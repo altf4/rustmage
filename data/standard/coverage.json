@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "e5a6a0e2ac358eb740bf84f19444c89d80982cc85cefb05f7c4002e5a2f33ce5",
+  "catalogue_version": "c31ece82fd1c607cbebab32a243f60c9b27e9b3251bec26e5e950c8833f5f9e1",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 43,
-  "implemented_total": 49,
+  "implemented_standard_cards": 47,
+  "implemented_total": 53,
   "cards": [
     {
       "name": "Plains",
@@ -2456,8 +2456,8 @@
     {
       "name": "Bilbo's Deadly Slice",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Bilbo's Gambit",
@@ -8936,8 +8936,8 @@
     {
       "name": "Fell",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Fell Gravship",
@@ -17282,8 +17282,8 @@
     {
       "name": "Murder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Murdock's Crusade",
@@ -28832,8 +28832,8 @@
     {
       "name": "Unsummon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Unswerving Sloth",

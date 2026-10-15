@@ -46,9 +46,10 @@ pool, 60-card minimum and copy limits, then rejects every unsupported card.
 The known Standard unlimited-copy exceptions are represented independently of
 whether their rules have been implemented.
 
-Coverage is **43 / 5,164 executable Standard cards**, plus six legacy regression
+Coverage is **47 / 5,164 executable Standard cards**, plus six legacy regression
 cards. The additions are ten exact vanilla-creature templates and 25 creatures
-whose entire text consists of implemented static keywords. The compiler rejects
+whose entire text consists of implemented static keywords, plus four exact
+single-instruction bounce/destruction spells. The compiler rejects
 legendary cards, dynamic power/toughness, other layouts, unimplemented cost
 symbols, triggers, or any other remaining rules text from this template. It never
 infers behavior from a partial keyword match.
@@ -56,6 +57,8 @@ infers behavior from a partial keyword match.
 The keyword kernel now supports flying, reach, haste, vigilance, defender, flash,
 lifelink, deathtouch, trample, first strike and double strike. Source-aware damage
 batches and split strike steps are described in [damage.md](damage.md).
+Zone transitions and target incarnation tracking are described in
+[object-identity.md](object-identity.md).
 Cards with additional text still require
 their own implementations. No statistic in this inventory establishes full
 Standard rules support. The full goal remains incomplete.

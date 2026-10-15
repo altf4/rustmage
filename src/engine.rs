@@ -3,7 +3,16 @@ use crate::rng::Rng;
 use crate::{Card, Keywords, Mana};
 use serde::{Deserialize, Serialize};
 
+/// Stable physical-card slot. Use `ObjectRef` for a particular game-object incarnation.
 pub type CardId = u32;
+
+/// Rules identity within a game branch. Every zone change creates a new incarnation.
+/// References are scoped to their game/snapshot; revision guards still protect actions.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+pub struct ObjectRef {
+    pub card: CardId,
+    pub generation: u64,
+}
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Player {
@@ -26,6 +35,9 @@ impl Player {
 #[cfg(test)]
 #[path = "engine_damage_tests.rs"]
 mod damage_tests;
+#[cfg(test)]
+#[path = "engine_identity_tests.rs"]
+mod identity_tests;
 #[cfg(test)]
 #[path = "engine_tests.rs"]
 mod tests;
@@ -154,6 +166,7 @@ struct Object {
     card: Card,
     owner: Player,
     zone: Zone,
+    generation: u64,
     tapped: bool,
     // True until this creature's controller begins their next turn.
     summoning_sick: bool,
@@ -190,6 +203,8 @@ struct PlayerState {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
     pub card: CardId,
+    pub object: ObjectRef,
+    pub target_object: Option<ObjectRef>,
     pub controller: Player,
     pub target: Option<Target>,
 }
@@ -214,6 +229,7 @@ struct DamageChoice {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 pub struct DamageSource {
     pub object: CardId,
+    pub reference: ObjectRef,
     pub controller: Player,
     pub keywords: Keywords,
 }
@@ -282,9 +298,10 @@ pub struct Game {
     revision: u64,
 }
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ObjectView {
     pub id: CardId,
+    pub reference: ObjectRef,
     pub card: Card,
     pub owner: Player,
     pub zone: Zone,
@@ -294,6 +311,15 @@ pub struct ObjectView {
     pub power: i32,
     pub toughness: i32,
     pub keywords: Keywords,
+}
+
+/// A single zone transition with the departing object's last-known characteristics.
+/// Engine internals consume this value; observations do not expose hidden transitions.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct ZoneChange {
+    pub before: ObjectView,
+    pub after: ObjectRef,
+    pub destination: Zone,
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -384,6 +410,7 @@ impl Game {
                     card,
                     owner: p,
                     zone: Zone::Library,
+                    generation: 0,
                     tapped: false,
                     summoning_sick: false,
                     damage: 0,
@@ -614,7 +641,7 @@ impl Game {
                                     }
                                 }
                             }
-                            Effect::Grow => {
+                            Effect::Grow | Effect::ReturnToHand | Effect::Destroy => {
                                 for (j, target) in s.objects.iter().enumerate() {
                                     if target.zone == Zone::Battlefield
                                         && target.card.is_creature()
@@ -744,7 +771,9 @@ impl Game {
                 self.next_mulligan(actor);
             }
             Action::Bottom { card } => {
-                self.state.objects[card as usize].zone = Zone::Library;
+                self.move_object(card, Zone::Library);
+                // move_object appends at the top; bottom ordering is this choice's rule.
+                self.state.players[actor.index()].library.pop();
                 // Chosen first is put lowest. Subsequent choices go above prior ones.
                 let already_bottomed = match self.state.pending {
                     Pending::Bottom { remaining, .. } => {
@@ -777,7 +806,7 @@ impl Game {
                 }
             }
             Action::PlayLand { card } => {
-                self.state.objects[card as usize].zone = Zone::Battlefield;
+                self.move_object(card, Zone::Battlefield);
                 self.state.land_played = true;
                 self.state.passes = 0;
             }
@@ -799,9 +828,15 @@ impl Game {
                 {
                     *pool -= cost;
                 }
-                self.state.objects[card as usize].zone = Zone::Stack;
+                let target_object = target.and_then(|target| match target {
+                    Target::Card(id) | Target::Spell(id) => Some(self.object_ref(id)),
+                    Target::Player(_) => None,
+                });
+                let object = self.move_object(card, Zone::Stack).after;
                 self.state.stack.push(SpellView {
                     card,
+                    object,
+                    target_object,
                     controller: actor,
                     target,
                 });
@@ -855,7 +890,7 @@ impl Game {
                 self.advance_damage_choices();
             }
             Action::Discard { card } => {
-                self.state.objects[card as usize].zone = Zone::Graveyard;
+                self.move_object(card, Zone::Graveyard);
                 if self.hand_count(actor) <= 7 {
                     self.finish_cleanup();
                 }
@@ -873,11 +908,16 @@ impl Game {
         // Everyone who chose to mulligan shuffles and draws simultaneously.
         for p in [start, start.other()] {
             if self.state.mulligan_round[p.index()] {
-                for (i, obj) in self.state.objects.iter_mut().enumerate() {
-                    if obj.owner == p && obj.zone == Zone::Hand {
-                        obj.zone = Zone::Library;
-                        self.state.players[p.index()].library.push(i as CardId);
-                    }
+                let hand: Vec<_> = self
+                    .state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, obj)| obj.owner == p && obj.zone == Zone::Hand)
+                    .map(|(i, _)| i as CardId)
+                    .collect();
+                for id in hand {
+                    self.move_object(id, Zone::Library);
                 }
                 self.state
                     .rng
@@ -934,8 +974,10 @@ impl Game {
     }
 
     fn draw(&mut self, p: Player) {
-        match self.state.players[p.index()].library.pop() {
-            Some(id) => self.state.objects[id as usize].zone = Zone::Hand,
+        match self.state.players[p.index()].library.last().copied() {
+            Some(id) => {
+                self.move_object(id, Zone::Hand);
+            }
             None => self.state.players[p.index()].attempted_empty_draw = true,
         }
     }
@@ -945,6 +987,87 @@ impl Game {
             .objects
             .get(id as usize)
             .is_some_and(|o| o.zone == Zone::Battlefield)
+    }
+
+    fn object_ref(&self, card: CardId) -> ObjectRef {
+        ObjectRef {
+            card,
+            generation: self.state.objects[card as usize].generation,
+        }
+    }
+
+    fn object_view(&self, id: CardId) -> ObjectView {
+        let obj = &self.state.objects[id as usize];
+        ObjectView {
+            id,
+            reference: self.object_ref(id),
+            card: obj.card,
+            owner: obj.owner,
+            zone: obj.zone,
+            tapped: obj.tapped,
+            summoning_sick: obj.summoning_sick,
+            damage: obj.damage,
+            power: obj.power(),
+            toughness: obj.toughness(),
+            keywords: obj.card.keywords(),
+        }
+    }
+
+    /// All real zone changes go through here. The library's default insertion is
+    /// its top; effects that specify ordering reposition after the transition.
+    /// The returned event is owned so later trigger processing can retain LKI.
+    fn move_object(&mut self, id: CardId, destination: Zone) -> ZoneChange {
+        let before = self.object_view(id);
+        assert_ne!(
+            before.zone, destination,
+            "same-zone moves are ordering operations"
+        );
+        let generation = before
+            .reference
+            .generation
+            .checked_add(1)
+            .expect("object generation exhausted");
+        if before.zone == Zone::Library {
+            let library = &mut self.state.players[before.owner.index()].library;
+            let position = library
+                .iter()
+                .rposition(|&card| card == id)
+                .expect("library membership");
+            library.remove(position);
+        }
+        if before.zone == Zone::Stack {
+            self.state
+                .stack
+                .retain(|spell| spell.object != before.reference);
+        }
+        if before.zone == Zone::Battlefield {
+            self.state.attackers.retain(|attacker| attacker.card != id);
+            self.state
+                .blocks
+                .retain(|&(blocker, attacker)| blocker != id && attacker != id);
+            self.state.selected_attackers.retain(|&card| card != id);
+            self.state
+                .selected_blocks
+                .retain(|&(blocker, attacker)| blocker != id && attacker != id);
+            self.state.first_strikers.retain(|&card| card != id);
+            // A surviving attacker remains blocked after its last blocker leaves.
+        }
+        let obj = &mut self.state.objects[id as usize];
+        obj.zone = destination;
+        obj.generation = generation;
+        obj.tapped = false;
+        obj.summoning_sick = destination == Zone::Battlefield;
+        obj.damage = 0;
+        obj.deathtouch_since_sba = false;
+        obj.growth = 0;
+        if destination == Zone::Library {
+            self.state.players[obj.owner.index()].library.push(id);
+        }
+        ZoneChange {
+            before,
+            after: self.object_ref(id),
+            destination,
+        }
     }
 
     fn give_priority(&mut self) {
@@ -1071,17 +1194,21 @@ impl Game {
         let effect = self.state.objects[spell.card as usize].card.effect();
         let valid = match spell.target {
             Some(Target::Card(id)) => {
-                self.on_battlefield(id) && self.state.objects[id as usize].card.is_creature()
+                spell.target_object == Some(self.object_ref(id))
+                    && self.on_battlefield(id)
+                    && self.state.objects[id as usize].card.is_creature()
             }
-            Some(Target::Spell(id)) => self.state.stack.iter().any(|s| s.card == id),
+            Some(Target::Spell(_)) => self
+                .state
+                .stack
+                .iter()
+                .any(|s| Some(s.object) == spell.target_object),
             _ => true,
         };
         if valid {
             match effect {
                 Effect::Creature(..) => {
-                    let obj = &mut self.state.objects[spell.card as usize];
-                    obj.zone = Zone::Battlefield;
-                    obj.summoning_sick = true;
+                    self.move_object(spell.card, Zone::Battlefield);
                     return;
                 }
                 Effect::Damage(amount) => {
@@ -1104,8 +1231,19 @@ impl Game {
                 }
                 Effect::Counter => {
                     if let Some(Target::Spell(id)) = spell.target {
-                        self.state.stack.retain(|s| s.card != id);
-                        self.state.objects[id as usize].zone = Zone::Graveyard;
+                        self.move_object(id, Zone::Graveyard);
+                    }
+                }
+                Effect::ReturnToHand => {
+                    if let Some(Target::Card(id)) = spell.target {
+                        self.move_object(id, Zone::Hand);
+                    }
+                }
+                Effect::Destroy => {
+                    if let Some(Target::Card(id)) = spell.target {
+                        // No admitted permanent has indestructible, regeneration,
+                        // or a destruction/zone-change replacement effect yet.
+                        self.move_object(id, Zone::Graveyard);
                     }
                 }
                 Effect::Land | Effect::Unsupported => {
@@ -1113,7 +1251,7 @@ impl Game {
                 }
             }
         }
-        self.state.objects[spell.card as usize].zone = Zone::Graveyard;
+        self.move_object(spell.card, Zone::Graveyard);
     }
 
     fn damage_source(&self, object: CardId) -> DamageSource {
@@ -1122,6 +1260,7 @@ impl Game {
         // where current controller must be used once control layers are added.
         DamageSource {
             object,
+            reference: self.object_ref(object),
             controller: obj.owner,
             keywords: obj.card.keywords(),
         }
@@ -1288,19 +1427,23 @@ impl Game {
     }
 
     fn state_based_actions(&mut self) {
-        for obj in &mut self.state.objects {
-            if obj.zone == Zone::Battlefield
-                && obj.card.is_creature()
-                && (obj.toughness() <= 0
-                    || obj.damage >= obj.toughness()
-                    || obj.deathtouch_since_sba)
-            {
-                obj.zone = Zone::Graveyard;
-                obj.damage = 0;
-                obj.growth = 0;
-                obj.tapped = false;
-                obj.summoning_sick = false;
-            }
+        // Determine the entire simultaneous death set before moving any object.
+        let deaths: Vec<_> = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(_, obj)| {
+                obj.zone == Zone::Battlefield
+                    && obj.card.is_creature()
+                    && (obj.toughness() <= 0
+                        || obj.damage >= obj.toughness()
+                        || obj.deathtouch_since_sba)
+            })
+            .map(|(i, _)| i as CardId)
+            .collect();
+        for id in deaths {
+            self.move_object(id, Zone::Graveyard);
         }
         // Deathtouch applies only since the previous SBA check, not forever.
         for obj in &mut self.state.objects {
@@ -1332,21 +1475,10 @@ impl Game {
             .iter()
             .enumerate()
             .filter(|(_, o)| o.zone != Zone::Library && (o.zone != Zone::Hand || o.owner == viewer))
-            .map(|(i, o)| ObjectView {
-                id: i as CardId,
-                card: o.card,
-                owner: o.owner,
-                zone: o.zone,
-                tapped: o.tapped,
-                summoning_sick: o.summoning_sick,
-                damage: o.damage,
-                power: o.power(),
-                toughness: o.toughness(),
-                keywords: o.card.keywords(),
-            })
+            .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 3,
+            schema: 4,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,

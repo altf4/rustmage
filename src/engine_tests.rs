@@ -27,6 +27,7 @@ pub(super) fn spawn(game: &mut Game, p: Player, card: Card, zone: Zone) -> CardI
         card,
         owner: p,
         zone,
+        generation: 0,
         tapped: false,
         summoning_sick: false,
         damage: 0,
@@ -447,7 +448,7 @@ fn killing_a_blocker_does_not_unblock_attacker() {
         blocked: true,
     });
     game.state.blocks.push((blocker, attacker));
-    game.state.objects[blocker as usize].zone = Zone::Graveyard;
+    game.move_object(blocker, Zone::Graveyard);
     game.state.step = Step::Blockers;
     pass_pair(&mut game);
     assert_eq!(game.state.players[1].life, 20);
