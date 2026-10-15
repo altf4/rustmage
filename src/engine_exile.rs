@@ -72,24 +72,16 @@ impl Game {
         }
         // All effects created by the same departure batch return simultaneously.
         // They use no stack and offer no intervening choice or priority.
-        let before: Vec<_> = returning
-            .iter()
-            .map(|&(id, destination)| {
-                (
-                    self.object_view(id),
+        let moves = returning
+            .into_iter()
+            .map(|(id, destination)| {
+                self.entry_move(
+                    id,
                     destination,
                     destination == Zone::Battlefield && self.enters_tapped(id),
                 )
             })
             .collect();
-        let returned: Vec<_> = before
-            .into_iter()
-            .map(|(before, destination, tapped)| {
-                self.transition_object(before, destination, tapped)
-            })
-            .collect();
-        for event in &returned {
-            self.zone_triggers(event, &[]);
-        }
+        self.stage_entries(moves, None);
     }
 }

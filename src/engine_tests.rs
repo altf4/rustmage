@@ -55,7 +55,7 @@ pub(super) fn scenario() -> Game {
     game.state.step_sources.clear();
     game.state.life_sources.clear();
     game.state.death_sources.clear();
-    game.state.equipment_sources.clear();
+    game.state.attachment_sources.clear();
     for player in &mut game.state.players {
         player.library.clear();
         player.kept = true;

@@ -12,6 +12,7 @@ pub(crate) enum Effect {
     Modal(&'static [SpellMode]),
     Land,
     Permanent,
+    Aura(TargetPlan),
     Unsupported,
 }
 
@@ -190,6 +191,7 @@ pub(crate) struct SacrificeFilter {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
     AttachSource,
+    TapAttached,
     ChooseObjects {
         kind: EffectChoiceKind,
         players: PlayerSet,
@@ -313,9 +315,16 @@ pub(crate) struct EquipmentSpec {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct AuraSpec {
+    pub relation: i8,
+    pub bonus: EquipmentSpec,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Subject {
     Source,
     Targets,
+    Attached,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -625,6 +634,12 @@ impl Card {
     pub(crate) fn equipment(self) -> Option<EquipmentSpec> {
         generated::equipment(self)
     }
+    pub(crate) fn aura(self) -> Option<AuraSpec> {
+        generated::aura(self)
+    }
+    pub(crate) fn attachment_bonus(self) -> Option<EquipmentSpec> {
+        self.equipment().or_else(|| self.aura().map(|a| a.bonus))
+    }
     pub fn keywords(self) -> Keywords {
         self.info().keywords
     }
@@ -655,6 +670,7 @@ impl Card {
     ) -> Option<(TargetPlan, &'static [Instruction])> {
         match self.effect() {
             Effect::Spell(spec, program) => Some((spec, program)),
+            Effect::Aura(spec) => Some((spec, &[])),
             Effect::Modal(modes) => mode
                 .and_then(|id| modes.get(usize::from(id)))
                 .map(|mode| (mode.targets, mode.program)),

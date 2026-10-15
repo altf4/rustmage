@@ -14,6 +14,41 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_aura_enchant_relations_static_bonuses_and_source_entry_subjects(self):
+        for line,relation in [('Enchant creature',-1),('Enchant creature you control',0),('Enchant creature an opponent controls',1)]:
+            result=generate.aura_template(self.card(type_line='Enchantment — Aura',oracle_text=line+'\nEnchanted creature gets +2/+1 and has flying.'))
+            self.assertIsNotNone(result,line)
+            self.assertEqual(result[-4:],(relation,2,1,1))
+        self.assertEqual(generate.statement_program('Tap enchanted creature.'),['TapAttached'])
+        self.assertIn('Subject::Attached',generate.statement_program('Enchanted creature gains hexproof until end of turn.')[0])
+        self.assertIn('Subject::Attached',generate.statement_program('Equipped creature gets +2/+2 until end of turn.')[0])
+        self.assertIsNone(generate.permanent_program_template(self.card(type_line='Enchantment — Aura',oracle_text='Enchant creature\nEnchanted creature gets +1/+1.')))
+
+    def test_aura_unsupported_enchant_restrictions_layers_and_events_fail_closed(self):
+        for text in ['Enchant creature with flying\nEnchanted creature gets +1/+1.',
+                     'Enchant land\nEnchanted creature gets +1/+1.',
+                     'Enchant creature\nEnchanted creature has base power and toughness 1/1.',
+                     'Enchant creature\nYou control enchanted creature.',
+                     'Enchant creature\nEnchanted creature loses all abilities.',
+                     'Enchant creature\nEnchanted creature gets +1/+1 for each Forest you control.',
+                     'Enchant creature\nWhen enchanted creature dies, draw a card.',
+                     'Enchant creature\nEnchanted creature has "Whenever this creature attacks, draw a card."',
+                     "Enchant creature\nEnchanted creature doesn't untap during its controller's untap step.",
+                     'Enchant creature\nWhen this Aura enters, it deals 1 damage to enchanted creature.']:
+            self.assertIsNone(generate.aura_template(self.card(type_line='Enchantment — Aura',oracle_text=text)),text)
+
+    def test_all_aura_milestone_cards_compile_completely(self):
+        import json
+        cards={c['name']:c for c in json.loads((generate.ROOT/'data/standard/cards.json').read_text())['cards']}
+        for name in ["Aquitect's Defenses",'Colossification','Dead Weight','Fae Flight','Feather of Flight',
+                     'Fire-Rim Form','Frantic Strength',"Gilt-Leaf's Embrace",'Robotics Mastery','Super Speed',
+                     'Twinblade Blessing','Unflinching Courage','Untamed Hunger']:
+            self.assertIsNotNone(generate.aura_template(cards[name]),name)
+        self.assertIsNotNone(generate.equipment_template(cards['Adventuring Gear']))
+        for name in ['Charmed Sleep','Coerced to Kill','Ethereal Armor','Fungal Fortitude',
+                     'Pacifism',"Shardmage's Rescue",'Wingspan Stride']:
+            self.assertIsNone(generate.aura_template(cards[name]),name)
+
     def test_equipment_fixed_bonuses_and_equip_costs_compile_completely(self):
         c=self.card(type_line='Artifact — Equipment',mana_cost='{2}',oracle_text='Equipped creature gets +2/+1 and has flying and vigilance.\nEquip {1}{W}')
         result=generate.equipment_template(c)
@@ -53,7 +88,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                      "Squire's Lightblade",'Stolen Stark Tech','Swiftfoot Boots','Sword of Vengeance',
                      'Twin Blades','Vibranium Energy Daggers','Well-Worn Spatula']:
             self.assertIsNotNone(generate.equipment_template(cards[name]),name)
-        for name in ['Adventuring Gear','Auxiliary Boosters','Bloodthorn Flail',"Captain America's Shield",
+        for name in ['Auxiliary Boosters','Bloodthorn Flail',"Captain America's Shield",
                      'Dragonfire Blade',"Hunter's Blowgun",'Lotus Ring',"Pirate's Cutlass",'Spider-Suit']:
             self.assertIsNone(generate.equipment_template(cards[name]),name)
 

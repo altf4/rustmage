@@ -4,8 +4,12 @@ use super::*;
 
 impl Game {
     pub(super) fn register_battlefield_sources(&mut self, id: CardId) {
-        if self.state.objects[id as usize].card.equipment().is_some() {
-            self.state.equipment_sources.push(id);
+        if self.state.objects[id as usize]
+            .card
+            .attachment_bonus()
+            .is_some()
+        {
+            self.state.attachment_sources.push(id);
         }
         let triggers = self.state.objects[id as usize].card.triggers();
         if triggers
@@ -88,7 +92,7 @@ impl Game {
         if object.zone != Zone::Battlefield || !object.card.is_creature() {
             return stats;
         }
-        stats += self.equipment_bonus(id).0;
+        stats += self.attachment_bonus(id).0;
         // Only the small live-source index is traversed. Central zone transitions
         // maintain it, and snapshots own it; no derived stat cache needs invalidation.
         for &source in &self.state.static_sources {

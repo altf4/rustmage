@@ -146,6 +146,9 @@ pub struct BoundTarget {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
 pub enum Action {
+    ChooseAuraAttachment {
+        object: ObjectRef,
+    },
     Keep,
     Mulligan,
     Bottom {
@@ -377,6 +380,7 @@ pub struct SpellView {
     pub source_card: Card,
     pub source_keywords: Keywords,
     pub source_tapped: bool,
+    pub source_attachment: Option<ObjectRef>,
     pub card: CardId,
     pub object: ObjectRef,
     pub targets: Vec<BoundTarget>,
@@ -432,6 +436,9 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    AuraEntry {
+        player: Player,
+    },
     Mulligan(Player),
     Bottom {
         player: Player,
@@ -492,7 +499,7 @@ struct State {
     step_sources: Vec<CardId>,
     life_sources: Vec<CardId>,
     death_sources: Vec<CardId>,
-    equipment_sources: Vec<CardId>,
+    attachment_sources: Vec<CardId>,
     exile_links: Vec<ExileLink>,
     known_hand: Vec<ObjectRef>,
     players: [PlayerState; 2],
@@ -504,6 +511,7 @@ struct State {
     step: Step,
     pending: Pending,
     sba_batch: Option<Box<sba::SbaBatch>>,
+    entry_batch: Option<Box<entries::EntryBatch>>,
     mulligan_round: [bool; 2],
     stack: Vec<SpellView>,
     resolving: Option<Resolution>,
@@ -673,6 +681,7 @@ pub struct Observation {
     pub library_choice: Option<LibraryChoiceView>,
     pub search_choice: Option<SearchChoiceView>,
     pub effect_choice: Option<EffectChoiceView>,
+    pub aura_entry: Option<entries::AuraEntryView>,
     pub known_hand: Vec<ObjectRef>,
     pub payment_request: Option<PaymentRequestView>,
     pub waiting_triggers: Vec<SpellView>,
@@ -777,7 +786,7 @@ impl Game {
                 step_sources: Vec::new(),
                 life_sources: Vec::new(),
                 death_sources: Vec::new(),
-                equipment_sources: Vec::new(),
+                attachment_sources: Vec::new(),
                 exile_links: Vec::new(),
                 known_hand: Vec::new(),
                 players,
@@ -789,6 +798,7 @@ impl Game {
                 step: Step::Pregame,
                 pending: Pending::Mulligan(config.starting_player),
                 sba_batch: None,
+                entry_batch: None,
                 stack: Vec::new(),
                 resolving: None,
                 announcing: None,
@@ -836,7 +846,8 @@ impl Game {
         match self.state.pending {
             Pending::Mulligan(p) | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
-            Pending::EffectChoice { player }
+            Pending::AuraEntry { player }
+            | Pending::EffectChoice { player }
             | Pending::Legend { player }
             | Pending::EffectSearch { player }
             | Pending::EffectLibrary { player }
@@ -890,9 +901,18 @@ impl Game {
             self.apply_legal(actor, action);
             // Resolution is atomic with respect to SBAs and priority, even when
             // a program is suspended for an optional effect or discard choice.
-            if self.state.resolving.is_none() && self.state.announcing.is_none() {
-                self.state_based_actions();
-                self.prepare_triggers();
+            loop {
+                if self.advance_entries() {
+                    break;
+                }
+                if self.state.resolving.is_none() && self.state.announcing.is_none() {
+                    self.state_based_actions();
+                    if self.state.entry_batch.is_some() {
+                        continue;
+                    }
+                    self.prepare_triggers();
+                }
+                break;
             }
         }
         self.revision = self.revision.checked_add(1).expect("revision exhausted");
@@ -932,6 +952,15 @@ impl Game {
         // result. Cache capacity affects work only, never the admitted action set.
         let mut spell_funding_cache: [Option<(Mana, u32, bool)>; 8] = [None; 8];
         match s.pending {
+            Pending::AuraEntry { .. } => {
+                for (id, _) in s.objects.iter().enumerate() {
+                    let object = self.object_ref(id as CardId);
+                    if self.entry_candidate(object) && emit(Action::ChooseAuraAttachment { object })
+                    {
+                        return true;
+                    }
+                }
+            }
             Pending::EffectChoice { player } => {
                 let choice = s.resolving.as_ref().unwrap().choice.as_ref().unwrap();
                 if choice.skip_to.is_some() && emit(Action::DeclineEffectPayment) {
@@ -1046,7 +1075,7 @@ impl Game {
                         Effect::Modal(modes) => modes.iter().any(|mode| {
                             self.targets_available(mode.targets, actor, self.object_ref(card))
                         }),
-                        Effect::Spell(spec, _) => {
+                        Effect::Spell(spec, _) | Effect::Aura(spec) => {
                             self.targets_available(spec, actor, self.object_ref(card))
                         }
                         _ => true,
@@ -1089,7 +1118,7 @@ impl Game {
                             return;
                         }
                         let plan = match obj.card.effect() {
-                            Effect::Spell(plan, _) => plan,
+                            Effect::Spell(plan, _) | Effect::Aura(plan) => plan,
                             _ => TargetPlan::NONE,
                         };
                         let Some(spec) = plan.single() else {
@@ -1287,6 +1316,7 @@ impl Game {
 
     fn apply_legal(&mut self, actor: Player, action: Action) {
         match action {
+            Action::ChooseAuraAttachment { object } => self.choose_aura_attachment(object),
             Action::Keep => {
                 self.state.players[actor.index()].kept = true;
                 self.next_mulligan(actor);
@@ -1819,6 +1849,7 @@ impl Game {
                 if item.object == before.reference {
                     item.source_keywords = before.keywords;
                     item.source_tapped = before.tapped;
+                    item.source_attachment = before.attached_to;
                 }
             }
             self.state.static_sources.retain(|&source| source != id);
@@ -1826,7 +1857,7 @@ impl Game {
             self.state.step_sources.retain(|&source| source != id);
             self.state.life_sources.retain(|&source| source != id);
             self.state.death_sources.retain(|&source| source != id);
-            self.state.equipment_sources.retain(|&source| source != id);
+            self.state.attachment_sources.retain(|&source| source != id);
             self.state.attackers.retain(|attacker| attacker.card != id);
             self.state.blocking.retain(|&blocker| blocker != id);
             self.state
@@ -2195,7 +2226,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 22,
+            schema: 23,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -2218,6 +2249,7 @@ impl Game {
                 Pending::EffectSearch { .. } => "library_search",
                 Pending::EffectDiscard { .. } => "effect_discard",
                 Pending::EffectChoice { .. } => "effect_choice",
+                Pending::AuraEntry { .. } => "aura_entry",
                 Pending::Attackers => "attackers",
                 Pending::Blockers => "blockers",
                 Pending::Damage => "damage",
@@ -2234,6 +2266,7 @@ impl Game {
                 hand_count: self.hand_count(if i == 0 { Player::P0 } else { Player::P1 }),
             }),
             effect_choice: self.effect_choice_view(viewer),
+            aura_entry: self.aura_entry_view(viewer),
             objects,
             exile_links: s.exile_links.clone(),
             legend_choices: s
@@ -2419,6 +2452,10 @@ impl Game {
             + s.objects.len() * std::mem::size_of::<Object>()
             + s.exile_links.len() * std::mem::size_of::<ExileLink>()
             + s.sba_batch.as_ref().map(|batch| batch.bytes()).unwrap_or(0)
+            + s.entry_batch
+                .as_ref()
+                .map(|batch| batch.bytes())
+                .unwrap_or(0)
             + s.known_hand.len() * std::mem::size_of::<ObjectRef>()
             + (s.free_tokens.len()
                 + s.static_sources.len()
@@ -2426,7 +2463,7 @@ impl Game {
                 + s.step_sources.len()
                 + s.life_sources.len()
                 + s.death_sources.len()
-                + s.equipment_sources.len())
+                + s.attachment_sources.len())
                 * std::mem::size_of::<CardId>()
             + s.players
                 .iter()
@@ -2551,3 +2588,11 @@ mod equipment;
 #[cfg(test)]
 #[path = "engine_equipment_tests.rs"]
 mod equipment_tests;
+
+#[path = "engine_entries.rs"]
+mod entries;
+pub use entries::{AuraAttachmentView, AuraEntryView};
+
+#[cfg(test)]
+#[path = "engine_aura_tests.rs"]
+mod aura_tests;

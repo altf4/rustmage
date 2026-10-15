@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "bd071a60cc0f931aa83e8255f0a275c3dcd0735c81e0458959151402824bebdf",
+  "catalogue_version": "48768cd94213313da31a03d81c2e7c78b4ece345e16b20c1193af2735213793f",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 656,
-  "implemented_total": 662,
-  "token_definitions": 35,
+  "implemented_standard_cards": 670,
+  "implemented_total": 676,
+  "token_definitions": 36,
   "cards": [
     {
       "name": "Plains",
@@ -393,8 +393,8 @@
     {
       "name": "Adventuring Gear",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Adventurous Eater // Have a Bite",
@@ -1179,8 +1179,8 @@
     {
       "name": "Aquitect's Defenses",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Arabella, Abandoned Doll",
@@ -4827,8 +4827,8 @@
     {
       "name": "Colossification",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Colossus of the Blood Age",
@@ -5961,8 +5961,8 @@
     {
       "name": "Dead Weight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Deadeye Duelist",
@@ -8553,8 +8553,8 @@
     {
       "name": "Fae Flight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Faebloom Trick",
@@ -8865,8 +8865,8 @@
     {
       "name": "Feather of Flight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Featherbrained Filcher",
@@ -9171,8 +9171,8 @@
     {
       "name": "Fire-Rim Form",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Firebender Ascension",
@@ -9705,8 +9705,8 @@
     {
       "name": "Frantic Strength",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Freestrider Commando",
@@ -10527,8 +10527,8 @@
     {
       "name": "Gilt-Leaf's Embrace",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Gingerbread Hunter // Puny Snack",
@@ -21399,8 +21399,8 @@
     {
       "name": "Robotics Mastery",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Rock Soldiers",
@@ -25533,8 +25533,8 @@
     {
       "name": "Super Speed",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Super Strength",
@@ -28317,8 +28317,8 @@
     {
       "name": "Twinblade Blessing",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Twinblade Paladin",
@@ -28683,8 +28683,8 @@
     {
       "name": "Unflinching Courage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Unflinching Hortimancer",
@@ -28845,8 +28845,8 @@
     {
       "name": "Untamed Hunger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Untimely Malfunction",

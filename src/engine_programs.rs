@@ -221,6 +221,7 @@ impl Game {
             source_card: source.card,
             source_keywords: source.keywords,
             source_tapped: source.tapped,
+            source_attachment: source.attached_to,
             card: source.id,
             object: source.reference,
             controller: source.owner, // Control-changing effects remain gated.
@@ -285,6 +286,7 @@ impl Game {
 
     pub(super) fn prepare_triggers(&mut self) {
         if self.state.pending != Pending::Priority
+            || self.state.entry_batch.is_some()
             || self.state.resolving.is_some()
             || self.state.outcome.is_some()
             || self.state.pending_triggers.is_empty()
@@ -359,6 +361,18 @@ impl Game {
                 item.source_card.activations()[ability as usize].program
             }
             StackKind::Spell => match item.source_card.effect() {
+                Effect::Aura(_) => {
+                    let target = item.targets[0].object.unwrap();
+                    let mut movement = self.entry_move(
+                        item.card,
+                        Zone::Battlefield,
+                        self.enters_tapped(item.card),
+                    );
+                    movement.attachment = Some(target);
+                    self.stage_entries(vec![movement], None);
+                    self.give_priority();
+                    return;
+                }
                 Effect::Creature(..) | Effect::Permanent => {
                     self.move_object(item.card, Zone::Battlefield);
                     self.give_priority();
@@ -413,6 +427,9 @@ impl Game {
 
     pub(super) fn run_program(&mut self) {
         loop {
+            if self.state.entry_batch.is_some() {
+                return;
+            }
             // Mandatory discards are chosen privately by their player, APNAP when
             // multiple players must discard. Hand exhaustion completes that part.
             for player in [self.state.active, self.state.active.other()] {
@@ -456,6 +473,11 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::TapAttached => {
+                    if let Some(id) = self.attached_subject(&item) {
+                        self.state.objects[id as usize].tapped = true;
+                    }
+                }
                 Instruction::AttachSource => {
                     if let Some(target) = item.targets.iter().find_map(|bound| bound.object) {
                         self.attach_equipment(item.object, target);
@@ -653,6 +675,11 @@ impl Game {
                                 self.state.objects[item.card as usize].growth += stats;
                             }
                         }
+                        Subject::Attached => {
+                            if let Some(id) = self.attached_subject(&item) {
+                                self.state.objects[id as usize].growth += stats;
+                            }
+                        }
                         Subject::Targets => {
                             for bound in &item.targets {
                                 if self.same_target_object(*bound)
@@ -665,6 +692,12 @@ impl Game {
                     }
                 }
                 Instruction::GrantKeywords { subject, keywords } => match subject {
+                    Subject::Attached => {
+                        if let Some(id) = self.attached_subject(&item) {
+                            let object = &mut self.state.objects[id as usize];
+                            object.gained_keywords = object.gained_keywords.union(keywords);
+                        }
+                    }
                     Subject::Source => {
                         if self.on_battlefield(item.card)
                             && self.object_ref(item.card) == item.object
@@ -717,6 +750,11 @@ impl Game {
                     kind,
                     amount,
                 } => match subject {
+                    Subject::Attached => {
+                        if let Some(id) = self.attached_subject(&item) {
+                            self.state.objects[id as usize].counters.add(kind, amount);
+                        }
+                    }
                     Subject::Source => {
                         if self.on_battlefield(item.card)
                             && self.object_ref(item.card) == item.object
