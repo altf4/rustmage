@@ -48,7 +48,7 @@ pool, 60-card minimum and copy limits, then rejects every unsupported card.
 The known Standard unlimited-copy exceptions are represented independently of
 whether their rules have been implemented.
 
-Coverage is **767 / 5,164 executable Standard cards**, plus six legacy regression
+Coverage is **784 / 5,164 executable Standard cards**, plus six legacy regression
 cards. The additions are ten exact vanilla-creature templates and 25 creatures
 whose entire text consists of implemented static keywords, plus four exact
 single-instruction bounce/destruction spells, additional spell programs and creatures with complete supported trigger programs.
@@ -194,3 +194,9 @@ definitions. Current coverage is 767/5,164; 4,397 identities remain unsupported,
 with 39 token factories. Cause-specific batching, captured counts, private cleanup
 selections and repeated cleanup precede broader discarded-card bindings,
 conditional/reflexive triggers, variable costs and remaining card semantics.
+
+[Successful draw events and per-turn ordinals](draw-events.md) add 17 complete
+definitions. Current coverage is 784/5,164; 4,380 identities remain unsupported,
+with 40 token factories. Cause-specific successful draws, global turn counts,
+captured player bindings and shared targeted counter/keyword programs precede
+draw replacement/prevention, conditional triggers, copies and remaining rules.

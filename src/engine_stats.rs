@@ -14,6 +14,12 @@ impl Game {
         let triggers = self.state.objects[id as usize].card.triggers();
         if triggers
             .iter()
+            .any(|ability| matches!(ability.condition, TriggerCondition::CardDrawn { .. }))
+        {
+            self.state.draw_sources.push(id);
+        }
+        if triggers
+            .iter()
             .any(|ability| matches!(ability.condition, TriggerCondition::Discarded { .. }))
         {
             self.state.discard_sources.push(id);

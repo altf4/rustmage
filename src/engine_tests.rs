@@ -54,6 +54,7 @@ pub(super) fn scenario() -> Game {
     game.state.cast_sources.clear();
     game.state.damage_sources.clear();
     game.state.discard_sources.clear();
+    game.state.draw_sources.clear();
     game.state.cleanup_discards.clear();
     game.state.step_sources.clear();
     game.state.life_sources.clear();
@@ -61,6 +62,7 @@ pub(super) fn scenario() -> Game {
     game.state.attachment_sources.clear();
     for player in &mut game.state.players {
         player.library.clear();
+        player.cards_drawn_this_turn = 0;
         player.kept = true;
     }
     for p in [Player::P0, Player::P1] {

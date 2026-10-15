@@ -109,6 +109,7 @@ impl TargetPlan {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum PlayerSet {
+    DrawingPlayer,
     Controller,
     Opponent,
     Each,
@@ -277,6 +278,7 @@ pub(crate) enum Instruction {
     Damage(i32),
     DamagePlayers(PlayerSet, i32),
     UntapSource,
+    TapSource,
     UntapCreatures(CreatureFilter),
     Grow {
         subject: Subject,
@@ -507,6 +509,10 @@ pub(crate) enum DamageSubject {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    CardDrawn {
+        relation: CastRelation,
+        ordinal: Option<u64>,
+    },
     SelfDiscarded,
     SelfCycled,
     Discarded {

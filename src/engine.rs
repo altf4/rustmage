@@ -11,6 +11,8 @@ mod activations;
 mod damage_triggers;
 #[path = "engine_discard_events.rs"]
 mod discard_events;
+#[path = "engine_draw_events.rs"]
+mod draw_events;
 #[path = "engine_funding.rs"]
 mod funding;
 #[path = "engine_resolution_mana.rs"]
@@ -379,6 +381,7 @@ impl Object {
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct PlayerState {
     spells_cast_this_turn: u64,
+    cards_drawn_this_turn: u64,
     life_gain_events_this_turn: u64,
     attacked_this_turn: bool,
     life: i64,
@@ -399,6 +402,7 @@ pub struct SpellView {
     pub source_attachment: Option<ObjectRef>,
     pub damage_event: Option<DamageTriggerView>,
     pub discard_event: Option<DiscardTriggerView>,
+    pub draw_event: Option<DrawTriggerView>,
     pub source_facts: DamageFacts,
     pub related_stack: Option<StackLink>,
     pub card: CardId,
@@ -570,6 +574,7 @@ struct State {
     cast_sources: Vec<CardId>,
     damage_sources: Vec<CardId>,
     discard_sources: Vec<CardId>,
+    draw_sources: Vec<CardId>,
     cleanup_discards: Vec<CardId>,
     step_sources: Vec<CardId>,
     life_sources: Vec<CardId>,
@@ -653,6 +658,7 @@ pub struct ZoneChange {
 #[derive(Clone, Debug, Serialize)]
 pub struct PlayerView {
     pub spells_cast_this_turn: u64,
+    pub cards_drawn_this_turn: u64,
     pub life_gain_events_this_turn: u64,
     pub attacked_this_turn: bool,
     pub life: i64,
@@ -832,6 +838,7 @@ impl Game {
         let mut objects = Vec::with_capacity(config.decks.iter().map(Vec::len).sum());
         let mut players = std::array::from_fn(|_| PlayerState {
             spells_cast_this_turn: 0,
+            cards_drawn_this_turn: 0,
             life_gain_events_this_turn: 0,
             attacked_this_turn: false,
             life: 20,
@@ -873,6 +880,7 @@ impl Game {
                 cast_sources: Vec::new(),
                 damage_sources: Vec::new(),
                 discard_sources: Vec::new(),
+                draw_sources: Vec::new(),
                 cleanup_discards: Vec::new(),
                 step_sources: Vec::new(),
                 life_sources: Vec::new(),
@@ -1795,6 +1803,7 @@ impl Game {
         match self.state.players[p.index()].library.last().copied() {
             Some(id) => {
                 self.move_object(id, Zone::Hand);
+                self.card_drawn(p);
             }
             None => self.state.players[p.index()].attempted_empty_draw = true,
         }
@@ -1987,6 +1996,7 @@ impl Game {
             self.state.cast_sources.retain(|&source| source != id);
             self.state.damage_sources.retain(|&source| source != id);
             self.state.discard_sources.retain(|&source| source != id);
+            self.state.draw_sources.retain(|&source| source != id);
             self.state.step_sources.retain(|&source| source != id);
             self.state.life_sources.retain(|&source| source != id);
             self.state.death_sources.retain(|&source| source != id);
@@ -2042,6 +2052,7 @@ impl Game {
     fn begin_turn(&mut self) {
         for player in &mut self.state.players {
             player.spells_cast_this_turn = 0;
+            player.cards_drawn_this_turn = 0;
             player.life_gain_events_this_turn = 0;
             player.attacked_this_turn = false;
         }
@@ -2363,7 +2374,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 28,
+            schema: 29,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -2397,6 +2408,7 @@ impl Game {
             },
             players: std::array::from_fn(|i| PlayerView {
                 spells_cast_this_turn: s.players[i].spells_cast_this_turn,
+                cards_drawn_this_turn: s.players[i].cards_drawn_this_turn,
                 life_gain_events_this_turn: s.players[i].life_gain_events_this_turn,
                 attacked_this_turn: s.players[i].attacked_this_turn,
                 life: s.players[i].life,
@@ -2628,6 +2640,7 @@ impl Game {
                 + s.cast_sources.len()
                 + s.damage_sources.len()
                 + s.discard_sources.len()
+                + s.draw_sources.len()
                 + s.cleanup_discards.len()
                 + s.step_sources.len()
                 + s.life_sources.len()
@@ -2791,3 +2804,9 @@ pub use discard_events::DiscardTriggerView;
 #[cfg(test)]
 #[path = "engine_discard_tests.rs"]
 mod discard_tests;
+
+pub use draw_events::DrawTriggerView;
+
+#[cfg(test)]
+#[path = "engine_draw_tests.rs"]
+mod draw_tests;
