@@ -9,6 +9,7 @@ pub(super) struct Announcement {
     pub group: u16,
     pub trigger: bool,
     pub payment: Option<Mana>,
+    pub cost: Option<ManaCost>,
     pub counter_payment: Counters,
     pub pay_window: bool,
     pub production: Option<Mana>,
@@ -50,6 +51,24 @@ impl Game {
         match plan {
             TargetPlan::Single(spec) => available(spec),
             TargetPlan::Groups(groups) => groups.iter().copied().all(available),
+        }
+    }
+
+    pub(super) fn choose_spell_cost(&mut self, index: u16) {
+        let a = self.state.announcing.as_mut().unwrap();
+        a.cost = Some(
+            a.item
+                .source_card
+                .cost_options()
+                .nth(index as usize)
+                .unwrap(),
+        );
+        let player = a.item.controller;
+        if matches!(a.item.source_card.effect(), Effect::Modal(_)) && a.item.mode.is_none() {
+            self.state.pending = Pending::Modes { player };
+        } else {
+            self.state.pending = Pending::Targets { player };
+            self.advance_target_groups();
         }
     }
 
@@ -292,6 +311,7 @@ impl Game {
             group: 0,
             trigger,
             payment: None,
+            cost: None,
             counter_payment: Counters::default(),
             pay_window: false,
             production: None,
@@ -313,6 +333,7 @@ impl Game {
         let needs_mode = item.kind == StackKind::Spell
             && matches!(item.source_card.effect(), Effect::Modal(_))
             && item.mode.is_none();
+        let needs_cost = item.kind == StackKind::Spell && item.source_card.has_hybrid_cost();
         self.state.announcing = Some(Announcement {
             item,
             spec: TargetSpec::NONE,
@@ -320,16 +341,19 @@ impl Game {
             group: 0,
             trigger: false,
             payment: None,
+            cost: None,
             counter_payment: counters,
             pay_window: true,
             production,
         });
-        self.state.pending = if needs_mode {
+        self.state.pending = if needs_cost {
+            Pending::SpellCost { player }
+        } else if needs_mode {
             Pending::Modes { player }
         } else {
             Pending::Targets { player }
         };
-        if !needs_mode {
+        if !needs_cost && !needs_mode {
             self.advance_target_groups();
         }
     }

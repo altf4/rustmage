@@ -827,6 +827,36 @@ impl Card {
         let definition = &generated::DEFINITIONS[self.0 as usize];
         (definition.colored, definition.generic)
     }
+    pub(crate) fn has_hybrid_cost(self) -> bool {
+        !generated::cost_alternatives(self).is_empty()
+    }
+    pub(crate) fn cost_options(self) -> impl Iterator<Item = ManaCost> {
+        let definition = &generated::DEFINITIONS[self.0 as usize];
+        std::iter::once(definition.colored)
+            .chain(generated::cost_alternatives(self).iter().copied())
+            .map(|colored| ManaCost {
+                colored,
+                generic: definition.generic,
+            })
+    }
+    pub(crate) fn spell_payments(self, pool: Mana, mut emit: impl FnMut(Mana)) {
+        if !self.has_hybrid_cost() {
+            let (colored, generic) = self.cost();
+            payments(pool, colored, generic, emit);
+            return;
+        }
+        // Different hybrid assignments can consume the same pool allocation.
+        // Emit each action once, without charging fixed-cost casts an allocation.
+        let mut seen = Vec::new();
+        for cost in self.cost_options() {
+            payments(pool, cost.colored, cost.generic, |payment| {
+                if !seen.contains(&payment) {
+                    seen.push(payment);
+                    emit(payment);
+                }
+            });
+        }
+    }
     pub(crate) fn index(self) -> usize {
         self.0 as usize
     }

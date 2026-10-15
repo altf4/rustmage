@@ -14,6 +14,53 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_hybrid_spell_costs_enumerate_unique_nonhybrid_equivalents(self):
+        self.assertEqual(generate.spell_cost_options('{G/W}{G/W}'),[
+            ([0,0,0,0,2,0],0),([1,0,0,0,1,0],0),([2,0,0,0,0,0],0)])
+        self.assertEqual(len(generate.spell_cost_options('{W/U}{U/B}')),4)
+        for cost in ['{3}{R}{R}','{0}','{2}{C}{G}']:
+            self.assertEqual(generate.spell_cost_options(cost),[generate.fixed_cost(cost)])
+        for pair in ['W/U','W/B','U/B','U/R','B/R','B/G','R/G','R/W','G/W','G/U']:
+            costs=generate.spell_cost_options('{1}{'+pair+'}{'+pair+'}{'+pair+'}')
+            self.assertEqual(len(costs),4)
+            self.assertTrue(all(sum(colored)+generic==4 for colored,generic in costs))
+        for cost in ['{2/W}','{W/P}','{W/U/P}','{C/W}','{S}','{X}','{W/W}','{W/G}',
+                     '{W/U}junk','','{4294967296}{G/W}']:
+            self.assertIsNone(generate.spell_cost_options(cost),cost)
+        self.assertIsNone(generate.fixed_cost('{G/W}'))
+        self.assertIsNone(generate.mana_cost_spec('{G/W}'))
+        self.assertIsNone(generate.activation_cost('{G/W}'))
+
+    def test_hybrid_spell_admission_never_approximates_other_symbols_or_ability_costs(self):
+        row=self.card(mana_cost='{1}{G/W}',oracle_text='When this creature enters, draw a card.')
+        self.assertIsNotNone(generate.trigger_creature_template(row))
+        self.assertIsNotNone(generate.creature_template(dict(row,oracle_text='')))
+        for cost in ['{2/W}','{G/W/P}','{X}{G/W}','{S}{G/W}']:
+            self.assertIsNone(generate.trigger_creature_template(dict(row,mana_cost=cost)))
+        for text in ['{G/W}: Draw a card.','Cycling {G/W}',
+                     'Ward {G/W}','When this creature enters, draw a card. Then discover 2.']:
+            self.assertIsNone(generate.permanent_program_template(dict(row,oracle_text=text)),text)
+        self.assertIsNone(generate.trigger_creature_template(dict(row,layout='adventure')))
+        spell=self.card(type_line='Instant',mana_cost='{U/R}',oracle_text='Draw a card.')
+        self.assertIsNotNone(generate.spell_program_template(spell))
+        modal=dict(spell,oracle_text='Choose one —\n• Draw a card.\n• You gain 2 life.')
+        self.assertIsNotNone(generate.modal_spell_template(modal))
+
+    def test_hybrid_complete_admissions_preserve_other_card_gates(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,coverage=generate.compile_catalogue(rows,target)
+        supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for name in ['Abandon Attachments','Cat-Owl','Duskwatch Hunter','Foot Elite','Gallant Citizen',
+                     'Head of the Homestead','Large Bear','Mary Jane Watson','Mechanized Ninja Cavalry','Mob Lookout',
+                     'Moonrise Cleric','Noggle Robber','Pond Prophet','Pretending Poxbearers','Punk Frogs',
+                     'Slithering Cryptid','Tempest Angler','Wandering Musicians']:
+            self.assertIn(name,supported)
+        for name in ['Blessed Ghoul','Chitinous Graspling','Mischievous Sneakling','Gangly Stompling','Mouser Mark III',
+                     'Sokka, Lateral Strategist','Spider-Woman, Stunning Savior','Nori, Teller of Tales']:
+            self.assertNotIn(name,supported)
+
     def test_once_per_turn_wraps_complete_events_and_rejects_other_limit_meanings(self):
         for prefix in ['Whenever you draw a card, ', 'Whenever you discard a card, ',
                        'Whenever you gain life, ', 'Whenever you cast your second spell each turn, ',
@@ -60,7 +107,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                      "Mm'menon, Uthros Exile",'Obyra, Dreaming Duelist','Rimefur Reindeer','Tanglespan Lookout',
                      'Tidus, Blitzball Star','Youthful Valkyrie']:
             self.assertIn(name,supported)
-        for name in ['Mary Jane Watson','Crossbones, Malicious Mercenary','Caretaker\'s Talent','Enduring Innocence',
+        for name in ['Crossbones, Malicious Mercenary','Caretaker\'s Talent','Enduring Innocence',
                      'Knightfisher','Twilight Diviner','Mikey & Leo, Chaos & Order','Deepmuck Desperado']:
             self.assertNotIn(name,supported)
 
@@ -101,7 +148,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Kang, Temporal Tyrant','Madame Masque','Mechanical Mobster','Prowler, Clawed Thief','Red Room Recruit',
                      'Startled Relic Sloth',"Syr Alin, the Lion's Claw",'Unstable Experiment','Wreck Remover','Yellowjacket, Heartless Marauder']:
             self.assertIn(name,supported)
-        for name in ['Baron Helmut Zemo','Baron Strucker, HYDRA Overlord','Leader, Super-Genius','M.O.D.O.K.','Mob Lookout',
+        for name in ['Baron Helmut Zemo','Baron Strucker, HYDRA Overlord','Leader, Super-Genius','M.O.D.O.K.',
                      'Scorpion, Seething Striker','Swordsman, Sharp Scoundrel',"Trickster's Stratagem",'Villainous Hideout']:
             self.assertNotIn(name,supported)
 
@@ -959,7 +1006,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         for change in [dict(oracle_text=None), dict(oracle_text=card['oracle_text'] + '\n{T}: Draw a card.'),
                        dict(oracle_text='When this creature enters, draw a card if you control an Elf.'),
                        dict(oracle_text='When this creature enters, draw a card.\nWard—Discard a card.'),
-                       dict(mana_cost='{G/U}{G/U}'), dict(layout='transform'),
+                       dict(mana_cost='{G/U/P}{G/U/P}'), dict(layout='transform'),
                        dict(type_line='Snow Creature — Cat'), dict(toughness='*')]:
             self.assertIsNone(generate.trigger_creature_template(dict(card, **change)), change)
 
