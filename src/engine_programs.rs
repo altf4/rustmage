@@ -4,6 +4,7 @@ use super::*;
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Resolution {
     pub item: SpellView,
+    pub mana_payment: Option<Box<resolution_mana::ResolutionPayment>>,
     pub program: &'static [Instruction],
     pub pc: usize,
     pub target_group: u16,
@@ -194,7 +195,8 @@ impl Game {
                     TriggerCondition::SelfEnters
                     | TriggerCondition::SelfEntersOrAttacks
                     | TriggerCondition::SelfEntersOrDies => same,
-                    TriggerCondition::PlayerDamaged { .. }
+                    TriggerCondition::Ward
+                    | TriggerCondition::PlayerDamaged { .. }
                     | TriggerCondition::SelfDies
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::LifeGained { .. }
@@ -228,6 +230,7 @@ impl Game {
             source_keywords: source.keywords,
             source_tapped: source.tapped,
             source_facts: DamageFacts::from_view(source),
+            related_stack: None,
             damage_event: None,
             source_attachment: source.attached_to,
             card: source.id,
@@ -399,6 +402,7 @@ impl Game {
             pc: 0,
             target_group: 0,
             discards: [0; 2],
+            mana_payment: None,
             selected_discards: [Vec::new(), Vec::new()],
             milled: Vec::new(),
             library: None,
@@ -436,7 +440,15 @@ impl Game {
 
     pub(super) fn run_program(&mut self) {
         loop {
-            if self.state.entry_batch.is_some() {
+            if self.state.entry_batch.is_some()
+                || self
+                    .state
+                    .resolving
+                    .as_ref()
+                    .unwrap()
+                    .mana_payment
+                    .is_some()
+            {
                 return;
             }
             // Mandatory discards are chosen privately by their player, APNAP when
@@ -485,6 +497,16 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::CounterUnlessPay {
+                    cost,
+                    subject,
+                    exile,
+                    unpaid_skip,
+                } => {
+                    if self.start_resolution_payment(&item, cost, subject, exile, unpaid_skip) {
+                        return;
+                    }
+                }
                 Instruction::DrawDamageAmount => {
                     self.draw_many(
                         item.controller,

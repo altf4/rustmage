@@ -511,6 +511,10 @@ TARGET_RULES = {
     'Player': 'TargetRule::Player { opponent_only: false }',
     'Opponent': 'TargetRule::Player { opponent_only: true }',
 }
+for _name,_kinds,_excluded in [('SpellCreature',1,0),('SpellNoncreature',0,1),('SpellInstantSorcery',12,0),('SpellArtifact',16,0),('SpellEnchantment',32,0)]:
+    TARGET_RULES[_name]=f'TargetRule::SpellKinds {{ kinds: {_kinds}, excluded: {_excluded} }}'
+
+
 for _name, _zone, _kinds, _relation, _other, _nonland in [
     ('OtherCreature', 'Battlefield', 1, -1, True, False),
     ('CreatureYou', 'Battlefield', 1, 0, False, False),
@@ -590,11 +594,59 @@ def power_damage_program(text):
     return None
 
 
+
+COUNTER_TARGETS = {
+    'target spell':'Spell','target creature spell':'SpellCreature',
+    'target noncreature spell':'SpellNoncreature','target instant or sorcery spell':'SpellInstantSorcery',
+    'target artifact spell':'SpellArtifact','target enchantment spell':'SpellEnchantment',
+}
+
+
+def mana_cost_spec(text):
+    mana=fixed_cost(text)
+    if mana is None or max([mana[1],*mana[0]])>4294967295: return None
+    return f'ManaCost {{ colored: {mana[0]}, generic: {mana[1]} }}'
+
+
+def counter_unless(cost,subject='Targets',exile=False,skip=0):
+    return (f'CounterUnlessPay {{ cost: {cost}, subject: CounterSubject::{subject}, '
+            f'exile: {str(exile).lower()}, unpaid_skip: {skip} }}')
+
+
+def counter_program(text):
+    for phrase,target in COUNTER_TARGETS.items():
+        prefix='counter '+phrase
+        if text==prefix+'.': return target,['Counter']
+        if not text.startswith(prefix+' unless its controller pays '): continue
+        rest=text[len(prefix+' unless its controller pays '):]
+        match=re.fullmatch(r'((?:\{(?:[0-9]+|[WUBRGC])\})+)\.(.*)',rest)
+        if match is None or (cost:=mana_cost_spec(match[1])) is None: return None
+        tail=match[2]
+        if not tail: return target,[counter_unless(cost)]
+        if tail.startswith(' If they do, '):
+            body=tail[len(' If they do, '):]
+            # Later sentences have independent scope; admit only one paid sentence.
+            if body.count('.') != 1: return None
+            if body.startswith('you create '): body=body[4:]
+            program=statement_program(body)
+            return (target,[counter_unless(cost,skip=len(program)),*program]) if program else None
+        if tail==" If that spell is countered this way, exile it instead of putting it into its owner's graveyard.":
+            return target,[counter_unless(cost,exile=True)]
+        return None
+    return None
+
+
+def ward_word(word):
+    if not word.startswith('ward '): return None
+    return mana_cost_spec(word[len('ward '):].upper())
+
+
 def targeted_program(text):
     """Complete target occurrences with independent predicates and effect focus."""
     if not isinstance(text, str) or not text.endswith('.'):
         return None
     text = normalize_duration(text[0].lower() + text[1:])
+    if counter:=counter_program(text): return counter
     if m := re.fullmatch(r'attach this Equipment to target creature you control\.(?: That creature gains (.+) until end of turn\.)?', text):
         program=['AttachSource']
         if m[1]:
@@ -898,10 +950,11 @@ def trigger_creature_template(card):
         if line.casefold() in TEXT_FLAGS:
             keywords |= TEXT_FLAGS[line.casefold()]; continue
         words = [word.strip().casefold() for word in line.split(',') if word.strip()]
-        if words and all(word in KEYWORDS or word == 'prowess' for word in words):
-            keywords |= sum(KEYWORDS[word] for word in set(words) if word != 'prowess')
-            abilities.extend((cast_condition(filter_='Noncreature'), [grow_instruction('Source', 1, 1)], 'None')
-                             for word in words if word == 'prowess')
+        if words and all(word in KEYWORDS or word == 'prowess' or ward_word(word) is not None for word in words):
+            keywords |= sum(KEYWORDS[word] for word in set(words) if word in KEYWORDS)
+            for word in words:
+                if word=='prowess': abilities.append((cast_condition(filter_='Noncreature'),[grow_instruction('Source',1,1)],'None'))
+                elif (cost:=ward_word(word)) is not None: abilities.append(('Ward',[counter_unless(cost,'Related')],'None'))
             continue
         damage_prefix=player_damage_prefix(line)
         line_prefixes=[damage_prefix] if damage_prefix else []

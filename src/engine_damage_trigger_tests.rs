@@ -557,6 +557,7 @@ fn departed_hero_damage_uses_frozen_battlefield_facts_for_observers() {
         pc: 0,
         target_group: 0,
         discards: [0; 2],
+        mana_payment: None,
         selected_discards: [Vec::new(), Vec::new()],
         milled: Vec::new(),
         library: None,

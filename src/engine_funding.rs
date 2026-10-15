@@ -524,6 +524,46 @@ impl Game {
     }
 }
 
+impl Game {
+    pub(super) fn visit_resolution_payment(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
+        let request = self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .mana_payment
+            .as_ref()
+            .unwrap();
+        if emit(Action::DeclineResolutionMana) {
+            return true;
+        }
+        let goal = FundingGoal {
+            actor: request.payer,
+            required: request.cost.colored,
+            generic: request.cost.generic,
+            source: None,
+        };
+        let state = FundingState::from_game(self, goal);
+        let mut done = false;
+        payments(state.mana, goal.required, goal.generic, |payment| {
+            if !done {
+                done = emit(Action::PayResolutionMana { payment });
+            }
+        });
+        if done {
+            return true;
+        }
+        // A payment request grants a mana-ability window even if the player
+        // eventually declines or cannot assemble the whole payment.
+        for step in state.moves(goal) {
+            if emit(state.action(&step)) {
+                return true;
+            }
+        }
+        false
+    }
+}
+
 #[cfg(test)]
 mod equipment_tests {
     use super::super::tests::{scenario, spawn};

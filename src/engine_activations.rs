@@ -222,6 +222,7 @@ impl Game {
             source_keywords: self.keywords(card),
             source_tapped: self.state.objects[card as usize].tapped,
             source_facts: self.damage_facts(card),
+            related_stack: None,
             damage_event: None,
             source_attachment: self.state.objects[card as usize].attached_to,
             card,
