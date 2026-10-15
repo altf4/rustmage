@@ -182,6 +182,47 @@ class BindingTests(unittest.TestCase):
             self.assertEqual(again, after)
             game.drop_snapshot(saved)
 
+    def test_menace_partial_blocks_require_completion_and_restore(self):
+        decks = [["Swamp"] * 36 + ["Ravine Raider"] * 24, ["Forest"] * 36 + ["Grizzly Bears"] * 24]
+        with Game(decks, seed=7, deck_rules="Freeform") as game:
+            obs = game.observe("P0")
+            for _ in range(1500):
+                self.assertIsNone(obs["outcome"])
+                if obs["viewer"] != obs["actor"]:
+                    obs = game.observe(obs["actor"])
+                index = next((i for i, a in enumerate(obs["actions"]) if a["kind"] == "Block" and obs["actor"] == "P1"), None)
+                if index is not None:
+                    break
+                def score(action):
+                    if action["kind"] == "TapMana":
+                        return 20 if obs["active"] == obs["actor"] and obs["step"] in ("Main1", "Main2") else -5
+                    return {"Keep": 100, "PlayLand": 90, "Cast": 80, "AnnounceCast": -20, "Attack": 60,
+                            "Mulligan": -100, "Concede": -1000}.get(action["kind"], 0)
+                selected = max(range(len(obs["actions"])), key=lambda i: score(obs["actions"][i]))
+                obs = game.step(obs, selected)
+            else:
+                self.fail("menace block fixture not reached")
+            attacker = obs["actions"][index]["attacker"]
+            obs = game.step(obs, index)
+            self.assertFalse(any(a["kind"] == "FinishBlockers" for a in obs["actions"]))
+            self.assertEqual(game.observe("P0")["blocks"], [])
+            saved = game.snapshot()
+            second = next(i for i, a in enumerate(obs["actions"]) if a["kind"] == "Block" and a["attacker"] == attacker)
+            def complete(engine, observation):
+                current = engine.step(observation, second)
+                finish = next(i for i, a in enumerate(current["actions"]) if a["kind"] == "FinishBlockers")
+                return engine.step(current, finish)
+            with game.clone() as branch:
+                expected = complete(branch, branch.observe("P1"))
+            after = complete(game, obs)
+            self.assertEqual(after, expected)
+            self.assertEqual(len(after["blocks"]), 2)
+            game.restore(saved)
+            again = complete(game, game.observe("P1"))
+            self.assertGreater(again.pop("revision"), after.pop("revision"))
+            self.assertEqual(again, after)
+            game.drop_snapshot(saved)
+
     def test_input_and_lifecycle(self):
         with self.assertRaises(EngineError):
             Game([["BlackLotus"] * 60] * 2)

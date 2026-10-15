@@ -71,11 +71,27 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIsNotNone(generate.statement_program(text),text)
         for text in ('Target creature gains hexproof from red until end of turn.',
                      'Target creature loses flying until end of turn.',
-                     'Target creature gains menace until end of turn.',
+                     'Target creature gains ward {2} until end of turn.',
                      'Target creature gains flying until your next turn.',
                      'Target player draws a card. Untap it.'):
             self.assertIsNone(generate.targeted_program(text),text)
         self.assertIsNone(generate.permanent_program_template(self.card(oracle_text='Other creatures you control have haste.')))
+
+    def test_fixed_blocking_restrictions_and_menace_require_complete_text(self):
+        for text, flags in [('Menace', 32768), ("This creature can't block.", 2048),
+                            ("This creature can't be blocked.",16384),
+                            ("This creature can't be blocked by more than one creature.",65536),
+                            ("This creature can't be blocked except by three or more creatures.",131072),
+                            ("This creature can't be blocked by tokens.",262144)]:
+            self.assertEqual(generate.creature_template(self.card(oracle_text=text)), ('Creature(2, 1)',flags))
+        self.assertIsNotNone(generate.targeted_program("Target creature can't be blocked this turn."))
+        self.assertIsNotNone(generate.targeted_program("Target creature gains vigilance until end of turn and can't be blocked this turn."))
+        for text in ("This creature can't block unless you control a Hero.",
+                     "This creature can't be blocked by creatures with power 2 or less.",
+                     'This creature must be blocked if able.'):
+            self.assertIsNone(generate.creature_template(self.card(oracle_text=text)))
+        self.assertIsNone(generate.statement_program("Creatures you control can't be blocked this turn."))
+        self.assertIsNotNone(generate.statement_program('Create a 1/1 white Rabbit creature token with menace.'))
 
     def test_exact_creature_template_rejects_other_mechanics(self):
         self.assertEqual(generate.creature_template(self.card()), ('Creature(2, 1)', 0))
@@ -220,7 +236,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         for text in ['Create a Powerstone token.', 'Create a Blood token.', 'Create a Junk token.',
                      'Create X 1/1 white Rabbit creature tokens.',
                      'Create a 1/1 white Rabbit creature token for each creature you control.',
-                     'Create a 1/1 white Rabbit creature token with menace.',
+                     'Create a 1/1 white Rabbit creature token with ward {2}.',
                      'Create a 1/1 white Rabbit creature token with vigilance. It gains haste.',
                      'Create a 1/1 white Rabbit creature token that is tapped and attacking.',
                      'Create a token that is a copy of target creature.',

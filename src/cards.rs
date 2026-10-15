@@ -289,6 +289,11 @@ impl Keywords {
     pub const NONE: Self = Self(0);
     pub const HEXPROOF: Self = Self(4096);
     pub const INDESTRUCTIBLE: Self = Self(8192);
+    pub const CANT_BE_BLOCKED: Self = Self(16384);
+    pub const MENACE: Self = Self(32768);
+    pub const MAX_ONE_BLOCKER: Self = Self(65536);
+    pub const MIN_THREE_BLOCKERS: Self = Self(131072);
+    pub const NO_TOKEN_BLOCKERS: Self = Self(262144);
     pub fn contains(self, keyword: Self) -> bool {
         self.0 & keyword.0 == keyword.0
     }

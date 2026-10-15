@@ -8,6 +8,8 @@ mod activations;
 #[path = "engine_funding.rs"]
 mod funding;
 use funding::FundingGoal;
+#[path = "engine_blocking.rs"]
+mod blocking;
 #[path = "engine_stats.rs"]
 mod stats;
 #[path = "engine_tokens.rs"]
@@ -986,27 +988,19 @@ impl Game {
                 }
             }
             Pending::Blockers => {
-                if emit(Action::FinishBlockers) {
+                if self.blocks_complete() && emit(Action::FinishBlockers) {
                     return true;
                 }
-                for (i, obj) in s.objects.iter().enumerate() {
+                for (i, _) in s.objects.iter().enumerate() {
                     let blocker = i as CardId;
-                    if obj.owner != actor
-                        || obj.zone != Zone::Battlefield
-                        || !obj.card.is_creature()
-                        || obj.tapped
-                        || obj.keywords().contains(Keywords::CANT_BLOCK)
+                    if !self.can_be_blocker(blocker)
                         || s.selected_blocks.iter().any(|&(b, _)| b == blocker)
                     {
                         continue;
                     }
                     for attacker in &s.attackers {
-                        if self.on_battlefield(attacker.card)
-                            && (!s.objects[attacker.card as usize]
-                                .keywords()
-                                .contains(Keywords::FLYING)
-                                || obj.keywords().contains(Keywords::FLYING)
-                                || obj.keywords().contains(Keywords::REACH))
+                        if self.can_block_pair(blocker, attacker.card)
+                            && self.block_preserves_completion(blocker, attacker.card)
                             && emit(Action::Block {
                                 blocker,
                                 attacker: attacker.card,
@@ -2199,3 +2193,7 @@ mod stats_tests;
 #[cfg(test)]
 #[path = "engine_keyword_tests.rs"]
 mod keyword_tests;
+
+#[cfg(test)]
+#[path = "engine_blocking_tests.rs"]
+mod blocking_tests;
