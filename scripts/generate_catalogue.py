@@ -426,7 +426,11 @@ def statement_program(text):
         return ['DiscardHand(PlayerSet::Each)','Draw(PlayerSet::Each, 7)']
     if m:=re.fullmatch(r'tap (.+)\.',text):
         if filt:=creature_filter(m[1]): return [f'TapCreatures({filt})']
+    if m:=re.fullmatch(r'this creature gets ([+-][0-9]+)/([+-][0-9]+) until end of turn and can\'t be blocked this turn\.',text):
+        if max(abs(int(m[1])),abs(int(m[2])))>32767: return None
+        return [grow_instruction('Source',int(m[1]),int(m[2])),'GrantKeywords { subject: Subject::Source, keywords: Keywords(16384) }']
     if text == 'untap this creature.': return ['UntapSource']
+    if text == 'tap this creature.': return ['TapSource']
     if m := re.fullmatch(r'untap (.+)\.', text):
         if filt := creature_filter(m[1]): return [f'UntapCreatures({filt})']
     if m := re.fullmatch(r'(?:you )?draw (a card|two cards|three cards|four cards) and (?:you )?lose ([0-9]+) life\.', text):
@@ -649,6 +653,11 @@ def targeted_program(text):
         return None
     text = normalize_duration(text[0].lower() + text[1:])
     if counter:=counter_program(text): return counter
+    if text=='two target players each draw a card.': return ('Player',2,2),['Draw(PlayerSet::Targeted, 1)']
+    if m:=re.fullmatch(r'put (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on target creature\. It gains (.+) until end of turn\.',text):
+        keywords=keyword_list(m[3])
+        if keywords is None: return None
+        return 'Creature',[counter_instruction('Targets',m[1],m[2]),f'GrantKeywords {{ subject: Subject::Targets, keywords: Keywords({keywords}) }}']
     if m:=re.fullmatch(r'(target creature or Vehicle)( an opponent controls)? gets ([+-][0-9]+)/([+-][0-9]+) until end of turn\.',text):
         if max(abs(int(m[3])),abs(int(m[4])))>32767: return None
         return ('CreatureVehicleOpponent' if m[2] else 'CreatureVehicle'),[grow_instruction('Targets',int(m[3]),int(m[4]))]
@@ -926,6 +935,24 @@ def discard_event_program(text):
     return ('None',program) if program else None
 
 
+def draw_condition(relation='You',ordinal=None):
+    ordinal='None' if ordinal is None else f'Some({ordinal})'
+    return f'CardDrawn {{ relation: CastRelation::{relation}, ordinal: {ordinal} }}'
+
+
+def draw_event_program(text):
+    normalized=text[0].lower()+text[1:] if text else ''
+    if m:=re.fullmatch(r'that player loses ([0-9]+) life\.',normalized):
+        return ('None',[f'LoseLife(PlayerSet::DrawingPlayer, {int(m[1])})']) if int(m[1])<=65535 else None
+    if m:=re.fullmatch(r'this creature deals ([0-9]+) damage to them\.',normalized):
+        return ('None',[f'DamagePlayers(PlayerSet::DrawingPlayer, {int(m[1])})']) if int(m[1])<=32767 else None
+    if normalized=='you create a Treasure token.': normalized=normalized[4:]
+    targeted=targeted_program(normalized)
+    if targeted: return targeted
+    program=statement_program(normalized)
+    return ('None',program) if program else None
+
+
 def trigger_creature_template(card):
     if not isinstance(card.get('oracle_text'), str):
         return None
@@ -935,6 +962,14 @@ def trigger_creature_template(card):
     keywords = 0
     abilities = []
     prefixes = {
+        'Whenever you draw a card, ': draw_condition(),
+        'Whenever you draw your first card each turn, ': draw_condition(ordinal=1),
+        'Whenever you draw your second card each turn, ': draw_condition(ordinal=2),
+        'Whenever an opponent draws a card, ': draw_condition(relation='Opponent'),
+        'Whenever an opponent draws their first card each turn, ': draw_condition(relation='Opponent',ordinal=1),
+        'Whenever an opponent draws their second card each turn, ': draw_condition(relation='Opponent',ordinal=2),
+        'Whenever a player draws a card, ': draw_condition(relation='Any'),
+        'Whenever a player draws their second card each turn, ': draw_condition(relation='Any',ordinal=2),
         'When you discard this card, ': 'SelfDiscarded',
         'When you cycle this card, ': 'SelfCycled',
         'Whenever you discard a card, ': discard_condition(),
@@ -1017,7 +1052,10 @@ def trigger_creature_template(card):
                     # Only this whole source-counter sentence proves its antecedent.
                     # A later 'it' can refer to an earlier target or another object.
                     effect_text=effect_text.replace(' on it.',' on this creature.')
-                if condition.startswith('Discarded {'):
+                if condition.startswith('CardDrawn {'):
+                    result=draw_event_program(effect_text)
+                    targets,program=result if result else ('None',None)
+                elif condition.startswith('Discarded {'):
                     result=discard_event_program(effect_text)
                     targets,program=result if result else ('None',None)
                 elif condition.startswith('PlayerDamaged {'):

@@ -14,6 +14,57 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_draw_conditions_and_event_player_are_bound_only_to_draw_triggers(self):
+        for prefix,relation,ordinal in [
+            ('Whenever you draw a card, ','You',None),('Whenever you draw your first card each turn, ','You',1),
+            ('Whenever you draw your second card each turn, ','You',2),('Whenever an opponent draws a card, ','Opponent',None),
+            ('Whenever an opponent draws their second card each turn, ','Opponent',2),
+            ('Whenever a player draws their second card each turn, ','Any',2),
+        ]:
+            row=self.card(oracle_text=prefix+'draw a card.')
+            self.assertEqual(generate.trigger_creature_template(row)[2][0][0],generate.draw_condition(relation,ordinal))
+        for body,program in [('that player loses 1 life.','LoseLife(PlayerSet::DrawingPlayer, 1)'),
+                             ('this creature deals 2 damage to them.','DamagePlayers(PlayerSet::DrawingPlayer, 2)')]:
+            self.assertEqual(generate.draw_event_program(body),('None',[program]))
+            self.assertIsNone(generate.statement_program(body))
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='When this creature enters, '+body)))
+        for text in ['Whenever you draw a card, draw a card. This ability triggers only once each turn.',
+                     'Whenever you draw your second card each turn, if you control another Hero, draw a card.',
+                     'Whenever you draw a card, that player loses 1 life. You gain 1 life.',
+                     'Whenever you draw a card, you may pay {B}. If you do, draw a card.',
+                     'Whenever you draw a card, reveal it.']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=text)),text)
+        self.assertIsNone(generate.draw_event_program('that player loses 65536 life.'))
+        self.assertIsNone(generate.draw_event_program('this creature deals 32768 damage to them.'))
+
+    def test_draw_milestone_complete_admissions_preserve_residual_gates(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,coverage=generate.compile_catalogue(rows,target)
+        supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for name in ['Atlantean Cavalry','Bard the Bowman','Clinquant Skymage','Erudite Wizard','Gleaming Splendor',
+                     'Knowledge Seeker','Lakeshore Apothecary','Lightfoot Technique','Loxodon Eavesdropper','Maximum Overdrive',
+                     'Mischievous Mystic','Otter-Penguin','Ravenhill Flock','Roxxon Brutes','Scrawling Crawler','Take Up the Shield','Tiger-Seal']:
+            self.assertIn(name,supported)
+        for name in ['Aether Syphon','Construct a Cosmic Cube','Foggy Swamp Spirit Keeper','Homunculus Horde','Human Torch, Johnny Storm',
+                     'Jaded Analyst','Kang, Temporal Tyrant','Kid Loki','Lady Octopus, Inspired Inventor','Madame Masque',
+                     "Master's Councillors",'Moon Girl and Devil Dinosaur','Private Eye','Raven Eagle','Razorkin Needlehead',
+                     'Starving Revenant','The Astonishing Ant-Man','The Unagi of Kyoshi Island','Thopter Fabricator','Wolfbat']:
+            self.assertNotIn(name,supported)
+
+    def test_counter_then_target_keywords_and_two_distinct_player_draws_require_complete_text(self):
+        rule,program=generate.targeted_program('Put a +1/+1 counter on target creature. It gains lifelink until end of turn.')
+        self.assertEqual(rule,'Creature');self.assertEqual(len(program),2)
+        self.assertEqual(generate.targeted_program('Two target players each draw a card.'),(('Player',2,2),['Draw(PlayerSet::Targeted, 1)']))
+        self.assertEqual(generate.statement_program('Tap this creature.'),['TapSource'])
+        self.assertIsNotNone(generate.statement_program("This creature gets +1/+2 until end of turn and can't be blocked this turn."))
+        for text in ['Two target players each draw a card unless they pay {1}.',
+                     'Put a +1/+1 counter on target creature. It gains ward {2} until end of turn.',
+                     'Put a +1/+1 counter on target creature. It gains flying until end of turn. Draw a card.',
+                     'Put a +1/+1 counter on target creature. It gains flying until your next turn.']:
+            self.assertIsNone(generate.targeted_program(text),text)
+
     def test_discard_trigger_prefixes_and_amount_bindings_are_cause_specific(self):
         for prefix,condition in [
             ('When you discard this card, ','SelfDiscarded'),('When you cycle this card, ','SelfCycled'),

@@ -196,6 +196,7 @@ impl Game {
                     | TriggerCondition::SelfEntersOrAttacks
                     | TriggerCondition::SelfEntersOrDies => same,
                     TriggerCondition::Ward
+                    | TriggerCondition::CardDrawn { .. }
                     | TriggerCondition::SelfDiscarded
                     | TriggerCondition::SelfCycled
                     | TriggerCondition::Discarded { .. }
@@ -236,6 +237,7 @@ impl Game {
             related_stack: None,
             damage_event: None,
             discard_event: None,
+            draw_event: None,
             source_attachment: source.attached_to,
             card: source.id,
             object: source.reference,
@@ -423,6 +425,14 @@ impl Game {
     ) -> impl Iterator<Item = Player> + use<> {
         let controller = item.controller;
         let players = match set {
+            PlayerSet::DrawingPlayer => [
+                Some(
+                    item.draw_event
+                        .expect("drawing player requires draw event")
+                        .player,
+                ),
+                None,
+            ],
             PlayerSet::Controller => [Some(controller), None],
             PlayerSet::Opponent => [Some(controller.other()), None],
             PlayerSet::Each => [Some(self.state.active), Some(self.state.active.other())],
@@ -714,9 +724,13 @@ impl Game {
                         }
                     }
                 }
-                Instruction::UntapSource => {
+                Instruction::UntapSource | Instruction::TapSource => {
                     if self.on_battlefield(item.card) && self.object_ref(item.card) == item.object {
-                        self.state.objects[item.card as usize].untap();
+                        if instruction == Instruction::TapSource {
+                            self.state.objects[item.card as usize].tapped = true;
+                        } else {
+                            self.state.objects[item.card as usize].untap();
+                        }
                     }
                 }
                 Instruction::Damage(_)

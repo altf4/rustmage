@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "38c1e53bd0d09744bcbc21653bdcf5633f56fc138b9fb8ce348b7a9291692af6",
+  "catalogue_version": "f6645d08efc1758d388970e13a9ee0d5f36ee108fdb9deca8c17fac7ea1f8dc0",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 767,
-  "implemented_total": 773,
-  "token_definitions": 39,
+  "implemented_standard_cards": 784,
+  "implemented_total": 790,
+  "token_definitions": 40,
   "cards": [
     {
       "name": "Plains",
@@ -1527,8 +1527,8 @@
     {
       "name": "Atlantean Cavalry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Atlantis Attacks",
@@ -1959,8 +1959,8 @@
     {
       "name": "Bard the Bowman",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Bard's Bow",
@@ -4629,8 +4629,8 @@
     {
       "name": "Clinquant Skymage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Clive's Hideaway",
@@ -8193,8 +8193,8 @@
     {
       "name": "Erudite Wizard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Escape Tunnel",
@@ -10647,8 +10647,8 @@
     {
       "name": "Gleaming Splendor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Glen Elendra Guardian",
@@ -14349,8 +14349,8 @@
     {
       "name": "Knowledge Seeker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Koh, the Face Stealer",
@@ -14655,8 +14655,8 @@
     {
       "name": "Lakeshore Apothecary",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Lakeside Shack",
@@ -14973,8 +14973,8 @@
     {
       "name": "Lightfoot Technique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Lightless Evangel",
@@ -15435,8 +15435,8 @@
     {
       "name": "Loxodon Eavesdropper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Loxodon Surveyor",
@@ -16149,8 +16149,8 @@
     {
       "name": "Maximum Overdrive",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Maze's End",
@@ -16731,8 +16731,8 @@
     {
       "name": "Mischievous Mystic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Mischievous Pup",
@@ -18327,8 +18327,8 @@
     {
       "name": "Otter-Penguin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Otterball Antics",
@@ -20385,8 +20385,8 @@
     {
       "name": "Ravenhill Flock",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Ravening Warg",
@@ -21633,8 +21633,8 @@
     {
       "name": "Roxxon Brutes",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Royal Treatment",
@@ -22431,8 +22431,8 @@
     {
       "name": "Scrawling Crawler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Scream Puff",
@@ -25935,8 +25935,8 @@
     {
       "name": "Take Up the Shield",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Take for a Ride",
@@ -27603,8 +27603,8 @@
     {
       "name": "Tiger-Seal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Tigra, Feline Fury",
