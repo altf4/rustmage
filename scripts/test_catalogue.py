@@ -136,6 +136,55 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertIsNone(generate.trigger_creature_template(self.card(
             oracle_text='When this creature enters, put a +1/+1 counter on this creature.\nOther creatures get +1/+1.')))
 
+    def test_fixed_token_characteristics_and_counts_are_not_conflated(self):
+        generate.TOKEN_DEFS.clear()
+        normal = generate.statement_program('Create two 1/1 red Goblin creature tokens.')
+        tapped = generate.statement_program('Create a tapped 1/1 red Goblin creature token.')
+        self.assertEqual(len(generate.TOKEN_DEFS), 1)
+        self.assertIn('amount: 2, tapped: false', normal[0])
+        self.assertIn('amount: 1, tapped: true', tapped[0])
+        generate.statement_program('Create a 1/1 black and red Goblin creature token.')
+        self.assertEqual(len(generate.TOKEN_DEFS), 2)
+        self.assertEqual({factory['colors'] for factory in generate.TOKEN_DEFS.values()}, {8, 12})
+        generate.statement_program('Create a 2/2 colorless Wizard Soldier creature token named Cadet with flying.')
+        factory = list(generate.TOKEN_DEFS.values())[-1]
+        self.assertEqual((factory['name'], factory['subtypes'], factory['keywords']), ('Cadet', 'Wizard Soldier', 1))
+        token = generate.statement_program('Create a 1/1 black Rat creature token with "This token can\'t block."')
+        self.assertIsNotNone(token)
+        self.assertEqual(list(generate.TOKEN_DEFS.values())[-1]['keywords'], 2048)
+
+    def test_token_compilation_rejects_missing_dependencies_and_residual_clauses(self):
+        for text in ['Create a Treasure token.', 'Create a Food token.', 'Create a Clue token.',
+                     'Create X 1/1 white Rabbit creature tokens.',
+                     'Create a 1/1 white Rabbit creature token for each creature you control.',
+                     'Create a 1/1 white Rabbit creature token with menace.',
+                     'Create a 1/1 white Rabbit creature token with vigilance. It gains haste.',
+                     'Create a 1/1 white Rabbit creature token that is tapped and attacking.',
+                     'Create a token that is a copy of target creature.',
+                     'Create a 1/1 white and colorless Rabbit creature token.',
+                     'Create a 1/1 white Rabbit creature token with "Draw a card."']:
+            self.assertIsNone(generate.statement_program(text), text)
+        result = generate.statement_program('Draw two cards. Create a 1/1 white Glimmer enchantment creature token.')
+        self.assertEqual(len(result), 2)
+        self.assertIn('Draw', result[0])
+        self.assertIn('CreateTokens', result[1])
+
+    def test_factory_emission_uses_only_whole_accepted_cards_and_is_repeatable(self):
+        import json, hashlib
+        accepted = self.card(name='Factory Test', oracle_id='factory-test', type_line='Sorcery',
+                             oracle_text='Create two 1/1 red Goblin creature tokens.')
+        rejected = self.card(name='Rejected Factory', oracle_id='rejected-factory',
+                             oracle_text='When this creature enters, create a 4/4 green Beast creature token.\nWard {2}')
+        cards = [accepted, rejected]
+        canonical = json.dumps(cards, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()
+        snapshot = {'cards': cards, 'card_count': len(cards), 'cards_sha256': hashlib.sha256(canonical).hexdigest()}
+        target = {'banned_card_names': []}
+        rust, coverage = generate.compile_catalogue(snapshot, target)
+        self.assertEqual(coverage['token_definitions'], 1)
+        self.assertEqual(coverage['implemented_standard_cards'], 1)
+        self.assertNotIn('Beast Token', rust)
+        self.assertEqual(generate.compile_catalogue(snapshot, target), (rust, coverage))
+
 
 if __name__ == '__main__':
     unittest.main()

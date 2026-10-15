@@ -103,3 +103,35 @@ fn source_spelling_aliases_do_not_replace_authoritative_names() {
     );
     assert!(Card::from_name("This Card Does Not Exist").is_none());
 }
+
+#[test]
+fn token_factories_are_not_submitted_cards_in_any_deck_mode() {
+    let tokens: Vec<_> = Card::catalogue().filter(|card| card.is_token()).collect();
+    let coverage: serde_json::Value =
+        serde_json::from_str(include_str!("../data/standard/coverage.json")).unwrap();
+    assert_eq!(
+        tokens.len(),
+        coverage["token_definitions"].as_u64().unwrap() as usize
+    );
+    assert!(!tokens.is_empty());
+    for card in tokens {
+        assert!(!card.is_standard_legal());
+        assert!(!Card::ALL.contains(&card));
+        assert!(card.info().mana_cost.is_empty());
+        assert!(card.name().starts_with("@token/"));
+        for rules in [
+            DeckRules::Freeform,
+            DeckRules::Constructed,
+            DeckRules::Standard,
+        ] {
+            let mut cfg = config(vec![card; 60]);
+            cfg.deck_rules = rules;
+            assert!(
+                Game::new(cfg)
+                    .unwrap_err()
+                    .to_string()
+                    .contains("tokens cannot")
+            );
+        }
+    }
+}

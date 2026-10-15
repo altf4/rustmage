@@ -35,6 +35,9 @@ impl Game {
     }
 
     pub(super) fn zone_triggers(&mut self, event: &ZoneChange, death_sources: &[ObjectView]) {
+        if !event.moved {
+            return;
+        }
         if event.before.zone == Zone::Battlefield
             && event.destination == Zone::Graveyard
             && event.before.card.is_creature()
@@ -259,6 +262,13 @@ impl Game {
             resolution.pc += 1;
             let item = resolution.item.clone();
             match instruction {
+                Instruction::CreateTokens {
+                    token,
+                    amount,
+                    tapped,
+                } => {
+                    self.create_tokens(item.controller, token, amount, tapped);
+                }
                 Instruction::May { skip } => {
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");
                     assert!(skip_to <= resolution.program.len());
