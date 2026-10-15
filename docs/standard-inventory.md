@@ -48,7 +48,7 @@ pool, 60-card minimum and copy limits, then rejects every unsupported card.
 The known Standard unlimited-copy exceptions are represented independently of
 whether their rules have been implemented.
 
-Coverage is **670 / 5,164 executable Standard cards**, plus six legacy regression
+Coverage is **690 / 5,164 executable Standard cards**, plus six legacy regression
 cards. The additions are ten exact vanilla-creature templates and 25 creatures
 whose entire text consists of implemented static keywords, plus four exact
 single-instruction bounce/destruction spells, additional spell programs and creatures with complete supported trigger programs.
@@ -165,3 +165,9 @@ definitions. Current coverage is 670/5,164; 4,494 identities remain unsupported,
 with 36 token factories. Aura casting, noncasting APNAP entry, private search
 continuations, attached subjects and Aura state-based legality precede broader
 enchant clauses, layers, granted abilities and remaining card semantics.
+
+[Milling and exact-batch recovery](milling.md) add 20 complete definitions.
+Current coverage is 690/5,164; 4,474 identities remain unsupported, with 36 token
+factories. Owned mill results, optional milling legality, recovery choices and
+combined entry/death conditions precede wider graveyard events, replacement
+semantics, recovery filters and remaining card rules.

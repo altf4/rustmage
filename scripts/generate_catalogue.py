@@ -364,11 +364,51 @@ def optional_payment_program(text,targeted):
     return [object_choice(kind,'Controller',spec,len(program)),*program]
 
 
+
+def mill_quantity(text):
+    words={'a card':1,'one card':1,'two cards':2,'three cards':3,'four cards':4,
+           'five cards':5,'six cards':6,'seven cards':7,'eight cards':8,'nine cards':9,'ten cards':10}
+    if text in words: return words[text]
+    if m:=re.fullmatch(r'([0-9]+) cards?',text):
+        return int(m[1]) if int(m[1])<=65535 else None
+    return None
+
+
+def mill_instruction(players, amount):
+    return f'Mill(PlayerSet::{players}, MillAmount::Fixed({amount}))'
+
+
+def mill_program(text):
+    # Bind recovery only within an explicit mill-and-recover expression. A bare
+    # 'them' or 'milled cards' elsewhere does not acquire a guessed antecedent.
+    if m:=re.fullmatch(r'(?:you )?mill (.+?)(?:, then you may return a (permanent|land) card from among them to your hand|\. (?:Then )?You may put a (permanent|land) card from among (?:them|the milled cards|the cards milled this way) into your hand)\.(?: (.+))?',text):
+        amount=mill_quantity(m[1])
+        if amount is None: return None
+        tail=statement_program(m[4]) if m[4] else []
+        if tail is None: return None
+        filter_=(m[2] or m[3]).capitalize()
+        return [mill_instruction('Controller',amount),f'RecoverMilled(RecoveryFilter::{filter_})',*tail]
+    if m:=re.fullmatch(r'(?:you )?mill (.+?)(?:, then (.+)| and (you gain [0-9]+ life))\.',text):
+        amount=mill_quantity(m[1]);tail=statement_program((m[2] or m[3])+'.')
+        if amount is not None and tail: return [mill_instruction('Controller',amount),*tail]
+    if m:=re.fullmatch(r'(?:you )?mill (.+)\.',text):
+        amount=mill_quantity(m[1])
+        if amount is not None: return [mill_instruction('Controller',amount)]
+    if m:=re.fullmatch(r'you may mill (.+)\.',text):
+        amount=mill_quantity(m[1])
+        if amount is not None: return [f'MayMill({amount})',mill_instruction('Controller',amount)]
+    if m:=re.fullmatch(r'(each player|each opponent) mills (.+)\.',text):
+        amount=mill_quantity(m[2])
+        if amount is not None: return [mill_instruction('Each' if m[1]=='each player' else 'Opponent',amount)]
+    return None
+
+
 def statement_program(text):
     """Compile only these complete sentences; residual text never gets ignored."""
     if not isinstance(text, str) or not text:
         return None
     text = normalize_duration(text[0].lower() + text[1:])
+    if mill := mill_program(text): return mill
     if choice := optional_payment_program(text, False): return choice
     if sacrifice := sacrifice_program(text):
         if sacrifice[0] == 'None': return sacrifice[1]
@@ -556,6 +596,11 @@ def targeted_program(text):
             if extra is None: return None
             program.append(f'GrantKeywords {{ subject: Subject::Targets, keywords: Keywords({extra}) }}')
         return 'CreatureYou',program
+    if m:=re.fullmatch(r'target (player|opponent) mills (.+)\.',text):
+        amount=mill_quantity(m[2])
+        program=([mill_instruction('Targeted',amount)] if amount is not None else
+                 ['Mill(PlayerSet::Targeted, MillAmount::ControllerLife)'] if m[2]=='cards equal to your life total' else None)
+        if program: return ('Player' if m[1]=='player' else 'Opponent'),program
     if choice := optional_payment_program(text, True): return choice
     if sacrifice := sacrifice_program(text):
         if sacrifice[0] != 'None': return sacrifice
@@ -771,6 +816,7 @@ def trigger_creature_template(card):
         'Flurry — Whenever you cast your second spell each turn, ': cast_condition(ordinal=2),
         'When this creature enters, ': 'SelfEnters',
         'When this creature dies, ': 'SelfDies',
+        'When this creature enters or dies, ': 'SelfEntersOrDies',
         'Whenever this creature attacks, ': 'SelfAttacks',
         'Whenever this creature enters or attacks, ': 'SelfEntersOrAttacks',
         'Whenever another artifact you control enters, ': 'OtherArtifactEntersYou',
@@ -810,7 +856,7 @@ def trigger_creature_template(card):
                     effect_text = parts[1]
                 # Only self-event subjects prove an initial 'it' denotes this source.
                 # Other-creature events and later targeted clauses have other antecedents.
-                if condition in ('SelfEnters', 'SelfDies', 'SelfAttacks', 'SelfEntersOrAttacks'):
+                if condition in ('SelfEnters', 'SelfDies', 'SelfEntersOrDies', 'SelfAttacks', 'SelfEntersOrAttacks'):
                     effect_text = re.sub(r'^[Ii]t deals ', 'this creature deals ', effect_text)
                 for alias in names:
                     if effect_text.startswith(alias + ' deals '):

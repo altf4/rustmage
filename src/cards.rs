@@ -187,9 +187,35 @@ pub(crate) struct SacrificeFilter {
     pub subtype: Option<&'static str>,
 }
 
+/// Card qualities for a non-targeted choice from an exact milled batch.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum RecoveryFilter {
+    Permanent,
+    Land,
+}
+impl RecoveryFilter {
+    pub(crate) fn matches(self, card: Card) -> bool {
+        match self {
+            Self::Permanent => {
+                card.is_land() || card.is_creature() || card.kind_mask() & (16 | 32 | 64) != 0
+            }
+            Self::Land => card.is_land(),
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum MillAmount {
+    Fixed(u16),
+    ControllerLife,
+}
+
 /// Immutable rule bytecode. Only the program counter and choices live in state.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    Mill(PlayerSet, MillAmount),
+    MayMill(u16),
+    RecoverMilled(RecoveryFilter),
     AttachSource,
     TapAttached,
     ChooseObjects {
@@ -449,6 +475,7 @@ pub(crate) enum TriggerCondition {
     },
     SelfEnters,
     SelfDies,
+    SelfEntersOrDies,
     SelfAttacks,
     SelfEntersOrAttacks,
     OtherCreatureEntersYou,

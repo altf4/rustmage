@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "48768cd94213313da31a03d81c2e7c78b4ece345e16b20c1193af2735213793f",
+  "catalogue_version": "6adea7ec917c3a127d316b6a938e4d968f4862d5414f6f26dffa430e76f06562",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 670,
-  "implemented_total": 676,
+  "implemented_standard_cards": 690,
+  "implemented_total": 696,
   "token_definitions": 36,
   "cards": [
     {
@@ -5385,8 +5385,8 @@
     {
       "name": "Crow of Dark Tidings",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Crowd of True Believers",
@@ -5673,8 +5673,8 @@
     {
       "name": "Daggerfang Duo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Daggermaw Megalodon",
@@ -6045,8 +6045,8 @@
     {
       "name": "Deathcap Marionette",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Deathless Pilot",
@@ -6351,8 +6351,8 @@
     {
       "name": "Desperate Bloodseeker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Desperate Futurescribe",
@@ -15579,8 +15579,8 @@
     {
       "name": "Lys Alana Informant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "M.O.D.O.K.",
@@ -16503,8 +16503,8 @@
     {
       "name": "Midnight Tilling",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Might of the Ancestors",
@@ -16659,8 +16659,8 @@
     {
       "name": "Mineshaft Spider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Mintstrosity",
@@ -17385,8 +17385,8 @@
     {
       "name": "Mysterio's Phantasm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Mysterio, Master of Illusion",
@@ -20301,8 +20301,8 @@
     {
       "name": "Rapid Rescue",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Rapier Wit",
@@ -22275,8 +22275,8 @@
     {
       "name": "Scarblade Scout",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Scarblade's Malice",
@@ -22449,8 +22449,8 @@
     {
       "name": "Screaming Phantom",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Screeching Soulbreaker",
@@ -23013,8 +23013,8 @@
     {
       "name": "Shinra Reinforcements",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Shipwreck Dowser",
@@ -23787,8 +23787,8 @@
     {
       "name": "Something Worth Saving",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Sonar Strike",
@@ -23949,8 +23949,8 @@
     {
       "name": "Space-Time Anomaly",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Sparring Dummy",
@@ -26505,8 +26505,8 @@
     {
       "name": "Thawbringer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "The Aetherspark",
@@ -29235,8 +29235,8 @@
     {
       "name": "Venomized Cat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Venomsac Lagac",
@@ -29421,8 +29421,8 @@
     {
       "name": "Vinereap Mentor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Violent Echoes",
@@ -29943,14 +29943,14 @@
     {
       "name": "Wary Thespian",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Wary Watchdog",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Wastes",
@@ -29967,8 +29967,8 @@
     {
       "name": "Watcher of the Wayside",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Water Tribe Captain",

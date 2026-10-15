@@ -76,6 +76,7 @@ fn program(g: &mut Game, code: &'static [Instruction], targets: Vec<BoundTarget>
         target_group: 0,
         discards: [0; 2],
         selected_discards: [Vec::new(), Vec::new()],
+        milled: Vec::new(),
         library: None,
         search: None,
         choice: None,

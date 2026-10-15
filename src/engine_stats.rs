@@ -21,7 +21,9 @@ impl Game {
         if triggers.iter().any(|ability| {
             matches!(
                 ability.condition,
-                TriggerCondition::SelfDies | TriggerCondition::CreatureDies { .. }
+                TriggerCondition::SelfDies
+                    | TriggerCondition::SelfEntersOrDies
+                    | TriggerCondition::CreatureDies { .. }
             )
         }) {
             self.state.death_sources.push(id);

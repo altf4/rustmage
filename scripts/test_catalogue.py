@@ -14,6 +14,41 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_mill_quantities_optional_legality_and_exact_recovery_binding(self):
+        self.assertEqual(generate.statement_program('Mill two cards.'),[generate.mill_instruction('Controller',2)])
+        self.assertEqual(generate.statement_program('You may mill two cards.'),['MayMill(2)',generate.mill_instruction('Controller',2)])
+        self.assertEqual(generate.statement_program('Each player mills 4 cards.'),[generate.mill_instruction('Each',4)])
+        self.assertEqual(generate.statement_program('Each opponent mills a card.'),[generate.mill_instruction('Opponent',1)])
+        self.assertEqual(generate.targeted_program('Target opponent mills three cards.'),('Opponent',[generate.mill_instruction('Targeted',3)]))
+        self.assertEqual(generate.targeted_program('Target player mills cards equal to your life total.'),('Player',['Mill(PlayerSet::Targeted, MillAmount::ControllerLife)']))
+        program=generate.statement_program('Mill four cards, then you may return a land card from among them to your hand.')
+        self.assertEqual(program,[generate.mill_instruction('Controller',4),'RecoverMilled(RecoveryFilter::Land)'])
+        program=generate.statement_program('Mill two cards. You may put a permanent card from among the milled cards into your hand. You gain 2 life.')
+        self.assertEqual(program,[generate.mill_instruction('Controller',2),'RecoverMilled(RecoveryFilter::Permanent)','GainLife(PlayerSet::Controller, 2)'])
+        for text in ['Mill 65536 cards.','Mill X cards.','You may mill two cards. If you do, draw a card.',
+                     'Mill four cards, then return a land card from your graveyard to your hand.',
+                     'You may put a permanent card from among them into your hand.',
+                     'Mill four cards. You may put a permanent card from among them into your hand. Create a Food token if it was a Squirrel.',
+                     'Mill two cards. You may put two permanent cards from among them into your hand.']:
+            self.assertIsNone(generate.statement_program(text),text)
+
+    def test_milling_and_combined_entry_death_admissions_are_complete(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,coverage=generate.compile_catalogue(rows,target)
+        supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for name in ['Crow of Dark Tidings','Daggerfang Duo','Deathcap Marionette','Desperate Bloodseeker',
+                     'Lys Alana Informant','Midnight Tilling','Mineshaft Spider',"Mysterio's Phantasm",'Rapid Rescue',
+                     'Scarblade Scout','Screaming Phantom','Shinra Reinforcements','Something Worth Saving',
+                     'Space-Time Anomaly','Thawbringer','Venomized Cat','Vinereap Mentor','Wary Thespian','Wary Watchdog',
+                     'Watcher of the Wayside']:
+            self.assertIn(name,supported)
+        for name in ['Cache Grab','Aftermath Analyst','Pothole Mole','The Mindskinner','Molt Tender','Festerleech','Town Greeter']:
+            self.assertNotIn(name,supported)
+        trigger=generate.trigger_creature_template(self.card(oracle_text='When this creature enters or dies, surveil 1.'))
+        self.assertEqual(trigger[2][0][0],'SelfEntersOrDies')
+
     def test_aura_enchant_relations_static_bonuses_and_source_entry_subjects(self):
         for line,relation in [('Enchant creature',-1),('Enchant creature you control',0),('Enchant creature an opponent controls',1)]:
             result=generate.aura_template(self.card(type_line='Enchantment — Aura',oracle_text=line+'\nEnchanted creature gets +2/+1 and has flying.'))
@@ -598,7 +633,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         card = self.card(type_line='Instant', oracle_text='Draw two cards.')
         self.assertEqual(generate.spell_program_template(card), ('None', ['Draw(PlayerSet::Controller, 2)']))
         self.assertIsNone(generate.spell_program_template(dict(card, type_line='Creature — Wizard')))
-        self.assertIsNone(generate.spell_program_template(dict(card, oracle_text='Draw two cards. Mill a card.')))
+        self.assertEqual(generate.spell_program_template(dict(card, oracle_text='Draw two cards. Mill a card.')), ('None',['Draw(PlayerSet::Controller, 2)',generate.mill_instruction('Controller',1)]))
         for prefix, condition in [('Whenever another creature you control enters, ', 'OtherCreatureEntersYou'),
                                   ('Whenever this creature or another creature you control enters, ', 'CreatureEntersYou'),
                                   ('Landfall — Whenever a land you control enters, ', 'LandEntersYou'),
@@ -615,7 +650,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                          (('Creature', 1, 2), ['Untap', 'Grow { subject: Subject::Targets, power: 2, toughness: 2 }']))
         self.assertEqual(generate.targeted_program('Target creature gets -2/-2 until end of turn. You gain 2 life.'),
                          ('Creature', ['Grow { subject: Subject::Targets, power: -2, toughness: -2 }', 'GainLife(PlayerSet::Controller, 2)']))
-        for text in ['Target creature gets +1/+X until end of turn.', 'Tap target creature. Mill a card.',
+        for text in ['Target creature gets +1/+X until end of turn.', 'Tap target creature. Mill X cards.',
                      'Return target creature card from your graveyard to the battlefield with a counter.',
                      'Tap target creature. It does not untap next turn.']:
             self.assertIsNone(generate.targeted_program(text), text)
