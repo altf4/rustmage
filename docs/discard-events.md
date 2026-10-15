@@ -20,8 +20,9 @@ discarding player, captured amount and whether this was a cycling cost. The
 context is owned value data, retained through private choices, source departure,
 cloning and restoration. Quantity-dependent counters require the exact original
 battlefield incarnation; source damage retains its existing last-known facts and
-keywords. A returned source is a new object. Private selections reveal no additional card identities before the discard
-batch commits; an announced cycling source is already public.
+keywords. A returned source is a new object. Private selections reveal no
+additional card identities before the discard batch commits; an announced cycling
+source is already public.
 
 Cleanup now stores private provisional selections and moves all chosen cards
 simultaneously. It then removes damage and temporary effects. Waiting triggers
