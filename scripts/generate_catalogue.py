@@ -23,7 +23,11 @@ LEGACY = [
     ('Counterspell', 'Counter', '{U}{U}', None),
 ]
 KEYWORDS = {'flying': 1, 'reach': 2, 'haste': 4, 'vigilance': 8, 'defender': 16, 'flash': 32,
-            'lifelink': 64, 'deathtouch': 128, 'trample': 256, 'first strike': 512, 'double strike': 1024, 'hexproof': 4096, 'indestructible': 8192}
+            'lifelink': 64, 'deathtouch': 128, 'trample': 256, 'first strike': 512, 'double strike': 1024, 'hexproof': 4096, 'indestructible': 8192, 'menace': 32768}
+TEXT_FLAGS = {"this creature can't block.": 2048, "this creature can't be blocked.": 16384,
+              "this creature can't be blocked by more than one creature.": 65536,
+              "this creature can't be blocked except by three or more creatures.": 131072,
+              "this creature can't be blocked by tokens.": 262144}
 UNLIMITED = {'Cid, Timeless Artificer', 'Hare Apparent', 'Slime Against Humanity', "Sphinx's Approach", 'Tempest Hawk'}
 
 
@@ -53,10 +57,15 @@ def creature_template(card):
         return None
     # Remove only balanced, unnested reminder text; fail closed on residual text.
     text = re.sub(r'\([^()]*\)', '', card['oracle_text']).strip()
-    words = {word.strip().casefold() for word in text.replace('\n', ',').split(',') if word.strip()}
-    if not words <= KEYWORDS.keys():
-        return None
-    return f"Creature({int(card['power'])}, {int(card['toughness'])})", sum(KEYWORDS[word] for word in words)
+    keywords = 0
+    body = []
+    for line in text.split('\n'):
+        if line.casefold() in TEXT_FLAGS: keywords |= TEXT_FLAGS[line.casefold()]
+        else: body.append(line)
+    words = {word.strip().casefold() for word in ','.join(body).split(',') if word.strip()}
+    if not words <= KEYWORDS.keys(): return None
+    return f"Creature({int(card['power'])}, {int(card['toughness'])})", keywords | sum(KEYWORDS[word] for word in words)
+
 
 
 def spell_template(card):
@@ -116,8 +125,8 @@ def token_program(text):
     if suffix != '.':
         if not suffix.startswith(' with '): return None
         ability = suffix[len(' with '):]
-        if ability == '"This token can\'t block."':
-            keywords = 2048
+        if ability in ('"This token can\'t block."', '"This token can\'t be blocked."'):
+            keywords = 2048 if ability == '"This token can\'t block."' else 16384
         else:
             if not ability.endswith('.'): return None
             words = [word.strip() for word in ability[:-1].replace(' and ', ',').split(',')]
@@ -362,6 +371,14 @@ def targeted_program(text):
     if m := re.fullmatch(r'(another target creature you control|target creature you control|target creature) (.+)', text):
         rule = {'target creature': 'Creature', 'target creature you control': 'CreatureYou', 'another target creature you control': 'OtherCreatureYou'}[m[1]]
         if program := keyword_effect(m[2], 'Targets'): return rule, program
+    if m := re.fullmatch(r'(another target creature you control|target creature you control|target creature) (.+)', text):
+        rule = {'target creature': 'Creature', 'target creature you control': 'CreatureYou', 'another target creature you control': 'OtherCreatureYou'}[m[1]]
+        if m[2] == "can't be blocked this turn.":
+            return rule, ['GrantKeywords { subject: Subject::Targets, keywords: Keywords(16384) }']
+        if m[2].endswith(" and can't be blocked this turn."):
+            clause = m[2][:-len(" and can't be blocked this turn.")] + '.'
+            if program := keyword_effect(clause, 'Targets'):
+                return rule, program + ['GrantKeywords { subject: Subject::Targets, keywords: Keywords(16384) }']
     # Optional effects still require targets at announcement (CR603.5).
     if text.startswith('you may '):
         result = targeted_program(text[len('you may '):])
@@ -465,6 +482,8 @@ def trigger_creature_template(card):
     }
     text = re.sub(r'\([^()]*\)', '', card['oracle_text']).strip()
     for line in text.split('\n'):
+        if line.casefold() in TEXT_FLAGS:
+            keywords |= TEXT_FLAGS[line.casefold()]; continue
         words = {word.strip().casefold() for word in line.split(',') if word.strip()}
         if words and words <= KEYWORDS.keys():
             keywords |= sum(KEYWORDS[word] for word in words)

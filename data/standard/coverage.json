@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "29eba90562f80a8cc85dfac31a5abe0b5d11c2e2bb67cc498297d2598deac966",
+  "catalogue_version": "3d1b7eb99d16ebec4b9551457368c7ad37ab06f33192c15e8a12f049122c11b1",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 335,
-  "implemented_total": 341,
-  "token_definitions": 28,
+  "implemented_standard_cards": 346,
+  "implemented_total": 352,
+  "token_definitions": 29,
   "cards": [
     {
       "name": "Plains",
@@ -573,8 +573,8 @@
     {
       "name": "Agents of HYDRA",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Agents of S.H.I.E.L.D.",
@@ -6501,8 +6501,8 @@
     {
       "name": "Dinotomaton",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Dion, Bahamut's Dominant // Bahamut, Warden of Light",
@@ -7611,8 +7611,8 @@
     {
       "name": "Edgewall Pack",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Eerie Gravestone",
@@ -7797,8 +7797,8 @@
     {
       "name": "Elvenking's Harper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Elvish Archdruid",
@@ -8079,8 +8079,8 @@
     {
       "name": "Enter the Enigma",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Enterprising Scallywag",
@@ -9255,8 +9255,8 @@
     {
       "name": "Flame-Chain Mauler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Flamebraider",
@@ -19749,8 +19749,8 @@
     {
       "name": "Pym Particles",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Pym Technologies",
@@ -20187,8 +20187,8 @@
     {
       "name": "Rampaging Ceratops",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Rampaging Soulrager",
@@ -20415,8 +20415,8 @@
     {
       "name": "Ravine Raider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Ray Fillet, Man Ray",
@@ -29037,8 +29037,8 @@
     {
       "name": "Vampire Interloper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Vampire Neonate",
@@ -29055,8 +29055,8 @@
     {
       "name": "Vampire Soulcaller",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Vampire Spawn",
