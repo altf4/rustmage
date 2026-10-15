@@ -1,7 +1,7 @@
 # Typed counters and untapping
 
 Objects store three counter counts: +1/+1, -1/-1 and stun. Public
-`ObjectView.counters` exposes them in observation schema **7**. Counts are owned
+`ObjectView.counters` was introduced in observation schema **7** (retained in schema 8). Counts are owned
 snapshot state, and resetting a zone incarnation clears them. Immutable
 instructions place counters on bound targets or the original source incarnation.
 An ability resolving after its source leaves does not modify a returned object.
@@ -20,7 +20,7 @@ therefore require multiple attempts.
 The compiler accepts only complete, exact supported clauses. Eight added
 Standard admissions are Bile-Vial Boggart, Blight Rot, Ironpaw Aspirant,
 Jeong Jeong's Deserters, Machinesmith Automaton, Sazh's Chocobo, Sterling Supplier,
-and Utrom Scientists. Executable coverage is **114/5,164**. Entry counters,
+and Utrom Scientists. This milestone brought coverage to **114/5,164**. Entry counters,
 counter transfer/removal/doubling, new counter kinds, counter-placement triggers
 and replacements, and unsupported additional text still block admission.
 

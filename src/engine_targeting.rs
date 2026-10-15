@@ -71,6 +71,7 @@ impl Game {
                             TargetZone::Graveyard => Zone::Graveyard,
                         };
                         obj.zone == expected
+                            && (expected != Zone::Graveyard || !obj.card.is_token())
                             && (kinds == 0 || obj.card.kind_mask() & kinds != 0)
                             && (relation == -1 || (obj.owner == controller) == (relation == 0))
                             && (!other || self.object_ref(id) != source)

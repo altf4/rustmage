@@ -2,11 +2,14 @@ use crate::cards::{
     Counters, Effect, Instruction, PlayerSet, Subject, TargetRule, TargetSpec, TargetZone,
     TriggerCondition, payments,
 };
+#[path = "engine_tokens.rs"]
+mod tokens;
 use crate::rng::Rng;
-use crate::{Card, Keywords, Mana};
+use crate::{Card, Keywords, Mana, TokenInfo};
 use serde::{Deserialize, Serialize};
 
-/// Stable physical-card slot. Use `ObjectRef` for a particular game-object incarnation.
+/// Stable physical-card slot; ceased token slots may be reused.
+/// Use `ObjectRef` for a particular game-object incarnation.
 pub type CardId = u32;
 
 /// Rules identity within a game branch. Every zone change creates a new incarnation.
@@ -59,6 +62,9 @@ mod target_tests;
 #[cfg(test)]
 #[path = "engine_tests.rs"]
 mod tests;
+#[cfg(test)]
+#[path = "engine_token_tests.rs"]
+mod token_tests;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum Zone {
@@ -67,6 +73,8 @@ pub enum Zone {
     Battlefield,
     Stack,
     Graveyard,
+    /// Vacant slot after a token ceases to exist; never a game zone.
+    Outside,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -331,6 +339,7 @@ enum Pending {
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
     objects: Vec<Object>,
+    free_tokens: Vec<CardId>,
     players: [PlayerState; 2],
     rng: Rng,
     active: Player,
@@ -385,6 +394,7 @@ pub struct ObjectView {
     pub power: i32,
     pub toughness: i32,
     pub keywords: Keywords,
+    pub token: Option<&'static TokenInfo>,
 }
 
 /// A single zone transition with the departing object's last-known characteristics.
@@ -394,6 +404,7 @@ pub struct ZoneChange {
     pub before: ObjectView,
     pub after: ObjectRef,
     pub destination: Zone,
+    pub moved: bool,
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -458,6 +469,11 @@ impl Game {
                 }
             }
             for &card in deck {
+                if card.is_token() {
+                    return Err(Error::InvalidDeck(
+                        "tokens cannot be submitted in decks".into(),
+                    ));
+                }
                 if config.deck_rules == DeckRules::Standard && !card.is_standard_legal() {
                     return Err(Error::InvalidDeck(format!(
                         "not Standard legal in this catalogue: {}",
@@ -505,6 +521,7 @@ impl Game {
             revision: 0,
             state: State {
                 objects,
+                free_tokens: Vec::new(),
                 players,
                 rng,
                 active: config.starting_player,
@@ -656,7 +673,7 @@ impl Game {
             }
             Pending::Bottom { .. } | Pending::Discard | Pending::EffectDiscard { .. } => {
                 for (i, obj) in s.objects.iter().enumerate() {
-                    if obj.owner == actor && obj.zone == Zone::Hand {
+                    if obj.owner == actor && obj.zone == Zone::Hand && !obj.card.is_token() {
                         if matches!(s.pending, Pending::EffectDiscard { .. })
                             && s.resolving.as_ref().unwrap().selected_discards[actor.index()]
                                 .contains(&(i as CardId))
@@ -696,7 +713,7 @@ impl Game {
                     {
                         return true;
                     }
-                    if obj.zone != Zone::Hand {
+                    if obj.zone != Zone::Hand || obj.card.is_token() {
                         continue;
                     }
                     if obj.card.is_land() {
@@ -786,6 +803,7 @@ impl Game {
                         || obj.zone != Zone::Battlefield
                         || !obj.card.is_creature()
                         || obj.tapped
+                        || obj.card.keywords().contains(Keywords::CANT_BLOCK)
                         || s.selected_blocks.iter().any(|&(b, _)| b == blocker)
                     {
                         continue;
@@ -1122,7 +1140,7 @@ impl Game {
         self.state
             .objects
             .iter()
-            .filter(|o| o.owner == p && o.zone == Zone::Hand)
+            .filter(|o| o.owner == p && o.zone == Zone::Hand && !o.card.is_token())
             .count()
     }
 
@@ -1164,6 +1182,7 @@ impl Game {
             power: obj.power(),
             toughness: obj.toughness(),
             keywords: obj.card.keywords(),
+            token: obj.card.token_info(),
         }
     }
 
@@ -1185,6 +1204,15 @@ impl Game {
 
     fn move_object_raw(&mut self, id: CardId, destination: Zone) -> ZoneChange {
         let before = self.object_view(id);
+        // CR111.8: after leaving the battlefield, a token cannot move again.
+        if before.card.is_token() && before.zone != Zone::Battlefield {
+            return ZoneChange {
+                after: before.reference,
+                destination: before.zone,
+                before,
+                moved: false,
+            };
+        }
         assert_ne!(
             before.zone, destination,
             "same-zone moves are ordering operations"
@@ -1236,6 +1264,7 @@ impl Game {
             before,
             after: self.object_ref(id),
             destination,
+            moved: true,
         }
     }
 
@@ -1543,37 +1572,57 @@ impl Game {
     }
 
     fn state_based_actions(&mut self) {
-        // Determine the entire simultaneous death set before moving any object.
-        let deaths: Vec<_> = self
-            .state
-            .objects
-            .iter()
-            .enumerate()
-            .filter(|(_, obj)| {
-                obj.zone == Zone::Battlefield
-                    && obj.card.is_creature()
-                    && (obj.toughness() <= 0
-                        || obj.damage >= obj.toughness()
-                        || obj.deathtouch_since_sba)
-            })
-            .map(|(i, _)| i as CardId)
-            .collect();
-        if !deaths.is_empty() {
-            let sources = self.death_trigger_sources();
-            let events: Vec<_> = deaths
-                .into_iter()
-                .map(|id| self.move_object_raw(id, Zone::Graveyard))
+        loop {
+            // Freeze the entire batch, including tokens already outside the battlefield.
+            let ceased: Vec<_> = self
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter(|(_, obj)| {
+                    obj.card.is_token() && !matches!(obj.zone, Zone::Battlefield | Zone::Outside)
+                })
+                .map(|(id, _)| id as CardId)
                 .collect();
-            for event in &events {
-                self.zone_triggers(event, &sources);
+            let deaths: Vec<_> = self
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter(|(_, obj)| {
+                    obj.zone == Zone::Battlefield
+                        && obj.card.is_creature()
+                        && (obj.toughness() <= 0
+                            || obj.damage >= obj.toughness()
+                            || obj.deathtouch_since_sba)
+                })
+                .map(|(i, _)| i as CardId)
+                .collect();
+            let mut changed = !deaths.is_empty() || !ceased.is_empty();
+            if !deaths.is_empty() {
+                let sources = self.death_trigger_sources();
+                let events: Vec<_> = deaths
+                    .into_iter()
+                    .map(|id| self.move_object_raw(id, Zone::Graveyard))
+                    .collect();
+                for event in &events {
+                    self.zone_triggers(event, &sources);
+                }
             }
-        }
-        // Counter pairs cancel in the same SBA batch as deaths. Departing
-        // objects' last-known characteristics were captured before cancellation.
-        for obj in &mut self.state.objects {
-            let pairs = obj.counters.plus_one.min(obj.counters.minus_one);
-            obj.counters.plus_one -= pairs;
-            obj.counters.minus_one -= pairs;
+            // Counter pairs cancel in the same SBA batch as deaths. Departing
+            // objects' last-known characteristics were captured before cancellation.
+            for obj in &mut self.state.objects {
+                let pairs = obj.counters.plus_one.min(obj.counters.minus_one);
+                changed |= pairs != 0;
+                obj.counters.plus_one -= pairs;
+                obj.counters.minus_one -= pairs;
+            }
+            for id in ceased {
+                self.cease_token(id);
+            }
+            if !changed {
+                break;
+            }
         }
         // Deathtouch applies only since the previous SBA check, not forever.
         for obj in &mut self.state.objects {
@@ -1604,11 +1653,15 @@ impl Game {
             .objects
             .iter()
             .enumerate()
-            .filter(|(_, o)| o.zone != Zone::Library && (o.zone != Zone::Hand || o.owner == viewer))
+            .filter(|(_, o)| {
+                o.zone != Zone::Outside
+                    && o.zone != Zone::Library
+                    && (o.zone != Zone::Hand || o.owner == viewer)
+            })
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 7,
+            schema: 8,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -1695,6 +1748,7 @@ impl Game {
         let s = &self.state;
         std::mem::size_of::<State>()
             + s.objects.len() * std::mem::size_of::<Object>()
+            + s.free_tokens.len() * std::mem::size_of::<CardId>()
             + s.players
                 .iter()
                 .map(|p| p.library.len() * std::mem::size_of::<CardId>())

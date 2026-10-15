@@ -38,7 +38,9 @@ fingerprint. JSON uses canonical English names and accepts legacy foundation
 tokens such as `LightningBolt` as input aliases.
 
 The native catalogue knows every legal identity, the explicitly listed banned
-identities, and the original non-Standard regression cards. Knowing an identity
+identities, and the original non-Standard regression cards. It also contains fixed token factories,
+which are excluded from all submitted decks and from `Card::ALL`.
+`Card::token_info()` distinguishes these definitions from actual cards. Knowing an identity
 does not make it executable. `Card::info()` reports implementation and legality
 separately. `Card::ALL` lists executable definitions, while `Card::catalogue()`
 iterates all known identities. `DeckRules::Standard` enforces the pinned legal
@@ -46,7 +48,7 @@ pool, 60-card minimum and copy limits, then rejects every unsupported card.
 The known Standard unlimited-copy exceptions are represented independently of
 whether their rules have been implemented.
 
-Coverage is **114 / 5,164 executable Standard cards**, plus six legacy regression
+Coverage is **142 / 5,164 executable Standard cards**, plus six legacy regression
 cards. The additions are ten exact vanilla-creature templates and 25 creatures
 whose entire text consists of implemented static keywords, plus four exact
 single-instruction bounce/destruction spells, additional spell programs and creatures with complete supported trigger programs.
@@ -88,3 +90,6 @@ runtime admission are cross-checked over every known identity. Those checks prov
 inventory/admission consistency; they do not prove the semantics of unsupported
 cards. The Standard example is a complete supported-deck smoke game, not all-card
 acceptance.
+
+[Fixed tokens](tokens.md) add 28 complete Standard definitions and 23 immutable factories.
+Factory counts are reported separately from executable deck-card coverage.

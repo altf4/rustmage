@@ -1,9 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "ee83438d678ccbfee72e159d7487204dfd3a2734e54d1fa66a5ba12184ae83c5",
+  "catalogue_version": "2451b71a3cb0e1c8b02f2ebd1677f093323c2ed6f924616acb2a567aded88202",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 114,
-  "implemented_total": 120,
+  "implemented_standard_cards": 142,
+  "implemented_total": 148,
+  "token_definitions": 23,
   "cards": [
     {
       "name": "Plains",
@@ -6920,8 +6921,8 @@
     {
       "name": "Dragon Fodder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Dragon Mage",
@@ -6938,8 +6939,8 @@
     {
       "name": "Dragon Trainer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Dragon's Prey",
@@ -7028,8 +7029,8 @@
     {
       "name": "Dragoon's Wyvern",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Drake Hatcher",
@@ -7286,8 +7287,8 @@
     {
       "name": "Dwarven Castle Guard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Dwarven Mattock",
@@ -7364,8 +7365,8 @@
     {
       "name": "Eager Glyphmage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Eager Trufflesnout",
@@ -7658,8 +7659,8 @@
     {
       "name": "Elder Auntie",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Electro's Bolt",
@@ -7724,8 +7725,8 @@
     {
       "name": "Elfsworn Giant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Eliminate the Impossible",
@@ -10688,8 +10689,8 @@
     {
       "name": "Glimmerburst",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Glimmerlight",
@@ -11156,8 +11157,8 @@
     {
       "name": "Gravpack Monoist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Greasewrench Goblin",
@@ -11396,8 +11397,8 @@
     {
       "name": "Guarded Heir",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Guardian Sunmare",
@@ -11732,8 +11733,8 @@
     {
       "name": "Harried Spearguard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Harrier Strix",
@@ -11906,8 +11907,8 @@
     {
       "name": "Heartstring Puller",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Heartwood Crafter // Soul Tether",
@@ -12422,8 +12423,8 @@
     {
       "name": "Hop to It",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Hope Estheim",
@@ -12974,8 +12975,8 @@
     {
       "name": "Infestation Sage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Infinite Coursework",
@@ -13268,8 +13269,8 @@
     {
       "name": "Invasion Reinforcements",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Invasion Submersible",
@@ -14600,8 +14601,8 @@
     {
       "name": "Kyoshi Warriors",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Kíli the Resourceful",
@@ -15590,8 +15591,8 @@
     {
       "name": "Maalfeld Twins",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Mabel's Mettle",
@@ -17570,8 +17571,8 @@
     {
       "name": "News Helicopter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Nexus of Becoming",
@@ -17666,8 +17667,8 @@
     {
       "name": "Nimble Thopterist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Nine-Lives Familiar",
@@ -18068,8 +18069,8 @@
     {
       "name": "Oltec Cloud Guard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Oltec Matterweaver",
@@ -19388,8 +19389,8 @@
     {
       "name": "Prideful Parent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Primal Might",
@@ -20180,8 +20181,8 @@
     {
       "name": "Rampaging Baloths",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Rampaging Ceratops",
@@ -20702,8 +20703,8 @@
     {
       "name": "Release the Dogs",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Relentless X-ATM092",
@@ -20882,8 +20883,8 @@
     {
       "name": "Resolute Reinforcements",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Resonating Lute",
@@ -21818,8 +21819,8 @@
     {
       "name": "S.H.I.E.L.D. Deployment Drone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "S.H.I.E.L.D. Flying Car",
@@ -25820,8 +25821,8 @@
     {
       "name": "Synapse Necromage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Synchronized Charge",
@@ -28046,8 +28047,8 @@
     {
       "name": "Treetop Freedom Fighters",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Treetop Sentries",
@@ -28226,8 +28227,8 @@
     {
       "name": "Tunnel Surveyor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Tunnel Tipster",

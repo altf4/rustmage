@@ -80,11 +80,68 @@ def counter_instruction(subject, count, kind):
     return f'PutCounters {{ subject: Subject::{subject}, kind: CounterKind::{COUNTER_KINDS[kind]}, amount: {COUNT_WORDS[count]} }}'
 
 
+TOKEN_DEFS = {}
+TOKEN_COUNTS = dict(COUNT_WORDS, an=1, seven=7, eight=8)
+
+def token_program(text):
+    """Fixed fully-described creature tokens only; no inferred predefined abilities."""
+    if not isinstance(text, str):
+        return None
+    m = re.fullmatch(r'create (a|an|one|two|three|four|five|six|seven|eight) (tapped )?([0-9]+)/([0-9]+) (.+?) (?:(artifact|enchantment) )?creature tokens?(.*)', text, re.DOTALL)
+    if not m:
+        return None
+    count, tapped, power, toughness, description, extra_type, suffix = m.groups()
+    if max(int(power), int(toughness)) > 32767:
+        return None
+    colors = {'white': 1, 'blue': 2, 'black': 4, 'red': 8, 'green': 16, 'colorless': 0}
+    parts = description.split()
+    color_words = []
+    while parts and (parts[0] in colors or parts[0] == 'and'):
+        color_words.append(parts.pop(0))
+    color_text = ' '.join(color_words)
+    if not re.fullmatch(r'(white|blue|black|red|green|colorless)( and (white|blue|black|red|green))*', color_text):
+        return None
+    color_names = color_text.split(' and ')
+    if len(set(color_names)) != len(color_names) or ('colorless' in color_names and len(color_names) != 1):
+        return None
+    if not parts or not all(re.fullmatch(r"[A-Z][A-Za-z'-]*", part) for part in parts):
+        return None
+    subtypes = ' '.join(parts)
+    name = subtypes + ' Token'
+    if suffix.startswith(' named '):
+        match = re.fullmatch(r' named ([A-Z][A-Za-z -]*?)(\.| with .*)', suffix)
+        if not match: return None
+        name, suffix = match.groups()
+    keywords = 0
+    if suffix != '.':
+        if not suffix.startswith(' with '): return None
+        ability = suffix[len(' with '):]
+        if ability == '"This token can\'t block."':
+            keywords = 2048
+        else:
+            if not ability.endswith('.'): return None
+            words = [word.strip() for word in ability[:-1].replace(' and ', ',').split(',')]
+            if not words or not all(word in KEYWORDS for word in words): return None
+            keywords = sum(KEYWORDS[word] for word in set(words))
+    factory = {'name': name, 'subtypes': subtypes, 'colors': sum(colors[word] for word in color_names),
+               'power': int(power), 'toughness': int(toughness), 'extra_type': extra_type,
+               'keywords': keywords}
+    key = hashlib.sha256(json.dumps(factory, sort_keys=True).encode()).hexdigest()[:24]
+    if key in TOKEN_DEFS and TOKEN_DEFS[key] != factory:
+        raise ValueError("token factory identity collision")
+    TOKEN_DEFS[key] = factory
+    return [f'CreateTokens {{ token: __TOKEN_{key}__, amount: {TOKEN_COUNTS[count]}, tapped: {str(bool(tapped)).lower()} }}']
+
+
 def statement_program(text):
     """Compile only these complete sentences; residual text never gets ignored."""
-    if not isinstance(text, str) or not text or not text.endswith('.'):
+    if not isinstance(text, str) or not text:
         return None
     text = text[0].lower() + text[1:]
+    token = token_program(text)
+    if token: return token
+    if not text.endswith('.'):
+        return None
     if m := re.fullmatch(r'put (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on this creature\.', text):
         return [counter_instruction('Source', m[1], m[2])]
     draw = r'(a card|two cards|three cards|four cards)'
@@ -303,6 +360,7 @@ def rust_program(program):
     return '&[' + ', '.join('Instruction::' + instruction for instruction in program) + ']'
 
 def compile_catalogue(snapshot, target):
+    TOKEN_DEFS.clear()
     canonical = json.dumps(snapshot['cards'], ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()
     if hashlib.sha256(canonical).hexdigest() != snapshot['cards_sha256'] or len(snapshot['cards']) != snapshot['card_count']:
         raise ValueError('card snapshot checksum/count mismatch')
@@ -370,6 +428,25 @@ def compile_catalogue(snapshot, target):
         definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(name)}, oracle_id: {oracle_id}, mana_cost: {quote(cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in cards).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
         coverage.append({'name': name, 'standard_legal': name in cards, 'implemented': effect != 'Unsupported',
                          'implementation': 'explicit' if name in legacy else 'creature_template' if template else 'trigger_template' if trigger_template else 'spell_template' if spell else None})
+
+    # Only factories referenced by wholly accepted cards enter the executable catalogue.
+    used_tokens = sorted(set(re.findall(r'__TOKEN_([0-9a-f]+)__', '\n'.join(definitions))))
+    token_base = len(names)
+    token_infos = []
+    for offset, key in enumerate(used_tokens):
+        factory = TOKEN_DEFS[key]
+        index = token_base + offset
+        name = '@token/' + key
+        names.append(name)
+        types = ((factory['extra_type'].title() + ' ') if factory['extra_type'] else '') + 'Creature'
+        type_line = types + ' — ' + factory['subtypes']
+        kind = 1 | (16 if factory['extra_type'] == 'artifact' else 32 if factory['extra_type'] == 'enchantment' else 0)
+        definitions.append(f"    Definition {{ info: CardInfo {{ name: {json.dumps(name)}, oracle_id: None, mana_cost: \"\", type_line: {json.dumps(type_line, ensure_ascii=False)}, oracle_keywords: &[], standard_legal: false, implemented: true, keywords: Keywords({factory['keywords']}), deck_limit: None }}, effect: Effect::Creature({factory['power']}, {factory['toughness']}), triggers: &[], kind: {kind}, basic: false, mana_color: None, colored: [0; 5], generic: 0 }},")
+        token_infos.append(f"    TokenInfo {{ name: {json.dumps(factory['name'])}, subtypes: {json.dumps(factory['subtypes'])}, colors: {factory['colors']} }},")
+        marker = '__TOKEN_' + key + '__'
+        definitions = [definition.replace(marker, f'Card({index})') for definition in definitions]
+    if len(names) > 65536:
+        raise ValueError('catalogue exceeds u16 identity space')
     # The fingerprint covers data and compiler logic; card IDs are local to it.
     target_bytes = json.dumps(target, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()
     version = hashlib.sha256(canonical + target_bytes + Path(__file__).read_bytes()).hexdigest()
@@ -378,7 +455,9 @@ def compile_catalogue(snapshot, target):
              '#[rustfmt::skip]', f'pub(super) static DEFINITIONS: [Definition; {len(names)}] = [', *definitions, '];',
              '#[rustfmt::skip]', f'pub(super) static NAME_INDEX: [(&str, u16); {len(names)}] = [']
     lines += [f'    ({json.dumps(name, ensure_ascii=False)}, {index}),' for name, index in sorted((name, index) for index, name in enumerate(names))]
-    lines += ['];', '#[allow(non_upper_case_globals)]', 'impl Card {', '#[rustfmt::skip]',
+    lines += ['];', f'pub(super) const TOKEN_BASE: usize = {token_base};',
+              '#[rustfmt::skip]', f'pub(super) static TOKENS: [TokenInfo; {len(token_infos)}] = [', *token_infos, '];',
+              '#[allow(non_upper_case_globals)]', 'impl Card {', '#[rustfmt::skip]',
               f'    pub const ALL: [Card; {len(supported)}] = [{", ".join(f"Card({i})" for i in supported)}];']
     # Preserve existing Rust constants and JSON tokens. New callers use English names.
     for index, (name, _, _, _) in enumerate(LEGACY):
@@ -386,7 +465,7 @@ def compile_catalogue(snapshot, target):
     lines += ['}', '']
     return '\n'.join(lines), {'schema': 1, 'catalogue_version': version, 'standard_legal_cards': len(cards),
         'implemented_standard_cards': sum(row['implemented'] and row['standard_legal'] for row in coverage),
-        'implemented_total': len(supported), 'cards': coverage}
+        'implemented_total': len(supported), 'token_definitions': len(used_tokens), 'cards': coverage}
 
 
 if __name__ == '__main__':

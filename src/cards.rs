@@ -83,6 +83,11 @@ pub(crate) enum Instruction {
         kind: CounterKind,
         amount: u32,
     },
+    CreateTokens {
+        token: Card,
+        amount: u16,
+        tapped: bool,
+    },
     Draw(PlayerSet, u16),
     Discard(PlayerSet, u16),
     GainLife(PlayerSet, u16),
@@ -161,6 +166,7 @@ impl Keywords {
     pub const TRAMPLE: Self = Self(256);
     pub const FIRST_STRIKE: Self = Self(512);
     pub const DOUBLE_STRIKE: Self = Self(1024);
+    pub const CANT_BLOCK: Self = Self(2048);
     pub fn contains(self, keyword: Self) -> bool {
         self.0 & keyword.0 == keyword.0
     }
@@ -180,6 +186,14 @@ pub struct CardInfo {
     pub implemented: bool,
     pub keywords: Keywords,
     pub deck_limit: Option<u8>,
+}
+
+/// Immutable characteristics of a fixed creature token. Colors use W/U/B/R/G bits.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct TokenInfo {
+    pub name: &'static str,
+    pub subtypes: &'static str,
+    pub colors: u8,
 }
 
 struct Definition {
@@ -236,6 +250,14 @@ impl Card {
     }
     pub fn is_standard_legal(self) -> bool {
         self.info().standard_legal
+    }
+    pub fn token_info(self) -> Option<&'static TokenInfo> {
+        self.index()
+            .checked_sub(generated::TOKEN_BASE)
+            .and_then(|offset| generated::TOKENS.get(offset))
+    }
+    pub fn is_token(self) -> bool {
+        self.token_info().is_some()
     }
     pub fn keywords(self) -> Keywords {
         self.info().keywords

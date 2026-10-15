@@ -17,7 +17,7 @@ class BindingTests(unittest.TestCase):
             observation = game.observe("P0")
             coverage = json.loads((Path(__file__).resolve().parents[1] / "data/standard/coverage.json").read_text())
             self.assertEqual(observation["catalogue"], coverage["catalogue_version"])
-            self.assertEqual(observation["schema"], 7)
+            self.assertEqual(observation["schema"], 8)
             self.assertEqual(len(observation["objects"]), 7)
             self.assertTrue(all(o["owner"] == "P0" for o in observation["objects"]))
             self.assertEqual(game.observe("P1")["actions"], [])
@@ -74,6 +74,51 @@ else:
     raise AssertionError("invalid card accepted")
 """], env={**os.environ, "PYTHONPATH": str(Path(__file__).resolve().parent)}, capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_token_metadata_and_pending_resolution_replay_through_shared_library(self):
+        deck = ["Mountain"] * 10 + ["Dragon Fodder"] * 2
+        with Game([deck, deck], seed=7, deck_rules="Freeform") as game:
+            obs = game.observe("P0")
+            for _ in range(200):
+                if obs["viewer"] != obs["actor"]:
+                    obs = game.observe(obs["actor"])
+                def score(action):
+                    if action["kind"] == "TapMana":
+                        return 20 if obs["active"] == obs["actor"] and obs["step"] in ("Main1", "Main2") else -5
+                    return {"Keep": 100, "PlayLand": 90, "Cast": 80,
+                            "Mulligan": -100, "Concede": -1000}.get(action["kind"], 0)
+                index = max(range(len(obs["actions"])), key=lambda i: score(obs["actions"][i]))
+                kind = obs["actions"][index]["kind"]
+                obs = game.step(obs, index)
+                if kind == "Cast":
+                    break
+                self.assertIsNone(obs["outcome"])
+            else:
+                self.fail("token spell was never cast")
+            saved = game.snapshot()
+            def resolve(handle):
+                for _ in range(2):
+                    current = handle.observe("P0")
+                    current = handle.observe(current["actor"])
+                    index = next(i for i, action in enumerate(current["actions"]) if action["kind"] == "Pass")
+                    handle.step(current, index)
+                result = handle.observe("P0")
+                result.pop("revision")
+                return result
+            with game.clone() as branch:
+                expected = resolve(branch)
+            actual = resolve(game)
+            self.assertEqual(actual, expected)
+            tokens = [o for o in actual["objects"] if o["token"] is not None]
+            self.assertEqual(len(tokens), 2)
+            self.assertTrue(all(o["token"] == {"name": "Goblin Token", "subtypes": "Goblin", "colors": 8}
+                                for o in tokens))
+            self.assertTrue(all(o["summoning_sick"] for o in tokens))
+            self.assertTrue(all(o["card"].startswith("@token/") for o in tokens))
+            game.restore(saved)
+            self.assertEqual(resolve(game), expected)
+            with self.assertRaisesRegex(EngineError, "tokens cannot"):
+                Game([[tokens[0]["card"]] * 60] * 2, deck_rules="Freeform")
 
     def test_parallel_independent_games(self):
         def run(seed):
