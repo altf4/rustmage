@@ -39,6 +39,7 @@ fn scry_partition_orders_both_groups_and_keeps_middle() {
         selected_discards: [Vec::new(), Vec::new()],
         library: None,
         search: None,
+        choice: None,
     });
     let original = game.state.players[0].library.clone();
     let n = original.len();
@@ -238,6 +239,7 @@ fn short_empty_and_zero_looks_do_not_attempt_empty_draws() {
         selected_discards: [Vec::new(), Vec::new()],
         library: None,
         search: None,
+        choice: None,
     });
     game.run_program();
     assert_eq!(game.state.players[0].life, 21);
@@ -332,6 +334,7 @@ fn sba_waits_through_library_choices_and_following_instructions() {
         selected_discards: [Vec::new(), Vec::new()],
         library: None,
         search: None,
+        choice: None,
     });
     game.run_program();
     let cards = game.observe(Player::P0).library_choice.unwrap().remaining;

@@ -11,6 +11,7 @@ pub(super) struct Resolution {
     pub selected_discards: [Vec<CardId>; 2],
     pub library: Option<LibraryChoice>,
     pub search: Option<super::search::SearchChoice>,
+    pub choice: Option<Box<super::effect_choices::EffectChoice>>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -318,11 +319,12 @@ impl Game {
             selected_discards: [Vec::new(), Vec::new()],
             library: None,
             search: None,
+            choice: None,
         });
         self.run_program();
     }
 
-    fn program_players(
+    pub(super) fn program_players(
         &self,
         set: PlayerSet,
         item: &SpellView,
@@ -393,6 +395,18 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::ChooseObjects {
+                    kind,
+                    players,
+                    filter,
+                    amount,
+                    optional_skip,
+                } => {
+                    if self.start_effect_choice(&item, kind, players, filter, amount, optional_skip)
+                    {
+                        return;
+                    }
+                }
                 Instruction::SelectGroup(group) => {
                     self.state.resolving.as_mut().unwrap().target_group = group;
                 }

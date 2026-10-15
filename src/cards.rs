@@ -168,9 +168,34 @@ pub(crate) struct SearchSpec {
     pub reveal: bool,
 }
 
+/// A resolution choice; discard here is a cost, not a forced discard effect.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum EffectChoiceKind {
+    Sacrifice,
+    Discard,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct SacrificeFilter {
+    pub keywords: Keywords,
+    pub source_only: bool,
+    pub kinds: u8,
+    pub nonland: bool,
+    pub other: bool,
+    pub tokens: Option<bool>,
+    pub subtype: Option<&'static str>,
+}
+
 /// Immutable rule bytecode. Only the program counter and choices live in state.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    ChooseObjects {
+        kind: EffectChoiceKind,
+        players: PlayerSet,
+        filter: SacrificeFilter,
+        amount: u16,
+        optional_skip: Option<usize>,
+    },
     SelectGroup(u16),
     Fight {
         source: u16,

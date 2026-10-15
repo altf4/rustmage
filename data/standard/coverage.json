@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "97fe8793251265d631f19e60a8c7f9d5dba789dec0f0fb034a82d4027af694fc",
+  "catalogue_version": "91607c124fdb04917598915b287baa34c3d59e03f7f396e9afff2c833b1d8944",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 599,
-  "implemented_total": 605,
+  "implemented_standard_cards": 611,
+  "implemented_total": 617,
   "token_definitions": 35,
   "cards": [
     {
@@ -261,8 +261,8 @@
     {
       "name": "Abyssal Gorestalker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Abyssal Harvester",
@@ -2241,8 +2241,8 @@
     {
       "name": "Beetle-Headed Merchants",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Behind the Mask",
@@ -2325,8 +2325,8 @@
     {
       "name": "Benthic Criminologists",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Beorn the Fierce",
@@ -3111,8 +3111,8 @@
     {
       "name": "Boundary Lands Ranger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Bounding Felidar",
@@ -4863,8 +4863,8 @@
     {
       "name": "Comet Crawler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Comforting Counsel",
@@ -6555,8 +6555,8 @@
     {
       "name": "Discerning Peddler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Disdainful Stroke",
@@ -12945,8 +12945,8 @@
     {
       "name": "Incinerating Blast",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Incinerator of the Guilty",
@@ -16251,8 +16251,8 @@
     {
       "name": "Melded Moxite",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Melek, Reforged Researcher",
@@ -18933,8 +18933,8 @@
     {
       "name": "Pick Your Poison",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Picklock Prankster // Free the Fae",
@@ -24447,8 +24447,8 @@
     {
       "name": "Springbloom Druid",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Springleaf Drum",
@@ -28293,8 +28293,8 @@
     {
       "name": "Tweeze",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Twilight Diviner",
@@ -30903,8 +30903,8 @@
     {
       "name": "Yuyan Archers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Zack Fair",

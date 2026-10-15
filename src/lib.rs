@@ -7,7 +7,7 @@ pub mod protocol;
 mod rng;
 
 pub use cards::{
-    CATALOGUE_VERSION, Card, CardInfo, CounterKind, Counters, Keywords, Mana, SearchDestination,
-    SearchFilter, TokenInfo,
+    CATALOGUE_VERSION, Card, CardInfo, CounterKind, Counters, EffectChoiceKind, Keywords, Mana,
+    SearchDestination, SearchFilter, TokenInfo,
 };
 pub use engine::*;
