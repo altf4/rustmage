@@ -239,6 +239,10 @@ pub(crate) enum CounterSubject {
 /// Immutable rule bytecode. Only the program counter and choices live in state.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    Connive {
+        subject: Subject,
+        amount: u16,
+    },
     CounterUnlessPay {
         cost: ManaCost,
         subject: CounterSubject,
@@ -552,6 +556,7 @@ pub(crate) enum TriggerCondition {
     SelfAttacks,
     SelfEntersOrAttacks,
     OtherCreatureEntersYou,
+    OtherSubtypeEntersYou(&'static str),
     CreatureEntersYou,
     OtherArtifactEntersYou,
     LandEntersYou,

@@ -3,6 +3,7 @@ use super::*;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Resolution {
+    pub connive: Option<Box<super::connive::ConniveSequence>>,
     pub item: SpellView,
     pub mana_payment: Option<Box<resolution_mana::ResolutionPayment>>,
     pub program: &'static [Instruction],
@@ -210,6 +211,13 @@ impl Game {
                     TriggerCondition::OtherCreatureEntersYou => {
                         yours && !same && entered.card.is_creature()
                     }
+                    TriggerCondition::OtherSubtypeEntersYou(subtype) => {
+                        yours
+                            && !same
+                            && entered.card.info().type_line.split_once(" — ").is_some_and(
+                                |(_, types)| types.split_whitespace().any(|ty| ty == subtype),
+                            )
+                    }
                     TriggerCondition::CreatureEntersYou => yours && entered.card.is_creature(),
                     TriggerCondition::LandEntersYou => yours && entered.card.is_land(),
                     TriggerCondition::OtherArtifactEntersYou => {
@@ -403,6 +411,7 @@ impl Game {
         };
         assert!(self.state.resolving.is_none());
         self.state.resolving = Some(Resolution {
+            connive: None,
             item,
             program,
             pc: 0,
@@ -465,6 +474,9 @@ impl Game {
             {
                 return;
             }
+            if self.state.resolving.as_ref().unwrap().connive.is_some() && self.advance_connive() {
+                return;
+            }
             // Mandatory discards are chosen privately by their player, APNAP when
             // multiple players must discard. Hand exhaustion completes that part.
             for player in [self.state.active, self.state.active.other()] {
@@ -510,6 +522,9 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::Connive { subject, amount } => {
+                    self.start_connive(&item, subject, amount)
+                }
                 Instruction::CounterUnlessPay {
                     cost,
                     subject,

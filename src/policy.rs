@@ -38,6 +38,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             .find_map(|instruction| match instruction {
                 Instruction::PutCounters { kind, .. } => Some(*kind == CounterKind::PlusOne),
                 Instruction::GrantKeywords { .. } => Some(true),
+                Instruction::Connive { .. } => Some(true),
                 Instruction::Grow {
                     power, toughness, ..
                 } => Some(*power >= 0 && *toughness >= 0),
@@ -100,6 +101,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             return -10;
         }
         match action {
+            Action::ChooseConniver { .. } => 60,
             Action::PayResolutionMana { .. } => 100,
             Action::DeclineResolutionMana => -1,
             Action::ChooseAuraAttachment { object } => aura_score(
