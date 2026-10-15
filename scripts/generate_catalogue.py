@@ -54,7 +54,7 @@ def creature_template(card):
     # establishes data integrity; it cannot establish omitted card semantics.
     if not isinstance(card.get('oracle_text'), str):
         return None
-    if card.get('layout') != 'normal' or permanent_type(card) not in ('Creature', 'Artifact Creature'):
+    if card.get('layout') != 'normal' or permanent_type(card) not in ('Creature', 'Artifact Creature', 'Enchantment Creature'):
         return None
     if not card.get('power', '').isdigit() or not card.get('toughness', '').isdigit():
         return None
@@ -420,6 +420,12 @@ def statement_program(text):
         return [grow_instruction('Attached',int(m[1]),int(m[2]))]
     if m := re.fullmatch(r'(?:enchanted|equipped) creature (gains? .+ until end of turn\.)',text):
         return keyword_effect(m[1],'Attached')
+    if m:=re.fullmatch(r'sacrifice (this creature|this artifact|this enchantment|this permanent)\.',text):
+        return [object_choice('Sacrifice','Controller',sacrifice_spec(m[1]))]
+    if text == 'each player discards their hand, then draws seven cards.':
+        return ['DiscardHand(PlayerSet::Each)','Draw(PlayerSet::Each, 7)']
+    if m:=re.fullmatch(r'tap (.+)\.',text):
+        if filt:=creature_filter(m[1]): return [f'TapCreatures({filt})']
     if text == 'untap this creature.': return ['UntapSource']
     if m := re.fullmatch(r'untap (.+)\.', text):
         if filt := creature_filter(m[1]): return [f'UntapCreatures({filt})']
@@ -795,6 +801,54 @@ for _subtype in ('Goblin','Rat','Insect','Elf','Zombie','Vampire','Human','Ally'
         VITAL_PREFIXES[f'Whenever {_quantifier} {_subtype} you control dies, '] = death_condition(other=_other,subtype=_subtype)
 
 
+
+def player_damage_prefix(line):
+    match=re.match(r'Whenever (.+?) deals? (combat )?damage to (a player|an opponent), ',line)
+    if not match: return None
+    descriptor=match[1]
+    one=descriptor.startswith('one or more ')
+    if one: descriptor=descriptor[len('one or more '):]
+    if descriptor=='this creature': subject='DamageSubject::Source'
+    elif descriptor in ('equipped creature','enchanted creature'): subject='DamageSubject::Attached'
+    else:
+        qualification='Any'
+        if descriptor.startswith('a '):
+            if one: return None
+            descriptor=descriptor[2:]
+            if descriptor.startswith('modified creature '):
+                descriptor=descriptor.replace('modified creature ','modified creatures ',1)
+            elif descriptor.startswith('creature '): descriptor=descriptor.replace('creature ','creatures ',1)
+            else: return None
+        elif not one: return None
+        if descriptor.startswith('modified creatures '):
+            qualification='Modified';descriptor=descriptor[len('modified '):]
+        for suffix,kind in [(' with a counter on it','Counter'),(' with counters on them','Counter'),
+                            (' with +1/+1 counters on them','PlusOne')]:
+            if descriptor.endswith(suffix):
+                if qualification!='Any': return None
+                qualification=kind;descriptor=descriptor[:-len(suffix)];break
+        if descriptor=='Heroes you control':
+            filter_=creature_filter('creatures you control').replace('subtype: None','subtype: Some("Hero")')
+        else: filter_=creature_filter(descriptor)
+        if filter_ is None: return None
+        subject=f'DamageSubject::Creatures {{ filter: {filter_}, qualification: DamageQualification::{qualification} }}'
+    condition=(f'PlayerDamaged {{ subject: {subject}, combat_only: {str(bool(match[2])).lower()}, '
+               f'opponent_only: {str(match[3]=="an opponent").lower()}, one_or_more: {str(one).lower()} }}')
+    return match[0],condition
+
+
+def damage_event_program(text):
+    # A damage-sized quantity binds only inside a player-damage trigger. Ordinary
+    # spell/step/entry parsing cannot infer an event from 'that many'.
+    normalized=text[0].lower()+text[1:] if text else ''
+    if m:=re.fullmatch(r'(?:you )?draw that many cards(, then discard a card)?\.',normalized):
+        return 'None',['DrawDamageAmount']+(['Discard(PlayerSet::Controller, 1)'] if m[1] else [])
+    targeted=targeted_program(text)
+    if targeted: return targeted
+    program=statement_program(text)
+    return ('None',program) if program else None
+
+
 def trigger_creature_template(card):
     if not isinstance(card.get('oracle_text'), str):
         return None
@@ -838,6 +892,9 @@ def trigger_creature_template(card):
                 line = 'When this creature enters, ' + line[len('When ' + alias + ' enters, '):]
         for label in ('Raid — ', 'Formidable — ', 'Survival — '):
             if line.startswith(label + 'At the beginning of '): line = line[len(label):]
+        for alias in names:
+            line=re.sub(r'^Whenever '+re.escape(alias)+r' deals? ((?:combat )?damage to )',r'Whenever this creature deals \1',line)
+            line=line.replace('Whenever '+alias+' enters or attacks, ','Whenever this creature enters or attacks, ')
         if line.casefold() in TEXT_FLAGS:
             keywords |= TEXT_FLAGS[line.casefold()]; continue
         words = [word.strip().casefold() for word in line.split(',') if word.strip()]
@@ -846,7 +903,9 @@ def trigger_creature_template(card):
             abilities.extend((cast_condition(filter_='Noncreature'), [grow_instruction('Source', 1, 1)], 'None')
                              for word in words if word == 'prowess')
             continue
-        for prefix, condition in prefixes.items():
+        damage_prefix=player_damage_prefix(line)
+        line_prefixes=[damage_prefix] if damage_prefix else []
+        for prefix, condition in [*line_prefixes,*prefixes.items()]:
             if line.startswith(prefix):
                 effect_text = line[len(prefix):]
                 if condition.startswith('AtStep {') and effect_text.startswith('if '):
@@ -865,11 +924,17 @@ def trigger_creature_template(card):
                 # event-subject pronouns still have no inferred binding.
                 for alias in names:
                     effect_text = effect_text.replace(' on ' + alias + '.', ' on this creature.')
-                targeted = targeted_program(effect_text)
-                if targeted:
-                    targets, program = targeted
+                if condition.startswith('PlayerDamaged { subject: DamageSubject::Source,'):
+                    effect_text=effect_text.replace(' on it.',' on this creature.')
+                if condition.startswith('PlayerDamaged {'):
+                    result=damage_event_program(effect_text)
+                    targets,program=result if result else ('None',None)
                 else:
-                    targets, program = 'None', statement_program(effect_text)
+                    targeted = targeted_program(effect_text)
+                    if targeted:
+                        targets, program = targeted
+                    else:
+                        targets, program = 'None', statement_program(effect_text)
                 if program is None:
                     return None
                 abilities.append((condition, program, targets))
@@ -1020,7 +1085,7 @@ def permanent_program_template(card):
         return None
     typ = permanent_type(card)
     if set(card.get('type_line','').split(' — ')[-1].split()) & {'Equipment','Aura'}: return None
-    if typ not in ('Creature', 'Artifact Creature', 'Artifact', 'Enchantment'):
+    if typ not in ('Creature', 'Artifact Creature', 'Enchantment Creature', 'Artifact', 'Enchantment'):
         return None
     creature = 'Creature' in typ
     if creature and (not card.get('power', '').isdigit() or not card.get('toughness', '').isdigit()):

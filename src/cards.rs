@@ -2,7 +2,7 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 /// Compact catalogue identity. The immutable definitions are shared across all
 /// games; no card strings, JSON, or rule objects are cloned into game states.
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Card(u16);
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -213,6 +213,9 @@ pub(crate) enum MillAmount {
 /// Immutable rule bytecode. Only the program counter and choices live in state.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    DrawDamageAmount,
+    DiscardHand(PlayerSet),
+    TapCreatures(CreatureFilter),
     Mill(PlayerSet, MillAmount),
     MayMill(u16),
     RecoverMilled(RecoveryFilter),
@@ -452,7 +455,31 @@ pub(crate) enum TriggerStep {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum DamageQualification {
+    Any,
+    Modified,
+    Counter,
+    PlusOne,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum DamageSubject {
+    Source,
+    Attached,
+    Creatures {
+        filter: CreatureFilter,
+        qualification: DamageQualification,
+    },
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    PlayerDamaged {
+        subject: DamageSubject,
+        combat_only: bool,
+        opponent_only: bool,
+        one_or_more: bool,
+    },
     LifeGained {
         first_only: bool,
         own_turn: bool,

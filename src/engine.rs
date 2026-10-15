@@ -1,11 +1,14 @@
 use crate::cards::{
-    ActivatedAbility, ActivationCost, CastRelation, CounterKind, Counters, CreatureFilter, Effect,
-    EffectChoiceKind, EntryTapped, Instruction, ManaProduction, MillAmount, PlayerSet,
-    RecoveryFilter, SacrificeFilter, SearchSpec, Stats, StepGuard, StepValue, Subject, TargetPlan,
-    TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
+    ActivatedAbility, ActivationCost, CastRelation, CounterKind, Counters, CreatureFilter,
+    DamageQualification, DamageSubject, Effect, EffectChoiceKind, EntryTapped, Instruction,
+    ManaProduction, MillAmount, PlayerSet, RecoveryFilter, SacrificeFilter, SearchSpec, Stats,
+    StepGuard, StepValue, Subject, TargetPlan, TargetRule, TargetSpec, TargetZone,
+    TriggerCondition, TriggerStep, payments,
 };
 #[path = "engine_activations.rs"]
 mod activations;
+#[path = "engine_damage_triggers.rs"]
+mod damage_triggers;
 #[path = "engine_funding.rs"]
 mod funding;
 use funding::FundingGoal;
@@ -386,11 +389,23 @@ pub struct SpellView {
     pub source_keywords: Keywords,
     pub source_tapped: bool,
     pub source_attachment: Option<ObjectRef>,
+    pub damage_event: Option<DamageTriggerView>,
+    pub source_facts: DamageFacts,
     pub card: CardId,
     pub object: ObjectRef,
     pub targets: Vec<BoundTarget>,
     pub mode: Option<u16>,
     pub controller: Player,
+}
+
+/// Frozen public context for a player-damage trigger. Aggregated 'one or more'
+/// events have no single dealer. These references never follow later incarnations.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct DamageTriggerView {
+    pub dealer: Option<ObjectRef>,
+    pub player: Player,
+    pub amount: u64,
+    pub combat: bool,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -415,10 +430,38 @@ struct DamageChoice {
     prior_blockers_lethal: bool,
 }
 
+/// Damage-relevant characteristics captured while a source exists in its zone.
+/// Battlefield status stays true for last-known battlefield sources, not cards
+/// that deal damage from their hand or as spells.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+pub struct DamageFacts {
+    pub card: Card,
+    pub battlefield: bool,
+    pub counter: bool,
+    pub plus_one: bool,
+    pub modified: bool,
+    pub attacking: bool,
+}
+impl DamageFacts {
+    fn from_view(view: &ObjectView) -> Self {
+        Self {
+            card: view.card,
+            battlefield: view.zone == Zone::Battlefield,
+            counter: view.counters.plus_one > 0
+                || view.counters.minus_one > 0
+                || view.counters.stun > 0,
+            plus_one: view.counters.plus_one > 0,
+            modified: view.modified,
+            attacking: view.attacking,
+        }
+    }
+}
+
 /// Source characteristics captured when a damage event is constructed. Damage
 /// need not originate from a permanent that survives the simultaneous batch.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 pub struct DamageSource {
+    pub facts: DamageFacts,
     pub object: CardId,
     pub reference: ObjectRef,
     pub controller: Player,
@@ -488,7 +531,7 @@ enum Pending {
     },
     EffectDiscard {
         player: Player,
-        remaining: u16,
+        remaining: usize,
     },
     Attackers,
     Blockers,
@@ -505,6 +548,7 @@ struct State {
     free_tokens: Vec<CardId>,
     static_sources: Vec<CardId>,
     cast_sources: Vec<CardId>,
+    damage_sources: Vec<CardId>,
     step_sources: Vec<CardId>,
     life_sources: Vec<CardId>,
     death_sources: Vec<CardId>,
@@ -566,6 +610,8 @@ pub struct ObjectView {
     pub counters: Counters,
     pub used_abilities: u64,
     pub attached_to: Option<ObjectRef>,
+    pub modified: bool,
+    pub attacking: bool,
     pub power: i32,
     pub toughness: i32,
     pub keywords: Keywords,
@@ -802,6 +848,7 @@ impl Game {
                 free_tokens: Vec::new(),
                 static_sources: Vec::new(),
                 cast_sources: Vec::new(),
+                damage_sources: Vec::new(),
                 step_sources: Vec::new(),
                 life_sources: Vec::new(),
                 death_sources: Vec::new(),
@@ -1736,6 +1783,8 @@ impl Game {
             counters: obj.counters,
             used_abilities: obj.used_abilities,
             attached_to: obj.attached_to,
+            modified: self.is_modified(id),
+            attacking: self.state.attackers.iter().any(|a| a.card == id),
             power: stats.power,
             toughness: stats.toughness,
             keywords: self.keywords(id),
@@ -1885,10 +1934,12 @@ impl Game {
                     item.source_keywords = before.keywords;
                     item.source_tapped = before.tapped;
                     item.source_attachment = before.attached_to;
+                    item.source_facts = DamageFacts::from_view(&before);
                 }
             }
             self.state.static_sources.retain(|&source| source != id);
             self.state.cast_sources.retain(|&source| source != id);
+            self.state.damage_sources.retain(|&source| source != id);
             self.state.step_sources.retain(|&source| source != id);
             self.state.life_sources.retain(|&source| source != id);
             self.state.death_sources.retain(|&source| source != id);
@@ -2078,6 +2129,7 @@ impl Game {
         // Control-changing cards are not admitted yet. This is the single place
         // where current controller must be used once control layers are added.
         DamageSource {
+            facts: self.damage_facts(object),
             object,
             reference: self.object_ref(object),
             controller: obj.owner,
@@ -2131,6 +2183,7 @@ impl Game {
         for gain in &gains {
             self.gain_life(gain.source.controller, i64::from(gain.amount));
         }
+        self.player_damage_triggers(events);
         // Trigger events are recorded before SBAs, after the whole damage batch.
         gains
     }
@@ -2261,7 +2314,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 24,
+            schema: 25,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -2513,6 +2566,7 @@ impl Game {
             + (s.free_tokens.len()
                 + s.static_sources.len()
                 + s.cast_sources.len()
+                + s.damage_sources.len()
                 + s.step_sources.len()
                 + s.life_sources.len()
                 + s.death_sources.len()
@@ -2654,3 +2708,7 @@ mod aura_tests;
 #[cfg(test)]
 #[path = "engine_milling_tests.rs"]
 mod milling_tests;
+
+#[cfg(test)]
+#[path = "engine_damage_trigger_tests.rs"]
+mod damage_trigger_tests;

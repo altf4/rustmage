@@ -14,6 +14,61 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_player_damage_filters_and_event_amount_scope(self):
+        for header,subject,combat,opponent,one in [
+            ('Whenever this creature deals combat damage to a player, ','Source',True,False,False),
+            ('Whenever equipped creature deals combat damage to a player, ','Attached',True,False,False),
+            ('Whenever this creature deals damage to an opponent, ','Source',False,True,False),
+            ('Whenever a modified creature you control deals combat damage to a player, ','Modified',True,False,False),
+            ('Whenever one or more creatures you control with +1/+1 counters on them deal combat damage to a player, ','PlusOne',True,False,True),
+            ('Whenever a creature you control with a counter on it deals combat damage to a player, ','Counter',True,False,False),
+            ('Whenever one or more Heroes you control deal damage to a player, ','Hero',False,False,True),
+        ]:
+            compiled=generate.trigger_creature_template(self.card(oracle_text=header+'draw a card.'))
+            self.assertIsNotNone(compiled,header)
+            condition=compiled[2][0][0]
+            self.assertIn(subject,condition)
+            self.assertIn('combat_only: '+str(combat).lower(),condition)
+            self.assertIn('opponent_only: '+str(opponent).lower(),condition)
+            self.assertIn('one_or_more: '+str(one).lower(),condition)
+        row=self.card(oracle_text='Whenever this creature deals combat damage to a player, draw that many cards, then discard a card.')
+        self.assertEqual(generate.trigger_creature_template(row)[2][0][1],['DrawDamageAmount','Discard(PlayerSet::Controller, 1)'])
+        self.assertIsNone(generate.statement_program('Draw that many cards.'))
+        self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='When this creature enters, draw that many cards.')))
+        for text in ['Whenever this creature deals combat damage to a player, draw a card for each modified creature you control.',
+                     'Whenever a creature you control deals combat damage to a player, draw a card. This ability triggers only once each turn.',
+                     'Whenever this creature deals combat damage to a player, destroy target artifact that player controls.',
+                     'Whenever this creature deals combat damage to a player or planeswalker, draw a card.',
+                     'Whenever a creature you control with two counters on it deals combat damage to a player, draw a card.']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=text)),text)
+
+    def test_damage_trigger_complete_admissions_and_residual_gates(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,coverage=generate.compile_catalogue(rows,target)
+        supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for name in ['Appendage Amalgam','April, Reporter of the Weird','Ball Lightning','Dragon Mage','Eager Trufflesnout',
+                     'Fear of Failed Tests','Fear of Surveillance','Festerleech','Frostbite Pyromental','Goldvein Pick',
+                     'Grasping Longneck','Haliya, Ascendant Cadet','Invasion Tactics','Jeskai Shrinekeeper','Locke Cole',
+                     'SP//dr, Piloted by Peni','Scream Puff','Syr Vondam, the Lucent','The Thing, Ben Grimm',
+                     'Thieving Otter','Ultimecia, Temporal Threat','Yathan Tombguard']:
+            self.assertIn(name,supported)
+        for name in ['Curious Inquiry','Thief\'s Knife','Enduring Curiosity','Trygon Predator','Kutzil, Malamet Exemplar',
+                     'Venus, Torn Between Worlds','Nashi, Searcher in the Dark','Buster Sword']:
+            self.assertNotIn(name,supported)
+        row=self.card(name='Example, Named',type_line='Legendary Creature — Human',
+            oracle_text='Whenever Example deals combat damage to a player, put a +1/+1 counter on it.')
+        self.assertIn('Subject::Source',generate.trigger_creature_template(row)[2][0][1][0])
+
+    def test_discard_hand_tap_creatures_and_enchantment_creatures_are_complete(self):
+        self.assertEqual(generate.statement_program('Each player discards their hand, then draws seven cards.'),
+            ['DiscardHand(PlayerSet::Each)','Draw(PlayerSet::Each, 7)'])
+        self.assertIn('TapCreatures',generate.statement_program('Tap all creatures your opponents control.')[0])
+        self.assertIn('source_only: true',generate.statement_program('Sacrifice this creature.')[0])
+        self.assertIsNotNone(generate.creature_template(self.card(type_line='Enchantment Creature — Nightmare',oracle_text='Flying')))
+        self.assertIsNone(generate.creature_template(self.card(type_line='Enchantment Creature — Nightmare',oracle_text='Bestow {2}{U}')))
+
     def test_mill_quantities_optional_legality_and_exact_recovery_binding(self):
         self.assertEqual(generate.statement_program('Mill two cards.'),[generate.mill_instruction('Controller',2)])
         self.assertEqual(generate.statement_program('You may mill two cards.'),['MayMill(2)',generate.mill_instruction('Controller',2)])
@@ -44,7 +99,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Space-Time Anomaly','Thawbringer','Venomized Cat','Vinereap Mentor','Wary Thespian','Wary Watchdog',
                      'Watcher of the Wayside']:
             self.assertIn(name,supported)
-        for name in ['Cache Grab','Aftermath Analyst','Pothole Mole','The Mindskinner','Molt Tender','Festerleech','Town Greeter']:
+        for name in ['Cache Grab','Aftermath Analyst','Pothole Mole','The Mindskinner','Molt Tender','Town Greeter']:
             self.assertNotIn(name,supported)
         trigger=generate.trigger_creature_template(self.card(oracle_text='When this creature enters or dies, surveil 1.'))
         self.assertEqual(trigger[2][0][0],'SelfEntersOrDies')

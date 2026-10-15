@@ -52,6 +52,7 @@ pub(super) fn scenario() -> Game {
     game.state.objects.clear();
     game.state.static_sources.clear();
     game.state.cast_sources.clear();
+    game.state.damage_sources.clear();
     game.state.step_sources.clear();
     game.state.life_sources.clear();
     game.state.death_sources.clear();

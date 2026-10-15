@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "6adea7ec917c3a127d316b6a938e4d968f4862d5414f6f26dffa430e76f06562",
+  "catalogue_version": "c7590f12b82ec2a03b9c4c92b972f649d71be5bcb068431fcb20d81cdd7c6335",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 690,
-  "implemented_total": 696,
+  "implemented_standard_cards": 712,
+  "implemented_total": 718,
   "token_definitions": 36,
   "cards": [
     {
@@ -1143,8 +1143,8 @@
     {
       "name": "Appendage Amalgam",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Applied Geometry",
@@ -1167,8 +1167,8 @@
     {
       "name": "April, Reporter of the Weird",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Aquatic Alchemist // Bubble Up",
@@ -1887,8 +1887,8 @@
     {
       "name": "Ball Lightning",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Ballyrush Banneret",
@@ -6927,8 +6927,8 @@
     {
       "name": "Dragon Mage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Dragon Sniper",
@@ -7371,8 +7371,8 @@
     {
       "name": "Eager Trufflesnout",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Eagle of the Great Shelf",
@@ -8793,8 +8793,8 @@
     {
       "name": "Fear of Failed Tests",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Fear of Falling",
@@ -8841,8 +8841,8 @@
     {
       "name": "Fear of Surveillance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Fear of the Dark",
@@ -9009,8 +9009,8 @@
     {
       "name": "Festerleech",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Festival of Embers",
@@ -9831,8 +9831,8 @@
     {
       "name": "Frostbite Pyromental",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Frostbridge Guard",
@@ -10953,8 +10953,8 @@
     {
       "name": "Goldvein Pick",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Golgari Guildgate",
@@ -11103,8 +11103,8 @@
     {
       "name": "Grasping Longneck",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Grasping Shadows // Shadows' Lair",
@@ -11577,8 +11577,8 @@
     {
       "name": "Haliya, Ascendant Cadet",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Haliya, Guided by Light",
@@ -13281,8 +13281,8 @@
     {
       "name": "Invasion Tactics",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Invasive Maneuvers",
@@ -13647,8 +13647,8 @@
     {
       "name": "Jeskai Shrinekeeper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Jessica Jones, Private Eye",
@@ -15213,8 +15213,8 @@
     {
       "name": "Locke Cole",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Locust Spray",
@@ -21843,8 +21843,8 @@
     {
       "name": "SP//dr, Piloted by Peni",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Sab-Sunen, Luxa Embodied",
@@ -22437,8 +22437,8 @@
     {
       "name": "Scream Puff",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Screaming Nemesis",
@@ -25875,8 +25875,8 @@
     {
       "name": "Syr Vondam, the Lucent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Systems Override",
@@ -27069,8 +27069,8 @@
     {
       "name": "The Thing, Ben Grimm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "The Unagi of Kyoshi Island",
@@ -27183,8 +27183,8 @@
     {
       "name": "Thieving Otter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Think Twice",
@@ -28479,8 +28479,8 @@
     {
       "name": "Ultimecia, Temporal Threat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Ultimecia, Time Sorceress // Ultimecia, Omnipotent",
@@ -30819,8 +30819,8 @@
     {
       "name": "Yathan Tombguard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Yellowjacket, Heartless Marauder",
