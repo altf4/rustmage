@@ -57,6 +57,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::AnnounceActivate { .. } => 34,
             Action::AnnounceMana { .. } => -2,
             Action::PayCosts { .. } => 100,
+            Action::ChooseMode { .. } => 50,
             Action::ChooseSearch { .. } => 60,
             Action::FinishSearch => 0,
             Action::Keep => 100,
@@ -72,10 +73,11 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     StackKind::ActivatedAbility { ability } => {
                         item.source_card.activations()[ability as usize].program
                     }
-                    StackKind::Spell => match item.source_card.effect() {
-                        Effect::Spell(_, program) => program,
-                        _ => &[],
-                    },
+                    StackKind::Spell => item
+                        .source_card
+                        .spell_program(item.mode)
+                        .map(|(_, program)| program)
+                        .unwrap_or(&[]),
                 };
                 target_score(program, *target)
             }

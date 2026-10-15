@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "212dc68ed1194df3cbf6b05feb5b2d67d2d921d6e519282990ebdc95ff932e6a",
+  "catalogue_version": "4c1480b0c944dfdb7ffaaf9ac36fcf3f10606f00e5579d28a333bf0c28d87cb3",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 512,
-  "implemented_total": 518,
-  "token_definitions": 30,
+  "implemented_standard_cards": 523,
+  "implemented_total": 529,
+  "token_definitions": 31,
   "cards": [
     {
       "name": "Plains",
@@ -213,8 +213,8 @@
     {
       "name": "Abrade",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Abraded Bluffs",
@@ -8619,8 +8619,8 @@
     {
       "name": "Family Reunion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Famished Worldsire",
@@ -10863,8 +10863,8 @@
     {
       "name": "Goblin Surprise",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Goblin Surveyor",
@@ -15123,8 +15123,8 @@
     {
       "name": "Live or Die",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Lively Dirge",
@@ -17193,8 +17193,8 @@
     {
       "name": "Mouser Attack!",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Mouser Foundry",
@@ -21063,8 +21063,8 @@
     {
       "name": "Reverent Howl",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Revival of the Ancestors",
@@ -22341,8 +22341,8 @@
     {
       "name": "School Daze",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Scientist Supreme of A.I.M.",
@@ -22623,8 +22623,8 @@
     {
       "name": "Seeker's Folly",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Seifer Almasy",
@@ -23103,8 +23103,8 @@
     {
       "name": "Shredder's Revenge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Shredder's Technique",
@@ -24069,8 +24069,8 @@
     {
       "name": "Spellgyre",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Spellscorn Coven // Take It Back",
@@ -27249,8 +27249,8 @@
     {
       "name": "Thorin's Last Stand",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Thorin, Mountain-king",

@@ -21,11 +21,52 @@ impl Game {
             StackKind::ActivatedAbility { ability } => {
                 item.source_card.activations()[ability as usize].targets
             }
-            StackKind::Spell => match item.source_card.effect() {
-                Effect::Spell(spec, _) => spec,
-                _ => TargetSpec::NONE,
-            },
+            StackKind::Spell => item
+                .source_card
+                .spell_program(item.mode)
+                .map(|(spec, _)| spec)
+                .unwrap_or(TargetSpec::NONE),
         }
+    }
+
+    pub(super) fn targets_available(
+        &self,
+        spec: TargetSpec,
+        actor: Player,
+        source: ObjectRef,
+    ) -> bool {
+        if spec.min == 0 {
+            return true;
+        }
+        let mut count = 0;
+        self.visit_targets(spec.rule, actor, source, |_| {
+            count += 1;
+            count >= usize::from(spec.min)
+        })
+    }
+
+    pub(super) fn choose_mode(&mut self, mode: u16) {
+        let announcement = self.state.announcing.as_mut().unwrap();
+        announcement.item.mode = Some(mode);
+        announcement.spec = announcement
+            .item
+            .source_card
+            .spell_program(Some(mode))
+            .unwrap()
+            .0;
+        let item = announcement.item.clone();
+        let spec = announcement.spec;
+        self.state.pending = if spec.max == 0
+            || !self.visit_targets(spec.rule, item.controller, item.object, |_| true)
+        {
+            Pending::PayCosts {
+                player: item.controller,
+            }
+        } else {
+            Pending::Targets {
+                player: item.controller,
+            }
+        };
     }
 
     pub(super) fn bind_target(&self, target: Target) -> BoundTarget {
@@ -167,6 +208,7 @@ impl Game {
             object,
             controller: actor,
             targets: Vec::new(),
+            mode: None,
         }
     }
 
@@ -221,6 +263,9 @@ impl Game {
             });
         }
         assert!(count >= usize::from(spec.min));
+        let needs_mode = item.kind == StackKind::Spell
+            && matches!(item.source_card.effect(), Effect::Modal(_))
+            && item.mode.is_none();
         self.state.announcing = Some(Announcement {
             item,
             spec,
@@ -230,7 +275,9 @@ impl Game {
             pay_window: true,
             production,
         });
-        self.state.pending = if spec.max == 0 || count == 0 {
+        self.state.pending = if needs_mode {
+            Pending::Modes { player }
+        } else if spec.max == 0 || count == 0 {
             Pending::PayCosts { player }
         } else {
             Pending::Targets { player }

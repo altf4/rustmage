@@ -158,6 +158,7 @@ impl Game {
             object: source.reference,
             controller: source.owner, // Control-changing effects remain gated.
             targets: Vec::new(),
+            mode: None,
         });
     }
 
@@ -243,7 +244,9 @@ impl Game {
                     self.give_priority();
                     return;
                 }
-                Effect::Spell(_, program) => program,
+                Effect::Spell(..) | Effect::Modal(_) => {
+                    item.source_card.spell_program(item.mode).unwrap().1
+                }
                 Effect::Land | Effect::Unsupported => unreachable!("unsupported spell admitted"),
             },
         };

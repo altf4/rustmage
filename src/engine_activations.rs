@@ -216,6 +216,7 @@ impl Game {
             object: self.object_ref(card),
             controller: actor,
             targets: Vec::new(),
+            mode: None,
         }
     }
 
