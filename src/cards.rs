@@ -329,12 +329,24 @@ pub struct TokenInfo {
     pub colors: u8,
 }
 
+/// Self replacement evaluated against the battlefield immediately before entry.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum EntryTapped {
+    Never,
+    Always,
+    UnlessBasic,
+    UnlessAtMostTwo,
+    UnlessAtLeastTwo,
+    UnlessLowLife,
+}
+
 struct Definition {
     info: CardInfo,
     effect: Effect,
     triggers: &'static [TriggeredAbility],
     activated: &'static [ActivatedAbility],
     enters: Counters,
+    entry: EntryTapped,
     kind: u8,
     basic: bool,
     mana_color: Option<usize>,
@@ -427,6 +439,9 @@ impl Card {
 
     pub(crate) fn activations(self) -> &'static [ActivatedAbility] {
         generated::DEFINITIONS[self.0 as usize].activated
+    }
+    pub(crate) fn entry_tapped(self) -> EntryTapped {
+        generated::DEFINITIONS[self.0 as usize].entry
     }
     pub(crate) fn enters_counters(self) -> Counters {
         generated::DEFINITIONS[self.0 as usize].enters
