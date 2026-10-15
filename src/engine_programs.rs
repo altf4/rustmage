@@ -196,6 +196,9 @@ impl Game {
                     | TriggerCondition::SelfEntersOrAttacks
                     | TriggerCondition::SelfEntersOrDies => same,
                     TriggerCondition::Ward
+                    | TriggerCondition::SelfDiscarded
+                    | TriggerCondition::SelfCycled
+                    | TriggerCondition::Discarded { .. }
                     | TriggerCondition::PlayerDamaged { .. }
                     | TriggerCondition::SelfDies
                     | TriggerCondition::CreatureDies { .. }
@@ -232,6 +235,7 @@ impl Game {
             source_facts: DamageFacts::from_view(source),
             related_stack: None,
             damage_event: None,
+            discard_event: None,
             source_attachment: source.attached_to,
             card: source.id,
             object: source.reference,
@@ -475,8 +479,7 @@ impl Game {
                 .flat_map(|player| selected[player.index()].iter().copied())
                 .collect();
             if !discarded.is_empty() {
-                let events = self.move_objects_raw(&discarded, Zone::Graveyard);
-                self.finish_zone_events(&events, &[]);
+                self.discard_batch(&discarded, None);
             }
             let resolution = self.state.resolving.as_mut().unwrap();
             let Some(instruction) = resolution.program.get(resolution.pc).copied() else {
@@ -716,7 +719,21 @@ impl Game {
                         self.state.objects[item.card as usize].untap();
                     }
                 }
-                Instruction::Damage(amount) | Instruction::DamagePlayers(_, amount) => {
+                Instruction::Damage(_)
+                | Instruction::DamagePlayers(_, _)
+                | Instruction::DamageDiscardAmount(_) => {
+                    let amount = match instruction {
+                        Instruction::Damage(amount) | Instruction::DamagePlayers(_, amount) => {
+                            amount
+                        }
+                        Instruction::DamageDiscardAmount(_) => i32::try_from(
+                            item.discard_event
+                                .expect("discard-sized effect requires event")
+                                .amount,
+                        )
+                        .expect("discard damage exhausted"),
+                        _ => unreachable!(),
+                    };
                     let source = if self.object_ref(item.card) == item.object {
                         self.damage_source(item.card)
                     } else {
@@ -734,7 +751,9 @@ impl Game {
                         amount,
                         combat: false,
                     };
-                    let events: Vec<_> = if let Instruction::DamagePlayers(players, _) = instruction
+                    let events: Vec<_> = if let Instruction::DamagePlayers(players, _)
+                    | Instruction::DamageDiscardAmount(players) =
+                        instruction
                     {
                         self.program_players(players, &item)
                             .map(|player| event(Target::Player(player)))
@@ -831,6 +850,16 @@ impl Game {
                         .collect();
                     for id in affected {
                         self.state.objects[id as usize].growth += Stats { power, toughness };
+                    }
+                }
+                Instruction::PutDiscardCounters(kind) => {
+                    if self.on_battlefield(item.card) && self.object_ref(item.card) == item.object {
+                        self.state.objects[item.card as usize].counters.add(
+                            kind,
+                            item.discard_event
+                                .expect("discard-sized effect requires event")
+                                .amount,
+                        );
                     }
                 }
                 Instruction::PutCounters {

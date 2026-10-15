@@ -142,6 +142,14 @@ impl Game {
                     return false;
                 }
                 match rule {
+                    TargetRule::CreatureOrVehicle { relation } => {
+                        obj.zone == Zone::Battlefield
+                            && (obj.card.is_creature()
+                                || obj.card.info().type_line.split_once(" — ").is_some_and(
+                                    |(_, types)| types.split_whitespace().any(|ty| ty == "Vehicle"),
+                                ))
+                            && (relation == -1 || (obj.owner == controller) == (relation == 0))
+                    }
                     TargetRule::Creature | TargetRule::Any => {
                         obj.zone == Zone::Battlefield && obj.card.is_creature()
                     }
@@ -241,6 +249,7 @@ impl Game {
             source_facts: self.damage_facts(card),
             related_stack: None,
             damage_event: None,
+            discard_event: None,
             source_attachment: self.state.objects[card as usize].attached_to,
             card,
             object,

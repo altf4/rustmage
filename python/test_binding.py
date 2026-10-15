@@ -12,6 +12,94 @@ class BindingTests(unittest.TestCase):
     def game(self):
         return Game([["Mountain"] * 24 + ["LightningBolt"] * 36] * 2, seed=17, deck_rules="Freeform")
 
+    def discard_index(self,obs):
+        hand={o['id'] for o in obs['objects'] if o['zone']=='Hand' and o['owner']==obs['actor']}
+        def score(a):
+            k=a['kind']
+            if k=='TapMana':return 70 if obs['decision']=='pay_costs' else -10
+            if k in ('AnnounceActivate','Activate') and a['card'] in hand:return 60
+            return {'Keep':100,'PlayLand':90,'Cast':80,'AnnounceCast':79,'PayCosts':100,'PutTrigger':60,
+                    'Discard':50,'DeclineEffectPayment':-1,'ChooseTarget':60,'FinishTargets':0,
+                    'FinishAttackers':40,'FinishBlockers':40,'Pass':20,'Mulligan':-100,'Concede':-1000}.get(k,0)
+        return max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i]))
+
+    def test_cycling_event_context_and_trigger_stack_replay_in_native_binding(self):
+        red=['Mountain']*24+['Marauding Mako']*16+['Magmakin Artillerist']*20
+        green=['Forest']*24+['Titanbones, Towering Heart']*36
+        with Game([red,green],seed=4,deck_rules='Freeform') as game:
+            obs=game.observe('P0')
+            for _ in range(2000):
+                self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor'])
+                items=obs['stack']+obs['waiting_triggers']+([obs['announcing']] if obs['announcing'] else [])
+                if any(s['source_card']=='Magmakin Artillerist' and s['discard_event'] is not None and s['discard_event']['cycling'] for s in items):break
+                obs=game.step(obs,self.discard_index(obs))
+            else:self.fail('cycling-bound trigger not reached')
+            actor=obs['actor'];self.assertEqual(obs['schema'],28)
+            item=next(s for s in items if s['source_card']=='Magmakin Artillerist' and s['discard_event'] is not None)
+            self.assertEqual(item['discard_event'],{'player':'P0','amount':1,'cycling':True})
+            other=game.observe('P1');public=other['stack']+other['waiting_triggers']+([other['announcing']] if other['announcing'] else [])
+            self.assertEqual(next(s['discard_event'] for s in public if s['id']==item['id']),item['discard_event'])
+            saved=game.snapshot();library=obs['players'][0]['library_count'];life=obs['players'][1]['life']
+            def finish(handle):
+                for _ in range(40):
+                    current=handle.observe(handle.observe('P0')['actor'])
+                    if not current['stack'] and not current['waiting_triggers'] and current['announcing'] is None:return current
+                    index=next((i for i,a in enumerate(current['actions']) if a['kind']=='PutTrigger'),None)
+                    if index is None:index=next(i for i,a in enumerate(current['actions']) if a['kind']=='Pass')
+                    handle.step(current,index)
+                self.fail('event stack did not finish')
+            with game.clone() as branch:expected=finish(branch)
+            actual=finish(game);self.assertEqual(actual,expected);self.assertEqual(actual['players'][0]['library_count'],library-1)
+            self.assertLess(actual['players'][1]['life'],life)
+            game.restore(saved);replay=finish(game);self.assertGreater(replay.pop('revision'),actual.pop('revision'));self.assertEqual(actual,replay)
+            game.drop_snapshot(saved)
+
+    def test_cleanup_discard_batch_is_private_owned_and_repeats_cleanup_after_triggers(self):
+        deck=['Mountain']*12+['Island']*12+['Hobgoblin, Mantled Marauder']*16+['Divination']*20
+        with Game([deck,deck],seed=17,deck_rules='Freeform') as game:
+            ready=False;cast_draw=False;draw_done=False;obs=game.observe('P0')
+            for _ in range(4000):
+                self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor']);objects={o['id']:o for o in obs['objects']}
+                own=[o for o in objects.values() if o['owner']=='P0' and o['zone']=='Battlefield']
+                ready=ready or (any(o['card']=='Hobgoblin, Mantled Marauder' for o in own) and sum(o['card'] in ('Mountain','Island') for o in own)>=3 and any(o['card']=='Island' for o in own))
+                if obs['actor']=='P0' and obs['decision']=='discard' and draw_done:break
+                def score(a):
+                    k=a['kind'];name=objects.get(a.get('card'),{}).get('card')
+                    if k=='Keep':return 100
+                    if k=='TapMana':return 80 if obs['decision']=='pay_costs' else -10
+                    if k=='PayCosts':return 100
+                    if k=='PlayLand':return 90 if obs['actor']=='P0' and not ready else -10
+                    if k in ('Cast','AnnounceCast'):
+                        if obs['actor']=='P0' and not ready and name=='Hobgoblin, Mantled Marauder':return 80
+                        if ready and not cast_draw and obs['actor']=='P0' and obs['players'][0]['hand_count']>=8 and name=='Divination':return 80
+                        return -10
+                    return {'Pass':20,'PutTrigger':60,'Discard':50,'FinishAttackers':40,'FinishBlockers':40,'Concede':-1000,'Mulligan':-100}.get(k,-10)
+                index=max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i]));a=obs['actions'][index]
+                if a['kind'] in ('Cast','AnnounceCast') and objects[a['card']]['card']=='Divination':cast_draw=True
+                obs=game.step(obs,index)
+                if cast_draw and not obs['stack'] and obs['announcing'] is None:draw_done=True
+            else:self.fail('nine-card cleanup fixture not reached')
+            self.assertEqual(obs['players'][0]['hand_count'],9);turn=obs['turn']
+            first=next(a['card'] for a in obs['actions'] if a['kind']=='Discard')
+            obs=game.step(obs,next(i for i,a in enumerate(obs['actions']) if a['kind']=='Discard' and a['card']==first))
+            self.assertEqual(obs['players'][0]['hand_count'],9);self.assertEqual(next(o['zone'] for o in obs['objects'] if o['id']==first),'Hand')
+            self.assertFalse(any(a['kind']=='Discard' and a['card']==first for a in obs['actions']))
+            self.assertTrue(all(o['zone']!='Hand' or o['owner']!='P0' for o in game.observe('P1')['objects']))
+            saved=game.snapshot();index=next(i for i,a in enumerate(obs['actions']) if a['kind']=='Discard')
+            with game.clone() as branch:expected=branch.step(branch.observe('P0'),index)
+            actual=game.step(obs,index);self.assertEqual(actual,expected);self.assertEqual(actual['players'][0]['hand_count'],7)
+            self.assertEqual(actual['step'],'Cleanup');self.assertEqual(actual['turn'],turn)
+            game.restore(saved);replay=game.step(game.observe('P0'),index);self.assertGreater(replay.pop('revision'),actual.pop('revision'));self.assertEqual(actual,replay);game.drop_snapshot(saved)
+            for _ in range(30):
+                obs=game.observe(game.observe('P0')['actor'])
+                if obs['turn']>turn:break
+                index=next((i for i,a in enumerate(obs['actions']) if a['kind']=='PutTrigger'),None)
+                if index is None:index=next(i for i,a in enumerate(obs['actions']) if a['kind']=='Pass')
+                game.step(obs,index)
+            else:self.fail('extra cleanup did not finish')
+            self.assertEqual(obs['active'],'P1')
+            self.assertTrue(all(o['power']==1 for o in obs['objects'] if o['card']=='Hobgoblin, Mantled Marauder' and o['zone']=='Battlefield'))
+
     def cycling_index(self,obs):
         hand={o['id'] for o in obs['objects'] if o['zone']=='Hand' and o['owner']==obs['actor']}
         def score(a):
@@ -33,7 +121,7 @@ class BindingTests(unittest.TestCase):
                 obs=game.step(obs,self.cycling_index(obs))
             else:self.fail('hand activation payment not reached')
             actor=obs['actor'];other='P1' if actor=='P0' else 'P0';source=obs['announcing']['card'];player=0 if actor=='P0' else 1
-            self.assertEqual(obs['schema'],27)
+            self.assertEqual(obs['schema'],28)
             self.assertEqual(next(o['zone'] for o in obs['objects'] if o['id']==source),'Hand')
             self.assertEqual(game.observe(other)['announcing']['source_card'],'Migrating Ketradon')
             self.assertEqual(game.observe(other)['actions'],[])
@@ -115,7 +203,7 @@ class BindingTests(unittest.TestCase):
                 obs=game.step(obs,self.ward_index(obs))
             else:self.fail('ward resolution payment not reached')
             actor=obs['actor'];other='P1' if actor=='P0' else 'P0';request=obs['resolution_payment']
-            self.assertEqual(obs['schema'],27);self.assertEqual(request['payer'],actor);self.assertEqual(request['cost']['generic'],2)
+            self.assertEqual(obs['schema'],28);self.assertEqual(request['payer'],actor);self.assertEqual(request['cost']['generic'],2)
             self.assertEqual(game.observe(other)['resolution_payment'],request);self.assertEqual(game.observe(other)['actions'],[])
             victim=next(s for s in obs['stack'] if s['id']==request['victim']);self.assertEqual(victim['source_card'],'Shock')
             saved=game.snapshot();index=next(i for i,a in enumerate(obs['actions']) if a['kind']=='DeclineResolutionMana')
@@ -178,7 +266,7 @@ class BindingTests(unittest.TestCase):
                 obs=game.step(obs,self.damage_index(obs))
             else:self.fail('April damage discard not reached')
             actor=obs['actor'];other='P1' if actor=='P0' else 'P0'
-            event=obs['resolving']['damage_event'];self.assertEqual(obs['schema'],27)
+            event=obs['resolving']['damage_event'];self.assertEqual(obs['schema'],28)
             self.assertEqual(event['amount'],2);self.assertTrue(event['combat']);self.assertEqual(event['player'],other)
             self.assertEqual(event['dealer'],obs['resolving']['object'])
             self.assertEqual(game.observe(other)['resolving']['damage_event'],event)
@@ -236,7 +324,7 @@ class BindingTests(unittest.TestCase):
                 obs=game.step(obs,self.mill_index(obs))
             else:self.fail('recovery choice not reached')
             actor=obs['actor'];other='P1' if actor=='P0' else 'P0'
-            choice=obs['recovery_choice'];self.assertEqual(obs['schema'],27)
+            choice=obs['recovery_choice'];self.assertEqual(obs['schema'],28)
             self.assertEqual(choice,game.observe(other)['recovery_choice']);self.assertEqual(game.observe(other)['actions'],[])
             self.assertEqual(choice['filter'],'Permanent');self.assertTrue(choice['candidates'])
             self.assertTrue(all(any(o['reference']==r and o['zone']=='Graveyard' for o in game.observe(other)['objects']) for r in choice['milled']))
@@ -330,7 +418,7 @@ class BindingTests(unittest.TestCase):
                 obs=game.step(obs,self.aura_index(obs,linked=True))
             else:self.fail('no linked Aura return reached')
             actor=obs['actor'];choice=obs['aura_entry'];aura=choice['aura']['card']
-            self.assertEqual(obs['schema'],27);self.assertEqual(obs['resolving']['source_card'],'Disenchant')
+            self.assertEqual(obs['schema'],28);self.assertEqual(obs['resolving']['source_card'],'Disenchant')
             self.assertEqual(next(o['zone'] for o in obs['objects'] if o['id']==aura),'Exile')
             target=next(o['reference'] for o in obs['objects'] if o['zone']=='Battlefield' and o['owner']==actor and o['card']=="Healer's Hawk")
             index=next(i for i,a in enumerate(obs['actions']) if a['kind']=='ChooseAuraAttachment' and a['object']==target)
@@ -445,7 +533,7 @@ class BindingTests(unittest.TestCase):
                 obs=game.step(obs,self.vital_index(obs))
             else: self.fail('no life-gain trigger reached')
             source=obs['stack'][-1];viewer=source['controller'];p=0 if viewer=='P0' else 1
-            self.assertEqual(obs['schema'],27)
+            self.assertEqual(obs['schema'],28)
             self.assertGreater(obs['players'][p]['life_gain_events_this_turn'],0)
             other='P1' if viewer=='P0' else 'P0'
             self.assertEqual(game.observe(other)['players'][p]['life_gain_events_this_turn'],obs['players'][p]['life_gain_events_this_turn'])
@@ -691,7 +779,7 @@ class BindingTests(unittest.TestCase):
             observation = game.observe("P0")
             coverage = json.loads((Path(__file__).resolve().parents[1] / "data/standard/coverage.json").read_text())
             self.assertEqual(observation["catalogue"], coverage["catalogue_version"])
-            self.assertEqual(observation["schema"], 27)
+            self.assertEqual(observation["schema"], 28)
             self.assertEqual(len(observation["objects"]), 7)
             self.assertTrue(all(o["owner"] == "P0" for o in observation["objects"]))
             self.assertEqual(game.observe("P1")["actions"], [])

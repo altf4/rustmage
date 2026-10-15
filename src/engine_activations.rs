@@ -233,6 +233,7 @@ impl Game {
             source_facts: self.damage_facts(card),
             related_stack: None,
             damage_event: None,
+            discard_event: None,
             source_attachment: self.state.objects[card as usize].attached_to,
             card,
             object: self.object_ref(card),
@@ -276,7 +277,9 @@ impl Game {
         object.counters.plus_one -= counter_payment.plus_one;
         object.counters.minus_one -= counter_payment.minus_one;
         object.counters.stun -= counter_payment.stun;
-        if cost.sacrifice || cost.discard {
+        if cost.discard {
+            self.discard_batch(&[item.card], definition.cycling.then_some(item.object));
+        } else if cost.sacrifice {
             self.move_object(item.card, Zone::Graveyard);
         }
     }

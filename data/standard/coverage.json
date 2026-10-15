@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "2c1aa02f043a9d24a749cb82c9619ae3be31065f435e5e3d262881ff081efece",
+  "catalogue_version": "38c1e53bd0d09744bcbc21653bdcf5633f56fc138b9fb8ce348b7a9291692af6",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 759,
-  "implemented_total": 765,
+  "implemented_standard_cards": 767,
+  "implemented_total": 773,
   "token_definitions": 39,
   "cards": [
     {
@@ -603,8 +603,8 @@
     {
       "name": "Agonasaur Rex",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Agrus Kos, Spirit of Justice",
@@ -12333,8 +12333,8 @@
     {
       "name": "Hobgoblin, Mantled Marauder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Hog-Monkey",
@@ -12525,8 +12525,8 @@
     {
       "name": "Howler's Heavy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Howling Galefang",
@@ -15741,8 +15741,8 @@
     {
       "name": "Magmakin Artillerist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Magmatic Galleon",
@@ -15951,8 +15951,8 @@
     {
       "name": "Marauding Mako",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Marauding Sphinx",
@@ -22467,8 +22467,8 @@
     {
       "name": "Scrounging Skyray",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Scuzzback Scrounger",
@@ -27657,8 +27657,8 @@
     {
       "name": "Tinybones, Pocket Nuisance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Tinybones, the Pickpocket",
@@ -27681,8 +27681,8 @@
     {
       "name": "Titanbones, Towering Heart",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Titania, Rugged Rumbler",

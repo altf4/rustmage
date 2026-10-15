@@ -27,6 +27,9 @@ pub(crate) struct SpellMode {
 pub(crate) enum TargetRule {
     None,
     Creature,
+    CreatureOrVehicle {
+        relation: i8,
+    },
     Any,
     Spell,
     SpellKinds {
@@ -242,6 +245,8 @@ pub(crate) enum Instruction {
         unpaid_skip: usize,
     },
     DrawDamageAmount,
+    PutDiscardCounters(CounterKind),
+    DamageDiscardAmount(PlayerSet),
     DiscardHand(PlayerSet),
     TapCreatures(CreatureFilter),
     Mill(PlayerSet, MillAmount),
@@ -502,6 +507,12 @@ pub(crate) enum DamageSubject {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    SelfDiscarded,
+    SelfCycled,
+    Discarded {
+        relation: CastRelation,
+        one_or_more: bool,
+    },
     Ward,
     PlayerDamaged {
         subject: DamageSubject,
@@ -566,6 +577,7 @@ pub(crate) enum ActivationOrigin {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct ActivatedAbility {
     pub origin: ActivationOrigin,
+    pub cycling: bool,
     pub cost: ActivationCost,
     pub targets: TargetPlan,
     pub program: &'static [Instruction],

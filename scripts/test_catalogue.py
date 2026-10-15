@@ -14,6 +14,56 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_discard_trigger_prefixes_and_amount_bindings_are_cause_specific(self):
+        for prefix,condition in [
+            ('When you discard this card, ','SelfDiscarded'),('When you cycle this card, ','SelfCycled'),
+            ('Whenever you discard a card, ','Discarded { relation: CastRelation::You, one_or_more: false }'),
+            ('Whenever you discard one or more cards, ','Discarded { relation: CastRelation::You, one_or_more: true }'),
+            ('Whenever an opponent discards a card, ','Discarded { relation: CastRelation::Opponent, one_or_more: false }'),
+            ('Whenever a player discards one or more cards, ','Discarded { relation: CastRelation::Any, one_or_more: true }'),
+        ]:
+            result=generate.trigger_creature_template(self.card(oracle_text=prefix+'draw a card.'))
+            self.assertEqual(result[2][0][0],condition)
+        for body,expected in [('put that many +1/+1 counters on this creature.','PutDiscardCounters(CounterKind::PlusOne)'),
+                              ('this creature deals that much damage to each opponent.','DamageDiscardAmount(PlayerSet::Opponent)')]:
+            row=self.card(oracle_text='Whenever you discard one or more cards, '+body)
+            self.assertEqual(generate.trigger_creature_template(row)[2][0][1],[expected])
+            self.assertIsNone(generate.statement_program(body))
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='When this creature enters, '+body)))
+        for text in ['Whenever you discard a nonland card, draw a card.',
+                     'Whenever you discard a card, draw a card. This ability triggers only once each turn.',
+                     'When you cycle this card, draw cards equal to the amount of mana spent to cycle it.',
+                     'Whenever you discard one or more cards, put that many +1/+1 counters on target creature.',
+                     'Whenever you discard a card, exile that card from your graveyard.']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=text)),text)
+
+    def test_cycling_marker_and_creature_vehicle_target_scope(self):
+        _,a=generate.cycling_abilities(self.card(oracle_text='Cycling {2}'))
+        self.assertTrue(a[0][0]['cycling']);self.assertIn('cycling: true',generate.rust_activations(a))
+        ordinary=generate.permanent_program_template(self.card(oracle_text='{1}: Draw a card.'))
+        self.assertIn('cycling: false',generate.rust_activations(ordinary[3]))
+        rule,program=generate.targeted_program('Target creature or Vehicle an opponent controls gets -3/-0 until end of turn.')
+        self.assertEqual(rule,'CreatureVehicleOpponent');self.assertIn('power: -3',program[0])
+        rule,program=generate.targeted_program('Put two +1/+1 counters on up to one target creature or Vehicle. It gains trample and indestructible until end of turn.')
+        self.assertEqual(rule,('CreatureVehicle',0,1));self.assertEqual(len(program),2)
+        for text in ['Put two +1/+1 counters on up to one target creature or Vehicle. It gains trample until end of turn. Draw a card.',
+                     'Target creature or Vehicle an opponent controls gets -3/-0 until your next turn.',
+                     'Put two +1/+1 counters on up to one target creature or Vehicle. It gains ward {2} until end of turn.']:
+            self.assertIsNone(generate.targeted_program(text),text)
+
+    def test_discard_and_cycling_complete_admissions_gate_residual_mechanics(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,coverage=generate.compile_catalogue(rows,target)
+        supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for name in ['Agonasaur Rex','Hobgoblin, Mantled Marauder',"Howler's Heavy",'Magmakin Artillerist',
+                     'Marauding Mako','Scrounging Skyray','Tinybones, Pocket Nuisance','Titanbones, Towering Heart']:
+            self.assertIn(name,supported)
+        for name in ["Basri, Tomorrow's Champion",'Captain Howler, Sea Scourge','Cryptcaller Chariot','Inti, Seneschal of the Sun',
+                     'Monument to Endurance','Moonstone, Harsh Mistress','Tinybones, Bauble Burglar','Webstrike Elite',"Valor's Flagship"]:
+            self.assertNotIn(name,supported)
+
     def test_cycling_extracts_only_complete_fixed_cost_hand_abilities(self):
         row=self.card(oracle_text='Flying\nCycling {1}{U} ({1}{U}, Discard this card: Draw a card.)\nBasic landcycling {2}')
         residual,abilities=generate.cycling_abilities(row)
@@ -48,8 +98,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Shepherding Spirits','Skycrash','Slavering Branchsnapper','Soaring Sandwing','Stockman, Mad Fly-entist',
                      'Stratosoarer','Topiary Panther','Undulating Witness','Vinelasher Adept']:
             self.assertIn(name,supported)
-        for name in ['A.I.M. Scientists','Agonasaur Rex',"Howler's Heavy",'Marauding Mako','Magmakin Artillerist',
-                     'Scrounging Skyray','Webstrike Elite',"Valor's Flagship",'Night Market','Clamorous Ironclad','Pest Control']:
+        for name in ['A.I.M. Scientists',"Basri, Tomorrow's Champion",'Webstrike Elite',"Valor's Flagship",'Night Market','Clamorous Ironclad','Pest Control']:
             self.assertNotIn(name,supported)
 
     def test_cycling_combines_with_battlefield_abilities_without_overflowing_slots(self):
@@ -311,7 +360,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIsNotNone(generate.trigger_creature_template(cards[name]),name)
         for name in ['Engine Rat',"Thrór's Map"]:
             self.assertIsNotNone(generate.permanent_program_template(cards[name]),name)
-        for name in ['Bloombrute','Aerith Gainsborough','Vein Ripper','Twinblade Paladin','Titanbones, Towering Heart']:
+        for name in ['Bloombrute','Aerith Gainsborough','Vein Ripper','Twinblade Paladin']:
             self.assertIsNone(generate.trigger_creature_template(cards[name]),name)
             self.assertIsNone(generate.permanent_program_template(cards[name]),name)
 
