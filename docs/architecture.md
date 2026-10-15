@@ -55,7 +55,9 @@ admission scope. Wider events, replacement/prevention continuations, remaining S
 The implemented SBA rules repeat to a fixed point, including token cessation.
 Target predicates now share validation between masks, submission and resolution;
 [owned announcements](targeting.md) retain partial target choices and pending
-fixed mana payment. Wider cost/mode choices still need the same treatment.
+fixed mana payment. [Activated abilities](activations.md) also retain deferred
+mana/counter costs, independent source context and per-object usage flags. Wider
+cost/mode choices still need the same treatment.
 Intermediate selections remain private until committed.
 
 Physical card slots remain stable, while `ObjectRef` pairs a slot with a zone-change
