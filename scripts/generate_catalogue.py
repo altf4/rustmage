@@ -60,7 +60,7 @@ def creature_template(card):
 
 
 def spell_template(card):
-    if (card.get('layout') != 'normal' or card.get('type_line') not in ('Instant', 'Sorcery')
+    if (card.get('layout') != 'normal' or card.get('type_line', '').split(' — ')[0] not in ('Instant', 'Sorcery')
             or fixed_cost(card.get('mana_cost', '')) is None):
         return None
     return {
@@ -112,6 +112,114 @@ def statement_program(text):
     return None
 
 
+
+TARGET_RULES = {
+    'None': 'TargetRule::None', 'Creature': 'TargetRule::Creature',
+    'Any': 'TargetRule::Any', 'Spell': 'TargetRule::Spell',
+    'Player': 'TargetRule::Player { opponent_only: false }',
+    'Opponent': 'TargetRule::Player { opponent_only: true }',
+}
+for _name, _zone, _kinds, _relation, _other, _nonland in [
+    ('OtherCreature', 'Battlefield', 1, -1, True, False),
+    ('CreatureYou', 'Battlefield', 1, 0, False, False),
+    ('OtherCreatureYou', 'Battlefield', 1, 0, True, False),
+    ('CreatureOpponent', 'Battlefield', 1, 1, False, False),
+    ('Permanent', 'Battlefield', 0, -1, False, False),
+    ('Nonland', 'Battlefield', 0, -1, False, True),
+    ('OtherNonlandYou', 'Battlefield', 0, 0, True, True),
+    ('Land', 'Battlefield', 2, -1, False, False),
+    ('Artifact', 'Battlefield', 16, -1, False, False),
+    ('ArtifactCreature', 'Battlefield', 17, -1, False, False),
+    ('Enchantment', 'Battlefield', 32, -1, False, False),
+    ('ArtifactEnchantment', 'Battlefield', 48, -1, False, False),
+    ('CreatureGraveYou', 'Graveyard', 1, 0, False, False),
+    ('CreatureGrave', 'Graveyard', 1, -1, False, False),
+]:
+    TARGET_RULES[_name] = (f'TargetRule::Object {{ zone: TargetZone::{_zone}, kinds: {_kinds}, '
+                          f'relation: {_relation}, other: {str(_other).lower()}, nonland: {str(_nonland).lower()} }}')
+
+
+def rust_targets(spec):
+    if spec == 'None':
+        return 'TargetSpec::NONE'
+    if isinstance(spec, str):
+        return f'TargetSpec::one({TARGET_RULES[spec]})'
+    rule, minimum, maximum = spec
+    return f'TargetSpec {{ rule: {TARGET_RULES[rule]}, min: {minimum}, max: {maximum} }}'
+
+
+def targeted_program(text):
+    """One homogeneous target group, requiring the entire effect to compile."""
+    if not isinstance(text, str) or not text.endswith('.'):
+        return None
+    text = text[0].lower() + text[1:]
+    # Optional effects still require targets at announcement (CR603.5).
+    if text.startswith('you may '):
+        result = targeted_program(text[len('you may '):])
+        if result:
+            spec, program = result
+            return spec, [f'May {{ skip: {len(program)} }}', *program]
+    rules = {
+        "return target creature to its owner's hand.": ('Creature', ['ReturnToHand']),
+        "return target nonland permanent to its owner's hand.": ('Nonland', ['ReturnToHand']),
+        "return up to one other target nonland permanent you control to its owner's hand.": (('OtherNonlandYou', 0, 1), ['ReturnToHand']),
+        'untap target artifact or creature.': ('ArtifactCreature', ['Untap']),
+        'untap target nonland permanent.': ('Nonland', ['Untap']),
+        'untap one or two target creatures. They each get +2/+2 until end of turn.': (('Creature', 1, 2), ['Untap', 'Grow(2)']),
+        "return target creature card from your graveyard to the battlefield.": ('CreatureGraveYou', ['ReturnToBattlefield']),
+        "return target creature card from your graveyard to your hand.": ('CreatureGraveYou', ['ReturnToHand']),
+        "return target creature card from a graveyard to its owner's hand.": ('CreatureGrave', ['ReturnToHand']),
+        'destroy target creature.': ('Creature', ['Destroy']),
+        'destroy target artifact.': ('Artifact', ['Destroy']),
+        'destroy target enchantment.': ('Enchantment', ['Destroy']),
+        'destroy target artifact or enchantment.': ('ArtifactEnchantment', ['Destroy']),
+        'counter target spell.': ('Spell', ['Counter']),
+    }
+    if text in rules:
+        return rules[text]
+    numbers = {'one': 1, 'two': 2, 'three': 3}
+    if m := re.fullmatch(r'(tap|untap) (up to (one|two|three) |)(other |)target (creatures?|permanents?|lands?)( you control| an opponent controls| your opponents control|)\.', text):
+        action, optional, count, other, kind, relation = m.groups()
+        rule = {'creature': 'Creature', 'permanent': 'Permanent', 'land': 'Land'}[kind.rstrip('s')]
+        if other and kind.rstrip('s') != 'creature':
+            return None
+        if relation and kind.rstrip('s') != 'creature':
+            return None
+        if kind.rstrip('s') == 'creature':
+            if relation == ' you control': rule = 'OtherCreatureYou' if other else 'CreatureYou'
+            elif relation: rule = 'CreatureOpponent' if not other else None
+            elif other: rule = 'OtherCreature'
+        if rule is None: return None
+        minimum, maximum = (0, numbers[count]) if optional else (1, 1)
+        return (rule, minimum, maximum), [action.capitalize()]
+    draw = r'(a card|two cards|three cards|four cards)'
+    if m := re.fullmatch(r'target player draws ' + draw + r'( and loses ([0-9]+) life|)\.', text):
+        program = [f'Draw(PlayerSet::Targeted, {DRAW_COUNTS[m[1]]})']
+        if m[3]:
+            if int(m[3]) > 65535: return None
+            program.append(f'LoseLife(PlayerSet::Targeted, {int(m[3])})')
+        return 'Player', program
+    if m := re.fullmatch(r'target (player|opponent) discards ' + draw + r'\.', text):
+        return ('Player' if m[1] == 'player' else 'Opponent'), [f'Discard(PlayerSet::Targeted, {DRAW_COUNTS[m[2]]})']
+    if m := re.fullmatch(r'target (player|opponent) (gains|loses) ([0-9]+) life\.', text):
+        if int(m[3]) > 65535: return None
+        return ('Player' if m[1] == 'player' else 'Opponent'), [f'{"GainLife" if m[2] == "gains" else "LoseLife"}(PlayerSet::Targeted, {int(m[3])})']
+    if m := re.fullmatch(r'it deals ([0-9]+) damage to (any target|target creature|target opponent|target player)\.', text):
+        if int(m[1]) > 32767: return None
+        return {'any target': 'Any', 'target creature': 'Creature', 'target opponent': 'Opponent', 'target player': 'Player'}[m[2]], [f'Damage({int(m[1])})']
+    if m := re.fullmatch(r'target creature gets ([+-][0-9]+)/([+-][0-9]+) until end of turn\.', text):
+        if m[1] != m[2] or abs(int(m[1])) > 32767: return None
+        return 'Creature', [f'Grow({int(m[1])})']
+    # A targeted clause followed by wholly non-targeted instructions is supported.
+    if '. ' in text:
+        first, rest = text.split('. ', 1)
+        result = targeted_program(first + '.')
+        tail = statement_program(rest)
+        if result and tail:
+            spec, program = result
+            return spec, program + tail
+    return None
+
 def trigger_creature_template(card):
     if not isinstance(card.get('oracle_text'), str):
         return None
@@ -138,10 +246,15 @@ def trigger_creature_template(card):
             continue
         for prefix, condition in prefixes.items():
             if line.startswith(prefix):
-                program = statement_program(line[len(prefix):])
+                effect_text = line[len(prefix):]
+                targeted = targeted_program(effect_text)
+                if targeted:
+                    targets, program = targeted
+                else:
+                    targets, program = 'None', statement_program(effect_text)
                 if program is None:
                     return None
-                abilities.append((condition, program))
+                abilities.append((condition, program, targets))
                 break
         else:
             return None
@@ -154,10 +267,15 @@ def spell_program_template(card):
     old = spell_template(card)
     if old:
         return 'Creature', [old]
-    if (card.get('layout') != 'normal' or card.get('type_line') not in ('Instant', 'Sorcery')
+    if (card.get('layout') != 'normal' or card.get('type_line', '').split(' — ')[0] not in ('Instant', 'Sorcery')
             or fixed_cost(card.get('mana_cost', '')) is None):
         return None
-    program = statement_program(card.get('oracle_text'))
+    text = card.get('oracle_text')
+    if isinstance(text, str) and text.startswith(card.get('name', '') + ' deals '):
+        text = 'it deals ' + text[len(card['name']) + len(' deals '):]
+    targeted = targeted_program(text)
+    if targeted: return targeted
+    program = statement_program(text)
     return ('None', program) if program else None
 
 
@@ -200,7 +318,7 @@ def compile_catalogue(snapshot, target):
             kind = 2 if effect == 'Land' else 1 if effect.startswith('Creature') else 4 if effect in ('Draw',) else 8
         else:
             types = card.get('type_line', '').split(' — ')[0].split()
-            kind = (1 if 'Creature' in types else 0) | (2 if 'Land' in types else 0) | (4 if 'Sorcery' in types else 0) | (8 if 'Instant' in types else 0) | (16 if 'Artifact' in types else 0)
+            kind = (1 if 'Creature' in types else 0) | (2 if 'Land' in types else 0) | (4 if 'Sorcery' in types else 0) | (8 if 'Instant' in types else 0) | (16 if 'Artifact' in types else 0) | (32 if 'Enchantment' in types else 0)
             if template is not None:
                 effect, keywords = template
             elif trigger_template is not None:
@@ -214,11 +332,11 @@ def compile_catalogue(snapshot, target):
         }
         if effect in programs:
             rule, program = programs[effect]
-            effect = f'Spell(TargetRule::{rule}, {rust_program(program)})'
+            effect = f'Spell({rust_targets(rule)}, {rust_program(program)})'
         elif effect == 'Spell':
             rule, program = spell
-            effect = f'Spell(TargetRule::{rule}, {rust_program(program)})'
-        triggers_rust = '&[' + ', '.join(f'TriggeredAbility {{ condition: TriggerCondition::{condition}, program: {rust_program(program)} }}' for condition, program in abilities) + ']'
+            effect = f'Spell({rust_targets(rule)}, {rust_program(program)})'
+        triggers_rust = '&[' + ', '.join(f'TriggeredAbility {{ condition: TriggerCondition::{condition}, targets: {rust_targets(targets)}, program: {rust_program(program)} }}' for condition, program, targets in abilities) + ']'
 
         if effect != 'Unsupported':
             supported.append(index)

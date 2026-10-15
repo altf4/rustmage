@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "de0792b0b61b1dcbbc1b2d9bec9a232e4f4e713cd2aa16dd0d606ebbb4ff4dfc",
+  "catalogue_version": "256fd96fd02751813add5865db6c93f9f3ec4bbfc52703a4a86a5bd10bcdc79a",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 80,
-  "implemented_total": 86,
+  "implemented_standard_cards": 106,
+  "implemented_total": 112,
   "cards": [
     {
       "name": "Plains",
@@ -2954,8 +2954,8 @@
     {
       "name": "Bombard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Bombur, Gentle Dreamer",
@@ -3788,8 +3788,8 @@
     {
       "name": "Cancel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Candlestick",
@@ -5138,8 +5138,8 @@
     {
       "name": "Corrupt Court Official",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Corrupted Conviction",
@@ -5792,8 +5792,8 @@
     {
       "name": "Dark Deed",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Dark Endurance",
@@ -6566,8 +6566,8 @@
     {
       "name": "Disenchant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Dismal Backwater",
@@ -7868,8 +7868,8 @@
     {
       "name": "Emerge from the Cocoon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Emergency Eject",
@@ -8654,8 +8654,8 @@
     {
       "name": "Fancy Footwork",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Fang Guardian",
@@ -9248,8 +9248,8 @@
     {
       "name": "Flame Lash",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Flame-Chain Mauler",
@@ -14702,8 +14702,8 @@
     {
       "name": "Last Gasp",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Last Light of Durin's Day",
@@ -14990,8 +14990,8 @@
     {
       "name": "Lightning Strike",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Lightning, Army of One",
@@ -16928,8 +16928,8 @@
     {
       "name": "Moment of Craving",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Moment of Glory",
@@ -16946,8 +16946,8 @@
     {
       "name": "Moment of Triumph",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Moment of Valor",
@@ -17480,8 +17480,8 @@
     {
       "name": "Nebula Dragon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Needletooth Pack",
@@ -20552,8 +20552,8 @@
     {
       "name": "Reclamation Sage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Recursive Recruitment",
@@ -20660,8 +20660,8 @@
     {
       "name": "Refute",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Refute Destiny",
@@ -22364,8 +22364,8 @@
     {
       "name": "Scorching Shot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Scorpion Sentinel",
@@ -22376,8 +22376,8 @@
     {
       "name": "Scorpion's Sting",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Scorpion, Seething Striker",
@@ -22742,8 +22742,8 @@
     {
       "name": "Sephiroth's Intervention",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel",
@@ -23348,8 +23348,8 @@
     {
       "name": "Skeleton Archer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Skewer Slinger",
@@ -24506,8 +24506,8 @@
     {
       "name": "Stab",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Stadium Headliner",
@@ -25844,8 +25844,8 @@
     {
       "name": "Syphon Fuel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Syr Alin, the Lion's Claw",
@@ -27218,8 +27218,8 @@
     {
       "name": "Thistledown Players",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Thopter Fabricator",
@@ -27692,8 +27692,8 @@
     {
       "name": "Titanic Growth",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Tithing Blade // Consuming Sepulcher",
@@ -29120,8 +29120,8 @@
     {
       "name": "Vault Plunderer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Vaultborn Tyrant",
@@ -30506,8 +30506,8 @@
     {
       "name": "Winter's Intervention",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Winter, Cursed Rider",
@@ -31022,8 +31022,8 @@
     {
       "name": "Zombify",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Zoo Escapees",

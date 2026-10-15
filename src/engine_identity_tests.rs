@@ -43,7 +43,7 @@ fn targeted_spell_cannot_find_returned_permanent_and_replay_is_identical() {
     game.state.players[0].mana[4] = 1;
     cast(&mut game, growth, Some(Target::Card(bears)));
     assert_eq!(
-        game.state.stack[0].target_object,
+        game.state.stack[0].targets[0].object,
         Some(game.object_ref(bears))
     );
     let pending = game.snapshot();
@@ -75,7 +75,7 @@ fn counter_cannot_find_recast_spell_in_same_physical_slot() {
     cast(&mut game, bolt, Some(Target::Player(Player::P1)));
     act(&mut game, Action::Pass);
     cast(&mut game, counter, Some(Target::Spell(bolt)));
-    let old_target = game.state.stack.last().unwrap().target_object.unwrap();
+    let old_target = game.state.stack.last().unwrap().targets[0].object.unwrap();
     game.move_object(bolt, Zone::Hand);
     game.state.priority = Player::P0;
     cast(&mut game, bolt, Some(Target::Player(Player::P1)));

@@ -85,6 +85,11 @@ fn assert_invariants(game: &Game) {
                 .filter(|spell| spell.kind == StackKind::Spell && spell.card == i as CardId)
                 .count()
                 + usize::from(
+                    s.announcing.as_ref().is_some_and(
+                        |a| a.item.kind == StackKind::Spell && a.item.card == i as CardId
+                    )
+                )
+                + usize::from(
                     s.resolving.as_ref().is_some_and(
                         |r| r.item.kind == StackKind::Spell && r.item.card == i as CardId
                     )
@@ -99,6 +104,7 @@ fn assert_invariants(game: &Game) {
         .chain(&s.pending_triggers)
         .chain(&s.ordering_triggers)
         .chain(s.resolving.iter().map(|r| &r.item))
+        .chain(s.announcing.iter().map(|a| &a.item))
     {
         assert!(stack_ids.insert(item.id));
         assert!(item.id < s.next_stack_id);

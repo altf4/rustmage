@@ -17,7 +17,7 @@ class BindingTests(unittest.TestCase):
             observation = game.observe("P0")
             coverage = json.loads((Path(__file__).resolve().parents[1] / "data/standard/coverage.json").read_text())
             self.assertEqual(observation["catalogue"], coverage["catalogue_version"])
-            self.assertEqual(observation["schema"], 5)
+            self.assertEqual(observation["schema"], 6)
             self.assertEqual(len(observation["objects"]), 7)
             self.assertTrue(all(o["owner"] == "P0" for o in observation["objects"]))
             self.assertEqual(game.observe("P1")["actions"], [])
@@ -264,6 +264,63 @@ else:
                 break
         self.assertTrue(seen_trigger)
         self.assertEqual(replayed, {"order_triggers", "optional_effect", "effect_discard"})
+
+    def test_standard_target_announcements_and_pending_target_replay(self):
+        white_black = ["Plains"] * 12 + ["Swamp"] * 12
+        for name in ["Fancy Footwork", "Thistledown Players", "Helpful Hunter", "Inspiring Overseer",
+                     "Emerge from the Cocoon", "Skeleton Archer", "Vault Plunderer", "Zombify", "Burglar Rat"]:
+            white_black.extend([name] * 4)
+        blue_green = ["Island"] * 12 + ["Forest"] * 12
+        for name in ["Reclamation Sage", "Iron Giant", "Buzz Bots", "Rook Turret", "Quick Study", "Refute",
+                     "Aegis Turtle", "Tajuru Pathwarden", "Magnigoth Sentry"]:
+            blue_green.extend([name] * 4)
+        replayed = set()
+        for seed in range(5):
+            with Game([white_black, blue_green], seed=seed, deck_rules="Standard") as game:
+                obs = game.observe("P0")
+                for _ in range(10000):
+                    if obs["outcome"] is not None: break
+                    if obs["viewer"] != obs["actor"]: obs = game.observe(obs["actor"])
+                    objects = {obj["id"]: obj for obj in obs["objects"]}
+                    def score(action):
+                        kind = action["kind"]
+                        if kind == "TapMana": return 10 if obs["active"] == obs["actor"] and obs["step"] in ("Main1", "Main2") else -20
+                        if kind == "AssignDamage": return 50 + action["amount"]
+                        if kind == "ChooseOptional": return 50 if action["accept"] else 0
+                        if kind == "ChooseTarget":
+                            source = obs["announcing"]["source_card"]
+                            beneficial = source in {"Fancy Footwork", "Thistledown Players", "Vault Plunderer"}
+                            target = action["target"]
+                            own = (target.get("Player") == obs["actor"] if "Player" in target
+                                   else objects[target["Card"]]["owner"] == obs["actor"])
+                            return 70 if own == beneficial else -10
+                        if kind == "Cast" and action["target"] is not None:
+                            target = action["target"]
+                            if "Spell" in target: return -10
+                            return 80
+                        return {"Concede": -1000, "Mulligan": -100, "Keep": 100, "PlayLand": 90,
+                                "Cast": 80, "BeginCast": 80, "Attack": 60, "Block": 60, "Discard": 50,
+                                "PutTrigger": 50}.get(kind, 0)
+                    index = max(range(len(obs["actions"])), key=lambda i: (score(obs["actions"][i]), i))
+                    item = obs["announcing"]
+                    replay_kind = None if item is None else ("spell" if item["kind"] == "Spell" else "trigger")
+                    if obs["decision"] == "targets" and replay_kind not in replayed:
+                        saved = game.snapshot()
+                        with game.clone() as branch: expected = branch.step(obs, index)
+                        self.assertEqual(game.step(obs, index), expected)
+                        game.restore(saved)
+                        restored = game.observe(obs["viewer"])
+                        again = game.step(restored, index)
+                        self.assertGreater(again.pop("revision"), expected.pop("revision"))
+                        self.assertEqual(again, expected)
+                        game.drop_snapshot(saved)
+                        replayed.add(replay_kind)
+                        obs = game.observe(restored["viewer"])
+                    else: obs = game.step(obs, index)
+                else: self.fail("Standard targeting game did not end")
+                self.assertIn("Winner", obs["outcome"])
+            if len(replayed) == 2: break
+        self.assertEqual(replayed, {"spell", "trigger"})
 
 
 if __name__ == "__main__":

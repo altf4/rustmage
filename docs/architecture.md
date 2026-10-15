@@ -53,8 +53,10 @@ choices. Trigger instances use distinct stack identities, queue until priority,
 and are placed in APNAP/controller order. See [programs.md](programs.md) for exact
 admission scope. Wider events, replacement/prevention continuations, general SBA
 fixed points and continuous layers remain prerequisites for dependent cards.
-Target/cost/mode choices must share validation between masks and submission, with
-intermediate selections private until committed.
+Target predicates now share validation between masks, submission and resolution;
+[owned announcements](targeting.md) retain partial target choices and pending
+fixed mana payment. Wider cost/mode choices still need the same treatment.
+Intermediate selections remain private until committed.
 
 Physical card slots remain stable, while `ObjectRef` pairs a slot with a zone-change
 generation. All current zone transitions share reset, library-index and combat-removal

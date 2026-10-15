@@ -97,8 +97,7 @@ impl Game {
             card: source.id,
             object: source.reference,
             controller: source.owner, // Control-changing effects remain gated.
-            target: None,
-            target_object: None,
+            targets: Vec::new(),
         });
     }
 
@@ -146,7 +145,9 @@ impl Game {
                     return;
                 }
                 let item = self.state.ordering_triggers.remove(index);
-                self.state.stack.push(item);
+                if self.start_announcement(item, true) {
+                    return;
+                }
             }
         }
         self.state.pending = Pending::Priority;
@@ -154,20 +155,14 @@ impl Game {
     }
 
     pub(super) fn resolve_top(&mut self) {
-        let item = self.state.stack.pop().unwrap();
-        let valid = match item.target {
-            Some(Target::Card(id)) => {
-                item.target_object == Some(self.object_ref(id))
-                    && self.on_battlefield(id)
-                    && self.state.objects[id as usize].card.is_creature()
-            }
-            Some(Target::Spell(_)) => self
-                .state
-                .stack
-                .iter()
-                .any(|s| s.kind == StackKind::Spell && Some(s.object) == item.target_object),
-            _ => true,
-        };
+        let mut item = self.state.stack.pop().unwrap();
+        let was_targeted = !item.targets.is_empty();
+        let spec = self.target_spec(&item);
+        item.targets.retain(|bound| {
+            self.same_target_object(*bound)
+                && self.target_matches(spec.rule, item.controller, item.object, bound.target)
+        });
+        let valid = !was_targeted || !item.targets.is_empty();
         if !valid {
             if item.kind == StackKind::Spell {
                 self.move_object(item.card, Zone::Graveyard);
@@ -203,12 +198,25 @@ impl Game {
     fn program_players(
         &self,
         set: PlayerSet,
-        controller: Player,
+        item: &SpellView,
     ) -> impl Iterator<Item = Player> + use<> {
+        let controller = item.controller;
         let players = match set {
             PlayerSet::Controller => [Some(controller), None],
             PlayerSet::Opponent => [Some(controller.other()), None],
             PlayerSet::Each => [Some(self.state.active), Some(self.state.active.other())],
+            PlayerSet::Targeted => {
+                let first = self.state.active;
+                let selected = |player| {
+                    item.targets
+                        .iter()
+                        .any(|bound| bound.target == Target::Player(player))
+                };
+                [
+                    selected(first).then_some(first),
+                    selected(first.other()).then_some(first.other()),
+                ]
+            }
         };
         players.into_iter().flatten()
     }
@@ -261,24 +269,24 @@ impl Game {
                     return;
                 }
                 Instruction::Draw(set, amount) => {
-                    for player in self.program_players(set, item.controller) {
+                    for player in self.program_players(set, &item) {
                         for _ in 0..amount {
                             self.draw(player);
                         }
                     }
                 }
                 Instruction::Discard(set, amount) => {
-                    for player in self.program_players(set, item.controller) {
+                    for player in self.program_players(set, &item) {
                         self.state.resolving.as_mut().unwrap().discards[player.index()] = amount;
                     }
                 }
                 Instruction::GainLife(set, amount) => {
-                    for player in self.program_players(set, item.controller) {
+                    for player in self.program_players(set, &item) {
                         self.state.players[player.index()].life += i64::from(amount);
                     }
                 }
                 Instruction::LoseLife(set, amount) => {
-                    for player in self.program_players(set, item.controller) {
+                    for player in self.program_players(set, &item) {
                         self.state.players[player.index()].life -= i64::from(amount);
                     }
                 }
@@ -293,27 +301,51 @@ impl Game {
                             keywords: item.source_keywords,
                         }
                     };
-                    self.apply_damage_batch(&[DamageEvent {
-                        source,
-                        target: item.target.unwrap(),
-                        amount,
-                        combat: false,
-                    }]);
+                    let events: Vec<_> = item
+                        .targets
+                        .iter()
+                        .copied()
+                        .filter(|&bound| self.same_target_object(bound))
+                        .map(|bound| DamageEvent {
+                            source,
+                            target: bound.target,
+                            amount,
+                            combat: false,
+                        })
+                        .collect();
+                    self.apply_damage_batch(&events);
                 }
                 Instruction::Grow(amount) => {
-                    if let Some(Target::Card(id)) = item.target {
-                        self.state.objects[id as usize].growth += amount;
+                    for bound in &item.targets {
+                        if self.same_target_object(*bound)
+                            && let Target::Card(id) = bound.target
+                        {
+                            self.state.objects[id as usize].growth += amount;
+                        }
                     }
                 }
-                Instruction::Counter | Instruction::Destroy | Instruction::ReturnToHand => {
-                    if let Some(Target::Card(id) | Target::Spell(id)) = item.target {
-                        let zone = if instruction == Instruction::ReturnToHand {
-                            Zone::Hand
-                        } else {
-                            Zone::Graveyard
-                        };
-                        self.move_object(id, zone);
+                Instruction::Tap | Instruction::Untap => {
+                    for bound in &item.targets {
+                        if self.same_target_object(*bound)
+                            && let Target::Card(id) = bound.target
+                        {
+                            self.state.objects[id as usize].tapped =
+                                instruction == Instruction::Tap;
+                        }
                     }
+                }
+                Instruction::Counter
+                | Instruction::Destroy
+                | Instruction::ReturnToHand
+                | Instruction::ReturnToBattlefield => {
+                    let zone = if instruction == Instruction::ReturnToHand {
+                        Zone::Hand
+                    } else if instruction == Instruction::ReturnToBattlefield {
+                        Zone::Battlefield
+                    } else {
+                        Zone::Graveyard
+                    };
+                    self.move_target_batch(&item.targets, zone);
                 }
             }
         }
