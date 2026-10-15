@@ -131,7 +131,8 @@ impl Game {
                     TriggerCondition::SelfEnters | TriggerCondition::SelfEntersOrAttacks => same,
                     TriggerCondition::SelfDies
                     | TriggerCondition::SelfAttacks
-                    | TriggerCondition::SpellCast { .. } => false,
+                    | TriggerCondition::SpellCast { .. }
+                    | TriggerCondition::AtStep { .. } => false,
                     TriggerCondition::OtherCreatureEntersYou => {
                         yours && !same && entered.card.is_creature()
                     }
@@ -148,7 +149,7 @@ impl Game {
         }
     }
 
-    fn queue_trigger(&mut self, source: &ObjectView, index: usize) {
+    pub(super) fn queue_trigger(&mut self, source: &ObjectView, index: usize) {
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
             id,
@@ -157,6 +158,7 @@ impl Game {
             },
             source_card: source.card,
             source_keywords: source.keywords,
+            source_tapped: source.tapped,
             card: source.id,
             object: source.reference,
             controller: source.owner, // Control-changing effects remain gated.
@@ -263,6 +265,14 @@ impl Game {
 
     pub(super) fn resolve_top(&mut self) {
         let mut item = self.state.stack.pop().unwrap();
+        if let StackKind::TriggeredAbility { ability } = item.kind
+            && let TriggerCondition::AtStep { guard, .. } =
+                item.source_card.triggers()[ability as usize].condition
+            && !self.step_guard(guard, item.controller, item.object, item.source_tapped)
+        {
+            self.give_priority();
+            return;
+        }
         let was_targeted = !item.targets.is_empty();
         let spec = self.target_spec(&item);
         item.targets.retain(|bound| {
@@ -489,6 +499,26 @@ impl Game {
                 Instruction::LoseLife(set, amount) => {
                     for player in self.program_players(set, &item) {
                         self.state.players[player.index()].life -= i64::from(amount);
+                    }
+                }
+                Instruction::UntapCreatures(filter) => {
+                    let ids: Vec<_> = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter(|(id, _)| {
+                            self.creature_matches(
+                                filter,
+                                item.controller,
+                                item.object,
+                                *id as CardId,
+                            )
+                        })
+                        .map(|(id, _)| id)
+                        .collect();
+                    for id in ids {
+                        self.state.objects[id].untap();
                     }
                 }
                 Instruction::UntapSource => {

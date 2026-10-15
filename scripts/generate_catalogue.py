@@ -293,6 +293,14 @@ def statement_program(text):
     token = token_program(text) or predefined_program(text)
     if token: return token
     if text == 'untap this creature.': return ['UntapSource']
+    if m := re.fullmatch(r'untap (.+)\.', text):
+        if filt := creature_filter(m[1]): return [f'UntapCreatures({filt})']
+    if m := re.fullmatch(r'(?:you )?draw (a card|two cards|three cards|four cards) and (?:you )?lose ([0-9]+) life\.', text):
+        if int(m[2])>65535: return None
+        return [f'Draw(PlayerSet::Controller, {DRAW_COUNTS[m[1]]})',f'LoseLife(PlayerSet::Controller, {int(m[2])})']
+    if m := re.fullmatch(r'you lose ([0-9]+) life and (create .+)\.', text):
+        if int(m[1])>65535: return None
+        if program := token_program(m[2]+'.'): return [f'LoseLife(PlayerSet::Controller, {int(m[1])})', *program]
     if m := re.fullmatch(r'this (?:creature|artifact|enchantment|permanent|spell) deals ([0-9]+) damage to each opponent(?: and you gain ([0-9]+) life)?\.', text):
         if int(m[1]) > 32767 or (m[2] and int(m[2]) > 65535): return None
         return [f'DamagePlayers(PlayerSet::Opponent, {int(m[1])})'] + ([f'GainLife(PlayerSet::Controller, {int(m[2])})'] if m[2] else [])
@@ -464,6 +472,9 @@ def targeted_program(text):
         subject, linked = m.groups()
         if subject in EXILE_SUBJECTS:
             return EXILE_SUBJECTS[subject], ['ExileUntilSourceLeaves' if linked else 'Exile']
+    if m := re.fullmatch(r'you may have (target creature|target creature you control|another target creature you control) get ([+-][0-9]+)/([+-][0-9]+) until end of turn\.', text):
+        result = targeted_program(f'{m[1]} gets {m[2]}/{m[3]} until end of turn.')
+        return (result[0], [f'May {{ skip: {len(result[1])} }}', *result[1]]) if result else None
     # Optional effects still require targets at announcement (CR603.5).
     if text.startswith('you may '):
         result = targeted_program(text[len('you may '):])
@@ -565,6 +576,51 @@ def cast_condition(relation='You', filter_='Any', ordinal=None):
     return f'SpellCast {{ relation: CastRelation::{relation}, filter: CastFilter::{filter_}, ordinal: {ordinal} }}'
 
 
+def step_guard(text):
+    if text == 'you attacked this turn': return 'StepGuard::Attacked'
+    if text == 'this creature is tapped': return 'StepGuard::SourceTapped'
+    def threshold(value, minimum=None, maximum=None):
+        lo = 'None' if minimum is None else f'Some({minimum})'
+        hi = 'None' if maximum is None else f'Some({maximum})'
+        return f'StepGuard::Threshold {{ value: StepValue::{value}, minimum: {lo}, maximum: {hi} }}'
+    if text == "you didn't cast a spell this turn": return threshold('SpellsCast', maximum=0)
+    if m := re.fullmatch(r'you control a creature with power ([0-9]+) or greater', text):
+        return threshold('GreatestCreaturePower', minimum=int(m[1])) if int(m[1]) <= 32767 else None
+    if m := re.fullmatch(r'creatures you control have total (power|toughness) ([0-9]+) or greater', text):
+        return threshold('TotalCreaturePower' if m[1]=='power' else 'TotalCreatureToughness', minimum=int(m[2])) if int(m[2]) <= 32767 else None
+    if m := re.fullmatch(r'you control (two|three|four|five|six|[0-9]+) or more (tapped creatures|creatures|lands)', text):
+        n = COUNT_WORDS.get(m[1], int(m[1]) if m[1].isdigit() else 0)
+        return threshold({'tapped creatures':'TappedCreatures','creatures':'Creatures','lands':'Lands'}[m[2]],minimum=n) if n <= 65535 else None
+    if m := re.fullmatch(r'you have fewer than ([0-9]+) cards in hand',text):
+        n=int(m[1]); return threshold('Hand',maximum=n-1) if 0<n<=65535 else None
+    if m := re.fullmatch(r'you have ([0-9]+) or (more|less) life',text):
+        n=int(m[1]); return threshold('Life',minimum=n) if m[2]=='more' and n<=65535 else threshold('Life',maximum=n) if n<=65535 else None
+    return None
+
+
+def step_condition(step, relation='You', guard='StepGuard::Always'):
+    return f'AtStep {{ step: TriggerStep::{step}, relation: CastRelation::{relation}, guard: {guard} }}'
+
+
+STEP_PREFIXES = {}
+for _subject, _step in [('upkeep','Upkeep'),('draw step','Draw'),('end step','End')]:
+    for _when, _relation in [('your '+_subject,'You'),('each '+_subject,'Any'),("each opponent's "+_subject,'Opponent')]:
+        STEP_PREFIXES['At the beginning of '+_when+', '] = step_condition(_step,_relation)
+for _text, _step, _relation in [
+    ('At the beginning of combat on your turn, ','BeginCombat','You'),
+    ('At the beginning of each combat, ','BeginCombat','Any'),
+    ("At the beginning of combat on each opponent's turn, ",'BeginCombat','Opponent'),
+    ('At end of combat, ','EndCombat','Any'),
+    ('At the end of combat on your turn, ','EndCombat','You'),
+    ('At the beginning of your first main phase, ','Main1','You'),
+    ('At the beginning of your precombat main phase, ','Main1','You'),
+    ('At the beginning of your second main phase, ','Main2','You'),
+    ('At the beginning of your postcombat main phase, ','Main2','You'),
+    ('At the beginning of each of your main phases, ','MainPhases','You'),
+    ('At the beginning of the end step, ','End','Any'),
+]: STEP_PREFIXES[_text] = step_condition(_step,_relation)
+
+
 def trigger_creature_template(card):
     if not isinstance(card.get('oracle_text'), str):
         return None
@@ -592,9 +648,12 @@ def trigger_creature_template(card):
         'Whenever another creature you control enters, ': 'OtherCreatureEntersYou',
         'Whenever this creature or another creature you control enters, ': 'CreatureEntersYou',
         'Landfall — Whenever a land you control enters, ': 'LandEntersYou',
+        **STEP_PREFIXES,
     }
     text = re.sub(r'\([^()]*\)', '', card['oracle_text']).strip()
     for line in text.split('\n'):
+        for label in ('Raid — ', 'Formidable — ', 'Survival — '):
+            if line.startswith(label + 'At the beginning of '): line = line[len(label):]
         if line.casefold() in TEXT_FLAGS:
             keywords |= TEXT_FLAGS[line.casefold()]; continue
         words = [word.strip().casefold() for word in line.split(',') if word.strip()]
@@ -606,6 +665,11 @@ def trigger_creature_template(card):
         for prefix, condition in prefixes.items():
             if line.startswith(prefix):
                 effect_text = line[len(prefix):]
+                if condition.startswith('AtStep {') and effect_text.startswith('if '):
+                    parts = effect_text[3:].split(', ', 1)
+                    if len(parts) != 2 or (guard := step_guard(parts[0])) is None: return None
+                    condition = condition.replace('StepGuard::Always', guard)
+                    effect_text = parts[1]
                 # Only self-event subjects prove an initial 'it' denotes this source.
                 # Other-creature events and later targeted clauses have other antecedents.
                 if condition in ('SelfEnters', 'SelfDies', 'SelfAttacks', 'SelfEntersOrAttacks'):

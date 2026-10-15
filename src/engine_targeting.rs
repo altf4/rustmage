@@ -230,6 +230,7 @@ impl Game {
             kind: StackKind::Spell,
             source_card: self.state.objects[card as usize].card,
             source_keywords: self.state.objects[card as usize].keywords(),
+            source_tapped: self.state.objects[card as usize].tapped,
             card,
             object,
             controller: actor,

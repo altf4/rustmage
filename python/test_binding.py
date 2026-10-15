@@ -12,6 +12,46 @@ class BindingTests(unittest.TestCase):
     def game(self):
         return Game([["Mountain"] * 24 + ["LightningBolt"] * 36] * 2, seed=17, deck_rules="Freeform")
 
+    def test_survival_step_trigger_history_and_source_tapped_clone_restore(self):
+        deck=["Forest"]*30+["Cautious Survivor"]*30
+        with Game([deck,deck],seed=7,deck_rules="Freeform") as game:
+            obs=game.observe("P0")
+            for _ in range(1600):
+                if obs["outcome"] is not None: self.fail("game ended before survival trigger")
+                obs=game.observe(obs["actor"])
+                actor=obs["actor"]
+                if obs["step"]=="Main2" and obs["decision"]=="priority" and any(x["source_card"]=="Cautious Survivor" for x in obs["stack"]):
+                    break
+                index=max(range(len(obs["actions"])),key=lambda i:
+                    {"Keep":100,"PlayLand":90,"AnnounceCast":80,"PayCosts":100,
+                     "TapMana":70 if obs["decision"]=="pay_costs" else -5,
+                     "PutTrigger":70,"Attack":60,"Block":-5,"Pass":20,
+                     "Discard":30,"Mulligan":-100,"Concede":-1000}.get(obs["actions"][i]["kind"],0))
+                obs=game.step(obs,index)
+            else: self.fail("no survival trigger reached")
+            player=0 if actor=="P0" else 1
+            self.assertTrue(obs["players"][player]["attacked_this_turn"])
+            self.assertTrue(obs["stack"][-1]["source_tapped"])
+            other="P1" if actor=="P0" else "P0"
+            self.assertTrue(game.observe(other)["players"][player]["attacked_this_turn"])
+            saved=game.snapshot()
+            def resolve(handle):
+                for _ in range(2):
+                    current=handle.observe(actor)
+                    current=handle.observe(current["actor"])
+                    index=next(i for i,a in enumerate(current["actions"]) if a["kind"]=="Pass")
+                    handle.step(current,index)
+                return handle.observe(actor)
+            with game.clone() as branch: expected=resolve(branch)
+            actual=resolve(game)
+            self.assertEqual(actual,expected)
+            self.assertEqual(actual["players"][player]["life"],obs["players"][player]["life"]+2)
+            game.restore(saved)
+            replay=resolve(game)
+            self.assertGreater(replay.pop("revision"),actual.pop("revision"))
+            self.assertEqual(replay,actual)
+            game.drop_snapshot(saved)
+
     def test_completed_cast_counts_and_triggers_survive_native_clone_restore(self):
         deck = ["Mountain"] * 24 + ["Firebrand Archer"] * 24 + ["Boltwave"] * 12
         with Game([deck, deck], seed=7, deck_rules="Freeform") as game:
@@ -99,7 +139,7 @@ class BindingTests(unittest.TestCase):
             observation = game.observe("P0")
             coverage = json.loads((Path(__file__).resolve().parents[1] / "data/standard/coverage.json").read_text())
             self.assertEqual(observation["catalogue"], coverage["catalogue_version"])
-            self.assertEqual(observation["schema"], 18)
+            self.assertEqual(observation["schema"], 19)
             self.assertEqual(len(observation["objects"]), 7)
             self.assertTrue(all(o["owner"] == "P0" for o in observation["objects"]))
             self.assertEqual(game.observe("P1")["actions"], [])

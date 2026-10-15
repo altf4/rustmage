@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "e58df01af2e8fee1cd76221b40f3e4a8e6fdaf6bef5fca0e11f5517e2748c329",
+  "catalogue_version": "97fe8793251265d631f19e60a8c7f9d5dba789dec0f0fb034a82d4027af694fc",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 582,
-  "implemented_total": 588,
-  "token_definitions": 34,
+  "implemented_standard_cards": 599,
+  "implemented_total": 605,
+  "token_definitions": 35,
   "cards": [
     {
       "name": "Plains",
@@ -2109,8 +2109,8 @@
     {
       "name": "Battle-Rattle Shaman",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Battlesong Berserker",
@@ -2577,8 +2577,8 @@
     {
       "name": "Bitterbloom Bearer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Black Cat, Cunning Thief",
@@ -4137,8 +4137,8 @@
     {
       "name": "Cautious Survivor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Cavern Stomper",
@@ -6999,8 +6999,8 @@
     {
       "name": "Dragonmaster Outcast",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Dragonologist",
@@ -9363,8 +9363,8 @@
     {
       "name": "Flight-Deck Coordinator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Flitterwing Nuisance",
@@ -9825,8 +9825,8 @@
     {
       "name": "Frontline War-Rager",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Frostbite Pyromental",
@@ -15429,8 +15429,8 @@
     {
       "name": "Loxodon Battle Priest",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Loxodon Eavesdropper",
@@ -16509,8 +16509,8 @@
     {
       "name": "Might of the Ancestors",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Might of the Meek",
@@ -16881,8 +16881,8 @@
     {
       "name": "Molecular Modifier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Molt Tender",
@@ -17061,8 +17061,8 @@
     {
       "name": "Moonglove Extractor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Moonlit Lamenter",
@@ -18915,8 +18915,8 @@
     {
       "name": "Phyrexian Arena",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Pia, Aether Ascetic",
@@ -21987,8 +21987,8 @@
     {
       "name": "Sami, Ship's Engineer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Sami, Wildcat Captain",
@@ -22497,8 +22497,8 @@
     {
       "name": "Searslicer Goblin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Season of Gathering",
@@ -23121,8 +23121,8 @@
     {
       "name": "Shrewd Storyteller",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Shriek, Treblemaker",
@@ -23307,8 +23307,8 @@
     {
       "name": "Sinister Monolith",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Sinkhole Surveyor",
@@ -25641,8 +25641,8 @@
     {
       "name": "Surrak, the Hunt Caller",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Surveillance Monitor",
@@ -29265,8 +29265,8 @@
     {
       "name": "Veteran Beastrider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Veteran Guardmouse",

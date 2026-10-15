@@ -187,6 +187,7 @@ pub(crate) enum Instruction {
     Damage(i32),
     DamagePlayers(PlayerSet, i32),
     UntapSource,
+    UntapCreatures(CreatureFilter),
     Grow {
         subject: Subject,
         power: i32,
@@ -344,8 +345,52 @@ pub(crate) enum CastRelation {
     Any,
 }
 
+// The compiler has exact spellings for this condition vocabulary. Some values
+// remain unused until the rest of the corresponding card text is implemented.
+#[allow(dead_code)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum StepValue {
+    Life,
+    Hand,
+    Creatures,
+    TappedCreatures,
+    Lands,
+    GreatestCreaturePower,
+    TotalCreaturePower,
+    TotalCreatureToughness,
+    SpellsCast,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum StepGuard {
+    Always,
+    Attacked,
+    SourceTapped,
+    Threshold {
+        value: StepValue,
+        minimum: Option<i64>,
+        maximum: Option<i64>,
+    },
+}
+#[allow(dead_code)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum TriggerStep {
+    Upkeep,
+    Draw,
+    Main1,
+    Main2,
+    MainPhases,
+    BeginCombat,
+    EndCombat,
+    End,
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    AtStep {
+        step: TriggerStep,
+        relation: CastRelation,
+        guard: StepGuard,
+    },
     SpellCast {
         relation: CastRelation,
         filter: CastFilter,
