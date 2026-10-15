@@ -180,7 +180,12 @@ def statement_program(text):
         return None
     if m := re.fullmatch(r'put (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on this creature\.', text):
         return [counter_instruction('Source', m[1], m[2])]
+    if m := re.fullmatch(r'(scry|surveil) ([0-9]+)\.', text):
+        return [f'{m[1].capitalize()}({int(m[2])})'] if int(m[2]) <= 65535 else None
     draw = r'(a card|two cards|three cards|four cards)'
+    if m := re.fullmatch(r'(scry|surveil) ([0-9]+), then draw ' + draw + r'\.', text):
+        if int(m[2]) > 65535: return None
+        return [f'{m[1].capitalize()}({int(m[2])})', f'Draw(PlayerSet::Controller, {DRAW_COUNTS[m[3]]})']
     if m := re.fullmatch(r'draw ' + draw + r'\.', text):
         return [f'Draw(PlayerSet::Controller, {DRAW_COUNTS[m[1]]})']
     if m := re.fullmatch(r'you gain ([0-9]+) life\.', text):
@@ -384,7 +389,7 @@ def spell_program_template(card):
             or fixed_cost(card.get('mana_cost', '')) is None):
         return None
     text = card.get('oracle_text')
-    if isinstance(text, str): text = re.sub(r'\([^()]*\)', '', text).strip()
+    if isinstance(text, str): text = ' '.join(re.sub(r'\([^()]*\)', '', text).split())
     if isinstance(text, str) and text.startswith(card.get('name', '') + ' deals '):
         text = 'it deals ' + text[len(card['name']) + len(' deals '):]
     targeted = targeted_program(text)

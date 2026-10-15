@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "21b2b65f56c179cbe55cbe96ea318dc6c7c27edc9b7b6ebee50277dfbfa8b46e",
+  "catalogue_version": "b178eab182e057740c4341477fd67e9e270e900907fc32a38a05c18b2db65c84",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 212,
-  "implemented_total": 218,
-  "token_definitions": 27,
+  "implemented_standard_cards": 239,
+  "implemented_total": 245,
+  "token_definitions": 28,
   "cards": [
     {
       "name": "Plains",
@@ -123,8 +123,8 @@
     {
       "name": "A.I.M. Synthoids",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Aang's Iceberg",
@@ -1929,8 +1929,8 @@
     {
       "name": "Banishing Betrayal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Banishing Light",
@@ -3099,8 +3099,8 @@
     {
       "name": "Boulderborn Dragon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Bounce Off",
@@ -3807,8 +3807,8 @@
     {
       "name": "Candy Trail",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Canonized in Blood",
@@ -5433,8 +5433,8 @@
     {
       "name": "Cruel Truths",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Cruelclaw's Heist",
@@ -6537,8 +6537,8 @@
     {
       "name": "Diresight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Dirgur Island Dragon // Skimming Strike",
@@ -7077,8 +7077,8 @@
     {
       "name": "Dream Beavers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Dream Harvest",
@@ -10671,8 +10671,8 @@
     {
       "name": "Glider Kids",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Glider Staff",
@@ -12399,8 +12399,8 @@
     {
       "name": "Honor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Honorbound Page // Forum's Favor",
@@ -12489,8 +12489,8 @@
     {
       "name": "Hour of Defeat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Hour of Victory",
@@ -12807,8 +12807,8 @@
     {
       "name": "Il Mheg Pixie",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Ill-Timed Explosion",
@@ -12885,8 +12885,8 @@
     {
       "name": "Imperious Inkmage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Imperious Perfect",
@@ -15975,8 +15975,8 @@
     {
       "name": "Mardu Devotee",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Mardu Monument",
@@ -17313,8 +17313,8 @@
     {
       "name": "Muse's Encouragement",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Museum Nightwatch",
@@ -18171,8 +18171,8 @@
     {
       "name": "Opt",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Optimistic Scavenger",
@@ -19113,8 +19113,8 @@
     {
       "name": "Playful Shove",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Plow Through",
@@ -19149,8 +19149,8 @@
     {
       "name": "Plunge into Winter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Poetic Ingenuity",
@@ -21261,8 +21261,8 @@
     {
       "name": "Risky Research",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Risky Shortcut",
@@ -21747,8 +21747,8 @@
     {
       "name": "Rune-Sealed Wall",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Runescale Stormbrood // Chilling Screech",
@@ -22131,8 +22131,8 @@
     {
       "name": "Sanitation Automaton",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Sapling Nursery",
@@ -23073,8 +23073,8 @@
     {
       "name": "Shore Lurker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Shore Up",
@@ -24807,8 +24807,8 @@
     {
       "name": "Sterling Hound",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Sterling Keykeeper",
@@ -28527,8 +28527,8 @@
     {
       "name": "Unauthorized Exit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Unburied Earthcarver",
@@ -28827,8 +28827,8 @@
     {
       "name": "Unsubtle Mockery",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Unsummon",
@@ -29727,8 +29727,8 @@
     {
       "name": "Wakandan Drone Flock",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Wakandan Royal Guard",
@@ -30741,8 +30741,8 @@
     {
       "name": "Wreckage Wickerfolk",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Wrecking Gecko",
@@ -30759,8 +30759,8 @@
     {
       "name": "Wretched Doll",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Wurmwall Sweeper",

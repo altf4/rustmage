@@ -8,9 +8,65 @@ pub(super) struct Resolution {
     pub pc: usize,
     pub discards: [u16; 2],
     pub selected_discards: [Vec<CardId>; 2],
+    pub library: Option<LibraryChoice>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct LibraryChoice {
+    pub surveil: bool,
+    pub remaining: Vec<CardId>,
+    pub top: Vec<CardId>,
+    pub bottom: Vec<CardId>,
+    pub graveyard: Vec<CardId>,
 }
 
 impl Game {
+    pub(super) fn arrange_library(
+        &mut self,
+        player: Player,
+        card: CardId,
+        destination: LibraryDestination,
+    ) {
+        let choice = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .library
+            .as_mut()
+            .unwrap();
+        let index = choice.remaining.iter().position(|&id| id == card).unwrap();
+        choice.remaining.remove(index);
+        match destination {
+            LibraryDestination::Top => choice.top.push(card),
+            LibraryDestination::Bottom => choice.bottom.push(card),
+            LibraryDestination::Graveyard => choice.graveyard.push(card),
+        }
+        if !choice.remaining.is_empty() {
+            return;
+        }
+        let choice = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .library
+            .take()
+            .unwrap();
+        // No zone changes or observable partial rearrangement occur while choosing.
+        // Remove the looked-at suffix once, then preserve the untouched middle.
+        for &card in &choice.graveyard {
+            self.move_object(card, Zone::Graveyard);
+        }
+        let library = &mut self.state.players[player.index()].library;
+        let count = choice.top.len() + choice.bottom.len();
+        library.truncate(library.len() - count);
+        // Reuse library capacity; only bottom insertion shifts the untouched middle.
+        library.splice(0..0, choice.bottom.iter().rev().copied());
+        library.extend(choice.top.iter().rev().copied());
+        self.run_program();
+    }
+
     pub(super) fn next_stack_id(&mut self) -> u64 {
         let id = self.state.next_stack_id;
         self.state.next_stack_id = id.checked_add(1).expect("stack identity exhausted");
@@ -197,6 +253,7 @@ impl Game {
             pc: 0,
             discards: [0; 2],
             selected_discards: [Vec::new(), Vec::new()],
+            library: None,
         });
         self.run_program();
     }
@@ -275,6 +332,28 @@ impl Game {
                         return;
                     }
                 },
+                Instruction::Scry(amount) | Instruction::Surveil(amount) => {
+                    let remaining: Vec<_> = self.state.players[item.controller.index()]
+                        .library
+                        .iter()
+                        .rev()
+                        .take(usize::from(amount))
+                        .copied()
+                        .collect();
+                    if !remaining.is_empty() {
+                        self.state.resolving.as_mut().unwrap().library = Some(LibraryChoice {
+                            surveil: matches!(instruction, Instruction::Surveil(_)),
+                            remaining,
+                            top: Vec::new(),
+                            bottom: Vec::new(),
+                            graveyard: Vec::new(),
+                        });
+                        self.state.pending = Pending::EffectLibrary {
+                            player: item.controller,
+                        };
+                        return;
+                    }
+                }
                 Instruction::CreateTokens {
                     token,
                     amount,

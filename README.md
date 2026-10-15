@@ -5,7 +5,7 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 212 have executable rules so far.
+knows all 5,164 pinned Standard identities; 239 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
@@ -27,6 +27,7 @@ cargo run --release --example standard_counters -- 100
 cargo run --release --example standard_tokens -- 100
 cargo run --release --example standard_activations -- 100
 cargo run --release --example standard_mana -- 100
+cargo run --release --example standard_library -- 100
 cargo run --release --example standard_targeting -- 100
 cargo run --bin coverage
 ```
@@ -101,7 +102,7 @@ entry/death/attack triggers, controller ordering, draw/discard and life effects 
 choices suspend in owned continuations. Shared target predicates and incremental
 announcements support targeted triggers, multi-target spells, partial target
 invalidation and reanimation. See [targeting](docs/targeting.md),
-[effect programs](docs/programs.md), [activated abilities](docs/activations.md), [mana](docs/mana.md), [payment windows](docs/payment-windows.md) and
+[effect programs](docs/programs.md), [activated abilities](docs/activations.md), [mana](docs/mana.md), [payment windows](docs/payment-windows.md), [private scry/surveil](docs/library-choices.md) and
 [object identity](docs/object-identity.md).
 
 `Constructed` checks 60-card minimum and the four-copy limit; **it does not claim
@@ -129,8 +130,9 @@ and revision unchanged. `apply_index` also checks the observation revision.
 Concession is allowed from either player while the game is running.
 
 `observe(player)` returns public objects plus that player's hand, and legal
-actions only for the pending actor. Neither library identities/order nor the
-opponent's hand or RNG appears in observations. `Game` and `Snapshot` are trusted
+actions only for the pending actor. During a scry/surveil continuation, only its
+actor receives looked-at card views and partial destination orders. Other library
+identities/order, the opponent's hand and RNG remain hidden. `Game` and `Snapshot` are trusted
 simulator objects containing full private state; do not give them to a policy.
 
 Fork/restore is the substrate for MCTS, not an implemented hidden-information

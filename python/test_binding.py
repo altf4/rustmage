@@ -17,7 +17,7 @@ class BindingTests(unittest.TestCase):
             observation = game.observe("P0")
             coverage = json.loads((Path(__file__).resolve().parents[1] / "data/standard/coverage.json").read_text())
             self.assertEqual(observation["catalogue"], coverage["catalogue_version"])
-            self.assertEqual(observation["schema"], 11)
+            self.assertEqual(observation["schema"], 12)
             self.assertEqual(len(observation["objects"]), 7)
             self.assertTrue(all(o["owner"] == "P0" for o in observation["objects"]))
             self.assertEqual(game.observe("P1")["actions"], [])
@@ -38,6 +38,57 @@ class BindingTests(unittest.TestCase):
             game.drop_snapshot(saved)
             with self.assertRaisesRegex(EngineError, "unknown snapshot"):
                 game.restore(saved)
+
+    def test_scry_private_library_cards_and_partial_choice_restore(self):
+        deck = ["Plains"] * 36 + ["Wakandan Drone Flock"] * 24
+        with Game([deck, deck], seed=7, deck_rules="Freeform") as game:
+            obs = game.observe("P0")
+            for _ in range(600):
+                self.assertIsNone(obs["outcome"], "game ended before the scry fixture")
+                if obs["viewer"] != obs["actor"]:
+                    obs = game.observe(obs["actor"])
+                if obs["library_choice"] is not None:
+                    break
+                def score(action):
+                    if action["kind"] == "TapMana":
+                        return 20 if obs["active"] == obs["actor"] and obs["step"] in ("Main1", "Main2") else -5
+                    return {"Keep": 100, "PlayLand": 90, "Cast": 80, "AnnounceCast": -20,
+                            "Mulligan": -100, "Concede": -1000}.get(action["kind"], 0)
+                index = max(range(len(obs["actions"])), key=lambda i: score(obs["actions"][i]))
+                obs = game.step(obs, index)
+            else:
+                self.fail("no scry choice reached")
+            choice = obs["library_choice"]
+            self.assertFalse(choice["surveil"])
+            self.assertEqual(len(choice["remaining"]), 2)
+            self.assertTrue(all(o["zone"] == "Library" for o in choice["remaining"]))
+            actor = obs["actor"]
+            other = "P1" if actor == "P0" else "P0"
+            hidden = game.observe(other)
+            self.assertIsNone(hidden["library_choice"])
+            self.assertEqual(hidden["actions"], [])
+            visible_ids = {o["id"] for o in hidden["objects"]}
+            self.assertTrue(all(o["id"] not in visible_ids for o in choice["remaining"]))
+            index = next(i for i, a in enumerate(obs["actions"])
+                         if a["kind"] == "ArrangeLibrary" and a["destination"] == "Bottom")
+            obs = game.step(obs, index)
+            self.assertEqual(len(obs["library_choice"]["bottom"]), 1)
+            selected = obs["library_choice"]["bottom"][0]
+            self.assertEqual(selected, next(o for o in choice["remaining"] if o["id"] == selected["id"]))
+            self.assertEqual(selected["zone"], "Library")
+            self.assertIsNone(game.observe(other)["library_choice"])
+            saved = game.snapshot()
+            index = next(i for i, a in enumerate(obs["actions"])
+                         if a["kind"] == "ArrangeLibrary" and a["destination"] == "Top")
+            with game.clone() as branch:
+                expected = branch.step(branch.observe(actor), index)
+            actual = game.step(obs, index)
+            self.assertEqual(actual, expected)
+            game.restore(saved)
+            replay = game.step(game.observe(actor), index)
+            self.assertGreater(replay.pop("revision"), actual.pop("revision"))
+            self.assertEqual(actual, replay)
+            game.drop_snapshot(saved)
 
     def test_input_and_lifecycle(self):
         with self.assertRaises(EngineError):
