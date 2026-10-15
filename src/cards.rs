@@ -8,7 +8,7 @@ pub struct Card(u16);
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Effect {
     Creature(i32, i32),
-    Spell(TargetSpec, &'static [Instruction]),
+    Spell(TargetPlan, &'static [Instruction]),
     Modal(&'static [SpellMode]),
     Land,
     Permanent,
@@ -18,7 +18,7 @@ pub(crate) enum Effect {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct SpellMode {
     pub text: &'static str,
-    pub targets: TargetSpec,
+    pub targets: TargetPlan,
     pub program: &'static [Instruction],
 }
 
@@ -69,6 +69,34 @@ impl TargetSpec {
         min: 0,
         max: 0,
     };
+}
+
+/// Independent occurrences of target. Cross-occurrence relationships are gated.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum TargetPlan {
+    Single(TargetSpec),
+    Groups(&'static [TargetSpec]),
+}
+impl TargetPlan {
+    pub const NONE: Self = Self::Single(TargetSpec::NONE);
+    pub fn group(self, index: u16) -> Option<TargetSpec> {
+        match self {
+            Self::Single(spec) => (index == 0).then_some(spec),
+            Self::Groups(groups) => groups.get(usize::from(index)).copied(),
+        }
+    }
+    pub fn single(self) -> Option<TargetSpec> {
+        match self {
+            Self::Single(spec) => Some(spec),
+            _ => None,
+        }
+    }
+    pub fn has_targets(self) -> bool {
+        match self {
+            Self::Single(spec) => spec.max > 0,
+            Self::Groups(groups) => groups.iter().any(|spec| spec.max > 0),
+        }
+    }
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -143,6 +171,15 @@ pub(crate) struct SearchSpec {
 /// Immutable rule bytecode. Only the program counter and choices live in state.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    SelectGroup(u16),
+    Fight {
+        source: u16,
+        recipient: u16,
+    },
+    PowerDamage {
+        source: u16,
+        recipient: u16,
+    },
     AddMana(ManaProduction),
     Scry(u16),
     Surveil(u16),
@@ -287,7 +324,7 @@ pub(crate) enum TriggerCondition {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct TriggeredAbility {
     pub condition: TriggerCondition,
-    pub targets: TargetSpec,
+    pub targets: TargetPlan,
     pub program: &'static [Instruction],
 }
 
@@ -304,7 +341,7 @@ pub(crate) struct ActivationCost {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct ActivatedAbility {
     pub cost: ActivationCost,
-    pub targets: TargetSpec,
+    pub targets: TargetPlan,
     pub program: &'static [Instruction],
     pub sorcery: bool,
     pub once_per_turn: bool,
@@ -313,7 +350,7 @@ pub(crate) struct ActivatedAbility {
 impl ActivatedAbility {
     pub(crate) fn mana_production(&self) -> Option<ManaProduction> {
         match self.program {
-            [Instruction::AddMana(production)] if self.targets.max == 0 => Some(*production),
+            [Instruction::AddMana(production)] if !self.targets.has_targets() => Some(*production),
             _ => None,
         }
     }
@@ -481,7 +518,7 @@ impl Card {
     pub(crate) fn spell_program(
         self,
         mode: Option<u16>,
-    ) -> Option<(TargetSpec, &'static [Instruction])> {
+    ) -> Option<(TargetPlan, &'static [Instruction])> {
         match self.effect() {
             Effect::Spell(spec, program) => Some((spec, program)),
             Effect::Modal(modes) => mode

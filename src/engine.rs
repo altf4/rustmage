@@ -1,7 +1,7 @@
 use crate::cards::{
     ActivatedAbility, ActivationCost, CounterKind, Counters, CreatureFilter, Effect, EntryTapped,
-    Instruction, ManaProduction, PlayerSet, SearchSpec, Stats, Subject, TargetRule, TargetSpec,
-    TargetZone, TriggerCondition, payments,
+    Instruction, ManaProduction, PlayerSet, SearchSpec, Stats, Subject, TargetPlan, TargetRule,
+    TargetSpec, TargetZone, TriggerCondition, payments,
 };
 #[path = "engine_activations.rs"]
 mod activations;
@@ -12,6 +12,8 @@ use funding::FundingGoal;
 mod blocking;
 #[path = "engine_exile.rs"]
 mod exile;
+#[path = "engine_fight.rs"]
+mod fight;
 #[path = "engine_search.rs"]
 mod search;
 #[path = "engine_stats.rs"]
@@ -127,6 +129,7 @@ pub enum Target {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct BoundTarget {
+    pub group: u16,
     pub target: Target,
     pub object: Option<ObjectRef>,
 }
@@ -610,6 +613,7 @@ pub struct Observation {
     pub announcing_payment: Option<PendingPaymentView>,
     pub mana_choices: Vec<Mana>,
     pub mode_choices: Vec<ModeChoiceView>,
+    pub targeting_group: Option<u16>,
     pub library_choice: Option<LibraryChoiceView>,
     pub search_choice: Option<SearchChoiceView>,
     pub known_hand: Vec<ObjectRef>,
@@ -986,9 +990,15 @@ impl Game {
                         if done {
                             return;
                         }
-                        let spec = match obj.card.effect() {
-                            Effect::Spell(spec, _) => spec,
-                            _ => TargetSpec::NONE,
+                        let plan = match obj.card.effect() {
+                            Effect::Spell(plan, _) => plan,
+                            _ => TargetPlan::NONE,
+                        };
+                        let Some(spec) = plan.single() else {
+                            if self.targets_available(plan, actor, self.object_ref(card)) {
+                                done = emit(Action::BeginCast { card, payment });
+                            }
+                            return;
                         };
                         let source = self.object_ref(card);
                         if spec.max > 1 {
@@ -1103,23 +1113,24 @@ impl Game {
             }
             Pending::Targets { .. } => {
                 let announcement = s.announcing.as_ref().unwrap();
-                if announcement.item.targets.len() >= usize::from(announcement.spec.min)
-                    && emit(Action::FinishTargets)
-                {
+                let count = announcement
+                    .item
+                    .targets
+                    .iter()
+                    .filter(|bound| bound.group == announcement.group)
+                    .count();
+                if count >= usize::from(announcement.spec.min) && emit(Action::FinishTargets) {
                     return true;
                 }
-                if announcement.item.targets.len() < usize::from(announcement.spec.max) {
+                if count < usize::from(announcement.spec.max) {
                     return self.visit_targets(
                         announcement.spec.rule,
                         actor,
                         announcement.item.object,
                         |target| {
-                            !announcement
-                                .item
-                                .targets
-                                .iter()
-                                .any(|bound| bound.target == target)
-                                && emit(Action::ChooseTarget { target })
+                            !announcement.item.targets.iter().any(|bound| {
+                                bound.group == announcement.group && bound.target == target
+                            }) && emit(Action::ChooseTarget { target })
                         },
                     );
                 }
@@ -1333,14 +1344,22 @@ impl Game {
             }
             Action::ChooseMode { mode } => self.choose_mode(mode),
             Action::ChooseTarget { target } => {
-                let bound = self.bind_target(target);
+                let mut bound = self.bind_target(target);
                 let announcement = self.state.announcing.as_mut().unwrap();
+                bound.group = announcement.group;
                 announcement.item.targets.push(bound);
-                if announcement.item.targets.len() == usize::from(announcement.spec.max) {
-                    self.finish_announcement();
+                if announcement
+                    .item
+                    .targets
+                    .iter()
+                    .filter(|bound| bound.group == announcement.group)
+                    .count()
+                    == usize::from(announcement.spec.max)
+                {
+                    self.finish_target_group();
                 }
             }
-            Action::FinishTargets => self.finish_announcement(),
+            Action::FinishTargets => self.finish_target_group(),
             Action::Attack { card } => self.state.selected_attackers.push(card),
             Action::FinishAttackers => {
                 self.state.attack_declared = !self.state.selected_attackers.is_empty();
@@ -2127,7 +2146,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 15,
+            schema: 16,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -2197,6 +2216,11 @@ impl Game {
                             production: announcement.production,
                         }
                     })
+            } else {
+                None
+            },
+            targeting_group: if owns_choice && matches!(s.pending, Pending::Targets { .. }) {
+                s.announcing.as_ref().map(|announcement| announcement.group)
             } else {
                 None
             },
@@ -2412,3 +2436,7 @@ mod search_tests;
 #[cfg(test)]
 #[path = "engine_mode_tests.rs"]
 mod mode_tests;
+
+#[cfg(test)]
+#[path = "engine_group_tests.rs"]
+mod group_tests;

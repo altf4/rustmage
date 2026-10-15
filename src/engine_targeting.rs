@@ -5,6 +5,8 @@ use super::*;
 pub(super) struct Announcement {
     pub item: SpellView,
     pub spec: TargetSpec,
+    pub plan: TargetPlan,
+    pub group: u16,
     pub trigger: bool,
     pub payment: Option<Mana>,
     pub counter_payment: Counters,
@@ -13,7 +15,7 @@ pub(super) struct Announcement {
 }
 
 impl Game {
-    pub(super) fn target_spec(&self, item: &SpellView) -> TargetSpec {
+    pub(super) fn target_spec(&self, item: &SpellView) -> TargetPlan {
         match item.kind {
             StackKind::TriggeredAbility { ability } => {
                 item.source_card.triggers()[ability as usize].targets
@@ -25,52 +27,76 @@ impl Game {
                 .source_card
                 .spell_program(item.mode)
                 .map(|(spec, _)| spec)
-                .unwrap_or(TargetSpec::NONE),
+                .unwrap_or(TargetPlan::NONE),
         }
     }
 
     pub(super) fn targets_available(
         &self,
-        spec: TargetSpec,
+        plan: TargetPlan,
         actor: Player,
         source: ObjectRef,
     ) -> bool {
-        if spec.min == 0 {
-            return true;
+        let available = |spec: TargetSpec| {
+            if spec.min == 0 {
+                return true;
+            }
+            let mut count = 0;
+            self.visit_targets(spec.rule, actor, source, |_| {
+                count += 1;
+                count >= usize::from(spec.min)
+            })
+        };
+        match plan {
+            TargetPlan::Single(spec) => available(spec),
+            TargetPlan::Groups(groups) => groups.iter().copied().all(available),
         }
-        let mut count = 0;
-        self.visit_targets(spec.rule, actor, source, |_| {
-            count += 1;
-            count >= usize::from(spec.min)
-        })
     }
 
     pub(super) fn choose_mode(&mut self, mode: u16) {
         let announcement = self.state.announcing.as_mut().unwrap();
         announcement.item.mode = Some(mode);
-        announcement.spec = announcement
+        announcement.plan = announcement
             .item
             .source_card
             .spell_program(Some(mode))
             .unwrap()
             .0;
-        let item = announcement.item.clone();
-        let spec = announcement.spec;
-        self.state.pending = if spec.max == 0
-            || !self.visit_targets(spec.rule, item.controller, item.object, |_| true)
-        {
-            Pending::PayCosts {
-                player: item.controller,
-            }
-        } else {
-            Pending::Targets {
-                player: item.controller,
-            }
+        announcement.group = 0;
+        self.state.pending = Pending::Targets {
+            player: announcement.item.controller,
         };
+        self.advance_target_groups();
+    }
+
+    pub(super) fn finish_target_group(&mut self) {
+        self.state.announcing.as_mut().unwrap().group += 1;
+        self.advance_target_groups();
+    }
+
+    fn advance_target_groups(&mut self) {
+        loop {
+            let announcement = self.state.announcing.as_ref().unwrap();
+            let Some(spec) = announcement.plan.group(announcement.group) else {
+                self.finish_announcement();
+                return;
+            };
+            let item = &announcement.item;
+            if spec.max > 0 && self.visit_targets(spec.rule, item.controller, item.object, |_| true)
+            {
+                let player = item.controller;
+                self.state.announcing.as_mut().unwrap().spec = spec;
+                self.state.pending = Pending::Targets { player };
+                return;
+            }
+            assert_eq!(spec.min, 0, "validated group completion");
+            self.state.announcing.as_mut().unwrap().group += 1;
+        }
     }
 
     pub(super) fn bind_target(&self, target: Target) -> BoundTarget {
         BoundTarget {
+            group: 0,
             target,
             object: match target {
                 Target::Player(_) => None,
@@ -214,21 +240,22 @@ impl Game {
 
     /// Returns true only when a decision suspends the enclosing ordering/cast work.
     pub(super) fn start_announcement(&mut self, item: SpellView, trigger: bool) -> bool {
-        let spec = self.target_spec(&item);
-        if spec.max == 0 {
-            self.state.stack.push(item);
-            return false;
-        }
-        let mut count = 0;
-        self.visit_targets(spec.rule, item.controller, item.object, |_| {
-            count += 1;
-            false
-        });
-        if count < usize::from(spec.min) {
+        let plan = self.target_spec(&item);
+        if !self.targets_available(plan, item.controller, item.object) {
             assert!(trigger, "validated spell announcement");
             return false;
-        } // Impossible trigger announcement: remove it.
-        if spec.max == 0 || count == 0 {
+        }
+        let has_choice = match plan {
+            TargetPlan::Single(spec) => {
+                spec.max > 0
+                    && self.visit_targets(spec.rule, item.controller, item.object, |_| true)
+            }
+            TargetPlan::Groups(groups) => groups.iter().any(|spec| {
+                spec.max > 0
+                    && self.visit_targets(spec.rule, item.controller, item.object, |_| true)
+            }),
+        };
+        if !has_choice {
             self.state.stack.push(item);
             return false;
         }
@@ -236,7 +263,9 @@ impl Game {
         assert!(self.state.announcing.is_none());
         self.state.announcing = Some(Announcement {
             item,
-            spec,
+            spec: TargetSpec::NONE,
+            plan,
+            group: 0,
             trigger,
             payment: None,
             counter_payment: Counters::default(),
@@ -244,6 +273,7 @@ impl Game {
             production: None,
         });
         self.state.pending = Pending::Targets { player };
+        self.advance_target_groups();
         true
     }
 
@@ -253,22 +283,17 @@ impl Game {
         counters: Counters,
         production: Option<Mana>,
     ) {
-        let spec = self.target_spec(&item);
+        let plan = self.target_spec(&item);
         let player = item.controller;
-        let mut count = 0;
-        if spec.max > 0 {
-            self.visit_targets(spec.rule, player, item.object, |_| {
-                count += 1;
-                false
-            });
-        }
-        assert!(count >= usize::from(spec.min));
+        assert!(self.targets_available(plan, player, item.object));
         let needs_mode = item.kind == StackKind::Spell
             && matches!(item.source_card.effect(), Effect::Modal(_))
             && item.mode.is_none();
         self.state.announcing = Some(Announcement {
             item,
-            spec,
+            spec: TargetSpec::NONE,
+            plan,
+            group: 0,
             trigger: false,
             payment: None,
             counter_payment: counters,
@@ -277,11 +302,12 @@ impl Game {
         });
         self.state.pending = if needs_mode {
             Pending::Modes { player }
-        } else if spec.max == 0 || count == 0 {
-            Pending::PayCosts { player }
         } else {
             Pending::Targets { player }
         };
+        if !needs_mode {
+            self.advance_target_groups();
+        }
     }
 
     pub(super) fn finish_announcement(&mut self) {
@@ -295,7 +321,10 @@ impl Game {
             return;
         }
         let mut announcement = self.state.announcing.take().unwrap();
-        announcement.item.targets.sort_by_key(|bound| bound.target);
+        announcement
+            .item
+            .targets
+            .sort_by_key(|bound| (bound.group, bound.target));
         if let Some(payment) = announcement.payment {
             if matches!(announcement.item.kind, StackKind::ActivatedAbility { .. }) {
                 self.pay_activation(&announcement.item, payment, announcement.counter_payment);

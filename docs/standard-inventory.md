@@ -48,7 +48,7 @@ pool, 60-card minimum and copy limits, then rejects every unsupported card.
 The known Standard unlimited-copy exceptions are represented independently of
 whether their rules have been implemented.
 
-Coverage is **523 / 5,164 executable Standard cards**, plus six legacy regression
+Coverage is **537 / 5,164 executable Standard cards**, plus six legacy regression
 cards. The additions are ten exact vanilla-creature templates and 25 creatures
 whose entire text consists of implemented static keywords, plus four exact
 single-instruction bounce/destruction spells, additional spell programs and creatures with complete supported trigger programs.
@@ -110,7 +110,7 @@ and one referenced token factory. Current coverage is 346/5,164; 4,818 legal
 identities remain unsupported.
 
 [Face-up exile and linked returns](linked-exile.md) adds 18 complete Standard definitions.
-Current executable coverage is 523/5,164; 4,641 legal identities remain unsupported.
+Current executable coverage is 537/5,164; 4,627 legal identities remain unsupported.
 
 [Nonbasic lands](nonbasic-lands.md) add 135 complete definitions, including
 pre-entry tapped conditions, intrinsic typed mana, Wastes, entry triggers and
@@ -124,3 +124,8 @@ and full Standard/RL acceptance remain outstanding.
 [Modal spells](spell-modes.md) add 11 whole-card definitions and one Robot factory.
 Current coverage is 523/5,164, with 31 factories. Wider modal costs/abilities,
 choose-many and broader target relationships remain outstanding.
+
+[Distinct target groups](target-groups.md) add 14 complete definitions, including
+Bushwhack, independent targeted clauses and current-power fight/bite instructions.
+Coverage is 537/5,164 with 31 token factories; wider relationships and mechanics
+remain outstanding.
