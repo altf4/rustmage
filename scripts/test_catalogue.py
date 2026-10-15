@@ -57,7 +57,8 @@ class CatalogueCompilerTests(unittest.TestCase):
 
     def test_sacrifice_unknown_restrictions_and_mixed_union_qualifiers_fail_closed(self):
         for spec in ['a creature with the greatest power','a creature or planeswalker with the greatest mana value',
-                     'an artifact or creature token','two creatures with flying or reach','half your creatures',
+                     'an artifact or creature token','a nontoken artifact or creature',
+                     'an artifact or creature with flying','two creatures with flying or reach','half your creatures',
                      'a creature an opponent controls','another creature you do not control','a creature with ward {2}',
                      'zero creatures','a permanent other than enchanted creature']:
             self.assertIsNone(generate.sacrifice_spec(spec),spec)

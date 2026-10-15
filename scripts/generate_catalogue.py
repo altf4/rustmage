@@ -308,6 +308,8 @@ def sacrifice_spec(text):
     # Only entire homogeneous qualifiers are supported; e.g. 'artifact or creature
     # token' cannot use a union mask with a shared token restriction.
     if subject.endswith('s') and subject[:-1] in kinds: subject=subject[:-1]
+    if ' or ' in subject and (' with ' in subject or subject.startswith('nontoken ')):
+        return None
     keyword=0
     if ' with ' in subject:
         subject,word=subject.split(' with ',1)
