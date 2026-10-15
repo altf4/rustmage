@@ -14,6 +14,36 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_search_quality_quantity_destination_and_residual_text(self):
+        for quality, name in [('basic land', 'BasicLand'), ('land', 'Land'),
+                              ('creature', 'Creature'), ('artifact', 'Artifact'), ('enchantment', 'Enchantment')]:
+            result = generate.statement_program(f'Search your library for a {quality} card, reveal it, put it into your hand, then shuffle.')
+            self.assertIn('SearchFilter::' + name, result[0])
+            self.assertIn('reveal: true', result[0])
+            self.assertIn('SearchDestination::Hand', result[0])
+        result = generate.statement_program('Search your library for up to two basic land cards, put them onto the battlefield tapped, then shuffle.')
+        self.assertIn('maximum: 2', result[0])
+        self.assertIn('tapped: true', result[0])
+        result = generate.statement_program('Search your library for a basic land card, put it onto the battlefield tapped, then shuffle. Investigate.')
+        self.assertEqual(len(result), 2)
+        for text in [
+            'Search your library for a basic land card, put it into your hand, then shuffle.',
+            'Search your library for a basic land card, reveal it, put it into your hand tapped, then shuffle.',
+            'Search your library for a land card with mana value 2, reveal it, put it into your hand, then shuffle.',
+            'Search your library for a basic land card or a Desert card, put it onto the battlefield, then shuffle.',
+            'Search your library for up to two basic land cards with different names, put them onto the battlefield, then shuffle.',
+            'Search your library for a land card, reveal it, put it into your hand.',
+            'Search your library for a basic land card, put it onto the battlefield tapped, then shuffle. Then if you control four or more lands, untap that land.',
+            'Search your library for up to X land cards, put them onto the battlefield, then shuffle.',
+            'Search your library for a basic land cards, put them onto the battlefield, then shuffle.',
+            'Search your library for up to two basic land cards, reveal it, put them into your hand, then shuffle.']:
+            self.assertIsNone(generate.statement_program(text), text)
+        token = generate.predefined_program('create a Lander token.')
+        self.assertIsNotNone(token)
+        ability = generate.permanent_program_template(self.card(type_line='Artifact', mana_cost='{0}', oracle_text=generate.PREDEFINED['Lander']))
+        self.assertTrue(ability[3][0][0]['sacrifice'])
+        self.assertIn('SearchFilter::BasicLand', ability[3][0][2][0])
+
     def test_land_templates_require_complete_text_and_intrinsic_mana(self):
         def land(text, typ='Land', **kw):
             return self.card(type_line=typ, mana_cost='', oracle_text=text, **kw)
@@ -373,7 +403,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIsNotNone(result, kind)
             self.assertEqual(result[0], 'Permanent')
             self.assertEqual(len(result[3]),1)
-        for kind in ['Powerstone','Blood','Junk','Map','Lander','Shard']:
+        for kind in ['Powerstone','Blood','Junk','Map','Shard']:
             self.assertIsNone(generate.statement_program(f'Create a {kind} token.'))
         self.assertIsNotNone(generate.statement_program('Investigate.'))
 

@@ -57,6 +57,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::AnnounceActivate { .. } => 34,
             Action::AnnounceMana { .. } => -2,
             Action::PayCosts { .. } => 100,
+            Action::ChooseSearch { .. } => 60,
+            Action::FinishSearch => 0,
             Action::Keep => 100,
             Action::Mulligan => -100,
             Action::PlayLand { .. } => 90,
