@@ -18,7 +18,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 Instruction::Grow {
                     power, toughness, ..
                 } => Some(*power >= 0 && *toughness >= 0),
-                Instruction::Untap | Instruction::ReturnToBattlefield => Some(true),
+                Instruction::Untap
+                | Instruction::ReturnToBattlefield
+                | Instruction::AttachSource => Some(true),
                 Instruction::Draw(PlayerSet::Targeted, _)
                 | Instruction::GainLife(PlayerSet::Targeted, _) => Some(true),
                 Instruction::ReturnToHand => Some(match target {
@@ -51,6 +53,19 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
         if own == beneficial { 70 } else { -10 }
     };
     let score = |action: &Action| -> i32 {
+        // A smoke policy need not spend the whole turn re-equipping, including
+        // legal zero-cost activations. The engine still offers those actions.
+        if let Action::Activate { card, ability, .. }
+        | Action::BeginActivate { card, ability, .. }
+        | Action::AnnounceActivate { card, ability, .. } = action
+            && let Some(object) = observation.objects.iter().find(|o| o.id == *card)
+            && object.card.activations()[*ability as usize]
+                .program
+                .contains(&Instruction::AttachSource)
+            && object.used_abilities & (1u64 << ability) != 0
+        {
+            return -10;
+        }
         match action {
             Action::Concede => -1000,
             Action::Sacrifice { .. } => 50,

@@ -543,6 +543,13 @@ def targeted_program(text):
     if not isinstance(text, str) or not text.endswith('.'):
         return None
     text = normalize_duration(text[0].lower() + text[1:])
+    if m := re.fullmatch(r'attach this Equipment to target creature you control\.(?: That creature gains (.+) until end of turn\.)?', text):
+        program=['AttachSource']
+        if m[1]:
+            extra=keyword_list(m[1])
+            if extra is None: return None
+            program.append(f'GrantKeywords {{ subject: Subject::Targets, keywords: Keywords({extra}) }}')
+        return 'CreatureYou',program
     if choice := optional_payment_program(text, True): return choice
     if sacrifice := sacrifice_program(text):
         if sacrifice[0] != 'None': return sacrifice
@@ -889,12 +896,46 @@ def activation_cost(text):
     return cost
 
 
+def equipment_template(card):
+    if (card.get('layout') != 'normal' or permanent_type(card) != 'Artifact'
+            or card.get('type_line', '').split(' — ')[-1] != 'Equipment'
+            or not isinstance(card.get('oracle_text'),str)
+            or fixed_cost(card.get('mana_cost','')) is None): return None
+    text=re.sub(r'\([^()]*\)', '', card['oracle_text']).strip()
+    body=[]
+    power,toughness,keywords,equips=0,0,0,0
+    for line in text.split('\n'):
+        line=line.strip()
+        if m:=re.fullmatch(r'Equipped creature gets ([+-][0-9]+)/([+-][0-9]+)(?: and has (.+))?\.',line):
+            if max(abs(int(m[1])),abs(int(m[2])))>32767: return None
+            extra=keyword_list(m[3]) if m[3] else 0
+            if extra is None: return None
+            power+=int(m[1]);toughness+=int(m[2]);keywords|=extra
+        elif m:=re.fullmatch(r'Equipped creature has (.+)\.',line):
+            extra=keyword_list(m[1])
+            if extra is None: return None
+            keywords|=extra
+        elif m:=re.fullmatch(r'Equip ((?:\{(?:[0-9]+|[WUBRGC])\})+)',line):
+            equips+=1
+            body.append(m[1]+': Attach this Equipment to target creature you control. Activate only as a sorcery.')
+        else:
+            if line.startswith('When this Equipment enters, attach it to '):
+                line=line.replace('enters, attach it to ','enters, attach this Equipment to ',1)
+            body.append(line.replace('When this Equipment enters, ','When this artifact enters, '))
+    if not equips: return None
+    # Source-cost aliases are exact; granted abilities and residual clauses still fail.
+    body=[line.replace('Sacrifice this Equipment','Sacrifice this artifact') for line in body]
+    result=permanent_program_template(dict(card,type_line='Artifact',oracle_text='\n'.join(body)))
+    return (*result,power,toughness,keywords) if result else None
+
+
 def permanent_program_template(card):
     """Whole supported permanent text, including all activation restrictions."""
     if (card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'), str)
             or fixed_cost(card.get('mana_cost', '')) is None):
         return None
     typ = permanent_type(card)
+    if 'Equipment' in card.get('type_line','').split(' — ')[-1].split(): return None
     if typ not in ('Creature', 'Artifact Creature', 'Artifact', 'Enchantment'):
         return None
     creature = 'Creature' in typ
@@ -1028,6 +1069,7 @@ def compile_catalogue(snapshot, target):
     supported = []
     coverage = []
     static_rows = []
+    equipment_rows = []
     for index, name in enumerate(names):
         card = cards.get(name, {})
         cost = card.get('mana_cost', '')
@@ -1038,6 +1080,7 @@ def compile_catalogue(snapshot, target):
         trigger_template = trigger_creature_template(card)
         spell = spell_program_template(card)
         modal = modal_spell_template(card)
+        equipment = equipment_template(card)
         permanent = permanent_program_template(card)
         static = static_permanent_template(card)
         activations, enters = [], [0, 0, 0]
@@ -1062,6 +1105,9 @@ def compile_catalogue(snapshot, target):
                 effect = 'Modal'
             elif spell is not None:
                 effect = 'Spell'
+            elif equipment is not None:
+                effect, keywords, abilities, activations, enters, power, toughness, granted = equipment
+                equipment_rows.append(f'        {index} => Some(EquipmentSpec {{ stats: Stats {{ power: {power}, toughness: {toughness} }}, keywords: Keywords({granted}) }}),')
             elif permanent is not None:
                 effect, keywords, abilities, activations, enters = permanent
             elif static is not None:
@@ -1093,7 +1139,7 @@ def compile_catalogue(snapshot, target):
         oracle_keywords = '&[' + ', '.join(quote(word) for word in card.get('keywords', [])) + ']'
         definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(name)}, oracle_id: {oracle_id}, mana_cost: {quote(cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in cards).lower()}, legendary: {str(card.get('type_line', '').startswith('Legendary ')).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, activated: {rust_activations(activations)}, enters: Counters {{ plus_one: {enters[0]}, minus_one: {enters[1]}, stun: {enters[2]} }}, entry: EntryTapped::{entry}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
         coverage.append({'name': name, 'standard_legal': name in cards, 'implemented': effect != 'Unsupported',
-                         'implementation': 'explicit' if name in legacy else 'land_template' if land else 'creature_template' if template else 'trigger_template' if trigger_template else 'modal_template' if modal else 'spell_template' if spell else 'permanent_template' if permanent else 'static_template' if static else None})
+                         'implementation': 'explicit' if name in legacy else 'land_template' if land else 'creature_template' if template else 'trigger_template' if trigger_template else 'modal_template' if modal else 'spell_template' if spell else 'equipment_template' if equipment else 'permanent_template' if permanent else 'static_template' if static else None})
 
     # Only factories referenced by wholly accepted cards enter the executable catalogue.
     used_tokens = sorted(set(re.findall(r'__TOKEN_([0-9a-f]+)__', '\n'.join(definitions))))
@@ -1138,7 +1184,7 @@ def compile_catalogue(snapshot, target):
     # Preserve existing Rust constants and JSON tokens. New callers use English names.
     for index, (name, _, _, _) in enumerate(LEGACY):
         lines.append(f'    pub const {name.replace(" ", "")}: Card = Card({index});')
-    lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '']
+    lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn equipment(card: Card) -> Option<EquipmentSpec> {', '    match card.0 {', *equipment_rows, '        _ => None,', '    }', '}', '']
     return '\n'.join(lines), {'schema': 1, 'catalogue_version': version, 'standard_legal_cards': len(cards),
         'implemented_standard_cards': sum(row['implemented'] and row['standard_legal'] for row in coverage),
         'implemented_total': len(supported), 'token_definitions': len(used_tokens), 'cards': coverage}

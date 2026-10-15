@@ -24,6 +24,7 @@ impl Game {
     ) -> bool {
         Self::object_activation_available(
             &self.state.objects[card as usize],
+            self.keywords(card),
             self.state.players[actor.index()].life,
             ability,
             index,
@@ -34,6 +35,7 @@ impl Game {
 
     pub(super) fn object_activation_available(
         object: &Object,
+        keywords: Keywords,
         life: i64,
         ability: &ActivatedAbility,
         index: usize,
@@ -52,7 +54,7 @@ impl Game {
             && (object.tapped
                 || (object.card.is_creature()
                     && object.summoning_sick
-                    && !object.keywords().contains(Keywords::HASTE)))
+                    && !keywords.contains(Keywords::HASTE)))
         {
             return false;
         }
@@ -217,7 +219,7 @@ impl Game {
             id: self.next_stack_id(),
             kind: StackKind::ActivatedAbility { ability },
             source_card: self.state.objects[card as usize].card,
-            source_keywords: self.state.objects[card as usize].keywords(),
+            source_keywords: self.keywords(card),
             source_tapped: self.state.objects[card as usize].tapped,
             card,
             object: self.object_ref(card),

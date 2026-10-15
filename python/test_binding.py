@@ -12,6 +12,74 @@ class BindingTests(unittest.TestCase):
     def game(self):
         return Game([["Mountain"] * 24 + ["LightningBolt"] * 36] * 2, seed=17, deck_rules="Freeform")
 
+    def equipment_index(self, obs):
+        own={o['id']:o for o in obs['objects'] if o['owner']==obs['actor']}
+        creature=any(o['zone']=='Battlefield' and o['card'] in ("Healer's Hawk",'GoblinPiker','Goblin Piker') for o in own.values())
+        def score(a):
+            if a['kind']=='AnnounceCast' and own[a['card']]['card'] in ('Short Bow','Coral Sword') and not creature:
+                return -5
+            return {'Keep':100,'PlayLand':90,'AnnounceCast':80,'PayCosts':100,
+                    'TapMana':70 if obs['decision']=='pay_costs' else (40 if obs['active']==obs['actor'] and obs['step'] in ('Main1','Main2') else -5),
+                    'ChooseTarget':70,'PutTrigger':70,'FinishAttackers':60,'FinishBlockers':60,
+                    'Pass':20,'Mulligan':-100,'Concede':-1000}.get(a['kind'],0)
+        return max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i]))
+
+    def test_paid_equipment_attachment_is_public_and_native_clone_restore_owned(self):
+        deck=['Plains']*24+["Healer's Hawk"]*12+['Short Bow']*24
+        with Game([deck,deck],seed=7,deck_rules='Freeform') as game:
+            obs=game.observe('P0')
+            for _ in range(3000):
+                if obs['outcome'] is not None: self.fail('game ended before equip')
+                obs=game.observe(obs['actor'])
+                index=next((i for i,a in enumerate(obs['actions']) if a['kind']=='Activate'),None)
+                if index is not None: break
+                obs=game.step(obs,self.equipment_index(obs))
+            else: self.fail('no paid equip action reached')
+            action=obs['actions'][index];equipment=action['card'];target=action['target']['Card'];actor=obs['actor']
+            saved=game.snapshot()
+            def activate_and_resolve(handle):
+                current=handle.observe(actor);handle.step(current,index)
+                self.assertIsNone(next(o['attached_to'] for o in handle.observe(actor)['objects'] if o['id']==equipment))
+                return self.resolve_vital_top(handle,actor)
+            with game.clone() as branch: expected=activate_and_resolve(branch)
+            actual=activate_and_resolve(game);self.assertEqual(actual,expected)
+            link=next(o['attached_to'] for o in actual['objects'] if o['id']==equipment)
+            self.assertEqual(link['card'],target)
+            before=next(o for o in obs['objects'] if o['id']==target)
+            after=next(o for o in actual['objects'] if o['id']==target)
+            self.assertEqual((after['power'],after['toughness']),(before['power']+1,before['toughness']+1))
+            self.assertEqual(next(o['attached_to'] for o in game.observe('P1' if actor=='P0' else 'P0')['objects'] if o['id']==equipment),link)
+            game.restore(saved)
+            with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,index)
+            replay=activate_and_resolve(game)
+            self.assertGreater(replay.pop('revision'),actual.pop('revision'));self.assertEqual(replay,actual)
+            game.drop_snapshot(saved)
+
+    def test_flash_equipment_entry_target_and_temporary_keyword_replay(self):
+        deck=['Mountain']*24+['Coral Sword']*24+['Goblin Piker']*12
+        with Game([deck,deck],seed=7,deck_rules='Freeform') as game:
+            obs=game.observe('P0')
+            for _ in range(3000):
+                if obs['outcome'] is not None:self.fail('game ended before entry attachment')
+                obs=game.observe(obs['actor'])
+                if obs['decision']=='targets' and obs['announcing']['source_card']=='Coral Sword' and 'TriggeredAbility' in obs['announcing']['kind']:break
+                obs=game.step(obs,self.equipment_index(obs))
+            else:self.fail('no entry attachment reached')
+            actor=obs['actor'];equipment=obs['announcing']['card']
+            index=next(i for i,a in enumerate(obs['actions']) if a['kind']=='ChooseTarget');target=obs['actions'][index]['target']['Card']
+            saved=game.snapshot()
+            def target_and_resolve(handle):
+                handle.step(handle.observe(actor),index)
+                return self.resolve_vital_top(handle,actor)
+            with game.clone() as branch:expected=target_and_resolve(branch)
+            actual=target_and_resolve(game);self.assertEqual(actual,expected)
+            self.assertEqual(next(o['attached_to']['card'] for o in actual['objects'] if o['id']==equipment),target)
+            creature=next(o for o in actual['objects'] if o['id']==target)
+            self.assertNotEqual(creature['keywords'] & 512,0)
+            game.restore(saved);replay=target_and_resolve(game)
+            self.assertGreater(replay.pop('revision'),actual.pop('revision'));self.assertEqual(replay,actual)
+            game.drop_snapshot(saved)
+
     def vital_index(self, obs):
         own={o['id']:o for o in obs['objects']}
         def score(a):
@@ -43,7 +111,7 @@ class BindingTests(unittest.TestCase):
                 obs=game.step(obs,self.vital_index(obs))
             else: self.fail('no life-gain trigger reached')
             source=obs['stack'][-1];viewer=source['controller'];p=0 if viewer=='P0' else 1
-            self.assertEqual(obs['schema'],21)
+            self.assertEqual(obs['schema'],22)
             self.assertGreater(obs['players'][p]['life_gain_events_this_turn'],0)
             other='P1' if viewer=='P0' else 'P0'
             self.assertEqual(game.observe(other)['players'][p]['life_gain_events_this_turn'],obs['players'][p]['life_gain_events_this_turn'])
@@ -289,7 +357,7 @@ class BindingTests(unittest.TestCase):
             observation = game.observe("P0")
             coverage = json.loads((Path(__file__).resolve().parents[1] / "data/standard/coverage.json").read_text())
             self.assertEqual(observation["catalogue"], coverage["catalogue_version"])
-            self.assertEqual(observation["schema"], 21)
+            self.assertEqual(observation["schema"], 22)
             self.assertEqual(len(observation["objects"]), 7)
             self.assertTrue(all(o["owner"] == "P0" for o in observation["objects"]))
             self.assertEqual(game.observe("P1")["actions"], [])

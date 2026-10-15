@@ -48,7 +48,7 @@ pool, 60-card minimum and copy limits, then rejects every unsupported card.
 The known Standard unlimited-copy exceptions are represented independently of
 whether their rules have been implemented.
 
-Coverage is **634 / 5,164 executable Standard cards**, plus six legacy regression
+Coverage is **656 / 5,164 executable Standard cards**, plus six legacy regression
 cards. The additions are ten exact vanilla-creature templates and 25 creatures
 whose entire text consists of implemented static keywords, plus four exact
 single-instruction bounce/destruction spells, additional spell programs and creatures with complete supported trigger programs.
@@ -153,3 +153,9 @@ Standard definitions. Current coverage is 634/5,164; 4,530 identities remain
 unsupported, with 35 token factories. First-gain history, lifelink grouping and
 pre-batch death observers are owned snapshot state. Wider event restrictions,
 variable amounts and residual mechanics remain gated.
+
+[Equipment and attachment foundations](equipment.md) add 22 complete definitions.
+Current coverage is 656/5,164; 4,508 identities remain unsupported, with 35 token
+factories. Owned links, fixed continuous bonuses, attachment-aware funding and
+frozen detachment precede wider attachment mechanics. Auras, granted abilities,
+equipped-creature events, broader costs and residual rules remain gated.

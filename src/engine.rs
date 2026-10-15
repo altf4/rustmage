@@ -322,6 +322,7 @@ struct Object {
     gained_keywords: Keywords,
     counters: Counters,
     used_abilities: u64,
+    attached_to: Option<ObjectRef>,
 }
 
 impl Object {
@@ -491,6 +492,7 @@ struct State {
     step_sources: Vec<CardId>,
     life_sources: Vec<CardId>,
     death_sources: Vec<CardId>,
+    equipment_sources: Vec<CardId>,
     exile_links: Vec<ExileLink>,
     known_hand: Vec<ObjectRef>,
     players: [PlayerState; 2],
@@ -546,6 +548,7 @@ pub struct ObjectView {
     pub damage: i32,
     pub counters: Counters,
     pub used_abilities: u64,
+    pub attached_to: Option<ObjectRef>,
     pub power: i32,
     pub toughness: i32,
     pub keywords: Keywords,
@@ -758,6 +761,7 @@ impl Game {
                     gained_keywords: Keywords::NONE,
                     counters: Counters::default(),
                     used_abilities: 0,
+                    attached_to: None,
                 });
                 players[p.index()].library.push(id);
             }
@@ -773,6 +777,7 @@ impl Game {
                 step_sources: Vec::new(),
                 life_sources: Vec::new(),
                 death_sources: Vec::new(),
+                equipment_sources: Vec::new(),
                 exile_links: Vec::new(),
                 known_hand: Vec::new(),
                 players,
@@ -1011,7 +1016,7 @@ impl Game {
                         && obj.card.mana_color().is_some()
                         && (!obj.card.is_creature()
                             || !obj.summoning_sick
-                            || obj.keywords().contains(Keywords::HASTE))
+                            || self.keywords(card).contains(Keywords::HASTE))
                         && emit(Action::TapMana { card })
                     {
                         return true;
@@ -1032,7 +1037,7 @@ impl Game {
                     }
                     if !sorcery
                         && !obj.card.is_instant()
-                        && !obj.keywords().contains(Keywords::FLASH)
+                        && !self.keywords(card).contains(Keywords::FLASH)
                     {
                         continue;
                     }
@@ -1139,8 +1144,8 @@ impl Game {
                         && obj.zone == Zone::Battlefield
                         && obj.card.is_creature()
                         && !obj.tapped
-                        && (!obj.summoning_sick || obj.keywords().contains(Keywords::HASTE))
-                        && !obj.keywords().contains(Keywords::DEFENDER)
+                        && (!obj.summoning_sick || self.keywords(card).contains(Keywords::HASTE))
+                        && !self.keywords(card).contains(Keywords::DEFENDER)
                         && !s.selected_attackers.contains(&card)
                         && emit(Action::Attack { card })
                     {
@@ -1461,9 +1466,8 @@ impl Game {
                 self.state.players[actor.index()].attacked_this_turn |= self.state.attack_declared;
                 let declared = std::mem::take(&mut self.state.selected_attackers);
                 for card in declared {
-                    let obj = &mut self.state.objects[card as usize];
-                    if !obj.keywords().contains(Keywords::VIGILANCE) {
-                        obj.tapped = true;
+                    if !self.keywords(card).contains(Keywords::VIGILANCE) {
+                        self.state.objects[card as usize].tapped = true;
                     }
                     self.state.attackers.push(Attacker {
                         card,
@@ -1666,9 +1670,10 @@ impl Game {
             damage: obj.damage,
             counters: obj.counters,
             used_abilities: obj.used_abilities,
+            attached_to: obj.attached_to,
             power: stats.power,
             toughness: stats.toughness,
-            keywords: obj.keywords(),
+            keywords: self.keywords(id),
             token: obj.card.token_info(),
         }
     }
@@ -1702,11 +1707,7 @@ impl Game {
             .collect();
         before
             .into_iter()
-            .map(|(before, tapped)| {
-                let mut event = self.move_object_raw_with_entry(before.id, destination, tapped);
-                event.before = before;
-                event
-            })
+            .map(|(before, tapped)| self.transition_object(before, destination, tapped))
             .collect()
     }
 
@@ -1752,6 +1753,16 @@ impl Game {
         tapped: bool,
     ) -> ZoneChange {
         let before = self.object_view(id);
+        self.transition_object(before, destination, tapped)
+    }
+
+    fn transition_object(
+        &mut self,
+        before: ObjectView,
+        destination: Zone,
+        tapped: bool,
+    ) -> ZoneChange {
+        let id = before.id;
         // CR111.8: after leaving the battlefield, a token cannot move again.
         if before.card.is_token() && before.zone != Zone::Battlefield {
             return ZoneChange {
@@ -1815,6 +1826,7 @@ impl Game {
             self.state.step_sources.retain(|&source| source != id);
             self.state.life_sources.retain(|&source| source != id);
             self.state.death_sources.retain(|&source| source != id);
+            self.state.equipment_sources.retain(|&source| source != id);
             self.state.attackers.retain(|attacker| attacker.card != id);
             self.state.blocking.retain(|&blocker| blocker != id);
             self.state
@@ -1842,6 +1854,7 @@ impl Game {
             Counters::default()
         };
         obj.used_abilities = 0;
+        obj.attached_to = None;
         if destination == Zone::Library {
             self.state.players[obj.owner.index()].library.push(id);
         }
@@ -1925,7 +1938,7 @@ impl Game {
                     .combatants()
                     .into_iter()
                     .filter(|&id| {
-                        let keywords = self.state.objects[id as usize].keywords();
+                        let keywords = self.keywords(id);
                         keywords.contains(Keywords::FIRST_STRIKE)
                             || keywords.contains(Keywords::DOUBLE_STRIKE)
                     })
@@ -2002,7 +2015,7 @@ impl Game {
             object,
             reference: self.object_ref(object),
             controller: obj.owner,
-            keywords: obj.keywords(),
+            keywords: self.keywords(object),
         }
     }
 
@@ -2071,9 +2084,7 @@ impl Game {
             self.state.first_strikers.contains(&id)
         } else {
             !self.state.first_strikers.contains(&id)
-                || self.state.objects[id as usize]
-                    .keywords()
-                    .contains(Keywords::DOUBLE_STRIKE)
+                || self.keywords(id).contains(Keywords::DOUBLE_STRIKE)
         }
     }
 
@@ -2184,7 +2195,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 21,
+            schema: 22,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -2414,7 +2425,8 @@ impl Game {
                 + s.cast_sources.len()
                 + s.step_sources.len()
                 + s.life_sources.len()
-                + s.death_sources.len())
+                + s.death_sources.len()
+                + s.equipment_sources.len())
                 * std::mem::size_of::<CardId>()
             + s.players
                 .iter()
@@ -2532,3 +2544,10 @@ mod effect_choice_tests;
 #[cfg(test)]
 #[path = "engine_vital_tests.rs"]
 mod vital_tests;
+
+#[path = "engine_equipment.rs"]
+mod equipment;
+
+#[cfg(test)]
+#[path = "engine_equipment_tests.rs"]
+mod equipment_tests;

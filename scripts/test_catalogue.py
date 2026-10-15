@@ -14,6 +14,49 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_equipment_fixed_bonuses_and_equip_costs_compile_completely(self):
+        c=self.card(type_line='Artifact — Equipment',mana_cost='{2}',oracle_text='Equipped creature gets +2/+1 and has flying and vigilance.\nEquip {1}{W}')
+        result=generate.equipment_template(c)
+        self.assertIsNotNone(result)
+        self.assertEqual(result[-3:],(2,1,9))
+        ability=result[3][0]
+        self.assertEqual(ability[0]['colored'],[1,0,0,0,0,0])
+        self.assertEqual(ability[0]['generic'],1)
+        self.assertEqual(ability[1],'CreatureYou')
+        self.assertEqual(ability[2],['AttachSource'])
+        self.assertTrue(ability[3])
+        self.assertIsNone(generate.permanent_program_template(c))
+        self.assertIsNotNone(generate.equipment_template(dict(c,oracle_text='Equipped creature has haste.\nEquip {0}')))
+
+    def test_equipment_unknown_layers_granted_abilities_and_costs_fail_closed(self):
+        for text in ['Equipped creature has hexproof from monocolored.\nEquip {2}',
+                     'Equipped creature has "Whenever this creature attacks, draw a card."\nEquip {2}',
+                     'Equipped creature has base power and toughness 3/3.\nEquip {2}',
+                     'Equipped creature gets +1/+1 for each artifact you control.\nEquip {2}',
+                     'Equipped creature gets +1/+1 and is a Hero.\nEquip {2}',
+                     'During your turn, equipped creature has first strike.\nEquip {2}',
+                     'Equipped creature gets +1/+1.\nEquip—Sacrifice a creature.',
+                     'Equipped creature gets +1/+1.\nEquip {2}. This ability costs {1} less to activate.',
+                     'Equipped creature gets +1/+1.\nEquip Detective {1}',
+                     'Equipped creature gets +1/+1.']:
+            self.assertIsNone(generate.equipment_template(self.card(type_line='Artifact — Equipment',oracle_text=text)),text)
+        self.assertIsNone(generate.equipment_template(self.card(type_line='Enchantment — Aura',oracle_text='Enchant creature\nEnchanted creature gets +1/+1.')))
+        self.assertIsNone(generate.targeted_program('Attach this Equipment to target creature you control. That creature gains wither until end of turn.'))
+        self.assertIsNone(generate.targeted_program('Attach it to target creature you control.'))
+
+    def test_equipment_milestone_all_admissions_and_unsupported_residuals(self):
+        import json
+        cards={c['name']:c for c in json.loads((generate.ROOT/'data/standard/cards.json').read_text())['cards']}
+        for name in ['Basilisk Collar','Celestial Armor','Coral Sword','Crude Bent Blade','Fireshrieker',
+                     'Glimmerlight','Gold Pan','Hard-Won Jitte','Illvoi Light Jammer','Lion Heart',
+                     'Malamet Scythe',"Meltstrider's Gear",'Ragged Short Spear','Short Bow','Skateboard',
+                     "Squire's Lightblade",'Stolen Stark Tech','Swiftfoot Boots','Sword of Vengeance',
+                     'Twin Blades','Vibranium Energy Daggers','Well-Worn Spatula']:
+            self.assertIsNotNone(generate.equipment_template(cards[name]),name)
+        for name in ['Adventuring Gear','Auxiliary Boosters','Bloodthorn Flail',"Captain America's Shield",
+                     'Dragonfire Blade',"Hunter's Blowgun",'Lotus Ring',"Pirate's Cutlass",'Spider-Suit']:
+            self.assertIsNone(generate.equipment_template(cards[name]),name)
+
     def test_vital_event_prefixes_are_complete_and_filtered(self):
         for prefix,condition in generate.VITAL_PREFIXES.items():
             result=generate.trigger_creature_template(self.card(oracle_text=prefix+'draw a card.'))

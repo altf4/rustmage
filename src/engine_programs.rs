@@ -456,6 +456,11 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::AttachSource => {
+                    if let Some(target) = item.targets.iter().find_map(|bound| bound.object) {
+                        self.attach_equipment(item.object, target);
+                    }
+                }
                 Instruction::ChooseObjects {
                     kind,
                     players,
@@ -765,9 +770,9 @@ impl Game {
                             .iter()
                             .copied()
                             .filter(|bound| match bound.target {
-                                Target::Card(id) => !self.state.objects[id as usize]
-                                    .keywords()
-                                    .contains(Keywords::INDESTRUCTIBLE),
+                                Target::Card(id) => {
+                                    !self.keywords(id).contains(Keywords::INDESTRUCTIBLE)
+                                }
                                 _ => true,
                             })
                             .collect();

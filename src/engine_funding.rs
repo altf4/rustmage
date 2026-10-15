@@ -39,6 +39,9 @@ struct ResourceKey {
     counters: Counters,
     used: u64,
     gained: Keywords,
+    owned: bool,
+    identity: Option<CardId>,
+    attached: Option<(CardId, u64)>,
 }
 #[derive(Hash, PartialEq, Eq)]
 struct FundingKey {
@@ -59,7 +62,12 @@ fn payable(pool: Mana, required: Mana, generic: u32) -> bool {
         .sum::<u64>()
         >= u64::from(generic)
 }
-fn source_obligations(goal: FundingGoal, object: Option<&Object>, life: i64) -> bool {
+fn source_obligations(
+    goal: FundingGoal,
+    object: Option<&Object>,
+    keywords: Keywords,
+    life: i64,
+) -> bool {
     let Some((source, index, counters, definition)) = goal.source else {
         return true;
     };
@@ -73,8 +81,15 @@ fn source_obligations(goal: FundingGoal, object: Option<&Object>, life: i64) -> 
     let requires_source =
         ability.cost.tap || ability.cost.sacrifice || ability.cost.remove.is_some();
     if let Some(object) = current {
-        Game::object_activation_available(object, life, ability, index as usize, goal.actor, true)
-            && object.counters.plus_one >= counters.plus_one
+        Game::object_activation_available(
+            object,
+            keywords,
+            life,
+            ability,
+            index as usize,
+            goal.actor,
+            true,
+        ) && object.counters.plus_one >= counters.plus_one
             && object.counters.minus_one >= counters.minus_one
             && object.counters.stun >= counters.stun
     } else {
@@ -92,17 +107,18 @@ impl FundingState {
             .iter()
             .enumerate()
             .filter(|(id, object)| {
-                object.owner == goal.actor
-                    && object.zone == Zone::Battlefield
-                    && (object.card.mana_color().is_some()
-                        || object
-                            .card
-                            .activations()
-                            .iter()
-                            .any(|ability| ability.mana_production().is_some())
-                        || goal
-                            .source
-                            .is_some_and(|(source, _, _, _)| source.card == *id as CardId))
+                object.zone == Zone::Battlefield
+                    && (object.card.equipment().is_some()
+                        || (object.owner == goal.actor
+                            && (object.card.mana_color().is_some()
+                                || object
+                                    .card
+                                    .activations()
+                                    .iter()
+                                    .any(|ability| ability.mana_production().is_some())
+                                || goal.source.is_some_and(|(source, _, _, _)| {
+                                    source.card == *id as CardId
+                                }))))
             })
             .map(|(id, object)| Resource {
                 id: id as CardId,
@@ -122,19 +138,42 @@ impl FundingState {
                 .find(|resource| resource.id == source.card)
                 .map(|resource| &resource.object)
         });
-        source_obligations(goal, object, self.life)
+        let keywords = goal
+            .source
+            .and_then(|(source, _, _, _)| self.resources.iter().find(|r| r.id == source.card))
+            .map_or(Keywords::NONE, |r| self.keywords(r));
+        source_obligations(goal, object, keywords, self.life)
+    }
+    fn keywords(&self, target: &Resource) -> Keywords {
+        let mut keywords = target.object.keywords();
+        if target.object.zone == Zone::Battlefield && target.object.card.is_creature() {
+            let reference = ObjectRef {
+                card: target.id,
+                generation: target.object.generation,
+            };
+            for source in &self.resources {
+                if source.object.zone == Zone::Battlefield
+                    && !source.object.card.is_creature()
+                    && source.object.attached_to == Some(reference)
+                    && let Some(spec) = source.object.card.equipment()
+                {
+                    keywords = keywords.union(spec.keywords);
+                }
+            }
+        }
+        keywords
     }
     fn moves(&self, goal: FundingGoal) -> Vec<FundingMove> {
         let mut moves = Vec::new();
         for (resource, entry) in self.resources.iter().enumerate() {
             let object = &entry.object;
-            if object.zone != Zone::Battlefield {
+            if object.zone != Zone::Battlefield || object.owner != goal.actor {
                 continue;
             }
             if !object.tapped
                 && (!object.card.is_creature()
                     || !object.summoning_sick
-                    || object.keywords().contains(Keywords::HASTE))
+                    || self.keywords(entry).contains(Keywords::HASTE))
                 && let Some(color) = object.card.mana_color()
             {
                 let mut production = [0; 6];
@@ -162,7 +201,13 @@ impl FundingState {
                     continue;
                 }
                 if !Game::object_activation_available(
-                    object, self.life, ability, index, goal.actor, false,
+                    object,
+                    self.keywords(entry),
+                    self.life,
+                    ability,
+                    index,
+                    goal.actor,
+                    false,
                 ) {
                     continue;
                 }
@@ -231,6 +276,11 @@ impl FundingState {
         }
     }
     fn key(&self, goal: FundingGoal) -> FundingKey {
+        // Attachment edges distinguish otherwise interchangeable mana sources.
+        let linked = self
+            .resources
+            .iter()
+            .any(|r| r.object.attached_to.is_some());
         let mut resources: Vec<_> = self
             .resources
             .iter()
@@ -245,6 +295,9 @@ impl FundingState {
                 counters: r.object.counters,
                 used: r.object.used_abilities,
                 gained: r.object.gained_keywords,
+                owned: r.object.owner == goal.actor,
+                identity: linked.then_some(r.id),
+                attached: r.object.attached_to.map(|r| (r.card, r.generation)),
             })
             .collect();
         resources.sort_by_key(|r| {
@@ -259,6 +312,7 @@ impl FundingState {
                 r.counters.stun,
                 r.used,
                 r.gained,
+                (r.owned, r.identity, r.attached),
             )
         });
         FundingKey {
@@ -271,13 +325,13 @@ impl FundingState {
         let mut upper = self.mana.map(u64::from);
         for resource in &self.resources {
             let object = &resource.object;
-            if object.zone != Zone::Battlefield {
+            if object.zone != Zone::Battlefield || object.owner != goal.actor {
                 continue;
             }
             let tap_ready = !object.tapped
                 && (!object.card.is_creature()
                     || !object.summoning_sick
-                    || object.keywords().contains(Keywords::HASTE));
+                    || self.keywords(resource).contains(Keywords::HASTE));
             if tap_ready && let Some(color) = object.card.mana_color() {
                 upper[color] = upper[color].saturating_add(1);
             }
@@ -291,7 +345,13 @@ impl FundingState {
                         && object.generation == source.generation
                         && pending as usize == index
                 }) || !Game::object_activation_available(
-                    object, self.life, ability, index, goal.actor, false,
+                    object,
+                    self.keywords(resource),
+                    self.life,
+                    ability,
+                    index,
+                    goal.actor,
+                    false,
                 ) {
                     continue;
                 }
@@ -382,7 +442,15 @@ impl Game {
         let object = goal
             .source
             .and_then(|(source, _, _, _)| self.state.objects.get(source.card as usize));
-        if !source_obligations(goal, object, self.state.players[goal.actor.index()].life) {
+        let keywords = object.map_or(Keywords::NONE, |_| {
+            self.keywords(goal.source.unwrap().0.card)
+        });
+        if !source_obligations(
+            goal,
+            object,
+            keywords,
+            self.state.players[goal.actor.index()].life,
+        ) {
             return false;
         }
         // The common prefunded path needs no resource graph or heap allocations.
@@ -453,5 +521,77 @@ impl Game {
             }
         }
         false
+    }
+}
+
+#[cfg(test)]
+mod equipment_tests {
+    use super::super::tests::{scenario, spawn};
+    use super::*;
+    #[test]
+    fn planning_recomputes_haste_after_supporting_equipment_leaves() {
+        let mut g = scenario();
+        let elf = spawn(&mut g, Player::P0, Card::LlanowarElves, Zone::Battlefield);
+        g.state.objects[elf as usize].summoning_sick = true;
+        let boots = spawn(
+            &mut g,
+            Player::P1,
+            Card::from_name("Swiftfoot Boots").unwrap(),
+            Zone::Battlefield,
+        );
+        assert!(g.attach_equipment(g.object_ref(boots), g.object_ref(elf)));
+        let goal = FundingGoal {
+            actor: Player::P0,
+            required: [0, 0, 0, 0, 1, 0],
+            generic: 0,
+            source: None,
+        };
+        let mut state = FundingState::from_game(&g, goal);
+        assert!(state.reachable(goal, &mut HashSet::new()));
+        let initial_key = state.key(goal);
+        state
+            .resources
+            .iter_mut()
+            .find(|r| r.id == boots)
+            .unwrap()
+            .object
+            .zone = Zone::Graveyard;
+        assert!(state.key(goal) != initial_key);
+        assert!(!state.reachable(goal, &mut HashSet::new()));
+        assert!(
+            !state
+                .moves(goal)
+                .iter()
+                .any(|m| state.resources[m.resource].id == elf)
+        );
+    }
+    #[test]
+    fn attachment_edges_distinguish_otherwise_identical_resources_in_funding_keys() {
+        let mut g = scenario();
+        let a = spawn(&mut g, Player::P0, Card::LlanowarElves, Zone::Battlefield);
+        let b = spawn(&mut g, Player::P0, Card::LlanowarElves, Zone::Battlefield);
+        let boots = spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Swiftfoot Boots").unwrap(),
+            Zone::Battlefield,
+        );
+        assert!(g.attach_equipment(g.object_ref(boots), g.object_ref(a)));
+        let goal = FundingGoal {
+            actor: Player::P0,
+            required: [0, 0, 0, 0, 1, 0],
+            generic: 0,
+            source: None,
+        };
+        let state = FundingState::from_game(&g, goal);
+        let mut changed = state.clone();
+        changed
+            .resources
+            .iter_mut()
+            .find(|r| r.id == boots)
+            .unwrap()
+            .object
+            .attached_to = Some(g.object_ref(b));
+        assert!(state.key(goal) != changed.key(goal));
     }
 }
