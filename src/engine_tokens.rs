@@ -51,7 +51,7 @@ impl Game {
                 .expect("object generation exhausted");
             object.tapped = tapped;
             object.summoning_sick = true;
-            self.register_static_source(id);
+            self.register_battlefield_sources(id);
             events.push(ZoneChange {
                 before,
                 after: self.object_ref(id),

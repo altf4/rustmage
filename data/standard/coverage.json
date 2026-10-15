@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "de83b56125ab9174efc05bceb56b4dd15ff34e28b9d2d012b4cd7a732496b2a6",
+  "catalogue_version": "97774ff16a99657d8ea4f9b06b54c9772b78a75f2de03ee1805ac9dd895e1dae",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 547,
-  "implemented_total": 553,
-  "token_definitions": 31,
+  "implemented_standard_cards": 580,
+  "implemented_total": 586,
+  "token_definitions": 34,
   "cards": [
     {
       "name": "Plains",
@@ -561,8 +561,8 @@
     {
       "name": "Agent of Atlas",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Agent of Kotis",
@@ -1899,8 +1899,8 @@
     {
       "name": "Balmor, Battlemage Captain",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Balthier and Fran",
@@ -2601,8 +2601,8 @@
     {
       "name": "Black Waltz No. 3",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Black Widow, Double Agent",
@@ -2853,8 +2853,8 @@
     {
       "name": "Boar-q-pine",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Bofur, Reliable Guardian // Concerted Care",
@@ -2949,8 +2949,8 @@
     {
       "name": "Boltwave",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Bombard",
@@ -4287,8 +4287,8 @@
     {
       "name": "Chandra's Emberling",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Chandra, Chill of Compliance",
@@ -5097,8 +5097,8 @@
     {
       "name": "Cori Mountain Stalwart",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Cori-Steel Cutter",
@@ -5265,8 +5265,8 @@
     {
       "name": "Crackling Cyclops",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Craftwork Crusher",
@@ -6393,8 +6393,8 @@
     {
       "name": "Devoted Duelist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Devouring Sugarmaw // Have for Dinner",
@@ -7713,8 +7713,8 @@
     {
       "name": "Elementalist Adept",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Elenda, Saint of Dusk",
@@ -9195,8 +9195,8 @@
     {
       "name": "Firebrand Archer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Fireglass Mentor",
@@ -11499,8 +11499,8 @@
     {
       "name": "Guttersnipe",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Guy in the Chair",
@@ -12801,8 +12801,8 @@
     {
       "name": "Iguana Parrot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Il Mheg Pixie",
@@ -12855,8 +12855,8 @@
     {
       "name": "Illvoi Operative",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Immersturm Predator",
@@ -13623,14 +13623,14 @@
     {
       "name": "Jeskai Brushmaster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Jeskai Devotee",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Jeskai Monument",
@@ -14163,8 +14163,8 @@
     {
       "name": "Kindlespark Duo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Kindred Judgment",
@@ -14481,8 +14481,8 @@
     {
       "name": "Kree Commandos",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Kree Sentinel",
@@ -15009,8 +15009,8 @@
     {
       "name": "Lightshell Duo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Lightshield Parry",
@@ -15867,8 +15867,8 @@
     {
       "name": "Malcolm, the Eyes",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Malevolent Chandelier",
@@ -16347,8 +16347,8 @@
     {
       "name": "Merciless Enforcers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Merfolk Cave-Diver",
@@ -16413,8 +16413,8 @@
     {
       "name": "Meticulous Artisan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Meticulous Commons",
@@ -18579,8 +18579,8 @@
     {
       "name": "Panicked Altisaur",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Panther Pounce",
@@ -19167,8 +19167,8 @@
     {
       "name": "Poised Practitioner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Poison Dart Frog",
@@ -19419,8 +19419,8 @@
     {
       "name": "Primeval Bounty",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Primordial Gnawer",
@@ -20409,8 +20409,8 @@
     {
       "name": "Ravenous Robots",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Ravine Raider",
@@ -21285,8 +21285,8 @@
     {
       "name": "Rite of the Dragoncaller",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Rite of the Moth",
@@ -21867,8 +21867,8 @@
     {
       "name": "Sabotender",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Sacred Foundry",
@@ -22455,8 +22455,8 @@
     {
       "name": "Screeching Soulbreaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Scrounge for Eternity",
@@ -24363,8 +24363,8 @@
     {
       "name": "Spitfire Lagac",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Splash Lasher",
@@ -27231,8 +27231,8 @@
     {
       "name": "Thor Odinson",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Thor, God of Thunder",
@@ -28773,8 +28773,8 @@
     {
       "name": "Unruly Catapult",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Unscrupulous Agent",
@@ -30477,8 +30477,8 @@
     {
       "name": "Wingblade Disciple",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Wingnut, Bat on the Belfry",

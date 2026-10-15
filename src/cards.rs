@@ -185,6 +185,8 @@ pub(crate) enum Instruction {
     Surveil(u16),
     Search(SearchSpec),
     Damage(i32),
+    DamagePlayers(PlayerSet, i32),
+    UntapSource,
     Grow {
         subject: Subject,
         power: i32,
@@ -310,7 +312,45 @@ impl Counters {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum CastFilter {
+    Any,
+    Creature,
+    Noncreature,
+    InstantSorcery,
+    Artifact,
+    // Compiler vocabulary; no complete admitted card currently uses this filter.
+    #[allow(dead_code)]
+    Enchantment,
+}
+impl CastFilter {
+    pub fn matches(self, card: Card) -> bool {
+        match self {
+            Self::Any => true,
+            Self::Creature => card.is_creature(),
+            Self::Noncreature => !card.is_creature(),
+            Self::InstantSorcery => card.kind_mask() & (4 | 8) != 0,
+            Self::Artifact => card.is_artifact(),
+            Self::Enchantment => card.kind_mask() & 32 != 0,
+        }
+    }
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum CastRelation {
+    You,
+    // Complete-text gating currently excludes the corresponding printed cards.
+    #[allow(dead_code)]
+    Opponent,
+    #[allow(dead_code)]
+    Any,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    SpellCast {
+        relation: CastRelation,
+        filter: CastFilter,
+        ordinal: Option<u64>,
+    },
     SelfEnters,
     SelfDies,
     SelfAttacks,

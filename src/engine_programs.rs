@@ -129,7 +129,9 @@ impl Game {
             for (index, ability) in source.card.triggers().iter().enumerate() {
                 let matched = match ability.condition {
                     TriggerCondition::SelfEnters | TriggerCondition::SelfEntersOrAttacks => same,
-                    TriggerCondition::SelfDies | TriggerCondition::SelfAttacks => false,
+                    TriggerCondition::SelfDies
+                    | TriggerCondition::SelfAttacks
+                    | TriggerCondition::SpellCast { .. } => false,
                     TriggerCondition::OtherCreatureEntersYou => {
                         yours && !same && entered.card.is_creature()
                     }
@@ -161,6 +163,49 @@ impl Game {
             targets: Vec::new(),
             mode: None,
         });
+    }
+
+    /// A spell becomes cast only after every declaration and cost is complete.
+    /// Completed insertion paths share this hook; abilities never count as casts.
+    pub(super) fn push_stack_item(&mut self, item: SpellView) {
+        let cast = (item.kind == StackKind::Spell).then_some((item.controller, item.source_card));
+        self.state.stack.push(item);
+        let Some((caster, card)) = cast else { return };
+        self.record_spell_cast(caster, card);
+    }
+
+    pub(super) fn record_spell_cast(&mut self, caster: Player, card: Card) {
+        let count = &mut self.state.players[caster.index()].spells_cast_this_turn;
+        *count = count.checked_add(1).expect("spell count exhausted");
+        let ordinal = *count;
+        let sources: Vec<_> = self
+            .state
+            .cast_sources
+            .iter()
+            .map(|&id| self.object_view(id))
+            .collect();
+        for source in sources {
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                if let TriggerCondition::SpellCast {
+                    relation,
+                    filter,
+                    ordinal: wanted,
+                } = ability.condition
+                {
+                    let related = match relation {
+                        CastRelation::You => source.owner == caster,
+                        CastRelation::Opponent => source.owner != caster,
+                        CastRelation::Any => true,
+                    };
+                    if related
+                        && filter.matches(card)
+                        && wanted.is_none_or(|wanted| wanted == ordinal)
+                    {
+                        self.queue_trigger(&source, index);
+                    }
+                }
+            }
+        }
     }
 
     pub(super) fn attack_triggers(&mut self, source: &ObjectView) {
@@ -446,7 +491,12 @@ impl Game {
                         self.state.players[player.index()].life -= i64::from(amount);
                     }
                 }
-                Instruction::Damage(amount) => {
+                Instruction::UntapSource => {
+                    if self.on_battlefield(item.card) && self.object_ref(item.card) == item.object {
+                        self.state.objects[item.card as usize].untap();
+                    }
+                }
+                Instruction::Damage(amount) | Instruction::DamagePlayers(_, amount) => {
                     let source = if self.object_ref(item.card) == item.object {
                         self.damage_source(item.card)
                     } else {
@@ -457,18 +507,25 @@ impl Game {
                             keywords: item.source_keywords,
                         }
                     };
-                    let events: Vec<_> = item
-                        .targets
-                        .iter()
-                        .copied()
-                        .filter(|&bound| self.same_target_object(bound))
-                        .map(|bound| DamageEvent {
-                            source,
-                            target: bound.target,
-                            amount,
-                            combat: false,
-                        })
-                        .collect();
+                    let event = |target| DamageEvent {
+                        source,
+                        target,
+                        amount,
+                        combat: false,
+                    };
+                    let events: Vec<_> = if let Instruction::DamagePlayers(players, _) = instruction
+                    {
+                        self.program_players(players, &item)
+                            .map(|player| event(Target::Player(player)))
+                            .collect()
+                    } else {
+                        item.targets
+                            .iter()
+                            .copied()
+                            .filter(|&bound| self.same_target_object(bound))
+                            .map(|bound| event(bound.target))
+                            .collect()
+                    };
                     self.apply_damage_batch(&events);
                 }
                 Instruction::Grow {

@@ -3,7 +3,15 @@
 use super::*;
 
 impl Game {
-    pub(super) fn register_static_source(&mut self, id: CardId) {
+    pub(super) fn register_battlefield_sources(&mut self, id: CardId) {
+        if self.state.objects[id as usize]
+            .card
+            .triggers()
+            .iter()
+            .any(|ability| matches!(ability.condition, TriggerCondition::SpellCast { .. }))
+        {
+            self.state.cast_sources.push(id);
+        }
         if !self.state.objects[id as usize]
             .card
             .static_modifiers()

@@ -41,7 +41,7 @@ pub(super) fn spawn(game: &mut Game, p: Player, card: Card, zone: Zone) -> CardI
         game.state.players[p.index()].library.push(id);
     }
     if zone == Zone::Battlefield {
-        game.register_static_source(id);
+        game.register_battlefield_sources(id);
     }
     id
 }
@@ -50,6 +50,7 @@ pub(super) fn scenario() -> Game {
     let mut game = fresh();
     game.state.objects.clear();
     game.state.static_sources.clear();
+    game.state.cast_sources.clear();
     for player in &mut game.state.players {
         player.library.clear();
         player.kept = true;
