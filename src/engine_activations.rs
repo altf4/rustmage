@@ -1,5 +1,14 @@
-//! Battlefield activations: legality, captured source context, and committed costs.
+//! Zone-qualified activations: legality, captured source context, and committed costs.
 use super::*;
+
+impl ActivatedAbility {
+    pub(super) fn source_zone(&self) -> Zone {
+        match self.origin {
+            ActivationOrigin::Battlefield => Zone::Battlefield,
+            ActivationOrigin::Hand => Zone::Hand,
+        }
+    }
+}
 
 impl Game {
     pub(super) fn add_mana(&mut self, player: Player, production: Mana) {
@@ -42,7 +51,7 @@ impl Game {
         actor: Player,
         sorcery: bool,
     ) -> bool {
-        if object.zone != Zone::Battlefield
+        if object.zone != ability.source_zone()
             || object.owner != actor
             || (ability.sorcery && !sorcery)
             || (ability.once_per_turn && object.used_abilities & (1u64 << index) != 0)
@@ -242,7 +251,8 @@ impl Game {
         let StackKind::ActivatedAbility { ability } = item.kind else {
             unreachable!()
         };
-        let cost: ActivationCost = item.source_card.activations()[ability as usize].cost;
+        let definition = &item.source_card.activations()[ability as usize];
+        let cost: ActivationCost = definition.cost;
         for (pool, cost) in self.state.players[item.controller.index()]
             .mana
             .iter_mut()
@@ -252,9 +262,9 @@ impl Game {
         }
         self.state.players[item.controller.index()].life -= i64::from(cost.life);
         let object = &mut self.state.objects[item.card as usize];
-        if object.generation != item.object.generation || object.zone != Zone::Battlefield {
+        if object.generation != item.object.generation || object.zone != definition.source_zone() {
             assert!(
-                !cost.tap && !cost.sacrifice && cost.remove.is_none(),
+                !cost.tap && !cost.sacrifice && !cost.discard && cost.remove.is_none(),
                 "unpaid source cost"
             );
             return;
@@ -266,7 +276,7 @@ impl Game {
         object.counters.plus_one -= counter_payment.plus_one;
         object.counters.minus_one -= counter_payment.minus_one;
         object.counters.stun -= counter_payment.stun;
-        if cost.sacrifice {
+        if cost.sacrifice || cost.discard {
             self.move_object(item.card, Zone::Graveyard);
         }
     }

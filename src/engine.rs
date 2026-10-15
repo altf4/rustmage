@@ -1,9 +1,9 @@
 use crate::cards::{
-    ActivatedAbility, ActivationCost, CastRelation, CounterKind, CounterSubject, Counters,
-    CreatureFilter, DamageQualification, DamageSubject, Effect, EffectChoiceKind, EntryTapped,
-    Instruction, ManaCost, ManaProduction, MillAmount, PlayerSet, RecoveryFilter, SacrificeFilter,
-    SearchSpec, Stats, StepGuard, StepValue, Subject, TargetPlan, TargetRule, TargetSpec,
-    TargetZone, TriggerCondition, TriggerStep, payments,
+    ActivatedAbility, ActivationCost, ActivationOrigin, CastRelation, CounterKind, CounterSubject,
+    Counters, CreatureFilter, DamageQualification, DamageSubject, Effect, EffectChoiceKind,
+    EntryTapped, Instruction, ManaCost, ManaProduction, MillAmount, PlayerSet, RecoveryFilter,
+    SacrificeFilter, SearchSpec, Stats, StepGuard, StepValue, Subject, TargetPlan, TargetRule,
+    TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
 #[path = "engine_activations.rs"]
 mod activations;
@@ -1141,7 +1141,7 @@ impl Game {
                     {
                         return true;
                     }
-                    if obj.zone == Zone::Battlefield
+                    if matches!(obj.zone, Zone::Battlefield | Zone::Hand)
                         && self.visit_activations(card, actor, sorcery, &mut emit)
                     {
                         return true;
@@ -2346,7 +2346,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 26,
+            schema: 27,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -2762,3 +2762,7 @@ mod damage_trigger_tests;
 #[path = "engine_ward_tests.rs"]
 mod ward_tests;
 pub use resolution_mana::ResolutionPaymentView;
+
+#[cfg(test)]
+#[path = "engine_cycling_tests.rs"]
+mod cycling_tests;

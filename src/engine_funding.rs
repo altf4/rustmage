@@ -76,10 +76,12 @@ fn source_obligations(
         return false;
     }
     let current = object.filter(|object| {
-        object.zone == Zone::Battlefield && object.generation == source.generation
+        object.zone == ability.source_zone() && object.generation == source.generation
     });
-    let requires_source =
-        ability.cost.tap || ability.cost.sacrifice || ability.cost.remove.is_some();
+    let requires_source = ability.cost.tap
+        || ability.cost.sacrifice
+        || ability.cost.discard
+        || ability.cost.remove.is_some();
     if let Some(object) = current {
         Game::object_activation_available(
             object,
@@ -107,18 +109,17 @@ impl FundingState {
             .iter()
             .enumerate()
             .filter(|(id, object)| {
-                object.zone == Zone::Battlefield
-                    && (object.card.attachment_bonus().is_some()
-                        || (object.owner == goal.actor
-                            && (object.card.mana_color().is_some()
-                                || object
-                                    .card
-                                    .activations()
-                                    .iter()
-                                    .any(|ability| ability.mana_production().is_some())
-                                || goal.source.is_some_and(|(source, _, _, _)| {
-                                    source.card == *id as CardId
-                                }))))
+                goal.source
+                    .is_some_and(|(source, _, _, _)| source.card == *id as CardId)
+                    || object.zone == Zone::Battlefield
+                        && (object.card.attachment_bonus().is_some()
+                            || (object.owner == goal.actor
+                                && (object.card.mana_color().is_some()
+                                    || object
+                                        .card
+                                        .activations()
+                                        .iter()
+                                        .any(|ability| ability.mana_production().is_some()))))
             })
             .map(|(id, object)| Resource {
                 id: id as CardId,

@@ -14,6 +14,57 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_cycling_extracts_only_complete_fixed_cost_hand_abilities(self):
+        row=self.card(oracle_text='Flying\nCycling {1}{U} ({1}{U}, Discard this card: Draw a card.)\nBasic landcycling {2}')
+        residual,abilities=generate.cycling_abilities(row)
+        self.assertEqual(residual['oracle_text'],'Flying')
+        self.assertEqual(len(abilities),2)
+        self.assertEqual(abilities[0][0]['origin'],'Hand');self.assertTrue(abilities[0][0]['discard'])
+        self.assertEqual(abilities[0][0]['colored'],[0,1,0,0,0,0])
+        self.assertEqual(abilities[0][2],['Draw(PlayerSet::Controller, 1)'])
+        self.assertIn('SearchFilter::BasicLand',abilities[1][2][0])
+        for kind in ['Plains','Island','Swamp','Mountain','Forest','Halfling']:
+            _,a=generate.cycling_abilities(self.card(oracle_text=kind+'cycling {2}'))
+            self.assertIn('SearchFilter::Subtype("'+kind+'")',a[0][2][0])
+        for text in ['Cycling {X}{G}','Cycling—Pay 2 life.','Cycling {4294967296}',
+                     'Cycling {2}.','Other creatures have cycling {2}.','Cycling {2} only on your turn']:
+            residual,a=generate.cycling_abilities(self.card(oracle_text=text))
+            self.assertEqual(residual['oracle_text'],text);self.assertEqual(a,[])
+        row=self.card(layout='transform',oracle_text='Cycling {2}')
+        self.assertEqual(generate.cycling_abilities(row),(row,[]))
+        rust=generate.rust_activations(abilities)
+        self.assertIn('origin: ActivationOrigin::Hand',rust);self.assertIn('discard: true',rust)
+
+    def test_cycling_complete_admissions_preserve_residual_rules(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,coverage=generate.compile_catalogue(rows,target)
+        supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for name in ['Apex Witchstalker','Balamb T-Rexaur','Bedhead Beastie','Borough Backup','Canyon Crawler','Capital City',
+                     'Cloudbound Moogle','Daggermaw Megalodon','Hill Gigas','Hobbit Hole','Jennika, Bad Apple Big Sister',
+                     'Kree Sentinel','Lightshield Parry','Locust Spray','Marauding Brinefang','Migrating Ketradon','Mongoose Lizard',
+                     'Nurturing Bristleback','Rampaging Spiketail','Saber-Tooth Moose-Lion','Savage Land Dinosaur','Shefet Archfiend',
+                     'Shepherding Spirits','Skycrash','Slavering Branchsnapper','Soaring Sandwing','Stockman, Mad Fly-entist',
+                     'Stratosoarer','Topiary Panther','Undulating Witness','Vinelasher Adept']:
+            self.assertIn(name,supported)
+        for name in ['A.I.M. Scientists','Agonasaur Rex',"Howler's Heavy",'Marauding Mako','Magmakin Artillerist',
+                     'Scrounging Skyray','Webstrike Elite',"Valor's Flagship",'Night Market','Clamorous Ironclad','Pest Control']:
+            self.assertNotIn(name,supported)
+
+    def test_cycling_combines_with_battlefield_abilities_without_overflowing_slots(self):
+        import hashlib,json
+        def compile_text(text):
+            cards=[self.card(name='Test Cycler',oracle_id='test-cycler',oracle_text=text)]
+            canonical=json.dumps(cards,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()
+            snapshot=dict(cards=cards,card_count=1,cards_sha256=hashlib.sha256(canonical).hexdigest())
+            return generate.compile_catalogue(snapshot,dict(banned_card_names=[]))
+        rust,c=compile_text('{1}: Draw a card.\nCycling {2}\nCycling {U}')
+        self.assertTrue(next(c for c in c['cards'] if c['name']=='Test Cycler')['implemented'])
+        self.assertIn('origin: ActivationOrigin::Battlefield',rust);self.assertIn('origin: ActivationOrigin::Hand',rust)
+        _,c=compile_text('{1}: Draw a card.\n'+'\n'.join(['Cycling {2}']*64))
+        self.assertFalse(next(c for c in c['cards'] if c['name']=='Test Cycler')['implemented'])
+
     def test_mana_ward_is_triggered_and_repeated_instances_are_preserved(self):
         row=self.card(oracle_text='Flying, ward {2}\nWard {U}\nWhen this creature enters, draw a card.')
         result=generate.trigger_creature_template(row)
