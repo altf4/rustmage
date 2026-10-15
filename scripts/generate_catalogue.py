@@ -1242,11 +1242,34 @@ def land_template(card):
     return 'Land', keywords, triggers, activations, enters, entry
 
 
+def cycling_abilities(card):
+    """Extract only complete fixed-mana cycling lines; compile all residual text."""
+    text=card.get('oracle_text')
+    if not isinstance(text,str) or card.get('layout')!='normal': return card,[]
+    body,abilities=[],[]
+    for line in text.split('\n'):
+        clean=re.sub(r'\([^()]*\)', '',line).strip()
+        match=re.fullmatch(r'(Cycling|Basic landcycling|Plainscycling|Islandcycling|Swampcycling|Mountaincycling|Forestcycling|Halflingcycling) ((?:\{(?:[0-9]+|[WUBRGC])\})+)',clean)
+        if match is None:
+            body.append(line);continue
+        kind,mana=match.groups()
+        if mana_cost_spec(mana) is None:
+            body.append(line);continue
+        cost=activation_cost(mana)
+        cost.update(discard=True,origin='Hand')
+        if kind=='Cycling': program=['Draw(PlayerSet::Controller, 1)']
+        else:
+            filter_='BasicLand' if kind=='Basic landcycling' else 'Subtype('+json.dumps(kind.removesuffix('cycling'))+')'
+            program=[f'Search(SearchSpec {{ filter: SearchFilter::{filter_}, maximum: 1, destination: SearchDestination::Hand, tapped: false, reveal: true }})']
+        abilities.append((cost,'None',program,False,False))
+    return dict(card,oracle_text='\n'.join(body)),abilities
+
+
 def rust_activations(abilities):
     rows = []
     for cost, targets, program, sorcery, once in abilities:
         remove = 'None' if cost['remove'] is None else f"Some(({'None' if cost['remove'][0] is None else 'Some(CounterKind::' + cost['remove'][0] + ')'}, {cost['remove'][1]}))"
-        rows.append(f"ActivatedAbility {{ cost: ActivationCost {{ colored: {cost['colored']}, generic: {cost['generic']}, mana_component: {str(cost['mana_component']).lower()}, tap: {str(cost['tap']).lower()}, sacrifice: {str(cost['sacrifice']).lower()}, life: {cost['life']}, remove: {remove} }}, targets: {rust_targets(targets)}, program: {rust_program(program)}, sorcery: {str(sorcery).lower()}, once_per_turn: {str(once).lower()} }}")
+        rows.append(f"ActivatedAbility {{ origin: ActivationOrigin::{cost.get('origin','Battlefield')}, cost: ActivationCost {{ colored: {cost['colored']}, generic: {cost['generic']}, mana_component: {str(cost['mana_component']).lower()}, tap: {str(cost['tap']).lower()}, sacrifice: {str(cost['sacrifice']).lower()}, discard: {str(cost.get('discard',False)).lower()}, life: {cost['life']}, remove: {remove} }}, targets: {rust_targets(targets)}, program: {rust_program(program)}, sorcery: {str(sorcery).lower()}, once_per_turn: {str(once).lower()} }}")
     return '&[' + ', '.join(rows) + ']'
 
 
@@ -1277,7 +1300,7 @@ def compile_catalogue(snapshot, target):
     equipment_rows = []
     aura_rows = []
     for index, name in enumerate(names):
-        card = cards.get(name, {})
+        card, cycling = cycling_abilities(cards.get(name, {}))
         cost = card.get('mana_cost', '')
         keywords = sum(KEYWORDS[word] for word in {keyword.casefold() for keyword in card.get('keywords', [])} & KEYWORDS.keys())
         effect = 'Unsupported'
@@ -1325,6 +1348,9 @@ def compile_catalogue(snapshot, target):
             elif static is not None:
                 effect, keywords, abilities, activations, enters, modifiers = static
                 static_rows.append(f'        {index} => &[{", ".join(modifiers)}],')
+        if effect != 'Unsupported':
+            activations = [*activations, *cycling]
+            if len(activations) > 64: effect = 'Unsupported'; activations = []
         programs = {
             'Damage(3)': ('Any', ['Damage(3)']), 'Damage(2)': ('Any', ['Damage(2)']),
             'Grow': ('Creature', [grow_instruction('Targets', 3, 3)]), 'Draw': ('None', ['Draw(PlayerSet::Controller, 2)']),

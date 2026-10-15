@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "a79b602490f257be9353bef4c879c104a5f192657be4cb58eae2c025910e2222",
+  "catalogue_version": "2c1aa02f043a9d24a749cb82c9619ae3be31065f435e5e3d262881ff081efece",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 728,
-  "implemented_total": 734,
-  "token_definitions": 36,
+  "implemented_standard_cards": 759,
+  "implemented_total": 765,
+  "token_definitions": 39,
   "cards": [
     {
       "name": "Plains",
@@ -1107,8 +1107,8 @@
     {
       "name": "Apex Witchstalker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Apocalypse Runner",
@@ -1869,8 +1869,8 @@
     {
       "name": "Balamb T-Rexaur",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Balemurk Leech",
@@ -2223,8 +2223,8 @@
     {
       "name": "Bedhead Beastie",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Bedrock Tortoise",
@@ -3051,8 +3051,8 @@
     {
       "name": "Borough Backup",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Borrowed Knowledge",
@@ -3831,8 +3831,8 @@
     {
       "name": "Canyon Crawler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Canyon Vaulter",
@@ -3849,8 +3849,8 @@
     {
       "name": "Capital City",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Captain America's Shield",
@@ -4689,8 +4689,8 @@
     {
       "name": "Cloudbound Moogle",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Cloudsculpt Technician",
@@ -5679,8 +5679,8 @@
     {
       "name": "Daggermaw Megalodon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Dai Li Agents",
@@ -12279,8 +12279,8 @@
     {
       "name": "Hill Gigas",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Hinterland Sanctifier",
@@ -12327,8 +12327,8 @@
     {
       "name": "Hobbit Hole",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Hobgoblin, Mantled Marauder",
@@ -13599,8 +13599,8 @@
     {
       "name": "Jennika, Bad Apple Big Sister",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Jenova, Ancient Calamity",
@@ -14487,8 +14487,8 @@
     {
       "name": "Kree Sentinel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Krenko's Buzzcrusher",
@@ -15015,8 +15015,8 @@
     {
       "name": "Lightshield Parry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Lightstall Inquisitor",
@@ -15219,8 +15219,8 @@
     {
       "name": "Locust Spray",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Lodestone Needle // Guidestone Compass",
@@ -15945,8 +15945,8 @@
     {
       "name": "Marauding Brinefang",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Marauding Mako",
@@ -16533,8 +16533,8 @@
     {
       "name": "Migrating Ketradon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Mikey & Don, Party Planners",
@@ -16995,8 +16995,8 @@
     {
       "name": "Mongoose Lizard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Monica Rambeau // Photon, Living Light",
@@ -17877,8 +17877,8 @@
     {
       "name": "Nurturing Bristleback",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Nurturing Pixie",
@@ -20199,8 +20199,8 @@
     {
       "name": "Rampaging Spiketail",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Rampart Hunter",
@@ -21855,8 +21855,8 @@
     {
       "name": "Saber-Tooth Moose-Lion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Sabotage Strategist",
@@ -22161,8 +22161,8 @@
     {
       "name": "Savage Land Dinosaur",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Savage Mansion",
@@ -22953,8 +22953,8 @@
     {
       "name": "Shefet Archfiend",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Sheltered by Ghosts",
@@ -22971,8 +22971,8 @@
     {
       "name": "Shepherding Spirits",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Sheriff of Safe Passage",
@@ -23415,8 +23415,8 @@
     {
       "name": "Skycrash",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Skyknight Squire",
@@ -23499,8 +23499,8 @@
     {
       "name": "Slavering Branchsnapper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Sledge-Class Seedship",
@@ -23703,8 +23703,8 @@
     {
       "name": "Soaring Sandwing",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Soaring Stoneglider",
@@ -24933,8 +24933,8 @@
     {
       "name": "Stockman, Mad Fly-entist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Stockpiling Celebrant",
@@ -25107,8 +25107,8 @@
     {
       "name": "Stratosoarer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Streaking Oilgorger",
@@ -27831,8 +27831,8 @@
     {
       "name": "Topiary Panther",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Torch the Tower",
@@ -28641,8 +28641,8 @@
     {
       "name": "Undulating Witness",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Undying Malice",
@@ -29415,8 +29415,8 @@
     {
       "name": "Vinelasher Adept",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Vinereap Mentor",

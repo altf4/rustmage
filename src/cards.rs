@@ -145,6 +145,7 @@ pub enum SearchFilter {
     Creature,
     Artifact,
     Enchantment,
+    Subtype(&'static str),
 }
 impl SearchFilter {
     pub(crate) fn matches(self, card: Card) -> bool {
@@ -154,6 +155,11 @@ impl SearchFilter {
             Self::Creature => card.is_creature(),
             Self::Artifact => card.is_artifact(),
             Self::Enchantment => card.kind_mask() & 32 != 0,
+            Self::Subtype(subtype) => card
+                .info()
+                .type_line
+                .split_once(" — ")
+                .is_some_and(|(_, types)| types.split_whitespace().any(|ty| ty == subtype)),
         }
     }
 }
@@ -548,11 +554,18 @@ pub(crate) struct ActivationCost {
     pub mana_component: bool,
     pub tap: bool,
     pub sacrifice: bool,
+    pub discard: bool,
     pub life: u16,
     pub remove: Option<(Option<CounterKind>, u32)>,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum ActivationOrigin {
+    Battlefield,
+    Hand,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct ActivatedAbility {
+    pub origin: ActivationOrigin,
     pub cost: ActivationCost,
     pub targets: TargetPlan,
     pub program: &'static [Instruction],

@@ -48,7 +48,7 @@ pool, 60-card minimum and copy limits, then rejects every unsupported card.
 The known Standard unlimited-copy exceptions are represented independently of
 whether their rules have been implemented.
 
-Coverage is **728 / 5,164 executable Standard cards**, plus six legacy regression
+Coverage is **759 / 5,164 executable Standard cards**, plus six legacy regression
 cards. The additions are ten exact vanilla-creature templates and 25 creatures
 whose entire text consists of implemented static keywords, plus four exact
 single-instruction bounce/destruction spells, additional spell programs and creatures with complete supported trigger programs.
@@ -183,3 +183,8 @@ Current coverage is 728/5,164; 4,436 identities remain unsupported, with 36 toke
 factories. Owned payment windows, exact ward stack associations, paid branches
 and restricted counters precede wider ward costs, generic optional payments,
 uncounterability and remaining rules.
+
+[Hand-zone cycling and typecycling](cycling.md) add 31 complete definitions.
+Current coverage is 759/5,164; 4,405 identities remain unsupported, with 39 token
+factories. Source-discard costs, exact hand incarnation funding and basic/subtype
+searches precede cycling/discard triggers, variable costs and remaining rules.
