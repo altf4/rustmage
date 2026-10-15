@@ -37,6 +37,7 @@ impl Game {
                 gained_keywords: Keywords::NONE,
                 counters: Counters::default(),
                 used_abilities: 0,
+                attached_to: None,
             };
             if id as usize == self.state.objects.len() {
                 self.state.objects.push(object);
@@ -92,6 +93,7 @@ impl Game {
         object.gained_keywords = Keywords::NONE;
         object.counters = Counters::default();
         object.used_abilities = 0;
+        object.attached_to = None;
         // No zone-change event: this game object ceases to exist (CR111.7).
         self.state.free_tokens.push(id);
     }

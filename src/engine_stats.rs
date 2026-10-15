@@ -4,6 +4,9 @@ use super::*;
 
 impl Game {
     pub(super) fn register_battlefield_sources(&mut self, id: CardId) {
+        if self.state.objects[id as usize].card.equipment().is_some() {
+            self.state.equipment_sources.push(id);
+        }
         let triggers = self.state.objects[id as usize].card.triggers();
         if triggers
             .iter()
@@ -68,7 +71,7 @@ impl Game {
                     .split_once(" — ")
                     .is_some_and(|(_, types)| types.split_whitespace().any(|word| word == subtype))
             })
-            && object.keywords().contains(filter.keyword)
+            && (filter.keyword == Keywords::NONE || self.keywords(id).contains(filter.keyword))
             && (!filter.attacking || self.state.attackers.iter().any(|a| a.card == id))
             && filter
                 .tokens
@@ -85,6 +88,7 @@ impl Game {
         if object.zone != Zone::Battlefield || !object.card.is_creature() {
             return stats;
         }
+        stats += self.equipment_bonus(id).0;
         // Only the small live-source index is traversed. Central zone transitions
         // maintain it, and snapshots own it; no derived stat cache needs invalidation.
         for &source in &self.state.static_sources {

@@ -85,9 +85,7 @@ impl Game {
         let returned: Vec<_> = before
             .into_iter()
             .map(|(before, destination, tapped)| {
-                let mut event = self.move_object_raw_with_entry(before.id, destination, tapped);
-                event.before = before;
-                event
+                self.transition_object(before, destination, tapped)
             })
             .collect();
         for event in &returned {

@@ -36,6 +36,7 @@ pub(super) fn spawn(game: &mut Game, p: Player, card: Card, zone: Zone) -> CardI
         gained_keywords: Keywords::NONE,
         counters: Counters::default(),
         used_abilities: 0,
+        attached_to: None,
     });
     if zone == Zone::Library {
         game.state.players[p.index()].library.push(id);
@@ -54,6 +55,7 @@ pub(super) fn scenario() -> Game {
     game.state.step_sources.clear();
     game.state.life_sources.clear();
     game.state.death_sources.clear();
+    game.state.equipment_sources.clear();
     for player in &mut game.state.players {
         player.library.clear();
         player.kept = true;

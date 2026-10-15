@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "04c5bc3a2301ddf0da7f6e7963e459a944bc14fbadd4abc8d4ad035ffc81fc2b",
+  "catalogue_version": "bd071a60cc0f931aa83e8255f0a275c3dcd0735c81e0458959151402824bebdf",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 634,
-  "implemented_total": 640,
+  "implemented_standard_cards": 656,
+  "implemented_total": 662,
   "token_definitions": 35,
   "cards": [
     {
@@ -2079,8 +2079,8 @@
     {
       "name": "Basilisk Collar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Basking Capybara",
@@ -4179,8 +4179,8 @@
     {
       "name": "Celestial Armor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Celestial Reunion",
@@ -5085,8 +5085,8 @@
     {
       "name": "Coral Sword",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Cori Mountain Monastery",
@@ -5403,8 +5403,8 @@
     {
       "name": "Crude Bent Blade",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Cruel Administrator",
@@ -9207,8 +9207,8 @@
     {
       "name": "Fireshrieker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Firespitter Whelp",
@@ -10695,8 +10695,8 @@
     {
       "name": "Glimmerlight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Glimpse the Core",
@@ -10923,8 +10923,8 @@
     {
       "name": "Gold Pan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Gold Rush",
@@ -11655,8 +11655,8 @@
     {
       "name": "Hard-Won Jitte",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Hardbristle Bandit",
@@ -12849,8 +12849,8 @@
     {
       "name": "Illvoi Light Jammer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Illvoi Operative",
@@ -15093,8 +15093,8 @@
     {
       "name": "Lion Heart",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Lionheart Glimmer",
@@ -15837,8 +15837,8 @@
     {
       "name": "Malamet Scythe",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Malamet Veteran",
@@ -16269,8 +16269,8 @@
     {
       "name": "Meltstrider's Gear",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Meltstrider's Resolve",
@@ -20049,8 +20049,8 @@
     {
       "name": "Ragged Short Spear",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Raging Battle Mouse",
@@ -23091,8 +23091,8 @@
     {
       "name": "Short Bow",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Shredder's Armor",
@@ -23343,8 +23343,8 @@
     {
       "name": "Skateboard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Skeleton Archer",
@@ -24489,8 +24489,8 @@
     {
       "name": "Squire's Lightblade",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Squirming Emergence",
@@ -24957,8 +24957,8 @@
     {
       "name": "Stolen Stark Tech",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Stolen Uniform",
@@ -25761,8 +25761,8 @@
     {
       "name": "Swiftfoot Boots",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Swiftwater Cliffs",
@@ -25779,8 +25779,8 @@
     {
       "name": "Sword of Vengeance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Sword of Wealth and Power",
@@ -28305,8 +28305,8 @@
     {
       "name": "Twin Blades",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Twin Bolt",
@@ -29307,8 +29307,8 @@
     {
       "name": "Vibranium Energy Daggers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Vibrant Cityscape",
@@ -30213,8 +30213,8 @@
     {
       "name": "Well-Worn Spatula",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Werefox Bodyguard",

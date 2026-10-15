@@ -8,7 +8,7 @@ impl Game {
                 && b.owner == self.state.active.other()
                 && b.card.is_creature()
                 && !b.tapped
-                && !b.keywords().contains(Keywords::CANT_BLOCK)
+                && !self.keywords(id).contains(Keywords::CANT_BLOCK)
         })
     }
 
@@ -23,11 +23,14 @@ impl Game {
             && a.zone == Zone::Battlefield
             && a.owner == self.state.active
             && a.card.is_creature()
-            && !a.keywords().contains(Keywords::CANT_BE_BLOCKED)
-            && (!a.keywords().contains(Keywords::NO_TOKEN_BLOCKERS) || !b.card.is_token())
-            && (!a.keywords().contains(Keywords::FLYING)
-                || b.keywords().contains(Keywords::FLYING)
-                || b.keywords().contains(Keywords::REACH))
+            && !self.keywords(attacker).contains(Keywords::CANT_BE_BLOCKED)
+            && (!self
+                .keywords(attacker)
+                .contains(Keywords::NO_TOKEN_BLOCKERS)
+                || !b.card.is_token())
+            && (!self.keywords(attacker).contains(Keywords::FLYING)
+                || self.keywords(blocker).contains(Keywords::FLYING)
+                || self.keywords(blocker).contains(Keywords::REACH))
     }
 
     fn minimum_blockers(&self, attacker: CardId) -> usize {
@@ -150,5 +153,5 @@ impl Game {
     }
 }
 fn has_attacker_keyword(game: &Game, id: CardId, keyword: Keywords) -> bool {
-    game.state.objects[id as usize].keywords().contains(keyword)
+    game.keywords(id).contains(keyword)
 }

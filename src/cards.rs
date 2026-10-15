@@ -189,6 +189,7 @@ pub(crate) struct SacrificeFilter {
 /// Immutable rule bytecode. Only the program counter and choices live in state.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    AttachSource,
     ChooseObjects {
         kind: EffectChoiceKind,
         players: PlayerSet,
@@ -303,6 +304,12 @@ pub(crate) struct CreatureFilter {
 pub(crate) struct StaticModifier {
     pub filter: CreatureFilter,
     pub stats: Stats,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct EquipmentSpec {
+    pub stats: Stats,
+    pub keywords: Keywords,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -614,6 +621,9 @@ impl Card {
     }
     pub(crate) fn static_modifiers(self) -> &'static [StaticModifier] {
         generated::static_modifiers(self)
+    }
+    pub(crate) fn equipment(self) -> Option<EquipmentSpec> {
+        generated::equipment(self)
     }
     pub fn keywords(self) -> Keywords {
         self.info().keywords

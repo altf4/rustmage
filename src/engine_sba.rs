@@ -13,6 +13,7 @@ pub(super) struct SbaBatch {
     resume: Pending,
     deaths: Vec<CardId>,
     ceased: Vec<CardId>,
+    detached: Vec<ObjectRef>,
     pairs: Vec<(ObjectRef, u32)>,
     lost: [bool; 2],
     pub groups: Vec<LegendGroup>,
@@ -22,6 +23,7 @@ impl SbaBatch {
         std::mem::size_of::<Self>()
             + (self.deaths.len() + self.ceased.len()) * std::mem::size_of::<CardId>()
             + self.pairs.len() * std::mem::size_of::<(ObjectRef, u32)>()
+            + self.detached.len() * std::mem::size_of::<ObjectRef>()
             + self.groups.len() * std::mem::size_of::<LegendGroup>()
             + self.groups.iter().map(|g| g.objects.len()).sum::<usize>()
                 * std::mem::size_of::<ObjectRef>()
@@ -33,6 +35,7 @@ impl Game {
             resume: self.state.pending.clone(),
             deaths: Vec::new(),
             ceased: Vec::new(),
+            detached: Vec::new(),
             pairs: Vec::new(),
             groups: Vec::new(),
             lost: self
@@ -51,6 +54,15 @@ impl Game {
             if object.zone != Zone::Battlefield {
                 continue;
             }
+            if let Some(target) = object.attached_to
+                && (object.card.is_creature()
+                    || target == self.object_ref(id)
+                    || !self.on_battlefield(target.card)
+                    || self.object_ref(target.card) != target
+                    || !self.state.objects[target.card as usize].card.is_creature())
+            {
+                batch.detached.push(self.object_ref(id));
+            }
             if object.card.is_legendary() {
                 legends[object.owner.index()]
                     .entry(object.card.name())
@@ -60,7 +72,7 @@ impl Game {
             if object.card.is_creature() {
                 let toughness = self.stats(id).toughness;
                 if toughness <= 0
-                    || (!object.keywords().contains(Keywords::INDESTRUCTIBLE)
+                    || (!self.keywords(id).contains(Keywords::INDESTRUCTIBLE)
                         && (object.damage >= toughness || object.deathtouch_since_sba))
                 {
                     batch.deaths.push(id);
@@ -94,6 +106,7 @@ impl Game {
         loop {
             let batch = self.collect_sba_batch();
             let changed = !batch.deaths.is_empty()
+                || !batch.detached.is_empty()
                 || !batch.ceased.is_empty()
                 || !batch.pairs.is_empty()
                 || !batch.groups.is_empty()
@@ -156,6 +169,11 @@ impl Game {
             self.death_trigger_sources()
         };
         let events = self.move_objects_raw(&batch.deaths, Zone::Graveyard);
+        for source in batch.detached {
+            if self.object_ref(source.card) == source {
+                self.state.objects[source.card as usize].attached_to = None;
+            }
+        }
         // Cancellation belongs to the frozen event, never a newly returned object.
         for (object, pairs) in batch.pairs {
             if self.object_ref(object.card) == object {

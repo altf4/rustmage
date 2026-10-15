@@ -130,7 +130,7 @@ impl Game {
                 };
                 if obj.zone == Zone::Battlefield
                     && obj.owner != controller
-                    && obj.keywords().contains(Keywords::HEXPROOF)
+                    && self.keywords(id).contains(Keywords::HEXPROOF)
                 {
                     return false;
                 }
@@ -229,7 +229,7 @@ impl Game {
             id,
             kind: StackKind::Spell,
             source_card: self.state.objects[card as usize].card,
-            source_keywords: self.state.objects[card as usize].keywords(),
+            source_keywords: self.keywords(card),
             source_tapped: self.state.objects[card as usize].tapped,
             card,
             object,
