@@ -49,6 +49,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut targets = 0;
     let mut multi = 0;
     let mut activations = 0;
+    let mut payments = 0;
 
     for seed in 0..games {
         let mut game = Game::new(Config {
@@ -72,6 +73,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     | Action::BeginActivate { .. }
                     | Action::ActivateMana { .. }
             ));
+            payments += usize::from(matches!(action, Action::PayCosts { .. }));
             game.apply(game.actor().unwrap(), action)?;
             total += 1;
         }
@@ -80,7 +82,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
     println!(
-        "Completed {games} mana/token games, {total} decisions, {targets} target choices, {multi} multi-target casts, {activations} activations; catalogue {}",
+        "Completed {games} mana/token games, {total} decisions, {targets} target choices, {multi} multi-target casts, {activations} activations, {payments} payments; catalogue {}",
         rustmage::CATALOGUE_VERSION
     );
     Ok(())

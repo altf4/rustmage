@@ -243,6 +243,16 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIsNone(generate.statement_program(f'Create a {kind} token.'))
         self.assertIsNotNone(generate.statement_program('Investigate.'))
 
+    def test_funding_kernel_admits_finite_conversion_and_gates_unbounded_free_production(self):
+        self.assertIsNone(generate.permanent_program_template(self.card(oracle_text='{0}: Add {G}.')))
+        self.assertIsNone(generate.permanent_program_template(self.card(oracle_text='{1}: Add {G}{G}.')))
+        for text in ['{2}: Add one mana of any color.',
+                     '{0}, {T}: Add {G}.',
+                     '{0}: Add {G}. Activate only once each turn.']:
+            self.assertIsNotNone(generate.permanent_program_template(self.card(oracle_text=text)),text)
+        self.assertTrue(generate.activation_cost('{0}, {T}')['mana_component'])
+        self.assertFalse(generate.activation_cost('{T}')['mana_component'])
+
 
 if __name__ == '__main__':
     unittest.main()

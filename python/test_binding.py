@@ -17,7 +17,7 @@ class BindingTests(unittest.TestCase):
             observation = game.observe("P0")
             coverage = json.loads((Path(__file__).resolve().parents[1] / "data/standard/coverage.json").read_text())
             self.assertEqual(observation["catalogue"], coverage["catalogue_version"])
-            self.assertEqual(observation["schema"], 10)
+            self.assertEqual(observation["schema"], 11)
             self.assertEqual(len(observation["objects"]), 7)
             self.assertTrue(all(o["owner"] == "P0" for o in observation["objects"]))
             self.assertEqual(game.observe("P1")["actions"], [])
@@ -207,6 +207,54 @@ else:
             actual.pop("revision")
             self.assertEqual(actual, expected)
 
+    def test_unfunded_cast_targets_then_funds_in_owned_payment_window(self):
+        deck = ["Mountain"] * 10 + ["Lightning Bolt"] * 2
+        with Game([deck, deck], seed=7, deck_rules="Freeform") as game:
+            for _ in range(200):
+                obs = game.observe("P0")
+                obs = game.observe(obs["actor"])
+                index = next((i for i,a in enumerate(obs["actions"]) if a["kind"] == "AnnounceCast"), None)
+                if index is not None:
+                    game.step(obs,index)
+                    break
+                def score(a):
+                    return {"Keep":100,"PlayLand":90,"Concede":-1000,"Mulligan":-100,"TapMana":-5}.get(a["kind"],0)
+                game.step(obs,max(range(len(obs["actions"])),key=lambda i: score(obs["actions"][i])))
+            else:
+                self.fail("unfunded announcement never offered")
+            actor = obs["actor"]
+            opponent = "P1" if actor == "P0" else "P0"
+            current=game.observe(actor)
+            index=next(i for i,a in enumerate(current["actions"]) if a["kind"] == "ChooseTarget" and a["target"] == {"Player":opponent})
+            game.step(current,index)
+            current=game.observe(actor)
+            self.assertEqual(current["decision"],"pay_costs")
+            self.assertEqual(current["payment_request"]["required"],[0,0,0,1,0,0])
+            self.assertIsNone(game.observe(opponent)["payment_request"])
+            self.assertEqual(game.observe(opponent)["actions"],[])
+            saved=game.snapshot()
+            def finish(handle):
+                current=handle.observe(actor)
+                index=next(i for i,a in enumerate(current["actions"]) if a["kind"] == "TapMana")
+                handle.step(current,index)
+                current=handle.observe(actor)
+                index=next(i for i,a in enumerate(current["actions"]) if a["kind"] == "PayCosts")
+                handle.step(current,index)
+                self.assertEqual(len(handle.observe(actor)["stack"]),1)
+                for _ in range(2):
+                    current=handle.observe("P0")
+                    current=handle.observe(current["actor"])
+                    handle.step(current,next(i for i,a in enumerate(current["actions"]) if a["kind"] == "Pass"))
+                result=handle.observe(actor)
+                result.pop("revision")
+                return result
+            with game.clone() as branch:
+                expected=finish(branch)
+            self.assertEqual(finish(game),expected)
+            self.assertEqual(expected["players"][0 if opponent=="P0" else 1]["life"],17)
+            game.restore(saved)
+            self.assertEqual(finish(game),expected)
+
     def test_parallel_independent_games(self):
         def run(seed):
             with self.game() as game:
@@ -313,6 +361,8 @@ else:
                     if kind == "Cast" and action["target"] is not None:
                         target = objects[action["target"]["Card"]]
                         return 85 if target["owner"] != obs["actor"] else -10
+                    if kind in ("AnnounceCast", "AnnounceActivate", "AnnounceMana"):
+                        return -30  # This fixture checks the original atomic Cast replay.
                     if kind == "TapMana":
                         return 10 if obs["active"] == obs["actor"] and obs["step"] in ("Main1", "Main2") else -20
                     if kind == "AssignDamage":

@@ -138,7 +138,7 @@ pub enum CounterKind {
     Stun,
 }
 
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct Counters {
     pub plus_one: u32,
     pub minus_one: u32,
@@ -180,6 +180,7 @@ pub(crate) struct TriggeredAbility {
 pub(crate) struct ActivationCost {
     pub colored: Mana,
     pub generic: u32,
+    pub mana_component: bool,
     pub tap: bool,
     pub sacrifice: bool,
     pub life: u16,

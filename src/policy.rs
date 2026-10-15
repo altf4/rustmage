@@ -49,6 +49,10 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
     let score = |action: &Action| -> i32 {
         match action {
             Action::Concede => -1000,
+            Action::AnnounceCast { .. } => 79,
+            Action::AnnounceActivate { .. } => 34,
+            Action::AnnounceMana { .. } => -2,
+            Action::PayCosts { .. } => 100,
             Action::Keep => 100,
             Action::Mulligan => -100,
             Action::PlayLand { .. } => 90,

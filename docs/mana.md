@@ -35,11 +35,9 @@ consumers must use the new observation schema and catalogue fingerprint.
 
 This adds 41 executable Standard definitions (212/5,164), with 27 referenced token
 factories counted separately. This does not prove complete rules support.
-Mana production is currently exposed at priority; activating mana sources during
-casting/cost payment remains outstanding in issue #21. Prefunding costs supports
-the current control loop, but does not represent every legal payment sequence.
-Remaining payment windows, triggered mana abilities, spending restrictions and
-other broader rules require further work before full acceptance.
+[Payment windows](payment-windows.md) now permit mana abilities during admitted
+casting/activation costs. Broader costs, triggered mana abilities, spending
+restrictions and other rules still require work before full acceptance.
 
 Rules: [September 25, 2026 Comprehensive Rules](https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf),
 especially 106, 107.4c, 111.4, 111.10, 117 and 605.

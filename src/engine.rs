@@ -4,6 +4,9 @@ use crate::cards::{
 };
 #[path = "engine_activations.rs"]
 mod activations;
+#[path = "engine_funding.rs"]
+mod funding;
+use funding::FundingGoal;
 #[path = "engine_tokens.rs"]
 mod tokens;
 use crate::rng::Rng;
@@ -58,6 +61,9 @@ mod activation_tests;
 #[cfg(test)]
 #[path = "engine_counter_tests.rs"]
 mod counter_tests;
+#[cfg(test)]
+#[path = "engine_funding_tests.rs"]
+mod funding_tests;
 #[cfg(test)]
 #[path = "engine_mana_tests.rs"]
 mod mana_tests;
@@ -131,6 +137,23 @@ pub enum Action {
     },
     TapMana {
         card: CardId,
+    },
+    AnnounceCast {
+        card: CardId,
+    },
+    AnnounceActivate {
+        card: CardId,
+        ability: u16,
+        counter_payment: Counters,
+    },
+    AnnounceMana {
+        card: CardId,
+        ability: u16,
+        counter_payment: Counters,
+        production: Mana,
+    },
+    PayCosts {
+        payment: Mana,
     },
     Cast {
         card: CardId,
@@ -366,6 +389,9 @@ enum Pending {
     Targets {
         player: Player,
     },
+    PayCosts {
+        player: Player,
+    },
     OrderTriggers {
         player: Player,
     },
@@ -466,6 +492,14 @@ pub struct PlayerView {
     pub hand_count: usize,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct PaymentRequestView {
+    pub required: Mana,
+    pub generic: u32,
+    pub counters: Counters,
+    pub production: Option<Mana>,
+}
+
 /// The choosing player's uncommitted announcement costs.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct PendingPaymentView {
@@ -491,6 +525,7 @@ pub struct Observation {
     pub announcing: Option<SpellView>,
     pub announcing_payment: Option<PendingPaymentView>,
     pub mana_choices: Vec<Mana>,
+    pub payment_request: Option<PaymentRequestView>,
     pub waiting_triggers: Vec<SpellView>,
     pub effect_discards: Vec<CardId>,
     pub attackers: Vec<CardId>,
@@ -639,6 +674,7 @@ impl Game {
             Pending::Mulligan(p) | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
             Pending::EffectMana { player, .. }
+            | Pending::PayCosts { player }
             | Pending::Targets { player }
             | Pending::OrderTriggers { player }
             | Pending::EffectOptional { player, .. }
@@ -724,7 +760,15 @@ impl Game {
         if emit(Action::Concede) {
             return true;
         }
+        // This query is read-only: identical fixed spell costs share a funding
+        // result. Cache capacity affects work only, never the admitted action set.
+        let mut spell_funding_cache: [Option<(Mana, u32, bool)>; 8] = [None; 8];
         match s.pending {
+            Pending::PayCosts { .. } => {
+                if self.visit_cost_payment(&mut emit) {
+                    return true;
+                }
+            }
             Pending::EffectMana { production, .. } => {
                 if production.visit(|production| emit(Action::ChooseMana { production })) {
                     return true;
@@ -801,6 +845,45 @@ impl Game {
                         continue;
                     }
                     let (colored, generic) = obj.card.cost();
+                    let spec = match obj.card.effect() {
+                        Effect::Spell(spec, _) => spec,
+                        _ => TargetSpec::NONE,
+                    };
+                    let mut target_count = 0;
+                    if spec.min > 0 {
+                        self.visit_targets(spec.rule, actor, self.object_ref(card), |_| {
+                            target_count += 1;
+                            false
+                        });
+                    }
+                    if target_count >= usize::from(spec.min) {
+                        let cached = spell_funding_cache
+                            .iter()
+                            .flatten()
+                            .find(|(required, amount, _)| {
+                                *required == colored && *amount == generic
+                            })
+                            .map(|(_, _, result)| *result);
+                        let can_fund = if let Some(result) = cached {
+                            result
+                        } else {
+                            let result = self.can_fund(FundingGoal {
+                                actor,
+                                required: colored,
+                                generic,
+                                source: None,
+                            });
+                            if let Some(slot) =
+                                spell_funding_cache.iter_mut().find(|slot| slot.is_none())
+                            {
+                                *slot = Some((colored, generic, result));
+                            }
+                            result
+                        };
+                        if can_fund && emit(Action::AnnounceCast { card }) {
+                            return true;
+                        }
+                    }
                     let mut done = false;
                     payments(s.players[actor.index()].mana, colored, generic, |payment| {
                         if done {
@@ -1016,6 +1099,31 @@ impl Game {
                 obj.tapped = true;
                 self.state.players[actor.index()].mana[obj.card.mana_color().unwrap()] += 1;
                 self.state.passes = 0;
+            }
+            Action::AnnounceCast { card } => {
+                let item = self.cast_item(actor, card, [0; 6]);
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
+            Action::AnnounceActivate {
+                card,
+                ability,
+                counter_payment,
+            } => {
+                let item = self.activation_item(actor, card, ability);
+                self.open_payment_announcement(item, counter_payment, None);
+            }
+            Action::AnnounceMana {
+                card,
+                ability,
+                counter_payment,
+                production,
+            } => {
+                let item = self.activation_item(actor, card, ability);
+                self.open_payment_announcement(item, counter_payment, Some(production));
+            }
+            Action::PayCosts { payment } => {
+                self.state.announcing.as_mut().unwrap().payment = Some(payment);
+                self.finish_announcement();
             }
             Action::Cast {
                 card,
@@ -1786,7 +1894,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 10,
+            schema: 11,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -1799,6 +1907,7 @@ impl Game {
                 Pending::Bottom { .. } => "bottom",
                 Pending::Priority => "priority",
                 Pending::Targets { .. } => "targets",
+                Pending::PayCosts { .. } => "pay_costs",
                 Pending::OrderTriggers { .. } => "order_triggers",
                 Pending::EffectOptional { .. } => "optional_effect",
                 Pending::EffectMana { .. } => "mana_choice",
@@ -1835,6 +1944,22 @@ impl Game {
                         counters: announcement.counter_payment,
                     })
                 })
+            } else {
+                None
+            },
+            payment_request: if owns_choice {
+                s.announcing
+                    .as_ref()
+                    .filter(|announcement| announcement.pay_window)
+                    .map(|announcement| {
+                        let goal = self.funding_goal(announcement);
+                        PaymentRequestView {
+                            required: goal.required,
+                            generic: goal.generic,
+                            counters: announcement.counter_payment,
+                            production: announcement.production,
+                        }
+                    })
             } else {
                 None
             },

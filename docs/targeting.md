@@ -23,7 +23,8 @@ A multi-target spell moves from hand to its stack zone during announcement; its
 validated mana payment is retained until targets commit. No other player receives
 priority and mana cannot be spent elsewhere during this continuation. There is no
 cancel action; the initial action is offered only if completion is possible. Broader
-costs, modes, mana abilities during casting and casting observers remain gated.
+costs, modes and casting observers remain gated. [Payment windows](payment-windows.md)
+support mana abilities during the admitted fixed casting/activation costs.
 
 Resolution rechecks each target's incarnation, zone and predicates. Illegal members
 are removed. If every originally chosen target is illegal, none of the effect
