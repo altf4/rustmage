@@ -277,7 +277,9 @@ struct State {
     stack: Vec<SpellView>,
     passes: u8,
     land_played: bool,
+    attack_declared: bool,
     attackers: Vec<Attacker>,
+    blocking: Vec<CardId>, // Remains blocking even after its attacker leaves combat.
     blocks: Vec<(CardId, CardId)>, // blocker, attacker
     selected_attackers: Vec<CardId>,
     selected_blocks: Vec<(CardId, CardId)>,
@@ -345,6 +347,7 @@ pub struct Observation {
     pub objects: Vec<ObjectView>,
     pub stack: Vec<SpellView>,
     pub attackers: Vec<CardId>,
+    pub blocking: Vec<CardId>,
     pub blocks: Vec<(CardId, CardId)>,
     pub damage_assigned: Vec<DamageEvent>,
     pub damage_source: Option<CardId>,
@@ -437,7 +440,9 @@ impl Game {
                 passes: 0,
                 mulligan_round: [false; 2],
                 land_played: false,
+                attack_declared: false,
                 attackers: Vec::new(),
+                blocking: Vec::new(),
                 blocks: Vec::new(),
                 selected_attackers: Vec::new(),
                 selected_blocks: Vec::new(),
@@ -845,6 +850,7 @@ impl Game {
             }
             Action::Attack { card } => self.state.selected_attackers.push(card),
             Action::FinishAttackers => {
+                self.state.attack_declared = !self.state.selected_attackers.is_empty();
                 for card in self.state.selected_attackers.drain(..) {
                     let obj = &mut self.state.objects[card as usize];
                     if !obj.card.keywords().contains(Keywords::VIGILANCE) {
@@ -861,6 +867,9 @@ impl Game {
                 self.state.selected_blocks.push((blocker, attacker))
             }
             Action::FinishBlockers => {
+                self.state
+                    .blocking
+                    .extend(self.state.selected_blocks.iter().map(|&(b, _)| b));
                 self.state.blocks.append(&mut self.state.selected_blocks);
                 for attacker in &mut self.state.attackers {
                     attacker.blocked = self.state.blocks.iter().any(|&(_, a)| a == attacker.card);
@@ -1042,6 +1051,7 @@ impl Game {
         }
         if before.zone == Zone::Battlefield {
             self.state.attackers.retain(|attacker| attacker.card != id);
+            self.state.blocking.retain(|&blocker| blocker != id);
             self.state
                 .blocks
                 .retain(|&(blocker, attacker)| blocker != id && attacker != id);
@@ -1078,7 +1088,9 @@ impl Game {
 
     fn begin_turn(&mut self) {
         self.state.land_played = false;
+        self.state.attack_declared = false;
         self.state.attackers.clear();
+        self.state.blocking.clear();
         self.state.blocks.clear();
         self.state.first_strikers.clear();
         for obj in &mut self.state.objects {
@@ -1118,7 +1130,7 @@ impl Game {
                 self.state.pending = Pending::Attackers;
             }
             Step::Attackers => {
-                if self.state.attackers.is_empty() {
+                if !self.state.attack_declared {
                     self.state.step = Step::EndCombat;
                     self.give_priority();
                 } else {
@@ -1153,6 +1165,8 @@ impl Game {
             }
             Step::EndCombat => {
                 self.state.attackers.clear();
+                self.state.blocking.clear();
+                self.state.attack_declared = false;
                 self.state.blocks.clear();
                 self.state.first_strikers.clear();
                 self.state.step = Step::Main2;
@@ -1322,7 +1336,7 @@ impl Game {
             .attackers
             .iter()
             .map(|attacker| attacker.card)
-            .chain(self.state.blocks.iter().map(|&(blocker, _)| blocker))
+            .chain(self.state.blocking.iter().copied())
             .filter(|&id| self.on_battlefield(id))
             .collect()
     }
@@ -1509,6 +1523,11 @@ impl Game {
             } else {
                 s.attackers.iter().map(|a| a.card).collect()
             },
+            blocking: if owns_choice && s.pending == Pending::Blockers {
+                s.selected_blocks.iter().map(|&(b, _)| b).collect()
+            } else {
+                s.blocking.clone()
+            },
             blocks: if owns_choice && s.pending == Pending::Blockers {
                 s.selected_blocks.clone()
             } else {
@@ -1545,6 +1564,7 @@ impl Game {
                 .sum::<usize>()
             + s.stack.len() * std::mem::size_of::<SpellView>()
             + s.attackers.len() * std::mem::size_of::<Attacker>()
+            + s.blocking.len() * std::mem::size_of::<CardId>()
             + s.blocks.len() * std::mem::size_of::<(CardId, CardId)>()
             + s.selected_attackers.len() * std::mem::size_of::<CardId>()
             + s.selected_blocks.len() * std::mem::size_of::<(CardId, CardId)>()

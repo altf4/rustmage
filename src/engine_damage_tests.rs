@@ -18,6 +18,7 @@ fn combat(game: &mut Game, attacker: CardId, blockers: &[CardId]) {
     });
     for &blocker in blockers {
         game.state.blocks.push((blocker, attacker));
+        game.state.blocking.push(blocker);
     }
     game.state.step = Step::Blockers;
     game.give_priority();

@@ -28,7 +28,8 @@ fully implemented fixed mana cost. No admitted permanent currently has a relevan
 destruction or zone-change replacement, indestructible or regeneration.
 
 Observation schema **4** adds `ObjectView.reference`, `SpellView.object`,
-`SpellView.target_object`, and `DamageSource.reference`. Action JSON continues to
+`SpellView.target_object`, `DamageSource.reference`, and `Observation.blocking`
+(current blocking creatures, including those whose attackers have left). Action JSON continues to
 use physical card IDs for submitted choices; only validated casts bind internal
 references. C function signatures and protocol response schema remain unchanged.
 The catalogue fingerprint changes because compiler admissions change.
@@ -43,6 +44,7 @@ Rules basis: [Comprehensive Rules, effective September 25, 2026](https://media.w
 400.7 (new objects), 403.4 (new permanents), 506.4 and 509.1h (combat membership),
 608.2b (target legality). Regression tests cover stale targets after return/recast,
 transient-state reset and owned LKI, all current zone routes/library indexing,
-blocking and source identity, real Unsummon responses, mana/timing/targets for all
+blocking and source identity, combat-step preservation after removal, real
+Unsummon responses through both internal fixtures and public gameplay, mana/timing/targets for all
 four spells, and restoring pending targets. Shared-library tests cover complete
 Standard removal games and replaying a cast through snapshot/restore.

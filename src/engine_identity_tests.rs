@@ -238,3 +238,91 @@ fn removal_templates_enforce_targets_timing_and_payments() {
         assert_eq!(game.state.objects[spell as usize].zone, Zone::Graveyard);
     }
 }
+
+#[test]
+fn removing_last_declared_attacker_preserves_remaining_combat_steps() {
+    let mut game = scenario();
+    let attacker = spawn(&mut game, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+    let bounce = spawn(
+        &mut game,
+        Player::P1,
+        Card::from_name("Unsummon").unwrap(),
+        Zone::Hand,
+    );
+    game.state.players[1].mana[1] = 1;
+    game.state.step = Step::Attackers;
+    game.state.pending = Pending::Attackers;
+    act(&mut game, Action::Attack { card: attacker });
+    act(&mut game, Action::FinishAttackers);
+    act(&mut game, Action::Pass);
+    cast(&mut game, bounce, Some(Target::Card(attacker)));
+    pass_pair(&mut game);
+    assert!(game.state.attackers.is_empty());
+    let removed = game.snapshot();
+    pass_pair(&mut game);
+    assert_eq!(game.state.step, Step::Blockers);
+    act(&mut game, Action::FinishBlockers);
+    pass_pair(&mut game);
+    assert_eq!(game.state.step, Step::CombatDamage);
+    let normal = game.snapshot();
+    game.restore(&removed);
+    pass_pair(&mut game);
+    act(&mut game, Action::FinishBlockers);
+    pass_pair(&mut game);
+    assert_eq!(game.snapshot(), normal);
+
+    // Only declaring no attackers skips the blockers and damage steps.
+    let mut game = scenario();
+    game.state.step = Step::Attackers;
+    game.state.pending = Pending::Attackers;
+    act(&mut game, Action::FinishAttackers);
+    pass_pair(&mut game);
+    assert_eq!(game.state.step, Step::EndCombat);
+}
+
+#[test]
+fn surviving_blocker_still_creates_first_strike_step_after_attacker_leaves() {
+    let mut game = scenario();
+    let attacker = spawn(&mut game, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+    let blocker = spawn(
+        &mut game,
+        Player::P1,
+        Card::from_name("Brightblade Stoat").unwrap(),
+        Zone::Battlefield,
+    );
+    let bounce = spawn(
+        &mut game,
+        Player::P0,
+        Card::from_name("Unsummon").unwrap(),
+        Zone::Hand,
+    );
+    game.state.step = Step::Attackers;
+    game.state.pending = Pending::Attackers;
+    act(&mut game, Action::Attack { card: attacker });
+    act(&mut game, Action::FinishAttackers);
+    pass_pair(&mut game);
+    act(&mut game, Action::Block { blocker, attacker });
+    act(&mut game, Action::FinishBlockers);
+    game.state.players[0].mana[1] = 1;
+    cast(&mut game, bounce, Some(Target::Card(attacker)));
+    pass_pair(&mut game);
+    assert!(game.state.attackers.is_empty());
+    assert!(game.state.blocks.is_empty());
+    assert_eq!(game.observe(Player::P0).blocking, vec![blocker]);
+    let orphan = game.snapshot();
+    pass_pair(&mut game);
+    assert_eq!(game.state.step, Step::FirstStrikeDamage);
+    assert_eq!(game.state.first_strikers, vec![blocker]);
+    assert_eq!(game.state.players[1].life, 20); // No opponent to damage, no lifelink.
+    pass_pair(&mut game);
+    assert_eq!(game.state.step, Step::CombatDamage);
+    let normal = game.snapshot();
+    game.restore(&orphan);
+    pass_pair(&mut game);
+    pass_pair(&mut game);
+    assert_eq!(game.snapshot(), normal);
+    pass_pair(&mut game); // End combat step.
+    pass_pair(&mut game); // Main2, all combat memberships cleared.
+    assert_eq!(game.state.step, Step::Main2);
+    assert!(game.observe(Player::P0).blocking.is_empty());
+}
