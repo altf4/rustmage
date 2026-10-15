@@ -48,7 +48,7 @@ pool, 60-card minimum and copy limits, then rejects every unsupported card.
 The known Standard unlimited-copy exceptions are represented independently of
 whether their rules have been implemented.
 
-Coverage is **712 / 5,164 executable Standard cards**, plus six legacy regression
+Coverage is **728 / 5,164 executable Standard cards**, plus six legacy regression
 cards. The additions are ten exact vanilla-creature templates and 25 creatures
 whose entire text consists of implemented static keywords, plus four exact
 single-instruction bounce/destruction spells, additional spell programs and creatures with complete supported trigger programs.
@@ -177,3 +177,9 @@ definitions. Current coverage is 712/5,164; 4,452 identities remain unsupported,
 with 36 token factories. Self/attached/filtered observers, damage facts/LKI,
 one-or-more grouping and whole-hand discard continuations precede broader
 event subjects, granted triggers, prevention and remaining semantics.
+
+[Ward and resolution mana payments](ward-payments.md) add 16 complete definitions.
+Current coverage is 728/5,164; 4,436 identities remain unsupported, with 36 token
+factories. Owned payment windows, exact ward stack associations, paid branches
+and restricted counters precede wider ward costs, generic optional payments,
+uncounterability and remaining rules.

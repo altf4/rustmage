@@ -14,6 +14,46 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_mana_ward_is_triggered_and_repeated_instances_are_preserved(self):
+        row=self.card(oracle_text='Flying, ward {2}\nWard {U}\nWhen this creature enters, draw a card.')
+        result=generate.trigger_creature_template(row)
+        self.assertEqual(result[1],1)
+        self.assertEqual([a[0] for a in result[2]],['Ward','Ward','SelfEnters'])
+        self.assertIn('generic: 2',result[2][0][1][0]);self.assertIn('CounterSubject::Related',result[2][0][1][0])
+        self.assertIn('colored: [0, 1, 0, 0, 0, 0]',result[2][1][1][0])
+        for text in ['Ward—Discard a card.','Ward—Pay 2 life.','Ward {X}','Ward {2}, pay 2 life',
+                     'Ward {2}\nOther creatures have ward {2}.','Equipped creature has ward {1}.']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=text)),text)
+        self.assertIsNone(generate.mana_cost_spec('{4294967296}'))
+
+    def test_counter_payment_subjects_conditions_and_spell_filters(self):
+        for text,rule in [('Counter target creature spell.','SpellCreature'),('Counter target noncreature spell.','SpellNoncreature'),
+                          ('Counter target instant or sorcery spell unless its controller pays {3}.','SpellInstantSorcery')]:
+            self.assertEqual(generate.targeted_program(text)[0],rule)
+        program=generate.targeted_program("Counter target spell unless its controller pays {3}. If that spell is countered this way, exile it instead of putting it into its owner's graveyard.")[1]
+        self.assertIn('exile: true',program[0])
+        program=generate.targeted_program('Counter target spell unless its controller pays {2}. If they do, surveil 2.')[1]
+        self.assertIn('unpaid_skip: 1',program[0]);self.assertEqual(program[1],'Surveil(2)')
+        program=generate.targeted_program('Counter target spell unless its controller pays {2}. If they do, you create a Lander token.')[1]
+        self.assertIn('CreateTokens',program[1])
+        for text in ['Counter target spell unless its controller pays {X}.','Counter target spell unless its controller pays {2} for each Faerie you control.',
+                     'Counter target spell unless its controller pays {2}. If a Dragon was beheld, counter that spell unless its controller pays {4} instead.',
+                     'Counter target activated or triggered ability unless its controller pays {2}.']:
+            self.assertIsNone(generate.targeted_program(text),text)
+
+    def test_ward_and_resolution_payment_admissions_require_complete_cards(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,coverage=generate.compile_catalogue(rows,target)
+        supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for name in ['Archive Dragon','Confusticate and Bebother','Diversion Unit','Divert Disaster',"Don't Make a Sound",'Essence Scatter',
+                     'Hulking Raptor',"It'll Quench Ya!",'Negate','No More Lies','Spell Pierce','Spider-Rex, Daring Dino',
+                     'Theorix Charm','Toadstool Admirer','Unflinching Hortimancer','Wrecking Gecko']:
+            self.assertIn(name,supported)
+        for name in ['Vein Ripper','Sire of Seven Deaths','Dazzling Denial','Spell Stutter','Tolarian Terror',"Falcon's Wing Harness"]:
+            self.assertNotIn(name,supported)
+
     def test_player_damage_filters_and_event_amount_scope(self):
         for header,subject,combat,opponent,one in [
             ('Whenever this creature deals combat damage to a player, ','Source',True,False,False),
@@ -357,7 +397,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertEqual(result[1], 9)
         self.assertEqual(result[2], [(condition, program, 'None')]*2)
         self.assertIsNone(generate.creature_template(row))
-        for text in ['Prowess, ward {1}', 'Prowess\nYou may cast spells from your graveyard.',
+        for text in ['Prowess, ward—Pay 1 life.', 'Prowess\nYou may cast spells from your graveyard.',
                      'Other creatures you control have prowess.', 'Prowess\nThis spell costs {1} less to cast.']:
             self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=text)), text)
         self.assertIsNone(generate.keyword_effect('gains prowess until end of turn.', 'Source'))
@@ -435,7 +475,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             'Choose one —\n• Draw two cards.',
             'Choose one —\n• Draw two cards.\n• You gain 2 life.\nThen win the game.',
             'Choose one —\nDraw two cards.\n• You gain 2 life.',
-            'Choose one —\n• Counter target spell unless its controller pays {2}.\n• Draw two cards.',
+            'Choose one —\n• Counter target spell unless its controller pays {X}.\n• Draw two cards.',
             'Choose one —\n• Draw two cards.\n• Test Spell deals X damage to target creature.',
             'Choose one —\n• Draw two cards.\n• Other creatures you control get +1/+1.']:
             self.assertIsNone(generate.modal_spell_template(dict(row, oracle_text=text)), text)
@@ -680,7 +720,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertEqual(len(generate.trigger_creature_template(card)[2]), 2)
         for change in [dict(oracle_text=None), dict(oracle_text=card['oracle_text'] + '\n{T}: Draw a card.'),
                        dict(oracle_text='When this creature enters, draw a card if you control an Elf.'),
-                       dict(oracle_text='When this creature enters, draw a card.\nWard {2}'),
+                       dict(oracle_text='When this creature enters, draw a card.\nWard—Discard a card.'),
                        dict(mana_cost='{G/U}{G/U}'), dict(layout='transform'),
                        dict(type_line='Snow Creature — Cat'), dict(toughness='*')]:
             self.assertIsNone(generate.trigger_creature_template(dict(card, **change)), change)
@@ -780,7 +820,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         accepted = self.card(name='Factory Test', oracle_id='factory-test', type_line='Sorcery',
                              oracle_text='Create two 1/1 red Goblin creature tokens.')
         rejected = self.card(name='Rejected Factory', oracle_id='rejected-factory',
-                             oracle_text='When this creature enters, create a 4/4 green Beast creature token.\nWard {2}')
+                             oracle_text='When this creature enters, create a 4/4 green Beast creature token.\nWard—Discard a card.')
         cards = [accepted, rejected]
         canonical = json.dumps(cards, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()
         snapshot = {'cards': cards, 'card_count': len(cards), 'cards_sha256': hashlib.sha256(canonical).hexdigest()}

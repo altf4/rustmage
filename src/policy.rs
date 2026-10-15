@@ -9,6 +9,29 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
     let observation = game.observe(actor);
     let tap_for_main =
         observation.active == actor && matches!(observation.step, Step::Main1 | Step::Main2);
+    let resolution_mana_score = |payment: crate::Mana, production: crate::Mana| {
+        let request = observation.resolution_payment.as_ref().unwrap();
+        let pool = observation.players[actor.index()].mana;
+        let deficit = |pool: crate::Mana| {
+            let colored: u64 = pool
+                .iter()
+                .zip(request.cost.colored)
+                .map(|(&pool, need)| u64::from(need.saturating_sub(pool)))
+                .sum();
+            let spare: u64 = pool
+                .iter()
+                .zip(request.cost.colored)
+                .map(|(&pool, need)| u64::from(pool.saturating_sub(need)))
+                .sum();
+            colored + u64::from(request.cost.generic).saturating_sub(spare)
+        };
+        let after = std::array::from_fn(|i| pool[i] - payment[i] + production[i]);
+        if deficit(after) < deficit(pool) {
+            70
+        } else {
+            -2
+        }
+    };
     let target_score = |program: &[Instruction], target: Target| -> i32 {
         let beneficial = program
             .iter()
@@ -77,6 +100,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             return -10;
         }
         match action {
+            Action::PayResolutionMana { .. } => 100,
+            Action::DeclineResolutionMana => -1,
             Action::ChooseAuraAttachment { object } => aura_score(
                 observation.aura_entry.as_ref().unwrap().card,
                 Target::Card(object.card),
@@ -125,7 +150,14 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             }
             Action::FinishTargets => 0,
             Action::ChooseMana { production } => mana_score(&observation, *production),
-            Action::ActivateMana { production, .. } => {
+            Action::ActivateMana {
+                production,
+                payment,
+                ..
+            } => {
+                if observation.resolution_payment.is_some() {
+                    return resolution_mana_score(*payment, *production);
+                }
                 if tap_for_main {
                     20 + mana_score(&observation, *production)
                 } else {
@@ -189,12 +221,20 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     0
                 }
             }
-            Action::TapMana { .. } => {
-                if tap_for_main {
-                    10
-                } else {
-                    -20
+            Action::TapMana { card } => {
+                if observation.resolution_payment.is_some() {
+                    let mut production = [0; 6];
+                    production[observation
+                        .objects
+                        .iter()
+                        .find(|o| o.id == *card)
+                        .unwrap()
+                        .card
+                        .mana_color()
+                        .unwrap()] = 1;
+                    return resolution_mana_score([0; 6], production);
                 }
+                if tap_for_main { 10 } else { -20 }
             }
             Action::Pass | Action::FinishAttackers | Action::FinishBlockers => 0,
         }

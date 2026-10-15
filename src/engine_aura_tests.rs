@@ -75,6 +75,7 @@ fn program(g: &mut Game, code: &'static [Instruction], targets: Vec<BoundTarget>
         pc: 0,
         target_group: 0,
         discards: [0; 2],
+        mana_payment: None,
         selected_discards: [Vec::new(), Vec::new()],
         milled: Vec::new(),
         library: None,

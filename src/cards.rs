@@ -29,6 +29,10 @@ pub(crate) enum TargetRule {
     Creature,
     Any,
     Spell,
+    SpellKinds {
+        kinds: u8,
+        excluded: u8,
+    },
     Player {
         opponent_only: bool,
     },
@@ -210,9 +214,27 @@ pub(crate) enum MillAmount {
     ControllerLife,
 }
 
+/// A fixed mana payment, independent of casting or activation costs.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct ManaCost {
+    pub colored: Mana,
+    pub generic: u32,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum CounterSubject {
+    Targets,
+    Related,
+}
+
 /// Immutable rule bytecode. Only the program counter and choices live in state.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    CounterUnlessPay {
+        cost: ManaCost,
+        subject: CounterSubject,
+        exile: bool,
+        unpaid_skip: usize,
+    },
     DrawDamageAmount,
     DiscardHand(PlayerSet),
     TapCreatures(CreatureFilter),
@@ -474,6 +496,7 @@ pub(crate) enum DamageSubject {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    Ward,
     PlayerDamaged {
         subject: DamageSubject,
         combat_only: bool,

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "65422c7152c25a1c50e6494abd07f148ef62de1fac259806685548a687002c39",
+  "catalogue_version": "30ca371a6577a8175d279c49ea15ceac6db3f83274a468a1d68072725a8ed994",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 712,
-  "implemented_total": 718,
+  "implemented_standard_cards": 728,
+  "implemented_total": 734,
   "token_definitions": 36,
   "cards": [
     {
@@ -1281,8 +1281,8 @@
     {
       "name": "Archive Dragon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Archmage of Runes",
@@ -4989,8 +4989,8 @@
     {
       "name": "Confusticate and Bebother",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Congregation Gryff",
@@ -6651,14 +6651,14 @@
     {
       "name": "Diversion Unit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Divert Disaster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Divine Resilience",
@@ -6765,8 +6765,8 @@
     {
       "name": "Don't Make a Sound",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Donatello's Technique",
@@ -8247,8 +8247,8 @@
     {
       "name": "Essence Scatter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Essence of Antiquity",
@@ -12567,8 +12567,8 @@
     {
       "name": "Hulking Raptor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Hulkling, Burgeoning Bruiser",
@@ -13449,8 +13449,8 @@
     {
       "name": "It'll Quench Ya!",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Item Shopkeep",
@@ -17493,8 +17493,8 @@
     {
       "name": "Negate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Neglected Manor",
@@ -17721,8 +17721,8 @@
     {
       "name": "No More Lies",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "No Witnesses",
@@ -24039,8 +24039,8 @@
     {
       "name": "Spell Pierce",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Spell Snare",
@@ -24219,8 +24219,8 @@
     {
       "name": "Spider-Rex, Daring Dino",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Spider-Sense",
@@ -27159,8 +27159,8 @@
     {
       "name": "Theorix Charm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Theorix Metamage // Omit Variables",
@@ -27705,8 +27705,8 @@
     {
       "name": "Toadstool Admirer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Toby, Beastie Befriender",
@@ -28689,8 +28689,8 @@
     {
       "name": "Unflinching Hortimancer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Unforgiving Aim",
@@ -30747,8 +30747,8 @@
     {
       "name": "Wrecking Gecko",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Wrench",

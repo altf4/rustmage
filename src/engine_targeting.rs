@@ -118,12 +118,19 @@ impl Game {
                 TargetRule::Player { opponent_only } => !opponent_only || player != controller,
                 _ => false,
             },
-            Target::Spell(id) => {
-                rule == TargetRule::Spell
-                    && self.state.stack.iter().any(|item| {
-                        item.kind == StackKind::Spell && item.card == id && item.object != source
-                    })
-            }
+            Target::Spell(id) => self.state.stack.iter().any(|item| {
+                item.kind == StackKind::Spell
+                    && item.card == id
+                    && item.object != source
+                    && match rule {
+                        TargetRule::Spell => true,
+                        TargetRule::SpellKinds { kinds, excluded } => {
+                            (kinds == 0 || item.source_card.kind_mask() & kinds != 0)
+                                && item.source_card.kind_mask() & excluded == 0
+                        }
+                        _ => false,
+                    }
+            }),
             Target::Card(id) => {
                 let Some(obj) = self.state.objects.get(id as usize) else {
                     return false;
@@ -232,6 +239,7 @@ impl Game {
             source_keywords: self.keywords(card),
             source_tapped: self.state.objects[card as usize].tapped,
             source_facts: self.damage_facts(card),
+            related_stack: None,
             damage_event: None,
             source_attachment: self.state.objects[card as usize].attached_to,
             card,

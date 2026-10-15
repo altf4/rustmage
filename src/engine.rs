@@ -1,9 +1,9 @@
 use crate::cards::{
-    ActivatedAbility, ActivationCost, CastRelation, CounterKind, Counters, CreatureFilter,
-    DamageQualification, DamageSubject, Effect, EffectChoiceKind, EntryTapped, Instruction,
-    ManaProduction, MillAmount, PlayerSet, RecoveryFilter, SacrificeFilter, SearchSpec, Stats,
-    StepGuard, StepValue, Subject, TargetPlan, TargetRule, TargetSpec, TargetZone,
-    TriggerCondition, TriggerStep, payments,
+    ActivatedAbility, ActivationCost, CastRelation, CounterKind, CounterSubject, Counters,
+    CreatureFilter, DamageQualification, DamageSubject, Effect, EffectChoiceKind, EntryTapped,
+    Instruction, ManaCost, ManaProduction, MillAmount, PlayerSet, RecoveryFilter, SacrificeFilter,
+    SearchSpec, Stats, StepGuard, StepValue, Subject, TargetPlan, TargetRule, TargetSpec,
+    TargetZone, TriggerCondition, TriggerStep, payments,
 };
 #[path = "engine_activations.rs"]
 mod activations;
@@ -11,6 +11,8 @@ mod activations;
 mod damage_triggers;
 #[path = "engine_funding.rs"]
 mod funding;
+#[path = "engine_resolution_mana.rs"]
+mod resolution_mana;
 use funding::FundingGoal;
 #[path = "engine_blocking.rs"]
 mod blocking;
@@ -151,6 +153,10 @@ pub struct BoundTarget {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
 pub enum Action {
+    PayResolutionMana {
+        payment: Mana,
+    },
+    DeclineResolutionMana,
     RecoverMilled {
         object: Option<ObjectRef>,
     },
@@ -391,10 +397,18 @@ pub struct SpellView {
     pub source_attachment: Option<ObjectRef>,
     pub damage_event: Option<DamageTriggerView>,
     pub source_facts: DamageFacts,
+    pub related_stack: Option<StackLink>,
     pub card: CardId,
     pub object: ObjectRef,
     pub targets: Vec<BoundTarget>,
     pub mode: Option<u16>,
+    pub controller: Player,
+}
+
+/// Exact stack identity and its controller, retained after that item leaves.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct StackLink {
+    pub id: u64,
     pub controller: Player,
 }
 
@@ -484,6 +498,9 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    ResolutionMana {
+        player: Player,
+    },
     RecoverMilled {
         player: Player,
         filter: RecoveryFilter,
@@ -749,6 +766,7 @@ pub struct Observation {
     pub aura_entry: Option<entries::AuraEntryView>,
     pub known_hand: Vec<ObjectRef>,
     pub payment_request: Option<PaymentRequestView>,
+    pub resolution_payment: Option<resolution_mana::ResolutionPaymentView>,
     pub waiting_triggers: Vec<SpellView>,
     pub effect_discards: Vec<CardId>,
     pub attackers: Vec<CardId>,
@@ -912,7 +930,8 @@ impl Game {
         match self.state.pending {
             Pending::Mulligan(p) | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
-            Pending::AuraEntry { player }
+            Pending::ResolutionMana { player }
+            | Pending::AuraEntry { player }
             | Pending::EffectChoice { player }
             | Pending::Legend { player }
             | Pending::RecoverMilled { player, .. }
@@ -1019,6 +1038,11 @@ impl Game {
         // result. Cache capacity affects work only, never the admitted action set.
         let mut spell_funding_cache: [Option<(Mana, u32, bool)>; 8] = [None; 8];
         match s.pending {
+            Pending::ResolutionMana { .. } => {
+                if self.visit_resolution_payment(&mut emit) {
+                    return true;
+                }
+            }
             Pending::AuraEntry { .. } => {
                 for (id, _) in s.objects.iter().enumerate() {
                     let object = self.object_ref(id as CardId);
@@ -1397,6 +1421,8 @@ impl Game {
 
     fn apply_legal(&mut self, actor: Player, action: Action) {
         match action {
+            Action::PayResolutionMana { payment } => self.finish_resolution_payment(Some(payment)),
+            Action::DeclineResolutionMana => self.finish_resolution_payment(None),
             Action::ChooseAuraAttachment { object } => self.choose_aura_attachment(object),
             Action::Keep => {
                 self.state.players[actor.index()].kept = true;
@@ -1486,7 +1512,9 @@ impl Game {
             } => {
                 let mut item = self.cast_item(actor, card, payment);
                 if let Some(target) = target {
-                    item.targets.push(self.bind_target(target));
+                    let bound = self.bind_target(target);
+                    self.target_becomes_bound(&item, bound);
+                    item.targets.push(bound);
                 }
                 self.push_stack_item(item);
                 self.state.passes = 0;
@@ -1500,7 +1528,9 @@ impl Game {
             } => {
                 let mut item = self.activation_item(actor, card, ability);
                 if let Some(target) = target {
-                    item.targets.push(self.bind_target(target));
+                    let bound = self.bind_target(target);
+                    self.target_becomes_bound(&item, bound);
+                    item.targets.push(bound);
                 }
                 self.pay_activation(&item, payment, counter_payment);
                 self.push_stack_item(item);
@@ -1556,6 +1586,8 @@ impl Game {
             Action::ChooseMode { mode } => self.choose_mode(mode),
             Action::ChooseTarget { target } => {
                 let mut bound = self.bind_target(target);
+                let item = self.state.announcing.as_ref().unwrap().item.clone();
+                self.target_becomes_bound(&item, bound);
                 let announcement = self.state.announcing.as_mut().unwrap();
                 bound.group = announcement.group;
                 announcement.item.targets.push(bound);
@@ -2314,7 +2346,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 25,
+            schema: 26,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -2323,6 +2355,7 @@ impl Game {
             turn: s.turn,
             step: s.step,
             decision: match s.pending {
+                Pending::ResolutionMana { .. } => "resolution_mana",
                 Pending::Mulligan(_) => "mulligan",
                 Pending::Bottom { .. } => "bottom",
                 Pending::Priority => "priority",
@@ -2413,6 +2446,16 @@ impl Game {
             } else {
                 None
             },
+            resolution_payment: s
+                .resolving
+                .as_ref()
+                .and_then(|r| r.mana_payment.as_deref())
+                .map(|p| resolution_mana::ResolutionPaymentView {
+                    payer: p.payer,
+                    cost: p.cost,
+                    victim: p.victim,
+                    exile: p.exile,
+                }),
             payment_request: if owns_choice {
                 s.announcing
                     .as_ref()
@@ -2581,7 +2624,9 @@ impl Game {
             + s.resolving
                 .as_ref()
                 .map(|resolution| {
-                    resolution.milled.len() * std::mem::size_of::<ObjectRef>()
+                    resolution.mana_payment.as_ref().map_or(0, |_| {
+                        std::mem::size_of::<resolution_mana::ResolutionPayment>()
+                    }) + resolution.milled.len() * std::mem::size_of::<ObjectRef>()
                         + resolution
                             .choice
                             .as_ref()
@@ -2712,3 +2757,8 @@ mod milling_tests;
 #[cfg(test)]
 #[path = "engine_damage_trigger_tests.rs"]
 mod damage_trigger_tests;
+
+#[cfg(test)]
+#[path = "engine_ward_tests.rs"]
+mod ward_tests;
+pub use resolution_mana::ResolutionPaymentView;
