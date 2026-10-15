@@ -292,6 +292,10 @@ def statement_program(text):
     text = normalize_duration(text[0].lower() + text[1:])
     token = token_program(text) or predefined_program(text)
     if token: return token
+    if text == 'untap this creature.': return ['UntapSource']
+    if m := re.fullmatch(r'this (?:creature|artifact|enchantment|permanent|spell) deals ([0-9]+) damage to each opponent(?: and you gain ([0-9]+) life)?\.', text):
+        if int(m[1]) > 32767 or (m[2] and int(m[2]) > 65535): return None
+        return [f'DamagePlayers(PlayerSet::Opponent, {int(m[1])})'] + ([f'GainLife(PlayerSet::Controller, {int(m[2])})'] if m[2] else [])
     if text == "exile each opponent's graveyard.": return ['ExileGraveyard(PlayerSet::Opponent)']
     if text == "exile your graveyard.": return ['ExileGraveyard(PlayerSet::Controller)']
     if text == 'investigate.': return predefined_program('create a Clue token.')
@@ -522,7 +526,7 @@ def targeted_program(text):
     if m := re.fullmatch(r'target (player|opponent) (gains|loses) ([0-9]+) life\.', text):
         if int(m[3]) > 65535: return None
         return ('Player' if m[1] == 'player' else 'Opponent'), [f'{"GainLife" if m[2] == "gains" else "LoseLife"}(PlayerSet::Targeted, {int(m[3])})']
-    if m := re.fullmatch(r'it deals ([0-9]+) damage to (any target|target creature|target opponent|target player)\.', text):
+    if m := re.fullmatch(r'this (?:creature|artifact|enchantment|permanent|spell) deals ([0-9]+) damage to (any target|target creature|target opponent|target player)\.', text):
         if int(m[1]) > 32767: return None
         return {'any target': 'Any', 'target creature': 'Creature', 'target opponent': 'Opponent', 'target player': 'Player'}[m[2]], [f'Damage({int(m[1])})']
     if m := re.fullmatch(r'(target creature|target creature you control|another target creature you control) gets ([+-][0-9]+)/([+-][0-9]+) until end of turn\.', text):
@@ -556,6 +560,11 @@ def targeted_program(text):
             return left + right, result[1] + [f'SelectGroup({offset})'] + rebased
     return None
 
+def cast_condition(relation='You', filter_='Any', ordinal=None):
+    ordinal = 'None' if ordinal is None else f'Some({ordinal})'
+    return f'SpellCast {{ relation: CastRelation::{relation}, filter: CastFilter::{filter_}, ordinal: {ordinal} }}'
+
+
 def trigger_creature_template(card):
     if not isinstance(card.get('oracle_text'), str):
         return None
@@ -565,6 +574,16 @@ def trigger_creature_template(card):
     keywords = 0
     abilities = []
     prefixes = {
+        'Whenever you cast a spell, ': cast_condition(),
+        'Whenever you cast a creature spell, ': cast_condition(filter_='Creature'),
+        'Whenever you cast a noncreature spell, ': cast_condition(filter_='Noncreature'),
+        'Whenever you cast an instant or sorcery spell, ': cast_condition(filter_='InstantSorcery'),
+        'Whenever you cast an artifact spell, ': cast_condition(filter_='Artifact'),
+        'Whenever you cast an enchantment spell, ': cast_condition(filter_='Enchantment'),
+        'Whenever an opponent casts a spell, ': cast_condition(relation='Opponent'),
+        'Whenever a player casts a spell, ': cast_condition(relation='Any'),
+        'Whenever you cast your second spell each turn, ': cast_condition(ordinal=2),
+        'Flurry — Whenever you cast your second spell each turn, ': cast_condition(ordinal=2),
         'When this creature enters, ': 'SelfEnters',
         'When this creature dies, ': 'SelfDies',
         'Whenever this creature attacks, ': 'SelfAttacks',
@@ -578,13 +597,21 @@ def trigger_creature_template(card):
     for line in text.split('\n'):
         if line.casefold() in TEXT_FLAGS:
             keywords |= TEXT_FLAGS[line.casefold()]; continue
-        words = {word.strip().casefold() for word in line.split(',') if word.strip()}
-        if words and words <= KEYWORDS.keys():
-            keywords |= sum(KEYWORDS[word] for word in words)
+        words = [word.strip().casefold() for word in line.split(',') if word.strip()]
+        if words and all(word in KEYWORDS or word == 'prowess' for word in words):
+            keywords |= sum(KEYWORDS[word] for word in set(words) if word != 'prowess')
+            abilities.extend((cast_condition(filter_='Noncreature'), [grow_instruction('Source', 1, 1)], 'None')
+                             for word in words if word == 'prowess')
             continue
         for prefix, condition in prefixes.items():
             if line.startswith(prefix):
                 effect_text = line[len(prefix):]
+                # Only self-event subjects prove an initial 'it' denotes this source.
+                # Other-creature events and later targeted clauses have other antecedents.
+                if condition in ('SelfEnters', 'SelfDies', 'SelfAttacks', 'SelfEntersOrAttacks'):
+                    effect_text = re.sub(r'^[Ii]t deals ', 'this creature deals ', effect_text)
+                if effect_text.startswith(card.get('name', '') + ' deals '):
+                    effect_text = 'this creature deals ' + effect_text[len(card['name']) + len(' deals '):]
                 targeted = targeted_program(effect_text)
                 if targeted:
                     targets, program = targeted
@@ -611,7 +638,7 @@ def spell_program_template(card):
     text = card.get('oracle_text')
     if isinstance(text, str): text = ' '.join(re.sub(r'\([^()]*\)', '', text).split())
     if isinstance(text, str) and text.startswith(card.get('name', '') + ' deals '):
-        text = 'it deals ' + text[len(card['name']) + len(' deals '):]
+        text = 'this spell deals ' + text[len(card['name']) + len(' deals '):]
     targeted = targeted_program(text)
     if targeted: return targeted
     program = statement_program(text)
@@ -699,8 +726,9 @@ def permanent_program_template(card):
         once = effect_text.endswith(' Activate only once each turn.')
         if sorcery: effect_text = effect_text[:-len(' Activate only as a sorcery.')]
         if once: effect_text = effect_text[:-len(' Activate only once each turn.')]
-        if effect_text.startswith('This creature deals '):
-            effect_text = 'it deals ' + effect_text[len('This creature deals '):]
+        # All admitted costs refer only to the source, mana, life or its counters;
+        # an initial pronoun in this activation therefore denotes the source.
+        effect_text = re.sub(r'^[Ii]t deals ', 'this permanent deals ', effect_text)
         targeted = targeted_program(effect_text)
         if targeted: targets, program = targeted
         else: targets, program = 'None', statement_program(effect_text)

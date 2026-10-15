@@ -14,6 +14,73 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_cast_trigger_conditions_and_second_spell_are_exact(self):
+        for prefix, relation, filter_, ordinal in [
+            ('Whenever you cast a spell, ', 'You', 'Any', None),
+            ('Whenever you cast a creature spell, ', 'You', 'Creature', None),
+            ('Whenever you cast a noncreature spell, ', 'You', 'Noncreature', None),
+            ('Whenever you cast an instant or sorcery spell, ', 'You', 'InstantSorcery', None),
+            ('Whenever you cast an artifact spell, ', 'You', 'Artifact', None),
+            ('Whenever you cast an enchantment spell, ', 'You', 'Enchantment', None),
+            ('Whenever an opponent casts a spell, ', 'Opponent', 'Any', None),
+            ('Whenever a player casts a spell, ', 'Any', 'Any', None),
+            ('Whenever you cast your second spell each turn, ', 'You', 'Any', 2),
+            ('Flurry — Whenever you cast your second spell each turn, ', 'You', 'Any', 2),
+        ]:
+            result = generate.trigger_creature_template(self.card(oracle_text=prefix+'Draw a card.'))
+            self.assertEqual(result[2], [(generate.cast_condition(relation, filter_, ordinal), ['Draw(PlayerSet::Controller, 1)'], 'None')])
+        for line in [
+            'Whenever you cast your second spell each turn, draw a card. This ability triggers only once each turn.',
+            'Whenever you cast a noncreature spell, if four mana was spent to cast it, draw a card.',
+            'Magecraft — Whenever you cast or copy an instant or sorcery spell, draw a card.',
+            'Whenever you cast your second creature spell each turn, draw a card.',
+            'Whenever you cast a spell, copy it.',
+            'Whenever you cast an instant or sorcery spell that targets a creature, draw a card.',
+        ]:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=line)), line)
+
+    def test_prowess_keeps_repeated_instances_and_rejects_residual_abilities(self):
+        condition = generate.cast_condition(filter_='Noncreature')
+        program = [generate.grow_instruction('Source', 1, 1)]
+        row = self.card(oracle_text='Flying, vigilance, prowess, prowess (Each triggers.)')
+        result = generate.trigger_creature_template(row)
+        self.assertEqual(result[1], 9)
+        self.assertEqual(result[2], [(condition, program, 'None')]*2)
+        self.assertIsNone(generate.creature_template(row))
+        for text in ['Prowess, ward {1}', 'Prowess\nYou may cast spells from your graveyard.',
+                     'Other creatures you control have prowess.', 'Prowess\nThis spell costs {1} less to cast.']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=text)), text)
+        self.assertIsNone(generate.keyword_effect('gains prowess until end of turn.', 'Source'))
+
+    def test_nontargeted_source_damage_and_source_untap_preserve_complete_clauses(self):
+        self.assertEqual(generate.statement_program('This creature deals 2 damage to each opponent and you gain 2 life.'),
+                         ['DamagePlayers(PlayerSet::Opponent, 2)', 'GainLife(PlayerSet::Controller, 2)'])
+        self.assertEqual(generate.statement_program('Untap this creature.'), ['UntapSource'])
+        row = self.card(name='Black Waltz No. 3', oracle_text='Whenever you cast a noncreature spell, Black Waltz No. 3 deals 2 damage to each opponent.')
+        self.assertEqual(generate.trigger_creature_template(row)[2][0][1], ['DamagePlayers(PlayerSet::Opponent, 2)'])
+        for text in ['This creature deals X damage to each opponent.',
+                     'This creature deals 1 damage to each opponent unless they pay {1}.',
+                     'This creature deals 40000 damage to each opponent.',
+                     'Untap this creature and another target creature.',
+                     'Untap this creature. Win the game.']:
+            self.assertIsNone(generate.statement_program(text), text)
+
+    def test_damage_pronouns_require_a_proven_source_antecedent(self):
+        for suffix in ['It deals 1 damage to each opponent.', 'It deals 1 damage to target opponent.']:
+            self.assertIsNone(generate.statement_program(suffix))
+            self.assertIsNone(generate.targeted_program(suffix))
+            self.assertIsNone(generate.targeted_program('Target creature gets +1/+1 until end of turn. '+suffix))
+            self.assertIsNone(generate.spell_program_template(self.card(type_line='Instant', oracle_text=suffix)))
+        for prefix in ['When this creature enters, ', 'When this creature dies, ', 'Whenever this creature attacks, ']:
+            self.assertIsNotNone(generate.trigger_creature_template(self.card(oracle_text=prefix+'it deals 1 damage to each opponent.')))
+        for prefix in ['Whenever another creature you control enters, ', 'Whenever you cast a creature spell, ']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=prefix+'it deals 1 damage to each opponent.')))
+        self.assertEqual(generate.spell_program_template(self.card(name='Boltwave',type_line='Sorcery',oracle_text='Boltwave deals 3 damage to each opponent.')),
+                         ('None',['DamagePlayers(PlayerSet::Opponent, 3)']))
+        activation=generate.permanent_program_template(self.card(oracle_text='{T}, Sacrifice this creature: It deals 1 damage to any target.'))
+        self.assertEqual(activation[3][0][2],['Damage(1)'])
+        self.assertIsNone(generate.permanent_program_template(self.card(oracle_text='{T}: Target creature gets +1/+1 until end of turn. It deals 1 damage to each opponent.')))
+
     def test_distinct_target_groups_and_power_damage_keep_operands(self):
         for verb, action in [('fights', 'Fight'), ('deals damage equal to its power to', 'PowerDamage')]:
             result = generate.targeted_program(f'Target creature you control {verb} target creature an opponent controls.')

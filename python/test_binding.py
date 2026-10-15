@@ -12,6 +12,50 @@ class BindingTests(unittest.TestCase):
     def game(self):
         return Game([["Mountain"] * 24 + ["LightningBolt"] * 36] * 2, seed=17, deck_rules="Freeform")
 
+    def test_completed_cast_counts_and_triggers_survive_native_clone_restore(self):
+        deck = ["Mountain"] * 24 + ["Firebrand Archer"] * 24 + ["Boltwave"] * 12
+        with Game([deck, deck], seed=7, deck_rules="Freeform") as game:
+            obs = game.observe("P0")
+            for _ in range(1200):
+                obs = game.observe(obs["actor"])
+                if obs["outcome"] is not None:
+                    self.fail("game ended before a cast-trigger check")
+                actor = obs["actor"]
+                player = 0 if actor == "P0" else 1
+                own = {o["id"]: o for o in obs["objects"] if o["owner"] == actor}
+                def score(a):
+                    kind = a["kind"]
+                    if kind == "AnnounceCast":
+                        return 85 if own[a["card"]]["card"] == "Firebrand Archer" else 80
+                    return {"Keep":100, "PlayLand":90, "PayCosts":100,
+                            "TapMana":70 if obs["decision"] == "pay_costs" else -5,
+                            "PutTrigger":60, "FinishAttackers":60, "FinishBlockers":60,
+                            "Pass":50, "Mulligan":-100, "Concede":-1000}.get(kind, 0)
+                index = max(range(len(obs["actions"])), key=lambda i: score(obs["actions"][i]))
+                action = obs["actions"][index]
+                if (action["kind"] == "PayCosts" and obs["announcing"]["source_card"] == "Boltwave"
+                        and any(o["card"] == "Firebrand Archer" and o["zone"] == "Battlefield" for o in own.values())):
+                    before = obs["players"][player]["spells_cast_this_turn"]
+                    saved = game.snapshot()
+                    with game.clone() as branch:
+                        expected = branch.step(branch.observe(actor), index)
+                    actual = game.step(obs, index)
+                    self.assertEqual(actual, expected)
+                    self.assertEqual(actual["players"][player]["spells_cast_this_turn"], before + 1)
+                    other = "P1" if actor == "P0" else "P0"
+                    self.assertEqual(game.observe(other)["players"][player]["spells_cast_this_turn"], before + 1)
+                    self.assertEqual(actual["stack"][0]["source_card"], "Boltwave")
+                    self.assertTrue(any(x["source_card"] == "Firebrand Archer" for x in actual["stack"] + actual["waiting_triggers"]))
+                    game.restore(saved)
+                    replay = game.step(game.observe(actor), index)
+                    self.assertGreater(replay.pop("revision"), actual.pop("revision"))
+                    self.assertEqual(replay, actual)
+                    game.drop_snapshot(saved)
+                    break
+                obs = game.step(obs, index)
+            else:
+                self.fail("no cast trigger exercised")
+
     def test_legend_choices_public_masks_and_native_clone_restore(self):
         deck = ["Swamp"] * 30 + ["Yargle, Glutton of Urborg"] * 30
         with Game([deck, deck], seed=7, deck_rules="Freeform") as game:
@@ -55,7 +99,7 @@ class BindingTests(unittest.TestCase):
             observation = game.observe("P0")
             coverage = json.loads((Path(__file__).resolve().parents[1] / "data/standard/coverage.json").read_text())
             self.assertEqual(observation["catalogue"], coverage["catalogue_version"])
-            self.assertEqual(observation["schema"], 17)
+            self.assertEqual(observation["schema"], 18)
             self.assertEqual(len(observation["objects"]), 7)
             self.assertTrue(all(o["owner"] == "P0" for o in observation["objects"]))
             self.assertEqual(game.observe("P1")["actions"], [])

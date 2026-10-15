@@ -1,7 +1,7 @@
 use crate::cards::{
-    ActivatedAbility, ActivationCost, CounterKind, Counters, CreatureFilter, Effect, EntryTapped,
-    Instruction, ManaProduction, PlayerSet, SearchSpec, Stats, Subject, TargetPlan, TargetRule,
-    TargetSpec, TargetZone, TriggerCondition, payments,
+    ActivatedAbility, ActivationCost, CastRelation, CounterKind, Counters, CreatureFilter, Effect,
+    EntryTapped, Instruction, ManaProduction, PlayerSet, SearchSpec, Stats, Subject, TargetPlan,
+    TargetRule, TargetSpec, TargetZone, TriggerCondition, payments,
 };
 #[path = "engine_activations.rs"]
 mod activations;
@@ -349,6 +349,7 @@ impl Object {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct PlayerState {
+    spells_cast_this_turn: u64,
     life: i64,
     mana: Mana,
     library: Vec<CardId>, // top is last, bottom is first
@@ -471,6 +472,7 @@ struct State {
     objects: Vec<Object>,
     free_tokens: Vec<CardId>,
     static_sources: Vec<CardId>,
+    cast_sources: Vec<CardId>,
     exile_links: Vec<ExileLink>,
     known_hand: Vec<ObjectRef>,
     players: [PlayerState; 2],
@@ -544,6 +546,7 @@ pub struct ZoneChange {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct PlayerView {
+    pub spells_cast_this_turn: u64,
     pub life: i64,
     pub mana: Mana,
     pub library_count: usize,
@@ -696,6 +699,7 @@ impl Game {
         }
         let mut objects = Vec::with_capacity(config.decks.iter().map(Vec::len).sum());
         let mut players = std::array::from_fn(|_| PlayerState {
+            spells_cast_this_turn: 0,
             life: 20,
             mana: [0; 6],
             library: Vec::new(),
@@ -731,6 +735,7 @@ impl Game {
                 objects,
                 free_tokens: Vec::new(),
                 static_sources: Vec::new(),
+                cast_sources: Vec::new(),
                 exile_links: Vec::new(),
                 known_hand: Vec::new(),
                 players,
@@ -1311,7 +1316,7 @@ impl Game {
                 if let Some(target) = target {
                     item.targets.push(self.bind_target(target));
                 }
-                self.state.stack.push(item);
+                self.push_stack_item(item);
                 self.state.passes = 0;
             }
             Action::Activate {
@@ -1326,7 +1331,7 @@ impl Game {
                     item.targets.push(self.bind_target(target));
                 }
                 self.pay_activation(&item, payment, counter_payment);
-                self.state.stack.push(item);
+                self.push_stack_item(item);
                 self.state.passes = 0;
             }
             Action::ActivateMana {
@@ -1372,6 +1377,7 @@ impl Game {
                     {
                         *pool -= cost;
                     }
+                    self.record_spell_cast(actor, self.state.objects[card as usize].card);
                 }
             }
             Action::KeepLegend { object } => self.keep_legend(object),
@@ -1743,6 +1749,7 @@ impl Game {
                 }
             }
             self.state.static_sources.retain(|&source| source != id);
+            self.state.cast_sources.retain(|&source| source != id);
             self.state.attackers.retain(|attacker| attacker.card != id);
             self.state.blocking.retain(|&blocker| blocker != id);
             self.state
@@ -1774,7 +1781,7 @@ impl Game {
             self.state.players[obj.owner.index()].library.push(id);
         }
         if destination == Zone::Battlefield {
-            self.register_static_source(id);
+            self.register_battlefield_sources(id);
         }
         ZoneChange {
             before,
@@ -1791,6 +1798,9 @@ impl Game {
     }
 
     fn begin_turn(&mut self) {
+        for player in &mut self.state.players {
+            player.spells_cast_this_turn = 0;
+        }
         self.state.land_played = false;
         self.state.attack_declared = false;
         self.state.attackers.clear();
@@ -2108,7 +2118,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 17,
+            schema: 18,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -2137,6 +2147,7 @@ impl Game {
                 Pending::Terminal => "terminal",
             },
             players: std::array::from_fn(|i| PlayerView {
+                spells_cast_this_turn: s.players[i].spells_cast_this_turn,
                 life: s.players[i].life,
                 mana: s.players[i].mana,
                 library_count: s.players[i].library.len(),
@@ -2328,7 +2339,8 @@ impl Game {
             + s.exile_links.len() * std::mem::size_of::<ExileLink>()
             + s.sba_batch.as_ref().map(|batch| batch.bytes()).unwrap_or(0)
             + s.known_hand.len() * std::mem::size_of::<ObjectRef>()
-            + (s.free_tokens.len() + s.static_sources.len()) * std::mem::size_of::<CardId>()
+            + (s.free_tokens.len() + s.static_sources.len() + s.cast_sources.len())
+                * std::mem::size_of::<CardId>()
             + s.players
                 .iter()
                 .map(|p| p.library.len() * std::mem::size_of::<CardId>())
@@ -2424,3 +2436,7 @@ mod group_tests;
 #[cfg(test)]
 #[path = "engine_sba_tests.rs"]
 mod sba_tests;
+
+#[cfg(test)]
+#[path = "engine_cast_tests.rs"]
+mod cast_tests;

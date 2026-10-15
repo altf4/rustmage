@@ -256,6 +256,8 @@ impl Game {
             }),
         };
         if !has_choice {
+            // Prepaid declarations settle their deferred costs in the caller.
+            // A spell is still only a proposal here, so do not fire cast triggers.
             self.state.stack.push(item);
             return false;
         }
@@ -346,7 +348,7 @@ impl Game {
         if let Some(production) = announcement.production {
             self.add_mana(announcement.item.controller, production);
         } else {
-            self.state.stack.push(announcement.item);
+            self.push_stack_item(announcement.item);
         }
         if announcement.trigger {
             self.continue_trigger_order();
