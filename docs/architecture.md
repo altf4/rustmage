@@ -51,8 +51,8 @@ Card bodies and immutable instruction programs share static catalogue storage.
 Owned resolving continuations retain a program counter, source context and pending
 choices. Trigger instances use distinct stack identities, queue until priority,
 and are placed in APNAP/controller order. See [programs.md](programs.md) for exact
-admission scope. Wider events, replacement/prevention continuations, general SBA
-fixed points and continuous layers remain prerequisites for dependent cards.
+admission scope. Wider events, replacement/prevention continuations, remaining SBA types and continuous layers remain prerequisites for dependent cards.
+The implemented SBA rules repeat to a fixed point, including token cessation.
 Target predicates now share validation between masks, submission and resolution;
 [owned announcements](targeting.md) retain partial target choices and pending
 fixed mana payment. Wider cost/mode choices still need the same treatment.
@@ -62,7 +62,9 @@ Physical card slots remain stable, while `ObjectRef` pairs a slot with a zone-ch
 generation. All current zone transitions share reset, library-index and combat-removal
 logic; spell targets capture their incarnation when cast. Damage sources retain their
 captured incarnation and attributes. Transition results own the departing object's
-last-known view. See [object-identity.md](object-identity.md) for scope and schema.
+last-known view. Fixed [token factories](tokens.md) share immutable storage;
+ceased token slots are recycled with new generations and an owned free list.
+See [object-identity.md](object-identity.md) for scope and schema.
 
 Zone transitions now dispatch the admitted entry/death triggers; attack declarations
 dispatch admitted attack triggers. Simultaneous death sources are captured before
