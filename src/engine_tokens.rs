@@ -33,7 +33,7 @@ impl Game {
                 summoning_sick: false,
                 damage: 0,
                 deathtouch_since_sba: false,
-                growth: 0,
+                growth: Stats::default(),
                 counters: Counters::default(),
                 used_abilities: 0,
             };
@@ -50,6 +50,7 @@ impl Game {
                 .expect("object generation exhausted");
             object.tapped = tapped;
             object.summoning_sick = true;
+            self.register_static_source(id);
             events.push(ZoneChange {
                 before,
                 after: self.object_ref(id),
@@ -81,7 +82,7 @@ impl Game {
         object.summoning_sick = false;
         object.damage = 0;
         object.deathtouch_since_sba = false;
-        object.growth = 0;
+        object.growth = Stats::default();
         object.counters = Counters::default();
         object.used_abilities = 0;
         // No zone-change event: this game object ceases to exist (CR111.7).

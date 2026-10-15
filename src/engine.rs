@@ -1,12 +1,15 @@
 use crate::cards::{
-    ActivatedAbility, ActivationCost, CounterKind, Counters, Effect, Instruction, ManaProduction,
-    PlayerSet, Subject, TargetRule, TargetSpec, TargetZone, TriggerCondition, payments,
+    ActivatedAbility, ActivationCost, CounterKind, Counters, CreatureFilter, Effect, Instruction,
+    ManaProduction, PlayerSet, Stats, Subject, TargetRule, TargetSpec, TargetZone,
+    TriggerCondition, payments,
 };
 #[path = "engine_activations.rs"]
 mod activations;
 #[path = "engine_funding.rs"]
 mod funding;
 use funding::FundingGoal;
+#[path = "engine_stats.rs"]
+mod stats;
 #[path = "engine_tokens.rs"]
 mod tokens;
 use crate::rng::Rng;
@@ -284,7 +287,7 @@ struct Object {
     summoning_sick: bool,
     damage: i32,
     deathtouch_since_sba: bool,
-    growth: i32,
+    growth: Stats,
     counters: Counters,
     used_abilities: u64,
 }
@@ -304,15 +307,15 @@ impl Object {
         }
     }
 
-    fn power(&self) -> i32 {
+    fn local_power(&self) -> i32 {
         match self.card.effect() {
-            Effect::Creature(p, _) => p + self.growth + self.counter_delta(),
+            Effect::Creature(p, _) => p + self.growth.power + self.counter_delta(),
             _ => 0,
         }
     }
-    fn toughness(&self) -> i32 {
+    fn local_toughness(&self) -> i32 {
         match self.card.effect() {
-            Effect::Creature(_, t) => t + self.growth + self.counter_delta(),
+            Effect::Creature(_, t) => t + self.growth.toughness + self.counter_delta(),
             _ => 0,
         }
     }
@@ -431,6 +434,7 @@ enum Pending {
 struct State {
     objects: Vec<Object>,
     free_tokens: Vec<CardId>,
+    static_sources: Vec<CardId>,
     players: [PlayerState; 2],
     rng: Rng,
     active: Player,
@@ -631,7 +635,7 @@ impl Game {
                     summoning_sick: false,
                     damage: 0,
                     deathtouch_since_sba: false,
-                    growth: 0,
+                    growth: Stats::default(),
                     counters: Counters::default(),
                     used_abilities: 0,
                 });
@@ -644,6 +648,7 @@ impl Game {
             state: State {
                 objects,
                 free_tokens: Vec::new(),
+                static_sources: Vec::new(),
                 players,
                 rng,
                 active: config.starting_player,
@@ -1442,6 +1447,7 @@ impl Game {
 
     fn object_view(&self, id: CardId) -> ObjectView {
         let obj = &self.state.objects[id as usize];
+        let stats = self.stats(id);
         ObjectView {
             id,
             reference: self.object_ref(id),
@@ -1453,8 +1459,8 @@ impl Game {
             damage: obj.damage,
             counters: obj.counters,
             used_abilities: obj.used_abilities,
-            power: obj.power(),
-            toughness: obj.toughness(),
+            power: stats.power,
+            toughness: stats.toughness,
             keywords: obj.card.keywords(),
             token: obj.card.token_info(),
         }
@@ -1474,6 +1480,19 @@ impl Game {
         let event = self.move_object_raw(id, destination);
         self.zone_triggers(&event, &sources);
         event
+    }
+
+    /// Capture every pre-event characteristic before any simultaneous departure.
+    fn move_objects_raw(&mut self, ids: &[CardId], destination: Zone) -> Vec<ZoneChange> {
+        let before: Vec<_> = ids.iter().map(|&id| self.object_view(id)).collect();
+        before
+            .into_iter()
+            .map(|before| {
+                let mut event = self.move_object_raw(before.id, destination);
+                event.before = before;
+                event
+            })
+            .collect()
     }
 
     fn move_object_raw(&mut self, id: CardId, destination: Zone) -> ZoneChange {
@@ -1510,6 +1529,7 @@ impl Game {
                 .retain(|spell| spell.kind != StackKind::Spell || spell.object != before.reference);
         }
         if before.zone == Zone::Battlefield {
+            self.state.static_sources.retain(|&source| source != id);
             self.state.attackers.retain(|attacker| attacker.card != id);
             self.state.blocking.retain(|&blocker| blocker != id);
             self.state
@@ -1529,7 +1549,7 @@ impl Game {
         obj.summoning_sick = destination == Zone::Battlefield;
         obj.damage = 0;
         obj.deathtouch_since_sba = false;
-        obj.growth = 0;
+        obj.growth = Stats::default();
         obj.counters = if destination == Zone::Battlefield {
             obj.card.enters_counters()
         } else {
@@ -1538,6 +1558,9 @@ impl Game {
         obj.used_abilities = 0;
         if destination == Zone::Library {
             self.state.players[obj.owner.index()].library.push(id);
+        }
+        if destination == Zone::Battlefield {
+            self.register_static_source(id);
         }
         ZoneChange {
             before,
@@ -1661,12 +1684,14 @@ impl Game {
         for obj in &mut self.state.objects {
             obj.damage = 0;
             obj.deathtouch_since_sba = false;
-            obj.growth = 0;
+            obj.growth = Stats::default();
         }
         // Losing temporary growth can expose lethal negative counters. Apply
         // SBAs before advancing the turn; CR514.3 gives an extra priority cycle.
-        if self.state.objects.iter().any(|obj| {
-            obj.zone == Zone::Battlefield && obj.card.is_creature() && obj.toughness() <= 0
+        if self.state.objects.iter().enumerate().any(|(id, obj)| {
+            obj.zone == Zone::Battlefield
+                && obj.card.is_creature()
+                && self.stats(id as CardId).toughness <= 0
         }) {
             self.state_based_actions();
             if self.state.outcome.is_none() {
@@ -1766,7 +1791,7 @@ impl Game {
 
     fn lethal_assignment(&self, source: DamageSource, blocker: CardId) -> i32 {
         let obj = &self.state.objects[blocker as usize];
-        let remaining = (obj.toughness() - obj.damage).max(0);
+        let remaining = (self.stats(blocker).toughness - obj.damage).max(0);
         if source.keywords.contains(Keywords::DEATHTOUCH) {
             remaining.min(1)
         } else {
@@ -1792,7 +1817,7 @@ impl Game {
             for &blocker in &blockers {
                 if self.assigns_this_step(blocker) {
                     let source = self.damage_source(blocker);
-                    let amount = self.state.objects[blocker as usize].power().max(0);
+                    let amount = self.stats(blocker).power.max(0);
                     self.queue_hit(source, Target::Card(attacker.card), amount, true);
                 }
             }
@@ -1800,7 +1825,7 @@ impl Game {
                 continue;
             }
             let source = self.damage_source(attacker.card);
-            let power = self.state.objects[attacker.card as usize].power().max(0);
+            let power = self.stats(attacker.card).power.max(0);
             let trample = source.keywords.contains(Keywords::TRAMPLE);
             if !attacker.blocked || (trample && blockers.is_empty()) {
                 self.queue_hit(
@@ -1869,11 +1894,11 @@ impl Game {
                 .objects
                 .iter()
                 .enumerate()
-                .filter(|(_, obj)| {
+                .filter(|(id, obj)| {
                     obj.zone == Zone::Battlefield
                         && obj.card.is_creature()
-                        && (obj.toughness() <= 0
-                            || obj.damage >= obj.toughness()
+                        && (self.stats(*id as CardId).toughness <= 0
+                            || obj.damage >= self.stats(*id as CardId).toughness
                             || obj.deathtouch_since_sba)
                 })
                 .map(|(i, _)| i as CardId)
@@ -1881,10 +1906,7 @@ impl Game {
             let mut changed = !deaths.is_empty() || !ceased.is_empty();
             if !deaths.is_empty() {
                 let sources = self.death_trigger_sources();
-                let events: Vec<_> = deaths
-                    .into_iter()
-                    .map(|id| self.move_object_raw(id, Zone::Graveyard))
-                    .collect();
+                let events = self.move_objects_raw(&deaths, Zone::Graveyard);
                 for event in &events {
                     self.zone_triggers(event, &sources);
                 }
@@ -2093,7 +2115,7 @@ impl Game {
         let s = &self.state;
         std::mem::size_of::<State>()
             + s.objects.len() * std::mem::size_of::<Object>()
-            + s.free_tokens.len() * std::mem::size_of::<CardId>()
+            + (s.free_tokens.len() + s.static_sources.len()) * std::mem::size_of::<CardId>()
             + s.players
                 .iter()
                 .map(|p| p.library.len() * std::mem::size_of::<CardId>())
@@ -2148,3 +2170,7 @@ impl Game {
 #[cfg(test)]
 #[path = "engine_library_tests.rs"]
 mod library_tests;
+
+#[cfg(test)]
+#[path = "engine_stats_tests.rs"]
+mod stats_tests;

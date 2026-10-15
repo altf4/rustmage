@@ -48,7 +48,7 @@ pool, 60-card minimum and copy limits, then rejects every unsupported card.
 The known Standard unlimited-copy exceptions are represented independently of
 whether their rules have been implemented.
 
-Coverage is **239 / 5,164 executable Standard cards**, plus six legacy regression
+Coverage is **279 / 5,164 executable Standard cards**, plus six legacy regression
 cards. The additions are ten exact vanilla-creature templates and 25 creatures
 whose entire text consists of implemented static keywords, plus four exact
 single-instruction bounce/destruction spells, additional spell programs and creatures with complete supported trigger programs.
@@ -96,5 +96,8 @@ Factory counts are reported separately from executable deck-card coverage.
 
 [Private scry/surveil](library-choices.md) adds complete fixed-count library choices
 and 27 additional Standard definitions, including sequential spell instructions
-separated by newlines. Current coverage remains partial; 4,925 legal identities
-still require executable semantics.
+separated by newlines. At that milestone 4,925 legal identities
+still required executable semantics.
+
+[Derived additive stats](derived-stats.md) adds 40 more complete definitions,
+bringing executable coverage to 279/5,164; 4,885 legal identities remain unsupported.

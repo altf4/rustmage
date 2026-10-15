@@ -8,7 +8,7 @@ fn zone_change_preserves_lki_and_resets_new_object() {
     let obj = &mut game.state.objects[card as usize];
     obj.tapped = true;
     obj.damage = 4;
-    obj.growth = 3;
+    obj.growth = (3).into();
     obj.deathtouch_since_sba = true;
     let before = game.object_ref(card);
     let event = game.move_object(card, Zone::Hand);

@@ -33,7 +33,7 @@ fn targeted_counter_is_permanent_snapshot_owned_and_resets_on_zone_change() {
     pass_pair(&mut game);
     assert_eq!(game.snapshot(), after);
     // Cleanup removes temporary growth, but counters remain.
-    game.state.objects[creature as usize].growth = 2;
+    game.state.objects[creature as usize].growth = (2).into();
     game.finish_cleanup();
     assert_eq!(game.object_view(creature).power, 3);
     game.move_object(creature, Zone::Hand);
@@ -130,7 +130,7 @@ fn cleanup_death_from_counter_preserves_active_player_for_extra_priority() {
     let target = spawn(&mut game, Player::P1, Card::HillGiant, Zone::Battlefield);
     let toughness = game.object_view(boggart).toughness;
     game.state.objects[boggart as usize].counters.minus_one = toughness as u32;
-    game.state.objects[boggart as usize].growth = 1;
+    game.state.objects[boggart as usize].growth = (1).into();
     game.state.step = Step::Cleanup;
     game.finish_cleanup();
     game.prepare_triggers();
@@ -157,7 +157,7 @@ fn repeated_cleanup_discards_after_death_trigger_draw_and_replays() {
         named(&mut game, "Forest", Zone::Hand);
     }
     game.state.objects[sentinel as usize].counters.minus_one = 3;
-    game.state.objects[sentinel as usize].growth = 1;
+    game.state.objects[sentinel as usize].growth = (1).into();
     game.state.step = Step::End;
     pass_pair(&mut game);
     assert_eq!(game.state.active, Player::P0);

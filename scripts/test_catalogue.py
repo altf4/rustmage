@@ -28,6 +28,35 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'At the beginning of your upkeep, scry 1.'):
             self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=text)))
 
+    def test_additive_stats_compile_both_values_and_exact_static_filters(self):
+        self.assertEqual(generate.targeted_program('Target creature gets +1/+3 until end of turn.'),
+                         ('Creature', [generate.grow_instruction('Targets', 1, 3)]))
+        self.assertEqual(generate.statement_program('This creature gets +3/-3 until end of turn.'),
+                         [generate.grow_instruction('Source', 3, -3)])
+        for phrase, expected in [('Other Elves you control', 'subtype: Some("Elf")'),
+                                 ('Creatures your opponents control', 'relation: 1'),
+                                 ('Attacking creatures you control', 'attacking: true'),
+                                 ('Creature tokens you control', 'tokens: Some(true)'),
+                                 ('Artifact creatures you control', 'artifact: true'),
+                                 ('Other creatures you control with flying', 'keyword: Keywords(1)')]:
+            self.assertIn(expected, generate.creature_filter(phrase))
+            row=self.card(oracle_text=phrase + ' get +1/+2.')
+            result=generate.static_permanent_template(row)
+            self.assertIsNotNone(result)
+            self.assertIn('power: 1, toughness: 2', result[5][0])
+        self.assertIn('power: -3, toughness: 0', generate.statement_program('Creatures your opponents control get -3/-0 until end of turn.')[0])
+        for text in ('Enchanted creatures you control get +2/+2.',
+                     'Creatures you control get +X/+X.',
+                     'Creatures you control get +1/+1 for each land you control.',
+                     'Other creatures you control get +1/+1.\nOther creatures have flying.',
+                     'Other creatures you control get +1/+1.\nThis creature has base power and toughness 4/4.',
+                     'Other creatures you control get +32768/+0.'):
+            self.assertIsNone(generate.static_permanent_template(self.card(oracle_text=text)),text)
+        for text in ('Creatures you control get +2/+1 until your next turn.',
+                     'Creatures you control get +1/+1 and gain haste until end of turn.',
+                     'This creature gets +X/+0 until end of turn.'):
+            self.assertIsNone(generate.statement_program(text),text)
+
     def test_exact_creature_template_rejects_other_mechanics(self):
         self.assertEqual(generate.creature_template(self.card()), ('Creature(2, 1)', 0))
         for changes in [dict(oracle_text='Flying\nWhen this creature enters, draw a card.'),
@@ -110,10 +139,10 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertEqual(generate.targeted_program('tap up to two target creatures an opponent controls.'),
                          (('CreatureOpponent', 0, 2), ['Tap']))
         self.assertEqual(generate.targeted_program('Untap one or two target creatures. They each get +2/+2 until end of turn.'),
-                         (('Creature', 1, 2), ['Untap', 'Grow(2)']))
+                         (('Creature', 1, 2), ['Untap', 'Grow { subject: Subject::Targets, power: 2, toughness: 2 }']))
         self.assertEqual(generate.targeted_program('Target creature gets -2/-2 until end of turn. You gain 2 life.'),
-                         ('Creature', ['Grow(-2)', 'GainLife(PlayerSet::Controller, 2)']))
-        for text in ['Target creature gets +1/+3 until end of turn.', 'Tap target creature. Mill a card.',
+                         ('Creature', ['Grow { subject: Subject::Targets, power: -2, toughness: -2 }', 'GainLife(PlayerSet::Controller, 2)']))
+        for text in ['Target creature gets +1/+X until end of turn.', 'Tap target creature. Mill a card.',
                      'Return target creature card from your graveyard to the battlefield with a counter.',
                      'Target player draws a card. Target opponent loses 1 life.',
                      'Tap target creature. It does not untap next turn.']:
