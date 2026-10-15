@@ -419,6 +419,10 @@ def statement_program(text):
         return [f'Draw(PlayerSet::Controller, {DRAW_COUNTS[m[1]]})']
     if m := re.fullmatch(r'you gain ([0-9]+) life\.', text):
         return [f'GainLife(PlayerSet::Controller, {int(m[1])})'] if int(m[1]) <= 65535 else None
+    if m := re.fullmatch(r'each opponent loses ([0-9]+) life\.', text):
+        return [f'LoseLife(PlayerSet::Opponent, {int(m[1])})'] if int(m[1]) <= 65535 else None
+    if m := re.fullmatch(r'this creature deals ([0-9]+) damage to you and you draw (a card|two cards|three cards|four cards)\.', text):
+        return [f'DamagePlayers(PlayerSet::Controller, {int(m[1])})',f'Draw(PlayerSet::Controller, {DRAW_COUNTS[m[2]]})'] if int(m[1]) <= 32767 else None
     if m := re.fullmatch(r'you lose ([0-9]+) life\.', text):
         return [f'LoseLife(PlayerSet::Controller, {int(m[1])})'] if int(m[1]) <= 65535 else None
     if text == 'you may draw a card. If you do, discard a card.':
@@ -708,6 +712,31 @@ for _text, _step, _relation in [
 ]: STEP_PREFIXES[_text] = step_condition(_step,_relation)
 
 
+def life_condition(first=False,own_turn=False):
+    return f'LifeGained {{ first_only: {str(first).lower()}, own_turn: {str(own_turn).lower()} }}'
+
+
+def death_condition(relation='You',other=False,nontoken=False,subtype=None):
+    subtype='None' if subtype is None else 'Some('+json.dumps(subtype)+')'
+    return (f'CreatureDies {{ relation: CastRelation::{relation}, other: {str(other).lower()}, '
+            f'nontoken: {str(nontoken).lower()}, subtype: {subtype} }}')
+
+
+VITAL_PREFIXES = {
+    'Whenever you gain life, ': life_condition(),
+    'Whenever you gain life for the first time each turn, ': life_condition(first=True),
+    'Whenever you gain life for the first time during each of your turns, ': life_condition(first=True,own_turn=True),
+}
+for _quantifier,_other in [('a',False),('another',True)]:
+    for _token in ['', 'nontoken ']:
+        for _ownership,_relation in [(' you control','You'),(' an opponent controls','Opponent'),('','Any')]:
+            VITAL_PREFIXES[f'Whenever {_quantifier} {_token}creature{_ownership} dies, '] = death_condition(_relation,_other,bool(_token))
+# Exact, single-subtype events. Other qualifiers, unions and batching remain gated.
+for _subtype in ('Goblin','Rat','Insect','Elf','Zombie','Vampire','Human','Ally','Hero','Villain'):
+    for _quantifier,_other in [('a',False),('another',True)]:
+        VITAL_PREFIXES[f'Whenever {_quantifier} {_subtype} you control dies, '] = death_condition(other=_other,subtype=_subtype)
+
+
 def trigger_creature_template(card):
     if not isinstance(card.get('oracle_text'), str):
         return None
@@ -736,9 +765,18 @@ def trigger_creature_template(card):
         'Whenever this creature or another creature you control enters, ': 'CreatureEntersYou',
         'Landfall — Whenever a land you control enters, ': 'LandEntersYou',
         **STEP_PREFIXES,
+        **VITAL_PREFIXES,
     }
     text = re.sub(r'\([^()]*\)', '', card['oracle_text']).strip()
     for line in text.split('\n'):
+        line = line.strip()
+        name = card.get('name', '')
+        names = [name] if name else []
+        if name and card.get('type_line', '').startswith('Legendary '):
+            names.append(name.split(',')[0])
+        for alias in names:
+            if line.startswith('When ' + alias + ' enters, '):
+                line = 'When this creature enters, ' + line[len('When ' + alias + ' enters, '):]
         for label in ('Raid — ', 'Formidable — ', 'Survival — '):
             if line.startswith(label + 'At the beginning of '): line = line[len(label):]
         if line.casefold() in TEXT_FLAGS:
@@ -761,8 +799,13 @@ def trigger_creature_template(card):
                 # Other-creature events and later targeted clauses have other antecedents.
                 if condition in ('SelfEnters', 'SelfDies', 'SelfAttacks', 'SelfEntersOrAttacks'):
                     effect_text = re.sub(r'^[Ii]t deals ', 'this creature deals ', effect_text)
-                if effect_text.startswith(card.get('name', '') + ' deals '):
-                    effect_text = 'this creature deals ' + effect_text[len(card['name']) + len(' deals '):]
+                for alias in names:
+                    if effect_text.startswith(alias + ' deals '):
+                        effect_text = 'this creature deals ' + effect_text[len(alias) + len(' deals '):]
+                # An explicit occurrence of this card's name denotes this source;
+                # event-subject pronouns still have no inferred binding.
+                for alias in names:
+                    effect_text = effect_text.replace(' on ' + alias + '.', ' on this creature.')
                 targeted = targeted_program(effect_text)
                 if targeted:
                     targets, program = targeted

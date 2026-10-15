@@ -14,6 +14,46 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_vital_event_prefixes_are_complete_and_filtered(self):
+        for prefix,condition in generate.VITAL_PREFIXES.items():
+            result=generate.trigger_creature_template(self.card(oracle_text=prefix+'draw a card.'))
+            self.assertIsNotNone(result,prefix)
+            self.assertEqual(result[2][0][0],condition)
+        first=generate.trigger_creature_template(self.card(oracle_text='Whenever you gain life for the first time during each of your turns, draw a card.'))
+        self.assertIn('first_only: true, own_turn: true',first[2][0][0])
+        for text in ['Whenever you gain 3 or more life, draw a card.',
+                     'Whenever you gain life, draw a card. This ability triggers only once each turn.',
+                     'Whenever one or more creatures you control die, draw a card.',
+                     'Whenever another creature you control with flying dies, draw a card.',
+                     'Whenever another creature or artifact you control dies, draw a card.',
+                     'Whenever another creature you control dies, it deals 1 damage to each opponent.',
+                     'Whenever a creature you control dies, that player loses 2 life.',
+                     'Whenever you gain life, draw that many cards.']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=text)),text)
+
+    def test_legendary_source_names_and_reminder_whitespace_preserve_complete_scope(self):
+        card=self.card(name='Tigra, Feline Fury',type_line='Legendary Creature — Cat Hero',oracle_text='Flash (You may cast this spell any time you could cast an instant.)\nWhenever you gain life, put a +1/+1 counter on Tigra.')
+        self.assertIsNotNone(generate.trigger_creature_template(card))
+        self.assertIsNone(generate.trigger_creature_template(dict(card,type_line='Creature — Cat Hero')))
+        self.assertIsNone(generate.trigger_creature_template(dict(card,oracle_text='Whenever you gain life, put a +1/+1 counter on Some Other Cat.')))
+        self.assertIsNotNone(generate.trigger_creature_template(self.card(name='Gladiolus Amicitia',oracle_text='When Gladiolus Amicitia enters, draw a card.')))
+        self.assertIsNone(generate.trigger_creature_template(self.card(name='Gladiolus Amicitia',oracle_text='When Gladiolus enters, draw a card.')))
+
+    def test_all_vital_milestone_admissions_and_remaining_mechanics_are_gated(self):
+        import json
+        cards={c['name']:c for c in json.loads((generate.ROOT/'data/standard/cards.json').read_text())['cards']}
+        for name in ["Ajani's Pridemate",'Marauding Blight-Priest','Pest Mascot','Tigra, Feline Fury',
+                     'Vanguard Seraph','Cat Collector','Agent Venom','Boggart Cursecrafter',
+                     'High-Society Hunter','Midnight Reaper',"Sephiroth, Planet's Heir",'Voracious Vermin',
+                     'Drogskol Reaver','Dori, Bearer of Friends','Glacier Godmaw','Gladiolus Amicitia',
+                     'Professional Wrestler','Provisions Merchant','Pulse Tracker','Shroudstomper','Starling, Aerial Ally']:
+            self.assertIsNotNone(generate.trigger_creature_template(cards[name]),name)
+        for name in ['Engine Rat',"Thrór's Map"]:
+            self.assertIsNotNone(generate.permanent_program_template(cards[name]),name)
+        for name in ['Bloombrute','Aerith Gainsborough','Vein Ripper','Twinblade Paladin','Titanbones, Towering Heart']:
+            self.assertIsNone(generate.trigger_creature_template(cards[name]),name)
+            self.assertIsNone(generate.permanent_program_template(cards[name]),name)
+
     def test_resolution_sacrifices_keep_player_ownership_filters_and_fixed_counts(self):
         for subject,players,targets in [('You','Controller','None'),('Each player','Each','None'),('Each opponent','Opponent','None'),('Target player','Targeted','Player'),('Target opponent','Targeted','Opponent')]:
             result=generate.sacrifice_program(subject.lower()+' sacrifices two creatures of their choice.')

@@ -76,20 +76,49 @@ impl Game {
         id
     }
 
+    pub(super) fn gain_life(&mut self, player: Player, amount: i64) {
+        if amount <= 0 {
+            return;
+        }
+        let state = &mut self.state.players[player.index()];
+        state.life = state
+            .life
+            .checked_add(amount)
+            .expect("life total exhausted");
+        state.life_gain_events_this_turn = state
+            .life_gain_events_this_turn
+            .checked_add(1)
+            .expect("life gain event count exhausted");
+        let first = state.life_gain_events_this_turn == 1;
+        let sources: Vec<_> = self
+            .state
+            .life_sources
+            .iter()
+            .map(|&id| self.object_view(id))
+            .collect();
+        for source in sources {
+            if source.owner != player {
+                continue;
+            }
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                if let TriggerCondition::LifeGained {
+                    first_only,
+                    own_turn,
+                } = ability.condition
+                    && (!first_only || first)
+                    && (!own_turn || self.state.active == player)
+                {
+                    self.queue_trigger(&source, index);
+                }
+            }
+        }
+    }
+
     pub(super) fn death_trigger_sources(&self) -> Vec<ObjectView> {
         self.state
-            .objects
+            .death_sources
             .iter()
-            .enumerate()
-            .filter(|(_, obj)| {
-                obj.zone == Zone::Battlefield
-                    && obj
-                        .card
-                        .triggers()
-                        .iter()
-                        .any(|ability| ability.condition == TriggerCondition::SelfDies)
-            })
-            .map(|(i, _)| self.object_view(i as CardId))
+            .map(|&id| self.object_view(id))
             .collect()
     }
 
@@ -101,12 +130,42 @@ impl Game {
             && event.destination == Zone::Graveyard
             && event.before.card.is_creature()
         {
+            // Dies triggers look back at the entire battlefield before the batch;
+            // a source that dies simultaneously still sees the other creatures.
             for source in death_sources {
-                if source.reference == event.before.reference {
-                    for (index, ability) in source.card.triggers().iter().enumerate() {
-                        if ability.condition == TriggerCondition::SelfDies {
-                            self.queue_trigger(source, index);
+                for (index, ability) in source.card.triggers().iter().enumerate() {
+                    let matched = match ability.condition {
+                        TriggerCondition::SelfDies => source.reference == event.before.reference,
+                        TriggerCondition::CreatureDies {
+                            relation,
+                            other,
+                            nontoken,
+                            subtype,
+                        } => {
+                            let related = match relation {
+                                CastRelation::You => source.owner == event.before.owner,
+                                CastRelation::Opponent => source.owner != event.before.owner,
+                                CastRelation::Any => true,
+                            };
+                            related
+                                && (!other || source.reference != event.before.reference)
+                                && (!nontoken || event.before.token.is_none())
+                                && subtype.is_none_or(|subtype| {
+                                    event
+                                        .before
+                                        .card
+                                        .info()
+                                        .type_line
+                                        .split_once(" — ")
+                                        .is_some_and(|(_, types)| {
+                                            types.split_whitespace().any(|word| word == subtype)
+                                        })
+                                })
                         }
+                        _ => false,
+                    };
+                    if matched {
+                        self.queue_trigger(source, index);
                     }
                 }
             }
@@ -131,6 +190,8 @@ impl Game {
                 let matched = match ability.condition {
                     TriggerCondition::SelfEnters | TriggerCondition::SelfEntersOrAttacks => same,
                     TriggerCondition::SelfDies
+                    | TriggerCondition::CreatureDies { .. }
+                    | TriggerCondition::LifeGained { .. }
                     | TriggerCondition::SelfAttacks
                     | TriggerCondition::SpellCast { .. }
                     | TriggerCondition::AtStep { .. } => false,
@@ -506,8 +567,9 @@ impl Game {
                     }
                 }
                 Instruction::GainLife(set, amount) => {
-                    for player in self.program_players(set, &item) {
-                        self.state.players[player.index()].life += i64::from(amount);
+                    let players: Vec<_> = self.program_players(set, &item).collect();
+                    for player in players {
+                        self.gain_life(player, i64::from(amount));
                     }
                 }
                 Instruction::LoseLife(set, amount) => {
