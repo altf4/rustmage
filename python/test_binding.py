@@ -12,6 +12,75 @@ class BindingTests(unittest.TestCase):
     def game(self):
         return Game([["Mountain"] * 24 + ["LightningBolt"] * 36] * 2, seed=17, deck_rules="Freeform")
 
+    def vital_index(self, obs):
+        own={o['id']:o for o in obs['objects']}
+        def score(a):
+            kind=a['kind']
+            if kind=='AnnounceCast':
+                return 85 if own[a['card']]['card'] in ("Ajani's Pridemate",'Agent Venom') else 80
+            return {'Keep':100,'PlayLand':90,'PayCosts':100,
+                    'TapMana':70 if obs['decision']=='pay_costs' else -5,
+                    'Activate':60,'AnnounceActivate':60,'PutTrigger':60,'Sacrifice':60,
+                    'FinishAttackers':40,'FinishBlockers':40,'Pass':20,
+                    'Mulligan':-100,'Concede':-1000}.get(kind,0)
+        return max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i]))
+
+    def resolve_vital_top(self, game, viewer):
+        for _ in range(2):
+            obs=game.observe(viewer)
+            obs=game.observe(obs['actor'])
+            game.step(obs,next(i for i,a in enumerate(obs['actions']) if a['kind']=='Pass'))
+        return game.observe(viewer)
+
+    def test_life_gain_trigger_and_public_history_clone_restore(self):
+        deck=['Plains']*24+["Ajani's Pridemate"]*12+['Cat Collector']*12+['Brightblade Stoat']*12
+        with Game([deck,deck],seed=7,deck_rules='Freeform') as game:
+            obs=game.observe('P0')
+            for _ in range(3000):
+                if obs['outcome'] is not None: self.fail('game ended before gain trigger')
+                obs=game.observe(obs['actor'])
+                if obs['decision']=='priority' and obs['stack'] and obs['stack'][-1]['source_card']=="Ajani's Pridemate" and 'TriggeredAbility' in obs['stack'][-1]['kind']: break
+                obs=game.step(obs,self.vital_index(obs))
+            else: self.fail('no life-gain trigger reached')
+            source=obs['stack'][-1];viewer=source['controller'];p=0 if viewer=='P0' else 1
+            self.assertEqual(obs['schema'],21)
+            self.assertGreater(obs['players'][p]['life_gain_events_this_turn'],0)
+            other='P1' if viewer=='P0' else 'P0'
+            self.assertEqual(game.observe(other)['players'][p]['life_gain_events_this_turn'],obs['players'][p]['life_gain_events_this_turn'])
+            card=source['card'];before=next(o['counters']['plus_one'] for o in obs['objects'] if o['id']==card)
+            saved=game.snapshot()
+            with game.clone() as branch: expected=self.resolve_vital_top(branch,viewer)
+            actual=self.resolve_vital_top(game,viewer)
+            self.assertEqual(actual,expected)
+            self.assertEqual(next(o['counters']['plus_one'] for o in actual['objects'] if o['id']==card),before+1)
+            game.restore(saved)
+            replay=self.resolve_vital_top(game,viewer)
+            self.assertGreater(replay.pop('revision'),actual.pop('revision'));self.assertEqual(replay,actual)
+            game.drop_snapshot(saved)
+
+    def test_death_trigger_native_continuation_clones_and_restores(self):
+        deck=['Swamp']*24+['Agent Venom']*12+['Voracious Vermin']*12+['Abyssal Gorestalker']*12
+        with Game([deck,deck],seed=7,deck_rules='Freeform') as game:
+            obs=game.observe('P0')
+            for _ in range(5000):
+                if obs['outcome'] is not None: self.fail('game ended before death trigger')
+                obs=game.observe(obs['actor'])
+                if obs['decision']=='priority' and obs['stack'] and obs['stack'][-1]['source_card']=='Agent Venom' and 'TriggeredAbility' in obs['stack'][-1]['kind']: break
+                obs=game.step(obs,self.vital_index(obs))
+            else: self.fail('no death trigger reached')
+            source=obs['stack'][-1];viewer=source['controller'];p=0 if viewer=='P0' else 1
+            self.assertTrue(any(o['zone']=='Graveyard' for o in obs['objects']))
+            saved=game.snapshot()
+            with game.clone() as branch: expected=self.resolve_vital_top(branch,viewer)
+            actual=self.resolve_vital_top(game,viewer)
+            self.assertEqual(actual,expected)
+            self.assertEqual(actual['players'][p]['library_count'],obs['players'][p]['library_count']-1)
+            self.assertEqual(actual['players'][p]['life'],obs['players'][p]['life']-1)
+            game.restore(saved)
+            replay=self.resolve_vital_top(game,viewer)
+            self.assertGreater(replay.pop('revision'),actual.pop('revision'));self.assertEqual(replay,actual)
+            game.drop_snapshot(saved)
+
     def test_private_discard_payment_paid_or_declined_clones_and_restores(self):
         deck=["Mountain"]*30+["Discerning Peddler"]*30
         with Game([deck,deck],seed=7,deck_rules="Freeform") as game:
@@ -220,7 +289,7 @@ class BindingTests(unittest.TestCase):
             observation = game.observe("P0")
             coverage = json.loads((Path(__file__).resolve().parents[1] / "data/standard/coverage.json").read_text())
             self.assertEqual(observation["catalogue"], coverage["catalogue_version"])
-            self.assertEqual(observation["schema"], 20)
+            self.assertEqual(observation["schema"], 21)
             self.assertEqual(len(observation["objects"]), 7)
             self.assertTrue(all(o["owner"] == "P0" for o in observation["objects"]))
             self.assertEqual(game.observe("P1")["actions"], [])

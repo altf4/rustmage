@@ -411,6 +411,16 @@ pub(crate) enum TriggerStep {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    LifeGained {
+        first_only: bool,
+        own_turn: bool,
+    },
+    CreatureDies {
+        relation: CastRelation,
+        other: bool,
+        nontoken: bool,
+        subtype: Option<&'static str>,
+    },
     AtStep {
         step: TriggerStep,
         relation: CastRelation,

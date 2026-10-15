@@ -4,6 +4,21 @@ use super::*;
 
 impl Game {
     pub(super) fn register_battlefield_sources(&mut self, id: CardId) {
+        let triggers = self.state.objects[id as usize].card.triggers();
+        if triggers
+            .iter()
+            .any(|ability| matches!(ability.condition, TriggerCondition::LifeGained { .. }))
+        {
+            self.state.life_sources.push(id);
+        }
+        if triggers.iter().any(|ability| {
+            matches!(
+                ability.condition,
+                TriggerCondition::SelfDies | TriggerCondition::CreatureDies { .. }
+            )
+        }) {
+            self.state.death_sources.push(id);
+        }
         if self.state.objects[id as usize]
             .card
             .triggers()

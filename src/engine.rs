@@ -359,6 +359,7 @@ impl Object {
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct PlayerState {
     spells_cast_this_turn: u64,
+    life_gain_events_this_turn: u64,
     attacked_this_turn: bool,
     life: i64,
     mana: Mana,
@@ -488,6 +489,8 @@ struct State {
     static_sources: Vec<CardId>,
     cast_sources: Vec<CardId>,
     step_sources: Vec<CardId>,
+    life_sources: Vec<CardId>,
+    death_sources: Vec<CardId>,
     exile_links: Vec<ExileLink>,
     known_hand: Vec<ObjectRef>,
     players: [PlayerState; 2],
@@ -562,6 +565,7 @@ pub struct ZoneChange {
 #[derive(Clone, Debug, Serialize)]
 pub struct PlayerView {
     pub spells_cast_this_turn: u64,
+    pub life_gain_events_this_turn: u64,
     pub attacked_this_turn: bool,
     pub life: i64,
     pub mana: Mana,
@@ -728,6 +732,7 @@ impl Game {
         let mut objects = Vec::with_capacity(config.decks.iter().map(Vec::len).sum());
         let mut players = std::array::from_fn(|_| PlayerState {
             spells_cast_this_turn: 0,
+            life_gain_events_this_turn: 0,
             attacked_this_turn: false,
             life: 20,
             mana: [0; 6],
@@ -766,6 +771,8 @@ impl Game {
                 static_sources: Vec::new(),
                 cast_sources: Vec::new(),
                 step_sources: Vec::new(),
+                life_sources: Vec::new(),
+                death_sources: Vec::new(),
                 exile_links: Vec::new(),
                 known_hand: Vec::new(),
                 players,
@@ -1806,6 +1813,8 @@ impl Game {
             self.state.static_sources.retain(|&source| source != id);
             self.state.cast_sources.retain(|&source| source != id);
             self.state.step_sources.retain(|&source| source != id);
+            self.state.life_sources.retain(|&source| source != id);
+            self.state.death_sources.retain(|&source| source != id);
             self.state.attackers.retain(|attacker| attacker.card != id);
             self.state.blocking.retain(|&blocker| blocker != id);
             self.state
@@ -1856,6 +1865,7 @@ impl Game {
     fn begin_turn(&mut self) {
         for player in &mut self.state.players {
             player.spells_cast_this_turn = 0;
+            player.life_gain_events_this_turn = 0;
             player.attacked_this_turn = false;
         }
         self.state.land_played = false;
@@ -2040,10 +2050,9 @@ impl Game {
             }
         }
         for gain in &gains {
-            self.state.players[gain.source.controller.index()].life += i64::from(gain.amount);
+            self.gain_life(gain.source.controller, i64::from(gain.amount));
         }
-        // Future trigger dispatch consumes damage + gain events here, before
-        // their storage is discarded. SBAs run only after the whole batch.
+        // Trigger events are recorded before SBAs, after the whole damage batch.
         gains
     }
 
@@ -2175,7 +2184,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 20,
+            schema: 21,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -2206,6 +2215,7 @@ impl Game {
             },
             players: std::array::from_fn(|i| PlayerView {
                 spells_cast_this_turn: s.players[i].spells_cast_this_turn,
+                life_gain_events_this_turn: s.players[i].life_gain_events_this_turn,
                 attacked_this_turn: s.players[i].attacked_this_turn,
                 life: s.players[i].life,
                 mana: s.players[i].mana,
@@ -2402,7 +2412,9 @@ impl Game {
             + (s.free_tokens.len()
                 + s.static_sources.len()
                 + s.cast_sources.len()
-                + s.step_sources.len())
+                + s.step_sources.len()
+                + s.life_sources.len()
+                + s.death_sources.len())
                 * std::mem::size_of::<CardId>()
             + s.players
                 .iter()
@@ -2516,3 +2528,7 @@ mod step_tests;
 #[cfg(test)]
 #[path = "engine_effect_choice_tests.rs"]
 mod effect_choice_tests;
+
+#[cfg(test)]
+#[path = "engine_vital_tests.rs"]
+mod vital_tests;

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "47c4075df840020de131ba6d8cd6070d2a9357fd670ede25e0b29c0b8129d143",
+  "catalogue_version": "04c5bc3a2301ddf0da7f6e7963e459a944bc14fbadd4abc8d4ad035ffc81fc2b",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 611,
-  "implemented_total": 617,
+  "implemented_standard_cards": 634,
+  "implemented_total": 640,
   "token_definitions": 35,
   "cards": [
     {
@@ -555,8 +555,8 @@
     {
       "name": "Agent Venom",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Agent of Atlas",
@@ -693,8 +693,8 @@
     {
       "name": "Ajani's Pridemate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Ajani's Response",
@@ -2865,8 +2865,8 @@
     {
       "name": "Boggart Cursecrafter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Boggart Mischief",
@@ -4071,8 +4071,8 @@
     {
       "name": "Cat Collector",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Cat-Gator",
@@ -6831,8 +6831,8 @@
     {
       "name": "Dori, Bearer of Friends",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Dose of Dawnglow",
@@ -7149,8 +7149,8 @@
     {
       "name": "Drogskol Reaver",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Dropkick Bomber",
@@ -8043,8 +8043,8 @@
     {
       "name": "Engine Rat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Enigma Drake",
@@ -10575,8 +10575,8 @@
     {
       "name": "Glacier Godmaw",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Glacierwood Siege",
@@ -10587,8 +10587,8 @@
     {
       "name": "Gladiolus Amicitia",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Glamdring, Foe-hammer // Gleam of Death",
@@ -12255,8 +12255,8 @@
     {
       "name": "High-Society Hunter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Highborn Vampire",
@@ -15939,8 +15939,8 @@
     {
       "name": "Marauding Blight-Priest",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Marauding Brinefang",
@@ -16491,8 +16491,8 @@
     {
       "name": "Midnight Reaper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Midnight Snack",
@@ -18831,8 +18831,8 @@
     {
       "name": "Pest Mascot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Pestbrood Sloth",
@@ -19497,8 +19497,8 @@
     {
       "name": "Professional Wrestler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Professor Dellian Fel",
@@ -19599,8 +19599,8 @@
     {
       "name": "Provisions Merchant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Prowcatcher Specialist",
@@ -19677,8 +19677,8 @@
     {
       "name": "Pulse Tracker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Pummeler for Hire",
@@ -22755,8 +22755,8 @@
     {
       "name": "Sephiroth, Planet's Heir",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Serah Farron // Crystallized Serah",
@@ -23145,8 +23145,8 @@
     {
       "name": "Shroudstomper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Shuri, Wakandan Inventor",
@@ -24645,8 +24645,8 @@
     {
       "name": "Starling, Aerial Ally",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Starlit Soothsayer",
@@ -27471,8 +27471,8 @@
     {
       "name": "Thrór's Map",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Thunder Lasso",
@@ -27609,8 +27609,8 @@
     {
       "name": "Tigra, Feline Fury",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Time Stop",
@@ -29073,8 +29073,8 @@
     {
       "name": "Vanguard Seraph",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Vanguard of the Rose",
@@ -29637,8 +29637,8 @@
     {
       "name": "Voracious Vermin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Vote Out",
