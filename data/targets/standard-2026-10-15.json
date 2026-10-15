@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "status": "migration target; not enforced by the foundation engine",
+  "format": "Standard",
+  "as_of": "2026-10-15",
+  "variant": "tabletop / Magic Online; Arena-specific substitutions and bans excluded",
+  "rules_effective": "2026-09-25",
+  "xmage_source_commit": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "sources": {
+    "format": "https://magic.wizards.com/en/formats/standard",
+    "bans": "https://magic.wizards.com/en/banned-restricted-list",
+    "rules": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt"
+  },
+  "set_codes": ["WOE", "LCI", "MKM", "OTJ", "BIG", "BLB", "DSK", "FDN", "DFT", "TDM", "FIN", "EOE", "SPM", "TLA", "ECL", "TMT", "SOS", "MSH", "HOB", "FRA"],
+  "banned_card_names": [
+    "Abuelo's Awakening", "Badgermole Cub", "Cori-Steel Cutter", "Gran-Gran",
+    "Heartfire Hero", "Hopeless Nightmare", "Monstrous Rage", "Proft's Eidetic Memory",
+    "Screaming Nemesis", "Stormchaser's Talent", "This Town Ain't Big Enough",
+    "Up the Beanstalk", "Vivi Ornitier"
+  ],
+  "notes": [
+    "Pin printings/card identities and legal reprints in the future card inventory; a set code alone is not a complete legality database.",
+    "Includes BIG as the Standard-legal subset accompanying OTJ. Supplemental Commander/bonus sets are not admitted wholesale.",
+    "Proft's canonical card name follows the XMage catalogue; the official banned-list webpage currently misspells Eidetic as Eiditic.",
+    "Do not derive legality from the host clock, unreleased XMage beta sets, or the foundation's generic Constructed mode.",
+    "Refresh through an explicit reviewed version change when sets or bans change. This file is a planning snapshot, not proof of Standard support."
+  ]
+}
