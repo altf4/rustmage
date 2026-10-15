@@ -14,8 +14,8 @@ can be expressed through linear-size action lists; the engine does not enumerate
 all permutations in one action mask. Selecting the final card commits the choice
 and resumes the next instruction automatically.
 
-Partial choices leave library order and zones unchanged. The actor sees remaining
-card views and selected destination IDs. Opponents see neither those identities
+Partial choices leave library order and zones unchanged. The actor sees full card views in both the remaining and selected destination
+groups, retaining known identities throughout the current choice. Opponents see neither those identities
 nor the selected partition/order, and have no action in the continuation. Cards
 sent to the graveyard become public when the complete choice commits. Kept and
 bottomed cards remain hidden. Library rearrangement reuses its allocation; only

@@ -73,6 +73,9 @@ class BindingTests(unittest.TestCase):
                          if a["kind"] == "ArrangeLibrary" and a["destination"] == "Bottom")
             obs = game.step(obs, index)
             self.assertEqual(len(obs["library_choice"]["bottom"]), 1)
+            selected = obs["library_choice"]["bottom"][0]
+            self.assertEqual(selected, next(o for o in choice["remaining"] if o["id"] == selected["id"]))
+            self.assertEqual(selected["zone"], "Library")
             self.assertIsNone(game.observe(other)["library_choice"])
             saved = game.snapshot()
             index = next(i for i, a in enumerate(obs["actions"])

@@ -51,6 +51,19 @@ fn scry_partition_orders_both_groups_and_keeps_middle() {
     arrange(&mut game, b, LibraryDestination::Top);
     arrange(&mut game, a, LibraryDestination::Bottom);
     assert_eq!(game.state.players[0].library, original);
+    let known = game.observe(Player::P0).library_choice.unwrap();
+    assert_eq!(known.top[0].id, b);
+    assert_eq!(
+        known.bottom.iter().map(|o| o.id).collect::<Vec<_>>(),
+        vec![c, a]
+    );
+    assert!(
+        known
+            .top
+            .iter()
+            .chain(&known.bottom)
+            .all(|o| o.zone == Zone::Library)
+    );
     arrange(&mut game, d, LibraryDestination::Top);
     assert_eq!(game.state.objects[b as usize].zone, Zone::Hand);
     let mut expected = vec![a, c]; // chosen c is above a in bottom group.
@@ -102,6 +115,13 @@ fn surveil_choices_are_private_atomic_and_replayable_at_every_stage() {
     let mut later = serde_json::to_value(game.observe(Player::P1)).unwrap();
     later["revision"] = opponent["revision"].clone();
     assert_eq!(opponent, later);
+    let known = game.observe(Player::P0).library_choice.unwrap();
+    assert_eq!(known.graveyard[0].id, cards[0]);
+    assert_eq!(
+        known.graveyard[0].card,
+        game.state.objects[cards[0] as usize].card
+    );
+    assert_eq!(known.graveyard[0].zone, Zone::Library);
     let partial = game.snapshot();
     let final_action = Action::ArrangeLibrary {
         card: cards[1],

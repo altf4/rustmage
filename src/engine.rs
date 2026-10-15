@@ -527,9 +527,9 @@ pub struct PendingPaymentView {
 pub struct LibraryChoiceView {
     pub surveil: bool,
     pub remaining: Vec<ObjectView>,
-    pub top: Vec<CardId>,
-    pub bottom: Vec<CardId>,
-    pub graveyard: Vec<CardId>,
+    pub top: Vec<ObjectView>,
+    pub bottom: Vec<ObjectView>,
+    pub graveyard: Vec<ObjectView>,
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -2032,9 +2032,17 @@ impl Game {
                             .iter()
                             .map(|&id| self.object_view(id))
                             .collect(),
-                        top: choice.top.clone(),
-                        bottom: choice.bottom.clone(),
-                        graveyard: choice.graveyard.clone(),
+                        top: choice.top.iter().map(|&id| self.object_view(id)).collect(),
+                        bottom: choice
+                            .bottom
+                            .iter()
+                            .map(|&id| self.object_view(id))
+                            .collect(),
+                        graveyard: choice
+                            .graveyard
+                            .iter()
+                            .map(|&id| self.object_view(id))
+                            .collect(),
                     })
             } else {
                 None
