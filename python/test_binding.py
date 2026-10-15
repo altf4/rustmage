@@ -39,6 +39,81 @@ class BindingTests(unittest.TestCase):
             with self.assertRaisesRegex(EngineError, "unknown snapshot"):
                 game.restore(saved)
 
+    def test_nonbasic_land_entry_private_surveil_and_mana_replay(self):
+        deck = ["Commercial District"] * 60
+        with Game([deck, deck], seed=7, deck_rules="Freeform") as game:
+            obs = game.observe("P0")
+            seen_entry = False
+            for _ in range(100):
+                if obs["viewer"] != obs["actor"]:
+                    obs = game.observe(obs["actor"])
+                if obs["library_choice"] is not None:
+                    break
+                index = max(range(len(obs["actions"])), key=lambda i:
+                    {"Keep": 100, "PlayLand": 90, "Mulligan": -100, "Concede": -1000}
+                    .get(obs["actions"][i]["kind"], 0))
+                action = obs["actions"][index]
+                if action["kind"] == "PlayLand":
+                    actor = obs["actor"]
+                    obs = game.step(obs, index)
+                    land = next(o for o in obs["objects"] if o["id"] == action["card"])
+                    self.assertTrue(land["tapped"])
+                    self.assertFalse(any(a.get("card") == land["id"] and a["kind"] == "ActivateMana"
+                                         for a in obs["actions"]))
+                    seen_entry = True
+                else:
+                    obs = game.step(obs, index)
+            else:
+                self.fail("no land surveil choice reached")
+            self.assertTrue(seen_entry)
+            actor = obs["actor"]
+            other = "P1" if actor == "P0" else "P0"
+            self.assertTrue(obs["library_choice"]["surveil"])
+            self.assertIsNone(game.observe(other)["library_choice"])
+            saved = game.snapshot()
+            index = next(i for i, a in enumerate(obs["actions"])
+                         if a["kind"] == "ArrangeLibrary" and a["destination"] == "Graveyard")
+            with game.clone() as branch:
+                expected = branch.step(branch.observe(actor), index)
+            actual = game.step(obs, index)
+            self.assertEqual(actual, expected)
+            game.restore(saved)
+            replay = game.step(game.observe(actor), index)
+            replay.pop("revision")
+            actual.pop("revision")
+            self.assertEqual(actual, replay)
+            game.drop_snapshot(saved)
+            obs = game.observe(actor)
+            # Reach the next untap step without tapping away the available source.
+            for _ in range(200):
+                if obs["viewer"] != obs["actor"]:
+                    obs = game.observe(obs["actor"])
+                actions = [(i, a) for i, a in enumerate(obs["actions"])
+                           if a["kind"] == "ActivateMana"]
+                if actions:
+                    break
+                index = next(i for i, a in enumerate(obs["actions"])
+                             if a["kind"] in ("Pass", "FinishAttackers", "FinishBlockers", "Keep",
+                                              "Discard", "Bottom", "ArrangeLibrary"))
+                obs = game.step(obs, index)
+            else:
+                self.fail("land never untapped")
+            self.assertEqual({tuple(a["production"]) for _, a in actions},
+                             {(0, 0, 0, 1, 0, 0), (0, 0, 0, 0, 1, 0)})
+            saved = game.snapshot()
+            index = actions[0][0]
+            with game.clone() as branch:
+                expected = branch.step(branch.observe(obs["actor"]), index)
+            actual = game.step(obs, index)
+            self.assertEqual(actual, expected)
+            self.assertEqual(sum(actual["players"][0 if obs["actor"] == "P0" else 1]["mana"]), 1)
+            game.restore(saved)
+            replay = game.step(game.observe(obs["actor"]), index)
+            replay.pop("revision")
+            actual.pop("revision")
+            self.assertEqual(actual, replay)
+            game.drop_snapshot(saved)
+
     def test_scry_private_library_cards_and_partial_choice_restore(self):
         deck = ["Plains"] * 36 + ["Wakandan Drone Flock"] * 24
         with Game([deck, deck], seed=7, deck_rules="Freeform") as game:

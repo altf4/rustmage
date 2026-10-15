@@ -74,12 +74,18 @@ impl Game {
         // They use no stack and offer no intervening choice or priority.
         let before: Vec<_> = returning
             .iter()
-            .map(|&(id, destination)| (self.object_view(id), destination))
+            .map(|&(id, destination)| {
+                (
+                    self.object_view(id),
+                    destination,
+                    destination == Zone::Battlefield && self.enters_tapped(id),
+                )
+            })
             .collect();
         let returned: Vec<_> = before
             .into_iter()
-            .map(|(before, destination)| {
-                let mut event = self.move_object_raw(before.id, destination);
+            .map(|(before, destination, tapped)| {
+                let mut event = self.move_object_raw_with_entry(before.id, destination, tapped);
                 event.before = before;
                 event
             })

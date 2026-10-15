@@ -14,6 +14,39 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_land_templates_require_complete_text_and_intrinsic_mana(self):
+        def land(text, typ='Land', **kw):
+            return self.card(type_line=typ, mana_cost='', oracle_text=text, **kw)
+        for line, entry in generate.LAND_ENTRY.items():
+            result = generate.land_template(land(line + '\n{T}: Add {W} or {U}.'))
+            self.assertEqual(result[0], 'Land')
+            self.assertEqual(result[5], entry)
+            self.assertIn('mask: 3', result[3][0][2][0])
+        result = generate.land_template(land('({T}: Add {R} or {G}.)\nThis land enters tapped.\n'
+            'When this land enters, surveil 1. (Look at the top card of your library.)', 'Land — Mountain Forest'))
+        self.assertEqual(result[5], 'Always')
+        self.assertEqual(result[2], [('SelfEnters', ['Surveil(1)'], 'None')])
+        self.assertIn('mask: 24', result[3][0][2][0])
+        for text, typ in [
+            ('({T}: Add {R}.)', 'Land — Mountain Forest'),
+            ('{T}: Add {R}.', 'Land — Mountain'),
+            ('({T}: Add {R}.)', 'Land'),
+            ('This land enters tapped unless you control a Dragon.\n{T}: Add {R}.', 'Land'),
+            ('As this land enters, choose a color.\n{T}: Add one mana of the chosen color.', 'Land'),
+            ('{T}: Add {R}. Spend this mana only to cast a creature spell.', 'Land'),
+            ('{T}: Add {R}.\nYou win the game.', 'Land'),
+            ('{T}: Add {R}.', 'Legendary Land'),
+            ('This land enters tapped.\nThis land enters tapped.\n{T}: Add {R}.', 'Land')]:
+            self.assertIsNone(generate.land_template(land(text, typ)), (text, typ))
+        self.assertIsNone(generate.land_template(land('{T}: Add {R}.', layout='transform')))
+        self.assertIsNone(generate.land_template(land(None)))
+        result = generate.land_template(land('{T}: Add {C}.', 'Basic Land'))
+        self.assertIsNotNone(result)
+        result = generate.land_template(land('This land enters tapped.\n{T}: Add {U} or {R}.\n'
+            '{4}, {T}, Sacrifice this land: Draw a card.'))
+        self.assertTrue(result[3][1][0]['sacrifice'])
+        self.assertEqual(result[3][1][2], ['Draw(PlayerSet::Controller, 1)'])
+
     def test_scry_and_surveil_compile_whole_fixed_count_programs(self):
         for name in ('scry', 'surveil'):
             for count in (0, 1, 2, 65535):

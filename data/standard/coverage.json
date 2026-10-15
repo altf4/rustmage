@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "ec06ce38a2ef63810633ff57f43eed160c9062ffa769ec68d26b81de95e20616",
+  "catalogue_version": "3fa202c8b6917cda68f14e9673c5f3baa97df659f0953397f84603cf615ecd19",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 364,
-  "implemented_total": 370,
+  "implemented_standard_cards": 499,
+  "implemented_total": 505,
   "token_definitions": 29,
   "cards": [
     {
@@ -111,8 +111,8 @@
     {
       "name": "A.I.M. Labs",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "A.I.M. Scientists",
@@ -177,8 +177,8 @@
     {
       "name": "Abandoned Campground",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Aberrant Manawurm",
@@ -219,8 +219,8 @@
     {
       "name": "Abraded Bluffs",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Absolute Virtue",
@@ -387,8 +387,8 @@
     {
       "name": "Adventurer's Inn",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Adventuring Gear",
@@ -597,8 +597,8 @@
     {
       "name": "Agna Qel'a",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Agonasaur Rex",
@@ -663,8 +663,8 @@
     {
       "name": "Airship Engine Room",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Airtight Alibi",
@@ -1431,8 +1431,8 @@
     {
       "name": "Asgardian Citadel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Ash, Party Crasher",
@@ -1713,8 +1713,8 @@
     {
       "name": "Avengers Hangar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Avengers Tower",
@@ -1779,8 +1779,8 @@
     {
       "name": "Azorius Guildgate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Azula Always Lies",
@@ -2019,8 +2019,8 @@
     {
       "name": "Baron, Airship Kingdom",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Barrels of Blasting Jelly",
@@ -2535,8 +2535,8 @@
     {
       "name": "Birnin Zana Plaza",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Bishop's Soldier",
@@ -2685,8 +2685,8 @@
     {
       "name": "Bleeding Woods",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Blessed Ghoul",
@@ -2739,8 +2739,8 @@
     {
       "name": "Bloodfell Caves",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Bloodghast",
@@ -2805,8 +2805,8 @@
     {
       "name": "Blooming Marsh",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Blooming Stinger",
@@ -2841,8 +2841,8 @@
     {
       "name": "Blossoming Sands",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Blossoming Tortoise",
@@ -2901,8 +2901,8 @@
     {
       "name": "Boiling Rock Prison",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Boiling Rock Rioter",
@@ -3045,8 +3045,8 @@
     {
       "name": "Boros Guildgate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Borough Backup",
@@ -3069,8 +3069,8 @@
     {
       "name": "Botanical Sanctum",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Bothersome Noisemaker",
@@ -3375,8 +3375,8 @@
     {
       "name": "Bristling Backwoods",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Bristly Bill, Spine Sower",
@@ -3903,8 +3903,8 @@
     {
       "name": "Captivating Cave",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Caradora, Heart of Alacria",
@@ -4887,8 +4887,8 @@
     {
       "name": "Commercial District",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Common Crook",
@@ -4935,8 +4935,8 @@
     {
       "name": "Concealed Courtyard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Concealed Weapon",
@@ -4971,8 +4971,8 @@
     {
       "name": "Conduit Pylons",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Confiscate",
@@ -5325,8 +5325,8 @@
     {
       "name": "Creosote Heath",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Crescent Island Temple",
@@ -5529,8 +5529,8 @@
     {
       "name": "Crystal Grotto",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Cuboid Colony",
@@ -6039,8 +6039,8 @@
     {
       "name": "Deathcap Glade",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Deathcap Marionette",
@@ -6327,8 +6327,8 @@
     {
       "name": "Deserted Beach",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Deserter's Disciple",
@@ -6471,8 +6471,8 @@
     {
       "name": "Dimension X",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Dimensional Exile",
@@ -6489,8 +6489,8 @@
     {
       "name": "Dimir Guildgate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Dina's Guidance",
@@ -6573,8 +6573,8 @@
     {
       "name": "Dismal Backwater",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Dispelling Exhale",
@@ -7107,8 +7107,8 @@
     {
       "name": "Dreamroot Cascade",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Dreams of Laguna",
@@ -7683,8 +7683,8 @@
     {
       "name": "Elegant Parlor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Elegy Acolyte",
@@ -8175,8 +8175,8 @@
     {
       "name": "Eroded Canyon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Erratic Apparition",
@@ -8277,8 +8277,8 @@
     {
       "name": "Etched Cornfield",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Eternal Student",
@@ -9003,8 +9003,8 @@
     {
       "name": "Festering Gulch",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Festerleech",
@@ -9021,8 +9021,8 @@
     {
       "name": "Fields of Strife",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Fiendish Panda",
@@ -9237,8 +9237,8 @@
     {
       "name": "Fisk Tower",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Fix What's Broken",
@@ -9459,8 +9459,8 @@
     {
       "name": "Foggy Bottom Swamp",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Foggy Swamp Hunters",
@@ -9525,8 +9525,8 @@
     {
       "name": "Foot Headquarters",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Foot Mystic",
@@ -9579,8 +9579,8 @@
     {
       "name": "Forlorn Flats",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Form a Posse",
@@ -9639,8 +9639,8 @@
     {
       "name": "Forum of Amity",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Foul Roads",
@@ -9807,8 +9807,8 @@
     {
       "name": "Frontier Bivouac",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Frontier Seeker",
@@ -10911,8 +10911,8 @@
     {
       "name": "Gohn, Town of Ruin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Golbez, Crystal Collector",
@@ -10959,8 +10959,8 @@
     {
       "name": "Golgari Guildgate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Goliath Daydreamer",
@@ -10989,8 +10989,8 @@
     {
       "name": "Gongaga, Reactor Town",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Gonti, Night Minister",
@@ -11379,8 +11379,8 @@
     {
       "name": "Gruul Guildgate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Guac & Marshmallow Pizza",
@@ -11391,8 +11391,8 @@
     {
       "name": "Guadosalam, Farplane Gateway",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Guarded Heir",
@@ -11787,8 +11787,8 @@
     {
       "name": "Haunted Ridge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Haunted Screen",
@@ -11931,8 +11931,8 @@
     {
       "name": "Hedge Maze",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Hedge Shredder",
@@ -11991,8 +11991,8 @@
     {
       "name": "Hell's Kitchen",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Hellcat, Undying Vigilante",
@@ -12171,8 +12171,8 @@
     {
       "name": "Hidden Grotto",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Hidden Lair",
@@ -12819,8 +12819,8 @@
     {
       "name": "Illegitimate Business",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Illicit Masquerade",
@@ -13113,8 +13113,8 @@
     {
       "name": "Insomnia, Crown City",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Inspiration from Beyond",
@@ -13149,8 +13149,8 @@
     {
       "name": "Inspiring Vantage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Inspirited Vanguard",
@@ -13479,8 +13479,8 @@
     {
       "name": "Izzet Guildgate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "J. Jonah Jameson",
@@ -13551,8 +13551,8 @@
     {
       "name": "Jagged Barrens",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Jailbreak Scheme",
@@ -13803,8 +13803,8 @@
     {
       "name": "Jungle Hollow",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Junkblade Bruiser",
@@ -14595,8 +14595,8 @@
     {
       "name": "Kyoshi Village",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Kyoshi Warriors",
@@ -14661,8 +14661,8 @@
     {
       "name": "Lakeside Shack",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Lamplight Phoenix",
@@ -15249,8 +15249,8 @@
     {
       "name": "Lonely Arroyo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Long Feng, Grand Secretariat",
@@ -15375,8 +15375,8 @@
     {
       "name": "Los Diablos Missile Base",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Lost Days",
@@ -15531,14 +15531,14 @@
     {
       "name": "Lush Oasis",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Lush Portico",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Luxknight Breacher",
@@ -16233,8 +16233,8 @@
     {
       "name": "Meditation Pools",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Meek Attack",
@@ -16407,8 +16407,8 @@
     {
       "name": "Meticulous Archive",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Meticulous Artisan",
@@ -16809,8 +16809,8 @@
     {
       "name": "Misty Palms Oasis",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Mjölnir, Hammer of Thor",
@@ -17295,8 +17295,8 @@
     {
       "name": "Murky Sewer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Murmuring Volume",
@@ -17349,8 +17349,8 @@
     {
       "name": "Mutant Town",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Mutant Town Musicians",
@@ -17403,8 +17403,8 @@
     {
       "name": "Mystic Monastery",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Mystical Teachings",
@@ -17499,8 +17499,8 @@
     {
       "name": "Neglected Manor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Neighborhood Guardian",
@@ -17763,8 +17763,8 @@
     {
       "name": "Nomad Outpost",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Nori, Teller of Tales",
@@ -17787,8 +17787,8 @@
     {
       "name": "North Pole Gates",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "North Pole Patrol",
@@ -18081,8 +18081,8 @@
     {
       "name": "Omashu City",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Omega, Heartless Evolution",
@@ -18105,8 +18105,8 @@
     {
       "name": "Ominous Asylum",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Omni-Changeling",
@@ -18183,8 +18183,8 @@
     {
       "name": "Opulent Palace",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Oracle's Restoration",
@@ -18279,8 +18279,8 @@
     {
       "name": "Orzhov Guildgate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Oscorp Industries",
@@ -18405,8 +18405,8 @@
     {
       "name": "Overgrown Farmland",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Overgrown Tomb",
@@ -18591,8 +18591,8 @@
     {
       "name": "Paradox Gardens",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Paradox Shaper // Omit Variables",
@@ -18717,8 +18717,8 @@
     {
       "name": "Peculiar Lighthouse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Pedal to the Metal",
@@ -19755,8 +19755,8 @@
     {
       "name": "Pym Technologies",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Pyre Rhymer // Molten Tide",
@@ -19953,8 +19953,8 @@
     {
       "name": "Rabanastre, Royal City",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Rabaroo Troop",
@@ -20109,8 +20109,8 @@
     {
       "name": "Rakdos Guildgate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Rakdos Joins Up",
@@ -20355,8 +20355,8 @@
     {
       "name": "Raucous Carnival",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Raucous Entertainer",
@@ -20367,8 +20367,8 @@
     {
       "name": "Raucous Theater",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Raven Eagle",
@@ -20457,8 +20457,8 @@
     {
       "name": "Razortrap Gorge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Razzle-Dazzler",
@@ -21435,8 +21435,8 @@
     {
       "name": "Rockfall Vale",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Rocksteady, Crash Courser",
@@ -21465,8 +21465,8 @@
     {
       "name": "Rogue's Passage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Roiling Canopy",
@@ -21675,8 +21675,8 @@
     {
       "name": "Rugged Highlands",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Ruin-Lurker Bat",
@@ -21699,8 +21699,8 @@
     {
       "name": "Rumble Arena",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Rumbling Rockslide",
@@ -22083,8 +22083,8 @@
     {
       "name": "Sandsteppe Citadel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Sandstorm Salvager",
@@ -22167,8 +22167,8 @@
     {
       "name": "Savage Mansion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Savage Ventmaw",
@@ -22395,8 +22395,8 @@
     {
       "name": "Scoured Barrens",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Scout for Survivors",
@@ -22677,8 +22677,8 @@
     {
       "name": "Selesnya Guildgate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Self-Destruct",
@@ -22785,8 +22785,8 @@
     {
       "name": "Serpent's Pass",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Serra Angel",
@@ -22851,8 +22851,8 @@
     {
       "name": "Shadowy Backstreet",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Shady Informant",
@@ -22905,8 +22905,8 @@
     {
       "name": "Sharlayan, Nation of Scholars",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Sharp-Eyed Rookie",
@@ -22929,8 +22929,8 @@
     {
       "name": "Shattered Sanctum",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Shattered Wings",
@@ -23025,8 +23025,8 @@
     {
       "name": "Shipwreck Marsh",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Shipwreck Sentry",
@@ -23265,8 +23265,8 @@
     {
       "name": "Simic Guildgate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Simulacrum Shaper",
@@ -23301,8 +23301,8 @@
     {
       "name": "Sinister Hideout",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Sinister Monolith",
@@ -23907,8 +23907,8 @@
     {
       "name": "Soured Springs",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "South Pole Voyager",
@@ -23967,8 +23967,8 @@
     {
       "name": "Spectacle Summit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Spectacular Pileup",
@@ -24333,8 +24333,8 @@
     {
       "name": "Spirebluff Canal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Spirit Mascot",
@@ -24627,8 +24627,8 @@
     {
       "name": "Stark Industries",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Stark Industries Executive",
@@ -25035,8 +25035,8 @@
     {
       "name": "Stormcarved Coast",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Stormcatch Mentor",
@@ -25095,8 +25095,8 @@
     {
       "name": "Strangled Cemetery",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Strategic Betrayal",
@@ -25191,8 +25191,8 @@
     {
       "name": "Subterranean Cavern",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Subterranean Schooner",
@@ -25203,8 +25203,8 @@
     {
       "name": "Suburban Sanctuary",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Subway Train",
@@ -25401,8 +25401,8 @@
     {
       "name": "Sun-Blessed Peak",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Sun-Dappled Celebrant",
@@ -25449,8 +25449,8 @@
     {
       "name": "Sundown Pass",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Sunfire Torch",
@@ -25659,8 +25659,8 @@
     {
       "name": "Surveillance Room",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Survey Mechan",
@@ -25767,8 +25767,8 @@
     {
       "name": "Swiftwater Cliffs",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Swiftwing Assailant",
@@ -25887,8 +25887,8 @@
     {
       "name": "TCRI Building",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Tablet of Discovery",
@@ -26181,62 +26181,62 @@
     {
       "name": "Temple of Abandon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Temple of Deceit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Temple of Enlightenment",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Temple of Epiphany",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Temple of Malady",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Temple of Malice",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Temple of Mystery",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Temple of Plenty",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Temple of Silence",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Temple of Triumph",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Temporal Cleansing",
@@ -27291,8 +27291,8 @@
     {
       "name": "Thornwood Falls",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Thought Shucker",
@@ -27525,8 +27525,8 @@
     {
       "name": "Thundering Falls",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Thunderous Debut",
@@ -27675,8 +27675,8 @@
     {
       "name": "Titan's Grave",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Titanbones, Towering Heart",
@@ -27939,8 +27939,8 @@
     {
       "name": "Tranquil Cove",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Transcendent Archaic",
@@ -28065,8 +28065,8 @@
     {
       "name": "Treno, Dark City",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Trial of Agony",
@@ -28593,8 +28593,8 @@
     {
       "name": "Undercity Sewers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Undercover Crocodelf",
@@ -28617,8 +28617,8 @@
     {
       "name": "Underground Mortuary",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Undergrowth Leopard",
@@ -28731,8 +28731,8 @@
     {
       "name": "University Campus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Unliving Legionnaire",
@@ -29145,8 +29145,8 @@
     {
       "name": "Vector, Imperial Capital",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Vein Ripper",
@@ -29955,8 +29955,8 @@
     {
       "name": "Wastes",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Wastewood Verge",
@@ -30459,8 +30459,8 @@
     {
       "name": "Wind-Scarred Crag",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Windcrag Siege",
@@ -30471,8 +30471,8 @@
     {
       "name": "Windurst, Federation Center",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Wingblade Disciple",

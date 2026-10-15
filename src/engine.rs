@@ -1,6 +1,6 @@
 use crate::cards::{
-    ActivatedAbility, ActivationCost, CounterKind, Counters, CreatureFilter, Effect, Instruction,
-    ManaProduction, PlayerSet, Stats, Subject, TargetRule, TargetSpec, TargetZone,
+    ActivatedAbility, ActivationCost, CounterKind, Counters, CreatureFilter, Effect, EntryTapped,
+    Instruction, ManaProduction, PlayerSet, Stats, Subject, TargetRule, TargetSpec, TargetZone,
     TriggerCondition, payments,
 };
 #[path = "engine_activations.rs"]
@@ -1496,18 +1496,66 @@ impl Game {
 
     /// Capture every pre-event characteristic before any simultaneous departure.
     fn move_objects_raw(&mut self, ids: &[CardId], destination: Zone) -> Vec<ZoneChange> {
-        let before: Vec<_> = ids.iter().map(|&id| self.object_view(id)).collect();
+        let before: Vec<_> = ids
+            .iter()
+            .map(|&id| {
+                (
+                    self.object_view(id),
+                    destination == Zone::Battlefield && self.enters_tapped(id),
+                )
+            })
+            .collect();
         before
             .into_iter()
-            .map(|before| {
-                let mut event = self.move_object_raw(before.id, destination);
+            .map(|(before, tapped)| {
+                let mut event = self.move_object_raw_with_entry(before.id, destination, tapped);
                 event.before = before;
                 event
             })
             .collect()
     }
 
+    fn enters_tapped(&self, id: CardId) -> bool {
+        let object = &self.state.objects[id as usize];
+        match object.card.entry_tapped() {
+            EntryTapped::Never => false,
+            EntryTapped::Always => true,
+            EntryTapped::UnlessLowLife => self.state.players.iter().all(|p| p.life > 13),
+            EntryTapped::UnlessBasic => !self.state.objects.iter().any(|o| {
+                o.zone == Zone::Battlefield && o.owner == object.owner && o.card.is_basic_land()
+            }),
+            EntryTapped::UnlessAtMostTwo | EntryTapped::UnlessAtLeastTwo => {
+                let lands = self
+                    .state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|(other, o)| {
+                        *other != id as usize
+                            && o.zone == Zone::Battlefield
+                            && o.owner == object.owner
+                            && o.card.is_land()
+                    })
+                    .count();
+                match object.card.entry_tapped() {
+                    EntryTapped::UnlessAtMostTwo => lands > 2,
+                    _ => lands < 2,
+                }
+            }
+        }
+    }
+
     fn move_object_raw(&mut self, id: CardId, destination: Zone) -> ZoneChange {
+        let tapped = destination == Zone::Battlefield && self.enters_tapped(id);
+        self.move_object_raw_with_entry(id, destination, tapped)
+    }
+
+    fn move_object_raw_with_entry(
+        &mut self,
+        id: CardId,
+        destination: Zone,
+        tapped: bool,
+    ) -> ZoneChange {
         let before = self.object_view(id);
         // CR111.8: after leaving the battlefield, a token cannot move again.
         if before.card.is_token() && before.zone != Zone::Battlefield {
@@ -1577,7 +1625,7 @@ impl Game {
         let obj = &mut self.state.objects[id as usize];
         obj.zone = destination;
         obj.generation = generation;
-        obj.tapped = false;
+        obj.tapped = tapped;
         obj.summoning_sick = destination == Zone::Battlefield;
         obj.damage = 0;
         obj.deathtouch_since_sba = false;
@@ -2220,3 +2268,7 @@ mod blocking_tests;
 #[cfg(test)]
 #[path = "engine_exile_tests.rs"]
 mod exile_tests;
+
+#[cfg(test)]
+#[path = "engine_land_tests.rs"]
+mod land_tests;

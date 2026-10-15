@@ -646,6 +646,52 @@ def permanent_program_template(card):
     return effect, keywords, triggers, activations, enters
 
 
+# These are replacements evaluated before entry, not triggered abilities.
+LAND_ENTRY = {
+    'This land enters tapped.': 'Always',
+    'This land enters tapped unless you control a basic land.': 'UnlessBasic',
+    'This land enters tapped unless you control two or fewer other lands.': 'UnlessAtMostTwo',
+    'This land enters tapped unless you control two or more other lands.': 'UnlessAtLeastTwo',
+    'This land enters tapped unless a player has 13 or less life.': 'UnlessLowLife',
+}
+
+
+def land_template(card):
+    """Complete normal lands; intrinsic basic-type mana is explicit reminder text."""
+    if (card.get('layout') != 'normal' or card.get('mana_cost', '') != ''
+            or card.get('type_line', '').split(' — ')[0] not in ('Land', 'Basic Land')
+            or not isinstance(card.get('oracle_text'), str)):
+        return None
+    text = card['oracle_text']
+    intrinsic = []
+    # A basic land type confers its mana ability even though it is reminder text.
+    if match := re.match(r'^\((\{T\}: Add [^()]+\.)\)(?:\n|$)', text):
+        if statement_program(match[1].split(': ', 1)[1]) is None: return None
+        intrinsic.append(match[1])
+        text = text[match.end():]
+    subtypes = card.get('type_line', '').split(' — ')[1:]
+    basic_types = set(subtypes[0].split()) & {'Plains', 'Island', 'Swamp', 'Mountain', 'Forest'} if subtypes else set()
+    expected = {'Plains': 'W', 'Island': 'U', 'Swamp': 'B', 'Mountain': 'R', 'Forest': 'G'}
+    intrinsic_symbols = set(re.findall(r'\{([WUBRGC])\}', ''.join(intrinsic)))
+    if basic_types and intrinsic_symbols != {expected[t] for t in basic_types}: return None
+    if intrinsic and not basic_types: return None
+    text = re.sub(r'\([^()]*\)', '', text).strip()
+    entry, lines = 'Never', list(intrinsic)
+    for line in text.split('\n'):
+        line = line.strip()
+        if not line: continue
+        if line in LAND_ENTRY:
+            if entry != 'Never': return None
+            entry = LAND_ENTRY[line]
+        else:
+            lines.append(line.replace('this land', 'this artifact'))
+    proxy = dict(card, type_line='Artifact', mana_cost='{0}', oracle_text='\n'.join(lines))
+    result = permanent_program_template(proxy)
+    if result is None: return None
+    _, keywords, triggers, activations, enters = result
+    return 'Land', keywords, triggers, activations, enters, entry
+
+
 def rust_activations(abilities):
     rows = []
     for cost, targets, program, sorcery, once in abilities:
@@ -691,6 +737,8 @@ def compile_catalogue(snapshot, target):
         static = static_permanent_template(card)
         activations, enters = [], [0, 0, 0]
         abilities = []
+        entry = 'Never'
+        land = land_template(card)
         if name in legacy:
             effect, fallback_cost, color = legacy[name]
             # Lands have no mana cost. Their legacy cost token encodes colour only.
@@ -699,7 +747,9 @@ def compile_catalogue(snapshot, target):
         else:
             types = card.get('type_line', '').split(' — ')[0].split()
             kind = (1 if 'Creature' in types else 0) | (2 if 'Land' in types else 0) | (4 if 'Sorcery' in types else 0) | (8 if 'Instant' in types else 0) | (16 if 'Artifact' in types else 0) | (32 if 'Enchantment' in types else 0)
-            if template is not None:
+            if land is not None:
+                effect, keywords, abilities, activations, enters, entry = land
+            elif template is not None:
                 effect, keywords = template
             elif trigger_template is not None:
                 effect, keywords, abilities = trigger_template
@@ -725,16 +775,16 @@ def compile_catalogue(snapshot, target):
 
         if effect != 'Unsupported':
             supported.append(index)
-        basic = name in {'Plains', 'Island', 'Swamp', 'Mountain', 'Forest'}
+        basic = name in {'Plains', 'Island', 'Swamp', 'Mountain', 'Forest'} or card.get('type_line', '').split(' — ')[0] == 'Basic Land'
         colored, generic = fixed_cost(cost) or ([0] * 6, 0)
         deck_limit = 'None' if basic or name in UNLIMITED else 'Some(4)'
         quote = lambda value: json.dumps(value, ensure_ascii=False)
         oracle_id = f"Some({quote(card['oracle_id'])})" if card else 'None'
         type_line = card.get('type_line', 'Basic Land' if basic else 'Creature' if kind & 1 else 'Instant' if kind & 8 else 'Sorcery' if kind & 4 else '')
         oracle_keywords = '&[' + ', '.join(quote(word) for word in card.get('keywords', [])) + ']'
-        definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(name)}, oracle_id: {oracle_id}, mana_cost: {quote(cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in cards).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, activated: {rust_activations(activations)}, enters: Counters {{ plus_one: {enters[0]}, minus_one: {enters[1]}, stun: {enters[2]} }}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
+        definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(name)}, oracle_id: {oracle_id}, mana_cost: {quote(cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in cards).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, activated: {rust_activations(activations)}, enters: Counters {{ plus_one: {enters[0]}, minus_one: {enters[1]}, stun: {enters[2]} }}, entry: EntryTapped::{entry}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
         coverage.append({'name': name, 'standard_legal': name in cards, 'implemented': effect != 'Unsupported',
-                         'implementation': 'explicit' if name in legacy else 'creature_template' if template else 'trigger_template' if trigger_template else 'spell_template' if spell else 'permanent_template' if permanent else 'static_template' if static else None})
+                         'implementation': 'explicit' if name in legacy else 'land_template' if land else 'creature_template' if template else 'trigger_template' if trigger_template else 'spell_template' if spell else 'permanent_template' if permanent else 'static_template' if static else None})
 
     # Only factories referenced by wholly accepted cards enter the executable catalogue.
     used_tokens = sorted(set(re.findall(r'__TOKEN_([0-9a-f]+)__', '\n'.join(definitions))))
@@ -758,7 +808,7 @@ def compile_catalogue(snapshot, target):
             kind = 1 | (16 if factory['extra_type'] == 'artifact' else 32 if factory['extra_type'] == 'enchantment' else 0)
             effect = f"Creature({factory['power']}, {factory['toughness']})"
             token_abilities = []
-        definitions.append(f"    Definition {{ info: CardInfo {{ name: {json.dumps(name)}, oracle_id: None, mana_cost: \"\", type_line: {json.dumps(type_line, ensure_ascii=False)}, oracle_keywords: &[], standard_legal: false, implemented: true, keywords: Keywords({factory['keywords']}), deck_limit: None }}, effect: Effect::{effect}, triggers: &[], activated: {rust_activations(token_abilities)}, enters: Counters {{ plus_one: 0, minus_one: 0, stun: 0 }}, kind: {kind}, basic: false, mana_color: None, colored: [0; 6], generic: 0 }},")
+        definitions.append(f"    Definition {{ info: CardInfo {{ name: {json.dumps(name)}, oracle_id: None, mana_cost: \"\", type_line: {json.dumps(type_line, ensure_ascii=False)}, oracle_keywords: &[], standard_legal: false, implemented: true, keywords: Keywords({factory['keywords']}), deck_limit: None }}, effect: Effect::{effect}, triggers: &[], activated: {rust_activations(token_abilities)}, enters: Counters {{ plus_one: 0, minus_one: 0, stun: 0 }}, entry: EntryTapped::Never, kind: {kind}, basic: false, mana_color: None, colored: [0; 6], generic: 0 }},")
         token_infos.append(f"    TokenInfo {{ name: {json.dumps(factory['name'])}, subtypes: {json.dumps(factory['subtypes'])}, colors: {factory['colors']} }},")
         marker = '__TOKEN_' + key + '__'
         definitions = [definition.replace(marker, f'Card({index})') for definition in definitions]
