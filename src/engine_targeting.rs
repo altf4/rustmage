@@ -8,6 +8,8 @@ pub(super) struct Announcement {
     pub trigger: bool,
     pub payment: Option<Mana>,
     pub counter_payment: Counters,
+    pub pay_window: bool,
+    pub production: Option<Mana>,
 }
 
 impl Game {
@@ -182,12 +184,55 @@ impl Game {
             trigger,
             payment: None,
             counter_payment: Counters::default(),
+            pay_window: false,
+            production: None,
         });
         self.state.pending = Pending::Targets { player };
         true
     }
 
+    pub(super) fn open_payment_announcement(
+        &mut self,
+        item: SpellView,
+        counters: Counters,
+        production: Option<Mana>,
+    ) {
+        let spec = self.target_spec(&item);
+        let player = item.controller;
+        let mut count = 0;
+        if spec.max > 0 {
+            self.visit_targets(spec.rule, player, item.object, |_| {
+                count += 1;
+                false
+            });
+        }
+        assert!(count >= usize::from(spec.min));
+        self.state.announcing = Some(Announcement {
+            item,
+            spec,
+            trigger: false,
+            payment: None,
+            counter_payment: counters,
+            pay_window: true,
+            production,
+        });
+        self.state.pending = if spec.max == 0 || count == 0 {
+            Pending::PayCosts { player }
+        } else {
+            Pending::Targets { player }
+        };
+    }
+
     pub(super) fn finish_announcement(&mut self) {
+        if let Some(announcement) = &self.state.announcing
+            && announcement.pay_window
+            && matches!(self.state.pending, Pending::Targets { .. })
+        {
+            self.state.pending = Pending::PayCosts {
+                player: announcement.item.controller,
+            };
+            return;
+        }
         let mut announcement = self.state.announcing.take().unwrap();
         announcement.item.targets.sort_by_key(|bound| bound.target);
         if let Some(payment) = announcement.payment {
@@ -208,7 +253,11 @@ impl Game {
         } else {
             announcement.item.controller
         };
-        self.state.stack.push(announcement.item);
+        if let Some(production) = announcement.production {
+            self.add_mana(announcement.item.controller, production);
+        } else {
+            self.state.stack.push(announcement.item);
+        }
         if announcement.trigger {
             self.continue_trigger_order();
         } else {

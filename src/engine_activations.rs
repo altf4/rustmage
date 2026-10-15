@@ -22,12 +22,29 @@ impl Game {
         actor: Player,
         sorcery: bool,
     ) -> bool {
-        let object = &self.state.objects[card as usize];
+        Self::object_activation_available(
+            &self.state.objects[card as usize],
+            self.state.players[actor.index()].life,
+            ability,
+            index,
+            actor,
+            sorcery,
+        )
+    }
+
+    pub(super) fn object_activation_available(
+        object: &Object,
+        life: i64,
+        ability: &ActivatedAbility,
+        index: usize,
+        actor: Player,
+        sorcery: bool,
+    ) -> bool {
         if object.zone != Zone::Battlefield
             || object.owner != actor
             || (ability.sorcery && !sorcery)
             || (ability.once_per_turn && object.used_abilities & (1u64 << index) != 0)
-            || i64::from(ability.cost.life) > self.state.players[actor.index()].life
+            || i64::from(ability.cost.life) > life
         {
             return false;
         }
@@ -70,6 +87,45 @@ impl Game {
                 continue;
             }
             let done = counter_payments(ability.cost, object.counters, |counter_payment| {
+                let mut count = 0;
+                if ability.targets.min > 0 {
+                    self.visit_targets(ability.targets.rule, actor, self.object_ref(card), |_| {
+                        count += 1;
+                        false
+                    });
+                }
+                let goal = FundingGoal {
+                    actor,
+                    required: ability.cost.colored,
+                    generic: ability.cost.generic,
+                    source: Some((
+                        self.object_ref(card),
+                        index as u16,
+                        counter_payment,
+                        object.card,
+                    )),
+                };
+                if count >= usize::from(ability.targets.min) && self.can_fund(goal) {
+                    let done = if let Some(production) = ability.mana_production() {
+                        production.visit(|production| {
+                            emit(Action::AnnounceMana {
+                                card,
+                                ability: index as u16,
+                                counter_payment,
+                                production,
+                            })
+                        })
+                    } else {
+                        emit(Action::AnnounceActivate {
+                            card,
+                            ability: index as u16,
+                            counter_payment,
+                        })
+                    };
+                    if done {
+                        return true;
+                    }
+                }
                 let mut done = false;
                 payments(
                     self.state.players[actor.index()].mana,
@@ -182,8 +238,13 @@ impl Game {
         }
         self.state.players[item.controller.index()].life -= i64::from(cost.life);
         let object = &mut self.state.objects[item.card as usize];
-        assert_eq!(object.generation, item.object.generation);
-        assert_eq!(object.zone, Zone::Battlefield);
+        if object.generation != item.object.generation || object.zone != Zone::Battlefield {
+            assert!(
+                !cost.tap && !cost.sacrifice && cost.remove.is_none(),
+                "unpaid source cost"
+            );
+            return;
+        }
         object.used_abilities |= 1u64 << ability;
         if cost.tap {
             object.tapped = true;
@@ -198,7 +259,7 @@ impl Game {
 }
 
 /// Fixed small counter costs enumerate allocations, not subsets of individual counters.
-fn counter_payments(
+pub(super) fn counter_payments(
     cost: ActivationCost,
     available: Counters,
     mut emit: impl FnMut(Counters) -> bool,

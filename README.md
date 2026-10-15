@@ -101,7 +101,7 @@ entry/death/attack triggers, controller ordering, draw/discard and life effects 
 choices suspend in owned continuations. Shared target predicates and incremental
 announcements support targeted triggers, multi-target spells, partial target
 invalidation and reanimation. See [targeting](docs/targeting.md),
-[effect programs](docs/programs.md), [activated abilities](docs/activations.md), [mana](docs/mana.md) and
+[effect programs](docs/programs.md), [activated abilities](docs/activations.md), [mana](docs/mana.md), [payment windows](docs/payment-windows.md) and
 [object identity](docs/object-identity.md).
 
 `Constructed` checks 60-card minimum and the four-copy limit; **it does not claim

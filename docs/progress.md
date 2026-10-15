@@ -16,17 +16,16 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Fair observations | Hidden-hand/library projection and privacy tests; catalogue fingerprint | New private choices/zones; belief sampling and neural encoders |
 | Reviewed delivery | PR #6 foundation; PR #8 catalogue/templates; PR #10 damage/combat; PR #12 object identity/removal; PR #13 programs/triggers; PR #15 targeting; PR #17 counters; PR #18 fixed tokens; PR #20 activations; PR #22 mana/artifact tokens, with two subagent reviews each | Continue issue-managed, reviewed PRs through complete acceptance |
 
-The latest work adds six-slot mana, distinct colorless costs, immediate activated
-production and owned resolution-time mana choices. Predefined artifact tokens
-carry their actual abilities. Forty-one new definitions bring coverage to
-212/5,164, with 27 referenced token factories counted separately. Native and
-Python checks cover immediate mana, normal Food/Clue responses, exact production
-legality, source sacrifice, usage limits and replay.
+The latest work opens owned casting/activation payment windows after target
+selection. Exact compact reachability reserves source costs and prevents
+stranding choices; mana production completes without intervening priority,
+SBAs or trigger placement. Existing atomic paths remain available. Schema 11
+exposes actor-only payment requests. Coverage remains 212/5,164: this closes a
+global rules gap for existing definitions rather than adding identities.
 
-Issue #21 remains open for mana abilities during casting/payment. Current
-prefunding does not represent every legal payment sequence. Other dependencies
-include wider costs/modes/events, multiple distinct target groups, triggered
-mana abilities, spending restrictions and replacement/prevention/layer machinery.
+Other dependencies include wider costs/modes/events, multiple distinct target
+groups, triggered/restricted/variable mana, infinite-resource handling and
+replacement/prevention/layer machinery.
 Remaining card-specific mechanics and native RL/search integration still need full
 implementations. These priorities do not reduce the all-Standard goal.
 
