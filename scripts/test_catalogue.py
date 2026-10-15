@@ -14,6 +14,54 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_step_events_and_intervening_if_are_whole_trigger_clauses(self):
+        for prefix, condition in generate.STEP_PREFIXES.items():
+            row = self.card(oracle_text=prefix+'Draw a card.')
+            self.assertEqual(generate.trigger_creature_template(row)[2], [(condition,['Draw(PlayerSet::Controller, 1)'],'None')])
+        for label, event, guard in [
+            ('Raid — ', 'your end step', 'you attacked this turn'),
+            ('Survival — ', 'your second main phase', 'this creature is tapped'),
+            ('Formidable — ', 'combat on your turn', 'creatures you control have total power 8 or greater'),
+        ]:
+            text=label+'At the beginning of '+event+', if '+guard+', draw a card.'
+            result=generate.trigger_creature_template(self.card(oracle_text=text))
+            self.assertIn(generate.step_guard(guard),result[2][0][0])
+        for text in [
+            'At the beginning of your end step, if you gained life this turn, draw a card.',
+            'At the beginning of your end step, if you control two or more tapped creatures and a Dragon, draw a card.',
+            'At the beginning of your upkeep, draw a card if you control a Dragon.',
+            'At the beginning of your upkeep, if you have 40 or more life, you win the game.',
+            'At the beginning of your next upkeep, draw a card.',
+            'At the beginning of combat on your turn, choose one —\n• Draw a card.\n• You gain 2 life.',
+            'At the beginning of your end step, draw a card. This ability triggers only once.',
+        ]:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=text)),text)
+
+    def test_step_conditions_preserve_numeric_bounds_and_unknown_predicates_fail_closed(self):
+        for text in ['you attacked this turn','this creature is tapped','you control two or more tapped creatures',
+                     'you control three or more creatures','you control six or more lands',
+                     'you control a creature with power 4 or greater','creatures you control have total power 8 or greater',
+                     'creatures you control have total toughness 10 or greater','you have fewer than 8 cards in hand',
+                     'you have 20 or more life','you have 5 or less life',"you didn't cast a spell this turn"]:
+            self.assertIsNotNone(generate.step_guard(text),text)
+        for text in ['you control a creature with power X or greater','you control a creature with power 40000 or greater',
+                     'you control 999999 or more lands','you have fewer than 0 cards in hand','you have 999999 or more life',
+                     'you attacked with a Hero this turn','this creature has a counter on it',
+                     'you control two or more tapped creatures or a Dragon',"you haven't cast a spell from your hand this turn"]:
+            self.assertIsNone(generate.step_guard(text),text)
+
+    def test_step_effects_keep_optional_targets_and_complete_atomic_sequences(self):
+        result=generate.targeted_program('You may have target creature get +2/+0 until end of turn.')
+        self.assertEqual(result,('Creature',['May { skip: 1 }', generate.grow_instruction('Targets',2,0)]))
+        self.assertEqual(generate.statement_program('You draw a card and lose 1 life.'),
+                         ['Draw(PlayerSet::Controller, 1)','LoseLife(PlayerSet::Controller, 1)'])
+        self.assertIsNotNone(generate.statement_program('You lose 1 life and create a 1/1 blue and black Faerie creature token with flying.'))
+        self.assertIn('UntapCreatures(',generate.statement_program('Untap each creature you control.')[0])
+        for text in ['Untap each artifact you control.','You may have target creature get +X/+0 until end of turn.',
+                     'You lose 1 life and create a 1/1 blue Faerie creature token with ward {2}.',
+                     'You draw a card and lose 999999 life.']:
+            self.assertIsNone(generate.statement_program(text) or generate.targeted_program(text),text)
+
     def test_cast_trigger_conditions_and_second_spell_are_exact(self):
         for prefix, relation, filter_, ordinal in [
             ('Whenever you cast a spell, ', 'You', 'Any', None),
@@ -207,7 +255,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertEqual(generate.spell_program_template(row), ('None', [f'{name.capitalize()}(2)', 'Draw(PlayerSet::Controller, 1)']))
             self.assertEqual(generate.statement_program(f'{name} 2, then draw two cards.'), [f'{name.capitalize()}(2)', 'Draw(PlayerSet::Controller, 2)'])
         for text in ('Whenever you scry, draw a card.', 'Whenever you surveil, draw a card.',
-                     'At the beginning of your upkeep, scry 1.'):
+                     'At the beginning of your next upkeep, scry 1.'):
             self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=text)))
 
     def test_additive_stats_compile_both_values_and_exact_static_filters(self):

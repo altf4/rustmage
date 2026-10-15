@@ -1,7 +1,8 @@
 use crate::cards::{
     ActivatedAbility, ActivationCost, CastRelation, CounterKind, Counters, CreatureFilter, Effect,
-    EntryTapped, Instruction, ManaProduction, PlayerSet, SearchSpec, Stats, Subject, TargetPlan,
-    TargetRule, TargetSpec, TargetZone, TriggerCondition, payments,
+    EntryTapped, Instruction, ManaProduction, PlayerSet, SearchSpec, Stats, StepGuard, StepValue,
+    Subject, TargetPlan, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep,
+    payments,
 };
 #[path = "engine_activations.rs"]
 mod activations;
@@ -20,6 +21,8 @@ mod sba;
 mod search;
 #[path = "engine_stats.rs"]
 mod stats;
+#[path = "engine_steps.rs"]
+mod steps;
 #[path = "engine_tokens.rs"]
 mod tokens;
 use crate::rng::Rng;
@@ -350,6 +353,7 @@ impl Object {
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct PlayerState {
     spells_cast_this_turn: u64,
+    attacked_this_turn: bool,
     life: i64,
     mana: Mana,
     library: Vec<CardId>, // top is last, bottom is first
@@ -364,6 +368,7 @@ pub struct SpellView {
     pub kind: StackKind,
     pub source_card: Card,
     pub source_keywords: Keywords,
+    pub source_tapped: bool,
     pub card: CardId,
     pub object: ObjectRef,
     pub targets: Vec<BoundTarget>,
@@ -473,6 +478,7 @@ struct State {
     free_tokens: Vec<CardId>,
     static_sources: Vec<CardId>,
     cast_sources: Vec<CardId>,
+    step_sources: Vec<CardId>,
     exile_links: Vec<ExileLink>,
     known_hand: Vec<ObjectRef>,
     players: [PlayerState; 2],
@@ -547,6 +553,7 @@ pub struct ZoneChange {
 #[derive(Clone, Debug, Serialize)]
 pub struct PlayerView {
     pub spells_cast_this_turn: u64,
+    pub attacked_this_turn: bool,
     pub life: i64,
     pub mana: Mana,
     pub library_count: usize,
@@ -700,6 +707,7 @@ impl Game {
         let mut objects = Vec::with_capacity(config.decks.iter().map(Vec::len).sum());
         let mut players = std::array::from_fn(|_| PlayerState {
             spells_cast_this_turn: 0,
+            attacked_this_turn: false,
             life: 20,
             mana: [0; 6],
             library: Vec::new(),
@@ -736,6 +744,7 @@ impl Game {
                 free_tokens: Vec::new(),
                 static_sources: Vec::new(),
                 cast_sources: Vec::new(),
+                step_sources: Vec::new(),
                 exile_links: Vec::new(),
                 known_hand: Vec::new(),
                 players,
@@ -1402,6 +1411,7 @@ impl Game {
             Action::Attack { card } => self.state.selected_attackers.push(card),
             Action::FinishAttackers => {
                 self.state.attack_declared = !self.state.selected_attackers.is_empty();
+                self.state.players[actor.index()].attacked_this_turn |= self.state.attack_declared;
                 let declared = std::mem::take(&mut self.state.selected_attackers);
                 for card in declared {
                     let obj = &mut self.state.objects[card as usize];
@@ -1746,10 +1756,12 @@ impl Game {
             {
                 if item.object == before.reference {
                     item.source_keywords = before.keywords;
+                    item.source_tapped = before.tapped;
                 }
             }
             self.state.static_sources.retain(|&source| source != id);
             self.state.cast_sources.retain(|&source| source != id);
+            self.state.step_sources.retain(|&source| source != id);
             self.state.attackers.retain(|attacker| attacker.card != id);
             self.state.blocking.retain(|&blocker| blocker != id);
             self.state
@@ -1800,6 +1812,7 @@ impl Game {
     fn begin_turn(&mut self) {
         for player in &mut self.state.players {
             player.spells_cast_this_turn = 0;
+            player.attacked_this_turn = false;
         }
         self.state.land_played = false;
         self.state.attack_declared = false;
@@ -1814,7 +1827,7 @@ impl Game {
                 obj.summoning_sick = false;
             }
         }
-        self.state.step = Step::Upkeep;
+        self.begin_step(Step::Upkeep);
         self.give_priority();
     }
 
@@ -1825,19 +1838,19 @@ impl Game {
         match self.state.step {
             Step::Upkeep => {
                 if self.state.turn == 1 {
-                    self.state.step = Step::Main1;
+                    self.begin_step(Step::Main1);
                 } else {
-                    self.state.step = Step::Draw;
+                    self.begin_step(Step::Draw);
                     self.draw(self.state.active);
                 }
                 self.give_priority();
             }
             Step::Draw => {
-                self.state.step = Step::Main1;
+                self.begin_step(Step::Main1);
                 self.give_priority();
             }
             Step::Main1 => {
-                self.state.step = Step::BeginCombat;
+                self.begin_step(Step::BeginCombat);
                 self.give_priority();
             }
             Step::BeginCombat => {
@@ -1846,7 +1859,7 @@ impl Game {
             }
             Step::Attackers => {
                 if !self.state.attack_declared {
-                    self.state.step = Step::EndCombat;
+                    self.begin_step(Step::EndCombat);
                     self.give_priority();
                 } else {
                     self.state.step = Step::Blockers;
@@ -1875,7 +1888,7 @@ impl Game {
                 self.prepare_damage();
             }
             Step::CombatDamage => {
-                self.state.step = Step::EndCombat;
+                self.begin_step(Step::EndCombat);
                 self.give_priority();
             }
             Step::EndCombat => {
@@ -1884,11 +1897,11 @@ impl Game {
                 self.state.attack_declared = false;
                 self.state.blocks.clear();
                 self.state.first_strikers.clear();
-                self.state.step = Step::Main2;
+                self.begin_step(Step::Main2);
                 self.give_priority();
             }
             Step::Main2 => {
-                self.state.step = Step::End;
+                self.begin_step(Step::End);
                 self.give_priority();
             }
             Step::End | Step::Cleanup => {
@@ -2118,7 +2131,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 18,
+            schema: 19,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -2148,6 +2161,7 @@ impl Game {
             },
             players: std::array::from_fn(|i| PlayerView {
                 spells_cast_this_turn: s.players[i].spells_cast_this_turn,
+                attacked_this_turn: s.players[i].attacked_this_turn,
                 life: s.players[i].life,
                 mana: s.players[i].mana,
                 library_count: s.players[i].library.len(),
@@ -2339,7 +2353,10 @@ impl Game {
             + s.exile_links.len() * std::mem::size_of::<ExileLink>()
             + s.sba_batch.as_ref().map(|batch| batch.bytes()).unwrap_or(0)
             + s.known_hand.len() * std::mem::size_of::<ObjectRef>()
-            + (s.free_tokens.len() + s.static_sources.len() + s.cast_sources.len())
+            + (s.free_tokens.len()
+                + s.static_sources.len()
+                + s.cast_sources.len()
+                + s.step_sources.len())
                 * std::mem::size_of::<CardId>()
             + s.players
                 .iter()
@@ -2440,3 +2457,7 @@ mod sba_tests;
 #[cfg(test)]
 #[path = "engine_cast_tests.rs"]
 mod cast_tests;
+
+#[cfg(test)]
+#[path = "engine_step_tests.rs"]
+mod step_tests;

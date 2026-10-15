@@ -8,6 +8,14 @@ impl Game {
             .card
             .triggers()
             .iter()
+            .any(|ability| matches!(ability.condition, TriggerCondition::AtStep { .. }))
+        {
+            self.state.step_sources.push(id);
+        }
+        if self.state.objects[id as usize]
+            .card
+            .triggers()
+            .iter()
             .any(|ability| matches!(ability.condition, TriggerCondition::SpellCast { .. }))
         {
             self.state.cast_sources.push(id);
