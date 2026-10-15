@@ -105,6 +105,14 @@ pub(crate) enum Instruction {
         power: i32,
         toughness: i32,
     },
+    GrantKeywords {
+        subject: Subject,
+        keywords: Keywords,
+    },
+    GrantCreatures {
+        filter: CreatureFilter,
+        keywords: Keywords,
+    },
     GrowCreatures {
         filter: CreatureFilter,
         power: i32,
@@ -261,9 +269,9 @@ impl ActivatedAbility {
 }
 
 /// Implemented static keyword flags. Other keyword cards remain unsupported.
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize)]
 #[serde(transparent)]
-pub struct Keywords(u16);
+pub struct Keywords(u32);
 
 impl Keywords {
     pub const FLYING: Self = Self(1);
@@ -278,6 +286,9 @@ impl Keywords {
     pub const FIRST_STRIKE: Self = Self(512);
     pub const DOUBLE_STRIKE: Self = Self(1024);
     pub const CANT_BLOCK: Self = Self(2048);
+    pub const NONE: Self = Self(0);
+    pub const HEXPROOF: Self = Self(4096);
+    pub const INDESTRUCTIBLE: Self = Self(8192);
     pub fn contains(self, keyword: Self) -> bool {
         self.0 & keyword.0 == keyword.0
     }

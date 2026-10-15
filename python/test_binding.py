@@ -136,6 +136,52 @@ class BindingTests(unittest.TestCase):
             self.assertEqual(again, after)
             game.drop_snapshot(saved)
 
+    def test_effective_keyword_gains_replay_through_native_library(self):
+        deck = ["Forest"] * 36 + ["Grizzly Bears"] * 12 + ["Overprotect"] * 12
+        with Game([deck, deck], seed=7, deck_rules="Freeform") as game:
+            obs = game.observe("P0")
+            for _ in range(1000):
+                self.assertIsNone(obs["outcome"])
+                if obs["viewer"] != obs["actor"]:
+                    obs = game.observe(obs["actor"])
+                objects = {o["id"]: o for o in obs["objects"]}
+                index = next((i for i, a in enumerate(obs["actions"]) if a["kind"] == "Cast"
+                              and objects[a["card"]]["card"] == "Overprotect"), None)
+                if index is not None:
+                    break
+                def score(action):
+                    if action["kind"] == "TapMana":
+                        return 20 if obs["active"] == obs["actor"] and obs["step"] in ("Main1", "Main2") else -5
+                    return {"Keep": 100, "PlayLand": 90, "Cast": 80, "AnnounceCast": -20,
+                            "Mulligan": -100, "Concede": -1000}.get(action["kind"], 0)
+                selected = max(range(len(obs["actions"])), key=lambda i: score(obs["actions"][i]))
+                obs = game.step(obs, selected)
+            else:
+                self.fail("keyword fixture not reached")
+            actor = obs["actor"]
+            target = obs["actions"][index]["target"]["Card"]
+            before = objects[target]
+            def resolve(engine, observation):
+                engine.step(observation, index)
+                for _ in range(2):
+                    current = engine.observe(engine.observe(actor)["actor"])
+                    passed = next(i for i, a in enumerate(current["actions"]) if a["kind"] == "Pass")
+                    engine.step(current, passed)
+                return engine.observe(actor)
+            saved = game.snapshot()
+            with game.clone() as branch:
+                expected = resolve(branch, branch.observe(actor))
+            after = resolve(game, obs)
+            self.assertEqual(after, expected)
+            protected = next(o for o in after["objects"] if o["id"] == target)
+            self.assertEqual(protected["keywords"] & (256 + 4096 + 8192), 256 + 4096 + 8192)
+            self.assertEqual((protected["power"], protected["toughness"]), (before["power"] + 3, before["toughness"] + 3))
+            game.restore(saved)
+            again = resolve(game, game.observe(actor))
+            self.assertGreater(again.pop("revision"), after.pop("revision"))
+            self.assertEqual(again, after)
+            game.drop_snapshot(saved)
+
     def test_input_and_lifecycle(self):
         with self.assertRaises(EngineError):
             Game([["BlackLotus"] * 60] * 2)

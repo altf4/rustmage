@@ -34,6 +34,7 @@ impl Game {
                 damage: 0,
                 deathtouch_since_sba: false,
                 growth: Stats::default(),
+                gained_keywords: Keywords::NONE,
                 counters: Counters::default(),
                 used_abilities: 0,
             };
@@ -83,6 +84,7 @@ impl Game {
         object.damage = 0;
         object.deathtouch_since_sba = false;
         object.growth = Stats::default();
+        object.gained_keywords = Keywords::NONE;
         object.counters = Counters::default();
         object.used_abilities = 0;
         // No zone-change event: this game object ceases to exist (CR111.7).

@@ -288,11 +288,15 @@ struct Object {
     damage: i32,
     deathtouch_since_sba: bool,
     growth: Stats,
+    gained_keywords: Keywords,
     counters: Counters,
     used_abilities: u64,
 }
 
 impl Object {
+    fn keywords(&self) -> Keywords {
+        self.card.keywords().union(self.gained_keywords)
+    }
     fn counter_delta(&self) -> i32 {
         i32::try_from(i64::from(self.counters.plus_one) - i64::from(self.counters.minus_one))
             .expect("counter modifier exhausted")
@@ -636,6 +640,7 @@ impl Game {
                     damage: 0,
                     deathtouch_since_sba: false,
                     growth: Stats::default(),
+                    gained_keywords: Keywords::NONE,
                     counters: Counters::default(),
                     used_abilities: 0,
                 });
@@ -851,7 +856,7 @@ impl Game {
                         && obj.card.mana_color().is_some()
                         && (!obj.card.is_creature()
                             || !obj.summoning_sick
-                            || obj.card.keywords().contains(Keywords::HASTE))
+                            || obj.keywords().contains(Keywords::HASTE))
                         && emit(Action::TapMana { card })
                     {
                         return true;
@@ -872,7 +877,7 @@ impl Game {
                     }
                     if !sorcery
                         && !obj.card.is_instant()
-                        && !obj.card.keywords().contains(Keywords::FLASH)
+                        && !obj.keywords().contains(Keywords::FLASH)
                     {
                         continue;
                     }
@@ -971,8 +976,8 @@ impl Game {
                         && obj.zone == Zone::Battlefield
                         && obj.card.is_creature()
                         && !obj.tapped
-                        && (!obj.summoning_sick || obj.card.keywords().contains(Keywords::HASTE))
-                        && !obj.card.keywords().contains(Keywords::DEFENDER)
+                        && (!obj.summoning_sick || obj.keywords().contains(Keywords::HASTE))
+                        && !obj.keywords().contains(Keywords::DEFENDER)
                         && !s.selected_attackers.contains(&card)
                         && emit(Action::Attack { card })
                     {
@@ -990,7 +995,7 @@ impl Game {
                         || obj.zone != Zone::Battlefield
                         || !obj.card.is_creature()
                         || obj.tapped
-                        || obj.card.keywords().contains(Keywords::CANT_BLOCK)
+                        || obj.keywords().contains(Keywords::CANT_BLOCK)
                         || s.selected_blocks.iter().any(|&(b, _)| b == blocker)
                     {
                         continue;
@@ -998,11 +1003,10 @@ impl Game {
                     for attacker in &s.attackers {
                         if self.on_battlefield(attacker.card)
                             && (!s.objects[attacker.card as usize]
-                                .card
                                 .keywords()
                                 .contains(Keywords::FLYING)
-                                || obj.card.keywords().contains(Keywords::FLYING)
-                                || obj.card.keywords().contains(Keywords::REACH))
+                                || obj.keywords().contains(Keywords::FLYING)
+                                || obj.keywords().contains(Keywords::REACH))
                             && emit(Action::Block {
                                 blocker,
                                 attacker: attacker.card,
@@ -1261,7 +1265,7 @@ impl Game {
                 let declared = std::mem::take(&mut self.state.selected_attackers);
                 for card in declared {
                     let obj = &mut self.state.objects[card as usize];
-                    if !obj.card.keywords().contains(Keywords::VIGILANCE) {
+                    if !obj.keywords().contains(Keywords::VIGILANCE) {
                         obj.tapped = true;
                     }
                     self.state.attackers.push(Attacker {
@@ -1461,7 +1465,7 @@ impl Game {
             used_abilities: obj.used_abilities,
             power: stats.power,
             toughness: stats.toughness,
-            keywords: obj.card.keywords(),
+            keywords: obj.keywords(),
             token: obj.card.token_info(),
         }
     }
@@ -1529,6 +1533,21 @@ impl Game {
                 .retain(|spell| spell.kind != StackKind::Spell || spell.object != before.reference);
         }
         if before.zone == Zone::Battlefield {
+            // Abilities use the source's actual last-known keywords if it leaves,
+            // including gains made after that ability was announced.
+            for item in self
+                .state
+                .stack
+                .iter_mut()
+                .chain(&mut self.state.pending_triggers)
+                .chain(&mut self.state.ordering_triggers)
+                .chain(self.state.resolving.iter_mut().map(|r| &mut r.item))
+                .chain(self.state.announcing.iter_mut().map(|a| &mut a.item))
+            {
+                if item.object == before.reference {
+                    item.source_keywords = before.keywords;
+                }
+            }
             self.state.static_sources.retain(|&source| source != id);
             self.state.attackers.retain(|attacker| attacker.card != id);
             self.state.blocking.retain(|&blocker| blocker != id);
@@ -1550,6 +1569,7 @@ impl Game {
         obj.damage = 0;
         obj.deathtouch_since_sba = false;
         obj.growth = Stats::default();
+        obj.gained_keywords = Keywords::NONE;
         obj.counters = if destination == Zone::Battlefield {
             obj.card.enters_counters()
         } else {
@@ -1634,7 +1654,7 @@ impl Game {
                     .combatants()
                     .into_iter()
                     .filter(|&id| {
-                        let keywords = self.state.objects[id as usize].card.keywords();
+                        let keywords = self.state.objects[id as usize].keywords();
                         keywords.contains(Keywords::FIRST_STRIKE)
                             || keywords.contains(Keywords::DOUBLE_STRIKE)
                     })
@@ -1685,6 +1705,7 @@ impl Game {
             obj.damage = 0;
             obj.deathtouch_since_sba = false;
             obj.growth = Stats::default();
+            obj.gained_keywords = Keywords::NONE;
         }
         // Losing temporary growth can expose lethal negative counters. Apply
         // SBAs before advancing the turn; CR514.3 gives an extra priority cycle.
@@ -1712,7 +1733,7 @@ impl Game {
             object,
             reference: self.object_ref(object),
             controller: obj.owner,
-            keywords: obj.card.keywords(),
+            keywords: obj.keywords(),
         }
     }
 
@@ -1783,7 +1804,6 @@ impl Game {
         } else {
             !self.state.first_strikers.contains(&id)
                 || self.state.objects[id as usize]
-                    .card
                     .keywords()
                     .contains(Keywords::DOUBLE_STRIKE)
         }
@@ -1898,8 +1918,9 @@ impl Game {
                     obj.zone == Zone::Battlefield
                         && obj.card.is_creature()
                         && (self.stats(*id as CardId).toughness <= 0
-                            || obj.damage >= self.stats(*id as CardId).toughness
-                            || obj.deathtouch_since_sba)
+                            || (!obj.keywords().contains(Keywords::INDESTRUCTIBLE)
+                                && (obj.damage >= self.stats(*id as CardId).toughness
+                                    || obj.deathtouch_since_sba)))
                 })
                 .map(|(i, _)| i as CardId)
                 .collect();
@@ -2174,3 +2195,7 @@ mod library_tests;
 #[cfg(test)]
 #[path = "engine_stats_tests.rs"]
 mod stats_tests;
+
+#[cfg(test)]
+#[path = "engine_keyword_tests.rs"]
+mod keyword_tests;

@@ -37,7 +37,7 @@ impl Game {
                     .split_once(" — ")
                     .is_some_and(|(_, types)| types.split_whitespace().any(|word| word == subtype))
             })
-            && object.card.keywords().contains(filter.keyword)
+            && object.keywords().contains(filter.keyword)
             && (!filter.attacking || self.state.attackers.iter().any(|a| a.card == id))
             && filter
                 .tokens

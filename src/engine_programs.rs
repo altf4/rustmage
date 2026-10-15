@@ -442,6 +442,38 @@ impl Game {
                         }
                     }
                 }
+                Instruction::GrantKeywords { subject, keywords } => match subject {
+                    Subject::Source => {
+                        if self.on_battlefield(item.card)
+                            && self.object_ref(item.card) == item.object
+                        {
+                            let object = &mut self.state.objects[item.card as usize];
+                            object.gained_keywords = object.gained_keywords.union(keywords);
+                        }
+                    }
+                    Subject::Targets => {
+                        for bound in &item.targets {
+                            if self.same_target_object(*bound)
+                                && let Target::Card(id) = bound.target
+                            {
+                                let object = &mut self.state.objects[id as usize];
+                                object.gained_keywords = object.gained_keywords.union(keywords);
+                            }
+                        }
+                    }
+                },
+                Instruction::GrantCreatures { filter, keywords } => {
+                    let affected: Vec<_> = (0..self.state.objects.len())
+                        .map(|id| id as CardId)
+                        .filter(|&id| {
+                            self.creature_matches(filter, item.controller, item.object, id)
+                        })
+                        .collect();
+                    for id in affected {
+                        let object = &mut self.state.objects[id as usize];
+                        object.gained_keywords = object.gained_keywords.union(keywords);
+                    }
+                }
                 Instruction::GrowCreatures {
                     filter,
                     power,
@@ -507,7 +539,22 @@ impl Game {
                     } else {
                         Zone::Graveyard
                     };
-                    self.move_target_batch(&item.targets, zone);
+                    if instruction == Instruction::Destroy {
+                        let targets: Vec<_> = item
+                            .targets
+                            .iter()
+                            .copied()
+                            .filter(|bound| match bound.target {
+                                Target::Card(id) => !self.state.objects[id as usize]
+                                    .keywords()
+                                    .contains(Keywords::INDESTRUCTIBLE),
+                                _ => true,
+                            })
+                            .collect();
+                        self.move_target_batch(&targets, zone);
+                    } else {
+                        self.move_target_batch(&item.targets, zone);
+                    }
                 }
             }
         }

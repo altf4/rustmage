@@ -52,7 +52,7 @@ impl Game {
             && (object.tapped
                 || (object.card.is_creature()
                     && object.summoning_sick
-                    && !object.card.keywords().contains(Keywords::HASTE)))
+                    && !object.keywords().contains(Keywords::HASTE)))
         {
             return false;
         }
@@ -211,7 +211,7 @@ impl Game {
             id: self.next_stack_id(),
             kind: StackKind::ActivatedAbility { ability },
             source_card: self.state.objects[card as usize].card,
-            source_keywords: self.state.objects[card as usize].card.keywords(),
+            source_keywords: self.state.objects[card as usize].keywords(),
             card,
             object: self.object_ref(card),
             controller: actor,

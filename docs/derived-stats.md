@@ -10,8 +10,8 @@ printed/stored characteristics; battlefield anthems do not affect hand cards.
 Immutable StaticModifier definitions hold a creature filter and two deltas.
 Filters can select controller/opponents/everyone, other creatures, an exact
 supported subtype, an implemented printed keyword, attackers, tokens/nontokens,
-or artifact creatures. Current control/type/keyword changes remain gated, so
-these predicates depend on supported earlier characteristics and combat state.
+or artifact creatures. Control/type changes and static keyword grants remain gated; predicates use
+effective supported temporary keywords and combat state.
 All admitted modifiers commute: no base-setting/switching/dependency effects are
 silently approximated as additions.
 
@@ -46,7 +46,7 @@ LKI, cleanup/counters, source reincarnation and branch/restore. Python loads the
 same library and verifies anthem stats through cloning and replay.
 
 Unimplemented layers include characteristic-defining values, base-setting,
-switches, type/color/control/ability changes and dependencies. Attachments,
+switches, type/color/control changes, general ability changes and dependencies. Attachments,
 variable/conditional bonuses and wider card/rules mechanics also remain gated.
 This is shared additive infrastructure, not full layer-system or Standard
 acceptance. The broader rules and RL/search goal remains open.
