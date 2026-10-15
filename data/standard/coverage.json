@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "3b406d72702e1fa59837ff88df283a0a7845dcf9667c0ab57ce428795a7ba548",
+  "catalogue_version": "6a93ebbab12633590fba661e54ca7bdf9bd2e00d5a5f4815b633063f705c17a7",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 834,
-  "implemented_total": 840,
+  "implemented_standard_cards": 846,
+  "implemented_total": 852,
   "token_definitions": 40,
   "cards": [
     {
@@ -4317,8 +4317,8 @@
     {
       "name": "Changeling Wayfinder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Channeled Dragonfire",
@@ -4443,8 +4443,8 @@
     {
       "name": "Chitinous Graspling",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Choco, Seeker of Paradise",
@@ -4473,8 +4473,8 @@
     {
       "name": "Chomping Changeling",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Chorale of the Void",
@@ -5595,8 +5595,8 @@
     {
       "name": "Curious Farm Animals",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Curious Forager",
@@ -8109,8 +8109,8 @@
     {
       "name": "Environmental Scientist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Envoy of Okinec Ahau",
@@ -9375,8 +9375,8 @@
     {
       "name": "Flock Impostor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Flood the Engine",
@@ -10083,8 +10083,8 @@
     {
       "name": "Gangly Stompling",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Gardenize",
@@ -11139,8 +11139,8 @@
     {
       "name": "Graveshifter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Gravestone Strider",
@@ -16743,8 +16743,8 @@
     {
       "name": "Mischievous Sneakling",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Misleading Motes",
@@ -19383,8 +19383,8 @@
     {
       "name": "Prideful Feastling",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Prideful Parent",
@@ -21507,8 +21507,8 @@
     {
       "name": "Rooftop Percher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Rook Turret",
@@ -27417,8 +27417,8 @@
     {
       "name": "Three Tree Mascot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Three Tree Rootweaver",

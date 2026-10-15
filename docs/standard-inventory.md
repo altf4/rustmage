@@ -48,7 +48,7 @@ pool, 60-card minimum and copy limits, then rejects every unsupported card.
 The known Standard unlimited-copy exceptions are represented independently of
 whether their rules have been implemented.
 
-Coverage is **834 / 5,164 executable Standard cards**, plus six legacy regression
+Coverage is **846 / 5,164 executable Standard cards**, plus six legacy regression
 cards. The additions are ten exact vanilla-creature templates and 25 creatures
 whose entire text consists of implemented static keywords, plus four exact
 single-instruction bounce/destruction spells, additional spell programs and creatures with complete supported trigger programs.
@@ -218,3 +218,9 @@ Committed two-color hybrid spell costs add 18 complete definitions. Current
 coverage is 834/5,164; 4,330 identities remain unsupported, with six regression
 definitions and 40 token factories. See hybrid-spells.md for all admissions,
 committed cost choices, exact payments, validation and remaining cost gates.
+
+
+All-zones changeling and shared typed subtype matching add 12 complete definitions.
+Current coverage is 846/5,164; 4,318 identities remain unsupported, with six
+regression definitions and 40 token factories. See changeling.md for all
+admissions, the pinned creature taxonomy, validation and remaining mechanics.

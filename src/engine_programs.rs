@@ -155,17 +155,8 @@ impl Game {
                             related
                                 && (!other || source.reference != event.before.reference)
                                 && (!nontoken || event.before.token.is_none())
-                                && subtype.is_none_or(|subtype| {
-                                    event
-                                        .before
-                                        .card
-                                        .info()
-                                        .type_line
-                                        .split_once(" — ")
-                                        .is_some_and(|(_, types)| {
-                                            types.split_whitespace().any(|word| word == subtype)
-                                        })
-                                })
+                                && subtype
+                                    .is_none_or(|subtype| event.before.card.has_subtype(subtype))
                         }
                         _ => false,
                     };
@@ -213,17 +204,10 @@ impl Game {
                         yours && !same && entered.card.is_creature()
                     }
                     TriggerCondition::OtherSubtypeEntersYou(subtype) => {
-                        yours
-                            && !same
-                            && entered.card.info().type_line.split_once(" — ").is_some_and(
-                                |(_, types)| types.split_whitespace().any(|ty| ty == subtype),
-                            )
+                        yours && !same && entered.card.has_subtype(subtype)
                     }
                     TriggerCondition::SubtypeEntersYou(subtype) => {
-                        yours
-                            && entered.card.info().type_line.split_once(" — ").is_some_and(
-                                |(_, types)| types.split_whitespace().any(|ty| ty == subtype),
-                            )
+                        yours && entered.card.has_subtype(subtype)
                     }
                     TriggerCondition::ArtifactEntersYou => yours && entered.card.is_artifact(),
                     TriggerCondition::EnchantmentEntersYou => {

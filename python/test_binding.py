@@ -12,6 +12,55 @@ class BindingTests(unittest.TestCase):
     def game(self):
         return Game([["Mountain"] * 24 + ["LightningBolt"] * 36] * 2, seed=17, deck_rules="Freeform")
 
+    def test_changeling_entry_matches_angel_observer_in_native_library_with_replay(self):
+        deck=['Plains']*24+['Youthful Valkyrie']*12+['Prideful Feastling']*12+['Mary Jane Watson']*12
+        with Game([deck,['Forest']*60],seed=8,deck_rules='Freeform') as game:
+            obs=game.observe('P0')
+            for _ in range(3000):
+                self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor'])
+                changelings=[o for o in obs['objects'] if o['zone']=='Battlefield' and o['owner']=='P0' and o['card']=='Prideful Feastling']
+                triggers=obs['stack']+obs['waiting_triggers']+([obs['announcing']] if obs['announcing'] else [])
+                angel=next((t for t in triggers if t['source_card']=='Youthful Valkyrie'),None)
+                if changelings and angel:break
+                obs=game.step(obs,self.discard_index(obs))
+            else:self.fail('changeling Angel-entry trigger not reached')
+            self.assertTrue(all(o['keywords']&524288 for o in changelings))
+            source=angel['object'];before=next(o['counters']['plus_one'] for o in obs['objects'] if o['reference']==source)
+            saved=game.snapshot();index=self.discard_index(obs)
+            with game.clone() as fork:expected=fork.step(fork.observe(obs['actor']),index)
+            actual=game.step(obs,index);self.assertEqual(actual,expected);game.restore(saved)
+            with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,index)
+            obs=game.observe(obs['actor'])
+            for _ in range(100):
+                current=next(o for o in obs['objects'] if o['reference']==source)
+                if current['counters']['plus_one']>before:break
+                obs=game.observe(obs['actor']);obs=game.step(obs,self.discard_index(obs))
+            else:self.fail('Angel-entry counter did not resolve')
+            self.assertEqual(current['counters']['plus_one'],before+1);game.drop_snapshot(saved)
+
+    def test_changeling_wayfinder_optional_search_is_private_and_branch_owned(self):
+        deck=['Forest']*28+['Changeling Wayfinder']*32
+        with Game([deck,['Forest']*60],seed=6,deck_rules='Freeform') as game:
+            obs=game.observe('P0')
+            for _ in range(2000):
+                self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor'])
+                if obs['decision']=='optional_effect' and obs['resolving']['source_card']=='Changeling Wayfinder':break
+                obs=game.step(obs,self.discard_index(obs))
+            else:self.fail('Wayfinder optional search not reached')
+            saved=game.snapshot();actor=obs['actor']
+            decline=next(i for i,a in enumerate(obs['actions']) if a['kind']=='ChooseOptional' and not a['accept'])
+            with game.clone() as fork:self.assertIsNone(fork.step(fork.observe(actor),decline)['search_choice'])
+            accept=next(i for i,a in enumerate(obs['actions']) if a['kind']=='ChooseOptional' and a['accept'])
+            obs=game.step(obs,accept);self.assertEqual(obs['search_choice']['filter'],'BasicLand')
+            hidden=game.observe('P1');self.assertIsNone(hidden['search_choice']);self.assertEqual(hidden['actions'],[])
+            index=next(i for i,a in enumerate(obs['actions']) if a['kind']=='ChooseSearch')
+            card=obs['actions'][index]['card'];obs=game.step(obs,index)
+            index=next(i for i,a in enumerate(obs['actions']) if a['kind']=='FinishSearch')
+            with game.clone() as fork:expected=fork.step(fork.observe(actor),index)
+            self.assertEqual(game.step(obs,index),expected)
+            self.assertTrue(any(o['id']==card and o['zone']=='Hand' and o['card']=='Forest' for o in expected['objects']))
+            game.restore(saved);self.assertEqual(game.observe(actor)['decision'],'optional_effect');game.drop_snapshot(saved)
+
     def test_hybrid_cost_choices_are_committed_before_payment_and_snapshot_owned(self):
         deck=['Plains']*14+['Forest']*14+['Gallant Citizen']*32
         with Game([deck,['Forest']*60],seed=5,deck_rules='Freeform') as game:

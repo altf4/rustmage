@@ -24,6 +24,7 @@ LEGACY = [
 ]
 KEYWORDS = {'flying': 1, 'reach': 2, 'haste': 4, 'vigilance': 8, 'defender': 16, 'flash': 32,
             'lifelink': 64, 'deathtouch': 128, 'trample': 256, 'first strike': 512, 'double strike': 1024, 'hexproof': 4096, 'indestructible': 8192, 'menace': 32768}
+INTRINSIC_KEYWORDS = dict(KEYWORDS, changeling=524288)
 TEXT_FLAGS = {"this creature can't block.": 2048, "this creature can't be blocked.": 16384,
               "this creature can't be blocked by more than one creature.": 65536,
               "this creature can't be blocked except by three or more creatures.": 131072,
@@ -87,8 +88,8 @@ def creature_template(card):
         if line.casefold() in TEXT_FLAGS: keywords |= TEXT_FLAGS[line.casefold()]
         else: body.append(line)
     words = {word.strip().casefold() for word in ','.join(body).split(',') if word.strip()}
-    if not words <= KEYWORDS.keys(): return None
-    return f"Creature({int(card['power'])}, {int(card['toughness'])})", keywords | sum(KEYWORDS[word] for word in words)
+    if not words <= INTRINSIC_KEYWORDS.keys(): return None
+    return f"Creature({int(card['power'])}, {int(card['toughness'])})", keywords | sum(INTRINSIC_KEYWORDS[word] for word in words)
 
 
 
@@ -154,8 +155,8 @@ def token_program(text):
         else:
             if not ability.endswith('.'): return None
             words = [word.strip() for word in ability[:-1].replace(' and ', ',').split(',')]
-            if not words or not all(word in KEYWORDS for word in words): return None
-            keywords = sum(KEYWORDS[word] for word in set(words))
+            if not words or not all(word in INTRINSIC_KEYWORDS for word in words): return None
+            keywords = sum(INTRINSIC_KEYWORDS[word] for word in set(words))
     factory = {'name': name, 'subtypes': subtypes, 'colors': sum(colors[word] for word in color_names),
                'power': int(power), 'toughness': int(toughness), 'extra_type': extra_type,
                'keywords': keywords}
@@ -468,6 +469,9 @@ def statement_program(text):
     if text == "exile your graveyard.": return ['ExileGraveyard(PlayerSet::Controller)']
     if text == 'investigate.': return predefined_program('create a Clue token.')
     if mana := mana_program(text): return mana
+    if text.startswith('you may search your library '):
+        program=search_program(text[len('you may '):])
+        return [f'May {{ skip: {len(program)} }}',*program] if program else None
     if search := search_program(text): return search
     if not text.endswith('.'):
         return None
@@ -676,6 +680,7 @@ def targeted_program(text):
     text = normalize_duration(text[0].lower() + text[1:])
     if counter:=counter_program(text): return counter
     if text=='exile up to one target card from a graveyard.': return ('CardGrave',0,1),['Exile']
+    if text=='exile up to two target cards from graveyards.': return ('CardGrave',0,2),['Exile']
     if text=='target player draws a card, then up to one target creature you control connives.':
         return ['Player',('CreatureYou',0,1)],['Draw(PlayerSet::Targeted, 1)','SelectGroup(1)','Connive { subject: Subject::Targets, amount: 1 }']
     if m:=re.fullmatch(r'(up to one )?target creature( you control| an opponent controls)? connives(?: ([0-9]+))?\.',text):
@@ -761,6 +766,8 @@ def targeted_program(text):
         'destroy target artifact.': ('Artifact', ['Destroy']),
         'destroy target enchantment.': ('Enchantment', ['Destroy']),
         'destroy target artifact or enchantment.': ('ArtifactEnchantment', ['Destroy']),
+        'destroy up to one target artifact or enchantment.': (('ArtifactEnchantment',0,1),['Destroy']),
+        "return up to one other target creature you control to its owner's hand.": (('OtherCreatureYou',0,1),['ReturnToHand']),
         'counter target spell.': ('Spell', ['Counter']),
     }
     if text in rules:
@@ -1056,9 +1063,9 @@ def trigger_creature_template(card):
             if limited: return None
             keywords |= TEXT_FLAGS[line.casefold()]; continue
         words = [word.strip().casefold() for word in line.split(',') if word.strip()]
-        if words and all(word in KEYWORDS or word == 'prowess' or ward_word(word) is not None for word in words):
+        if words and all(word in INTRINSIC_KEYWORDS or word == 'prowess' or ward_word(word) is not None for word in words):
             if limited: return None
-            keywords |= sum(KEYWORDS[word] for word in set(words) if word in KEYWORDS)
+            keywords |= sum(INTRINSIC_KEYWORDS[word] for word in set(words) if word in INTRINSIC_KEYWORDS)
             for word in words:
                 if word=='prowess': abilities.append((cast_condition(filter_='Noncreature'),[grow_instruction('Source',1,1)],'None'))
                 elif (cost:=ward_word(word)) is not None: abilities.append(('Ward',[counter_unless(cost,'Related')],'None'))
@@ -1417,6 +1424,11 @@ def rust_program(program):
 
 def compile_catalogue(snapshot, target):
     TOKEN_DEFS.clear()
+    creature_types_bytes = (ROOT / 'data/creature-types.json').read_bytes()
+    creature_types = json.loads(creature_types_bytes)['types']
+    if (creature_types != sorted(set(creature_types)) or not creature_types
+            or any(not re.fullmatch(r"[A-Z][A-Za-z'-]*",name) and name != 'Time Lord' for name in creature_types)):
+        raise ValueError('creature types must be sorted unique names; Time Lord is the two-word type')
     canonical = json.dumps(snapshot['cards'], ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()
     if hashlib.sha256(canonical).hexdigest() != snapshot['cards_sha256'] or len(snapshot['cards']) != snapshot['card_count']:
         raise ValueError('card snapshot checksum/count mismatch')
@@ -1442,7 +1454,7 @@ def compile_catalogue(snapshot, target):
     for index, name in enumerate(names):
         card, cycling = cycling_abilities(cards.get(name, {}))
         cost = card.get('mana_cost', '')
-        keywords = sum(KEYWORDS[word] for word in {keyword.casefold() for keyword in card.get('keywords', [])} & KEYWORDS.keys())
+        keywords = sum(INTRINSIC_KEYWORDS[word] for word in {keyword.casefold() for keyword in card.get('keywords', [])} & INTRINSIC_KEYWORDS.keys())
         effect = 'Unsupported'
         color = None
         template = creature_template(card)
@@ -1552,7 +1564,7 @@ def compile_catalogue(snapshot, target):
         raise ValueError('catalogue exceeds u16 identity space')
     # The fingerprint covers data and compiler logic; card IDs are local to it.
     target_bytes = json.dumps(target, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()
-    version = hashlib.sha256(canonical + target_bytes + Path(__file__).read_bytes()).hexdigest()
+    version = hashlib.sha256(canonical + target_bytes + creature_types_bytes + Path(__file__).read_bytes()).hexdigest()
     lines = ['// Generated by scripts/generate_catalogue.py. Do not edit.',
              f'pub const CATALOGUE_VERSION: &str = "{version}";',
              '#[rustfmt::skip]', f'pub(super) static DEFINITIONS: [Definition; {len(names)}] = [', *definitions, '];',
@@ -1566,6 +1578,7 @@ def compile_catalogue(snapshot, target):
     for index, (name, _, _, _) in enumerate(LEGACY):
         lines.append(f'    pub const {name.replace(" ", "")}: Card = Card({index});')
     lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn equipment(card: Card) -> Option<EquipmentSpec> {', '    match card.0 {', *equipment_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn aura(card: Card) -> Option<AuraSpec> {', '    match card.0 {', *aura_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub const CREATURE_TYPES: &[&str] = &[', *('    '+json.dumps(name)+',' for name in creature_types), '];', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn cost_alternatives(card: Card) -> &'static [Mana] {", '    match card.0 {', *hybrid_rows, '        _ => &[],', '    }', '}', '']
     return '\n'.join(lines), {'schema': 1, 'catalogue_version': version, 'standard_legal_cards': len(cards),
         'implemented_standard_cards': sum(row['implemented'] and row['standard_legal'] for row in coverage),
