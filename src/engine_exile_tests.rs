@@ -143,6 +143,15 @@ fn linked_tapped_and_mana_value_filters_revalidate_and_apply_to_tokens() {
     g.move_object(casket, Zone::Battlefield);
     g.prepare_triggers();
     let giant = named(&mut g, Player::P1, "Hill Giant", Zone::Battlefield);
+    let factory = Card::catalogue()
+        .find(|c| c.token_info().is_some_and(|t| t.subtypes == "Elf Warrior"))
+        .unwrap();
+    g.create_tokens(Player::P1, factory, 1, false);
+    let token = (g.state.objects.len() - 1) as CardId;
+    assert!(g.legal_actions().contains(&Action::ChooseTarget {
+        target: Target::Card(token)
+    }));
+    assert_eq!(g.state.objects[token as usize].card.fixed_mana_value(), 0);
     assert!(!g.legal_actions().contains(&Action::ChooseTarget {
         target: Target::Card(giant)
     }));
@@ -157,6 +166,11 @@ fn linked_tapped_and_mana_value_filters_revalidate_and_apply_to_tokens() {
     g.move_object(casket, Zone::Graveyard);
     assert_eq!(g.state.objects[bear as usize].zone, Zone::Battlefield);
     assert_eq!(g.state.objects[source as usize].zone, Zone::Battlefield);
+    let down = named(&mut g, Player::P0, "Epic Downfall", Zone::Hand);
+    g.state.players[0].mana = [0, 0, 2, 0, 0, 0];
+    let actions = g.legal_actions();
+    assert!(actions.iter().any(|a|matches!(a, Action::Cast { card, target: Some(Target::Card(id)), .. } if *card==down && *id==giant)));
+    assert!(!actions.iter().any(|a|matches!(a, Action::Cast { card, target: Some(Target::Card(id)), .. } if *card==down && (*id==token || *id==bear))));
 }
 
 #[test]
