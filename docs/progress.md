@@ -8,24 +8,23 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Requirement | Current evidence | Remaining work |
 | --- | --- | --- |
 | Full legal identity pool | 5,164 frozen oracle identities, Java reconciliation and native catalogue tests | Maintain reviewed data versions; implement missing Java-source cards directly |
-| All card semantics | Coverage manifest and runtime admission agree: 106 executable Standard identities | 5,058 identities; many reusable mechanics plus card-specific rules |
-| Gameplay enforcement | Implemented timing, payment, targets, stack, source-aware damage, strike steps, 11 keywords, typed programs, trigger ordering and regression tests | Wider events/multiple target groups, replacement/prevention, layers, counters, tokens, modes/costs, remaining keywords and mechanics |
+| All card semantics | Coverage manifest and runtime admission agree: 114 executable Standard identities | 5,050 identities; many reusable mechanics plus card-specific rules |
+| Gameplay enforcement | Implemented timing, payment, targets, stack, source-aware damage, strike steps, 11 keywords, typed programs, trigger ordering and regression tests | Wider events/multiple target groups, replacement/prevention, layers, entry counters, tokens, modes/costs, remaining keywords and mechanics |
 | In-process library | Rust rlib and C ABI/cdylib; Python ctypes tests including complete games | Batched/packed training interface and model hooks |
 | Branch/restore | Complete owned-state copies, local RNG, reusable snapshots, replay/invariant tests | Cover every new continuation/mechanic; search over information sets |
 | Fast simulation | Reproducible initial Freeform benchmark and compact state | Profile full Standard decks as mechanics expand, including inference/encoding |
 | Fair observations | Hidden-hand/library projection and privacy tests; catalogue fingerprint | New private choices/zones; belief sampling and neural encoders |
-| Reviewed delivery | PR #6 foundation; PR #8 catalogue/templates; PR #10 damage/combat; PR #12 object identity/removal; PR #13 programs/triggers; PR #15 targeting, with two subagent reviews each | Continue issue-managed, reviewed PRs through complete acceptance |
+| Reviewed delivery | PR #6 foundation; PR #8 catalogue/templates; PR #10 damage/combat; PR #12 object identity/removal; PR #13 programs/triggers; PR #15 targeting; PR #17 counters, with two subagent reviews each | Continue issue-managed, reviewed PRs through complete acceptance |
 
-The latest work adds shared typed target specifications for spells and triggers,
-incremental bounded announcements, target uniqueness and incarnation binding,
-partial/all-invalid target handling, targeted player effects, untapping, graveyard
-reanimation and the resulting entry triggers. Multi-target casting retains pending
-mana payment until targets commit. Exact whole-text templates add 26 Standard
-identities (106 total). All queues, target choices and pending payments are owned
-snapshot state; each new choice is validated through legal-action generation.
+The latest work adds typed +1/+1, -1/-1 and stun counters, counter-aware
+characteristics, cancellation and zone-change resets. Untap effects and the untap
+step share stun replacement; cleanup deaths give the required extra priority
+cycle. Eight exact complete-text admissions bring coverage to 114/5,164.
+Observation schema 7 exposes counters, and snapshots own all counter state.
 
-Next shared dependencies include counters, tokens, wider costs/modes and events,
-multiple distinct target groups, and replacement/prevention/layer machinery.
+Next shared dependencies include token creation/lifecycles, entry counters,
+wider costs/modes and events, multiple distinct target groups, and replacement/
+prevention/layer machinery.
 Remaining card-specific mechanics and native RL/search integration still need full
 implementations. These priorities do not reduce the all-Standard goal.
 

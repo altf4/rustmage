@@ -121,6 +121,21 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertIsNone(generate.spell_program_template(dict(row, type_line='Kindred Instant — Elf')))
         self.assertIsNone(generate.spell_program_template(dict(row, oracle_text=row['oracle_text'] + ' Draw a card if you control an Elf.')))
 
+    def test_counter_clauses_require_exact_subject_type_and_complete_text(self):
+        self.assertEqual(generate.targeted_program('Put four -1/-1 counters on target creature.'),
+                         ('Creature', ['PutCounters { subject: Subject::Targets, kind: CounterKind::MinusOne, amount: 4 }']))
+        self.assertEqual(generate.targeted_program('Tap up to one target creature and put a stun counter on it.')[0],
+                         ('Creature', 0, 1))
+        self.assertEqual(generate.statement_program('Put a +1/+1 counter on this creature.'),
+                         ['PutCounters { subject: Subject::Source, kind: CounterKind::PlusOne, amount: 1 }'])
+        for text in ['Put X +1/+1 counters on target creature.',
+                     'Put a +1/+1 counter on target creature. It gains flying.',
+                     'Tap up to two target creatures and put a stun counter on it.',
+                     'Put a shield counter on target creature.']:
+            self.assertIsNone(generate.targeted_program(text), text)
+        self.assertIsNone(generate.trigger_creature_template(self.card(
+            oracle_text='When this creature enters, put a +1/+1 counter on this creature.\nOther creatures get +1/+1.')))
+
 
 if __name__ == '__main__':
     unittest.main()

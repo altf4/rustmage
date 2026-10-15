@@ -1,5 +1,6 @@
 use crate::cards::{
-    Effect, Instruction, PlayerSet, TargetRule, TargetSpec, TargetZone, TriggerCondition, payments,
+    Counters, Effect, Instruction, PlayerSet, Subject, TargetRule, TargetSpec, TargetZone,
+    TriggerCondition, payments,
 };
 use crate::rng::Rng;
 use crate::{Card, Keywords, Mana};
@@ -46,6 +47,9 @@ use programs::Resolution;
 #[path = "engine_targeting.rs"]
 mod targeting;
 use targeting::Announcement;
+#[cfg(test)]
+#[path = "engine_counter_tests.rs"]
+mod counter_tests;
 #[cfg(test)]
 #[path = "engine_program_tests.rs"]
 mod program_tests;
@@ -207,18 +211,33 @@ struct Object {
     damage: i32,
     deathtouch_since_sba: bool,
     growth: i32,
+    counters: Counters,
 }
 
 impl Object {
+    fn counter_delta(&self) -> i32 {
+        i32::try_from(i64::from(self.counters.plus_one) - i64::from(self.counters.minus_one))
+            .expect("counter modifier exhausted")
+    }
+    fn untap(&mut self) {
+        if self.tapped {
+            if self.counters.stun > 0 {
+                self.counters.stun -= 1;
+            } else {
+                self.tapped = false;
+            }
+        }
+    }
+
     fn power(&self) -> i32 {
         match self.card.effect() {
-            Effect::Creature(p, _) => p + self.growth,
+            Effect::Creature(p, _) => p + self.growth + self.counter_delta(),
             _ => 0,
         }
     }
     fn toughness(&self) -> i32 {
         match self.card.effect() {
-            Effect::Creature(_, t) => t + self.growth,
+            Effect::Creature(_, t) => t + self.growth + self.counter_delta(),
             _ => 0,
         }
     }
@@ -362,6 +381,7 @@ pub struct ObjectView {
     pub tapped: bool,
     pub summoning_sick: bool,
     pub damage: i32,
+    pub counters: Counters,
     pub power: i32,
     pub toughness: i32,
     pub keywords: Keywords,
@@ -475,6 +495,7 @@ impl Game {
                     damage: 0,
                     deathtouch_since_sba: false,
                     growth: 0,
+                    counters: Counters::default(),
                 });
                 players[p.index()].library.push(id);
             }
@@ -1139,6 +1160,7 @@ impl Game {
             tapped: obj.tapped,
             summoning_sick: obj.summoning_sick,
             damage: obj.damage,
+            counters: obj.counters,
             power: obj.power(),
             toughness: obj.toughness(),
             keywords: obj.card.keywords(),
@@ -1206,6 +1228,7 @@ impl Game {
         obj.damage = 0;
         obj.deathtouch_since_sba = false;
         obj.growth = 0;
+        obj.counters = Counters::default();
         if destination == Zone::Library {
             self.state.players[obj.owner.index()].library.push(id);
         }
@@ -1231,7 +1254,7 @@ impl Game {
         self.state.first_strikers.clear();
         for obj in &mut self.state.objects {
             if obj.owner == self.state.active && obj.zone == Zone::Battlefield {
-                obj.tapped = false;
+                obj.untap();
                 obj.summoning_sick = false;
             }
         }
@@ -1312,7 +1335,7 @@ impl Game {
                 self.state.step = Step::End;
                 self.give_priority();
             }
-            Step::End => {
+            Step::End | Step::Cleanup => {
                 self.state.step = Step::Cleanup;
                 if self.hand_count(self.state.active) > 7 {
                     self.state.pending = Pending::Discard;
@@ -1320,7 +1343,6 @@ impl Game {
                     self.finish_cleanup();
                 }
             }
-            Step::Cleanup => self.finish_cleanup(),
             Step::Pregame => unreachable!(),
         }
     }
@@ -1332,8 +1354,17 @@ impl Game {
             obj.deathtouch_since_sba = false;
             obj.growth = 0;
         }
-        // Supported creatures all have positive printed toughness and there are no
-        // cleanup triggers; consequently no extra cleanup-priority cycle is needed.
+        // Losing temporary growth can expose lethal negative counters. Apply
+        // SBAs before advancing the turn; CR514.3 gives an extra priority cycle.
+        if self.state.objects.iter().any(|obj| {
+            obj.zone == Zone::Battlefield && obj.card.is_creature() && obj.toughness() <= 0
+        }) {
+            self.state_based_actions();
+            if self.state.outcome.is_none() {
+                self.give_priority();
+            }
+            return;
+        }
         self.state.active = self.state.active.other();
         self.state.turn += 1;
         self.begin_turn();
@@ -1537,6 +1568,13 @@ impl Game {
                 self.zone_triggers(event, &sources);
             }
         }
+        // Counter pairs cancel in the same SBA batch as deaths. Departing
+        // objects' last-known characteristics were captured before cancellation.
+        for obj in &mut self.state.objects {
+            let pairs = obj.counters.plus_one.min(obj.counters.minus_one);
+            obj.counters.plus_one -= pairs;
+            obj.counters.minus_one -= pairs;
+        }
         // Deathtouch applies only since the previous SBA check, not forever.
         for obj in &mut self.state.objects {
             obj.deathtouch_since_sba = false;
@@ -1570,7 +1608,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 6,
+            schema: 7,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,

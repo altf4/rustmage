@@ -73,11 +73,20 @@ def spell_template(card):
 DRAW_COUNTS = {'a card': 1, 'two cards': 2, 'three cards': 3, 'four cards': 4}
 
 
+COUNT_WORDS = {'a': 1, 'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5, 'six': 6}
+COUNTER_KINDS = {'+1/+1': 'PlusOne', '-1/-1': 'MinusOne', 'stun': 'Stun'}
+
+def counter_instruction(subject, count, kind):
+    return f'PutCounters {{ subject: Subject::{subject}, kind: CounterKind::{COUNTER_KINDS[kind]}, amount: {COUNT_WORDS[count]} }}'
+
+
 def statement_program(text):
     """Compile only these complete sentences; residual text never gets ignored."""
     if not isinstance(text, str) or not text or not text.endswith('.'):
         return None
     text = text[0].lower() + text[1:]
+    if m := re.fullmatch(r'put (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on this creature\.', text):
+        return [counter_instruction('Source', m[1], m[2])]
     draw = r'(a card|two cards|three cards|four cards)'
     if m := re.fullmatch(r'draw ' + draw + r'\.', text):
         return [f'Draw(PlayerSet::Controller, {DRAW_COUNTS[m[1]]})']
@@ -159,6 +168,17 @@ def targeted_program(text):
         if result:
             spec, program = result
             return spec, [f'May {{ skip: {len(program)} }}', *program]
+    if m := re.fullmatch(r'put (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on (target creature|target creature you control|another target creature you control|up to one target creature|up to one target creature you control)\.', text):
+        rules = {'target creature': 'Creature', 'target creature you control': 'CreatureYou',
+                 'another target creature you control': 'OtherCreatureYou',
+                 'up to one target creature': ('Creature', 0, 1),
+                 'up to one target creature you control': ('CreatureYou', 0, 1)}
+        return rules[m[3]], [counter_instruction('Targets', m[1], m[2])]
+    if m := re.fullmatch(r'tap (target creature|up to one target creature|up to two target creatures) and put (a|one|two|three) stun counters? on (it|each of them)\.', text):
+        plural = m[1] == 'up to two target creatures'
+        if plural != (m[3] == 'each of them'): return None
+        spec = ('Creature', 0, 2) if plural else ('Creature', 0, 1) if m[1].startswith('up to') else 'Creature'
+        return spec, ['Tap', counter_instruction('Targets', m[2], 'stun')]
     rules = {
         "return target creature to its owner's hand.": ('Creature', ['ReturnToHand']),
         "return target nonland permanent to its owner's hand.": ('Nonland', ['ReturnToHand']),
