@@ -19,7 +19,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         for changes in [dict(oracle_text='Flying\nWhen this creature enters, draw a card.'),
                         dict(type_line='Legendary Creature — Cat'), dict(power='*'),
                         dict(mana_cost='{X}{W}'), dict(mana_cost='{W/P}'), dict(layout='transform'),
-                        dict(oracle_text='Flying, first strike')]:
+                        dict(oracle_text='Flying, protection from red')]:
             self.assertIsNone(generate.creature_template(self.card(**changes)), changes)
 
     def test_keyword_template_requires_every_piece_of_text_to_be_implemented(self):
