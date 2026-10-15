@@ -78,6 +78,11 @@ pub(crate) enum Instruction {
     Destroy,
     Tap,
     Untap,
+    PutCounters {
+        subject: Subject,
+        kind: CounterKind,
+        amount: u32,
+    },
     Draw(PlayerSet, u16),
     Discard(PlayerSet, u16),
     GainLife(PlayerSet, u16),
@@ -86,6 +91,38 @@ pub(crate) enum Instruction {
     May {
         skip: usize,
     },
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum Subject {
+    Source,
+    Targets,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum CounterKind {
+    PlusOne,
+    MinusOne,
+    Stun,
+}
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
+pub struct Counters {
+    pub plus_one: u32,
+    pub minus_one: u32,
+    pub stun: u32,
+}
+impl Counters {
+    pub(crate) fn add(&mut self, kind: CounterKind, amount: u32) {
+        let counter = match kind {
+            CounterKind::PlusOne => &mut self.plus_one,
+            CounterKind::MinusOne => &mut self.minus_one,
+            CounterKind::Stun => &mut self.stun,
+        };
+        *counter = counter
+            .checked_add(amount)
+            .expect("counter representation exhausted");
+    }
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -227,6 +264,7 @@ impl Card {
     pub(crate) fn triggers(self) -> &'static [TriggeredAbility] {
         generated::DEFINITIONS[self.0 as usize].triggers
     }
+
     pub(crate) fn mana_color(self) -> Option<usize> {
         generated::DEFINITIONS[self.0 as usize].mana_color
     }

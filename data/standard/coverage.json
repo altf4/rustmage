@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "256fd96fd02751813add5865db6c93f9f3ec4bbfc52703a4a86a5bd10bcdc79a",
+  "catalogue_version": "ee83438d678ccbfee72e159d7487204dfd3a2734e54d1fa66a5ba12184ae83c5",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 106,
-  "implemented_total": 112,
+  "implemented_standard_cards": 114,
+  "implemented_total": 120,
   "cards": [
     {
       "name": "Plains",
@@ -2480,8 +2480,8 @@
     {
       "name": "Bile-Vial Boggart",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Billowing Shriekmass",
@@ -2696,8 +2696,8 @@
     {
       "name": "Blight Rot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Blighted Blackthorn",
@@ -13424,8 +13424,8 @@
     {
       "name": "Ironpaw Aspirant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Irreverent Gremlin",
@@ -13610,8 +13610,8 @@
     {
       "name": "Jeong Jeong's Deserters",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Jeong Jeong, the Deserter",
@@ -15632,8 +15632,8 @@
     {
       "name": "Machinesmith Automaton",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Machinist's Arsenal",
@@ -22244,8 +22244,8 @@
     {
       "name": "Sazh's Chocobo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Scalding Viper // Steam Clean",
@@ -24818,8 +24818,8 @@
     {
       "name": "Sterling Supplier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Stickytongue Sentinel",
@@ -28928,8 +28928,8 @@
     {
       "name": "Utrom Scientists",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Vaan, Street Thief",

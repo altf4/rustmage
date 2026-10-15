@@ -1,5 +1,5 @@
 //! Smoke policies for tests and benchmarks; not a training implementation.
-use crate::cards::{Effect, Instruction, PlayerSet};
+use crate::cards::{CounterKind, Effect, Instruction, PlayerSet};
 use crate::{Action, Game, StackKind, Step, Target, Zone};
 
 /// Deterministic simple policy: keep, play lands, cast, attack, block, tap, pass.
@@ -13,6 +13,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
         let beneficial = program
             .iter()
             .find_map(|instruction| match instruction {
+                Instruction::PutCounters { kind, .. } => Some(*kind == CounterKind::PlusOne),
                 Instruction::Grow(amount) => Some(*amount >= 0),
                 Instruction::Untap | Instruction::ReturnToBattlefield => Some(true),
                 Instruction::Draw(PlayerSet::Targeted, _)

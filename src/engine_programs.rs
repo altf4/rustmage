@@ -324,13 +324,41 @@ impl Game {
                         }
                     }
                 }
+                Instruction::PutCounters {
+                    subject,
+                    kind,
+                    amount,
+                } => match subject {
+                    Subject::Source => {
+                        if self.on_battlefield(item.card)
+                            && self.object_ref(item.card) == item.object
+                        {
+                            self.state.objects[item.card as usize]
+                                .counters
+                                .add(kind, amount);
+                        }
+                    }
+                    Subject::Targets => {
+                        for bound in &item.targets {
+                            if self.same_target_object(*bound)
+                                && let Target::Card(id) = bound.target
+                            {
+                                self.state.objects[id as usize].counters.add(kind, amount);
+                            }
+                        }
+                    }
+                },
                 Instruction::Tap | Instruction::Untap => {
                     for bound in &item.targets {
                         if self.same_target_object(*bound)
                             && let Target::Card(id) = bound.target
                         {
-                            self.state.objects[id as usize].tapped =
-                                instruction == Instruction::Tap;
+                            let object = &mut self.state.objects[id as usize];
+                            if instruction == Instruction::Tap {
+                                object.tapped = true;
+                            } else {
+                                object.untap();
+                            }
                         }
                     }
                 }
