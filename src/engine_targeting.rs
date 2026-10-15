@@ -1,0 +1,232 @@
+//! Shared target predicates, binding, and owned incremental announcements.
+use super::*;
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct Announcement {
+    pub item: SpellView,
+    pub spec: TargetSpec,
+    pub trigger: bool,
+    pub payment: Option<Mana>,
+}
+
+impl Game {
+    pub(super) fn target_spec(&self, item: &SpellView) -> TargetSpec {
+        match item.kind {
+            StackKind::TriggeredAbility { ability } => {
+                item.source_card.triggers()[ability as usize].targets
+            }
+            StackKind::Spell => match item.source_card.effect() {
+                Effect::Spell(spec, _) => spec,
+                _ => TargetSpec::NONE,
+            },
+        }
+    }
+
+    pub(super) fn bind_target(&self, target: Target) -> BoundTarget {
+        BoundTarget {
+            target,
+            object: match target {
+                Target::Player(_) => None,
+                Target::Card(id) | Target::Spell(id) => Some(self.object_ref(id)),
+            },
+        }
+    }
+
+    pub(super) fn target_matches(
+        &self,
+        rule: TargetRule,
+        controller: Player,
+        source: ObjectRef,
+        target: Target,
+    ) -> bool {
+        match target {
+            Target::Player(player) => match rule {
+                TargetRule::Any => true,
+                TargetRule::Player { opponent_only } => !opponent_only || player != controller,
+                _ => false,
+            },
+            Target::Spell(id) => {
+                rule == TargetRule::Spell
+                    && self.state.stack.iter().any(|item| {
+                        item.kind == StackKind::Spell && item.card == id && item.object != source
+                    })
+            }
+            Target::Card(id) => {
+                let Some(obj) = self.state.objects.get(id as usize) else {
+                    return false;
+                };
+                match rule {
+                    TargetRule::Creature | TargetRule::Any => {
+                        obj.zone == Zone::Battlefield && obj.card.is_creature()
+                    }
+                    TargetRule::Object {
+                        zone,
+                        kinds,
+                        relation,
+                        other,
+                        nonland,
+                    } => {
+                        let expected = match zone {
+                            TargetZone::Battlefield => Zone::Battlefield,
+                            TargetZone::Graveyard => Zone::Graveyard,
+                        };
+                        obj.zone == expected
+                            && (kinds == 0 || obj.card.kind_mask() & kinds != 0)
+                            && (relation == -1 || (obj.owner == controller) == (relation == 0))
+                            && (!other || self.object_ref(id) != source)
+                            && (!nonland || !obj.card.is_land())
+                    }
+                    _ => false,
+                }
+            }
+        }
+    }
+
+    pub(super) fn same_target_object(&self, target: BoundTarget) -> bool {
+        match target.target {
+            Target::Player(_) => target.object.is_none(),
+            Target::Card(id) | Target::Spell(id) => self
+                .state
+                .objects
+                .get(id as usize)
+                .is_some_and(|_| target.object == Some(self.object_ref(id))),
+        }
+    }
+
+    pub(super) fn visit_targets(
+        &self,
+        rule: TargetRule,
+        controller: Player,
+        source: ObjectRef,
+        mut emit: impl FnMut(Target) -> bool,
+    ) -> bool {
+        if rule == TargetRule::None {
+            return false;
+        }
+        for player in [Player::P0, Player::P1] {
+            let target = Target::Player(player);
+            if self.target_matches(rule, controller, source, target) && emit(target) {
+                return true;
+            }
+        }
+        for id in 0..self.state.objects.len() {
+            let target = Target::Card(id as CardId);
+            if self.target_matches(rule, controller, source, target) && emit(target) {
+                return true;
+            }
+        }
+        for item in &self.state.stack {
+            if item.kind == StackKind::Spell {
+                let target = Target::Spell(item.card);
+                if self.target_matches(rule, controller, source, target) && emit(target) {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
+    pub(super) fn cast_item(&mut self, actor: Player, card: CardId, payment: Mana) -> SpellView {
+        for (pool, cost) in self.state.players[actor.index()]
+            .mana
+            .iter_mut()
+            .zip(payment)
+        {
+            *pool -= cost;
+        }
+        self.state.passes = 0;
+        let object = self.move_object(card, Zone::Stack).after;
+        let id = self.next_stack_id();
+        SpellView {
+            id,
+            kind: StackKind::Spell,
+            source_card: self.state.objects[card as usize].card,
+            source_keywords: self.state.objects[card as usize].card.keywords(),
+            card,
+            object,
+            controller: actor,
+            targets: Vec::new(),
+        }
+    }
+
+    /// Returns true only when a decision suspends the enclosing ordering/cast work.
+    pub(super) fn start_announcement(&mut self, item: SpellView, trigger: bool) -> bool {
+        let spec = self.target_spec(&item);
+        if spec.max == 0 {
+            self.state.stack.push(item);
+            return false;
+        }
+        let mut count = 0;
+        self.visit_targets(spec.rule, item.controller, item.object, |_| {
+            count += 1;
+            false
+        });
+        if count < usize::from(spec.min) {
+            assert!(trigger, "validated spell announcement");
+            return false;
+        } // Impossible trigger announcement: remove it.
+        if spec.max == 0 || count == 0 {
+            self.state.stack.push(item);
+            return false;
+        }
+        let player = item.controller;
+        assert!(self.state.announcing.is_none());
+        self.state.announcing = Some(Announcement {
+            item,
+            spec,
+            trigger,
+            payment: None,
+        });
+        self.state.pending = Pending::Targets { player };
+        true
+    }
+
+    pub(super) fn finish_announcement(&mut self) {
+        let mut announcement = self.state.announcing.take().unwrap();
+        announcement.item.targets.sort_by_key(|bound| bound.target);
+        if let Some(payment) = announcement.payment {
+            for (pool, cost) in self.state.players[announcement.item.controller.index()]
+                .mana
+                .iter_mut()
+                .zip(payment)
+            {
+                *pool -= cost;
+            }
+        }
+        self.state.priority = if announcement.trigger {
+            self.state.priority
+        } else {
+            announcement.item.controller
+        };
+        self.state.stack.push(announcement.item);
+        if announcement.trigger {
+            self.continue_trigger_order();
+        } else {
+            self.state.pending = Pending::Priority;
+            self.state.passes = 0;
+        }
+    }
+
+    pub(super) fn move_target_batch(&mut self, targets: &[BoundTarget], destination: Zone) {
+        let sources = if destination == Zone::Graveyard {
+            self.death_trigger_sources()
+        } else {
+            Vec::new()
+        };
+        let events: Vec<_> = targets
+            .iter()
+            .copied()
+            .filter(|&bound| self.same_target_object(bound))
+            .filter_map(|bound| match bound.target {
+                Target::Card(id) | Target::Spell(id) => Some(id),
+                _ => None,
+            })
+            .collect::<Vec<_>>()
+            .into_iter()
+            .map(|id| self.move_object_raw(id, destination))
+            .collect();
+        for event in &events {
+            self.zone_triggers(event, &sources);
+        }
+    }
+}

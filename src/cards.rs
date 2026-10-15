@@ -8,7 +8,7 @@ pub struct Card(u16);
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Effect {
     Creature(i32, i32),
-    Spell(TargetRule, &'static [Instruction]),
+    Spell(TargetSpec, &'static [Instruction]),
     Land,
     Unsupported,
 }
@@ -19,6 +19,44 @@ pub(crate) enum TargetRule {
     Creature,
     Any,
     Spell,
+    Player {
+        opponent_only: bool,
+    },
+    Object {
+        zone: TargetZone,
+        kinds: u8,
+        relation: i8,
+        other: bool,
+        nonland: bool,
+    },
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum TargetZone {
+    Battlefield,
+    Graveyard,
+}
+
+/// One homogeneous occurrence of "target"; distinct choices, incremental bounds.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct TargetSpec {
+    pub rule: TargetRule,
+    pub min: u16,
+    pub max: u16,
+}
+impl TargetSpec {
+    pub const fn one(rule: TargetRule) -> Self {
+        Self {
+            rule,
+            min: 1,
+            max: 1,
+        }
+    }
+    pub const NONE: Self = Self {
+        rule: TargetRule::None,
+        min: 0,
+        max: 0,
+    };
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -26,6 +64,7 @@ pub(crate) enum PlayerSet {
     Controller,
     Opponent,
     Each,
+    Targeted,
 }
 
 /// Immutable rule bytecode. Only the program counter and choices live in state.
@@ -35,7 +74,10 @@ pub(crate) enum Instruction {
     Grow(i32),
     Counter,
     ReturnToHand,
+    ReturnToBattlefield,
     Destroy,
+    Tap,
+    Untap,
     Draw(PlayerSet, u16),
     Discard(PlayerSet, u16),
     GainLife(PlayerSet, u16),
@@ -61,6 +103,7 @@ pub(crate) enum TriggerCondition {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct TriggeredAbility {
     pub condition: TriggerCondition,
+    pub targets: TargetSpec,
     pub program: &'static [Instruction],
 }
 
@@ -168,6 +211,9 @@ impl Card {
     }
     pub fn is_artifact(self) -> bool {
         generated::DEFINITIONS[self.0 as usize].kind & 16 != 0
+    }
+    pub(crate) fn kind_mask(self) -> u8 {
+        generated::DEFINITIONS[self.0 as usize].kind
     }
     pub fn is_basic_land(self) -> bool {
         generated::DEFINITIONS[self.0 as usize].basic

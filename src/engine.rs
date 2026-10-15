@@ -1,4 +1,6 @@
-use crate::cards::{Effect, Instruction, PlayerSet, TargetRule, TriggerCondition, payments};
+use crate::cards::{
+    Effect, Instruction, PlayerSet, TargetRule, TargetSpec, TargetZone, TriggerCondition, payments,
+};
 use crate::rng::Rng;
 use crate::{Card, Keywords, Mana};
 use serde::{Deserialize, Serialize};
@@ -41,9 +43,15 @@ mod identity_tests;
 #[path = "engine_programs.rs"]
 mod programs;
 use programs::Resolution;
+#[path = "engine_targeting.rs"]
+mod targeting;
+use targeting::Announcement;
 #[cfg(test)]
 #[path = "engine_program_tests.rs"]
 mod program_tests;
+#[cfg(test)]
+#[path = "engine_target_tests.rs"]
+mod target_tests;
 #[cfg(test)]
 #[path = "engine_tests.rs"]
 mod tests;
@@ -74,11 +82,17 @@ pub enum Step {
     Cleanup,
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Target {
     Player(Player),
     Card(CardId),
     Spell(CardId),
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct BoundTarget {
+    pub target: Target,
+    pub object: Option<ObjectRef>,
 }
 
 /// Choices are incremental for declarations and multi-blocker damage; no combinatorial
@@ -103,6 +117,14 @@ pub enum Action {
         target: Option<Target>,
         payment: Mana,
     },
+    BeginCast {
+        card: CardId,
+        payment: Mana,
+    },
+    ChooseTarget {
+        target: Target,
+    },
+    FinishTargets,
     Attack {
         card: CardId,
     },
@@ -220,9 +242,8 @@ pub struct SpellView {
     pub source_keywords: Keywords,
     pub card: CardId,
     pub object: ObjectRef,
-    pub target_object: Option<ObjectRef>,
+    pub targets: Vec<BoundTarget>,
     pub controller: Player,
-    pub target: Option<Target>,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -275,6 +296,7 @@ enum Pending {
     Mulligan(Player),
     Bottom { player: Player, remaining: u8 },
     Priority,
+    Targets { player: Player },
     OrderTriggers { player: Player },
     EffectOptional { player: Player, skip_to: usize },
     EffectDiscard { player: Player, remaining: u16 },
@@ -301,6 +323,7 @@ struct State {
     mulligan_round: [bool; 2],
     stack: Vec<SpellView>,
     resolving: Option<Resolution>,
+    announcing: Option<Announcement>,
     pending_triggers: Vec<SpellView>,
     ordering_triggers: Vec<SpellView>,
     next_stack_id: u64,
@@ -376,6 +399,7 @@ pub struct Observation {
     pub objects: Vec<ObjectView>,
     pub stack: Vec<SpellView>,
     pub resolving: Option<SpellView>,
+    pub announcing: Option<SpellView>,
     pub waiting_triggers: Vec<SpellView>,
     pub effect_discards: Vec<CardId>,
     pub attackers: Vec<CardId>,
@@ -470,6 +494,7 @@ impl Game {
                 pending: Pending::Mulligan(config.starting_player),
                 stack: Vec::new(),
                 resolving: None,
+                announcing: None,
                 pending_triggers: Vec::new(),
                 ordering_triggers: Vec::new(),
                 next_stack_id: 0,
@@ -514,7 +539,8 @@ impl Game {
         match self.state.pending {
             Pending::Mulligan(p) | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
-            Pending::OrderTriggers { player }
+            Pending::Targets { player }
+            | Pending::OrderTriggers { player }
             | Pending::EffectOptional { player, .. }
             | Pending::EffectDiscard { player, .. } => Some(player),
             Pending::Attackers | Pending::Damage | Pending::Discard => Some(self.state.active),
@@ -560,7 +586,7 @@ impl Game {
             self.apply_legal(actor, action);
             // Resolution is atomic with respect to SBAs and priority, even when
             // a program is suspended for an optional effect or discard choice.
-            if self.state.resolving.is_none() {
+            if self.state.resolving.is_none() && self.state.announcing.is_none() {
                 self.state_based_actions();
                 self.prepare_triggers();
             }
@@ -670,70 +696,37 @@ impl Game {
                         if done {
                             return;
                         }
-                        let rule = match obj.card.effect() {
-                            Effect::Spell(rule, _) => rule,
-                            _ => TargetRule::None,
+                        let spec = match obj.card.effect() {
+                            Effect::Spell(spec, _) => spec,
+                            _ => TargetSpec::NONE,
                         };
-                        match rule {
-                            TargetRule::Any => {
-                                for p in [Player::P0, Player::P1] {
-                                    if emit(Action::Cast {
-                                        card,
-                                        target: Some(Target::Player(p)),
-                                        payment,
-                                    }) {
-                                        done = true;
-                                        return;
-                                    }
-                                }
-                                for (j, target) in s.objects.iter().enumerate() {
-                                    if target.zone == Zone::Battlefield
-                                        && target.card.is_creature()
-                                        && emit(Action::Cast {
-                                            card,
-                                            target: Some(Target::Card(j as CardId)),
-                                            payment,
-                                        })
-                                    {
-                                        done = true;
-                                        return;
-                                    }
-                                }
+                        let source = self.object_ref(card);
+                        if spec.max > 1 {
+                            let mut count = 0;
+                            self.visit_targets(spec.rule, actor, source, |_| {
+                                count += 1;
+                                false
+                            });
+                            if count >= usize::from(spec.min) {
+                                done = emit(Action::BeginCast { card, payment });
                             }
-                            TargetRule::Creature => {
-                                for (j, target) in s.objects.iter().enumerate() {
-                                    if target.zone == Zone::Battlefield
-                                        && target.card.is_creature()
-                                        && emit(Action::Cast {
-                                            card,
-                                            target: Some(Target::Card(j as CardId)),
-                                            payment,
-                                        })
-                                    {
-                                        done = true;
-                                        return;
-                                    }
-                                }
-                            }
-                            TargetRule::Spell => {
-                                for target in
-                                    s.stack.iter().filter(|item| item.kind == StackKind::Spell)
-                                {
-                                    if emit(Action::Cast {
-                                        card,
-                                        target: Some(Target::Spell(target.card)),
-                                        payment,
-                                    }) {
-                                        done = true;
-                                        return;
-                                    }
-                                }
-                            }
-                            TargetRule::None => {
-                                done = emit(Action::Cast {
+                        } else {
+                            if spec.min == 0
+                                && emit(Action::Cast {
                                     card,
                                     target: None,
                                     payment,
+                                })
+                            {
+                                done = true;
+                            }
+                            if !done && spec.max > 0 {
+                                done = self.visit_targets(spec.rule, actor, source, |target| {
+                                    emit(Action::Cast {
+                                        card,
+                                        target: Some(target),
+                                        payment,
+                                    })
                                 });
                             }
                         }
@@ -811,6 +804,29 @@ impl Game {
                     if emit(Action::AssignDamage { target, amount }) {
                         return true;
                     }
+                }
+            }
+            Pending::Targets { .. } => {
+                let announcement = s.announcing.as_ref().unwrap();
+                if announcement.item.targets.len() >= usize::from(announcement.spec.min)
+                    && emit(Action::FinishTargets)
+                {
+                    return true;
+                }
+                if announcement.item.targets.len() < usize::from(announcement.spec.max) {
+                    return self.visit_targets(
+                        announcement.spec.rule,
+                        actor,
+                        announcement.item.object,
+                        |target| {
+                            !announcement
+                                .item
+                                .targets
+                                .iter()
+                                .any(|bound| bound.target == target)
+                                && emit(Action::ChooseTarget { target })
+                        },
+                    );
                 }
             }
             Pending::OrderTriggers { player } => {
@@ -895,33 +911,36 @@ impl Game {
                 target,
                 payment,
             } => {
-                for (pool, cost) in self.state.players[actor.index()]
-                    .mana
-                    .iter_mut()
-                    .zip(payment)
-                {
-                    *pool -= cost;
+                let mut item = self.cast_item(actor, card, payment);
+                if let Some(target) = target {
+                    item.targets.push(self.bind_target(target));
                 }
-                let target_object = target.and_then(|target| match target {
-                    Target::Card(id) | Target::Spell(id) => Some(self.object_ref(id)),
-                    Target::Player(_) => None,
-                });
-                let object = self.move_object(card, Zone::Stack).after;
-                let id = self.next_stack_id();
-                self.state.stack.push(SpellView {
-                    id,
-                    kind: StackKind::Spell,
-                    source_card: self.state.objects[card as usize].card,
-                    source_keywords: self.state.objects[card as usize].card.keywords(),
-                    card,
-                    object,
-                    target_object,
-                    controller: actor,
-                    target,
-                });
+                self.state.stack.push(item);
                 self.state.passes = 0;
-                // Casting player retains priority (117.3c).
             }
+            Action::BeginCast { card, payment } => {
+                let item = self.cast_item(actor, card, [0; 5]);
+                if self.start_announcement(item, false) {
+                    self.state.announcing.as_mut().unwrap().payment = Some(payment);
+                } else {
+                    for (pool, cost) in self.state.players[actor.index()]
+                        .mana
+                        .iter_mut()
+                        .zip(payment)
+                    {
+                        *pool -= cost;
+                    }
+                }
+            }
+            Action::ChooseTarget { target } => {
+                let bound = self.bind_target(target);
+                let announcement = self.state.announcing.as_mut().unwrap();
+                announcement.item.targets.push(bound);
+                if announcement.item.targets.len() == usize::from(announcement.spec.max) {
+                    self.finish_announcement();
+                }
+            }
+            Action::FinishTargets => self.finish_announcement(),
             Action::Attack { card } => self.state.selected_attackers.push(card),
             Action::FinishAttackers => {
                 self.state.attack_declared = !self.state.selected_attackers.is_empty();
@@ -995,8 +1014,9 @@ impl Game {
                     .position(|item| item.id == id)
                     .unwrap();
                 let item = self.state.ordering_triggers.remove(index);
-                self.state.stack.push(item);
-                self.continue_trigger_order();
+                if !self.start_announcement(item, true) {
+                    self.continue_trigger_order();
+                }
             }
             Action::ChooseOptional { accept } => {
                 let Pending::EffectOptional { skip_to, .. } = self.state.pending else {
@@ -1550,7 +1570,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 5,
+            schema: 6,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -1562,6 +1582,7 @@ impl Game {
                 Pending::Mulligan(_) => "mulligan",
                 Pending::Bottom { .. } => "bottom",
                 Pending::Priority => "priority",
+                Pending::Targets { .. } => "targets",
                 Pending::OrderTriggers { .. } => "order_triggers",
                 Pending::EffectOptional { .. } => "optional_effect",
                 Pending::EffectDiscard { .. } => "effect_discard",
@@ -1583,6 +1604,13 @@ impl Game {
                 .resolving
                 .as_ref()
                 .map(|resolution| resolution.item.clone()),
+            announcing: s.announcing.as_ref().map(|announcement| {
+                let mut item = announcement.item.clone();
+                if !owns_choice {
+                    item.targets.clear();
+                }
+                item
+            }),
             waiting_triggers: s.ordering_triggers.clone(),
             effect_discards: s
                 .resolving
@@ -1646,6 +1674,14 @@ impl Game {
                         * std::mem::size_of::<CardId>()
                 })
                 .unwrap_or(0)
+            + s.stack
+                .iter()
+                .chain(&s.pending_triggers)
+                .chain(&s.ordering_triggers)
+                .chain(s.resolving.iter().map(|resolution| &resolution.item))
+                .chain(s.announcing.iter().map(|announcement| &announcement.item))
+                .map(|item| item.targets.len() * std::mem::size_of::<BoundTarget>())
+                .sum::<usize>()
             + s.attackers.len() * std::mem::size_of::<Attacker>()
             + s.blocking.len() * std::mem::size_of::<CardId>()
             + s.blocks.len() * std::mem::size_of::<(CardId, CardId)>()

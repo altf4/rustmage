@@ -47,9 +47,9 @@ The compiler requires complete supported text, normal layout, fixed implemented
 mana symbols, numeric stats and a nonlegendary supported creature body. All keyword
 lines and every trigger/effect clause must compile. Extra activated abilities,
 conditional triggers, unimplemented keywords/costs, or residual text reject the
-whole template. The current catalogue supports 80/5,164 Standard identities: 31
-creature trigger programs, 35 vanilla/keyword-only creature templates, six spell
-templates and eight explicit Standard definitions. Six additional regression cards
+whole template. The current catalogue supports 106/5,164 Standard identities.
+[Target announcements](targeting.md) extend these programs with typed predicates,
+multiple targets in one group, player effects, untapping and reanimation. Six additional regression cards
 are outside Standard. Unsupported cards remain rejected at game creation.
 
 Observation schema **5** adds stack kind/unique ID/source definition/context,
@@ -58,9 +58,11 @@ Observation schema **5** adds stack kind/unique ID/source definition/context,
 both use `Discard { card }`. Wrong actors, stale revisions and unoffered choices
 are rejected before mutation. Clones and snapshots include queues, ordering work,
 resolving instructions, pending selections and future stack IDs. C signatures and
-protocol response schema are unchanged. Neural encoders must handle these choices.
+protocol response schema are unchanged. Neural encoders must handle these choices. Schema 6 replaces the old singular
+stack target fields with bound target vectors and adds pending announcements; see
+[targeting](targeting.md).
 
-Still gated: targeted triggers and announcement modes, mana/other optional costs,
+Still gated: multiple distinct target groups and announcement modes, mana/other optional costs,
 intervening conditions, trigger-on-trigger abilities, other death watchers, batch
 entry effects, event replacement/prevention, draw/life/discard observers, control
 layers, tokens/counters, and the remaining mechanics. The implemented dispatch is

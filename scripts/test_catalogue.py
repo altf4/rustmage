@@ -68,7 +68,7 @@ class CatalogueCompilerTests(unittest.TestCase):
     def test_trigger_creatures_require_complete_supported_abilities(self):
         card = self.card(oracle_text='Flying\nWhen this creature enters, draw a card.')
         self.assertEqual(generate.trigger_creature_template(card),
-                         ('Creature(2, 1)', 1, [('SelfEnters', ['Draw(PlayerSet::Controller, 1)'])]))
+                         ('Creature(2, 1)', 1, [('SelfEnters', ['Draw(PlayerSet::Controller, 1)'], 'None')]))
         card['oracle_text'] += '\nWhen this creature dies, you gain 2 life.'
         self.assertEqual(len(generate.trigger_creature_template(card)[2]), 2)
         for change in [dict(oracle_text=None), dict(oracle_text=card['oracle_text'] + '\n{T}: Draw a card.'),
@@ -89,6 +89,37 @@ class CatalogueCompilerTests(unittest.TestCase):
                                   ('Whenever another artifact you control enters, ', 'OtherArtifactEntersYou')]:
             row = self.card(oracle_text=prefix + 'you gain 1 life.')
             self.assertEqual(generate.trigger_creature_template(row)[2][0][0], condition)
+
+    def test_targeted_program_specs_and_optional_effects_are_distinct(self):
+        self.assertEqual(generate.targeted_program('you may destroy target artifact or enchantment.'),
+                         ('ArtifactEnchantment', ['May { skip: 1 }', 'Destroy']))
+        self.assertEqual(generate.targeted_program('tap up to two target creatures an opponent controls.'),
+                         (('CreatureOpponent', 0, 2), ['Tap']))
+        self.assertEqual(generate.targeted_program('Untap one or two target creatures. They each get +2/+2 until end of turn.'),
+                         (('Creature', 1, 2), ['Untap', 'Grow(2)']))
+        self.assertEqual(generate.targeted_program('Target creature gets -2/-2 until end of turn. You gain 2 life.'),
+                         ('Creature', ['Grow(-2)', 'GainLife(PlayerSet::Controller, 2)']))
+        for text in ['Target creature gets +1/+3 until end of turn.', 'Tap target creature. Scry 1.',
+                     'Return target creature card from your graveyard to the battlefield with a counter.',
+                     'Target player draws a card. Target opponent loses 1 life.',
+                     'Tap target creature. It does not untap next turn.']:
+            self.assertIsNone(generate.targeted_program(text), text)
+
+    def test_targeted_graveyard_and_player_effects_keep_their_filters(self):
+        self.assertEqual(generate.targeted_program('Return target creature card from your graveyard to the battlefield.'),
+                         ('CreatureGraveYou', ['ReturnToBattlefield']))
+        self.assertEqual(generate.targeted_program('target player draws a card and loses 1 life.'),
+                         ('Player', ['Draw(PlayerSet::Targeted, 1)', 'LoseLife(PlayerSet::Targeted, 1)']))
+        self.assertEqual(generate.targeted_program('target opponent discards a card.'),
+                         ('Opponent', ['Discard(PlayerSet::Targeted, 1)']))
+        self.assertIn('min: 0, max: 2', generate.rust_targets(('CreatureOpponent', 0, 2)))
+
+    def test_spell_subtypes_do_not_enable_extra_card_types_or_partial_text(self):
+        row = self.card(name='Test', type_line='Instant — Lesson',
+                        oracle_text='Untap one or two target creatures. They each get +2/+2 until end of turn.')
+        self.assertIsNotNone(generate.spell_program_template(row))
+        self.assertIsNone(generate.spell_program_template(dict(row, type_line='Kindred Instant — Elf')))
+        self.assertIsNone(generate.spell_program_template(dict(row, oracle_text=row['oracle_text'] + ' Draw a card if you control an Elf.')))
 
 
 if __name__ == '__main__':
