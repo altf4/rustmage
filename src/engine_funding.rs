@@ -464,10 +464,40 @@ impl Game {
         }
         FundingState::from_game(self, goal).reachable(goal, &mut HashSet::new())
     }
+    pub(super) fn announcement_payment_request(
+        &self,
+        viewer: Player,
+    ) -> Option<PaymentRequestView> {
+        if self.actor() != Some(viewer) {
+            return None;
+        }
+        let a = self.state.announcing.as_ref()?;
+        // A hybrid equivalent may still be pending during mode selection too.
+        // Project a fixed payment only after that cost has been committed.
+        if !a.pay_window || a.needs_spell_cost() {
+            return None;
+        }
+        let goal = self.funding_goal(a);
+        Some(PaymentRequestView {
+            required: goal.required,
+            generic: goal.generic,
+            counters: a.counter_payment,
+            production: a.production,
+        })
+    }
     pub(super) fn funding_goal(&self, announcement: &Announcement) -> FundingGoal {
         match announcement.item.kind {
             StackKind::Spell => {
-                let (required, generic) = announcement.item.source_card.cost();
+                let cost = announcement.cost.unwrap_or_else(|| {
+                    assert!(
+                        !announcement.item.source_card.has_hybrid_cost(),
+                        "hybrid cost not chosen"
+                    );
+                    let (colored, generic) = announcement.item.source_card.cost();
+                    ManaCost { colored, generic }
+                });
+                let required = cost.colored;
+                let generic = cost.generic;
                 FundingGoal {
                     actor: announcement.item.controller,
                     required,

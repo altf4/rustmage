@@ -159,6 +159,9 @@ pub struct BoundTarget {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
 pub enum Action {
+    ChooseSpellCost {
+        cost: u16,
+    },
     ChooseConniver {
         object: ObjectRef,
     },
@@ -510,6 +513,9 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    SpellCost {
+        player: Player,
+    },
     ConniveOrder {
         player: Player,
     },
@@ -691,6 +697,13 @@ pub struct PendingPaymentView {
     pub counters: Counters,
 }
 
+/// Legal nonhybrid equivalents of a currently announced hybrid spell cost.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct SpellCostChoiceView {
+    pub index: u16,
+    pub cost: ManaCost,
+}
+
 /// Legal modes of the currently announced modal spell.
 #[derive(Clone, Debug, Serialize)]
 pub struct ModeChoiceView {
@@ -786,6 +799,8 @@ pub struct Observation {
     pub announcing_payment: Option<PendingPaymentView>,
     pub mana_choices: Vec<Mana>,
     pub mode_choices: Vec<ModeChoiceView>,
+    pub cost_choices: Vec<SpellCostChoiceView>,
+    pub announcing_cost: Option<ManaCost>,
     pub targeting_group: Option<u16>,
     pub library_choice: Option<LibraryChoiceView>,
     pub recovery_choice: Option<RecoveryChoiceView>,
@@ -964,7 +979,8 @@ impl Game {
         match self.state.pending {
             Pending::Mulligan(p) | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
-            Pending::ConniveOrder { player }
+            Pending::SpellCost { player }
+            | Pending::ConniveOrder { player }
             | Pending::ResolutionMana { player }
             | Pending::AuraEntry { player }
             | Pending::EffectChoice { player }
@@ -1201,7 +1217,6 @@ impl Game {
                     {
                         continue;
                     }
-                    let (colored, generic) = obj.card.cost();
                     let completable = match obj.card.effect() {
                         Effect::Modal(modes) => modes.iter().any(|mode| {
                             self.targets_available(mode.targets, actor, self.object_ref(card))
@@ -1212,29 +1227,33 @@ impl Game {
                         _ => true,
                     };
                     if completable {
-                        let cached = spell_funding_cache
-                            .iter()
-                            .flatten()
-                            .find(|(required, amount, _)| {
-                                *required == colored && *amount == generic
-                            })
-                            .map(|(_, _, result)| *result);
-                        let can_fund = if let Some(result) = cached {
-                            result
-                        } else {
-                            let result = self.can_fund(FundingGoal {
-                                actor,
-                                required: colored,
-                                generic,
-                                source: None,
-                            });
-                            if let Some(slot) =
-                                spell_funding_cache.iter_mut().find(|slot| slot.is_none())
-                            {
-                                *slot = Some((colored, generic, result));
+                        let can_fund = obj.card.cost_options().any(|cost| {
+                            let colored = cost.colored;
+                            let generic = cost.generic;
+                            let cached = spell_funding_cache
+                                .iter()
+                                .flatten()
+                                .find(|(required, amount, _)| {
+                                    *required == colored && *amount == generic
+                                })
+                                .map(|(_, _, result)| *result);
+                            if let Some(result) = cached {
+                                result
+                            } else {
+                                let result = self.can_fund(FundingGoal {
+                                    actor,
+                                    required: colored,
+                                    generic,
+                                    source: None,
+                                });
+                                if let Some(slot) =
+                                    spell_funding_cache.iter_mut().find(|slot| slot.is_none())
+                                {
+                                    *slot = Some((colored, generic, result));
+                                }
+                                result
                             }
-                            result
-                        };
+                        });
                         if can_fund && emit(Action::AnnounceCast { card }) {
                             return true;
                         }
@@ -1244,51 +1263,52 @@ impl Game {
                         continue;
                     }
                     let mut done = false;
-                    payments(s.players[actor.index()].mana, colored, generic, |payment| {
-                        if done {
-                            return;
-                        }
-                        let plan = match obj.card.effect() {
-                            Effect::Spell(plan, _) | Effect::Aura(plan) => plan,
-                            _ => TargetPlan::NONE,
-                        };
-                        let Some(spec) = plan.single() else {
-                            if self.targets_available(plan, actor, self.object_ref(card)) {
-                                done = emit(Action::BeginCast { card, payment });
+                    obj.card
+                        .spell_payments(s.players[actor.index()].mana, |payment| {
+                            if done {
+                                return;
                             }
-                            return;
-                        };
-                        let source = self.object_ref(card);
-                        if spec.max > 1 {
-                            let mut count = 0;
-                            self.visit_targets(spec.rule, actor, source, |_| {
-                                count += 1;
-                                false
-                            });
-                            if count >= usize::from(spec.min) {
-                                done = emit(Action::BeginCast { card, payment });
-                            }
-                        } else {
-                            if spec.min == 0
-                                && emit(Action::Cast {
-                                    card,
-                                    target: None,
-                                    payment,
-                                })
-                            {
-                                done = true;
-                            }
-                            if !done && spec.max > 0 {
-                                done = self.visit_targets(spec.rule, actor, source, |target| {
-                                    emit(Action::Cast {
+                            let plan = match obj.card.effect() {
+                                Effect::Spell(plan, _) | Effect::Aura(plan) => plan,
+                                _ => TargetPlan::NONE,
+                            };
+                            let Some(spec) = plan.single() else {
+                                if self.targets_available(plan, actor, self.object_ref(card)) {
+                                    done = emit(Action::BeginCast { card, payment });
+                                }
+                                return;
+                            };
+                            let source = self.object_ref(card);
+                            if spec.max > 1 {
+                                let mut count = 0;
+                                self.visit_targets(spec.rule, actor, source, |_| {
+                                    count += 1;
+                                    false
+                                });
+                                if count >= usize::from(spec.min) {
+                                    done = emit(Action::BeginCast { card, payment });
+                                }
+                            } else {
+                                if spec.min == 0
+                                    && emit(Action::Cast {
                                         card,
-                                        target: Some(target),
+                                        target: None,
                                         payment,
                                     })
-                                });
+                                {
+                                    done = true;
+                                }
+                                if !done && spec.max > 0 {
+                                    done = self.visit_targets(spec.rule, actor, source, |target| {
+                                        emit(Action::Cast {
+                                            card,
+                                            target: Some(target),
+                                            payment,
+                                        })
+                                    });
+                                }
                             }
-                        }
-                    });
+                        });
                     if done {
                         return true;
                     }
@@ -1352,6 +1372,20 @@ impl Game {
                 };
                 for amount in minimum..=choice.remaining {
                     if emit(Action::AssignDamage { target, amount }) {
+                        return true;
+                    }
+                }
+            }
+            Pending::SpellCost { player } => {
+                let card = s.announcing.as_ref().unwrap().item.source_card;
+                for (index, cost) in card.cost_options().enumerate() {
+                    if self.can_fund(FundingGoal {
+                        actor: player,
+                        required: cost.colored,
+                        generic: cost.generic,
+                        source: None,
+                    }) && emit(Action::ChooseSpellCost { cost: index as u16 })
+                    {
                         return true;
                     }
                 }
@@ -1646,6 +1680,7 @@ impl Game {
                 }
             }
             Action::KeepLegend { object } => self.keep_legend(object),
+            Action::ChooseSpellCost { cost } => self.choose_spell_cost(cost),
             Action::ChooseMode { mode } => self.choose_mode(mode),
             Action::ChooseTarget { target } => {
                 let mut bound = self.bind_target(target);
@@ -2418,7 +2453,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 31,
+            schema: 32,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -2434,6 +2469,7 @@ impl Game {
                 Pending::Priority => "priority",
                 Pending::Legend { .. } => "legend_rule",
                 Pending::Targets { .. } => "targets",
+                Pending::SpellCost { .. } => "spell_cost",
                 Pending::Modes { .. } => "spell_mode",
                 Pending::PayCosts { .. } => "pay_costs",
                 Pending::OrderTriggers { .. } => "order_triggers",
@@ -2531,26 +2567,32 @@ impl Game {
                     victim: p.victim,
                     exile: p.exile,
                 }),
-            payment_request: if owns_choice {
-                s.announcing
-                    .as_ref()
-                    .filter(|announcement| announcement.pay_window)
-                    .map(|announcement| {
-                        let goal = self.funding_goal(announcement);
-                        PaymentRequestView {
-                            required: goal.required,
-                            generic: goal.generic,
-                            counters: announcement.counter_payment,
-                            production: announcement.production,
-                        }
-                    })
-            } else {
-                None
-            },
+            payment_request: self.announcement_payment_request(viewer),
             targeting_group: if owns_choice && matches!(s.pending, Pending::Targets { .. }) {
                 s.announcing.as_ref().map(|announcement| announcement.group)
             } else {
                 None
+            },
+            announcing_cost: s.announcing.as_ref().and_then(|a| a.cost),
+            cost_choices: if owns_choice && matches!(s.pending, Pending::SpellCost { .. }) {
+                let card = s.announcing.as_ref().unwrap().item.source_card;
+                card.cost_options()
+                    .enumerate()
+                    .filter(|(_, cost)| {
+                        self.can_fund(FundingGoal {
+                            actor: viewer,
+                            required: cost.colored,
+                            generic: cost.generic,
+                            source: None,
+                        })
+                    })
+                    .map(|(index, cost)| SpellCostChoiceView {
+                        index: index as u16,
+                        cost,
+                    })
+                    .collect()
+            } else {
+                Vec::new()
             },
             mode_choices: if owns_choice && matches!(s.pending, Pending::Modes { .. }) {
                 let item = &s.announcing.as_ref().unwrap().item;
@@ -2878,3 +2920,7 @@ mod connive_tests;
 #[cfg(test)]
 #[path = "engine_limited_trigger_tests.rs"]
 mod limited_trigger_tests;
+
+#[cfg(test)]
+#[path = "engine_hybrid_tests.rs"]
+mod hybrid_tests;

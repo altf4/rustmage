@@ -9,9 +9,19 @@ pub(super) struct Announcement {
     pub group: u16,
     pub trigger: bool,
     pub payment: Option<Mana>,
+    pub cost: Option<ManaCost>,
     pub counter_payment: Counters,
     pub pay_window: bool,
     pub production: Option<Mana>,
+}
+
+impl Announcement {
+    pub(super) fn needs_spell_cost(&self) -> bool {
+        self.pay_window
+            && self.item.kind == StackKind::Spell
+            && self.item.source_card.has_hybrid_cost()
+            && self.cost.is_none()
+    }
 }
 
 impl Game {
@@ -53,20 +63,53 @@ impl Game {
         }
     }
 
+    pub(super) fn choose_spell_cost(&mut self, index: u16) {
+        let a = self.state.announcing.as_mut().unwrap();
+        a.cost = Some(
+            a.item
+                .source_card
+                .cost_options()
+                .nth(index as usize)
+                .unwrap(),
+        );
+        self.continue_announcement_choices(false);
+    }
+
     pub(super) fn choose_mode(&mut self, mode: u16) {
-        let announcement = self.state.announcing.as_mut().unwrap();
-        announcement.item.mode = Some(mode);
-        announcement.plan = announcement
+        let plan = self
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
             .item
             .source_card
             .spell_program(Some(mode))
             .unwrap()
             .0;
+        self.declare_mode(mode, plan);
+    }
+
+    pub(super) fn declare_mode(&mut self, mode: u16, plan: TargetPlan) {
+        let announcement = self.state.announcing.as_mut().unwrap();
+        announcement.item.mode = Some(mode);
+        announcement.plan = plan;
         announcement.group = 0;
-        self.state.pending = Pending::Targets {
-            player: announcement.item.controller,
-        };
-        self.advance_target_groups();
+        self.continue_announcement_choices(false);
+    }
+
+    pub(super) fn continue_announcement_choices(&mut self, needs_mode: bool) {
+        let a = self.state.announcing.as_ref().unwrap();
+        let player = a.item.controller;
+        // CR601.2b announces the mode before a hybrid equivalent. Both
+        // declarations precede targets, mana abilities and payment.
+        if needs_mode {
+            self.state.pending = Pending::Modes { player };
+        } else if a.needs_spell_cost() {
+            self.state.pending = Pending::SpellCost { player };
+        } else {
+            self.state.pending = Pending::Targets { player };
+            self.advance_target_groups();
+        }
     }
 
     pub(super) fn finish_target_group(&mut self) {
@@ -292,6 +335,7 @@ impl Game {
             group: 0,
             trigger,
             payment: None,
+            cost: None,
             counter_payment: Counters::default(),
             pay_window: false,
             production: None,
@@ -320,18 +364,12 @@ impl Game {
             group: 0,
             trigger: false,
             payment: None,
+            cost: None,
             counter_payment: counters,
             pay_window: true,
             production,
         });
-        self.state.pending = if needs_mode {
-            Pending::Modes { player }
-        } else {
-            Pending::Targets { player }
-        };
-        if !needs_mode {
-            self.advance_target_groups();
-        }
+        self.continue_announcement_choices(needs_mode);
     }
 
     pub(super) fn finish_announcement(&mut self) {

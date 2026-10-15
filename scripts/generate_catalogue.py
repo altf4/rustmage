@@ -44,6 +44,25 @@ def fixed_cost(cost):
     return colored, generic
 
 
+
+def spell_cost_options(cost):
+    """Unique nonhybrid equivalents for ordinary/two-colored-hybrid spell costs."""
+    if not re.fullmatch(r'(?:\{(?:[0-9]+|[WUBRGC]|[WUBRG]/[WUBRG])\})+',cost): return None
+    allowed={'W/U','W/B','U/B','U/R','B/R','B/G','R/G','R/W','G/W','G/U'}
+    variants={(0,0,0,0,0,0)}
+    generic=0
+    for symbol in re.findall(r'\{([^}]+)\}',cost):
+        if symbol.isdigit(): generic+=int(symbol)
+        else:
+            if '/' in symbol:
+                if symbol not in allowed: return None
+                colors=symbol.split('/')
+            else: colors=[symbol]
+            variants={tuple(n+(index=='WUBRGC'.index(color)) for index,n in enumerate(row))
+                      for row in variants for color in colors}
+        if generic>4294967295 or len(variants)>65536: return None
+    return [(list(row),generic) for row in sorted(variants)]
+
 def permanent_type(card):
     typ = card.get('type_line', '').split(' — ')[0]
     return typ.removeprefix('Legendary ')
@@ -58,7 +77,7 @@ def creature_template(card):
         return None
     if not card.get('power', '').isdigit() or not card.get('toughness', '').isdigit():
         return None
-    if fixed_cost(card.get('mana_cost', '')) is None:
+    if spell_cost_options(card.get('mana_cost', '')) is None:
         return None
     # Remove only balanced, unnested reminder text; fail closed on residual text.
     text = re.sub(r'\([^()]*\)', '', card['oracle_text']).strip()
@@ -75,7 +94,7 @@ def creature_template(card):
 
 def spell_template(card):
     if (card.get('layout') != 'normal' or card.get('type_line', '').split(' — ')[0] not in ('Instant', 'Sorcery')
-            or fixed_cost(card.get('mana_cost', '')) is None):
+            or spell_cost_options(card.get('mana_cost', '')) is None):
         return None
     return {
         "Return target creature to its owner's hand.": 'ReturnToHand',
@@ -1127,7 +1146,7 @@ def spell_program_template(card):
     if old:
         return 'Creature', [old]
     if (card.get('layout') != 'normal' or card.get('type_line', '').split(' — ')[0] not in ('Instant', 'Sorcery')
-            or fixed_cost(card.get('mana_cost', '')) is None):
+            or spell_cost_options(card.get('mana_cost', '')) is None):
         return None
     text = card.get('oracle_text')
     if isinstance(text, str): text = ' '.join(re.sub(r'\([^()]*\)', '', text).split())
@@ -1142,7 +1161,7 @@ def spell_program_template(card):
 def modal_spell_template(card):
     """Every mode must compile completely; unsupported alternatives gate the card."""
     if (card.get('layout') != 'normal' or card.get('type_line') not in ('Instant', 'Sorcery')
-            or fixed_cost(card.get('mana_cost', '')) is None
+            or spell_cost_options(card.get('mana_cost', '')) is None
             or not isinstance(card.get('oracle_text'), str)):
         return None
     lines = re.sub(r'\([^()]*\)', '', card['oracle_text']).strip().split('\n')
@@ -1193,7 +1212,7 @@ def aura_template(card):
     if (card.get('layout') != 'normal' or permanent_type(card) != 'Enchantment'
             or card.get('type_line','').split(' — ')[-1] != 'Aura'
             or not isinstance(card.get('oracle_text'),str)
-            or fixed_cost(card.get('mana_cost','')) is None): return None
+            or spell_cost_options(card.get('mana_cost','')) is None): return None
     text=re.sub(r'\([^()]*\)', '', card['oracle_text']).strip()
     body=[]
     power,toughness,keywords=0,0,0
@@ -1225,7 +1244,7 @@ def equipment_template(card):
     if (card.get('layout') != 'normal' or permanent_type(card) != 'Artifact'
             or card.get('type_line', '').split(' — ')[-1] != 'Equipment'
             or not isinstance(card.get('oracle_text'),str)
-            or fixed_cost(card.get('mana_cost','')) is None): return None
+            or spell_cost_options(card.get('mana_cost','')) is None): return None
     text=re.sub(r'\([^()]*\)', '', card['oracle_text']).strip()
     body=[]
     power,toughness,keywords,equips=0,0,0,0
@@ -1257,7 +1276,7 @@ def equipment_template(card):
 def permanent_program_template(card):
     """Whole supported permanent text, including all activation restrictions."""
     if (card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'), str)
-            or fixed_cost(card.get('mana_cost', '')) is None):
+            or spell_cost_options(card.get('mana_cost', '')) is None):
         return None
     typ = permanent_type(card)
     if set(card.get('type_line','').split(' — ')[-1].split()) & {'Equipment','Aura'}: return None
@@ -1417,6 +1436,7 @@ def compile_catalogue(snapshot, target):
     supported = []
     coverage = []
     static_rows = []
+    hybrid_rows = []
     equipment_rows = []
     aura_rows = []
     for index, name in enumerate(names):
@@ -1489,7 +1509,10 @@ def compile_catalogue(snapshot, target):
         if effect != 'Unsupported':
             supported.append(index)
         basic = name in {'Plains', 'Island', 'Swamp', 'Mountain', 'Forest'} or card.get('type_line', '').split(' — ')[0] == 'Basic Land'
-        colored, generic = fixed_cost(cost) or ([0] * 6, 0)
+        costs = spell_cost_options(cost) or [([0] * 6, 0)]
+        colored, generic = costs[0]
+        if len(costs)>1:
+            hybrid_rows.append(f'        {index} => &['+', '.join(str(mana) for mana,_ in costs[1:])+'],')
         deck_limit = 'None' if basic or name in UNLIMITED else 'Some(4)'
         quote = lambda value: json.dumps(value, ensure_ascii=False)
         oracle_id = f"Some({quote(card['oracle_id'])})" if card else 'None'
@@ -1543,6 +1566,7 @@ def compile_catalogue(snapshot, target):
     for index, (name, _, _, _) in enumerate(LEGACY):
         lines.append(f'    pub const {name.replace(" ", "")}: Card = Card({index});')
     lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn equipment(card: Card) -> Option<EquipmentSpec> {', '    match card.0 {', *equipment_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn aura(card: Card) -> Option<AuraSpec> {', '    match card.0 {', *aura_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', "pub(super) fn cost_alternatives(card: Card) -> &'static [Mana] {", '    match card.0 {', *hybrid_rows, '        _ => &[],', '    }', '}', '']
     return '\n'.join(lines), {'schema': 1, 'catalogue_version': version, 'standard_legal_cards': len(cards),
         'implemented_standard_cards': sum(row['implemented'] and row['standard_legal'] for row in coverage),
         'implemented_total': len(supported), 'token_definitions': len(used_tokens), 'cards': coverage}

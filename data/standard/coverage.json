@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "f85e241734374dfd81d6e12bf6560f9dea78ad10c2611130c6d328529d66b687",
+  "catalogue_version": "3b406d72702e1fa59837ff88df283a0a7845dcf9667c0ab57ce428795a7ba548",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 816,
-  "implemented_total": 822,
+  "implemented_standard_cards": 834,
+  "implemented_total": 840,
   "token_definitions": 40,
   "cards": [
     {
@@ -165,8 +165,8 @@
     {
       "name": "Abandon Attachments",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Abandoned Air Temple",
@@ -4083,8 +4083,8 @@
     {
       "name": "Cat-Owl",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Cathar Commando",
@@ -7251,8 +7251,8 @@
     {
       "name": "Duskwatch Hunter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Dust Animus",
@@ -9519,8 +9519,8 @@
     {
       "name": "Foot Elite",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Foot Headquarters",
@@ -10005,8 +10005,8 @@
     {
       "name": "Gallant Citizen",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Gallant Fowlknight",
@@ -11847,8 +11847,8 @@
     {
       "name": "Head of the Homestead",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Head of the Hunt",
@@ -14679,8 +14679,8 @@
     {
       "name": "Large Bear",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Larval Scoutlander",
@@ -16053,8 +16053,8 @@
     {
       "name": "Mary Jane Watson",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Masked Meower",
@@ -16209,8 +16209,8 @@
     {
       "name": "Mechanized Ninja Cavalry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Mechanozoa",
@@ -16833,8 +16833,8 @@
     {
       "name": "Mob Lookout",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Mobile Homestead",
@@ -17079,8 +17079,8 @@
     {
       "name": "Moonrise Cleric",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Moonshadow",
@@ -17751,8 +17751,8 @@
     {
       "name": "Noggle Robber",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Noggle the Mind",
@@ -19227,8 +19227,8 @@
     {
       "name": "Pond Prophet",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Popular Egotist",
@@ -19359,8 +19359,8 @@
     {
       "name": "Pretending Poxbearers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Price of Freedom",
@@ -19701,8 +19701,8 @@
     {
       "name": "Punk Frogs",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Puppet Crafting",
@@ -23577,8 +23577,8 @@
     {
       "name": "Slithering Cryptid",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Slumbering Cerberus",
@@ -26151,8 +26151,8 @@
     {
       "name": "Tempest Angler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Tempest Djinn",
@@ -29799,8 +29799,8 @@
     {
       "name": "Wandering Musicians",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Wandertale Mentor",
