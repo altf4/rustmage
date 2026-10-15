@@ -1335,7 +1335,7 @@ impl Game {
                 self.state.step = Step::End;
                 self.give_priority();
             }
-            Step::End => {
+            Step::End | Step::Cleanup => {
                 self.state.step = Step::Cleanup;
                 if self.hand_count(self.state.active) > 7 {
                     self.state.pending = Pending::Discard;
@@ -1343,7 +1343,6 @@ impl Game {
                     self.finish_cleanup();
                 }
             }
-            Step::Cleanup => self.finish_cleanup(),
             Step::Pregame => unreachable!(),
         }
     }

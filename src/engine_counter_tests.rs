@@ -148,3 +148,41 @@ fn cleanup_death_from_counter_preserves_active_player_for_extra_priority() {
     pass_pair(&mut game);
     assert_eq!(game.state.active, Player::P1);
 }
+
+#[test]
+fn repeated_cleanup_discards_after_death_trigger_draw_and_replays() {
+    let mut game = scenario();
+    let sentinel = named(&mut game, "Summit Sentinel", Zone::Battlefield);
+    for _ in 0..7 {
+        named(&mut game, "Forest", Zone::Hand);
+    }
+    game.state.objects[sentinel as usize].counters.minus_one = 3;
+    game.state.objects[sentinel as usize].growth = 1;
+    game.state.step = Step::End;
+    pass_pair(&mut game);
+    assert_eq!(game.state.active, Player::P0);
+    assert_eq!(game.state.stack.len(), 1);
+    pass_pair(&mut game); // Sentinel's death trigger draws the eighth card.
+    assert_eq!(game.hand_count(Player::P0), 8);
+    let before = game.snapshot();
+    pass_pair(&mut game); // A full second cleanup must discard.
+    assert_eq!(game.state.pending, Pending::Discard);
+    assert_eq!(game.state.active, Player::P0);
+    assert!(!game.legal_actions().contains(&Action::Pass));
+    let discard = game
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a, Action::Discard { .. }))
+        .unwrap();
+    let choice = game.snapshot();
+    act(&mut game, discard.clone());
+    assert_eq!(game.hand_count(Player::P0), 7);
+    assert_eq!(game.state.active, Player::P1);
+    let after = game.snapshot();
+    game.restore(&choice);
+    act(&mut game, discard);
+    assert_eq!(game.snapshot(), after);
+    game.restore(&before);
+    pass_pair(&mut game);
+    assert_eq!(game.snapshot(), choice);
+}
