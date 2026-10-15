@@ -1,17 +1,30 @@
 //! Exact-incarnation attachment links and continuous Equipment bonuses.
 use super::*;
 impl Game {
-    pub(super) fn equipment_bonus(&self, id: CardId) -> (Stats, Keywords) {
+    pub(super) fn attached_subject(&self, item: &SpellView) -> Option<CardId> {
+        let target = if self.on_battlefield(item.card) && self.object_ref(item.card) == item.object
+        {
+            self.state.objects[item.card as usize].attached_to
+        } else {
+            item.source_attachment
+        }?;
+        (self.on_battlefield(target.card)
+            && self.object_ref(target.card) == target
+            && self.state.objects[target.card as usize].card.is_creature())
+        .then_some(target.card)
+    }
+
+    pub(super) fn attachment_bonus(&self, id: CardId) -> (Stats, Keywords) {
         let mut stats = Stats::default();
         let mut keywords = Keywords::NONE;
         if !self.on_battlefield(id) || !self.state.objects[id as usize].card.is_creature() {
             return (stats, keywords);
         }
         let target = self.object_ref(id);
-        for &source in &self.state.equipment_sources {
+        for &source in &self.state.attachment_sources {
             let object = &self.state.objects[source as usize];
             if object.attached_to == Some(target) && !object.card.is_creature() {
-                let spec = object.card.equipment().unwrap();
+                let spec = object.card.attachment_bonus().unwrap();
                 stats += spec.stats;
                 keywords = keywords.union(spec.keywords);
             }
@@ -22,7 +35,7 @@ impl Game {
     pub(super) fn keywords(&self, id: CardId) -> Keywords {
         self.state.objects[id as usize]
             .keywords()
-            .union(self.equipment_bonus(id).1)
+            .union(self.attachment_bonus(id).1)
     }
 
     pub(super) fn attach_equipment(&mut self, source: ObjectRef, target: ObjectRef) -> bool {

@@ -52,6 +52,15 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
         };
         if own == beneficial { 70 } else { -10 }
     };
+    let aura_score = |card: crate::Card, target: Target| {
+        let aura = card.aura().unwrap();
+        let beneficial = aura.bonus.stats.power >= 0
+            && aura.bonus.stats.toughness >= 0
+            && !aura.bonus.keywords.contains(crate::Keywords::DEFENDER)
+            && !aura.bonus.keywords.contains(crate::Keywords::CANT_BLOCK);
+        let own = matches!(target, Target::Card(id) if observation.objects.iter().any(|o|o.id==id && o.owner==actor));
+        if own == beneficial { 70 } else { -10 }
+    };
     let score = |action: &Action| -> i32 {
         // A smoke policy need not spend the whole turn re-equipping, including
         // legal zero-cost activations. The engine still offers those actions.
@@ -67,6 +76,10 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             return -10;
         }
         match action {
+            Action::ChooseAuraAttachment { object } => aura_score(
+                observation.aura_entry.as_ref().unwrap().card,
+                Target::Card(object.card),
+            ),
             Action::Concede => -1000,
             Action::Sacrifice { .. } => 50,
             Action::DeclineEffectPayment => -1,
@@ -84,6 +97,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::BeginCast { .. } => 80,
             Action::ChooseTarget { target } => {
                 let item = observation.announcing.as_ref().unwrap();
+                if item.kind == StackKind::Spell && item.source_card.aura().is_some() {
+                    return aura_score(item.source_card, *target);
+                }
                 let program = match item.kind {
                     StackKind::TriggeredAbility { ability } => {
                         item.source_card.triggers()[ability as usize].program
@@ -132,6 +148,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     .find(|o| o.id == *card)
                     .unwrap()
                     .card;
+                if definition.aura().is_some() {
+                    return target.map(|t| aura_score(definition, t)).unwrap_or(-10);
+                }
                 if definition.is_creature() || matches!(definition.effect(), Effect::Permanent) {
                     80
                 } else {

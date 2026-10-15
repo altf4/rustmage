@@ -257,7 +257,7 @@ def keyword_effect(text, subject):
     else: return None
     keywords = keyword_list(words)
     if keywords is None: return None
-    if subject in ('Targets', 'Source'):
+    if subject in ('Targets', 'Source', 'Attached'):
         return ([grow_instruction(subject, *grow)] if grow else []) + [f'GrantKeywords {{ subject: Subject::{subject}, keywords: Keywords({keywords}) }}']
     return ([f'GrowCreatures {{ filter: {subject}, power: {grow[0]}, toughness: {grow[1]} }}'] if grow else []) + [f'GrantCreatures {{ filter: {subject}, keywords: Keywords({keywords}) }}']
 
@@ -374,6 +374,12 @@ def statement_program(text):
         if sacrifice[0] == 'None': return sacrifice[1]
     token = token_program(text) or predefined_program(text)
     if token: return token
+    if text in ('tap enchanted creature.','tap equipped creature.'): return ['TapAttached']
+    if m := re.fullmatch(r'(?:enchanted|equipped) creature gets ([+-][0-9]+)/([+-][0-9]+) until end of turn\.',text):
+        if max(abs(int(m[1])),abs(int(m[2])))>32767: return None
+        return [grow_instruction('Attached',int(m[1]),int(m[2]))]
+    if m := re.fullmatch(r'(?:enchanted|equipped) creature (gains? .+ until end of turn\.)',text):
+        return keyword_effect(m[1],'Attached')
     if text == 'untap this creature.': return ['UntapSource']
     if m := re.fullmatch(r'untap (.+)\.', text):
         if filt := creature_filter(m[1]): return [f'UntapCreatures({filt})']
@@ -896,6 +902,38 @@ def activation_cost(text):
     return cost
 
 
+def aura_template(card):
+    if (card.get('layout') != 'normal' or permanent_type(card) != 'Enchantment'
+            or card.get('type_line','').split(' — ')[-1] != 'Aura'
+            or not isinstance(card.get('oracle_text'),str)
+            or fixed_cost(card.get('mana_cost','')) is None): return None
+    text=re.sub(r'\([^()]*\)', '', card['oracle_text']).strip()
+    body=[]
+    power,toughness,keywords=0,0,0
+    relation=None
+    for line in text.split('\n'):
+        line=line.strip()
+        if line in ('Enchant creature','Enchant creature you control','Enchant creature an opponent controls'):
+            if relation is not None: return None
+            relation={'Enchant creature':-1,'Enchant creature you control':0,'Enchant creature an opponent controls':1}[line]
+        elif m:=re.fullmatch(r'Enchanted creature gets ([+-][0-9]+)/([+-][0-9]+)(?: and has (.+))?\.',line):
+            if max(abs(int(m[1])),abs(int(m[2])))>32767: return None
+            extra=keyword_list(m[3]) if m[3] else 0
+            if extra is None: return None
+            power+=int(m[1]);toughness+=int(m[2]);keywords|=extra
+        elif m:=re.fullmatch(r'Enchanted creature has (.+)\.',line):
+            extra=keyword_list(m[1])
+            if extra is None: return None
+            keywords|=extra
+        elif line.startswith('Enchanted creature ') and ('this creature '+line[len('Enchanted creature '):]).casefold() in TEXT_FLAGS:
+            keywords|=TEXT_FLAGS[('this creature '+line[len('Enchanted creature '):]).casefold()]
+        else:
+            body.append(line.replace('When this Aura enters, ','When this enchantment enters, '))
+    if relation is None: return None
+    result=permanent_program_template(dict(card,type_line='Enchantment',oracle_text='\n'.join(body)))
+    return (*result,relation,power,toughness,keywords) if result else None
+
+
 def equipment_template(card):
     if (card.get('layout') != 'normal' or permanent_type(card) != 'Artifact'
             or card.get('type_line', '').split(' — ')[-1] != 'Equipment'
@@ -935,7 +973,7 @@ def permanent_program_template(card):
             or fixed_cost(card.get('mana_cost', '')) is None):
         return None
     typ = permanent_type(card)
-    if 'Equipment' in card.get('type_line','').split(' — ')[-1].split(): return None
+    if set(card.get('type_line','').split(' — ')[-1].split()) & {'Equipment','Aura'}: return None
     if typ not in ('Creature', 'Artifact Creature', 'Artifact', 'Enchantment'):
         return None
     creature = 'Creature' in typ
@@ -1070,6 +1108,7 @@ def compile_catalogue(snapshot, target):
     coverage = []
     static_rows = []
     equipment_rows = []
+    aura_rows = []
     for index, name in enumerate(names):
         card = cards.get(name, {})
         cost = card.get('mana_cost', '')
@@ -1080,6 +1119,7 @@ def compile_catalogue(snapshot, target):
         trigger_template = trigger_creature_template(card)
         spell = spell_program_template(card)
         modal = modal_spell_template(card)
+        aura = aura_template(card)
         equipment = equipment_template(card)
         permanent = permanent_program_template(card)
         static = static_permanent_template(card)
@@ -1105,6 +1145,11 @@ def compile_catalogue(snapshot, target):
                 effect = 'Modal'
             elif spell is not None:
                 effect = 'Spell'
+            elif aura is not None:
+                _, keywords, abilities, activations, enters, relation, power, toughness, granted = aura
+                target = {-1:'Creature',0:'CreatureYou',1:'CreatureOpponent'}[relation]
+                effect = f'Aura({rust_targets(target)})'
+                aura_rows.append(f'        {index} => Some(AuraSpec {{ relation: {relation}, bonus: EquipmentSpec {{ stats: Stats {{ power: {power}, toughness: {toughness} }}, keywords: Keywords({granted}) }} }}),')
             elif equipment is not None:
                 effect, keywords, abilities, activations, enters, power, toughness, granted = equipment
                 equipment_rows.append(f'        {index} => Some(EquipmentSpec {{ stats: Stats {{ power: {power}, toughness: {toughness} }}, keywords: Keywords({granted}) }}),')
@@ -1139,7 +1184,7 @@ def compile_catalogue(snapshot, target):
         oracle_keywords = '&[' + ', '.join(quote(word) for word in card.get('keywords', [])) + ']'
         definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(name)}, oracle_id: {oracle_id}, mana_cost: {quote(cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in cards).lower()}, legendary: {str(card.get('type_line', '').startswith('Legendary ')).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, activated: {rust_activations(activations)}, enters: Counters {{ plus_one: {enters[0]}, minus_one: {enters[1]}, stun: {enters[2]} }}, entry: EntryTapped::{entry}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
         coverage.append({'name': name, 'standard_legal': name in cards, 'implemented': effect != 'Unsupported',
-                         'implementation': 'explicit' if name in legacy else 'land_template' if land else 'creature_template' if template else 'trigger_template' if trigger_template else 'modal_template' if modal else 'spell_template' if spell else 'equipment_template' if equipment else 'permanent_template' if permanent else 'static_template' if static else None})
+                         'implementation': 'explicit' if name in legacy else 'land_template' if land else 'creature_template' if template else 'trigger_template' if trigger_template else 'modal_template' if modal else 'spell_template' if spell else 'aura_template' if aura else 'equipment_template' if equipment else 'permanent_template' if permanent else 'static_template' if static else None})
 
     # Only factories referenced by wholly accepted cards enter the executable catalogue.
     used_tokens = sorted(set(re.findall(r'__TOKEN_([0-9a-f]+)__', '\n'.join(definitions))))
@@ -1184,7 +1229,7 @@ def compile_catalogue(snapshot, target):
     # Preserve existing Rust constants and JSON tokens. New callers use English names.
     for index, (name, _, _, _) in enumerate(LEGACY):
         lines.append(f'    pub const {name.replace(" ", "")}: Card = Card({index});')
-    lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn equipment(card: Card) -> Option<EquipmentSpec> {', '    match card.0 {', *equipment_rows, '        _ => None,', '    }', '}', '']
+    lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn equipment(card: Card) -> Option<EquipmentSpec> {', '    match card.0 {', *equipment_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn aura(card: Card) -> Option<AuraSpec> {', '    match card.0 {', *aura_rows, '        _ => None,', '    }', '}', '']
     return '\n'.join(lines), {'schema': 1, 'catalogue_version': version, 'standard_legal_cards': len(cards),
         'implemented_standard_cards': sum(row['implemented'] and row['standard_legal'] for row in coverage),
         'implemented_total': len(supported), 'token_definitions': len(used_tokens), 'cards': coverage}

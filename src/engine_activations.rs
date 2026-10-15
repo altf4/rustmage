@@ -221,6 +221,7 @@ impl Game {
             source_card: self.state.objects[card as usize].card,
             source_keywords: self.keywords(card),
             source_tapped: self.state.objects[card as usize].tapped,
+            source_attachment: self.state.objects[card as usize].attached_to,
             card,
             object: self.object_ref(card),
             controller: actor,

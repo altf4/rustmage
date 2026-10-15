@@ -36,37 +36,21 @@ impl Game {
             SearchDestination::Hand => Zone::Hand,
             SearchDestination::Battlefield => Zone::Battlefield,
         };
-        let before: Vec<_> = choice
+        let moves = choice
             .selected
             .iter()
             .map(|&id| {
-                (
-                    self.object_view(id),
+                let mut movement = self.entry_move(
+                    id,
+                    destination,
                     destination == Zone::Battlefield
                         && (choice.spec.tapped || self.enters_tapped(id)),
-                )
+                );
+                movement.reveal_hand = choice.spec.reveal && destination == Zone::Hand;
+                movement
             })
             .collect();
-        let events: Vec<_> = before
-            .into_iter()
-            .map(|(before, tapped)| {
-                let mut event = self.move_object_raw_with_entry(before.id, destination, tapped);
-                event.before = before;
-                event
-            })
-            .collect();
-        // Hand identities revealed by this search stay public knowledge until
-        // they change zones. Hidden hand/library randomization must explicitly
-        // invalidate such knowledge when that mechanic is implemented.
-        if choice.spec.reveal && destination == Zone::Hand {
-            self.state
-                .known_hand
-                .extend(events.iter().filter(|e| e.moved).map(|e| e.after));
-        }
-        self.finish_zone_events(&events, &[]);
-        self.state
-            .rng
-            .shuffle(&mut self.state.players[player.index()].library);
+        self.stage_entries(moves, Some(player));
         self.run_program();
     }
 }

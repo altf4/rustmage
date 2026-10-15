@@ -54,7 +54,14 @@ impl Game {
             if object.zone != Zone::Battlefield {
                 continue;
             }
-            if let Some(target) = object.attached_to
+            if object.card.aura().is_some() {
+                if !object
+                    .attached_to
+                    .is_some_and(|target| self.aura_can_enchant(object.card, object.owner, target))
+                {
+                    batch.deaths.push(id);
+                }
+            } else if let Some(target) = object.attached_to
                 && (object.card.is_creature()
                     || target == self.object_ref(id)
                     || !self.on_battlefield(target.card)
@@ -100,7 +107,10 @@ impl Game {
     }
 
     pub(super) fn state_based_actions(&mut self) {
-        if self.state.sba_batch.is_some() || self.state.outcome.is_some() {
+        if self.state.sba_batch.is_some()
+            || self.state.outcome.is_some()
+            || self.state.entry_batch.is_some()
+        {
             return;
         }
         loop {
@@ -126,7 +136,7 @@ impl Game {
                 return;
             }
             self.commit_sba_batch(batch);
-            if self.state.outcome.is_some() {
+            if self.state.outcome.is_some() || self.state.entry_batch.is_some() {
                 return;
             }
         }

@@ -105,7 +105,7 @@ fn equip_is_a_paid_targeted_stack_ability_and_attachment_is_public_owned_state()
     );
     for player in [Player::P0, Player::P1] {
         let view = g.observe(player);
-        assert_eq!(view.schema, 22);
+        assert_eq!(view.schema, 23);
         assert_eq!(
             view.objects
                 .iter()
@@ -470,20 +470,20 @@ fn equipment_source_index_and_links_reset_on_every_admitted_zone_transition() {
     let mut g = scenario();
     for &card in &Card::ALL {
         let id = spawn(&mut g, Player::P0, card, Zone::Battlefield);
-        let equipped = card.equipment().is_some();
+        let equipped = card.attachment_bonus().is_some();
         assert_eq!(
-            g.state.equipment_sources.contains(&id),
+            g.state.attachment_sources.contains(&id),
             equipped,
             "{}",
             card.name()
         );
         let saved = g.snapshot();
         g.move_object(id, Zone::Exile);
-        assert!(!g.state.equipment_sources.contains(&id));
+        assert!(!g.state.attachment_sources.contains(&id));
         assert_eq!(g.object_view(id).attached_to, None);
         g.restore(&saved);
-        assert_eq!(g.state.equipment_sources.contains(&id), equipped);
+        assert_eq!(g.state.attachment_sources.contains(&id), equipped);
         g.move_object(id, Zone::Exile);
     }
-    assert!(g.state.equipment_sources.is_empty());
+    assert!(g.state.attachment_sources.is_empty());
 }

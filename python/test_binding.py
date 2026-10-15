@@ -12,6 +12,90 @@ class BindingTests(unittest.TestCase):
     def game(self):
         return Game([["Mountain"] * 24 + ["LightningBolt"] * 36] * 2, seed=17, deck_rules="Freeform")
 
+    def aura_index(self, obs, linked=False):
+        objects={o['id']:o for o in obs['objects']}
+        own_creatures=[o for o in obs['objects'] if o['owner']==obs['actor'] and o['zone']=='Battlefield' and o['card']=="Healer's Hawk"]
+        own_auras=[o for o in obs['objects'] if o['owner']==obs['actor'] and o['zone']=='Battlefield' and o['card']=='Feather of Flight']
+        enemy_auras=[o for o in obs['objects'] if o['owner']!=obs['actor'] and o['zone']=='Battlefield' and o['card']=='Feather of Flight']
+        sources={l['source']['card'] for l in obs['exile_links'] if objects[l['exiled']['card']]['card']=='Feather of Flight'}
+        def score(a):
+            kind=a['kind']
+            if kind=='AnnounceCast':
+                if obs['stack'] or obs['active']!=obs['actor'] or obs['step'] not in ('Main1','Main2'):return -5
+                name=objects[a['card']]['card']
+                if name=="Healer's Hawk":return 85
+                if name=='Feather of Flight':return 80 if own_creatures and (not linked or not own_auras) else -5
+                if name=='Banishing Light':return 90 if enemy_auras else -5
+                if name=='Disenchant':return 95 if any(objects[i]['owner']==obs['actor'] for i in sources) else -5
+            if kind=='ChooseTarget':
+                target=objects[a['target']['Card']]
+                source=obs['announcing']['source_card']
+                if source=='Banishing Light':return 100 if target in enemy_auras else 0
+                if source=='Disenchant':return 100 if target['id'] in sources and target['owner']==obs['actor'] else 0
+                return 80 if target in own_creatures else 0
+            return {'Keep':100,'PlayLand':90,'PayCosts':100,'TapMana':70 if obs['decision']=='pay_costs' else -5,
+                    'PutTrigger':70,'FinishAttackers':60,'FinishBlockers':60,'Pass':20,'Discard':50,
+                    'Mulligan':-100,'Concede':-1000}.get(kind,0)
+        return max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i]))
+
+    def test_aura_cast_target_payment_and_entry_trigger_clone_restore(self):
+        deck=['Plains']*24+["Healer's Hawk"]*16+['Feather of Flight']*20
+        with Game([deck,deck],seed=7,deck_rules='Freeform') as game:
+            obs=game.observe('P0')
+            for _ in range(2500):
+                if obs['outcome'] is not None:self.fail('game ended before Aura cast')
+                obs=game.observe(obs['actor'])
+                if obs['decision']=='targets' and obs['announcing']['source_card']=='Feather of Flight':break
+                obs=game.step(obs,self.aura_index(obs))
+            else:self.fail('no Aura cast target reached')
+            actor=obs['actor'];aura=obs['announcing']['card'];index=self.aura_index(obs);target=obs['actions'][index]['target']['Card'];saved=game.snapshot()
+            def finish(handle):
+                handle.step(handle.observe(actor),index)
+                for _ in range(16):
+                    current=handle.observe(actor)
+                    if any(o['id']==aura and o['zone']=='Battlefield' for o in current['objects']):return current
+                    current=handle.observe(current['actor'])
+                    i=next((i for i,a in enumerate(current['actions']) if a['kind']=='PayCosts'),None)
+                    if i is None:i=next((i for i,a in enumerate(current['actions']) if a['kind']=='TapMana'),None)
+                    if i is None:i=next(i for i,a in enumerate(current['actions']) if a['kind']=='Pass')
+                    handle.step(current,i)
+                self.fail('Aura cast did not complete')
+            with game.clone() as branch:expected=finish(branch)
+            actual=finish(game);self.assertEqual(actual,expected)
+            aura_view=next(o for o in actual['objects'] if o['id']==aura);creature=next(o for o in actual['objects'] if o['id']==target)
+            self.assertEqual(aura_view['attached_to'],creature['reference']);self.assertEqual(creature['power'],2)
+            self.assertTrue(any(t['card']==aura and 'TriggeredAbility' in t['kind'] for t in actual['stack']))
+            game.restore(saved);replay=finish(game)
+            self.assertGreater(replay.pop('revision'),actual.pop('revision'));self.assertEqual(replay,actual)
+            game.drop_snapshot(saved)
+
+    def test_linked_aura_return_choice_suspends_removal_and_replays_through_library(self):
+        deck=['Plains']*24+["Healer's Hawk"]*8+['Feather of Flight']*8+['Banishing Light']*12+['Disenchant']*8
+        with Game([deck,deck],seed=7,deck_rules='Freeform') as game:
+            obs=game.observe('P0')
+            for _ in range(6000):
+                if obs['outcome'] is not None:self.fail('game ended before Aura return')
+                obs=game.observe(obs['actor'])
+                if obs['decision']=='aura_entry':break
+                obs=game.step(obs,self.aura_index(obs,linked=True))
+            else:self.fail('no linked Aura return reached')
+            actor=obs['actor'];choice=obs['aura_entry'];aura=choice['aura']['card']
+            self.assertEqual(obs['schema'],23);self.assertEqual(obs['resolving']['source_card'],'Disenchant')
+            self.assertEqual(next(o['zone'] for o in obs['objects'] if o['id']==aura),'Exile')
+            target=next(o['reference'] for o in obs['objects'] if o['zone']=='Battlefield' and o['owner']==actor and o['card']=="Healer's Hawk")
+            index=next(i for i,a in enumerate(obs['actions']) if a['kind']=='ChooseAuraAttachment' and a['object']==target)
+            other='P1' if actor=='P0' else 'P0';self.assertEqual(game.observe(other)['aura_entry'],choice)
+            self.assertEqual(game.observe(other)['actions'],[]);saved=game.snapshot()
+            with game.clone() as branch:expected=branch.step(branch.observe(actor),index)
+            actual=game.step(obs,index);self.assertEqual(actual,expected)
+            aura_view=next(o for o in actual['objects'] if o['id']==aura)
+            self.assertEqual(aura_view['zone'],'Battlefield');self.assertEqual(aura_view['attached_to'],target);self.assertIsNone(actual['resolving'])
+            game.restore(saved)
+            with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,index)
+            replay=game.step(game.observe(actor),index)
+            self.assertGreater(replay.pop('revision'),actual.pop('revision'));self.assertEqual(replay,actual)
+            game.drop_snapshot(saved)
+
     def equipment_index(self, obs):
         own={o['id']:o for o in obs['objects'] if o['owner']==obs['actor']}
         creature=any(o['zone']=='Battlefield' and o['card'] in ("Healer's Hawk",'GoblinPiker','Goblin Piker') for o in own.values())
@@ -111,7 +195,7 @@ class BindingTests(unittest.TestCase):
                 obs=game.step(obs,self.vital_index(obs))
             else: self.fail('no life-gain trigger reached')
             source=obs['stack'][-1];viewer=source['controller'];p=0 if viewer=='P0' else 1
-            self.assertEqual(obs['schema'],22)
+            self.assertEqual(obs['schema'],23)
             self.assertGreater(obs['players'][p]['life_gain_events_this_turn'],0)
             other='P1' if viewer=='P0' else 'P0'
             self.assertEqual(game.observe(other)['players'][p]['life_gain_events_this_turn'],obs['players'][p]['life_gain_events_this_turn'])
@@ -357,7 +441,7 @@ class BindingTests(unittest.TestCase):
             observation = game.observe("P0")
             coverage = json.loads((Path(__file__).resolve().parents[1] / "data/standard/coverage.json").read_text())
             self.assertEqual(observation["catalogue"], coverage["catalogue_version"])
-            self.assertEqual(observation["schema"], 22)
+            self.assertEqual(observation["schema"], 23)
             self.assertEqual(len(observation["objects"]), 7)
             self.assertTrue(all(o["owner"] == "P0" for o in observation["objects"]))
             self.assertEqual(game.observe("P1")["actions"], [])

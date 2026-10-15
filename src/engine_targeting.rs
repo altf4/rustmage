@@ -231,6 +231,7 @@ impl Game {
             source_card: self.state.objects[card as usize].card,
             source_keywords: self.keywords(card),
             source_tapped: self.state.objects[card as usize].tapped,
+            source_attachment: self.state.objects[card as usize].attached_to,
             card,
             object,
             controller: actor,
@@ -374,7 +375,15 @@ impl Game {
                 _ => None,
             })
             .collect();
-        let events = self.move_objects_raw(&ids, destination);
-        self.finish_zone_events(&events, &sources);
+        if destination == Zone::Battlefield {
+            let moves = ids
+                .iter()
+                .map(|&id| self.entry_move(id, destination, self.enters_tapped(id)))
+                .collect();
+            self.stage_entries(moves, None);
+        } else {
+            let events = self.move_objects_raw(&ids, destination);
+            self.finish_zone_events(&events, &sources);
+        }
     }
 }

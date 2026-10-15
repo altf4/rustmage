@@ -108,7 +108,7 @@ impl FundingState {
             .enumerate()
             .filter(|(id, object)| {
                 object.zone == Zone::Battlefield
-                    && (object.card.equipment().is_some()
+                    && (object.card.attachment_bonus().is_some()
                         || (object.owner == goal.actor
                             && (object.card.mana_color().is_some()
                                 || object
@@ -155,7 +155,7 @@ impl FundingState {
                 if source.object.zone == Zone::Battlefield
                     && !source.object.card.is_creature()
                     && source.object.attached_to == Some(reference)
-                    && let Some(spec) = source.object.card.equipment()
+                    && let Some(spec) = source.object.card.attachment_bonus()
                 {
                     keywords = keywords.union(spec.keywords);
                 }
