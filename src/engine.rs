@@ -1,7 +1,7 @@
 use crate::cards::{
     ActivatedAbility, ActivationCost, CounterKind, Counters, CreatureFilter, Effect, EntryTapped,
-    Instruction, ManaProduction, PlayerSet, Stats, Subject, TargetRule, TargetSpec, TargetZone,
-    TriggerCondition, payments,
+    Instruction, ManaProduction, PlayerSet, SearchSpec, Stats, Subject, TargetRule, TargetSpec,
+    TargetZone, TriggerCondition, payments,
 };
 #[path = "engine_activations.rs"]
 mod activations;
@@ -12,6 +12,8 @@ use funding::FundingGoal;
 mod blocking;
 #[path = "engine_exile.rs"]
 mod exile;
+#[path = "engine_search.rs"]
+mod search;
 #[path = "engine_stats.rs"]
 mod stats;
 #[path = "engine_tokens.rs"]
@@ -218,6 +220,10 @@ pub enum Action {
     PutTrigger {
         id: u64,
     },
+    ChooseSearch {
+        card: CardId,
+    },
+    FinishSearch,
     ArrangeLibrary {
         card: CardId,
         destination: LibraryDestination,
@@ -409,6 +415,9 @@ enum Pending {
     EffectLibrary {
         player: Player,
     },
+    EffectSearch {
+        player: Player,
+    },
     EffectMana {
         player: Player,
         production: ManaProduction,
@@ -445,6 +454,7 @@ struct State {
     free_tokens: Vec<CardId>,
     static_sources: Vec<CardId>,
     exile_links: Vec<ExileLink>,
+    known_hand: Vec<ObjectRef>,
     players: [PlayerState; 2],
     rng: Rng,
     active: Player,
@@ -546,6 +556,18 @@ pub struct LibraryChoiceView {
     pub graveyard: Vec<ObjectView>,
 }
 
+/// Private library contents and still-uncommitted selections of a search.
+#[derive(Clone, Debug, Serialize)]
+pub struct SearchChoiceView {
+    pub filter: crate::SearchFilter,
+    pub maximum: u16,
+    pub destination: crate::SearchDestination,
+    pub tapped: bool,
+    pub reveal: bool,
+    pub cards: Vec<ObjectView>,
+    pub selected: Vec<CardId>,
+}
+
 /// Public face-up exile relation, bound to both exact incarnations.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct ExileLink {
@@ -574,6 +596,8 @@ pub struct Observation {
     pub announcing_payment: Option<PendingPaymentView>,
     pub mana_choices: Vec<Mana>,
     pub library_choice: Option<LibraryChoiceView>,
+    pub search_choice: Option<SearchChoiceView>,
+    pub known_hand: Vec<ObjectRef>,
     pub payment_request: Option<PaymentRequestView>,
     pub waiting_triggers: Vec<SpellView>,
     pub effect_discards: Vec<CardId>,
@@ -670,6 +694,7 @@ impl Game {
                 free_tokens: Vec::new(),
                 static_sources: Vec::new(),
                 exile_links: Vec::new(),
+                known_hand: Vec::new(),
                 players,
                 rng,
                 active: config.starting_player,
@@ -725,7 +750,8 @@ impl Game {
         match self.state.pending {
             Pending::Mulligan(p) | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
-            Pending::EffectLibrary { player }
+            Pending::EffectSearch { player }
+            | Pending::EffectLibrary { player }
             | Pending::EffectMana { player, .. }
             | Pending::PayCosts { player }
             | Pending::Targets { player }
@@ -1067,6 +1093,22 @@ impl Game {
                     );
                 }
             }
+            Pending::EffectSearch { player } => {
+                let choice = s.resolving.as_ref().unwrap().search.as_ref().unwrap();
+                if emit(Action::FinishSearch) {
+                    return true;
+                }
+                if choice.selected.len() < usize::from(choice.spec.maximum) {
+                    for &card in &s.players[player.index()].library {
+                        if choice.spec.filter.matches(s.objects[card as usize].card)
+                            && !choice.selected.contains(&card)
+                            && emit(Action::ChooseSearch { card })
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
             Pending::EffectLibrary { .. } => {
                 let choice = s.resolving.as_ref().unwrap().library.as_ref().unwrap();
                 for &card in &choice.remaining {
@@ -1344,6 +1386,8 @@ impl Game {
                     self.continue_trigger_order();
                 }
             }
+            Action::ChooseSearch { card } => self.choose_search(card),
+            Action::FinishSearch => self.finish_search(actor),
             Action::ArrangeLibrary { card, destination } => {
                 self.arrange_library(actor, card, destination);
             }
@@ -1575,6 +1619,11 @@ impl Game {
             .generation
             .checked_add(1)
             .expect("object generation exhausted");
+        if before.zone == Zone::Hand {
+            self.state
+                .known_hand
+                .retain(|&reference| reference != before.reference);
+        }
         if before.zone == Zone::Library {
             let library = &mut self.state.players[before.owner.index()].library;
             let position = library
@@ -2026,8 +2075,9 @@ impl Game {
         }
     }
 
-    /// Player-facing information only. Opponent hands and all library identities
-    /// and RNG state are absent; partial declarations are visible only to their actor.
+    /// Player-facing information only. Unrevealed opponent hands and RNG state
+    /// are absent. Explicit library looks/searches and partial declarations are
+    /// projected only to their actor; known revealed hand incarnations are public.
     pub fn observe(&self, viewer: Player) -> Observation {
         let s = &self.state;
         let owns_choice = self.actor() == Some(viewer);
@@ -2035,15 +2085,17 @@ impl Game {
             .objects
             .iter()
             .enumerate()
-            .filter(|(_, o)| {
+            .filter(|(i, o)| {
                 o.zone != Zone::Outside
                     && o.zone != Zone::Library
-                    && (o.zone != Zone::Hand || o.owner == viewer)
+                    && (o.zone != Zone::Hand
+                        || o.owner == viewer
+                        || s.known_hand.contains(&self.object_ref(*i as CardId)))
             })
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 13,
+            schema: 14,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -2061,6 +2113,7 @@ impl Game {
                 Pending::EffectOptional { .. } => "optional_effect",
                 Pending::EffectMana { .. } => "mana_choice",
                 Pending::EffectLibrary { .. } => "library_choice",
+                Pending::EffectSearch { .. } => "library_search",
                 Pending::EffectDiscard { .. } => "effect_discard",
                 Pending::Attackers => "attackers",
                 Pending::Blockers => "blockers",
@@ -2150,6 +2203,27 @@ impl Game {
             } else {
                 None
             },
+            search_choice: if owns_choice {
+                s.resolving
+                    .as_ref()
+                    .and_then(|r| r.search.as_ref())
+                    .map(|choice| SearchChoiceView {
+                        filter: choice.spec.filter,
+                        maximum: choice.spec.maximum,
+                        destination: choice.spec.destination,
+                        tapped: choice.spec.tapped,
+                        reveal: choice.spec.reveal,
+                        cards: s.players[viewer.index()]
+                            .library
+                            .iter()
+                            .map(|&id| self.object_view(id))
+                            .collect(),
+                        selected: choice.selected.clone(),
+                    })
+            } else {
+                None
+            },
+            known_hand: s.known_hand.clone(),
             waiting_triggers: s.ordering_triggers.clone(),
             effect_discards: s
                 .resolving
@@ -2197,6 +2271,7 @@ impl Game {
         std::mem::size_of::<State>()
             + s.objects.len() * std::mem::size_of::<Object>()
             + s.exile_links.len() * std::mem::size_of::<ExileLink>()
+            + s.known_hand.len() * std::mem::size_of::<ObjectRef>()
             + (s.free_tokens.len() + s.static_sources.len()) * std::mem::size_of::<CardId>()
             + s.players
                 .iter()
@@ -2208,16 +2283,21 @@ impl Game {
                 .as_ref()
                 .map(|resolution| {
                     resolution
-                        .library
+                        .search
                         .as_ref()
-                        .map(|choice| {
-                            (choice.remaining.len()
-                                + choice.top.len()
-                                + choice.bottom.len()
-                                + choice.graveyard.len())
-                                * std::mem::size_of::<CardId>()
-                        })
+                        .map(|choice| choice.selected.len() * std::mem::size_of::<CardId>())
                         .unwrap_or(0)
+                        + resolution
+                            .library
+                            .as_ref()
+                            .map(|choice| {
+                                (choice.remaining.len()
+                                    + choice.top.len()
+                                    + choice.bottom.len()
+                                    + choice.graveyard.len())
+                                    * std::mem::size_of::<CardId>()
+                            })
+                            .unwrap_or(0)
                         + resolution
                             .selected_discards
                             .iter()
@@ -2272,3 +2352,7 @@ mod exile_tests;
 #[cfg(test)]
 #[path = "engine_land_tests.rs"]
 mod land_tests;
+
+#[cfg(test)]
+#[path = "engine_search_tests.rs"]
+mod search_tests;

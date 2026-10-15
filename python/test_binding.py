@@ -17,7 +17,7 @@ class BindingTests(unittest.TestCase):
             observation = game.observe("P0")
             coverage = json.loads((Path(__file__).resolve().parents[1] / "data/standard/coverage.json").read_text())
             self.assertEqual(observation["catalogue"], coverage["catalogue_version"])
-            self.assertEqual(observation["schema"], 13)
+            self.assertEqual(observation["schema"], 14)
             self.assertEqual(len(observation["objects"]), 7)
             self.assertTrue(all(o["owner"] == "P0" for o in observation["objects"]))
             self.assertEqual(game.observe("P1")["actions"], [])
@@ -38,6 +38,63 @@ class BindingTests(unittest.TestCase):
             game.drop_snapshot(saved)
             with self.assertRaisesRegex(EngineError, "unknown snapshot"):
                 game.restore(saved)
+
+    def test_search_private_selection_public_destination_and_clone_restore(self):
+        for source in ("Evolving Wilds", "World Map"):
+            deck = ["Forest"] * 36 + [source] * 24
+            with Game([deck, deck], seed=17, deck_rules="Freeform") as game:
+                obs = game.observe("P0")
+                for _ in range(1200):
+                    self.assertIsNone(obs["outcome"])
+                    if obs["viewer"] != obs["actor"]:
+                        obs = game.observe(obs["actor"])
+                    if obs["search_choice"] is not None:
+                        break
+                    def score(action):
+                        kind = action["kind"]
+                        if kind == "TapMana":
+                            return 15 if obs["active"] == obs["actor"] and obs["step"] in ("Main1", "Main2") else -5
+                        return {"Keep": 100, "PlayLand": 90, "Cast": 80, "Activate": 70,
+                                "AnnounceCast": -20, "AnnounceActivate": -20,
+                                "Mulligan": -100, "Concede": -1000}.get(kind, 0)
+                    index = max(range(len(obs["actions"])), key=lambda i: score(obs["actions"][i]))
+                    obs = game.step(obs, index)
+                else:
+                    self.fail("no search reached: " + source)
+                actor = obs["actor"]
+                other = "P1" if actor == "P0" else "P0"
+                choice = obs["search_choice"]
+                self.assertEqual(choice["filter"], "BasicLand")
+                self.assertTrue(choice["cards"])
+                self.assertTrue(all(o["zone"] == "Library" for o in choice["cards"]))
+                hidden = game.observe(other)
+                self.assertIsNone(hidden["search_choice"])
+                self.assertFalse(hidden["actions"])
+                index = next(i for i, a in enumerate(obs["actions"]) if a["kind"] == "ChooseSearch")
+                selected = obs["actions"][index]["card"]
+                obs = game.step(obs, index)
+                self.assertEqual(obs["search_choice"]["selected"], [selected])
+                self.assertIsNone(game.observe(other)["search_choice"])
+                self.assertFalse(any(o["id"] == selected for o in game.observe(other)["objects"]))
+                saved = game.snapshot()
+                index = next(i for i, a in enumerate(obs["actions"]) if a["kind"] == "FinishSearch")
+                with game.clone() as branch:
+                    expected = branch.step(branch.observe(actor), index)
+                actual = game.step(obs, index)
+                self.assertEqual(actual, expected)
+                obj = next(o for o in game.observe(other)["objects"] if o["id"] == selected)
+                if source == "World Map":
+                    self.assertEqual(obj["zone"], "Hand")
+                    self.assertIn(obj["reference"], actual["known_hand"])
+                else:
+                    self.assertEqual(obj["zone"], "Battlefield")
+                    self.assertTrue(obj["tapped"])
+                game.restore(saved)
+                replay = game.step(game.observe(actor), index)
+                replay.pop("revision")
+                actual.pop("revision")
+                self.assertEqual(actual, replay)
+                game.drop_snapshot(saved)
 
     def test_nonbasic_land_entry_private_surveil_and_mana_replay(self):
         deck = ["Commercial District"] * 60

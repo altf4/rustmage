@@ -9,6 +9,7 @@ pub(super) struct Resolution {
     pub discards: [u16; 2],
     pub selected_discards: [Vec<CardId>; 2],
     pub library: Option<LibraryChoice>,
+    pub search: Option<super::search::SearchChoice>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -254,6 +255,7 @@ impl Game {
             discards: [0; 2],
             selected_discards: [Vec::new(), Vec::new()],
             library: None,
+            search: None,
         });
         self.run_program();
     }
@@ -332,6 +334,16 @@ impl Game {
                         return;
                     }
                 },
+                Instruction::Search(spec) => {
+                    self.state.resolving.as_mut().unwrap().search = Some(search::SearchChoice {
+                        spec,
+                        selected: Vec::new(),
+                    });
+                    self.state.pending = Pending::EffectSearch {
+                        player: item.controller,
+                    };
+                    return;
+                }
                 Instruction::Scry(amount) | Instruction::Surveil(amount) => {
                     let remaining: Vec<_> = self.state.players[item.controller.index()]
                         .library

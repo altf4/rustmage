@@ -219,6 +219,7 @@ fn resolution_mana_choice_is_private_owned_and_replayable_before_later_instructi
         discards: [0; 2],
         selected_discards: [Vec::new(), Vec::new()],
         library: None,
+        search: None,
     });
     game.run_program();
     assert_eq!(game.actor(), Some(Player::P0));

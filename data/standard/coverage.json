@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "3fa202c8b6917cda68f14e9673c5f3baa97df659f0953397f84603cf615ecd19",
+  "catalogue_version": "212dc68ed1194df3cbf6b05feb5b2d67d2d921d6e519282990ebdc95ff932e6a",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 499,
-  "implemented_total": 505,
-  "token_definitions": 29,
+  "implemented_standard_cards": 512,
+  "implemented_total": 518,
+  "token_definitions": 30,
   "cards": [
     {
       "name": "Plains",
@@ -2139,8 +2139,8 @@
     {
       "name": "Beamsaw Prospector",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Beanstalk Wurm // Plant Beans",
@@ -3573,8 +3573,8 @@
     {
       "name": "Burnished Hart",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Burnout Bashtronaut",
@@ -5865,8 +5865,8 @@
     {
       "name": "Dauntless Scrapbot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Dauntless Veteran",
@@ -8355,8 +8355,8 @@
     {
       "name": "Evolving Wilds",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Exalted Sunborn",
@@ -8421,8 +8421,8 @@
     {
       "name": "Expedition Map",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Expel the Interlopers",
@@ -9987,8 +9987,8 @@
     {
       "name": "Galactic Wayfarer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Galewind Moose",
@@ -19551,8 +19551,8 @@
     {
       "name": "Promising Vein",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Prompto Argentum",
@@ -21981,8 +21981,8 @@
     {
       "name": "Sami's Curiosity",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Sami, Ship's Engineer",
@@ -22893,8 +22893,8 @@
     {
       "name": "Shared Roots",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Shark Shredder, Killer Clone",
@@ -26349,8 +26349,8 @@
     {
       "name": "Terramorphic Expanse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Terrapact Intimidator",
@@ -27171,8 +27171,8 @@
     {
       "name": "They Went This Way",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Thief's Knife",
@@ -29313,8 +29313,8 @@
     {
       "name": "Vibrant Cityscape",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Vibrant Outburst",
@@ -30681,8 +30681,8 @@
     {
       "name": "World Map",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "World War Hulk",

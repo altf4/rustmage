@@ -96,12 +96,49 @@ impl ManaProduction {
     }
 }
 
+/// Fixed qualities admitted by library-search instructions.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum SearchFilter {
+    BasicLand,
+    Land,
+    Creature,
+    Artifact,
+    Enchantment,
+}
+impl SearchFilter {
+    pub(crate) fn matches(self, card: Card) -> bool {
+        match self {
+            Self::BasicLand => card.is_land() && card.is_basic_land(),
+            Self::Land => card.is_land(),
+            Self::Creature => card.is_creature(),
+            Self::Artifact => card.is_artifact(),
+            Self::Enchantment => card.kind_mask() & 32 != 0,
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum SearchDestination {
+    Hand,
+    Battlefield,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub(crate) struct SearchSpec {
+    pub filter: SearchFilter,
+    pub maximum: u16,
+    pub destination: SearchDestination,
+    pub tapped: bool,
+    pub reveal: bool,
+}
+
 /// Immutable rule bytecode. Only the program counter and choices live in state.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
     AddMana(ManaProduction),
     Scry(u16),
     Surveil(u16),
+    Search(SearchSpec),
     Damage(i32),
     Grow {
         subject: Subject,

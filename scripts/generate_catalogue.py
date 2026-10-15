@@ -163,10 +163,11 @@ PREDEFINED = {
     'Clue': '{2}, Sacrifice this artifact: Draw a card.',
     'Mutagen': '{1}, {T}, Sacrifice this artifact: Put a +1/+1 counter on target creature. Activate only as a sorcery.',
     'Heartwood': '{T}: Add {R} or {G}.',
+    'Lander': '{2}, {T}, Sacrifice this artifact: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle.',
 }
 
 def predefined_program(text):
-    m = re.fullmatch(r'create (a|an|one|two|three|four|five|six|seven|eight) (tapped )?(Treasure|Gold|Food|Clue|Mutagen|Heartwood) tokens?\.', text)
+    m = re.fullmatch(r'create (a|an|one|two|three|four|five|six|seven|eight) (tapped )?(Treasure|Gold|Food|Clue|Mutagen|Heartwood|Lander) tokens?\.', text)
     if not m: return None
     count, tapped, kind = m.groups()
     factory = {'name': kind + ' Token', 'subtypes': kind, 'colors': 24 if kind == 'Heartwood' else 0,
@@ -263,6 +264,22 @@ def normalize_duration(text):
     return text
 
 
+def search_program(text):
+    quality = r'(basic land|land|creature|artifact|enchantment)'
+    match = re.fullmatch(r'search your library for (a|up to two|up to three|up to four) ' + quality +
+        r' cards?, (reveal (?:it|them), )?put (?:it|them) (into your hand|onto the battlefield)( tapped)?, then shuffle\.', text)
+    if not match: return None
+    count, kind, reveal, destination, tapped = match.groups()
+    plural = count != 'a'
+    if (' cards,' in text) != plural or ('put them ' in text) != plural: return None
+    if reveal and (('reveal them,' in reveal) != plural): return None
+    count = {'a': 1, 'up to two': 2, 'up to three': 3, 'up to four': 4}[count]
+    if destination == 'into your hand' and (tapped or not reveal): return None
+    filter_ = {'basic land': 'BasicLand', 'land': 'Land', 'creature': 'Creature', 'artifact': 'Artifact', 'enchantment': 'Enchantment'}[kind]
+    destination = 'Hand' if destination == 'into your hand' else 'Battlefield'
+    return [f'Search(SearchSpec {{ filter: SearchFilter::{filter_}, maximum: {count}, destination: SearchDestination::{destination}, tapped: {str(bool(tapped)).lower()}, reveal: {str(bool(reveal)).lower()} }})']
+
+
 def statement_program(text):
     """Compile only these complete sentences; residual text never gets ignored."""
     if not isinstance(text, str) or not text:
@@ -274,6 +291,7 @@ def statement_program(text):
     if text == "exile your graveyard.": return ['ExileGraveyard(PlayerSet::Controller)']
     if text == 'investigate.': return predefined_program('create a Clue token.')
     if mana := mana_program(text): return mana
+    if search := search_program(text): return search
     if not text.endswith('.'):
         return None
     if m := re.fullmatch(r'put (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on this creature\.', text):

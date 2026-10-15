@@ -324,6 +324,7 @@ fn all_program_instructions_finish_before_loss_sba_even_across_discard() {
         discards: [0; 2],
         selected_discards: [Vec::new(), Vec::new()],
         library: None,
+        search: None,
     });
     game.run_program();
     assert_eq!(game.state.players[0].life, 0);
@@ -474,6 +475,7 @@ fn simultaneous_discards_keep_all_selections_private_until_committed() {
         discards: [0; 2],
         selected_discards: [Vec::new(), Vec::new()],
         library: None,
+        search: None,
     });
     game.run_program();
     assert_eq!(game.actor(), Some(Player::P1));
