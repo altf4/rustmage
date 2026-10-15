@@ -34,7 +34,7 @@ zone changes. Moonlit Lamenter and Gnarlbark Elm exercise entry counters and
 removal of counters of any supported kind.
 
 Observation schema **9** adds activation actions, the `ActivatedAbility` stack
-kind and `ObjectView.used_abilities`. The latter is a per-ability bit mask,
+kind, actor-only `announcing_payment`, and `ObjectView.used_abilities`. The latter is a per-ability bit mask,
 owned by the object and cleared each turn or zone change. Catalogue definitions
 remain shared immutable data. Snapshot state includes all costs, flags and
 private choices required to replay an activation.

@@ -263,6 +263,18 @@ fn targeted_counter_cost_is_deferred_until_announcement_completes_and_replays() 
     assert_eq!(game.state.pending, Pending::Targets { player: Player::P0 });
     assert_eq!(game.state.players[0].mana, [2, 0, 1, 0, 0]);
     assert_eq!(game.object_view(elm).counters.minus_one, 2);
+    assert_eq!(
+        game.observe(Player::P0).announcing_payment,
+        Some(PendingPaymentView {
+            mana: [2, 0, 1, 0, 0],
+            counters: Counters {
+                plus_one: 0,
+                minus_one: 2,
+                stun: 0
+            }
+        })
+    );
+    assert!(game.observe(Player::P1).announcing_payment.is_none());
     assert!(game.state.stack.is_empty());
     let before = game.snapshot();
     let choose = Action::ChooseTarget {

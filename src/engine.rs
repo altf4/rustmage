@@ -436,6 +436,13 @@ pub struct PlayerView {
     pub hand_count: usize,
 }
 
+/// The choosing player's uncommitted announcement costs.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct PendingPaymentView {
+    pub mana: Mana,
+    pub counters: Counters,
+}
+
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
     pub schema: u32,
@@ -452,6 +459,7 @@ pub struct Observation {
     pub stack: Vec<SpellView>,
     pub resolving: Option<SpellView>,
     pub announcing: Option<SpellView>,
+    pub announcing_payment: Option<PendingPaymentView>,
     pub waiting_triggers: Vec<SpellView>,
     pub effect_discards: Vec<CardId>,
     pub attackers: Vec<CardId>,
@@ -1767,6 +1775,16 @@ impl Game {
                 }
                 item
             }),
+            announcing_payment: if owns_choice {
+                s.announcing.as_ref().and_then(|announcement| {
+                    announcement.payment.map(|mana| PendingPaymentView {
+                        mana,
+                        counters: announcement.counter_payment,
+                    })
+                })
+            } else {
+                None
+            },
             waiting_triggers: s.ordering_triggers.clone(),
             effect_discards: s
                 .resolving
