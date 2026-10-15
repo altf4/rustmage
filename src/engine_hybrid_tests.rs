@@ -646,3 +646,42 @@ fn all_admitted_printed_mana_costs_and_values_match_frozen_oracle_facts() {
         }
     }
 }
+
+#[test]
+fn synthetic_modal_hybrid_declaration_commits_mode_then_cost_then_targets_then_payment() {
+    let mut g = scenario();
+    let c = named(&mut g, Player::P0, "Abandon Attachments", Zone::Hand);
+    let bear = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+    g.state.players[0].mana = [0, 1, 0, 0, 0, 1];
+    replay(&mut g, Action::AnnounceCast { card: c });
+    // Inject a synthetic modal declaration shape into the shared continuation.
+    // Current complete printed hybrid spells have no modes. Production obtains
+    // these mode/target facts from the immutable definition in choose_mode.
+    g.continue_announcement_choices(true);
+    assert_eq!(g.state.pending, Pending::Modes { player: Player::P0 });
+    // Querying a mode list requires a real modal definition; this IR fixture
+    // instead checks the routing state, then declares its explicit target plan.
+    let saved = g.snapshot();
+    let mut fork = g.clone();
+    let plan = TargetPlan::Single(TargetSpec::one(TargetRule::Creature));
+    g.declare_mode(0, plan);
+    fork.declare_mode(0, plan);
+    assert_eq!(g.snapshot(), fork.snapshot());
+    assert_eq!(g.state.pending, Pending::SpellCost { player: Player::P0 });
+    assert_eq!(g.state.announcing.as_ref().unwrap().item.mode, Some(0));
+    let expected = g.snapshot();
+    g.restore(&saved);
+    g.declare_mode(0, plan);
+    assert_eq!(g.snapshot(), expected);
+    choose(&mut g, [0, 1, 0, 0, 0, 0]);
+    assert_eq!(g.state.pending, Pending::Targets { player: Player::P0 });
+    replay(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(bear),
+        },
+    );
+    assert_eq!(g.state.pending, Pending::PayCosts { player: Player::P0 });
+    pay(&mut g);
+    assert_eq!(g.state.stack[0].mode, Some(0));
+}

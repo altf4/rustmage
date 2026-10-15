@@ -8,8 +8,8 @@ including ordinary colored/colorless requirements and generic amounts, retain
 their existing meaning. Printed cost text and mana value remain unchanged;
 choosing a color to pay does not change a card's colors.
 
-The staged native casting API uses an owned `spell_cost` decision before mode,
-target or mana-ability choices. `ChooseSpellCost { cost }` commits one payable
+The staged native casting API uses an owned `spell_cost` decision after any mode
+selection and before target or mana-ability choices. `ChooseSpellCost { cost }` commits one payable
 equivalent. Subsequent funding searches and `PayCosts` use only that fixed cost.
 The player can legally float extra mana while paying, but cannot switch the
 committed colored requirements. Illegal indices, wrong actors, unaffordable
@@ -65,14 +65,15 @@ factories; no prior admissions were removed. Other hybrid cards remain rejected
 when their additional rules are missing, including changeling, hybrid graveyard
 activations, compound attack events and continuous entry restrictions.
 
-Validation: 468 Rust tests (460 unit plus eight integration), 82 compiler tests,
+Validation: 469 Rust tests (461 unit plus eight integration), 82 compiler tests,
 51 rebuilt release Python tests, consistency, rustfmt and Clippy with warnings
-denied. Seventeen focused Rust fixtures cover all equivalents, exhaustive small
+denied. Eighteen focused Rust fixtures cover all equivalents, exhaustive small
 pool allocation comparison, committed funding, wrong actions, private effects,
 source/target relations, all new printed bodies and owned replay. The pre-target
 ordering test explicitly injects a synthetic declaration target plan; no additional
-printed definition is admitted by that fixture. Modal hybrid spell compilation is
-covered synthetically; current complete printed admissions have no modal spell.
+printed definition is admitted by that fixture. Modal hybrid compilation and
+mode-first routing are covered by synthetic compiler/declaration fixtures; current
+complete printed admissions have no modal spell.
 
 One hundred supported Standard games between mono-green and mono-blue decks
 completed naturally: 45,437 decisions, 801 committed hybrid choices, 801 staged
