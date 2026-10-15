@@ -14,6 +14,66 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_changeling_intrinsic_flags_never_enable_dynamic_grants_or_type_removal(self):
+        result=generate.creature_template(self.card(oracle_text='Changeling (This card is every creature type.)\nReach'))
+        self.assertEqual(result[1],524288|2)
+        result=generate.trigger_creature_template(self.card(oracle_text='Changeling\nWhen this creature enters, draw a card.'))
+        self.assertEqual(result[1],524288)
+        token=generate.token_program('create a 1/1 colorless Shapeshifter creature token with changeling.')
+        self.assertIsNotNone(token)
+        self.assertTrue(any(t['keywords']==524288 for t in generate.TOKEN_DEFS.values()))
+        for text in ['Target creature gains changeling until end of turn.',
+                     'Target creature gets +3/-3 and loses all creature types until end of turn.',
+                     'This creature gains changeling until end of turn.']:
+            self.assertIsNone(generate.targeted_program(text));self.assertIsNone(generate.statement_program(text))
+        self.assertIsNone(generate.permanent_program_template(self.card(oracle_text='Changeling\n{0}: This creature gains changeling until end of turn.')))
+        self.assertIsNone(generate.creature_template(self.card(oracle_text='Changeling\nThis creature loses all creature types.')))
+
+    def test_changeling_shared_optional_programs_require_complete_shapes(self):
+        self.assertEqual(generate.targeted_program('Destroy up to one target artifact or enchantment.'),(('ArtifactEnchantment',0,1),['Destroy']))
+        self.assertEqual(generate.targeted_program("Return up to one other target creature you control to its owner's hand."),(('OtherCreatureYou',0,1),['ReturnToHand']))
+        self.assertEqual(generate.targeted_program('Exile up to two target cards from graveyards. You gain 3 life.'),(('CardGrave',0,2),['Exile','GainLife(PlayerSet::Controller, 3)']))
+        code=generate.statement_program('You may search your library for a basic land card, reveal it, put it into your hand, then shuffle.')
+        self.assertEqual(code[0],'May { skip: 1 }');self.assertIn('SearchFilter::BasicLand',code[1])
+        for text in ['Destroy up to two target artifacts or enchantments.',
+                     'Exile up to two target cards from graveyards. If two cards were exiled, you gain 3 life.',
+                     "Return up to one other target creature you control to its owner's hand. If you do, draw a card."]:
+            self.assertIsNone(generate.targeted_program(text),text)
+        self.assertIsNone(generate.statement_program('You may search your library for a basic land card, reveal it, put it into your hand, then shuffle. If you do, draw a card.'))
+
+    def test_creature_type_snapshot_is_validated_and_changes_catalogue_fingerprint(self):
+        import copy,json,tempfile
+        from unittest.mock import patch
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        taxonomy=json.loads((generate.ROOT/'data/creature-types.json').read_text())
+        self.assertEqual(len(taxonomy['types']),324)
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);(root/'data').mkdir();path=root/'data/creature-types.json'
+            path.write_text(json.dumps(taxonomy))
+            with patch.object(generate,'ROOT',root):
+                _,before=generate.compile_catalogue(rows,target)
+                changed=copy.deepcopy(taxonomy);changed['normalization']+=' Reviewed.';path.write_text(json.dumps(changed))
+                _,after=generate.compile_catalogue(rows,target)
+                self.assertNotEqual(before['catalogue_version'],after['catalogue_version'])
+                for types in [[],['Elf','Elf'],['Zombie','Elf'],['Elf Warrior']]:
+                    changed['types']=types;path.write_text(json.dumps(changed))
+                    with self.assertRaisesRegex(ValueError,'creature types'):generate.compile_catalogue(rows,target)
+
+    def test_changeling_complete_admissions_preserve_missing_mechanics(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,coverage=generate.compile_catalogue(rows,target)
+        supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for name in ['Changeling Wayfinder','Chitinous Graspling','Chomping Changeling','Curious Farm Animals',
+                     'Environmental Scientist','Flock Impostor','Gangly Stompling','Graveshifter',
+                     'Mischievous Sneakling','Prideful Feastling','Rooftop Percher','Three Tree Mascot']:
+            self.assertIn(name,supported)
+        for name in ['Feisty Spikeling','Nameless Inversion','Barkform Harvester','Taurean Mauler','Firdoch Core',
+                     'Crib Swap','Sizzling Changeling','Mutable Explorer','Omni-Changeling']:
+            self.assertNotIn(name,supported)
+
     def test_hybrid_spell_costs_enumerate_unique_nonhybrid_equivalents(self):
         self.assertEqual(generate.spell_cost_options('{G/W}{G/W}'),[
             ([0,0,0,0,2,0],0),([1,0,0,0,1,0],0),([2,0,0,0,0,0],0)])
@@ -57,7 +117,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Moonrise Cleric','Noggle Robber','Pond Prophet','Pretending Poxbearers','Punk Frogs',
                      'Slithering Cryptid','Tempest Angler','Wandering Musicians']:
             self.assertIn(name,supported)
-        for name in ['Blessed Ghoul','Chitinous Graspling','Mischievous Sneakling','Gangly Stompling','Mouser Mark III',
+        for name in ['Blessed Ghoul','Mouser Mark III',
                      'Sokka, Lateral Strategist','Spider-Woman, Stunning Savior','Nori, Teller of Tales']:
             self.assertNotIn(name,supported)
 

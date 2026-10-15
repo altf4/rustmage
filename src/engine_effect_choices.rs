@@ -41,13 +41,7 @@ impl Game {
             && (!f.nonland || !o.card.is_land())
             && (!f.other || object != choice.source)
             && f.tokens.is_none_or(|token| o.card.is_token() == token)
-            && f.subtype.is_none_or(|subtype| {
-                o.card
-                    .info()
-                    .type_line
-                    .split_once(" — ")
-                    .is_some_and(|(_, types)| types.split_whitespace().any(|word| word == subtype))
-            })
+            && f.subtype.is_none_or(|subtype| o.card.has_subtype(subtype))
     }
 
     pub(super) fn start_effect_choice(

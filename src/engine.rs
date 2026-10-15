@@ -2924,3 +2924,7 @@ mod limited_trigger_tests;
 #[cfg(test)]
 #[path = "engine_hybrid_tests.rs"]
 mod hybrid_tests;
+
+#[cfg(test)]
+#[path = "engine_changeling_tests.rs"]
+mod changeling_tests;

@@ -66,16 +66,9 @@ impl Game {
                         _ => true,
                     }
                     && (!filter.other || dealer.reference != source.reference)
-                    && filter.subtype.is_none_or(|subtype| {
-                        facts
-                            .card
-                            .info()
-                            .type_line
-                            .split_once(" — ")
-                            .is_some_and(|(_, types)| {
-                                types.split_whitespace().any(|word| word == subtype)
-                            })
-                    })
+                    && filter
+                        .subtype
+                        .is_none_or(|subtype| facts.card.has_subtype(subtype))
                     && dealer.keywords.contains(filter.keyword)
                     && (!filter.attacking || facts.attacking)
                     && filter

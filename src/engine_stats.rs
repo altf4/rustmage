@@ -100,14 +100,9 @@ impl Game {
                 _ => true,
             }
             && (!filter.other || self.object_ref(id) != source)
-            && filter.subtype.is_none_or(|subtype| {
-                object
-                    .card
-                    .info()
-                    .type_line
-                    .split_once(" — ")
-                    .is_some_and(|(_, types)| types.split_whitespace().any(|word| word == subtype))
-            })
+            && filter
+                .subtype
+                .is_none_or(|subtype| object.card.has_subtype(subtype))
             && (filter.keyword == Keywords::NONE || self.keywords(id).contains(filter.keyword))
             && (!filter.attacking || self.state.attackers.iter().any(|a| a.card == id))
             && filter

@@ -187,10 +187,7 @@ impl Game {
                 match rule {
                     TargetRule::CreatureOrVehicle { relation } => {
                         obj.zone == Zone::Battlefield
-                            && (obj.card.is_creature()
-                                || obj.card.info().type_line.split_once(" — ").is_some_and(
-                                    |(_, types)| types.split_whitespace().any(|ty| ty == "Vehicle"),
-                                ))
+                            && (obj.card.is_creature() || obj.card.has_subtype("Vehicle"))
                             && (relation == -1 || (obj.owner == controller) == (relation == 0))
                     }
                     TargetRule::Creature | TargetRule::Any => {

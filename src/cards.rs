@@ -159,11 +159,7 @@ impl SearchFilter {
             Self::Creature => card.is_creature(),
             Self::Artifact => card.is_artifact(),
             Self::Enchantment => card.kind_mask() & 32 != 0,
-            Self::Subtype(subtype) => card
-                .info()
-                .type_line
-                .split_once(" — ")
-                .is_some_and(|(_, types)| types.split_whitespace().any(|ty| ty == subtype)),
+            Self::Subtype(subtype) => card.has_subtype(subtype),
         }
     }
 }
@@ -644,6 +640,7 @@ impl Keywords {
     pub const MAX_ONE_BLOCKER: Self = Self(65536);
     pub const MIN_THREE_BLOCKERS: Self = Self(131072);
     pub const NO_TOKEN_BLOCKERS: Self = Self(262144);
+    pub const CHANGELING: Self = Self(524288);
     pub fn contains(self, keyword: Self) -> bool {
         self.0 & keyword.0 == keyword.0
     }
@@ -703,12 +700,41 @@ mod generated {
     use super::*;
     include!("generated/catalogue.rs");
 }
-pub use generated::CATALOGUE_VERSION;
+pub use generated::{CATALOGUE_VERSION, CREATURE_TYPES};
+
+/// Creature types from the pinned Comprehensive Rules, including Time Lord.
+pub fn is_creature_type(subtype: &str) -> bool {
+    CREATURE_TYPES.binary_search(&subtype).is_ok()
+}
+
+fn printed_subtype(type_line: &str, subtype: &str) -> bool {
+    let Some((_, types)) = type_line.split_once(" — ") else {
+        return false;
+    };
+    if subtype == "Time Lord" {
+        let mut words = types.split_whitespace();
+        while let Some(word) = words.next() {
+            if word == "Time" && words.next() == Some("Lord") {
+                return true;
+            }
+        }
+        false
+    } else {
+        // CR205.3m defines one two-word creature type, not separate Time/Lord types.
+        subtype != "Time" && subtype != "Lord" && types.split_whitespace().any(|ty| ty == subtype)
+    }
+}
 
 /// Mana is W U B R G C; C is colorless. Generic costs deliberately have no colour slot.
 pub type Mana = [u32; 6];
 
 impl Card {
+    /// Intrinsic subtype membership in every zone. Dynamic type/ability-changing
+    /// effects remain gated; changeling adds creature types, never other subtypes.
+    pub fn has_subtype(self, subtype: &str) -> bool {
+        self.keywords().contains(Keywords::CHANGELING) && is_creature_type(subtype)
+            || printed_subtype(self.info().type_line, subtype)
+    }
     pub fn from_name(name: &str) -> Option<Self> {
         // Accept the foundation's JSON tokens as aliases for canonical names.
         let canonical = match name {
@@ -896,4 +922,51 @@ pub(crate) fn payments(pool: Mana, colored: Mana, generic: u32, mut emit: impl F
     }
     let remaining = std::array::from_fn(|i| pool[i] - colored[i]);
     visit(0, generic, remaining, colored, &mut emit);
+}
+
+#[cfg(test)]
+mod subtype_tests {
+    use super::*;
+    #[test]
+    fn two_word_creature_type_is_one_subtype_and_other_subtypes_stay_separate() {
+        let line = "Legendary Creature — Time Lord Doctor";
+        assert!(printed_subtype(line, "Time Lord"));
+        assert!(printed_subtype(line, "Doctor"));
+        for typ in [
+            "Time",
+            "Lord",
+            "Time Lord Doctor",
+            "Lord Doctor",
+            "Human",
+            "",
+        ] {
+            assert!(!printed_subtype(line, typ), "{typ}");
+        }
+        assert!(printed_subtype("Artifact Creature — Food Golem", "Food"));
+        assert!(printed_subtype("Artifact Creature — Food Golem", "Golem"));
+        assert!(!printed_subtype(
+            "Creature — Human Soldier",
+            "Human Soldier"
+        ));
+    }
+    #[test]
+    fn compiled_creature_types_match_pinned_taxonomy_exactly() {
+        let doc: serde_json::Value =
+            serde_json::from_str(include_str!("../data/creature-types.json")).unwrap();
+        let expected = doc["types"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|s| s.as_str().unwrap())
+            .collect::<Vec<_>>();
+        assert_eq!(CREATURE_TYPES, expected);
+        assert!(is_creature_type("C'tan"));
+        assert!(is_creature_type("Shi'ar"));
+        assert!(is_creature_type("Time Lord"));
+        for typ in [
+            "Hunter", "Klingon", "Xindi", "Forest", "Aura", "Time", "Lord", "elf",
+        ] {
+            assert!(!is_creature_type(typ));
+        }
+    }
 }
