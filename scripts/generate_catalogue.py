@@ -356,6 +356,92 @@ def spell_program_template(card):
     return ('None', program) if program else None
 
 
+def activation_cost(text):
+    cost = dict(colored=[0] * 5, generic=0, tap=False, sacrifice=False, life=0, remove=None)
+    seen = set()
+    for component in text.split(', '):
+        mana = fixed_cost(component)
+        if mana:
+            if 'mana' in seen: return None
+            seen.add('mana')
+            cost['colored'], cost['generic'] = mana
+        elif component == '{T}':
+            if cost['tap']: return None
+            cost['tap'] = True
+        elif component in ('Sacrifice this creature', 'Sacrifice this artifact', 'Sacrifice this enchantment', 'Sacrifice this permanent'):
+            if cost['sacrifice']: return None
+            cost['sacrifice'] = True
+        elif m := re.fullmatch(r'Pay ([0-9]+) life', component):
+            if cost['life'] or int(m[1]) > 65535: return None
+            cost['life'] = int(m[1])
+        elif m := re.fullmatch(r'Remove (a|one|two|three|four|five|six) (?:(\+1/\+1|-1/-1|stun) )?counters? from this (?:creature|artifact|enchantment|permanent)', component):
+            if cost['remove']: return None
+            cost['remove'] = (COUNTER_KINDS[m[2]] if m[2] else None, COUNT_WORDS[m[1]])
+        else:
+            return None
+    return cost
+
+
+def permanent_program_template(card):
+    """Whole supported permanent text, including all activation restrictions."""
+    if (card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'), str)
+            or fixed_cost(card.get('mana_cost', '')) is None):
+        return None
+    typ = card.get('type_line', '').split(' — ')[0]
+    if typ not in ('Creature', 'Artifact Creature', 'Artifact', 'Enchantment'):
+        return None
+    creature = 'Creature' in typ
+    if creature and (not card.get('power', '').isdigit() or not card.get('toughness', '').isdigit()):
+        return None
+    text = re.sub(r'\([^()]*\)', '', card['oracle_text']).strip()
+    activations, body = [], []
+    enters = [0, 0, 0]
+    for line in text.split('\n'):
+        # These aliases denote the source only, not any arbitrary mentioned name.
+        line = line.replace('When this artifact enters, ', 'When this creature enters, ').replace('When this enchantment enters, ', 'When this creature enters, ')
+        if m := re.fullmatch(r'This creature enters with (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on it\.', line):
+            if not creature: return None
+            enters[list(COUNTER_KINDS).index(m[2])] += COUNT_WORDS[m[1]]
+            continue
+        if ': ' not in line:
+            body.append(line)
+            continue
+        cost_text, effect_text = line.split(': ', 1)
+        cost = activation_cost(cost_text)
+        if cost is None: return None
+        sorcery = effect_text.endswith(' Activate only as a sorcery.')
+        once = effect_text.endswith(' Activate only once each turn.')
+        if sorcery: effect_text = effect_text[:-len(' Activate only as a sorcery.')]
+        if once: effect_text = effect_text[:-len(' Activate only once each turn.')]
+        if effect_text.startswith('This creature deals '):
+            effect_text = 'it deals ' + effect_text[len('This creature deals '):]
+        targeted = targeted_program(effect_text)
+        if targeted: targets, program = targeted
+        else: targets, program = 'None', statement_program(effect_text)
+        if program is None: return None
+        activations.append((cost, targets, program, sorcery, once))
+    if len(activations) > 64: return None
+    body_text = '\n'.join(body).strip()
+    proxy = dict(card, type_line='Creature', power=card.get('power', '0'),
+                 toughness=card.get('toughness', '1'), oracle_text=body_text)
+    template = creature_template(proxy)
+    trigger = trigger_creature_template(proxy)
+    if template: effect, keywords = template; triggers = []
+    elif trigger: effect, keywords, triggers = trigger
+    else: return None
+    if not creature: effect = 'Permanent'
+    if not activations and not any(enters) and creature: return None
+    return effect, keywords, triggers, activations, enters
+
+
+def rust_activations(abilities):
+    rows = []
+    for cost, targets, program, sorcery, once in abilities:
+        remove = 'None' if cost['remove'] is None else f"Some(({'None' if cost['remove'][0] is None else 'Some(CounterKind::' + cost['remove'][0] + ')'}, {cost['remove'][1]}))"
+        rows.append(f"ActivatedAbility {{ cost: ActivationCost {{ colored: {cost['colored']}, generic: {cost['generic']}, tap: {str(cost['tap']).lower()}, sacrifice: {str(cost['sacrifice']).lower()}, life: {cost['life']}, remove: {remove} }}, targets: {rust_targets(targets)}, program: {rust_program(program)}, sorcery: {str(sorcery).lower()}, once_per_turn: {str(once).lower()} }}")
+    return '&[' + ', '.join(rows) + ']'
+
+
 def rust_program(program):
     return '&[' + ', '.join('Instruction::' + instruction for instruction in program) + ']'
 
@@ -388,6 +474,8 @@ def compile_catalogue(snapshot, target):
         template = creature_template(card)
         trigger_template = trigger_creature_template(card)
         spell = spell_program_template(card)
+        permanent = permanent_program_template(card)
+        activations, enters = [], [0, 0, 0]
         abilities = []
         if name in legacy:
             effect, fallback_cost, color = legacy[name]
@@ -403,6 +491,8 @@ def compile_catalogue(snapshot, target):
                 effect, keywords, abilities = trigger_template
             elif spell is not None:
                 effect = 'Spell'
+            elif permanent is not None:
+                effect, keywords, abilities, activations, enters = permanent
         programs = {
             'Damage(3)': ('Any', ['Damage(3)']), 'Damage(2)': ('Any', ['Damage(2)']),
             'Grow': ('Creature', ['Grow(3)']), 'Draw': ('None', ['Draw(PlayerSet::Controller, 2)']),
@@ -425,9 +515,9 @@ def compile_catalogue(snapshot, target):
         oracle_id = f"Some({quote(card['oracle_id'])})" if card else 'None'
         type_line = card.get('type_line', 'Basic Land' if basic else 'Creature' if kind & 1 else 'Instant' if kind & 8 else 'Sorcery' if kind & 4 else '')
         oracle_keywords = '&[' + ', '.join(quote(word) for word in card.get('keywords', [])) + ']'
-        definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(name)}, oracle_id: {oracle_id}, mana_cost: {quote(cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in cards).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
+        definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(name)}, oracle_id: {oracle_id}, mana_cost: {quote(cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in cards).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, activated: {rust_activations(activations)}, enters: Counters {{ plus_one: {enters[0]}, minus_one: {enters[1]}, stun: {enters[2]} }}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
         coverage.append({'name': name, 'standard_legal': name in cards, 'implemented': effect != 'Unsupported',
-                         'implementation': 'explicit' if name in legacy else 'creature_template' if template else 'trigger_template' if trigger_template else 'spell_template' if spell else None})
+                         'implementation': 'explicit' if name in legacy else 'creature_template' if template else 'trigger_template' if trigger_template else 'spell_template' if spell else 'permanent_template' if permanent else None})
 
     # Only factories referenced by wholly accepted cards enter the executable catalogue.
     used_tokens = sorted(set(re.findall(r'__TOKEN_([0-9a-f]+)__', '\n'.join(definitions))))
@@ -441,7 +531,7 @@ def compile_catalogue(snapshot, target):
         types = ((factory['extra_type'].title() + ' ') if factory['extra_type'] else '') + 'Creature'
         type_line = types + ' — ' + factory['subtypes']
         kind = 1 | (16 if factory['extra_type'] == 'artifact' else 32 if factory['extra_type'] == 'enchantment' else 0)
-        definitions.append(f"    Definition {{ info: CardInfo {{ name: {json.dumps(name)}, oracle_id: None, mana_cost: \"\", type_line: {json.dumps(type_line, ensure_ascii=False)}, oracle_keywords: &[], standard_legal: false, implemented: true, keywords: Keywords({factory['keywords']}), deck_limit: None }}, effect: Effect::Creature({factory['power']}, {factory['toughness']}), triggers: &[], kind: {kind}, basic: false, mana_color: None, colored: [0; 5], generic: 0 }},")
+        definitions.append(f"    Definition {{ info: CardInfo {{ name: {json.dumps(name)}, oracle_id: None, mana_cost: \"\", type_line: {json.dumps(type_line, ensure_ascii=False)}, oracle_keywords: &[], standard_legal: false, implemented: true, keywords: Keywords({factory['keywords']}), deck_limit: None }}, effect: Effect::Creature({factory['power']}, {factory['toughness']}), triggers: &[], activated: &[], enters: Counters {{ plus_one: 0, minus_one: 0, stun: 0 }}, kind: {kind}, basic: false, mana_color: None, colored: [0; 5], generic: 0 }},")
         token_infos.append(f"    TokenInfo {{ name: {json.dumps(factory['name'])}, subtypes: {json.dumps(factory['subtypes'])}, colors: {factory['colors']} }},")
         marker = '__TOKEN_' + key + '__'
         definitions = [definition.replace(marker, f'Card({index})') for definition in definitions]

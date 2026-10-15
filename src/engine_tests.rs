@@ -34,6 +34,7 @@ pub(super) fn spawn(game: &mut Game, p: Player, card: Card, zone: Zone) -> CardI
         deathtouch_since_sba: false,
         growth: 0,
         counters: Counters::default(),
+        used_abilities: 0,
     });
     if zone == Zone::Library {
         game.state.players[p.index()].library.push(id);

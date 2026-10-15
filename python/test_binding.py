@@ -17,7 +17,7 @@ class BindingTests(unittest.TestCase):
             observation = game.observe("P0")
             coverage = json.loads((Path(__file__).resolve().parents[1] / "data/standard/coverage.json").read_text())
             self.assertEqual(observation["catalogue"], coverage["catalogue_version"])
-            self.assertEqual(observation["schema"], 8)
+            self.assertEqual(observation["schema"], 9)
             self.assertEqual(len(observation["objects"]), 7)
             self.assertTrue(all(o["owner"] == "P0" for o in observation["objects"]))
             self.assertEqual(game.observe("P1")["actions"], [])
@@ -119,6 +119,56 @@ else:
             self.assertEqual(resolve(game), expected)
             with self.assertRaisesRegex(EngineError, "tokens cannot"):
                 Game([[tokens[0]["card"]] * 60] * 2, deck_rules="Freeform")
+
+    def test_activated_self_sacrifice_has_independent_stack_identity_and_replay(self):
+        deck = ["Mountain"] * 10 + ["Fanatical Firebrand"] * 2
+        with Game([deck, deck], seed=7, deck_rules="Freeform") as game:
+            for _ in range(100):
+                obs = game.observe("P0")
+                obs = game.observe(obs["actor"])
+                def score(action):
+                    if action["kind"] == "TapMana":
+                        return 20 if obs["active"] == obs["actor"] and obs["step"] == "Main1" else -5
+                    return {"Keep": 100, "PlayLand": 90, "Cast": 80,
+                            "Concede": -1000, "Mulligan": -100}.get(action["kind"], 0)
+                index = max(range(len(obs["actions"])), key=lambda i: score(obs["actions"][i]))
+                kind = obs["actions"][index]["kind"]
+                game.step(obs, index)
+                if kind == "Cast":
+                    break
+            else:
+                self.fail("Firebrand never cast")
+            def pass_twice():
+                for _ in range(2):
+                    current = game.observe("P0")
+                    current = game.observe(current["actor"])
+                    game.step(current, next(i for i, a in enumerate(current["actions"]) if a["kind"] == "Pass"))
+            pass_twice()
+            obs = game.observe("P0")
+            obs = game.observe(obs["actor"])
+            opponent = "P1" if obs["actor"] == "P0" else "P0"
+            index = next(i for i, a in enumerate(obs["actions"])
+                         if a["kind"] == "Activate" and a["target"] == {"Player": opponent})
+            action = obs["actions"][index]
+            self.assertEqual(action["counter_payment"], {"plus_one": 0, "minus_one": 0, "stun": 0})
+            source = next(o for o in obs["objects"] if o["id"] == action["card"])
+            saved = game.snapshot()
+            game.step(obs, index)
+            pending = game.observe("P0")
+            self.assertEqual(pending["stack"][-1]["kind"], {"ActivatedAbility": {"ability": 0}})
+            self.assertEqual(pending["stack"][-1]["object"], source["reference"])
+            self.assertEqual(next(o for o in pending["objects"] if o["id"] == action["card"])["zone"], "Graveyard")
+            pass_twice()
+            expected = game.observe("P0")
+            expected.pop("revision")
+            self.assertEqual(expected["players"][0 if opponent == "P0" else 1]["life"], 19)
+            game.restore(saved)
+            current = game.observe(obs["actor"])
+            game.step(current, current["actions"].index(action))
+            pass_twice()
+            actual = game.observe("P0")
+            actual.pop("revision")
+            self.assertEqual(actual, expected)
 
     def test_parallel_independent_games(self):
         def run(seed):

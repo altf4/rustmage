@@ -10,6 +10,7 @@ pub(crate) enum Effect {
     Creature(i32, i32),
     Spell(TargetSpec, &'static [Instruction]),
     Land,
+    Permanent,
     Unsupported,
 }
 
@@ -111,7 +112,7 @@ pub enum CounterKind {
     Stun,
 }
 
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Counters {
     pub plus_one: u32,
     pub minus_one: u32,
@@ -147,6 +148,24 @@ pub(crate) struct TriggeredAbility {
     pub condition: TriggerCondition,
     pub targets: TargetSpec,
     pub program: &'static [Instruction],
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct ActivationCost {
+    pub colored: Mana,
+    pub generic: u32,
+    pub tap: bool,
+    pub sacrifice: bool,
+    pub life: u16,
+    pub remove: Option<(Option<CounterKind>, u32)>,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct ActivatedAbility {
+    pub cost: ActivationCost,
+    pub targets: TargetSpec,
+    pub program: &'static [Instruction],
+    pub sorcery: bool,
+    pub once_per_turn: bool,
 }
 
 /// Implemented static keyword flags. Other keyword cards remain unsupported.
@@ -200,6 +219,8 @@ struct Definition {
     info: CardInfo,
     effect: Effect,
     triggers: &'static [TriggeredAbility],
+    activated: &'static [ActivatedAbility],
+    enters: Counters,
     kind: u8,
     basic: bool,
     mana_color: Option<usize>,
@@ -287,6 +308,12 @@ impl Card {
         generated::DEFINITIONS[self.0 as usize].triggers
     }
 
+    pub(crate) fn activations(self) -> &'static [ActivatedAbility] {
+        generated::DEFINITIONS[self.0 as usize].activated
+    }
+    pub(crate) fn enters_counters(self) -> Counters {
+        generated::DEFINITIONS[self.0 as usize].enters
+    }
     pub(crate) fn mana_color(self) -> Option<usize> {
         generated::DEFINITIONS[self.0 as usize].mana_color
     }
