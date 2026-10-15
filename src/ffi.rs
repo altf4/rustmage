@@ -5,8 +5,11 @@ use std::ffi::{CStr, CString, c_char};
 use std::panic::{AssertUnwindSafe, catch_unwind};
 
 fn output(value: String) -> *mut c_char {
-    CString::new(value)
-        .expect("JSON cannot contain literal NUL")
+    // Config errors are plain text, and serde may include decoded user input.
+    // In particular, an escaped NUL in an unknown enum variant must remain an
+    // ordinary error, not panic outside the FFI unwind boundary.
+    CString::new(value.replace('\0', "\\0"))
+        .expect("NUL escaped above")
         .into_raw()
 }
 

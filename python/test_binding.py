@@ -1,5 +1,9 @@
 import concurrent.futures
 import json
+import os
+from pathlib import Path
+import subprocess
+import sys
 import unittest
 from rustmage import EngineError, Game
 
@@ -44,6 +48,20 @@ class BindingTests(unittest.TestCase):
         game.close()
         with self.assertRaisesRegex(EngineError, "closed"):
             game.observe("P0")
+
+    def test_decoded_nul_in_invalid_card_is_an_error_without_aborting_host(self):
+        # A regression in this boundary can abort the interpreter, so exercise it
+        # in a child and assert normal exit rather than crashing the whole suite.
+        result = subprocess.run([sys.executable, "-c", """
+from rustmage import EngineError, Game
+try:
+    Game([["bad\\x00"] * 60] * 2)
+except EngineError as error:
+    assert "unknown variant" in str(error)
+else:
+    raise AssertionError("invalid card accepted")
+"""], env={**os.environ, "PYTHONPATH": str(Path(__file__).resolve().parent)}, capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_parallel_independent_games(self):
         def run(seed):

@@ -18,6 +18,7 @@ cargo test
 cargo build --release
 PYTHONPATH=python python3 -m unittest discover -s python -p 'test_*.py' -v
 cargo run --release --bin benchmark -- 1000
+cargo run --release --example branch
 ```
 
 Use the Rust API from another crate with a path or Git dependency:
@@ -105,6 +106,8 @@ simulator objects containing full private state; do not give them to a policy.
 
 Fork/restore is the substrate for MCTS, not an implemented hidden-information
 search algorithm. Searching the actual hidden state would let an agent cheat.
+`examples/branch.rs` demonstrates isolated root-action rollouts and restoration;
+it deliberately labels the example as privileged perfect-information planning.
 Belief sampling/determinization and network inference hooks are tracked in
 [issue #5](https://github.com/altf4/rustmage/issues/5).
 
@@ -121,3 +124,7 @@ This is new Rust code informed by the local XMage source at commit
 Rules reference: Wizards' [Comprehensive Rules, September 25, 2026](https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt).
 Tests are focused independent fixtures and randomized legal-play checks; the
 current tests are not differential acceptance tests against Java XMage.
+
+`scripts/benchmark.py --games 10000 --repeats 5 --cpu N --output report.json`
+records repeated release measurements with CPU/compiler metadata. Build the
+release binary first; `--cpu` is optional and pins only the benchmark subprocess.
