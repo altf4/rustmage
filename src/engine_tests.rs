@@ -32,12 +32,15 @@ pub(super) fn spawn(game: &mut Game, p: Player, card: Card, zone: Zone) -> CardI
         summoning_sick: false,
         damage: 0,
         deathtouch_since_sba: false,
-        growth: 0,
+        growth: Stats::default(),
         counters: Counters::default(),
         used_abilities: 0,
     });
     if zone == Zone::Library {
         game.state.players[p.index()].library.push(id);
+    }
+    if zone == Zone::Battlefield {
+        game.register_static_source(id);
     }
     id
 }
@@ -45,6 +48,7 @@ pub(super) fn spawn(game: &mut Game, p: Player, card: Card, zone: Zone) -> CardI
 pub(super) fn scenario() -> Game {
     let mut game = fresh();
     game.state.objects.clear();
+    game.state.static_sources.clear();
     for player in &mut game.state.players {
         player.library.clear();
         player.kept = true;
@@ -371,7 +375,7 @@ fn target_is_checked_again_on_resolution() {
     pass_pair(&mut game);
     assert_eq!(game.state.objects[bears as usize].zone, Zone::Graveyard);
     pass_pair(&mut game);
-    assert_eq!(game.state.objects[bears as usize].growth, 0);
+    assert_eq!(game.state.objects[bears as usize].growth, Stats::default());
     assert_eq!(game.state.objects[growth as usize].zone, Zone::Graveyard);
 }
 
@@ -487,7 +491,7 @@ fn killing_a_blocker_does_not_unblock_attacker() {
 fn cleanup_discards_then_expires_damage_and_growth_together() {
     let mut game = scenario();
     let bears = spawn(&mut game, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
-    game.state.objects[bears as usize].growth = 3;
+    game.state.objects[bears as usize].growth = (3).into();
     game.state.objects[bears as usize].damage = 4;
     for _ in 0..9 {
         spawn(&mut game, Player::P0, Card::Mountain, Zone::Hand);
@@ -506,7 +510,7 @@ fn cleanup_discards_then_expires_damage_and_growth_together() {
     }
     assert_eq!(game.state.active, Player::P1);
     assert_eq!(game.state.objects[bears as usize].damage, 0);
-    assert_eq!(game.state.objects[bears as usize].growth, 0);
+    assert_eq!(game.state.objects[bears as usize].growth, Stats::default());
     assert_eq!(game.state.objects[bears as usize].zone, Zone::Battlefield);
     assert_eq!(game.state.players[0].mana, [0; 6]);
 }

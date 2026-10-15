@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "b178eab182e057740c4341477fd67e9e270e900907fc32a38a05c18b2db65c84",
+  "catalogue_version": "c57c9b69a94d3f029588c537ad1c57e4f1133e69d0c263e5d774cc07cd8c09cc",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 239,
-  "implemented_total": 245,
+  "implemented_standard_cards": 279,
+  "implemented_total": 285,
   "token_definitions": 28,
   "cards": [
     {
@@ -627,8 +627,8 @@
     {
       "name": "Air Nomad Legacy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Air Response Unit",
@@ -1065,8 +1065,8 @@
     {
       "name": "Anthem of Champions",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Anthropede",
@@ -1563,8 +1563,8 @@
     {
       "name": "Attercop",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Attuma, Atlantean Warlord",
@@ -2175,8 +2175,8 @@
     {
       "name": "Beast-Kin Ranger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Beastbond Outcaster",
@@ -2415,8 +2415,8 @@
     {
       "name": "Bewildering Blizzard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Beyond the Quiet",
@@ -3585,8 +3585,8 @@
     {
       "name": "Burrog Banemaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Burrog Barrage",
@@ -5373,8 +5373,8 @@
     {
       "name": "Crossroads Watcher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Crossway Troublemakers",
@@ -5565,8 +5565,8 @@
     {
       "name": "Cunning Maneuver",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Curator of Destinies",
@@ -5871,8 +5871,8 @@
     {
       "name": "Dauntless Veteran",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Dawn's Light Archer",
@@ -5919,8 +5919,8 @@
     {
       "name": "Dawnwing Marshal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Day of Black Sun",
@@ -6339,8 +6339,8 @@
     {
       "name": "Desolation Prowler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Desolation of Smaug",
@@ -7185,8 +7185,8 @@
     {
       "name": "Dual-Sun Adepts",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Dual-Sun Technique",
@@ -7305,8 +7305,8 @@
     {
       "name": "Dwarven Provisioner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Dwarven Shortsword",
@@ -7947,8 +7947,8 @@
     {
       "name": "Empyrean Eagle",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Emrakul, the Exigent Doom",
@@ -9315,8 +9315,8 @@
     {
       "name": "Fleeting Distraction",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Fleeting Effigy",
@@ -9753,8 +9753,8 @@
     {
       "name": "Friendly Ghost",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Friendly Neighborhood",
@@ -10845,8 +10845,8 @@
     {
       "name": "Goblin Oriflamme",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Goblin Plate Mail",
@@ -12087,8 +12087,8 @@
     {
       "name": "Hermitic Nautilus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Hero in Training",
@@ -12747,8 +12747,8 @@
     {
       "name": "Icecave Crasher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Iceridge Serpent",
@@ -12891,8 +12891,8 @@
     {
       "name": "Imperious Perfect",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Impolite Entrance",
@@ -14463,8 +14463,8 @@
     {
       "name": "Kraven's Cats",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Kraven's Last Hunt",
@@ -15333,8 +15333,8 @@
     {
       "name": "Loporrit Scout",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Lord Dregg, Insect Invader",
@@ -15849,8 +15849,8 @@
     {
       "name": "Malamet War Scribe",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Malboro",
@@ -16359,8 +16359,8 @@
     {
       "name": "Merfolk Coralsmith",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Merrow Skyswimmer",
@@ -16611,8 +16611,8 @@
     {
       "name": "Mindful Biomancer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Mindseeker Oculus",
@@ -18141,8 +18141,8 @@
     {
       "name": "On the Job",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "One Last Job",
@@ -18423,8 +18423,8 @@
     {
       "name": "Overkill",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Overlord of the Balemurk",
@@ -20523,8 +20523,8 @@
     {
       "name": "Rebellious Strike",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Reckless Detective",
@@ -20541,8 +20541,8 @@
     {
       "name": "Reckless Ransacking",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Reckless Velocitaur",
@@ -20685,8 +20685,8 @@
     {
       "name": "Regal Imperiosaur",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Rehearsed Debater",
@@ -20745,8 +20745,8 @@
     {
       "name": "Remnant Elemental",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Render Speechless",
@@ -22941,8 +22941,8 @@
     {
       "name": "Shatterwing Pegasus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "She-Hulk, Jade Defender",
@@ -23037,8 +23037,8 @@
     {
       "name": "Shivan Dragon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Shock Brigade",
@@ -25239,8 +25239,8 @@
     {
       "name": "Sugar Rush",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Suki, Courageous Rescuer",
@@ -27627,8 +27627,8 @@
     {
       "name": "Timid Shieldbearer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Tin Street Gossip",
@@ -28263,8 +28263,8 @@
     {
       "name": "Turtle Power!",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Turtle Van",
@@ -29901,8 +29901,8 @@
     {
       "name": "Warren Elder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Warren Torchmaster",
@@ -29973,8 +29973,8 @@
     {
       "name": "Water Tribe Captain",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Water Tribe Rallier",
@@ -30273,8 +30273,8 @@
     {
       "name": "White Lotus Reinforcements",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "White Lotus Tile",
@@ -31035,8 +31035,8 @@
     {
       "name": "Zookeeper Mechan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Zoraline, Cosmos Caller",

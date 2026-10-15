@@ -417,13 +417,45 @@ impl Game {
                         .collect();
                     self.apply_damage_batch(&events);
                 }
-                Instruction::Grow(amount) => {
-                    for bound in &item.targets {
-                        if self.same_target_object(*bound)
-                            && let Target::Card(id) = bound.target
-                        {
-                            self.state.objects[id as usize].growth += amount;
+                Instruction::Grow {
+                    subject,
+                    power,
+                    toughness,
+                } => {
+                    let stats = Stats { power, toughness };
+                    match subject {
+                        Subject::Source => {
+                            if self.on_battlefield(item.card)
+                                && self.object_ref(item.card) == item.object
+                            {
+                                self.state.objects[item.card as usize].growth += stats;
+                            }
                         }
+                        Subject::Targets => {
+                            for bound in &item.targets {
+                                if self.same_target_object(*bound)
+                                    && let Target::Card(id) = bound.target
+                                {
+                                    self.state.objects[id as usize].growth += stats;
+                                }
+                            }
+                        }
+                    }
+                }
+                Instruction::GrowCreatures {
+                    filter,
+                    power,
+                    toughness,
+                } => {
+                    // Lock the affected set at resolution; future entrants get no bonus.
+                    let affected: Vec<_> = (0..self.state.objects.len())
+                        .map(|id| id as CardId)
+                        .filter(|&id| {
+                            self.creature_matches(filter, item.controller, item.object, id)
+                        })
+                        .collect();
+                    for id in affected {
+                        self.state.objects[id as usize].growth += Stats { power, toughness };
                     }
                 }
                 Instruction::PutCounters {

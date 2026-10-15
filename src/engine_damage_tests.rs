@@ -312,7 +312,7 @@ fn exhaustive_small_trample_partitions_match_complete_rule_constraints() {
             for power in 1..=6 {
                 let mut game = scenario();
                 let dino = permanent(&mut game, Player::P0, "Colossadactyl");
-                game.state.objects[dino as usize].growth = power - 4;
+                game.state.objects[dino as usize].growth = (power - 4).into();
                 let b1 = permanent(&mut game, Player::P1, "Grizzly Bears");
                 let b2 = permanent(&mut game, Player::P1, "Goblin Piker");
                 game.state.objects[b1 as usize].damage = marked;

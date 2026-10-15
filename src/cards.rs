@@ -100,7 +100,16 @@ pub(crate) enum Instruction {
     Scry(u16),
     Surveil(u16),
     Damage(i32),
-    Grow(i32),
+    Grow {
+        subject: Subject,
+        power: i32,
+        toughness: i32,
+    },
+    GrowCreatures {
+        filter: CreatureFilter,
+        power: i32,
+        toughness: i32,
+    },
     Counter,
     ReturnToHand,
     ReturnToBattlefield,
@@ -125,6 +134,51 @@ pub(crate) enum Instruction {
     May {
         skip: usize,
     },
+}
+
+/// Fixed additive layer-7c values, including asymmetric temporary modifiers.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub(crate) struct Stats {
+    pub power: i32,
+    pub toughness: i32,
+}
+impl From<i32> for Stats {
+    fn from(value: i32) -> Self {
+        Self {
+            power: value,
+            toughness: value,
+        }
+    }
+}
+impl std::ops::AddAssign for Stats {
+    fn add_assign(&mut self, other: Self) {
+        self.power = self
+            .power
+            .checked_add(other.power)
+            .expect("power representation exhausted");
+        self.toughness = self
+            .toughness
+            .checked_add(other.toughness)
+            .expect("toughness representation exhausted");
+    }
+}
+
+/// Predicates depend only on earlier-layer characteristics and combat membership.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct CreatureFilter {
+    pub relation: i8,
+    pub other: bool,
+    pub subtype: Option<&'static str>,
+    pub keyword: Keywords,
+    pub attacking: bool,
+    pub tokens: Option<bool>,
+    pub artifact: bool,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct StaticModifier {
+    pub filter: CreatureFilter,
+    pub stats: Stats,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -317,6 +371,9 @@ impl Card {
     }
     pub fn is_token(self) -> bool {
         self.token_info().is_some()
+    }
+    pub(crate) fn static_modifiers(self) -> &'static [StaticModifier] {
+        generated::static_modifiers(self)
     }
     pub fn keywords(self) -> Keywords {
         self.info().keywords

@@ -272,7 +272,7 @@ impl Game {
         } else {
             Vec::new()
         };
-        let events: Vec<_> = targets
+        let ids: Vec<_> = targets
             .iter()
             .copied()
             .filter(|&bound| self.same_target_object(bound))
@@ -280,10 +280,8 @@ impl Game {
                 Target::Card(id) | Target::Spell(id) => Some(id),
                 _ => None,
             })
-            .collect::<Vec<_>>()
-            .into_iter()
-            .map(|id| self.move_object_raw(id, destination))
             .collect();
+        let events = self.move_objects_raw(&ids, destination);
         for event in &events {
             self.zone_triggers(event, &sources);
         }

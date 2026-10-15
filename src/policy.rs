@@ -14,7 +14,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             .iter()
             .find_map(|instruction| match instruction {
                 Instruction::PutCounters { kind, .. } => Some(*kind == CounterKind::PlusOne),
-                Instruction::Grow(amount) => Some(*amount >= 0),
+                Instruction::Grow {
+                    power, toughness, ..
+                } => Some(*power >= 0 && *toughness >= 0),
                 Instruction::Untap | Instruction::ReturnToBattlefield => Some(true),
                 Instruction::Draw(PlayerSet::Targeted, _)
                 | Instruction::GainLife(PlayerSet::Targeted, _) => Some(true),

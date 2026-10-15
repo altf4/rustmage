@@ -167,6 +167,65 @@ def predefined_program(text):
     return [f'CreateTokens {{ token: __TOKEN_{key}__, amount: {TOKEN_COUNTS[count]}, tapped: {str(bool(tapped)).lower()} }}']
 
 
+SUBTYPE_PLURALS = {'elves': 'Elf', 'goblins': 'Goblin', 'dinosaurs': 'Dinosaur', 'dragons': 'Dragon',
+                   'allies': 'Ally', 'turtles': 'Turtle', 'soldiers': 'Soldier', 'zombies': 'Zombie',
+                   'vampires': 'Vampire', 'merfolk': 'Merfolk', 'humans': 'Human', 'cats': 'Cat',
+                   'dogs': 'Dog', 'rabbits': 'Rabbit', 'birds': 'Bird', 'bats': 'Bat', 'mice': 'Mouse',
+                   'kithkin': 'Kithkin', 'knights': 'Knight', 'warriors': 'Warrior', 'spirits': 'Spirit'}
+
+
+def creature_filter(text):
+    text = text.casefold()
+    if text.startswith('each '): text = text[5:].replace('creature', 'creatures', 1)
+    if text.startswith('all '): text = text[4:]
+    other = text.startswith('other ')
+    if other: text = text[6:]
+    attacking = text.startswith('attacking ')
+    if attacking: text = text[10:]
+    keyword = 0
+    if ' with ' in text:
+        text, word = text.split(' with ', 1)
+        if word not in KEYWORDS: return None
+        keyword = KEYWORDS[word]
+    relation = -1
+    if text.endswith(' you control'): relation, text = 0, text[:-12]
+    elif text.endswith(' your opponents control'): relation, text = 1, text[:-23]
+    subtype, tokens, artifact = 'None', 'None', False
+    if text == 'creatures': pass
+    elif text == 'creature tokens': tokens = 'Some(true)'
+    elif text == 'nontoken creatures': tokens = 'Some(false)'
+    elif text == 'artifact creatures': artifact = True
+    elif text in SUBTYPE_PLURALS: subtype = 'Some(' + json.dumps(SUBTYPE_PLURALS[text]) + ')'
+    else: return None
+    return (f'CreatureFilter {{ relation: {relation}, other: {str(other).lower()}, subtype: {subtype}, '
+            f'keyword: Keywords({keyword}), attacking: {str(attacking).lower()}, tokens: {tokens}, artifact: {str(artifact).lower()} }}')
+
+
+def grow_instruction(subject, power, toughness):
+    return f'Grow {{ subject: Subject::{subject}, power: {power}, toughness: {toughness} }}'
+
+
+def static_permanent_template(card):
+    if not isinstance(card.get('oracle_text'), str): return None
+    body, modifiers = [], []
+    for line in re.sub(r'\([^()]*\)', '', card['oracle_text']).strip().split('\n'):
+        m = re.fullmatch(r'(.+) get ([+-][0-9]+)/([+-][0-9]+)\.', line)
+        if m:
+            filt = creature_filter(m[1])
+            if filt is None or max(abs(int(m[2])), abs(int(m[3]))) > 32767: return None
+            modifiers.append(f'StaticModifier {{ filter: {filt}, stats: Stats {{ power: {int(m[2])}, toughness: {int(m[3])} }} }}')
+        else: body.append(line)
+    if not modifiers: return None
+    proxy = dict(card, oracle_text='\n'.join(body).strip())
+    result = permanent_program_template(proxy)
+    if result is None:
+        template = creature_template(proxy)
+        trigger = trigger_creature_template(proxy)
+        if template: effect, keywords = template; result = effect, keywords, [], [], [0,0,0]
+        elif trigger: effect, keywords, triggers = trigger; result = effect, keywords, triggers, [], [0,0,0]
+    return (*result, modifiers) if result else None
+
+
 def statement_program(text):
     """Compile only these complete sentences; residual text never gets ignored."""
     if not isinstance(text, str) or not text:
@@ -182,6 +241,13 @@ def statement_program(text):
         return [counter_instruction('Source', m[1], m[2])]
     if m := re.fullmatch(r'(scry|surveil) ([0-9]+)\.', text):
         return [f'{m[1].capitalize()}({int(m[2])})'] if int(m[2]) <= 65535 else None
+    if m := re.fullmatch(r'this creature gets ([+-][0-9]+)/([+-][0-9]+) until end of turn\.', text):
+        if max(abs(int(m[1])), abs(int(m[2]))) > 32767: return None
+        return [grow_instruction('Source', int(m[1]), int(m[2]))]
+    if m := re.fullmatch(r'(.+) gets? ([+-][0-9]+)/([+-][0-9]+) until end of turn\.', text):
+        filt = creature_filter(m[1])
+        if filt and max(abs(int(m[2])), abs(int(m[3]))) <= 32767:
+            return [f'GrowCreatures {{ filter: {filt}, power: {int(m[2])}, toughness: {int(m[3])} }}']
     draw = r'(a card|two cards|three cards|four cards)'
     if m := re.fullmatch(r'(scry|surveil) ([0-9]+), then draw ' + draw + r'\.', text):
         if int(m[2]) > 65535: return None
@@ -283,7 +349,7 @@ def targeted_program(text):
         "return up to one other target nonland permanent you control to its owner's hand.": (('OtherNonlandYou', 0, 1), ['ReturnToHand']),
         'untap target artifact or creature.': ('ArtifactCreature', ['Untap']),
         'untap target nonland permanent.': ('Nonland', ['Untap']),
-        'untap one or two target creatures. They each get +2/+2 until end of turn.': (('Creature', 1, 2), ['Untap', 'Grow(2)']),
+        'untap one or two target creatures. They each get +2/+2 until end of turn.': (('Creature', 1, 2), ['Untap', grow_instruction('Targets', 2, 2)]),
         "return target creature card from your graveyard to the battlefield.": ('CreatureGraveYou', ['ReturnToBattlefield']),
         "return target creature card from your graveyard to your hand.": ('CreatureGraveYou', ['ReturnToHand']),
         "return target creature card from a graveyard to its owner's hand.": ('CreatureGrave', ['ReturnToHand']),
@@ -325,9 +391,10 @@ def targeted_program(text):
     if m := re.fullmatch(r'it deals ([0-9]+) damage to (any target|target creature|target opponent|target player)\.', text):
         if int(m[1]) > 32767: return None
         return {'any target': 'Any', 'target creature': 'Creature', 'target opponent': 'Opponent', 'target player': 'Player'}[m[2]], [f'Damage({int(m[1])})']
-    if m := re.fullmatch(r'target creature gets ([+-][0-9]+)/([+-][0-9]+) until end of turn\.', text):
-        if m[1] != m[2] or abs(int(m[1])) > 32767: return None
-        return 'Creature', [f'Grow({int(m[1])})']
+    if m := re.fullmatch(r'(target creature|target creature you control|another target creature you control) gets ([+-][0-9]+)/([+-][0-9]+) until end of turn\.', text):
+        if max(abs(int(m[2])), abs(int(m[3]))) > 32767: return None
+        rule = {'target creature': 'Creature', 'target creature you control': 'CreatureYou', 'another target creature you control': 'OtherCreatureYou'}[m[1]]
+        return rule, [grow_instruction('Targets', int(m[2]), int(m[3]))]
     # A targeted clause followed by wholly non-targeted instructions is supported.
     if '. ' in text:
         first, rest = text.split('. ', 1)
@@ -516,6 +583,7 @@ def compile_catalogue(snapshot, target):
     definitions = []
     supported = []
     coverage = []
+    static_rows = []
     for index, name in enumerate(names):
         card = cards.get(name, {})
         cost = card.get('mana_cost', '')
@@ -526,6 +594,7 @@ def compile_catalogue(snapshot, target):
         trigger_template = trigger_creature_template(card)
         spell = spell_program_template(card)
         permanent = permanent_program_template(card)
+        static = static_permanent_template(card)
         activations, enters = [], [0, 0, 0]
         abilities = []
         if name in legacy:
@@ -544,9 +613,12 @@ def compile_catalogue(snapshot, target):
                 effect = 'Spell'
             elif permanent is not None:
                 effect, keywords, abilities, activations, enters = permanent
+            elif static is not None:
+                effect, keywords, abilities, activations, enters, modifiers = static
+                static_rows.append(f'        {index} => &[{", ".join(modifiers)}],')
         programs = {
             'Damage(3)': ('Any', ['Damage(3)']), 'Damage(2)': ('Any', ['Damage(2)']),
-            'Grow': ('Creature', ['Grow(3)']), 'Draw': ('None', ['Draw(PlayerSet::Controller, 2)']),
+            'Grow': ('Creature', [grow_instruction('Targets', 3, 3)]), 'Draw': ('None', ['Draw(PlayerSet::Controller, 2)']),
             'Counter': ('Spell', ['Counter']),
         }
         if effect in programs:
@@ -568,7 +640,7 @@ def compile_catalogue(snapshot, target):
         oracle_keywords = '&[' + ', '.join(quote(word) for word in card.get('keywords', [])) + ']'
         definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(name)}, oracle_id: {oracle_id}, mana_cost: {quote(cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in cards).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, activated: {rust_activations(activations)}, enters: Counters {{ plus_one: {enters[0]}, minus_one: {enters[1]}, stun: {enters[2]} }}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
         coverage.append({'name': name, 'standard_legal': name in cards, 'implemented': effect != 'Unsupported',
-                         'implementation': 'explicit' if name in legacy else 'creature_template' if template else 'trigger_template' if trigger_template else 'spell_template' if spell else 'permanent_template' if permanent else None})
+                         'implementation': 'explicit' if name in legacy else 'creature_template' if template else 'trigger_template' if trigger_template else 'spell_template' if spell else 'permanent_template' if permanent else 'static_template' if static else None})
 
     # Only factories referenced by wholly accepted cards enter the executable catalogue.
     used_tokens = sorted(set(re.findall(r'__TOKEN_([0-9a-f]+)__', '\n'.join(definitions))))
@@ -613,7 +685,7 @@ def compile_catalogue(snapshot, target):
     # Preserve existing Rust constants and JSON tokens. New callers use English names.
     for index, (name, _, _, _) in enumerate(LEGACY):
         lines.append(f'    pub const {name.replace(" ", "")}: Card = Card({index});')
-    lines += ['}', '']
+    lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '']
     return '\n'.join(lines), {'schema': 1, 'catalogue_version': version, 'standard_legal_cards': len(cards),
         'implemented_standard_cards': sum(row['implemented'] and row['standard_legal'] for row in coverage),
         'implemented_total': len(supported), 'token_definitions': len(used_tokens), 'cards': coverage}
