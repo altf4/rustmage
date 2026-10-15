@@ -14,7 +14,7 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Branch/restore | Complete owned-state copies, local RNG, reusable snapshots, replay/invariant tests | Cover every new continuation/mechanic; search over information sets |
 | Fast simulation | Reproducible initial Freeform benchmark and compact state | Profile full Standard decks as mechanics expand, including inference/encoding |
 | Fair observations | Hidden-hand/library projection and privacy tests; catalogue fingerprint | New private choices/zones; belief sampling and neural encoders |
-| Reviewed delivery | PR #6 foundation; PR #8 catalogue/templates; PR #10 damage/combat; PR #12 object identity/removal; PR #13 programs/triggers, with two subagent reviews each | Continue issue-managed, reviewed PRs through complete acceptance |
+| Reviewed delivery | PR #6 foundation; PR #8 catalogue/templates; PR #10 damage/combat; PR #12 object identity/removal; PR #13 programs/triggers; PR #15 targeting, with two subagent reviews each | Continue issue-managed, reviewed PRs through complete acceptance |
 
 The latest work adds shared typed target specifications for spells and triggers,
 incremental bounded announcements, target uniqueness and incarnation binding,
