@@ -41,7 +41,9 @@ These rules follow CR702.21, 605.3a–c and the resolution/cost rules in the
 [September 25, 2026 Comprehensive Rules](https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf).
 The parser admits exact fixed mana ward costs and complete counter statements;
 nonmana/variable ward, granted ward, conditional cost increases and all residual
-clauses remain gated.
+clauses remain gated. Paid counter branches must contain exactly one complete
+sentence; multi-sentence tails remain unsupported until their scope is represented
+explicitly.
 
 Sixteen complete Standard definitions are added:
 
