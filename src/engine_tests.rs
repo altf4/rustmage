@@ -33,6 +33,7 @@ pub(super) fn spawn(game: &mut Game, p: Player, card: Card, zone: Zone) -> CardI
         damage: 0,
         deathtouch_since_sba: false,
         growth: Stats::default(),
+        gained_keywords: Keywords::NONE,
         counters: Counters::default(),
         used_abilities: 0,
     });

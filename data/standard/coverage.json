@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "c57c9b69a94d3f029588c537ad1c57e4f1133e69d0c263e5d774cc07cd8c09cc",
+  "catalogue_version": "29eba90562f80a8cc85dfac31a5abe0b5d11c2e2bb67cc498297d2598deac966",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 279,
-  "implemented_total": 285,
+  "implemented_standard_cards": 335,
+  "implemented_total": 341,
   "token_definitions": 28,
   "cards": [
     {
@@ -315,8 +315,8 @@
     {
       "name": "Acrobatic Leap",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Action News Crew",
@@ -333,8 +333,8 @@
     {
       "name": "Adamant Will",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Adaptive Automaton",
@@ -771,8 +771,8 @@
     {
       "name": "Alesha's Legacy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Alesha, Who Laughs at Fate",
@@ -939,8 +939,8 @@
     {
       "name": "Ancestors' Aid",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Ancestral Anger",
@@ -1407,8 +1407,8 @@
     {
       "name": "Artifist Acumen",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Artist's Talent",
@@ -1755,8 +1755,8 @@
     {
       "name": "Axgard Cavalry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Ayli, Eternal Pilgrim",
@@ -2391,8 +2391,8 @@
     {
       "name": "Bestow Greatness",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Betor, Kin to All",
@@ -2715,8 +2715,8 @@
     {
       "name": "Blitzball Shot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Blood Crypt",
@@ -2811,8 +2811,8 @@
     {
       "name": "Blooming Stinger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Bloomvine Regent // Claim Territory",
@@ -2835,8 +2835,8 @@
     {
       "name": "Blossoming Defense",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Blossoming Sands",
@@ -3525,8 +3525,8 @@
     {
       "name": "Burdened Stoneback",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Burglar Rat",
@@ -4389,8 +4389,8 @@
     {
       "name": "Chase Inspiration",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Cheeky House-Mouse // Squeak By",
@@ -5277,8 +5277,8 @@
     {
       "name": "Crash Through",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Crash and Burn",
@@ -6633,8 +6633,8 @@
     {
       "name": "Dive Down",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Divergent Equation",
@@ -8649,8 +8649,8 @@
     {
       "name": "Fanatical Strength",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Fancy Footwork",
@@ -9339,8 +9339,8 @@
     {
       "name": "Flesh Burrower",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Flexible Waterbender",
@@ -9783,8 +9783,8 @@
     {
       "name": "Frog Butler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Frolicking Familiar // Blow Off Steam",
@@ -10563,8 +10563,8 @@
     {
       "name": "Give In to Violence",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Glacial Dragonhunt",
@@ -11385,8 +11385,8 @@
     {
       "name": "Guac & Marshmallow Pizza",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Guadosalam, Farplane Gateway",
@@ -11613,8 +11613,8 @@
     {
       "name": "Hamato Guardian Stance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Hamlet Glutton",
@@ -11673,8 +11673,8 @@
     {
       "name": "Hardened Escort",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Hardened Tactician",
@@ -12123,8 +12123,8 @@
     {
       "name": "Heroic Reinforcements",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Hex Magic",
@@ -12243,8 +12243,8 @@
     {
       "name": "High Stride",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "High-Flying Ace",
@@ -12453,8 +12453,8 @@
     {
       "name": "Horrid Vigor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Host of the Hereafter",
@@ -12897,8 +12897,8 @@
     {
       "name": "Impolite Entrance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Impossible Inferno",
@@ -13185,8 +13185,8 @@
     {
       "name": "Interjection",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Inti, Seneschal of the Sun",
@@ -13983,8 +13983,8 @@
     {
       "name": "Kavaron Turbodrone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Kavaron, Memorial World",
@@ -14151,14 +14151,14 @@
     {
       "name": "Kindled Fury",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Kindled Heroism",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Kindlespark Duo",
@@ -14793,8 +14793,8 @@
     {
       "name": "Leaping Ambush",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Leatherhead, Swamp Stalker",
@@ -15705,8 +15705,8 @@
     {
       "name": "Magic Damper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Magic Pot",
@@ -15813,8 +15813,8 @@
     {
       "name": "Make a Stand",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Makeshift Binding",
@@ -16113,8 +16113,8 @@
     {
       "name": "Masterful Flourish",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Mathemagics",
@@ -17949,8 +17949,8 @@
     {
       "name": "Octopus Form",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Offender at Large",
@@ -17961,8 +17961,8 @@
     {
       "name": "Offer Immortality",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Officious Interrogation",
@@ -18459,14 +18459,14 @@
     {
       "name": "Overprotect",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Overrun",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Overwhelming Surge",
@@ -18993,8 +18993,8 @@
     {
       "name": "Pillar Launch",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Pinecone Strike",
@@ -19125,8 +19125,8 @@
     {
       "name": "Plumecreed Escort",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Plumecreed Mentor",
@@ -19173,8 +19173,8 @@
     {
       "name": "Poison Dart Frog",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Poison the Waters",
@@ -19347,8 +19347,8 @@
     {
       "name": "Preposterous Proportions",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Presumed Dead",
@@ -19989,8 +19989,8 @@
     {
       "name": "Raccoon Rallier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Racers' Scoreboard",
@@ -20205,8 +20205,8 @@
     {
       "name": "Rampart Hunter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Ran and Shaw",
@@ -21147,8 +21147,8 @@
     {
       "name": "Rig for War",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Riku of Many Paths",
@@ -21321,8 +21321,8 @@
     {
       "name": "Riverguard's Reflexes",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Riverpyre Verge",
@@ -23079,8 +23079,8 @@
     {
       "name": "Shore Up",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Shoreline Looter",
@@ -23613,8 +23613,8 @@
     {
       "name": "Smaug's Fury",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Smaug, Wicked Worm",
@@ -24531,8 +24531,8 @@
     {
       "name": "Staggering Size",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Stalactite Dagger",
@@ -25605,8 +25605,8 @@
     {
       "name": "Sure Strike",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Sureshot Sower",
@@ -25629,8 +25629,8 @@
     {
       "name": "Surly Farrier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Surrak, Elusive Hunter",
@@ -26091,8 +26091,8 @@
     {
       "name": "Taxi Driver",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Teach by Example",
@@ -26403,8 +26403,8 @@
     {
       "name": "Terror of Mount Velus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Terror of the Peaks",
@@ -26433,8 +26433,8 @@
     {
       "name": "Tethermage's Advantage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Tetsuko Umezawa, Fugitive",
@@ -26565,8 +26565,8 @@
     {
       "name": "The Chase Is On",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "The Chief Warg",
@@ -27879,8 +27879,8 @@
     {
       "name": "Toxin Analysis",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Tractor Beam",
@@ -30411,8 +30411,8 @@
     {
       "name": "Wildheart Invoker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Wildvine Pummeler",

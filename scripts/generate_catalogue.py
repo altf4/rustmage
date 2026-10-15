@@ -23,7 +23,7 @@ LEGACY = [
     ('Counterspell', 'Counter', '{U}{U}', None),
 ]
 KEYWORDS = {'flying': 1, 'reach': 2, 'haste': 4, 'vigilance': 8, 'defender': 16, 'flash': 32,
-            'lifelink': 64, 'deathtouch': 128, 'trample': 256, 'first strike': 512, 'double strike': 1024}
+            'lifelink': 64, 'deathtouch': 128, 'trample': 256, 'first strike': 512, 'double strike': 1024, 'hexproof': 4096, 'indestructible': 8192}
 UNLIMITED = {'Cid, Timeless Artificer', 'Hare Apparent', 'Slime Against Humanity', "Sphinx's Approach", 'Tempest Hawk'}
 
 
@@ -226,11 +226,39 @@ def static_permanent_template(card):
     return (*result, modifiers) if result else None
 
 
+def keyword_list(text):
+    words = [part.strip() for part in text.replace(', and ', ',').replace(' and ', ',').split(',')]
+    if not words or not all(word in KEYWORDS for word in words): return None
+    return sum(KEYWORDS[word] for word in set(words))
+
+
+def keyword_effect(text, subject):
+    """Entire fixed-duration modifier clause; no ability removal/qualified gains."""
+    grow = None
+    if m := re.fullmatch(r'gets? ([+-][0-9]+)/([+-][0-9]+) and gains? (.+) until end of turn\.', text):
+        if max(abs(int(m[1])), abs(int(m[2]))) > 32767: return None
+        grow, words = (int(m[1]), int(m[2])), m[3]
+    elif m := re.fullmatch(r'gains? (.+) until end of turn\.', text): words = m[1]
+    else: return None
+    keywords = keyword_list(words)
+    if keywords is None: return None
+    if subject in ('Targets', 'Source'):
+        return ([grow_instruction(subject, *grow)] if grow else []) + [f'GrantKeywords {{ subject: Subject::{subject}, keywords: Keywords({keywords}) }}']
+    return ([f'GrowCreatures {{ filter: {subject}, power: {grow[0]}, toughness: {grow[1]} }}'] if grow else []) + [f'GrantCreatures {{ filter: {subject}, keywords: Keywords({keywords}) }}']
+
+
+def normalize_duration(text):
+    prefix = 'until end of turn, '
+    if text.startswith(prefix) and text.count('.') == 1:
+        return text[len(prefix):-1] + ' until end of turn.'
+    return text
+
+
 def statement_program(text):
     """Compile only these complete sentences; residual text never gets ignored."""
     if not isinstance(text, str) or not text:
         return None
-    text = text[0].lower() + text[1:]
+    text = normalize_duration(text[0].lower() + text[1:])
     token = token_program(text) or predefined_program(text)
     if token: return token
     if text == 'investigate.': return predefined_program('create a Clue token.')
@@ -248,6 +276,11 @@ def statement_program(text):
         filt = creature_filter(m[1])
         if filt and max(abs(int(m[2])), abs(int(m[3]))) <= 32767:
             return [f'GrowCreatures {{ filter: {filt}, power: {int(m[2])}, toughness: {int(m[3])} }}']
+    if text.startswith('this creature '):
+        if program := keyword_effect(text[len('this creature '):], 'Source'): return program
+    if m := re.fullmatch(r'(.+?) (gets? .+|gains? .+) until end of turn\.', text):
+        filt = creature_filter(m[1])
+        if filt and (program := keyword_effect(m[2] + ' until end of turn.', filt)): return program
     draw = r'(a card|two cards|three cards|four cards)'
     if m := re.fullmatch(r'(scry|surveil) ([0-9]+), then draw ' + draw + r'\.', text):
         if int(m[2]) > 65535: return None
@@ -325,7 +358,10 @@ def targeted_program(text):
     """One homogeneous target group, requiring the entire effect to compile."""
     if not isinstance(text, str) or not text.endswith('.'):
         return None
-    text = text[0].lower() + text[1:]
+    text = normalize_duration(text[0].lower() + text[1:])
+    if m := re.fullmatch(r'(another target creature you control|target creature you control|target creature) (.+)', text):
+        rule = {'target creature': 'Creature', 'target creature you control': 'CreatureYou', 'another target creature you control': 'OtherCreatureYou'}[m[1]]
+        if program := keyword_effect(m[2], 'Targets'): return rule, program
     # Optional effects still require targets at announcement (CR603.5).
     if text.startswith('you may '):
         result = targeted_program(text[len('you may '):])
@@ -400,6 +436,10 @@ def targeted_program(text):
         first, rest = text.split('. ', 1)
         result = targeted_program(first + '.')
         tail = statement_program(rest)
+        if result and rest == 'Untap it.':
+            rule = result[0][0] if isinstance(result[0], tuple) else result[0]
+            maximum = result[0][2] if isinstance(result[0], tuple) else 1
+            if maximum == 1 and rule not in ('None', 'Player', 'Opponent', 'Spell', 'CreatureGrave', 'CreatureGraveYou'): tail = ['Untap']
         if result and tail:
             spec, program = result
             return spec, program + tail

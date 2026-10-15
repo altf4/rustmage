@@ -53,9 +53,29 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Other creatures you control get +32768/+0.'):
             self.assertIsNone(generate.static_permanent_template(self.card(oracle_text=text)),text)
         for text in ('Creatures you control get +2/+1 until your next turn.',
-                     'Creatures you control get +1/+1 and gain haste until end of turn.',
+                     'Creatures you control get +1/+1 and gain ward {2} until end of turn.',
                      'This creature gets +X/+0 until end of turn.'):
             self.assertIsNone(generate.statement_program(text),text)
+
+    def test_effective_keyword_programs_remain_complete_and_fixed_duration(self):
+        self.assertEqual(generate.keyword_list('trample, hexproof, and indestructible'), 256+4096+8192)
+        self.assertEqual(generate.keyword_list('flying and flying'), 1)
+        row=self.card(oracle_text='Hexproof, indestructible')
+        self.assertEqual(generate.creature_template(row), ('Creature(2, 1)',4096+8192))
+        for text in ('Target creature gains deathtouch and lifelink until end of turn.',
+                     'Target creature you control gets +1/+1 and gains hexproof until end of turn. Untap it.',
+                     'Until end of turn, target creature gets +3/+2 and gains trample.'):
+            self.assertIsNotNone(generate.targeted_program(text),text)
+        for text in ('Creatures you control get +1/+1 and gain haste until end of turn.',
+                     'This creature gains reach until end of turn.'):
+            self.assertIsNotNone(generate.statement_program(text),text)
+        for text in ('Target creature gains hexproof from red until end of turn.',
+                     'Target creature loses flying until end of turn.',
+                     'Target creature gains menace until end of turn.',
+                     'Target creature gains flying until your next turn.',
+                     'Target player draws a card. Untap it.'):
+            self.assertIsNone(generate.targeted_program(text),text)
+        self.assertIsNone(generate.permanent_program_template(self.card(oracle_text='Other creatures you control have haste.')))
 
     def test_exact_creature_template_rejects_other_mechanics(self):
         self.assertEqual(generate.creature_template(self.card()), ('Creature(2, 1)', 0))

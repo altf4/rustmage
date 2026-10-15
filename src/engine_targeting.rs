@@ -61,6 +61,12 @@ impl Game {
                 let Some(obj) = self.state.objects.get(id as usize) else {
                     return false;
                 };
+                if obj.zone == Zone::Battlefield
+                    && obj.owner != controller
+                    && obj.keywords().contains(Keywords::HEXPROOF)
+                {
+                    return false;
+                }
                 match rule {
                     TargetRule::Creature | TargetRule::Any => {
                         obj.zone == Zone::Battlefield && obj.card.is_creature()
@@ -148,7 +154,7 @@ impl Game {
             id,
             kind: StackKind::Spell,
             source_card: self.state.objects[card as usize].card,
-            source_keywords: self.state.objects[card as usize].card.keywords(),
+            source_keywords: self.state.objects[card as usize].keywords(),
             card,
             object,
             controller: actor,

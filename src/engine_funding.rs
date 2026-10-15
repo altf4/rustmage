@@ -30,12 +30,23 @@ struct FundingMove {
     production: Mana,
 }
 #[derive(Hash, PartialEq, Eq)]
+struct ResourceKey {
+    definition: usize,
+    protected: bool,
+    present: bool,
+    tapped: bool,
+    sick: bool,
+    counters: Counters,
+    used: u64,
+    gained: Keywords,
+}
+#[derive(Hash, PartialEq, Eq)]
 struct FundingKey {
     mana: Mana,
     life: i64,
     // Equivalent sources are interchangeable for feasibility. Protect the
     // enclosing ability's source separately, even if its printed card matches.
-    resources: Vec<(usize, bool, bool, bool, bool, Counters, u64)>,
+    resources: Vec<ResourceKey>,
 }
 
 fn payable(pool: Mana, required: Mana, generic: u32) -> bool {
@@ -123,7 +134,7 @@ impl FundingState {
             if !object.tapped
                 && (!object.card.is_creature()
                     || !object.summoning_sick
-                    || object.card.keywords().contains(Keywords::HASTE))
+                    || object.keywords().contains(Keywords::HASTE))
                 && let Some(color) = object.card.mana_color()
             {
                 let mut production = [0; 6];
@@ -223,30 +234,31 @@ impl FundingState {
         let mut resources: Vec<_> = self
             .resources
             .iter()
-            .map(|r| {
-                (
-                    r.object.card.index(),
-                    goal.source
-                        .is_some_and(|(source, _, _, _)| source.card == r.id),
-                    r.object.zone == Zone::Battlefield,
-                    r.object.tapped,
-                    r.object.summoning_sick,
-                    r.object.counters,
-                    r.object.used_abilities,
-                )
+            .map(|r| ResourceKey {
+                definition: r.object.card.index(),
+                protected: goal
+                    .source
+                    .is_some_and(|(source, _, _, _)| source.card == r.id),
+                present: r.object.zone == Zone::Battlefield,
+                tapped: r.object.tapped,
+                sick: r.object.summoning_sick,
+                counters: r.object.counters,
+                used: r.object.used_abilities,
+                gained: r.object.gained_keywords,
             })
             .collect();
         resources.sort_by_key(|r| {
             (
-                r.0,
-                r.1,
-                r.2,
-                r.3,
-                r.4,
-                r.5.plus_one,
-                r.5.minus_one,
-                r.5.stun,
-                r.6,
+                r.definition,
+                r.protected,
+                r.present,
+                r.tapped,
+                r.sick,
+                r.counters.plus_one,
+                r.counters.minus_one,
+                r.counters.stun,
+                r.used,
+                r.gained,
             )
         });
         FundingKey {
@@ -265,7 +277,7 @@ impl FundingState {
             let tap_ready = !object.tapped
                 && (!object.card.is_creature()
                     || !object.summoning_sick
-                    || object.card.keywords().contains(Keywords::HASTE));
+                    || object.keywords().contains(Keywords::HASTE));
             if tap_ready && let Some(color) = object.card.mana_color() {
                 upper[color] = upper[color].saturating_add(1);
             }
