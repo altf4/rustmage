@@ -40,7 +40,7 @@ remain shared immutable data. Snapshot state includes all costs, flags and
 private choices required to replay an activation.
 
 This milestone adds 29 complete Standard definitions, bringing executable
-coverage to 171/5,164. Unknown costs/restrictions, variable costs, mana abilities,
+coverage to 171/5,164. See [mana production](mana.md) for the next milestone. Unknown costs/restrictions, variable costs, wider mana/payment windows,
 discard/sacrifice-other costs, granted abilities, modes, other activation zones,
 and unsupported additional card text remain gated.
 

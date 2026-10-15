@@ -68,9 +68,35 @@ pub(crate) enum PlayerSet {
     Targeted,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum ManaProduction {
+    Fixed(Mana),
+    Choice { mask: u8, amount: u32 },
+}
+impl ManaProduction {
+    pub(crate) fn visit(self, mut emit: impl FnMut(Mana) -> bool) -> bool {
+        match self {
+            Self::Fixed(mana) => emit(mana),
+            Self::Choice { mask, amount } => {
+                for index in 0..6 {
+                    if mask & (1 << index) != 0 {
+                        let mut mana = [0; 6];
+                        mana[index] = amount;
+                        if emit(mana) {
+                            return true;
+                        }
+                    }
+                }
+                false
+            }
+        }
+    }
+}
+
 /// Immutable rule bytecode. Only the program counter and choices live in state.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    AddMana(ManaProduction),
     Damage(i32),
     Grow(i32),
     Counter,
@@ -168,6 +194,15 @@ pub(crate) struct ActivatedAbility {
     pub once_per_turn: bool,
 }
 
+impl ActivatedAbility {
+    pub(crate) fn mana_production(&self) -> Option<ManaProduction> {
+        match self.program {
+            [Instruction::AddMana(production)] if self.targets.max == 0 => Some(*production),
+            _ => None,
+        }
+    }
+}
+
 /// Implemented static keyword flags. Other keyword cards remain unsupported.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 #[serde(transparent)]
@@ -234,8 +269,8 @@ mod generated {
 }
 pub use generated::CATALOGUE_VERSION;
 
-/// Mana is W U B R G. Generic costs deliberately have no colour slot.
-pub type Mana = [u32; 5];
+/// Mana is W U B R G C; C is colorless. Generic costs deliberately have no colour slot.
+pub type Mana = [u32; 6];
 
 impl Card {
     pub fn from_name(name: &str) -> Option<Self> {
@@ -340,11 +375,11 @@ impl<'de> Deserialize<'de> for Card {
 }
 
 pub(crate) fn payments(pool: Mana, colored: Mana, generic: u32, mut emit: impl FnMut(Mana)) {
-    if (0..5).any(|i| pool[i] < colored[i]) {
+    if (0..6).any(|i| pool[i] < colored[i]) {
         return;
     }
     fn visit(i: usize, left: u32, pool: Mana, mut paid: Mana, emit: &mut impl FnMut(Mana)) {
-        if i == 4 {
+        if i == 5 {
             if pool[i] >= left {
                 paid[i] += left;
                 emit(paid);

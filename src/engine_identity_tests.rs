@@ -216,7 +216,7 @@ fn removal_templates_enforce_targets_timing_and_payments() {
                 .iter()
                 .any(|a| matches!(a, Action::Cast {card, ..} if *card == spell))
         );
-        game.state.players[0].mana = [0, 1, 3, 0, 0];
+        game.state.players[0].mana = [0, 1, 3, 0, 0, 0];
         assert!(!game.legal_actions().iter().any(|a| matches!(a, Action::Cast {card, target: Some(Target::Card(id)), ..} if *card == spell && *id == land)));
         game.state.step = Step::Upkeep;
         let available = game

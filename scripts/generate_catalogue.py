@@ -28,15 +28,15 @@ UNLIMITED = {'Cid, Timeless Artificer', 'Hare Apparent', 'Slime Against Humanity
 
 
 def fixed_cost(cost):
-    if not re.fullmatch(r'(?:\{(?:[0-9]+|[WUBRG])\})+', cost):
+    if not re.fullmatch(r'(?:\{(?:[0-9]+|[WUBRGC])\})+', cost):
         return None
-    colored = [0] * 5
+    colored = [0] * 6
     generic = 0
     for symbol in re.findall(r'\{([^}]+)\}', cost):
         if symbol.isdigit():
             generic += int(symbol)
         else:
-            colored['WUBRG'.index(symbol)] += 1
+            colored['WUBRGC'.index(symbol)] += 1
     return colored, generic
 
 
@@ -133,13 +133,49 @@ def token_program(text):
     return [f'CreateTokens {{ token: __TOKEN_{key}__, amount: {TOKEN_COUNTS[count]}, tapped: {str(bool(tapped)).lower()} }}']
 
 
+def mana_program(text):
+    if not isinstance(text, str): return None
+    if m := re.fullmatch(r'add ((?:\{[WUBRGC]\})+)\.', text):
+        mana = [0] * 6
+        for symbol in re.findall(r'\{([WUBRGC])\}', m[1]): mana['WUBRGC'.index(symbol)] += 1
+        return [f'AddMana(ManaProduction::Fixed({mana}))']
+    if m := re.fullmatch(r'add (one|two|three) mana of any (color|one color|type)\.', text):
+        mask = 63 if m[2] == 'type' else 31
+        return [f'AddMana(ManaProduction::Choice {{ mask: {mask}, amount: {COUNT_WORDS[m[1]]} }})']
+    if re.fullmatch(r'add \{[WUBRGC]\}(?:, \{[WUBRGC]\})*(?:,? or \{[WUBRGC]\})\.', text):
+        mask = sum(1 << 'WUBRGC'.index(symbol) for symbol in set(re.findall(r'\{([WUBRGC])\}', text)))
+        return [f'AddMana(ManaProduction::Choice {{ mask: {mask}, amount: 1 }})']
+    return None
+
+PREDEFINED = {
+    'Treasure': '{T}, Sacrifice this artifact: Add one mana of any color.',
+    'Gold': 'Sacrifice this artifact: Add one mana of any color.',
+    'Food': '{2}, {T}, Sacrifice this artifact: You gain 3 life.',
+    'Clue': '{2}, Sacrifice this artifact: Draw a card.',
+    'Mutagen': '{1}, {T}, Sacrifice this artifact: Put a +1/+1 counter on target creature. Activate only as a sorcery.',
+    'Heartwood': '{T}: Add {R} or {G}.',
+}
+
+def predefined_program(text):
+    m = re.fullmatch(r'create (a|an|one|two|three|four|five|six|seven|eight) (tapped )?(Treasure|Gold|Food|Clue|Mutagen|Heartwood) tokens?\.', text)
+    if not m: return None
+    count, tapped, kind = m.groups()
+    factory = {'name': kind + ' Token', 'subtypes': kind, 'colors': 24 if kind == 'Heartwood' else 0,
+               'power': None, 'toughness': None, 'extra_type': 'artifact', 'keywords': 0, 'predefined': kind}
+    key = hashlib.sha256(json.dumps(factory, sort_keys=True).encode()).hexdigest()[:24]
+    TOKEN_DEFS[key] = factory
+    return [f'CreateTokens {{ token: __TOKEN_{key}__, amount: {TOKEN_COUNTS[count]}, tapped: {str(bool(tapped)).lower()} }}']
+
+
 def statement_program(text):
     """Compile only these complete sentences; residual text never gets ignored."""
     if not isinstance(text, str) or not text:
         return None
     text = text[0].lower() + text[1:]
-    token = token_program(text)
+    token = token_program(text) or predefined_program(text)
     if token: return token
+    if text == 'investigate.': return predefined_program('create a Clue token.')
+    if mana := mana_program(text): return mana
     if not text.endswith('.'):
         return None
     if m := re.fullmatch(r'put (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on this creature\.', text):
@@ -348,6 +384,7 @@ def spell_program_template(card):
             or fixed_cost(card.get('mana_cost', '')) is None):
         return None
     text = card.get('oracle_text')
+    if isinstance(text, str): text = re.sub(r'\([^()]*\)', '', text).strip()
     if isinstance(text, str) and text.startswith(card.get('name', '') + ' deals '):
         text = 'it deals ' + text[len(card['name']) + len(' deals '):]
     targeted = targeted_program(text)
@@ -357,7 +394,7 @@ def spell_program_template(card):
 
 
 def activation_cost(text):
-    cost = dict(colored=[0] * 5, generic=0, tap=False, sacrifice=False, life=0, remove=None)
+    cost = dict(colored=[0] * 6, generic=0, tap=False, sacrifice=False, life=0, remove=None)
     seen = set()
     for component in text.split(', '):
         mana = fixed_cost(component)
@@ -419,6 +456,8 @@ def permanent_program_template(card):
         if targeted: targets, program = targeted
         else: targets, program = 'None', statement_program(effect_text)
         if program is None: return None
+        if any(instruction.startswith('AddMana') for instruction in program) and (len(program) != 1 or targets != 'None'):
+            return None
         activations.append((cost, targets, program, sorcery, once))
     if len(activations) > 64: return None
     body_text = '\n'.join(body).strip()
@@ -509,7 +548,7 @@ def compile_catalogue(snapshot, target):
         if effect != 'Unsupported':
             supported.append(index)
         basic = name in {'Plains', 'Island', 'Swamp', 'Mountain', 'Forest'}
-        colored, generic = fixed_cost(cost) or ([0] * 5, 0)
+        colored, generic = fixed_cost(cost) or ([0] * 6, 0)
         deck_limit = 'None' if basic or name in UNLIMITED else 'Some(4)'
         quote = lambda value: json.dumps(value, ensure_ascii=False)
         oracle_id = f"Some({quote(card['oracle_id'])})" if card else 'None'
@@ -528,10 +567,20 @@ def compile_catalogue(snapshot, target):
         index = token_base + offset
         name = '@token/' + key
         names.append(name)
-        types = ((factory['extra_type'].title() + ' ') if factory['extra_type'] else '') + 'Creature'
-        type_line = types + ' — ' + factory['subtypes']
-        kind = 1 | (16 if factory['extra_type'] == 'artifact' else 32 if factory['extra_type'] == 'enchantment' else 0)
-        definitions.append(f"    Definition {{ info: CardInfo {{ name: {json.dumps(name)}, oracle_id: None, mana_cost: \"\", type_line: {json.dumps(type_line, ensure_ascii=False)}, oracle_keywords: &[], standard_legal: false, implemented: true, keywords: Keywords({factory['keywords']}), deck_limit: None }}, effect: Effect::Creature({factory['power']}, {factory['toughness']}), triggers: &[], activated: &[], enters: Counters {{ plus_one: 0, minus_one: 0, stun: 0 }}, kind: {kind}, basic: false, mana_color: None, colored: [0; 5], generic: 0 }},")
+
+        predefined = factory.get('predefined')
+        if predefined:
+            effect, _, _, token_abilities, _ = permanent_program_template({
+                'layout': 'normal', 'type_line': 'Artifact', 'mana_cost': '{0}',
+                'oracle_text': PREDEFINED[predefined]})
+            type_line, kind = 'Artifact — ' + factory['subtypes'], 16
+        else:
+            types = ((factory['extra_type'].title() + ' ') if factory['extra_type'] else '') + 'Creature'
+            type_line = types + ' — ' + factory['subtypes']
+            kind = 1 | (16 if factory['extra_type'] == 'artifact' else 32 if factory['extra_type'] == 'enchantment' else 0)
+            effect = f"Creature({factory['power']}, {factory['toughness']})"
+            token_abilities = []
+        definitions.append(f"    Definition {{ info: CardInfo {{ name: {json.dumps(name)}, oracle_id: None, mana_cost: \"\", type_line: {json.dumps(type_line, ensure_ascii=False)}, oracle_keywords: &[], standard_legal: false, implemented: true, keywords: Keywords({factory['keywords']}), deck_limit: None }}, effect: Effect::{effect}, triggers: &[], activated: {rust_activations(token_abilities)}, enters: Counters {{ plus_one: 0, minus_one: 0, stun: 0 }}, kind: {kind}, basic: false, mana_color: None, colored: [0; 6], generic: 0 }},")
         token_infos.append(f"    TokenInfo {{ name: {json.dumps(factory['name'])}, subtypes: {json.dumps(factory['subtypes'])}, colors: {factory['colors']} }},")
         marker = '__TOKEN_' + key + '__'
         definitions = [definition.replace(marker, f'Card({index})') for definition in definitions]

@@ -256,7 +256,7 @@ fn rejected_actions_are_atomic_and_restore_invalidates_indices() {
             Action::Cast {
                 card: u32::MAX,
                 target: None,
-                payment: [0; 5]
+                payment: [0; 6]
             }
         ),
         Err(Error::IllegalAction)
@@ -277,7 +277,7 @@ fn land_and_sorcery_timing_are_enforced() {
     let forest = spawn(&mut game, Player::P0, Card::Forest, Zone::Hand);
     let another = spawn(&mut game, Player::P0, Card::Forest, Zone::Hand);
     let bears = spawn(&mut game, Player::P0, Card::GrizzlyBears, Zone::Hand);
-    game.state.players[0].mana = [0, 0, 0, 0, 2];
+    game.state.players[0].mana = [0, 0, 0, 0, 2, 0];
     act(&mut game, Action::PlayLand { card: forest });
     assert!(
         !game
@@ -305,7 +305,7 @@ fn land_and_sorcery_timing_are_enforced() {
 fn payments_include_every_generic_color_choice_and_reject_underpayment() {
     let mut game = scenario();
     let bears = spawn(&mut game, Player::P0, Card::GrizzlyBears, Zone::Hand);
-    game.state.players[0].mana = [1, 1, 0, 0, 2];
+    game.state.players[0].mana = [1, 1, 0, 0, 2, 0];
     let castings: Vec<_> = game
         .legal_actions()
         .into_iter()
@@ -319,7 +319,7 @@ fn payments_include_every_generic_color_choice_and_reject_underpayment() {
             Action::Cast {
                 card: bears,
                 target: None,
-                payment: [0, 0, 0, 0, 1]
+                payment: [0, 0, 0, 0, 1, 0]
             }
         ),
         Err(Error::IllegalAction)
@@ -330,10 +330,10 @@ fn payments_include_every_generic_color_choice_and_reject_underpayment() {
         Action::Cast {
             card: bears,
             target: None,
-            payment: [0, 1, 0, 0, 1],
+            payment: [0, 1, 0, 0, 1, 0],
         },
     );
-    assert_eq!(game.state.players[0].mana, [1, 0, 0, 0, 1]);
+    assert_eq!(game.state.players[0].mana, [1, 0, 0, 0, 1, 0]);
 }
 
 #[test]
@@ -508,7 +508,7 @@ fn cleanup_discards_then_expires_damage_and_growth_together() {
     assert_eq!(game.state.objects[bears as usize].damage, 0);
     assert_eq!(game.state.objects[bears as usize].growth, 0);
     assert_eq!(game.state.objects[bears as usize].zone, Zone::Battlefield);
-    assert_eq!(game.state.players[0].mana, [0; 5]);
+    assert_eq!(game.state.players[0].mana, [0; 6]);
 }
 
 #[test]

@@ -30,7 +30,7 @@ fn enter(game: &mut Game, name: &str) -> CardId {
 fn token_spell_creates_distinct_summoning_sick_objects_and_replays() {
     let mut game = scenario();
     let fodder = spawn(&mut game, Player::P0, card("Dragon Fodder"), Zone::Hand);
-    game.state.players[0].mana = [1, 0, 0, 1, 0];
+    game.state.players[0].mana = [1, 0, 0, 1, 0, 0];
     cast(&mut game, fodder, None);
     let before = game.snapshot();
     pass_pair(&mut game);

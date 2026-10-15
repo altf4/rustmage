@@ -70,6 +70,14 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 target_score(program, *target)
             }
             Action::FinishTargets => 0,
+            Action::ChooseMana { production } => mana_score(&observation, *production),
+            Action::ActivateMana { production, .. } => {
+                if tap_for_main {
+                    20 + mana_score(&observation, *production)
+                } else {
+                    -5
+                }
+            }
             Action::BeginActivate { .. } => 35,
             Action::Activate {
                 card,
@@ -133,4 +141,24 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
         .max_by_key(|(_, a)| score(a))
         .map(|(i, _)| i)
         .expect("legal action")
+}
+
+fn mana_score(observation: &crate::Observation, production: crate::Mana) -> i32 {
+    let pool = observation.players[observation.viewer.index()].mana;
+    observation
+        .objects
+        .iter()
+        .filter(|object| object.owner == observation.viewer && object.zone == Zone::Hand)
+        .map(|object| {
+            let (required, _) = object.card.cost();
+            (0..6)
+                .map(|index| {
+                    required[index]
+                        .saturating_sub(pool[index])
+                        .min(production[index]) as i32
+                })
+                .sum()
+        })
+        .max()
+        .unwrap_or(0)
 }

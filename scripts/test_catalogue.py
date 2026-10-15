@@ -38,8 +38,8 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertEqual(generate.creature_template(row), ('Creature(2, 1)', 0))
 
     def test_cost_parser_does_not_approximate_unimplemented_symbols(self):
-        self.assertEqual(generate.fixed_cost('{3}{R}{R}'), ([0, 0, 0, 2, 0], 3))
-        for value in ('{C}', '{S}', '{X}', '{2/R}', '{R/P}', '', '{W}{unrecognized}'):
+        self.assertEqual(generate.fixed_cost('{3}{R}{R}'), ([0, 0, 0, 2, 0, 0], 3))
+        for value in ('{S}', '{X}', '{2/R}', '{R/P}', '', '{W}{unrecognized}'):
             self.assertIsNone(generate.fixed_cost(value))
 
     def test_removal_template_requires_exact_text_types_and_cost(self):
@@ -154,7 +154,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertEqual(list(generate.TOKEN_DEFS.values())[-1]['keywords'], 2048)
 
     def test_token_compilation_rejects_missing_dependencies_and_residual_clauses(self):
-        for text in ['Create a Treasure token.', 'Create a Food token.', 'Create a Clue token.',
+        for text in ['Create a Powerstone token.', 'Create a Blood token.', 'Create a Junk token.',
                      'Create X 1/1 white Rabbit creature tokens.',
                      'Create a 1/1 white Rabbit creature token for each creature you control.',
                      'Create a 1/1 white Rabbit creature token with menace.',
@@ -197,7 +197,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         for line in ['{X}: Draw a card.', '{1}, Discard a card: Draw a card.',
                      '{1}, Sacrifice another creature: Draw a card.',
                      '{1}: Draw a card. Activate only if you control a Hero.',
-                     'Power-up — {1}: Draw a card.', '{1}: Add {U}.',
+                     'Power-up — {1}: Draw a card.', '{1}: Add {U}. Draw a card.',
                      '{1}: Draw a card. Unknown instruction.',
                      '{1}: Draw a card. Activate only once.',
                      'Pay 999999 life: Draw a card.']:
@@ -219,6 +219,29 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertEqual(generate.permanent_program_template(artifact)[0], 'Permanent')
         restricted = self.card(oracle_text='{1}: Draw a card. Activate only once each turn.')
         self.assertTrue(generate.permanent_program_template(restricted)[3][0][4])
+
+    def test_mana_parser_distinguishes_generic_colorless_and_choice_production(self):
+        self.assertEqual(generate.fixed_cost('{2}{C}{G}'), ([0,0,0,0,1,1],2))
+        self.assertEqual(generate.mana_program('add {C}{C}.'), ['AddMana(ManaProduction::Fixed([0, 0, 0, 0, 0, 2]))'])
+        self.assertIn('mask: 31, amount: 3', generate.mana_program('add three mana of any one color.')[0])
+        self.assertIn('mask: 22', generate.mana_program('add {B}, {G}, or {U}.')[0])
+        for text in ['add {G}. Spend this mana only to cast a creature spell.',
+                     'add an amount of {G} equal to your power.', 'add {X}.']:
+            self.assertIsNone(generate.mana_program(text))
+        self.assertIsNone(generate.permanent_program_template(self.card(oracle_text='{T}: Add {G}. Draw a card.')))
+
+    def test_predefined_artifacts_have_complete_activation_definitions(self):
+        generate.TOKEN_DEFS.clear()
+        for kind in generate.PREDEFINED:
+            self.assertIsNotNone(generate.statement_program(f'Create a {kind} token.'))
+            result = generate.permanent_program_template(dict(self.card(), type_line='Artifact', mana_cost='{0}',
+                                                              oracle_text=generate.PREDEFINED[kind]))
+            self.assertIsNotNone(result, kind)
+            self.assertEqual(result[0], 'Permanent')
+            self.assertEqual(len(result[3]),1)
+        for kind in ['Powerstone','Blood','Junk','Map','Lander','Shard']:
+            self.assertIsNone(generate.statement_program(f'Create a {kind} token.'))
+        self.assertIsNotNone(generate.statement_program('Investigate.'))
 
 
 if __name__ == '__main__':

@@ -21,8 +21,8 @@ characteristics. Once it has left the battlefield it cannot move again, even
 before state-based actions. It then ceases to exist at the next state-based check.
 The engine repeats checks to a fixed point, so lethally damaged tokens move and
 cease before priority. Tokens never qualify as creature cards in graveyards or
-cards in hands. Predefined Treasure/Food/Clue and other ability-bearing tokens
-stay gated until their abilities exist.
+cards in hands. [Predefined artifact tokens](mana.md) now carry their implemented abilities.
+Other token abilities remain gated.
 
 Ceased tokens leave reusable slots in an owned free list. Every departure,
 cessation and new creation changes the generation, so previously bound targets
@@ -38,7 +38,7 @@ not a game zone, and never appears in observations or legal targets.
 
 The compiler admits only complete fixed token clauses and entire supported
 cards. Dynamic counts, copies, unsupported abilities, replacements, additional
-costs and residual rules text remain gated. Current coverage is 142/5,164
+costs and residual rules text remain gated. This milestone reached 142/5,164
 Standard identities plus six legacy regression cards and 23 token factories.
 
 Rules: [September 25, 2026 Comprehensive Rules](https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf),
