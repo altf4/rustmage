@@ -12,12 +12,50 @@ class BindingTests(unittest.TestCase):
     def game(self):
         return Game([["Mountain"] * 24 + ["LightningBolt"] * 36] * 2, seed=17, deck_rules="Freeform")
 
+    def test_legend_choices_public_masks_and_native_clone_restore(self):
+        deck = ["Swamp"] * 30 + ["Yargle, Glutton of Urborg"] * 30
+        with Game([deck, deck], seed=7, deck_rules="Freeform") as game:
+            obs = game.observe("P0")
+            for _ in range(3000):
+                obs = game.observe(obs["actor"])
+                if obs["decision"] == "legend_rule":
+                    break
+                # No attacks: keep both legends alive long enough to exercise the rule.
+                index = max(range(len(obs["actions"])), key=lambda i:
+                    {"Keep": 100, "PlayLand": 90, "AnnounceCast": 80, "Cast": 80, "PayCosts": 100,
+                     "TapMana": 70 if obs["decision"] == "pay_costs" else -5,
+                     "FinishAttackers": 60, "FinishBlockers": 60,
+                     "Pass": 50, "Attack": -50, "Mulligan": -100, "Concede": -1000}
+                    .get(obs["actions"][i]["kind"], 0))
+                obs = game.step(obs, index)
+            else:
+                self.fail("no legend decision reached")
+            actor = obs["actor"]
+            other = "P1" if actor == "P0" else "P0"
+            self.assertEqual(obs["legend_choices"], game.observe(other)["legend_choices"])
+            self.assertEqual({a["kind"] for a in obs["actions"]}, {"KeepLegend", "Concede"})
+            self.assertEqual(game.observe(other)["actions"], [])
+            index = next(i for i,a in enumerate(obs["actions"]) if a["kind"] == "KeepLegend")
+            kept = obs["actions"][index]["object"]["card"]
+            saved = game.snapshot()
+            with game.clone() as branch:
+                expected = branch.step(branch.observe(actor), index)
+            actual = game.step(obs, index)
+            self.assertEqual(actual, expected)
+            self.assertEqual(next(o for o in actual["objects"] if o["id"] == kept)["zone"], "Battlefield")
+            self.assertEqual(actual["legend_choices"], [])
+            game.restore(saved)
+            replay = game.step(game.observe(actor), index)
+            self.assertGreater(replay.pop("revision"), actual.pop("revision"))
+            self.assertEqual(replay, actual)
+            game.drop_snapshot(saved)
+
     def test_private_views_clone_restore_and_stale_indices(self):
         with self.game() as game:
             observation = game.observe("P0")
             coverage = json.loads((Path(__file__).resolve().parents[1] / "data/standard/coverage.json").read_text())
             self.assertEqual(observation["catalogue"], coverage["catalogue_version"])
-            self.assertEqual(observation["schema"], 16)
+            self.assertEqual(observation["schema"], 17)
             self.assertEqual(len(observation["objects"]), 7)
             self.assertTrue(all(o["owner"] == "P0" for o in observation["objects"]))
             self.assertEqual(game.observe("P1")["actions"], [])

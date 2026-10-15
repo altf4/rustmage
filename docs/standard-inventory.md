@@ -48,13 +48,13 @@ pool, 60-card minimum and copy limits, then rejects every unsupported card.
 The known Standard unlimited-copy exceptions are represented independently of
 whether their rules have been implemented.
 
-Coverage is **537 / 5,164 executable Standard cards**, plus six legacy regression
+Coverage is **547 / 5,164 executable Standard cards**, plus six legacy regression
 cards. The additions are ten exact vanilla-creature templates and 25 creatures
 whose entire text consists of implemented static keywords, plus four exact
 single-instruction bounce/destruction spells, additional spell programs and creatures with complete supported trigger programs.
 [Targeting](targeting.md) adds targeted entry effects, multi-target untapping,
 graveyard reanimation, damage/removal, and source-aware target binding. The compiler rejects
-legendary cards, dynamic power/toughness, other layouts, unimplemented cost
+legendary spells, dynamic power/toughness, other layouts, unimplemented cost
 symbols, triggers, or any other remaining rules text from this template. It never
 infers behavior from a partial keyword match.
 
@@ -129,3 +129,6 @@ choose-many and broader target relationships remain outstanding.
 Bushwhack, independent targeted clauses and current-power fight/bite instructions.
 Coverage is 537/5,164 with 31 token factories; wider relationships and mechanics
 remain outstanding.
+
+[Legend-rule support](legend-rule.md) admits ten complete legendary permanents.
+Current coverage is 547/5,164; 4,617 identities remain unsupported.

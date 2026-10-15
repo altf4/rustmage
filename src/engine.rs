@@ -14,6 +14,8 @@ mod blocking;
 mod exile;
 #[path = "engine_fight.rs"]
 mod fight;
+#[path = "engine_sba.rs"]
+mod sba;
 #[path = "engine_search.rs"]
 mod search;
 #[path = "engine_stats.rs"]
@@ -237,6 +239,9 @@ pub enum Action {
     ChooseOptional {
         accept: bool,
     },
+    KeepLegend {
+        object: ObjectRef,
+    },
     Concede,
 }
 
@@ -419,6 +424,9 @@ enum Pending {
         remaining: u8,
     },
     Priority,
+    Legend {
+        player: Player,
+    },
     EffectLibrary {
         player: Player,
     },
@@ -473,6 +481,7 @@ struct State {
     turn: u32,
     step: Step,
     pending: Pending,
+    sba_batch: Option<Box<sba::SbaBatch>>,
     mulligan_round: [bool; 2],
     stack: Vec<SpellView>,
     resolving: Option<Resolution>,
@@ -585,6 +594,15 @@ pub struct SearchChoiceView {
     pub selected: Vec<CardId>,
 }
 
+/// Public state-based choices; earlier APNAP choices stay visible to later players.
+#[derive(Clone, Debug, Serialize)]
+pub struct LegendGroupView {
+    pub controller: Player,
+    pub name: &'static str,
+    pub objects: Vec<ObjectRef>,
+    pub keep: Option<ObjectRef>,
+}
+
 /// Public face-up exile relation, bound to both exact incarnations.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct ExileLink {
@@ -607,6 +625,7 @@ pub struct Observation {
     pub players: [PlayerView; 2],
     pub objects: Vec<ObjectView>,
     pub exile_links: Vec<ExileLink>,
+    pub legend_choices: Vec<LegendGroupView>,
     pub stack: Vec<SpellView>,
     pub resolving: Option<SpellView>,
     pub announcing: Option<SpellView>,
@@ -722,6 +741,7 @@ impl Game {
                 turn: 1,
                 step: Step::Pregame,
                 pending: Pending::Mulligan(config.starting_player),
+                sba_batch: None,
                 stack: Vec::new(),
                 resolving: None,
                 announcing: None,
@@ -769,7 +789,8 @@ impl Game {
         match self.state.pending {
             Pending::Mulligan(p) | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
-            Pending::EffectSearch { player }
+            Pending::Legend { player }
+            | Pending::EffectSearch { player }
             | Pending::EffectLibrary { player }
             | Pending::EffectMana { player, .. }
             | Pending::PayCosts { player }
@@ -863,6 +884,17 @@ impl Game {
         // result. Cache capacity affects work only, never the admitted action set.
         let mut spell_funding_cache: [Option<(Mana, u32, bool)>; 8] = [None; 8];
         match s.pending {
+            Pending::Legend { player } => {
+                for group in &s.sba_batch.as_ref().unwrap().groups {
+                    if group.controller == player && group.keep.is_none() {
+                        for &object in &group.objects {
+                            if emit(Action::KeepLegend { object }) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
             Pending::PayCosts { .. } => {
                 if self.visit_cost_payment(&mut emit) {
                     return true;
@@ -1342,6 +1374,7 @@ impl Game {
                     }
                 }
             }
+            Action::KeepLegend { object } => self.keep_legend(object),
             Action::ChooseMode { mode } => self.choose_mode(mode),
             Action::ChooseTarget { target } => {
                 let mut bound = self.bind_target(target);
@@ -1875,10 +1908,8 @@ impl Game {
                 && obj.card.is_creature()
                 && self.stats(id as CardId).toughness <= 0
         }) {
+            self.give_priority();
             self.state_based_actions();
-            if self.state.outcome.is_none() {
-                self.give_priority();
-            }
             return;
         }
         self.state.active = self.state.active.other();
@@ -2057,75 +2088,6 @@ impl Game {
         self.give_priority();
     }
 
-    fn state_based_actions(&mut self) {
-        loop {
-            // Freeze the entire batch, including tokens already outside the battlefield.
-            let ceased: Vec<_> = self
-                .state
-                .objects
-                .iter()
-                .enumerate()
-                .filter(|(_, obj)| {
-                    obj.card.is_token() && !matches!(obj.zone, Zone::Battlefield | Zone::Outside)
-                })
-                .map(|(id, _)| id as CardId)
-                .collect();
-            let deaths: Vec<_> = self
-                .state
-                .objects
-                .iter()
-                .enumerate()
-                .filter(|(id, obj)| {
-                    obj.zone == Zone::Battlefield
-                        && obj.card.is_creature()
-                        && (self.stats(*id as CardId).toughness <= 0
-                            || (!obj.keywords().contains(Keywords::INDESTRUCTIBLE)
-                                && (obj.damage >= self.stats(*id as CardId).toughness
-                                    || obj.deathtouch_since_sba)))
-                })
-                .map(|(i, _)| i as CardId)
-                .collect();
-            let mut changed = !deaths.is_empty() || !ceased.is_empty();
-            if !deaths.is_empty() {
-                let sources = self.death_trigger_sources();
-                let events = self.move_objects_raw(&deaths, Zone::Graveyard);
-                self.finish_zone_events(&events, &sources);
-            }
-            // Counter pairs cancel in the same SBA batch as deaths. Departing
-            // objects' last-known characteristics were captured before cancellation.
-            for obj in &mut self.state.objects {
-                let pairs = obj.counters.plus_one.min(obj.counters.minus_one);
-                changed |= pairs != 0;
-                obj.counters.plus_one -= pairs;
-                obj.counters.minus_one -= pairs;
-            }
-            for id in ceased {
-                self.cease_token(id);
-            }
-            if !changed {
-                break;
-            }
-        }
-        // Deathtouch applies only since the previous SBA check, not forever.
-        for obj in &mut self.state.objects {
-            obj.deathtouch_since_sba = false;
-        }
-        let lost = self
-            .state
-            .players
-            .each_ref()
-            .map(|p| p.life <= 0 || p.attempted_empty_draw);
-        self.state.outcome = match lost {
-            [true, true] => Some(Outcome::Draw),
-            [true, false] => Some(Outcome::Winner(Player::P1)),
-            [false, true] => Some(Outcome::Winner(Player::P0)),
-            _ => None,
-        };
-        if self.state.outcome.is_some() {
-            self.state.pending = Pending::Terminal;
-        }
-    }
-
     /// Player-facing information only. Unrevealed opponent hands and RNG state
     /// are absent. Explicit library looks/searches and partial declarations are
     /// projected only to their actor; known revealed hand incarnations are public.
@@ -2146,7 +2108,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 16,
+            schema: 17,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -2158,6 +2120,7 @@ impl Game {
                 Pending::Mulligan(_) => "mulligan",
                 Pending::Bottom { .. } => "bottom",
                 Pending::Priority => "priority",
+                Pending::Legend { .. } => "legend_rule",
                 Pending::Targets { .. } => "targets",
                 Pending::Modes { .. } => "spell_mode",
                 Pending::PayCosts { .. } => "pay_costs",
@@ -2181,6 +2144,22 @@ impl Game {
             }),
             objects,
             exile_links: s.exile_links.clone(),
+            legend_choices: s
+                .sba_batch
+                .as_ref()
+                .map(|batch| {
+                    batch
+                        .groups
+                        .iter()
+                        .map(|group| LegendGroupView {
+                            controller: group.controller,
+                            name: group.name,
+                            objects: group.objects.clone(),
+                            keep: group.keep,
+                        })
+                        .collect()
+                })
+                .unwrap_or_default(),
             stack: s.stack.clone(),
             resolving: s
                 .resolving
@@ -2347,6 +2326,7 @@ impl Game {
         std::mem::size_of::<State>()
             + s.objects.len() * std::mem::size_of::<Object>()
             + s.exile_links.len() * std::mem::size_of::<ExileLink>()
+            + s.sba_batch.as_ref().map(|batch| batch.bytes()).unwrap_or(0)
             + s.known_hand.len() * std::mem::size_of::<ObjectRef>()
             + (s.free_tokens.len() + s.static_sources.len()) * std::mem::size_of::<CardId>()
             + s.players
@@ -2440,3 +2420,7 @@ mod mode_tests;
 #[cfg(test)]
 #[path = "engine_group_tests.rs"]
 mod group_tests;
+
+#[cfg(test)]
+#[path = "engine_sba_tests.rs"]
+mod sba_tests;
