@@ -625,6 +625,8 @@ def counter_program(text):
         if not tail: return target,[counter_unless(cost)]
         if tail.startswith(' If they do, '):
             body=tail[len(' If they do, '):]
+            # Later sentences have independent scope; admit only one paid sentence.
+            if body.count('.') != 1: return None
             if body.startswith('you create '): body=body[4:]
             program=statement_program(body)
             return (target,[counter_unless(cost,skip=len(program)),*program]) if program else None

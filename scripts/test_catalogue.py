@@ -37,6 +37,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         program=generate.targeted_program('Counter target spell unless its controller pays {2}. If they do, you create a Lander token.')[1]
         self.assertIn('CreateTokens',program[1])
         for text in ['Counter target spell unless its controller pays {X}.','Counter target spell unless its controller pays {2} for each Faerie you control.',
+                     'Counter target spell unless its controller pays {2}. If they do, draw a card. You gain 1 life.',
                      'Counter target spell unless its controller pays {2}. If a Dragon was beheld, counter that spell unless its controller pays {4} instead.',
                      'Counter target activated or triggered ability unless its controller pays {2}.']:
             self.assertIsNone(generate.targeted_program(text),text)
