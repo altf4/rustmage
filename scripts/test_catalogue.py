@@ -14,6 +14,59 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_resolution_sacrifices_keep_player_ownership_filters_and_fixed_counts(self):
+        for subject,players,targets in [('You','Controller','None'),('Each player','Each','None'),('Each opponent','Opponent','None'),('Target player','Targeted','Player'),('Target opponent','Targeted','Opponent')]:
+            result=generate.sacrifice_program(subject.lower()+' sacrifices two creatures of their choice.')
+            self.assertEqual(result[0],targets)
+            self.assertIn('players: PlayerSet::'+players,result[1][0])
+            self.assertIn('amount: 2, optional_skip: None',result[1][0])
+        for text,bits in [('an artifact',16),('a creature',1),('a creature or planeswalker',65),('another creature or artifact',17),('a creature or enchantment',33)]:
+            spec=generate.sacrifice_spec(text)
+            self.assertIn('kinds: '+str(bits),spec[1])
+        self.assertIn('other: true',generate.sacrifice_spec('another creature or artifact')[1])
+        self.assertIn('source_only: true',generate.sacrifice_spec('this creature')[1])
+        self.assertIn('Keywords(1)',generate.sacrifice_spec('a creature with flying')[1])
+        self.assertIn('tokens: Some(false)',generate.sacrifice_spec('two nontoken creatures')[1])
+        self.assertIn('subtype: Some("Food")',generate.sacrifice_spec('two Foods')[1])
+        self.assertIn('amount: 13',generate.statement_program('Each player sacrifices thirteen creatures of their choice.')[0])
+        self.assertIsNotNone(generate.modal_spell_template(self.card(type_line='Sorcery',oracle_text='Choose one —\n• Each opponent sacrifices an artifact of their choice.\n• Each opponent sacrifices an enchantment of their choice.\n• Each opponent sacrifices a creature with flying of their choice.')))
+
+    def test_conditional_resolution_costs_require_complete_single_effect_sentences(self):
+        result=generate.statement_program('You may discard two cards. If you do, draw a card.')
+        self.assertIn('kind: EffectChoiceKind::Discard',result[0])
+        self.assertIn('amount: 2, optional_skip: Some(1)',result[0])
+        result=generate.statement_program('You may sacrifice another creature or artifact. If you do, draw a card and put a +1/+1 counter on this creature.')
+        self.assertIn('optional_skip: Some(2)',result[0])
+        self.assertEqual(result[1:],['Draw(PlayerSet::Controller, 1)',generate.counter_instruction('Source','a','+1/+1')])
+        result=generate.targeted_program('You may sacrifice an artifact. If you do, put a +1/+1 counter on target creature.')
+        self.assertEqual(result[0],'Creature')
+        self.assertIn('optional_skip: Some(1)',result[1][0])
+        self.assertIsNotNone(generate.statement_program('You may sacrifice a land. If you do, search your library for up to two basic land cards, put them onto the battlefield tapped, then shuffle.'))
+        for text in [
+            'You may discard a nonland card. If you do, draw a card.',
+            'You may sacrifice an artifact. When you do, draw a card.',
+            'You may discard a card. If you do, draw a card. You gain 1 life.',
+            'You may sacrifice an artifact or discard a card. If you do, draw a card.',
+            'You may sacrifice up to one artifact. If you do, draw a card.',
+            'You may discard zero cards. If you do, draw a card.',
+            'You may discard a card. If you do, win the game.',
+            'You may sacrifice an artifact. If you do, it deals 1 damage to each opponent.',
+            'As an additional cost to cast this spell, sacrifice a creature. Draw a card.',
+        ]:
+            self.assertIsNone(generate.statement_program(text) or generate.targeted_program(text),text)
+
+    def test_sacrifice_unknown_restrictions_and_mixed_union_qualifiers_fail_closed(self):
+        for spec in ['a creature with the greatest power','a creature or planeswalker with the greatest mana value',
+                     'an artifact or creature token','a nontoken artifact or creature',
+                     'an artifact or creature with flying','two creatures with flying or reach','half your creatures',
+                     'a creature an opponent controls','another creature you do not control','a creature with ward {2}',
+                     'zero creatures','a permanent other than enchanted creature']:
+            self.assertIsNone(generate.sacrifice_spec(spec),spec)
+        for text in ['Target opponent sacrifices a creature with the greatest power among creatures they control.',
+                     'Each player sacrifices all other creatures they control.',
+                     'Target creature gets +1/+1 until end of turn. Its controller sacrifices it.']:
+            self.assertIsNone(generate.statement_program(text) or generate.targeted_program(text),text)
+
     def test_step_events_and_intervening_if_are_whole_trigger_clauses(self):
         for prefix, condition in generate.STEP_PREFIXES.items():
             row = self.card(oracle_text=prefix+'Draw a card.')
@@ -407,7 +460,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                          ['May { skip: 2 }', 'Draw(PlayerSet::Controller, 1)', 'Discard(PlayerSet::Controller, 1)'])
         for text in [None, '', 'Draw two cards. Unknown instruction.', 'You gain X life.',
                      'Draw a card if you control a Hero.', 'Draw a card. You gain 2 life',
-                     'You gain 999999 life.', 'you may discard a card. If you do, draw a card.']:
+                     'You gain 999999 life.', 'you may discard a card. When you do, draw a card.']:
             self.assertIsNone(generate.statement_program(text), text)
 
     def test_trigger_creatures_require_complete_supported_abilities(self):

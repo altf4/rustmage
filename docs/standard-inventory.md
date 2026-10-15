@@ -48,7 +48,7 @@ pool, 60-card minimum and copy limits, then rejects every unsupported card.
 The known Standard unlimited-copy exceptions are represented independently of
 whether their rules have been implemented.
 
-Coverage is **599 / 5,164 executable Standard cards**, plus six legacy regression
+Coverage is **611 / 5,164 executable Standard cards**, plus six legacy regression
 cards. The additions are ten exact vanilla-creature templates and 25 creatures
 whose entire text consists of implemented static keywords, plus four exact
 single-instruction bounce/destruction spells, additional spell programs and creatures with complete supported trigger programs.
@@ -142,3 +142,8 @@ gated until their full semantics are implemented.
 definitions. Current coverage is 599/5,164; 4,565 identities remain unsupported,
 with 35 token factories. Delayed triggers, wider history, modes/costs and other
 residual rules continue to require their full implementations.
+
+[Resolution sacrifices and conditional payments](resolution-payments.md) add 12
+complete definitions. Current coverage is 611/5,164; 4,553 Standard identities
+remain unsupported, with 35 token factories. Wider restrictions, reflexive
+triggers, costs and conditional scope remain gated.

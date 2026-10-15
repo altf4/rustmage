@@ -1,8 +1,8 @@
 use crate::cards::{
     ActivatedAbility, ActivationCost, CastRelation, CounterKind, Counters, CreatureFilter, Effect,
-    EntryTapped, Instruction, ManaProduction, PlayerSet, SearchSpec, Stats, StepGuard, StepValue,
-    Subject, TargetPlan, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep,
-    payments,
+    EffectChoiceKind, EntryTapped, Instruction, ManaProduction, PlayerSet, SacrificeFilter,
+    SearchSpec, Stats, StepGuard, StepValue, Subject, TargetPlan, TargetRule, TargetSpec,
+    TargetZone, TriggerCondition, TriggerStep, payments,
 };
 #[path = "engine_activations.rs"]
 mod activations;
@@ -11,6 +11,8 @@ mod funding;
 use funding::FundingGoal;
 #[path = "engine_blocking.rs"]
 mod blocking;
+#[path = "engine_effect_choices.rs"]
+mod effect_choices;
 #[path = "engine_exile.rs"]
 mod exile;
 #[path = "engine_fight.rs"]
@@ -242,6 +244,10 @@ pub enum Action {
     ChooseOptional {
         accept: bool,
     },
+    Sacrifice {
+        object: ObjectRef,
+    },
+    DeclineEffectPayment,
     KeepLegend {
         object: ObjectRef,
     },
@@ -459,6 +465,9 @@ enum Pending {
         player: Player,
         skip_to: usize,
     },
+    EffectChoice {
+        player: Player,
+    },
     EffectDiscard {
         player: Player,
         remaining: u16,
@@ -604,6 +613,17 @@ pub struct SearchChoiceView {
     pub selected: Vec<CardId>,
 }
 
+/// Private discard costs and public sacrifice choices suspended during resolution.
+#[derive(Clone, Debug, Serialize)]
+pub struct EffectChoiceView {
+    pub kind: EffectChoiceKind,
+    pub amount: u16,
+    pub optional: bool,
+    pub required: [u16; 2],
+    pub selected: [Vec<ObjectRef>; 2],
+    pub candidates: Vec<ObjectRef>,
+}
+
 /// Public state-based choices; earlier APNAP choices stay visible to later players.
 #[derive(Clone, Debug, Serialize)]
 pub struct LegendGroupView {
@@ -645,6 +665,7 @@ pub struct Observation {
     pub targeting_group: Option<u16>,
     pub library_choice: Option<LibraryChoiceView>,
     pub search_choice: Option<SearchChoiceView>,
+    pub effect_choice: Option<EffectChoiceView>,
     pub known_hand: Vec<ObjectRef>,
     pub payment_request: Option<PaymentRequestView>,
     pub waiting_triggers: Vec<SpellView>,
@@ -803,7 +824,8 @@ impl Game {
         match self.state.pending {
             Pending::Mulligan(p) | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
-            Pending::Legend { player }
+            Pending::EffectChoice { player }
+            | Pending::Legend { player }
             | Pending::EffectSearch { player }
             | Pending::EffectLibrary { player }
             | Pending::EffectMana { player, .. }
@@ -898,6 +920,24 @@ impl Game {
         // result. Cache capacity affects work only, never the admitted action set.
         let mut spell_funding_cache: [Option<(Mana, u32, bool)>; 8] = [None; 8];
         match s.pending {
+            Pending::EffectChoice { player } => {
+                let choice = s.resolving.as_ref().unwrap().choice.as_ref().unwrap();
+                if choice.skip_to.is_some() && emit(Action::DeclineEffectPayment) {
+                    return true;
+                }
+                for (index, _) in s.objects.iter().enumerate() {
+                    let object = self.object_ref(index as CardId);
+                    if self.effect_choice_candidate(choice, player, object) {
+                        let action = match choice.kind {
+                            EffectChoiceKind::Sacrifice => Action::Sacrifice { object },
+                            EffectChoiceKind::Discard => Action::Discard { card: object.card },
+                        };
+                        if emit(action) {
+                            return true;
+                        }
+                    }
+                }
+            }
             Pending::Legend { player } => {
                 for group in &s.sba_batch.as_ref().unwrap().groups {
                     if group.controller == player && group.keep.is_none() {
@@ -1461,8 +1501,12 @@ impl Game {
                 }
                 self.advance_damage_choices();
             }
+            Action::Sacrifice { object } => self.choose_effect_object(actor, object),
+            Action::DeclineEffectPayment => self.decline_effect_payment(),
             Action::Discard { card } => {
-                if matches!(self.state.pending, Pending::EffectDiscard { .. }) {
+                if matches!(self.state.pending, Pending::EffectChoice { .. }) {
+                    self.choose_effect_object(actor, self.object_ref(card));
+                } else if matches!(self.state.pending, Pending::EffectDiscard { .. }) {
                     let resolution = self.state.resolving.as_mut().unwrap();
                     resolution.discards[actor.index()] -= 1;
                     resolution.selected_discards[actor.index()].push(card);
@@ -2131,7 +2175,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 19,
+            schema: 20,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -2153,6 +2197,7 @@ impl Game {
                 Pending::EffectLibrary { .. } => "library_choice",
                 Pending::EffectSearch { .. } => "library_search",
                 Pending::EffectDiscard { .. } => "effect_discard",
+                Pending::EffectChoice { .. } => "effect_choice",
                 Pending::Attackers => "attackers",
                 Pending::Blockers => "blockers",
                 Pending::Damage => "damage",
@@ -2167,6 +2212,7 @@ impl Game {
                 library_count: s.players[i].library.len(),
                 hand_count: self.hand_count(if i == 0 { Player::P0 } else { Player::P1 }),
             }),
+            effect_choice: self.effect_choice_view(viewer),
             objects,
             exile_links: s.exile_links.clone(),
             legend_choices: s
@@ -2368,10 +2414,15 @@ impl Game {
                 .as_ref()
                 .map(|resolution| {
                     resolution
-                        .search
+                        .choice
                         .as_ref()
-                        .map(|choice| choice.selected.len() * std::mem::size_of::<CardId>())
+                        .map(|choice| choice.bytes())
                         .unwrap_or(0)
+                        + resolution
+                            .search
+                            .as_ref()
+                            .map(|choice| choice.selected.len() * std::mem::size_of::<CardId>())
+                            .unwrap_or(0)
                         + resolution
                             .library
                             .as_ref()
@@ -2461,3 +2512,7 @@ mod cast_tests;
 #[cfg(test)]
 #[path = "engine_step_tests.rs"]
 mod step_tests;
+
+#[cfg(test)]
+#[path = "engine_effect_choice_tests.rs"]
+mod effect_choice_tests;

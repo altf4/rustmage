@@ -12,6 +12,87 @@ class BindingTests(unittest.TestCase):
     def game(self):
         return Game([["Mountain"] * 24 + ["LightningBolt"] * 36] * 2, seed=17, deck_rules="Freeform")
 
+    def test_private_discard_payment_paid_or_declined_clones_and_restores(self):
+        deck=["Mountain"]*30+["Discerning Peddler"]*30
+        with Game([deck,deck],seed=7,deck_rules="Freeform") as game:
+            obs=game.observe("P0")
+            for _ in range(1000):
+                obs=game.observe(obs["actor"])
+                if obs["decision"]=="effect_choice": break
+                index=max(range(len(obs["actions"])),key=lambda i:
+                    {"Keep":100,"PlayLand":90,"AnnounceCast":80,"PayCosts":100,
+                     "TapMana":70 if obs["decision"]=="pay_costs" else -5,"Pass":20,
+                     "FinishAttackers":40,"FinishBlockers":40,"Mulligan":-100,"Concede":-1000}
+                    .get(obs["actions"][i]["kind"],0))
+                obs=game.step(obs,index)
+            else: self.fail("no discard cost reached")
+            actor=obs["actor"]; player=0 if actor=="P0" else 1; other="P1" if actor=="P0" else "P0"
+            self.assertEqual(obs["effect_choice"]["kind"],"Discard")
+            self.assertTrue(obs["effect_choice"]["optional"])
+            self.assertIsNone(game.observe(other)["effect_choice"])
+            self.assertEqual(game.observe(other)["actions"],[])
+            index=next(i for i,a in enumerate(obs["actions"]) if a["kind"]=="Discard")
+            card=obs["actions"][index]["card"];saved=game.snapshot()
+            with game.clone() as branch: expected=branch.step(branch.observe(actor),index)
+            actual=game.step(obs,index)
+            self.assertEqual(actual,expected)
+            self.assertEqual(actual["players"][player]["library_count"],obs["players"][player]["library_count"]-1)
+            self.assertTrue(any(o["id"]==card and o["zone"]=="Graveyard" for o in game.observe(other)["objects"]))
+            game.restore(saved)
+            with self.assertRaisesRegex(EngineError,"StaleRevision"): game.step(obs,index)
+            replay=game.step(game.observe(actor),index)
+            self.assertGreater(replay.pop("revision"),actual.pop("revision"));self.assertEqual(replay,actual)
+            game.restore(saved);current=game.observe(actor)
+            decline=next(i for i,a in enumerate(current["actions"]) if a["kind"]=="DeclineEffectPayment")
+            declined=game.step(current,decline)
+            self.assertEqual(declined["players"][player]["library_count"],obs["players"][player]["library_count"])
+            self.assertTrue(any(o["id"]==card and o["zone"]=="Hand" for o in declined["objects"]))
+            game.drop_snapshot(saved)
+
+    def test_public_apnap_sacrifices_stay_on_battlefield_until_simultaneous_commit(self):
+        deck=["Swamp"]*30+["Agents of HYDRA"]*20+["Abyssal Gorestalker"]*10
+        with Game([deck,deck],seed=7,deck_rules="Freeform") as game:
+            obs=game.observe("P0")
+            for _ in range(5000):
+                if obs["outcome"] is not None: self.fail("game ended before simultaneous sacrifice")
+                obs=game.observe(obs["actor"])
+                choice=obs["effect_choice"]
+                if choice and not choice["optional"] and min(choice["required"])>=2: break
+                objects={o["id"]:o for o in obs["objects"]}
+                def score(a):
+                    if a["kind"]=="AnnounceCast": return 85 if objects[a["card"]]["card"]=="Abyssal Gorestalker" else 80
+                    return {"Keep":100,"PlayLand":90,"PayCosts":100,
+                            "TapMana":70 if obs["decision"]=="pay_costs" else -5,
+                            "Sacrifice":60,"PutTrigger":60,"Discard":30,"Pass":20,
+                            "FinishAttackers":40,"FinishBlockers":40,"Mulligan":-100,"Concede":-1000}.get(a["kind"],0)
+                obs=game.step(obs,max(range(len(obs["actions"])),key=lambda i:score(obs["actions"][i])))
+            else: self.fail("no simultaneous sacrifice reached")
+            active=obs["active"];player=0 if active=="P0" else 1;other="P1" if active=="P0" else "P0"
+            self.assertEqual(obs["actor"],active)
+            selected=[]
+            for _ in range(2):
+                index=next(i for i,a in enumerate(obs["actions"]) if a["kind"]=="Sacrifice")
+                selected.append(obs["actions"][index]["object"])
+                obs=game.step(obs,index)
+                self.assertEqual(game.observe(other)["effect_choice"]["selected"][player],selected)
+                self.assertTrue(all(any(o["id"]==ref["card"] and o["zone"]=="Battlefield" for o in obs["objects"]) for ref in selected))
+            self.assertEqual(obs["actor"],other)
+            saved=game.snapshot()
+            def finish(handle):
+                for _ in range(3):
+                    current=handle.observe(other)
+                    if current["effect_choice"] is None: return current
+                    current=handle.observe(current["actor"])
+                    index=next(i for i,a in enumerate(current["actions"]) if a["kind"]=="Sacrifice")
+                    handle.step(current,index)
+                self.fail("sacrifice did not commit")
+            with game.clone() as branch: expected=finish(branch)
+            actual=finish(game);self.assertEqual(actual,expected)
+            self.assertTrue(all(any(o["id"]==ref["card"] and o["zone"]=="Graveyard" for o in actual["objects"]) for ref in selected))
+            game.restore(saved);replay=finish(game)
+            self.assertGreater(replay.pop("revision"),actual.pop("revision"));self.assertEqual(replay,actual)
+            game.drop_snapshot(saved)
+
     def test_survival_step_trigger_history_and_source_tapped_clone_restore(self):
         deck=["Forest"]*30+["Cautious Survivor"]*30
         with Game([deck,deck],seed=7,deck_rules="Freeform") as game:
@@ -139,7 +220,7 @@ class BindingTests(unittest.TestCase):
             observation = game.observe("P0")
             coverage = json.loads((Path(__file__).resolve().parents[1] / "data/standard/coverage.json").read_text())
             self.assertEqual(observation["catalogue"], coverage["catalogue_version"])
-            self.assertEqual(observation["schema"], 19)
+            self.assertEqual(observation["schema"], 20)
             self.assertEqual(len(observation["objects"]), 7)
             self.assertTrue(all(o["owner"] == "P0" for o in observation["objects"]))
             self.assertEqual(game.observe("P1")["actions"], [])

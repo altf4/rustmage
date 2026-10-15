@@ -324,6 +324,7 @@ fn target_focus_survives_private_library_continuation_and_replays() {
         selected_discards: [Vec::new(), Vec::new()],
         library: None,
         search: None,
+        choice: None,
     });
     game.run_program();
     assert_eq!(game.state.resolving.as_ref().unwrap().target_group, 1);
@@ -414,6 +415,7 @@ fn fighting_itself_is_one_noncombat_event_for_twice_current_power() {
         selected_discards: [Vec::new(), Vec::new()],
         library: None,
         search: None,
+        choice: None,
     });
     game.run_program();
     game.state_based_actions();

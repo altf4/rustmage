@@ -285,11 +285,93 @@ def search_program(text):
     return [f'Search(SearchSpec {{ filter: SearchFilter::{filter_}, maximum: {count}, destination: SearchDestination::{destination}, tapped: {str(bool(tapped)).lower()}, reveal: {str(bool(reveal)).lower()} }})']
 
 
+def sacrifice_spec(text):
+    """Exact controlled-permanent filters; no targeting/protection predicates."""
+    text = text.casefold()
+    source_only = text.startswith('this ')
+    if source_only:
+        subject=text[5:]
+        if subject not in ('creature','artifact','enchantment','permanent'): return None
+        amount, other = 1, False
+    else:
+        m=re.fullmatch(r'(a|an|another|one|two|three|four|five|six|thirteen) (.+)',text)
+        if not m: return None
+        amount=dict(COUNT_WORDS,a=1,an=1,another=1,thirteen=13)[m[1]]
+        other,subject=m[1]=='another',m[2]
+    if subject.endswith(' you control'): subject=subject[:-12]
+    plurals={word+'s':word for word in ('creature','artifact','enchantment','land','permanent','planeswalker','token','food','clue','treasure','lander')}
+    subject=' '.join(plurals.get(word,word) for word in subject.split())
+    kinds={'creature':1,'artifact':16,'enchantment':32,'land':2,'permanent':0,
+           'creature or planeswalker':65,'artifact or creature':17,'creature or artifact':17,
+           'creature or enchantment':33,'enchantment or creature':33,
+           'artifact or enchantment':48,'enchantment or artifact':48}
+    # Only entire homogeneous qualifiers are supported; e.g. 'artifact or creature
+    # token' cannot use a union mask with a shared token restriction.
+    if subject.endswith('s') and subject[:-1] in kinds: subject=subject[:-1]
+    if ' or ' in subject and (' with ' in subject or subject.startswith('nontoken ')):
+        return None
+    keyword=0
+    if ' with ' in subject:
+        subject,word=subject.split(' with ',1)
+        if word not in KEYWORDS: return None
+        keyword=KEYWORDS[word]
+    nonland,tokens,subtype=False,'None','None'
+    if subject=='nonland permanent': subject,nonland='permanent',True
+    if subject.startswith('nontoken '): subject,tokens=subject[9:],'Some(false)'
+    elif subject in ('creature token','artifact token','token'):
+        subject,tokens={'creature token':'creature','artifact token':'artifact','token':'permanent'}[subject],'Some(true)'
+    if subject in ('food','clue','treasure','lander'):
+        subtype,subject='Some('+json.dumps(subject.capitalize())+')','artifact'
+    if subject not in kinds: return None
+    filt=(f'SacrificeFilter {{ keywords: Keywords({keyword}), source_only: {str(source_only).lower()}, kinds: {kinds[subject]}, nonland: {str(nonland).lower()}, '
+          f'other: {str(other).lower()}, tokens: {tokens}, subtype: {subtype} }}')
+    return amount,filt
+
+
+def object_choice(kind,players,spec,skip=None):
+    amount,filter_=spec
+    skip='None' if skip is None else f'Some({skip})'
+    return f'ChooseObjects {{ kind: EffectChoiceKind::{kind}, players: PlayerSet::{players}, filter: {filter_}, amount: {amount}, optional_skip: {skip} }}'
+
+
+def sacrifice_program(text):
+    m=re.fullmatch(r'(you|each player|each opponent|target player|target opponent) sacrifices? (.+?)(?: of (?:their|your) choice)?\.',text)
+    if not m or (spec:=sacrifice_spec(m[2])) is None: return None
+    targets={'target player':'Player','target opponent':'Opponent'}.get(m[1],'None')
+    players={'you':'Controller','each player':'Each','each opponent':'Opponent'}.get(m[1],'Targeted')
+    return targets,[object_choice('Sacrifice',players,spec)]
+
+
+def optional_payment_program(text,targeted):
+    # A single exact conditional sentence. Extra sentences may have different
+    # conditional scope; never swallow them into the conditional block by guess.
+    m=re.fullmatch(r'you may (sacrifice [^.]+|discard (?:a card|two cards|three cards))\. If you do, ([^.]+)\.',text)
+    if not m: return None
+    cost,body=m[1],m[2]+'.'
+    if cost.startswith('sacrifice '):
+        kind,spec='Sacrifice',sacrifice_spec(cost[len('sacrifice '):])
+        if spec is None: return None
+    else:
+        kind='Discard'
+        spec=(DRAW_COUNTS[cost[len('discard '):]],sacrifice_spec('a permanent')[1])
+    if targeted:
+        result=targeted_program(body)
+        if result is None: return None
+        targets,program=result
+        return targets,[object_choice(kind,'Controller',spec,len(program)),*program]
+    program=statement_program(body)
+    if program is None: return None
+    return [object_choice(kind,'Controller',spec,len(program)),*program]
+
+
 def statement_program(text):
     """Compile only these complete sentences; residual text never gets ignored."""
     if not isinstance(text, str) or not text:
         return None
     text = normalize_duration(text[0].lower() + text[1:])
+    if choice := optional_payment_program(text, False): return choice
+    if sacrifice := sacrifice_program(text):
+        if sacrifice[0] == 'None': return sacrifice[1]
     token = token_program(text) or predefined_program(text)
     if token: return token
     if text == 'untap this creature.': return ['UntapSource']
@@ -331,6 +413,8 @@ def statement_program(text):
     if m := re.fullmatch(r'(scry|surveil) ([0-9]+), then draw ' + draw + r'\.', text):
         if int(m[2]) > 65535: return None
         return [f'{m[1].capitalize()}({int(m[2])})', f'Draw(PlayerSet::Controller, {DRAW_COUNTS[m[3]]})']
+    if m := re.fullmatch(r'draw (a card|two cards|three cards|four cards) and put (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on this creature\.', text):
+        return [f'Draw(PlayerSet::Controller, {DRAW_COUNTS[m[1]]})',counter_instruction('Source',m[2],m[3])]
     if m := re.fullmatch(r'draw ' + draw + r'\.', text):
         return [f'Draw(PlayerSet::Controller, {DRAW_COUNTS[m[1]]})']
     if m := re.fullmatch(r'you gain ([0-9]+) life\.', text):
@@ -455,6 +539,9 @@ def targeted_program(text):
     if not isinstance(text, str) or not text.endswith('.'):
         return None
     text = normalize_duration(text[0].lower() + text[1:])
+    if choice := optional_payment_program(text, True): return choice
+    if sacrifice := sacrifice_program(text):
+        if sacrifice[0] != 'None': return sacrifice
     if result := power_damage_program(text): return result
     if m := re.fullmatch(r'(another target creature you control|target creature you control|target creature) (.+)', text):
         rule = {'target creature': 'Creature', 'target creature you control': 'CreatureYou', 'another target creature you control': 'OtherCreatureYou'}[m[1]]
@@ -921,7 +1008,7 @@ def compile_catalogue(snapshot, target):
             kind = 2 if effect == 'Land' else 1 if effect.startswith('Creature') else 4 if effect in ('Draw',) else 8
         else:
             types = card.get('type_line', '').split(' — ')[0].split()
-            kind = (1 if 'Creature' in types else 0) | (2 if 'Land' in types else 0) | (4 if 'Sorcery' in types else 0) | (8 if 'Instant' in types else 0) | (16 if 'Artifact' in types else 0) | (32 if 'Enchantment' in types else 0)
+            kind = (1 if 'Creature' in types else 0) | (2 if 'Land' in types else 0) | (4 if 'Sorcery' in types else 0) | (8 if 'Instant' in types else 0) | (16 if 'Artifact' in types else 0) | (32 if 'Enchantment' in types else 0) | (64 if 'Planeswalker' in types else 0)
             if land is not None:
                 effect, keywords, abilities, activations, enters, entry = land
             elif template is not None:

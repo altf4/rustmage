@@ -5,7 +5,7 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 599 have executable rules so far.
+knows all 5,164 pinned Standard identities; 611 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
@@ -31,6 +31,7 @@ cargo run --release --example standard_groups -- 100
 cargo run --release --example standard_legends -- 100
 cargo run --release --example standard_casts -- 100
 cargo run --release --example standard_steps -- 100
+cargo run --release --example standard_payments -- 100
 cargo run --release --example standard_tokens -- 100
 cargo run --release --example standard_activations -- 100
 cargo run --release --example standard_mana -- 100
@@ -195,3 +196,6 @@ in [the casting milestone](docs/cast-triggers.md).
 
 Beginning-of-step events, survival, raid and intervening-if checks are described
 in [the step-trigger milestone](docs/step-triggers.md).
+
+Simultaneous sacrifices and exact conditional discard/sacrifice costs are described
+in [the resolution-payment milestone](docs/resolution-payments.md).
