@@ -408,6 +408,9 @@ def statement_program(text):
     if not isinstance(text, str) or not text:
         return None
     text = normalize_duration(text[0].lower() + text[1:])
+    if m:=re.fullmatch(r'this creature connives(?: ([0-9]+))?\.',text):
+        amount=int(m[1]) if m[1] else 1
+        return [f'Connive {{ subject: Subject::Source, amount: {amount} }}'] if amount<=65535 else None
     if mill := mill_program(text): return mill
     if choice := optional_payment_program(text, False): return choice
     if sacrifice := sacrifice_program(text):
@@ -653,6 +656,14 @@ def targeted_program(text):
         return None
     text = normalize_duration(text[0].lower() + text[1:])
     if counter:=counter_program(text): return counter
+    if text=='exile up to one target card from a graveyard.': return ('CardGrave',0,1),['Exile']
+    if text=='target player draws a card, then up to one target creature you control connives.':
+        return ['Player',('CreatureYou',0,1)],['Draw(PlayerSet::Targeted, 1)','SelectGroup(1)','Connive { subject: Subject::Targets, amount: 1 }']
+    if m:=re.fullmatch(r'(up to one )?target creature( you control| an opponent controls)? connives(?: ([0-9]+))?\.',text):
+        amount=int(m[3]) if m[3] else 1
+        if amount>65535: return None
+        rule={None:'Creature',' you control':'CreatureYou',' an opponent controls':'CreatureOpponent'}[m[2]]
+        return ((rule,0,1) if m[1] else rule),[f'Connive {{ subject: Subject::Targets, amount: {amount} }}']
     if text=='two target players each draw a card.': return ('Player',2,2),['Draw(PlayerSet::Targeted, 1)']
     if m:=re.fullmatch(r'put (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on target creature\. It gains (.+) until end of turn\.',text):
         keywords=keyword_list(m[3])
@@ -995,6 +1006,7 @@ def trigger_creature_template(card):
         'Whenever this creature enters or attacks, ': 'SelfEntersOrAttacks',
         'Whenever another artifact you control enters, ': 'OtherArtifactEntersYou',
         'Whenever another creature you control enters, ': 'OtherCreatureEntersYou',
+        'Whenever another Villain you control enters, ': 'OtherSubtypeEntersYou("Villain")',
         'Whenever this creature or another creature you control enters, ': 'CreatureEntersYou',
         'Landfall — Whenever a land you control enters, ': 'LandEntersYou',
         **STEP_PREFIXES,
@@ -1008,6 +1020,8 @@ def trigger_creature_template(card):
         if name and card.get('type_line', '').startswith('Legendary '):
             names.append(name.split(',')[0])
         for alias in names:
+            if line.startswith('Whenever ' + alias + ' attacks, '):
+                line = 'Whenever this creature attacks, ' + line[len('Whenever ' + alias + ' attacks, '):]
             if line.startswith('When ' + alias + ' enters, '):
                 line = 'When this creature enters, ' + line[len('When ' + alias + ' enters, '):]
         for label in ('Raid — ', 'Formidable — ', 'Survival — '):
@@ -1038,9 +1052,13 @@ def trigger_creature_template(card):
                 # Other-creature events and later targeted clauses have other antecedents.
                 if condition in ('SelfEnters', 'SelfDies', 'SelfEntersOrDies', 'SelfAttacks', 'SelfEntersOrAttacks', 'SelfDiscarded', 'SelfCycled'):
                     effect_text = re.sub(r'^[Ii]t deals ', 'this creature deals ', effect_text)
+                    if m:=re.fullmatch(r'(?:it|he|she) connives(?: ([0-9]+))?\.',effect_text):
+                        effect_text='this creature connives'+(' '+m[1] if m[1] else '')+'.'
                 for alias in names:
                     if effect_text.startswith(alias + ' deals '):
                         effect_text = 'this creature deals ' + effect_text[len(alias) + len(' deals '):]
+                    if m:=re.fullmatch(re.escape(alias)+r' connives(?: ([0-9]+))?\.',effect_text):
+                        effect_text='this creature connives'+(' '+m[1] if m[1] else '')+'.'
                     if effect_text.startswith(alias + ' gets '):
                         effect_text = 'this creature gets ' + effect_text[len(alias) + len(' gets '):]
                 # An explicit occurrence of this card's name denotes this source;

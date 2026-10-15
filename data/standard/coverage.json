@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "f6645d08efc1758d388970e13a9ee0d5f36ee108fdb9deca8c17fac7ea1f8dc0",
+  "catalogue_version": "84aabd7ee4163e289d71c20483fe77ec3f8c166e9ac63387658551ef434daa94",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 784,
-  "implemented_total": 790,
+  "implemented_standard_cards": 800,
+  "implemented_total": 806,
   "token_definitions": 40,
   "cards": [
     {
@@ -117,8 +117,8 @@
     {
       "name": "A.I.M. Scientists",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "A.I.M. Synthoids",
@@ -483,8 +483,8 @@
     {
       "name": "Afterthought Sentry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Agate Assault",
@@ -897,8 +897,8 @@
     {
       "name": "Ambush Wolf",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Amonkhet Raceway",
@@ -1425,8 +1425,8 @@
     {
       "name": "Ascendant Dustspeaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Asgardian Citadel",
@@ -6693,8 +6693,8 @@
     {
       "name": "Doc Ock's Henchmen",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Doc Ock's Tentacles",
@@ -12075,8 +12075,8 @@
     {
       "name": "Heritage Reclamation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Hermitic Herbalist",
@@ -13881,8 +13881,8 @@
     {
       "name": "Kang, Temporal Tyrant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Kapow!",
@@ -15651,8 +15651,8 @@
     {
       "name": "Madame Masque",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Madame Null, Power Broker",
@@ -16203,8 +16203,8 @@
     {
       "name": "Mechanical Mobster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Mechanized Ninja Cavalry",
@@ -19611,8 +19611,8 @@
     {
       "name": "Prowler, Clawed Thief",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Prudent Fateseer // Peer Review",
@@ -20589,8 +20589,8 @@
     {
       "name": "Red Room Recruit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Red Tiger Mechan",
@@ -24693,8 +24693,8 @@
     {
       "name": "Startled Relic Sloth",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Starving Revenant",
@@ -25851,8 +25851,8 @@
     {
       "name": "Syr Alin, the Lion's Claw",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Syr Armont, the Redeemer",
@@ -28803,8 +28803,8 @@
     {
       "name": "Unstable Experiment",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Unstable Glyphbridge // Sandswirl Wanderglyph",
@@ -30735,8 +30735,8 @@
     {
       "name": "Wreck Remover",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Wreckage Wickerfolk",
@@ -30825,8 +30825,8 @@
     {
       "name": "Yellowjacket, Heartless Marauder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Yenna, Redtooth Regent",

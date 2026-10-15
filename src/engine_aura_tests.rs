@@ -70,6 +70,7 @@ fn program(g: &mut Game, code: &'static [Instruction], targets: Vec<BoundTarget>
     let mut item = g.cast_item(Player::P0, id, [0; 6]);
     item.targets = targets;
     g.state.resolving = Some(Resolution {
+        connive: None,
         item,
         program: code,
         pc: 0,

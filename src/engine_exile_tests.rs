@@ -35,7 +35,7 @@ fn linked_exile_is_public_owned_and_returns_fresh_incarnation_with_etb() {
     let saved = g.snapshot();
     for viewer in [Player::P0, Player::P1] {
         let view = g.observe(viewer);
-        assert_eq!(view.schema, 29);
+        assert_eq!(view.schema, 30);
         assert_eq!(view.exile_links, g.state.exile_links);
         assert!(
             view.objects

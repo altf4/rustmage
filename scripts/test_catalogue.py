@@ -14,6 +14,47 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_connive_source_pronouns_names_and_fixed_amounts_require_bound_sources(self):
+        for pronoun in ['it','he','she']:
+            row=self.card(oracle_text='When this creature enters, '+pronoun+' connives.')
+            self.assertEqual(generate.trigger_creature_template(row)[2][0][1],['Connive { subject: Subject::Source, amount: 1 }'])
+        row=self.card(name='Test, Named Villain',type_line='Legendary Creature — Human Villain',oracle_text='Whenever Test attacks, he connives.')
+        result=generate.trigger_creature_template(row)
+        self.assertEqual(result[2][0][0],'SelfAttacks');self.assertIn('Connive',result[2][0][1][0])
+        for amount in [0,1,3,65535]:
+            self.assertEqual(generate.statement_program(f'This creature connives {amount}.'),[f'Connive {{ subject: Subject::Source, amount: {amount} }}'])
+        for text in ['This creature connives 65536.','This creature connives X.','It connives.','That creature connives.']:
+            self.assertIsNone(generate.statement_program(text),text)
+        self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='Whenever another Villain you control enters, it connives.')))
+        row=self.card(name='Test, Named Villain',type_line='Legendary Creature — Human Villain',oracle_text='Whenever another Villain you control enters, Test connives.')
+        self.assertEqual(generate.trigger_creature_template(row)[2][0][0],'OtherSubtypeEntersYou("Villain")')
+
+    def test_targeted_connive_groups_and_optional_graveyard_exile_are_complete(self):
+        self.assertEqual(generate.targeted_program('Target creature you control connives.'),('CreatureYou',['Connive { subject: Subject::Targets, amount: 1 }']))
+        self.assertEqual(generate.targeted_program('Up to one target creature connives 2.'),(('Creature',0,1),['Connive { subject: Subject::Targets, amount: 2 }']))
+        groups,program=generate.targeted_program('Target player draws a card, then up to one target creature you control connives.')
+        self.assertEqual(groups,['Player',('CreatureYou',0,1)]);self.assertEqual(program[1],'SelectGroup(1)')
+        groups,program=generate.targeted_program('Exile up to one target card from a graveyard. Target creature you control connives.')
+        self.assertEqual(groups,[('CardGrave',0,1),'CreatureYou']);self.assertEqual(program[0],'Exile');self.assertEqual(program[1],'SelectGroup(1)')
+        for text in ['Target creature connives X.','Target creature connives 65536.',
+                     'Exile up to one target card from a graveyard. If it was a creature card, draw a card.',
+                     'Target player draws a card, then up to one target creature you control connives. If you discarded a creature card, draw a card.']:
+            self.assertIsNone(generate.targeted_program(text),text)
+
+    def test_connive_and_shared_vocabulary_complete_admissions_gate_residuals(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,coverage=generate.compile_catalogue(rows,target)
+        supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for name in ['A.I.M. Scientists','Afterthought Sentry','Ambush Wolf','Ascendant Dustspeaker',"Doc Ock's Henchmen",'Heritage Reclamation',
+                     'Kang, Temporal Tyrant','Madame Masque','Mechanical Mobster','Prowler, Clawed Thief','Red Room Recruit',
+                     'Startled Relic Sloth',"Syr Alin, the Lion's Claw",'Unstable Experiment','Wreck Remover','Yellowjacket, Heartless Marauder']:
+            self.assertIn(name,supported)
+        for name in ['Baron Helmut Zemo','Baron Strucker, HYDRA Overlord','Leader, Super-Genius','M.O.D.O.K.','Mob Lookout',
+                     'Scorpion, Seething Striker','Swordsman, Sharp Scoundrel',"Trickster's Stratagem",'Villainous Hideout']:
+            self.assertNotIn(name,supported)
+
     def test_draw_conditions_and_event_player_are_bound_only_to_draw_triggers(self):
         for prefix,relation,ordinal in [
             ('Whenever you draw a card, ','You',None),('Whenever you draw your first card each turn, ','You',1),
@@ -48,7 +89,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Mischievous Mystic','Otter-Penguin','Ravenhill Flock','Roxxon Brutes','Scrawling Crawler','Take Up the Shield','Tiger-Seal']:
             self.assertIn(name,supported)
         for name in ['Aether Syphon','Construct a Cosmic Cube','Foggy Swamp Spirit Keeper','Homunculus Horde','Human Torch, Johnny Storm',
-                     'Jaded Analyst','Kang, Temporal Tyrant','Kid Loki','Lady Octopus, Inspired Inventor','Madame Masque',
+                     'Jaded Analyst','Kid Loki','Lady Octopus, Inspired Inventor',
                      "Master's Councillors",'Moon Girl and Devil Dinosaur','Private Eye','Raven Eagle','Razorkin Needlehead',
                      'Starving Revenant','The Astonishing Ant-Man','The Unagi of Kyoshi Island','Thopter Fabricator','Wolfbat']:
             self.assertNotIn(name,supported)
@@ -149,7 +190,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Shepherding Spirits','Skycrash','Slavering Branchsnapper','Soaring Sandwing','Stockman, Mad Fly-entist',
                      'Stratosoarer','Topiary Panther','Undulating Witness','Vinelasher Adept']:
             self.assertIn(name,supported)
-        for name in ['A.I.M. Scientists',"Basri, Tomorrow's Champion",'Webstrike Elite',"Valor's Flagship",'Night Market','Clamorous Ironclad','Pest Control']:
+        for name in ["Basri, Tomorrow's Champion",'Webstrike Elite',"Valor's Flagship",'Night Market','Clamorous Ironclad','Pest Control']:
             self.assertNotIn(name,supported)
 
     def test_cycling_combines_with_battlefield_abilities_without_overflowing_slots(self):

@@ -7,6 +7,8 @@ use crate::cards::{
 };
 #[path = "engine_activations.rs"]
 mod activations;
+#[path = "engine_connive.rs"]
+mod connive;
 #[path = "engine_damage_triggers.rs"]
 mod damage_triggers;
 #[path = "engine_discard_events.rs"]
@@ -157,6 +159,9 @@ pub struct BoundTarget {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
 pub enum Action {
+    ChooseConniver {
+        object: ObjectRef,
+    },
     PayResolutionMana {
         payment: Mana,
     },
@@ -505,6 +510,9 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    ConniveOrder {
+        player: Player,
+    },
     ResolutionMana {
         player: Player,
     },
@@ -775,6 +783,7 @@ pub struct Observation {
     pub search_choice: Option<SearchChoiceView>,
     pub effect_choice: Option<EffectChoiceView>,
     pub aura_entry: Option<entries::AuraEntryView>,
+    pub connive_choice: Option<connive::ConniveChoiceView>,
     pub known_hand: Vec<ObjectRef>,
     pub payment_request: Option<PaymentRequestView>,
     pub resolution_payment: Option<resolution_mana::ResolutionPaymentView>,
@@ -945,7 +954,8 @@ impl Game {
         match self.state.pending {
             Pending::Mulligan(p) | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
-            Pending::ResolutionMana { player }
+            Pending::ConniveOrder { player }
+            | Pending::ResolutionMana { player }
             | Pending::AuraEntry { player }
             | Pending::EffectChoice { player }
             | Pending::Legend { player }
@@ -1373,6 +1383,25 @@ impl Game {
                     );
                 }
             }
+            Pending::ConniveOrder { player } => {
+                for conniver in &s
+                    .resolving
+                    .as_ref()
+                    .unwrap()
+                    .connive
+                    .as_ref()
+                    .unwrap()
+                    .remaining
+                {
+                    if conniver.controller == player
+                        && emit(Action::ChooseConniver {
+                            object: conniver.object,
+                        })
+                    {
+                        return true;
+                    }
+                }
+            }
             Pending::RecoverMilled { player, filter } => {
                 if emit(Action::RecoverMilled { object: None }) {
                     return true;
@@ -1441,6 +1470,10 @@ impl Game {
 
     fn apply_legal(&mut self, actor: Player, action: Action) {
         match action {
+            Action::ChooseConniver { object } => {
+                self.choose_conniver(object);
+                self.run_program();
+            }
             Action::PayResolutionMana { payment } => self.finish_resolution_payment(Some(payment)),
             Action::DeclineResolutionMana => self.finish_resolution_payment(None),
             Action::ChooseAuraAttachment { object } => self.choose_aura_attachment(object),
@@ -2374,7 +2407,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 29,
+            schema: 30,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -2384,6 +2417,7 @@ impl Game {
             step: s.step,
             decision: match s.pending {
                 Pending::ResolutionMana { .. } => "resolution_mana",
+                Pending::ConniveOrder { .. } => "connive_order",
                 Pending::Mulligan(_) => "mulligan",
                 Pending::Bottom { .. } => "bottom",
                 Pending::Priority => "priority",
@@ -2581,6 +2615,15 @@ impl Game {
             } else {
                 None
             },
+            connive_choice: s
+                .resolving
+                .as_ref()
+                .and_then(|r| r.connive.as_ref())
+                .map(|c| connive::ConniveChoiceView {
+                    amount: c.amount,
+                    remaining: c.remaining.clone(),
+                    current: c.current,
+                }),
             known_hand: s.known_hand.clone(),
             waiting_triggers: s.ordering_triggers.clone(),
             effect_discards: s
@@ -2656,9 +2699,11 @@ impl Game {
             + s.resolving
                 .as_ref()
                 .map(|resolution| {
-                    resolution.mana_payment.as_ref().map_or(0, |_| {
-                        std::mem::size_of::<resolution_mana::ResolutionPayment>()
-                    }) + resolution.milled.len() * std::mem::size_of::<ObjectRef>()
+                    resolution.connive.as_ref().map_or(0, |c| c.bytes())
+                        + resolution.mana_payment.as_ref().map_or(0, |_| {
+                            std::mem::size_of::<resolution_mana::ResolutionPayment>()
+                        })
+                        + resolution.milled.len() * std::mem::size_of::<ObjectRef>()
                         + resolution
                             .choice
                             .as_ref()
@@ -2810,3 +2855,9 @@ pub use draw_events::DrawTriggerView;
 #[cfg(test)]
 #[path = "engine_draw_tests.rs"]
 mod draw_tests;
+
+pub use connive::{ConniveChoiceView, ConniverView};
+
+#[cfg(test)]
+#[path = "engine_connive_tests.rs"]
+mod connive_tests;
