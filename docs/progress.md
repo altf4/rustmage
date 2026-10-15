@@ -8,7 +8,7 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Requirement | Current evidence | Remaining work |
 | --- | --- | --- |
 | Full legal identity pool | 5,164 frozen oracle identities, Java reconciliation and native catalogue tests | Maintain reviewed data versions; implement missing Java-source cards directly |
-| All card semantics | Coverage manifest and runtime admission agree: 800 executable Standard identities | 4,364 identities; many reusable mechanics plus card-specific rules |
+| All card semantics | Coverage manifest and runtime admission agree: 816 executable Standard identities | 4,348 identities; many reusable mechanics plus card-specific rules |
 | Gameplay enforcement | Implemented timing, payment, targets, stack, source-aware damage, strike steps, 14 keywords, typed programs, trigger ordering and regression tests | Wider events/cross-group relationships, replacement/prevention, layers, wider counter mechanics, broader token abilities/copies, modes/costs, remaining keywords and mechanics |
 | In-process library | Rust rlib and C ABI/cdylib; Python ctypes tests including complete games | Batched/packed training interface and model hooks |
 | Branch/restore | Complete owned-state copies, local RNG, reusable snapshots, replay/invariant tests | Cover every new continuation/mechanic; search over information sets |
@@ -16,11 +16,10 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Fair observations | Hidden-hand/library projection and privacy tests; catalogue fingerprint | New private choices/zones; belief sampling and neural encoders |
 | Reviewed delivery | PR #6 foundation; PR #8 catalogue/templates; PR #10 damage/combat; PR #12 object identity/removal; PR #13 programs/triggers; PR #15 targeting; PR #17 counters; PR #18 fixed tokens; PR #20 activations; PR #22 mana/artifact tokens; PR #23 payment windows; PR #25 scry/surveil; PR #27 additive stats; PR #29 effective keywords; PR #31 blocking restrictions; PR #33 face-up exile and linked returns; PR #35 nonbasic lands; PR #37 library search; PR #39 spell modes; PR #41 distinct target groups/fight; PR #43 legend rule/state-based choices; PR #45 completed-cast triggers/prowess; PR #47 step triggers/intervening-if; PR #49 resolution-time sacrifices/conditional payments; PR #51 life-gain/creature-death events; PR #53 Equipment/continuous attached bonuses; PR #55 creature Auras/transactional noncasting entry; PR #57 milling/exact-batch recovery; PR #59 player-damage triggers/captured event amounts; PR #61 resolution mana payments/ward/restricted counters; PR #63 hand-zone cycling/typecycling; PR #65 discard/cycling events/cleanup batches; PR #67 draw events/per-turn ordinals; PR #69 connive continuations, with two subagent reviews each | Continue issue-managed, reviewed PRs through complete acceptance |
 
-The latest work adds connive continuations, exact source/controller LKI,
-sequential APNAP choices and shared subtype-entry/optional graveyard targets.
-Sixteen complete definitions bring coverage to 800/5,164, with 40 token factories.
-Native/Python fixtures cover private land/nonland branches, fixed N/multiple
-connivers, target groups, source departure, deferred triggers and branch replay.
+The latest work adds per-incarnation, per-ability trigger limits and typed
+entry observers. Sixteen complete definitions bring coverage to 816/5,164,
+with 40 token factories. Native/Python fixtures cover simultaneous events,
+independent limits, private choices, source departure/reentry and branch replay.
 Full Standard acceptance remains outstanding.
 
 Other dependencies include wider costs/modes/events, multiple distinct target

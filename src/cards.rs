@@ -513,6 +513,7 @@ pub(crate) enum DamageSubject {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    OncePerTurn(&'static TriggerCondition),
     CardDrawn {
         relation: CastRelation,
         ordinal: Option<u64>,
@@ -557,9 +558,21 @@ pub(crate) enum TriggerCondition {
     SelfEntersOrAttacks,
     OtherCreatureEntersYou,
     OtherSubtypeEntersYou(&'static str),
+    SubtypeEntersYou(&'static str),
+    ArtifactEntersYou,
+    EnchantmentEntersYou,
     CreatureEntersYou,
     OtherArtifactEntersYou,
     LandEntersYou,
+}
+
+impl TriggerCondition {
+    pub(crate) fn event(self) -> Self {
+        match self {
+            Self::OncePerTurn(event) => event.event(),
+            event => event,
+        }
+    }
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

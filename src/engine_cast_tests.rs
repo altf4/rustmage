@@ -347,7 +347,7 @@ fn source_index_agrees_with_full_scan_after_every_admitted_card_enters_and_leave
         let expected = card
             .triggers()
             .iter()
-            .any(|a| matches!(a.condition, TriggerCondition::SpellCast { .. }));
+            .any(|a| matches!(a.condition.event(), TriggerCondition::SpellCast { .. }));
         assert_eq!(
             g.state.cast_sources.contains(&id),
             expected,

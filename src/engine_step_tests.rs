@@ -366,7 +366,7 @@ fn every_admitted_step_source_is_indexed_removed_and_restored_by_zone_changes() 
         let expected = card
             .triggers()
             .iter()
-            .any(|a| matches!(a.condition, TriggerCondition::AtStep { .. }));
+            .any(|a| matches!(a.condition.event(), TriggerCondition::AtStep { .. }));
         assert_eq!(
             g.state.step_sources.contains(&id),
             expected,

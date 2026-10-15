@@ -315,10 +315,10 @@ fn source_indices_follow_every_admitted_definition_and_round_trip_restore() {
         let life = card
             .triggers()
             .iter()
-            .any(|a| matches!(a.condition, TriggerCondition::LifeGained { .. }));
+            .any(|a| matches!(a.condition.event(), TriggerCondition::LifeGained { .. }));
         let death = card.triggers().iter().any(|a| {
             matches!(
-                a.condition,
+                a.condition.event(),
                 TriggerCondition::SelfDies
                     | TriggerCondition::SelfEntersOrDies
                     | TriggerCondition::CreatureDies { .. }

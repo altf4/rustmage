@@ -48,7 +48,7 @@ pool, 60-card minimum and copy limits, then rejects every unsupported card.
 The known Standard unlimited-copy exceptions are represented independently of
 whether their rules have been implemented.
 
-Coverage is **800 / 5,164 executable Standard cards**, plus six legacy regression
+Coverage is **816 / 5,164 executable Standard cards**, plus six legacy regression
 cards. The additions are ten exact vanilla-creature templates and 25 creatures
 whose entire text consists of implemented static keywords, plus four exact
 single-instruction bounce/destruction spells, additional spell programs and creatures with complete supported trigger programs.
@@ -206,3 +206,9 @@ definitions. Current coverage is 800/5,164; 4,364 identities remain unsupported,
 with 40 token factories. Exact source/controller LKI, private nonland discards,
 sequential APNAP operations and shared target/entry vocabulary precede connive
 replacements, broader costs/restrictions, conditional events and remaining rules.
+
+
+Once-per-turn trigger limits and typed entry observers add 16 complete definitions.
+Current coverage is 816/5,164; 4,348 identities remain unsupported, with six
+regression definitions and 40 token factories. See limited-triggers.md for all
+admissions, complete-card gates, validation and the owned limit ledger.
