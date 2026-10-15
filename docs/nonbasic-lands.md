@@ -28,7 +28,7 @@ fastlands, slowlands, low-life duals, gainlands, Guildgates, tri-lands, temples,
 surveil lands, damage deserts and selected utility lands. Source references include
 XMage BloomingMarsh, DeathcapGlade, AgnaQela, CommercialDistrict, CaptivatingCave,
 AbandonedCampground and Wastes. Unsupported entry choices, shocklands, restricted
-mana, fetch/search, land animation, legendary lands and residual rules text stay
+mana, fetch/search, land animation and residual rules text stay
 gated. These remain implementation work toward the full Standard target.
 
 Native tests cover play timing/allowance, tapped funding exclusion, exact colors,
@@ -42,3 +42,6 @@ bases and plays them through the public library API.
 Rules: [September 25, 2026 Comprehensive Rules](https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf),
 especially 305, 603, 605 and 614.12. This implements the listed self replacements;
 general replacement ordering, dependency and choice machinery remain outstanding.
+
+Legendary land templates use the shared [legend rule](legend-rule.md); complete
+residual rules text is still required before any such definition is admitted.

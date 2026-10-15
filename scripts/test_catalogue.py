@@ -118,7 +118,6 @@ class CatalogueCompilerTests(unittest.TestCase):
             ('As this land enters, choose a color.\n{T}: Add one mana of the chosen color.', 'Land'),
             ('{T}: Add {R}. Spend this mana only to cast a creature spell.', 'Land'),
             ('{T}: Add {R}.\nYou win the game.', 'Land'),
-            ('{T}: Add {R}.', 'Legendary Land'),
             ('This land enters tapped.\nThis land enters tapped.\n{T}: Add {R}.', 'Land')]:
             self.assertIsNone(generate.land_template(land(text, typ)), (text, typ))
         self.assertIsNone(generate.land_template(land('{T}: Add {R}.', layout='transform')))
@@ -231,10 +230,24 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertIn('max_mana: 3',generate.TARGET_RULES['CreatureOpponentMax3'])
         self.assertIn('tapped: true',generate.TARGET_RULES['CreatureOpponentTapped'])
 
+    def test_legendary_permanents_require_all_rules_and_spells_stay_gated(self):
+        self.assertEqual(generate.creature_template(self.card(type_line='Legendary Creature — Cat')),
+                         ('Creature(2, 1)', 0))
+        self.assertIsNotNone(generate.trigger_creature_template(self.card(
+            type_line='Legendary Creature — Cat', oracle_text='When this creature enters, draw a card.')))
+        self.assertIsNotNone(generate.land_template(self.card(
+            type_line='Legendary Land', mana_cost='', oracle_text='{T}: Add {R}.')))
+        for typ in ('Legendary Instant', 'Legendary Sorcery'):
+            self.assertIsNone(generate.spell_program_template(self.card(type_line=typ, oracle_text='Draw a card.')))
+        for typ in ('World Creature — Cat', 'Snow Creature — Cat', 'Legendary Snow Creature — Cat'):
+            self.assertIsNone(generate.creature_template(self.card(type_line=typ)))
+        self.assertIsNone(generate.permanent_program_template(self.card(
+            type_line='Legendary Creature — Cat', oracle_text='You may play lands from your graveyard.')))
+
     def test_exact_creature_template_rejects_other_mechanics(self):
         self.assertEqual(generate.creature_template(self.card()), ('Creature(2, 1)', 0))
         for changes in [dict(oracle_text='Flying\nWhen this creature enters, draw a card.'),
-                        dict(type_line='Legendary Creature — Cat'), dict(power='*'),
+                        dict(type_line='Snow Creature — Cat'), dict(power='*'),
                         dict(mana_cost='{X}{W}'), dict(mana_cost='{W/P}'), dict(layout='transform'),
                         dict(oracle_text='Flying, protection from red')]:
             self.assertIsNone(generate.creature_template(self.card(**changes)), changes)
@@ -292,7 +305,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                        dict(oracle_text='When this creature enters, draw a card if you control an Elf.'),
                        dict(oracle_text='When this creature enters, draw a card.\nWard {2}'),
                        dict(mana_cost='{G/U}{G/U}'), dict(layout='transform'),
-                       dict(type_line='Legendary Creature — Cat'), dict(toughness='*')]:
+                       dict(type_line='Snow Creature — Cat'), dict(toughness='*')]:
             self.assertIsNone(generate.trigger_creature_template(dict(card, **change)), change)
 
     def test_program_spells_and_trigger_filters_remain_exact(self):
@@ -418,7 +431,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                      '{1}: Draw a card. Activate only once.',
                      'Pay 999999 life: Draw a card.']:
             self.assertIsNone(generate.permanent_program_template(self.card(oracle_text=line)), line)
-        self.assertIsNone(generate.permanent_program_template(self.card(
+        self.assertIsNotNone(generate.permanent_program_template(self.card(
             type_line='Legendary Creature — Cat', oracle_text='{1}: Draw a card.')))
 
     def test_permanent_entry_counters_and_all_abilities_are_compiled(self):

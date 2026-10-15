@@ -60,6 +60,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::ChooseMode { .. } => 50,
             Action::ChooseSearch { .. } => 60,
             Action::FinishSearch => 0,
+            Action::KeepLegend { .. } => 100,
             Action::Keep => 100,
             Action::Mulligan => -100,
             Action::PlayLand { .. } => 90,

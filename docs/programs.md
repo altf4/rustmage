@@ -44,7 +44,7 @@ An ability survives source departure and preserves its original definition and
 controller. Counterspell targets actual spells, not triggered abilities.
 
 The compiler requires complete supported text, normal layout, fixed implemented
-mana symbols, numeric stats and a nonlegendary supported creature body. All keyword
+mana symbols, numeric stats and a supported creature body (including implemented legendary permanents). All keyword
 lines and every trigger/effect clause must compile. Extra activated abilities,
 conditional triggers, unimplemented keywords/costs, or residual text reject the
 whole template. The current catalogue supports 212/5,164 Standard identities.

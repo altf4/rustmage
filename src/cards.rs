@@ -398,6 +398,7 @@ pub struct CardInfo {
     pub type_line: &'static str,
     pub oracle_keywords: &'static [&'static str],
     pub standard_legal: bool,
+    pub legendary: bool,
     pub implemented: bool,
     pub keywords: Keywords,
     pub deck_limit: Option<u8>,
@@ -473,6 +474,9 @@ impl Card {
     }
     pub fn name(self) -> &'static str {
         self.info().name
+    }
+    pub fn is_legendary(self) -> bool {
+        self.info().legendary
     }
     pub fn is_supported(self) -> bool {
         self.info().implemented

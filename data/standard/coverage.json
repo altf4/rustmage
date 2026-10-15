@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "a057dbb0eb212750337210d0e8aae378d43bd9987f07585b43676e8ff9c99ef6",
+  "catalogue_version": "de83b56125ab9174efc05bceb56b4dd15ff34e28b9d2d012b4cd7a732496b2a6",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 537,
-  "implemented_total": 543,
+  "implemented_standard_cards": 547,
+  "implemented_total": 553,
   "token_definitions": 31,
   "cards": [
     {
@@ -3699,8 +3699,8 @@
     {
       "name": "Caelorna, Coral Tyrant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Calamitous Cave-In",
@@ -13857,8 +13857,8 @@
     {
       "name": "Kalakscion, Hunger Tyrant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Kalastria Highborn",
@@ -18693,8 +18693,8 @@
     {
       "name": "Patriot, Shield Wielder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Pawpatch Formation",
@@ -25443,8 +25443,8 @@
     {
       "name": "Sundial, Dawn Tyrant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Sundown Pass",
@@ -26079,8 +26079,8 @@
     {
       "name": "Tatyova, Benthic Druid",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Taurean Mauler",
@@ -26367,8 +26367,8 @@
     {
       "name": "Terrian, World Tyrant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Terrific Team-Up",
@@ -28413,8 +28413,8 @@
     {
       "name": "Tyrox, Saurid Tyrant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Tyvar, the Pummeler",
@@ -30795,14 +30795,14 @@
     {
       "name": "Yargle, Glutton of Urborg",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Yargle, Goliath of Otaria",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Yarus, Roar of the Old Gods",
@@ -30963,8 +30963,8 @@
     {
       "name": "Zetalpa, Primal Dawn",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Zhao, Ruthless Admiral",
