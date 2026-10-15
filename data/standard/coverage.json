@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "97774ff16a99657d8ea4f9b06b54c9772b78a75f2de03ee1805ac9dd895e1dae",
+  "catalogue_version": "e58df01af2e8fee1cd76221b40f3e4a8e6fdaf6bef5fca0e11f5517e2748c329",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 580,
-  "implemented_total": 586,
+  "implemented_standard_cards": 582,
+  "implemented_total": 588,
   "token_definitions": 34,
   "cards": [
     {
@@ -13407,8 +13407,8 @@
     {
       "name": "Iron-Fist Pulverizer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Iron-Shield Elf",
@@ -23055,8 +23055,8 @@
     {
       "name": "Shocking Sharpshooter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Shoot the Sheriff",

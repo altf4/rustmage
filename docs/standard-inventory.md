@@ -48,7 +48,7 @@ pool, 60-card minimum and copy limits, then rejects every unsupported card.
 The known Standard unlimited-copy exceptions are represented independently of
 whether their rules have been implemented.
 
-Coverage is **580 / 5,164 executable Standard cards**, plus six legacy regression
+Coverage is **582 / 5,164 executable Standard cards**, plus six legacy regression
 cards. The additions are ten exact vanilla-creature templates and 25 creatures
 whose entire text consists of implemented static keywords, plus four exact
 single-instruction bounce/destruction spells, additional spell programs and creatures with complete supported trigger programs.
@@ -133,7 +133,7 @@ remain outstanding.
 [Legend-rule support](legend-rule.md) admits ten complete legendary permanents.
 Current coverage is 547/5,164; 4,617 identities remain unsupported.
 
-[Completed-cast triggers and prowess](cast-triggers.md) add 33 complete definitions.
-Current coverage is 580/5,164; 4,584 identities remain unsupported, with 34 native
+[Completed-cast triggers and prowess](cast-triggers.md) add 35 complete definitions.
+Current coverage is 582/5,164; 4,582 identities remain unsupported, with 34 native
 token factories. Wider costs, conditions, copying and granted abilities remain
 gated until their full semantics are implemented.

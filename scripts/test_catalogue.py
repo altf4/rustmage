@@ -65,6 +65,22 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Untap this creature. Win the game.']:
             self.assertIsNone(generate.statement_program(text), text)
 
+    def test_damage_pronouns_require_a_proven_source_antecedent(self):
+        for suffix in ['It deals 1 damage to each opponent.', 'It deals 1 damage to target opponent.']:
+            self.assertIsNone(generate.statement_program(suffix))
+            self.assertIsNone(generate.targeted_program(suffix))
+            self.assertIsNone(generate.targeted_program('Target creature gets +1/+1 until end of turn. '+suffix))
+            self.assertIsNone(generate.spell_program_template(self.card(type_line='Instant', oracle_text=suffix)))
+        for prefix in ['When this creature enters, ', 'When this creature dies, ', 'Whenever this creature attacks, ']:
+            self.assertIsNotNone(generate.trigger_creature_template(self.card(oracle_text=prefix+'it deals 1 damage to each opponent.')))
+        for prefix in ['Whenever another creature you control enters, ', 'Whenever you cast a creature spell, ']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=prefix+'it deals 1 damage to each opponent.')))
+        self.assertEqual(generate.spell_program_template(self.card(name='Boltwave',type_line='Sorcery',oracle_text='Boltwave deals 3 damage to each opponent.')),
+                         ('None',['DamagePlayers(PlayerSet::Opponent, 3)']))
+        activation=generate.permanent_program_template(self.card(oracle_text='{T}, Sacrifice this creature: It deals 1 damage to any target.'))
+        self.assertEqual(activation[3][0][2],['Damage(1)'])
+        self.assertIsNone(generate.permanent_program_template(self.card(oracle_text='{T}: Target creature gets +1/+1 until end of turn. It deals 1 damage to each opponent.')))
+
     def test_distinct_target_groups_and_power_damage_keep_operands(self):
         for verb, action in [('fights', 'Fight'), ('deals damage equal to its power to', 'PowerDamage')]:
             result = generate.targeted_program(f'Target creature you control {verb} target creature an opponent controls.')

@@ -42,9 +42,9 @@ Supporting instructions add source-incarnation untapping (respecting stun) and
 source-aware damage to each opponent. Damage uses current or last-known source
 keywords, including lifelink, and remains distinct from life loss.
 
-Thirty-three complete definitions bring executable Standard coverage to
-580/5,164, plus six regression cards and 34 token factories. Complete-text
-compiler checks retain the other 4,584 identities as unsupported. Conditional
+Thirty-five complete definitions bring executable Standard coverage to
+582/5,164, plus six regression cards and 34 token factories. Complete-text
+compiler checks retain the other 4,582 identities as unsupported. Conditional
 mana-spent clauses, casting restrictions/discounts, copies, magecraft, additional
 costs, broader history queries and remaining card-specific rules are not admitted
 by recognizing a cast-trigger prefix. This milestone does not establish full

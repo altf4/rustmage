@@ -363,3 +363,57 @@ fn source_index_agrees_with_full_scan_after_every_admitted_card_enters_and_leave
     }
     assert!(g.state.cast_sources.is_empty());
 }
+
+#[test]
+fn targeted_second_spell_damage_and_private_scry_keep_source_and_cast_history() {
+    let mut g = scenario();
+    let source = permanent(&mut g, "Iron-Fist Pulverizer");
+    let first = funded(&mut g, "Boltwave");
+    cast(&mut g, first, None);
+    resolve_all(&mut g);
+    let second = funded(&mut g, "Lightning Bolt");
+    cast(&mut g, second, Some(Target::Player(Player::P1)));
+    assert_eq!(g.observe(Player::P0).decision, "targets");
+    assert_eq!(g.state.players[0].spells_cast_this_turn, 2);
+    replay(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Player(Player::P1),
+        },
+    );
+    g.state.objects[source as usize].gained_keywords = Keywords::LIFELINK;
+    g.move_object(source, Zone::Graveyard);
+    pass_pair(&mut g);
+    assert_eq!(g.state.players[1].life, 15);
+    assert_eq!(g.state.players[0].life, 22);
+    assert_eq!(g.observe(Player::P0).decision, "library_choice");
+    assert!(g.observe(Player::P1).library_choice.is_none());
+    let action = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a, Action::ArrangeLibrary { .. }))
+        .unwrap();
+    replay(&mut g, action);
+    assert_eq!(g.state.players[0].spells_cast_this_turn, 2);
+    pass_pair(&mut g);
+    assert_eq!(g.state.players[1].life, 12);
+}
+
+#[test]
+fn explicit_source_damage_on_another_creatures_entry_is_distinct_from_that_creature() {
+    let mut g = scenario();
+    let source = named(&mut g, Player::P0, "Shocking Sharpshooter", Zone::Hand);
+    g.move_object(source, Zone::Battlefield);
+    assert!(g.state.pending_triggers.is_empty());
+    let opponent = named(&mut g, Player::P1, "Grizzly Bears", Zone::Hand);
+    g.move_object(opponent, Zone::Battlefield);
+    assert!(g.state.pending_triggers.is_empty());
+    let own = named(&mut g, Player::P0, "Grizzly Bears", Zone::Hand);
+    g.move_object(own, Zone::Battlefield);
+    g.prepare_triggers();
+    choose(&mut g, Target::Player(Player::P1));
+    assert_eq!(g.state.stack[0].card, source);
+    assert_eq!(g.state.players[0].spells_cast_this_turn, 0);
+    pass_pair(&mut g);
+    assert_eq!(g.state.players[1].life, 19);
+}
