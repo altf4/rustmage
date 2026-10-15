@@ -760,6 +760,9 @@ impl Game {
         if emit(Action::Concede) {
             return true;
         }
+        // This query is read-only: identical fixed spell costs share a funding
+        // result. Cache capacity affects work only, never the admitted action set.
+        let mut spell_funding_cache: [Option<(Mana, u32, bool)>; 8] = [None; 8];
         match s.pending {
             Pending::PayCosts { .. } => {
                 if self.visit_cost_payment(&mut emit) {
@@ -853,16 +856,33 @@ impl Game {
                             false
                         });
                     }
-                    if target_count >= usize::from(spec.min)
-                        && self.can_fund(FundingGoal {
-                            actor,
-                            required: colored,
-                            generic,
-                            source: None,
-                        })
-                        && emit(Action::AnnounceCast { card })
-                    {
-                        return true;
+                    if target_count >= usize::from(spec.min) {
+                        let cached = spell_funding_cache
+                            .iter()
+                            .flatten()
+                            .find(|(required, amount, _)| {
+                                *required == colored && *amount == generic
+                            })
+                            .map(|(_, _, result)| *result);
+                        let can_fund = if let Some(result) = cached {
+                            result
+                        } else {
+                            let result = self.can_fund(FundingGoal {
+                                actor,
+                                required: colored,
+                                generic,
+                                source: None,
+                            });
+                            if let Some(slot) =
+                                spell_funding_cache.iter_mut().find(|slot| slot.is_none())
+                            {
+                                *slot = Some((colored, generic, result));
+                            }
+                            result
+                        };
+                        if can_fund && emit(Action::AnnounceCast { card }) {
+                            return true;
+                        }
                     }
                     let mut done = false;
                     payments(s.players[actor.index()].mana, colored, generic, |payment| {
