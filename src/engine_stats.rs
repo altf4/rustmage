@@ -14,6 +14,12 @@ impl Game {
         let triggers = self.state.objects[id as usize].card.triggers();
         if triggers
             .iter()
+            .any(|ability| matches!(ability.condition, TriggerCondition::PlayerDamaged { .. }))
+        {
+            self.state.damage_sources.push(id);
+        }
+        if triggers
+            .iter()
             .any(|ability| matches!(ability.condition, TriggerCondition::LifeGained { .. }))
         {
             self.state.life_sources.push(id);

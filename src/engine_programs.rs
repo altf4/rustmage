@@ -7,7 +7,7 @@ pub(super) struct Resolution {
     pub program: &'static [Instruction],
     pub pc: usize,
     pub target_group: u16,
-    pub discards: [u16; 2],
+    pub discards: [usize; 2],
     pub selected_discards: [Vec<CardId>; 2],
     pub milled: Vec<ObjectRef>,
     pub library: Option<LibraryChoice>,
@@ -194,7 +194,8 @@ impl Game {
                     TriggerCondition::SelfEnters
                     | TriggerCondition::SelfEntersOrAttacks
                     | TriggerCondition::SelfEntersOrDies => same,
-                    TriggerCondition::SelfDies
+                    TriggerCondition::PlayerDamaged { .. }
+                    | TriggerCondition::SelfDies
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::LifeGained { .. }
                     | TriggerCondition::SelfAttacks
@@ -226,6 +227,8 @@ impl Game {
             source_card: source.card,
             source_keywords: source.keywords,
             source_tapped: source.tapped,
+            source_facts: DamageFacts::from_view(source),
+            damage_event: None,
             source_attachment: source.attached_to,
             card: source.id,
             object: source.reference,
@@ -455,10 +458,13 @@ impl Game {
             // must not see earlier players' selected hand identities.
             let selected =
                 std::mem::take(&mut self.state.resolving.as_mut().unwrap().selected_discards);
-            for player in [self.state.active, self.state.active.other()] {
-                for &card in &selected[player.index()] {
-                    self.move_object(card, Zone::Graveyard);
-                }
+            let discarded: Vec<_> = [self.state.active, self.state.active.other()]
+                .into_iter()
+                .flat_map(|player| selected[player.index()].iter().copied())
+                .collect();
+            if !discarded.is_empty() {
+                let events = self.move_objects_raw(&discarded, Zone::Graveyard);
+                self.finish_zone_events(&events, &[]);
             }
             let resolution = self.state.resolving.as_mut().unwrap();
             let Some(instruction) = resolution.program.get(resolution.pc).copied() else {
@@ -479,6 +485,20 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::DrawDamageAmount => {
+                    self.draw_many(
+                        item.controller,
+                        item.damage_event
+                            .expect("damage-sized effect requires event")
+                            .amount,
+                    );
+                }
+                Instruction::DiscardHand(players) => {
+                    for player in self.program_players(players, &item) {
+                        self.state.resolving.as_mut().unwrap().discards[player.index()] =
+                            self.hand_count(player);
+                    }
+                }
                 Instruction::Mill(players, amount) => {
                     let players: Vec<_> = self.program_players(players, &item).collect();
                     self.mill_batch(&players, amount, item.controller);
@@ -625,14 +645,13 @@ impl Game {
                 }
                 Instruction::Draw(set, amount) => {
                     for player in self.program_players(set, &item) {
-                        for _ in 0..amount {
-                            self.draw(player);
-                        }
+                        self.draw_many(player, u64::from(amount));
                     }
                 }
                 Instruction::Discard(set, amount) => {
                     for player in self.program_players(set, &item) {
-                        self.state.resolving.as_mut().unwrap().discards[player.index()] = amount;
+                        self.state.resolving.as_mut().unwrap().discards[player.index()] =
+                            usize::from(amount);
                     }
                 }
                 Instruction::GainLife(set, amount) => {
@@ -646,7 +665,7 @@ impl Game {
                         self.state.players[player.index()].life -= i64::from(amount);
                     }
                 }
-                Instruction::UntapCreatures(filter) => {
+                Instruction::UntapCreatures(filter) | Instruction::TapCreatures(filter) => {
                     let ids: Vec<_> = self
                         .state
                         .objects
@@ -663,7 +682,11 @@ impl Game {
                         .map(|(id, _)| id)
                         .collect();
                     for id in ids {
-                        self.state.objects[id].untap();
+                        if matches!(instruction, Instruction::TapCreatures(_)) {
+                            self.state.objects[id].tapped = true;
+                        } else {
+                            self.state.objects[id].untap();
+                        }
                     }
                 }
                 Instruction::UntapSource => {
@@ -676,6 +699,7 @@ impl Game {
                         self.damage_source(item.card)
                     } else {
                         DamageSource {
+                            facts: item.source_facts,
                             object: item.card,
                             reference: item.object,
                             controller: item.controller,

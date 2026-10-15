@@ -1,0 +1,186 @@
+//! Player-damage observers and frozen amounts; no source graph is cloned.
+use super::*;
+
+impl Game {
+    pub(super) fn draw_many(&mut self, player: Player, amount: u64) {
+        // Empty draws only set the existing failed-draw flag. No admitted card
+        // replaces draws or triggers on failed draws; cap the redundant attempts.
+        let attempts = amount.min(self.state.players[player.index()].library.len() as u64 + 1);
+        for _ in 0..attempts {
+            self.draw(player);
+        }
+    }
+
+    pub(super) fn is_modified(&self, id: CardId) -> bool {
+        let object = &self.state.objects[id as usize];
+        object.zone == Zone::Battlefield
+            && (object.counters.plus_one > 0
+                || object.counters.minus_one > 0
+                || object.counters.stun > 0
+                || self.state.attachment_sources.iter().any(|&attachment| {
+                    let attachment = &self.state.objects[attachment as usize];
+                    attachment.attached_to == Some(self.object_ref(id))
+                        && (attachment.card.equipment().is_some()
+                            || (attachment.card.aura().is_some()
+                                && attachment.owner == object.owner))
+                }))
+    }
+
+    pub(super) fn damage_facts(&self, id: CardId) -> DamageFacts {
+        let object = &self.state.objects[id as usize];
+        DamageFacts {
+            card: object.card,
+            battlefield: object.zone == Zone::Battlefield,
+            counter: object.counters.plus_one > 0
+                || object.counters.minus_one > 0
+                || object.counters.stun > 0,
+            plus_one: object.counters.plus_one > 0,
+            modified: self.is_modified(id),
+            attacking: self.state.attackers.iter().any(|a| a.card == id),
+        }
+    }
+
+    fn damage_qualified(
+        &self,
+        source: &ObjectView,
+        dealer: DamageSource,
+        subject: DamageSubject,
+    ) -> bool {
+        match subject {
+            DamageSubject::Source => dealer.reference == source.reference,
+            DamageSubject::Attached => {
+                source.attached_to == Some(dealer.reference)
+                    && self.on_battlefield(dealer.object)
+                    && self.object_ref(dealer.object) == dealer.reference
+            }
+            DamageSubject::Creatures {
+                filter,
+                qualification,
+            } => {
+                let facts = dealer.facts;
+                facts.battlefield
+                    && facts.card.is_creature()
+                    && match filter.relation {
+                        0 => dealer.controller == source.owner,
+                        1 => dealer.controller != source.owner,
+                        _ => true,
+                    }
+                    && (!filter.other || dealer.reference != source.reference)
+                    && filter.subtype.is_none_or(|subtype| {
+                        facts
+                            .card
+                            .info()
+                            .type_line
+                            .split_once(" — ")
+                            .is_some_and(|(_, types)| {
+                                types.split_whitespace().any(|word| word == subtype)
+                            })
+                    })
+                    && dealer.keywords.contains(filter.keyword)
+                    && (!filter.attacking || facts.attacking)
+                    && filter
+                        .tokens
+                        .is_none_or(|tokens| facts.card.is_token() == tokens)
+                    && (!filter.artifact || facts.card.is_artifact())
+                    && match qualification {
+                        DamageQualification::Any => true,
+                        DamageQualification::Counter => facts.counter,
+                        DamageQualification::PlusOne => facts.plus_one,
+                        DamageQualification::Modified => facts.modified,
+                    }
+            }
+        }
+    }
+
+    pub(super) fn player_damage_triggers(&mut self, events: &[DamageEvent]) {
+        if self.state.damage_sources.is_empty() {
+            return;
+        }
+        // One dealer damaging one player simultaneously is one occurrence,
+        // regardless of the number of assignment fragments in the event batch.
+        let mut hits = std::collections::BTreeMap::new();
+        for event in events {
+            if event.amount <= 0 {
+                continue;
+            }
+            let Target::Player(player) = event.target else {
+                continue;
+            };
+            let amount = hits
+                .entry((event.source, player, event.combat))
+                .or_insert(0u64);
+            *amount = amount
+                .checked_add(event.amount as u64)
+                .expect("damage amount exhausted");
+        }
+        let sources: Vec<_> = self
+            .state
+            .damage_sources
+            .iter()
+            .map(|&id| self.object_view(id))
+            .collect();
+        for source in sources {
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                let TriggerCondition::PlayerDamaged {
+                    subject,
+                    combat_only,
+                    opponent_only,
+                    one_or_more,
+                } = ability.condition
+                else {
+                    continue;
+                };
+                let mut aggregate = std::collections::BTreeMap::new();
+                for (&(dealer, player, combat), &amount) in &hits {
+                    if (combat_only && !combat)
+                        || (opponent_only && source.owner == player)
+                        || !self.damage_qualified(&source, dealer, subject)
+                    {
+                        continue;
+                    }
+                    if one_or_more {
+                        let total = aggregate.entry(player).or_insert((0u64, true));
+                        total.0 = total
+                            .0
+                            .checked_add(amount)
+                            .expect("damage amount exhausted");
+                        total.1 &= combat;
+                    } else {
+                        self.queue_damage_trigger(
+                            &source,
+                            index,
+                            DamageTriggerView {
+                                dealer: Some(dealer.reference),
+                                player,
+                                amount,
+                                combat,
+                            },
+                        );
+                    }
+                }
+                for (player, (amount, combat)) in aggregate {
+                    self.queue_damage_trigger(
+                        &source,
+                        index,
+                        DamageTriggerView {
+                            dealer: None,
+                            player,
+                            amount,
+                            combat,
+                        },
+                    );
+                }
+            }
+        }
+    }
+
+    fn queue_damage_trigger(
+        &mut self,
+        source: &ObjectView,
+        index: usize,
+        event: DamageTriggerView,
+    ) {
+        self.queue_trigger(source, index);
+        self.state.pending_triggers.last_mut().unwrap().damage_event = Some(event);
+    }
+}

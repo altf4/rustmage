@@ -48,7 +48,7 @@ pool, 60-card minimum and copy limits, then rejects every unsupported card.
 The known Standard unlimited-copy exceptions are represented independently of
 whether their rules have been implemented.
 
-Coverage is **690 / 5,164 executable Standard cards**, plus six legacy regression
+Coverage is **712 / 5,164 executable Standard cards**, plus six legacy regression
 cards. The additions are ten exact vanilla-creature templates and 25 creatures
 whose entire text consists of implemented static keywords, plus four exact
 single-instruction bounce/destruction spells, additional spell programs and creatures with complete supported trigger programs.
@@ -171,3 +171,9 @@ Current coverage is 690/5,164; 4,474 identities remain unsupported, with 36 toke
 factories. Owned mill results, optional milling legality, recovery choices and
 combined entry/death conditions precede wider graveyard events, replacement
 semantics, recovery filters and remaining card rules.
+
+[Player-damage triggers and captured amounts](damage-triggers.md) add 22 complete
+definitions. Current coverage is 712/5,164; 4,452 identities remain unsupported,
+with 36 token factories. Self/attached/filtered observers, damage facts/LKI,
+one-or-more grouping and whole-hand discard continuations precede broader
+event subjects, granted triggers, prevention and remaining semantics.
