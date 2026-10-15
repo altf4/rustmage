@@ -508,6 +508,8 @@ def statement_program(text):
 TARGET_RULES = {
     'None': 'TargetRule::None', 'Creature': 'TargetRule::Creature',
     'Any': 'TargetRule::Any', 'Spell': 'TargetRule::Spell',
+    'CreatureVehicle': 'TargetRule::CreatureOrVehicle { relation: -1 }',
+    'CreatureVehicleOpponent': 'TargetRule::CreatureOrVehicle { relation: 1 }',
     'Player': 'TargetRule::Player { opponent_only: false }',
     'Opponent': 'TargetRule::Player { opponent_only: true }',
 }
@@ -647,6 +649,13 @@ def targeted_program(text):
         return None
     text = normalize_duration(text[0].lower() + text[1:])
     if counter:=counter_program(text): return counter
+    if m:=re.fullmatch(r'(target creature or Vehicle)( an opponent controls)? gets ([+-][0-9]+)/([+-][0-9]+) until end of turn\.',text):
+        if max(abs(int(m[3])),abs(int(m[4])))>32767: return None
+        return ('CreatureVehicleOpponent' if m[2] else 'CreatureVehicle'),[grow_instruction('Targets',int(m[3]),int(m[4]))]
+    if m:=re.fullmatch(r'put (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on up to one target creature or Vehicle\. It gains (.+) until end of turn\.',text):
+        keywords=keyword_list(m[3])
+        if keywords is None: return None
+        return ('CreatureVehicle',0,1),[counter_instruction('Targets',m[1],m[2]),f'GrantKeywords {{ subject: Subject::Targets, keywords: Keywords({keywords}) }}']
     if m := re.fullmatch(r'attach this Equipment to target creature you control\.(?: That creature gains (.+) until end of turn\.)?', text):
         program=['AttachSource']
         if m[1]:
@@ -901,6 +910,22 @@ def damage_event_program(text):
     return ('None',program) if program else None
 
 
+def discard_condition(relation='You',one_or_more=False):
+    return f'Discarded {{ relation: CastRelation::{relation}, one_or_more: {str(one_or_more).lower()} }}'
+
+
+def discard_event_program(text):
+    normalized=text[0].lower()+text[1:] if text else ''
+    if re.fullmatch(r'put that many \+1/\+1 counters on this creature\.',normalized):
+        return 'None',['PutDiscardCounters(CounterKind::PlusOne)']
+    if re.fullmatch(r'this creature deals that much damage to each opponent\.',normalized):
+        return 'None',['DamageDiscardAmount(PlayerSet::Opponent)']
+    targeted=targeted_program(text)
+    if targeted: return targeted
+    program=statement_program(text)
+    return ('None',program) if program else None
+
+
 def trigger_creature_template(card):
     if not isinstance(card.get('oracle_text'), str):
         return None
@@ -910,6 +935,14 @@ def trigger_creature_template(card):
     keywords = 0
     abilities = []
     prefixes = {
+        'When you discard this card, ': 'SelfDiscarded',
+        'When you cycle this card, ': 'SelfCycled',
+        'Whenever you discard a card, ': discard_condition(),
+        'Whenever you discard one or more cards, ': discard_condition(one_or_more=True),
+        'Whenever an opponent discards a card, ': discard_condition(relation='Opponent'),
+        'Whenever an opponent discards one or more cards, ': discard_condition(relation='Opponent',one_or_more=True),
+        'Whenever a player discards a card, ': discard_condition(relation='Any'),
+        'Whenever a player discards one or more cards, ': discard_condition(relation='Any',one_or_more=True),
         'Whenever you cast a spell, ': cast_condition(),
         'Whenever you cast a creature spell, ': cast_condition(filter_='Creature'),
         'Whenever you cast a noncreature spell, ': cast_condition(filter_='Noncreature'),
@@ -968,11 +1001,13 @@ def trigger_creature_template(card):
                     effect_text = parts[1]
                 # Only self-event subjects prove an initial 'it' denotes this source.
                 # Other-creature events and later targeted clauses have other antecedents.
-                if condition in ('SelfEnters', 'SelfDies', 'SelfEntersOrDies', 'SelfAttacks', 'SelfEntersOrAttacks'):
+                if condition in ('SelfEnters', 'SelfDies', 'SelfEntersOrDies', 'SelfAttacks', 'SelfEntersOrAttacks', 'SelfDiscarded', 'SelfCycled'):
                     effect_text = re.sub(r'^[Ii]t deals ', 'this creature deals ', effect_text)
                 for alias in names:
                     if effect_text.startswith(alias + ' deals '):
                         effect_text = 'this creature deals ' + effect_text[len(alias) + len(' deals '):]
+                    if effect_text.startswith(alias + ' gets '):
+                        effect_text = 'this creature gets ' + effect_text[len(alias) + len(' gets '):]
                 # An explicit occurrence of this card's name denotes this source;
                 # event-subject pronouns still have no inferred binding.
                 for alias in names:
@@ -982,7 +1017,10 @@ def trigger_creature_template(card):
                     # Only this whole source-counter sentence proves its antecedent.
                     # A later 'it' can refer to an earlier target or another object.
                     effect_text=effect_text.replace(' on it.',' on this creature.')
-                if condition.startswith('PlayerDamaged {'):
+                if condition.startswith('Discarded {'):
+                    result=discard_event_program(effect_text)
+                    targets,program=result if result else ('None',None)
+                elif condition.startswith('PlayerDamaged {'):
                     result=damage_event_program(effect_text)
                     targets,program=result if result else ('None',None)
                 else:
@@ -1256,7 +1294,7 @@ def cycling_abilities(card):
         if mana_cost_spec(mana) is None:
             body.append(line);continue
         cost=activation_cost(mana)
-        cost.update(discard=True,origin='Hand')
+        cost.update(discard=True,origin='Hand',cycling=True)
         if kind=='Cycling': program=['Draw(PlayerSet::Controller, 1)']
         else:
             filter_='BasicLand' if kind=='Basic landcycling' else 'Subtype('+json.dumps(kind.removesuffix('cycling'))+')'
@@ -1269,7 +1307,7 @@ def rust_activations(abilities):
     rows = []
     for cost, targets, program, sorcery, once in abilities:
         remove = 'None' if cost['remove'] is None else f"Some(({'None' if cost['remove'][0] is None else 'Some(CounterKind::' + cost['remove'][0] + ')'}, {cost['remove'][1]}))"
-        rows.append(f"ActivatedAbility {{ origin: ActivationOrigin::{cost.get('origin','Battlefield')}, cost: ActivationCost {{ colored: {cost['colored']}, generic: {cost['generic']}, mana_component: {str(cost['mana_component']).lower()}, tap: {str(cost['tap']).lower()}, sacrifice: {str(cost['sacrifice']).lower()}, discard: {str(cost.get('discard',False)).lower()}, life: {cost['life']}, remove: {remove} }}, targets: {rust_targets(targets)}, program: {rust_program(program)}, sorcery: {str(sorcery).lower()}, once_per_turn: {str(once).lower()} }}")
+        rows.append(f"ActivatedAbility {{ cycling: {str(cost.get('cycling',False)).lower()}, origin: ActivationOrigin::{cost.get('origin','Battlefield')}, cost: ActivationCost {{ colored: {cost['colored']}, generic: {cost['generic']}, mana_component: {str(cost['mana_component']).lower()}, tap: {str(cost['tap']).lower()}, sacrifice: {str(cost['sacrifice']).lower()}, discard: {str(cost.get('discard',False)).lower()}, life: {cost['life']}, remove: {remove} }}, targets: {rust_targets(targets)}, program: {rust_program(program)}, sorcery: {str(sorcery).lower()}, once_per_turn: {str(once).lower()} }}")
     return '&[' + ', '.join(rows) + ']'
 
 

@@ -124,6 +124,10 @@ impl Game {
             .flat_map(|p| choice.selected[p.index()].iter().map(|object| object.card))
             .collect();
         if !ids.is_empty() {
+            if choice.kind == EffectChoiceKind::Discard {
+                self.discard_batch(&ids, None);
+                return false;
+            }
             let sources = if choice.kind == EffectChoiceKind::Sacrifice {
                 self.death_trigger_sources()
             } else {

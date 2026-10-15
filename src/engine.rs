@@ -9,6 +9,8 @@ use crate::cards::{
 mod activations;
 #[path = "engine_damage_triggers.rs"]
 mod damage_triggers;
+#[path = "engine_discard_events.rs"]
+mod discard_events;
 #[path = "engine_funding.rs"]
 mod funding;
 #[path = "engine_resolution_mana.rs"]
@@ -396,6 +398,7 @@ pub struct SpellView {
     pub source_tapped: bool,
     pub source_attachment: Option<ObjectRef>,
     pub damage_event: Option<DamageTriggerView>,
+    pub discard_event: Option<DiscardTriggerView>,
     pub source_facts: DamageFacts,
     pub related_stack: Option<StackLink>,
     pub card: CardId,
@@ -566,6 +569,8 @@ struct State {
     static_sources: Vec<CardId>,
     cast_sources: Vec<CardId>,
     damage_sources: Vec<CardId>,
+    discard_sources: Vec<CardId>,
+    cleanup_discards: Vec<CardId>,
     step_sources: Vec<CardId>,
     life_sources: Vec<CardId>,
     death_sources: Vec<CardId>,
@@ -867,6 +872,8 @@ impl Game {
                 static_sources: Vec::new(),
                 cast_sources: Vec::new(),
                 damage_sources: Vec::new(),
+                discard_sources: Vec::new(),
+                cleanup_discards: Vec::new(),
                 step_sources: Vec::new(),
                 life_sources: Vec::new(),
                 death_sources: Vec::new(),
@@ -1105,6 +1112,11 @@ impl Game {
                         if matches!(s.pending, Pending::EffectDiscard { .. })
                             && s.resolving.as_ref().unwrap().selected_discards[actor.index()]
                                 .contains(&(i as CardId))
+                        {
+                            continue;
+                        }
+                        if s.pending == Pending::Discard
+                            && s.cleanup_discards.contains(&(i as CardId))
                         {
                             continue;
                         }
@@ -1666,8 +1678,10 @@ impl Game {
                     resolution.selected_discards[actor.index()].push(card);
                     self.run_program();
                 } else {
-                    self.move_object(card, Zone::Graveyard);
-                    if self.hand_count(actor) <= 7 {
+                    self.state.cleanup_discards.push(card);
+                    if self.hand_count(actor) - self.state.cleanup_discards.len() <= 7 {
+                        let discarded = std::mem::take(&mut self.state.cleanup_discards);
+                        self.discard_batch(&discarded, None);
                         self.finish_cleanup();
                     }
                 }
@@ -1972,6 +1986,7 @@ impl Game {
             self.state.static_sources.retain(|&source| source != id);
             self.state.cast_sources.retain(|&source| source != id);
             self.state.damage_sources.retain(|&source| source != id);
+            self.state.discard_sources.retain(|&source| source != id);
             self.state.step_sources.retain(|&source| source != id);
             self.state.life_sources.retain(|&source| source != id);
             self.state.death_sources.retain(|&source| source != id);
@@ -2142,11 +2157,13 @@ impl Game {
         }
         // Losing temporary growth can expose lethal negative counters. Apply
         // SBAs before advancing the turn; CR514.3 gives an extra priority cycle.
-        if self.state.objects.iter().enumerate().any(|(id, obj)| {
-            obj.zone == Zone::Battlefield
-                && obj.card.is_creature()
-                && self.stats(id as CardId).toughness <= 0
-        }) {
+        if !self.state.pending_triggers.is_empty()
+            || self.state.objects.iter().enumerate().any(|(id, obj)| {
+                obj.zone == Zone::Battlefield
+                    && obj.card.is_creature()
+                    && self.stats(id as CardId).toughness <= 0
+            })
+        {
             self.give_priority();
             self.state_based_actions();
             return;
@@ -2346,7 +2363,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 27,
+            schema: 28,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -2610,6 +2627,8 @@ impl Game {
                 + s.static_sources.len()
                 + s.cast_sources.len()
                 + s.damage_sources.len()
+                + s.discard_sources.len()
+                + s.cleanup_discards.len()
                 + s.step_sources.len()
                 + s.life_sources.len()
                 + s.death_sources.len()
@@ -2766,3 +2785,9 @@ pub use resolution_mana::ResolutionPaymentView;
 #[cfg(test)]
 #[path = "engine_cycling_tests.rs"]
 mod cycling_tests;
+
+pub use discard_events::DiscardTriggerView;
+
+#[cfg(test)]
+#[path = "engine_discard_tests.rs"]
+mod discard_tests;
