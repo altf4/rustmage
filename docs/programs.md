@@ -47,7 +47,7 @@ The compiler requires complete supported text, normal layout, fixed implemented
 mana symbols, numeric stats and a nonlegendary supported creature body. All keyword
 lines and every trigger/effect clause must compile. Extra activated abilities,
 conditional triggers, unimplemented keywords/costs, or residual text reject the
-whole template. The current catalogue supports 171/5,164 Standard identities.
+whole template. The current catalogue supports 212/5,164 Standard identities.
 [Target announcements](targeting.md) extend these programs with typed predicates,
 multiple targets in one group, player effects, untapping and reanimation. Six additional regression cards
 are outside Standard. Unsupported cards remain rejected at game creation.

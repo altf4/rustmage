@@ -17,7 +17,7 @@ class BindingTests(unittest.TestCase):
             observation = game.observe("P0")
             coverage = json.loads((Path(__file__).resolve().parents[1] / "data/standard/coverage.json").read_text())
             self.assertEqual(observation["catalogue"], coverage["catalogue_version"])
-            self.assertEqual(observation["schema"], 9)
+            self.assertEqual(observation["schema"], 10)
             self.assertEqual(len(observation["objects"]), 7)
             self.assertTrue(all(o["owner"] == "P0" for o in observation["objects"]))
             self.assertEqual(game.observe("P1")["actions"], [])
@@ -167,6 +167,43 @@ else:
             game.step(current, current["actions"].index(action))
             pass_twice()
             actual = game.observe("P0")
+            actual.pop("revision")
+            self.assertEqual(actual, expected)
+
+    def test_treasure_mana_is_immediate_and_six_slot_pool_replays(self):
+        deck = ["Mountain"] * 16 + ["Plundering Pirate"] * 4
+        with Game([deck, deck], seed=7, deck_rules="Freeform") as game:
+            for _ in range(1000):
+                obs = game.observe("P0")
+                obs = game.observe(obs["actor"])
+                choices = [(i,a) for i,a in enumerate(obs["actions"])
+                           if a["kind"] == "ActivateMana" and a["production"] == [0,0,0,0,1,0]]
+                if choices:
+                    index, action = choices[0]
+                    break
+                def score(a):
+                    if a["kind"] == "TapMana":
+                        return 20 if obs["active"] == obs["actor"] and obs["step"] == "Main1" else -5
+                    return {"Keep":100,"PlayLand":90,"Cast":80,"Concede":-1000,"Mulligan":-100}.get(a["kind"],0)
+                game.step(obs, max(range(len(obs["actions"])), key=lambda i: score(obs["actions"][i])))
+            else:
+                self.fail("Treasure mana ability never available")
+            actor = obs["actor"]
+            self.assertTrue(all(len(p["mana"]) == 6 for p in obs["players"]))
+            self.assertEqual(next(o for o in obs["objects"] if o["id"] == action["card"])["token"]["name"], "Treasure Token")
+            before_mana = obs["players"][0 if actor == "P0" else 1]["mana"][4]
+            saved = game.snapshot()
+            game.step(obs, index)
+            expected = game.observe(actor)
+            expected.pop("revision")
+            self.assertEqual(expected["stack"], obs["stack"])
+            self.assertEqual(expected["actor"], actor)
+            self.assertEqual(expected["players"][0 if actor == "P0" else 1]["mana"][4], before_mana + 1)
+            self.assertFalse(any(o["id"] == action["card"] for o in expected["objects"]))
+            game.restore(saved)
+            current = game.observe(actor)
+            game.step(current, current["actions"].index(action))
+            actual = game.observe(actor)
             actual.pop("revision")
             self.assertEqual(actual, expected)
 

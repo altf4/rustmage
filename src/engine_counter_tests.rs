@@ -54,7 +54,7 @@ fn negative_counters_kill_and_opposing_pairs_cancel() {
     assert_eq!(game.object_view(creature).counters.plus_one, 1);
     assert_eq!(game.object_view(creature).counters.minus_one, 0);
     let rot = named(&mut game, "Blight Rot", Zone::Hand);
-    game.state.players[0].mana = [2, 0, 1, 0, 0];
+    game.state.players[0].mana = [2, 0, 1, 0, 0, 0];
     cast(&mut game, rot, Some(Target::Card(creature)));
     pass_pair(&mut game);
     assert_eq!(game.object_view(creature).zone, Zone::Graveyard);

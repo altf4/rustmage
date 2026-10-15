@@ -2,6 +2,18 @@
 use super::*;
 
 impl Game {
+    pub(super) fn add_mana(&mut self, player: Player, production: Mana) {
+        for (pool, amount) in self.state.players[player.index()]
+            .mana
+            .iter_mut()
+            .zip(production)
+        {
+            *pool = pool
+                .checked_add(amount)
+                .expect("mana representation exhausted");
+        }
+    }
+
     pub(super) fn activation_cost_available(
         &self,
         card: CardId,
@@ -65,6 +77,18 @@ impl Game {
                     ability.cost.generic,
                     |payment| {
                         if done {
+                            return;
+                        }
+                        if let Some(production) = ability.mana_production() {
+                            done = production.visit(|production| {
+                                emit(Action::ActivateMana {
+                                    card,
+                                    ability: index as u16,
+                                    payment,
+                                    counter_payment,
+                                    production,
+                                })
+                            });
                             return;
                         }
                         let spec = ability.targets;

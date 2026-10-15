@@ -265,6 +265,16 @@ impl Game {
             resolution.pc += 1;
             let item = resolution.item.clone();
             match instruction {
+                Instruction::AddMana(production) => match production {
+                    ManaProduction::Fixed(mana) => self.add_mana(item.controller, mana),
+                    ManaProduction::Choice { .. } => {
+                        self.state.pending = Pending::EffectMana {
+                            player: item.controller,
+                            production,
+                        };
+                        return;
+                    }
+                },
                 Instruction::CreateTokens {
                     token,
                     amount,

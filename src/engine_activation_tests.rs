@@ -60,7 +60,7 @@ fn tap_cost_enforces_sickness_tapped_status_turn_and_exact_payment_atomically() 
         card: duelist,
         ability: 0,
         target: Some(Target::Player(Player::P1)),
-        payment: [1, 0, 0, 0, 0],
+        payment: [1, 0, 0, 0, 0, 0],
         counter_payment: Counters::default(),
     };
     let before = game.snapshot();
@@ -81,7 +81,7 @@ fn tap_cost_enforces_sickness_tapped_status_turn_and_exact_payment_atomically() 
                 card: duelist,
                 ability: 0,
                 target: Some(Target::Player(Player::P1)),
-                payment: [2, 0, 0, 0, 0],
+                payment: [2, 0, 0, 0, 0, 0],
                 counter_payment: Counters::default(),
             }
         ),
@@ -137,7 +137,7 @@ fn reanimation_targets_are_chosen_before_self_sacrifice() {
         "Valgavoth's Faithful",
         Zone::Battlefield,
     );
-    game.state.players[0].mana = [3, 0, 1, 0, 0];
+    game.state.players[0].mana = [3, 0, 1, 0, 0, 0];
     assert!(!has_activation(&game, faithful));
     let bears = spawn(&mut game, Player::P0, Card::GrizzlyBears, Zone::Graveyard);
     activate(&mut game, faithful, Some(Target::Card(bears)));
@@ -187,7 +187,7 @@ fn non_tap_ability_ignores_summoning_sickness_and_source_counter_cannot_follow_b
 fn activated_draw_discard_suspends_and_restores_owned_resolution() {
     let mut game = scenario();
     let sailor = named(&mut game, Player::P0, "Strix Lookout", Zone::Battlefield);
-    game.state.players[0].mana = [1, 1, 0, 0, 0];
+    game.state.players[0].mana = [1, 1, 0, 0, 0, 0];
     activate(&mut game, sailor, None);
     pass_pair(&mut game);
     assert!(matches!(game.state.pending, Pending::EffectDiscard { .. }));
@@ -253,7 +253,7 @@ fn targeted_counter_cost_is_deferred_until_announcement_completes_and_replays() 
     let elm = named(&mut game, Player::P0, "Gnarlbark Elm", Zone::Hand);
     game.move_object(elm, Zone::Battlefield);
     let bears = spawn(&mut game, Player::P1, Card::GrizzlyBears, Zone::Battlefield);
-    game.state.players[0].mana = [2, 0, 1, 0, 0];
+    game.state.players[0].mana = [2, 0, 1, 0, 0, 0];
     let begin = game
         .legal_actions()
         .into_iter()
@@ -261,12 +261,12 @@ fn targeted_counter_cost_is_deferred_until_announcement_completes_and_replays() 
         .unwrap();
     act(&mut game, begin);
     assert_eq!(game.state.pending, Pending::Targets { player: Player::P0 });
-    assert_eq!(game.state.players[0].mana, [2, 0, 1, 0, 0]);
+    assert_eq!(game.state.players[0].mana, [2, 0, 1, 0, 0, 0]);
     assert_eq!(game.object_view(elm).counters.minus_one, 2);
     assert_eq!(
         game.observe(Player::P0).announcing_payment,
         Some(PendingPaymentView {
-            mana: [2, 0, 1, 0, 0],
+            mana: [2, 0, 1, 0, 0, 0],
             counters: Counters {
                 plus_one: 0,
                 minus_one: 2,
@@ -281,7 +281,7 @@ fn targeted_counter_cost_is_deferred_until_announcement_completes_and_replays() 
         target: Target::Card(bears),
     };
     act(&mut game, choose.clone());
-    assert_eq!(game.state.players[0].mana, [0; 5]);
+    assert_eq!(game.state.players[0].mana, [0; 6]);
     assert_eq!(game.object_view(elm).counters.minus_one, 0);
     assert_eq!(game.object_view(bears).zone, Zone::Battlefield);
     pass_pair(&mut game);
@@ -322,7 +322,7 @@ fn mixed_counter_payments_are_complete_unique_and_forgery_is_atomic() {
     let elm = named(&mut game, Player::P0, "Gnarlbark Elm", Zone::Hand);
     game.move_object(elm, Zone::Battlefield);
     game.state.objects[elm as usize].counters.stun = 2;
-    game.state.players[0].mana = [2, 0, 1, 0, 0];
+    game.state.players[0].mana = [2, 0, 1, 0, 0, 0];
     let choices: Vec<_> = game
         .legal_actions()
         .into_iter()
@@ -349,7 +349,7 @@ fn mixed_counter_payments_are_complete_unique_and_forgery_is_atomic() {
             Action::BeginActivate {
                 card: elm,
                 ability: 0,
-                payment: [2, 0, 1, 0, 0],
+                payment: [2, 0, 1, 0, 0, 0],
                 counter_payment: Counters {
                     plus_one: 1,
                     minus_one: 1,

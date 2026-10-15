@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "03207648bf70d3a0b263588c2536721c9f3366badb7668bcc43070b39fd5df99",
+  "catalogue_version": "420a1c244cc0224c86b796660333ee4bd607adcef7eccc497df554922433733f",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 171,
-  "implemented_total": 177,
-  "token_definitions": 23,
+  "implemented_standard_cards": 212,
+  "implemented_total": 218,
+  "token_definitions": 27,
   "cards": [
     {
       "name": "Plains",
@@ -1635,8 +1635,8 @@
     {
       "name": "Auspicious Arrival",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Autarch Mammoth",
@@ -1851,8 +1851,8 @@
     {
       "name": "Bake into a Pie",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Bakersbane Duo",
@@ -2025,8 +2025,8 @@
     {
       "name": "Barrels of Blasting Jelly",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Barrensteppe Siege",
@@ -4767,8 +4767,8 @@
     {
       "name": "Cold Case Cracker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Coliseum Behemoth",
@@ -4791,8 +4791,8 @@
     {
       "name": "Collector's Vault",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Colleen Wing, Street Samurai",
@@ -4893,8 +4893,8 @@
     {
       "name": "Common Crook",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Commune with Beavers",
@@ -5457,8 +5457,8 @@
     {
       "name": "Crustacean Commando",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Cryogen Relic",
@@ -6117,8 +6117,8 @@
     {
       "name": "Deduce",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Deep Goblin Skulltaker",
@@ -7167,8 +7167,8 @@
     {
       "name": "Druid of the Cowl",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Druid of the Spade",
@@ -9279,8 +9279,8 @@
     {
       "name": "Flamekin Gildweaver",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Flamewake Phoenix",
@@ -9555,8 +9555,8 @@
     {
       "name": "Forecasting Fortune Teller",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Forensic Gadgeteer",
@@ -10515,8 +10515,8 @@
     {
       "name": "Gilded Lotus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Gilgamesh, Master-at-Arms",
@@ -10629,8 +10629,8 @@
     {
       "name": "Gleaming Barrier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Gleaming Bastion",
@@ -11001,8 +11001,8 @@
     {
       "name": "Goobbue Gardener",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Good-Fortune Unicorn",
@@ -11187,8 +11187,8 @@
     {
       "name": "Great Forest Druid",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Great Gilded Boat",
@@ -11253,8 +11253,8 @@
     {
       "name": "Greenhouse Propagator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Gremlin Tamer",
@@ -11949,8 +11949,8 @@
     {
       "name": "Hedron Archive",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Hei Bai, Spirit of Balance",
@@ -12471,8 +12471,8 @@
     {
       "name": "Hot Dog Cart",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Hotfoot Gnome",
@@ -15285,8 +15285,8 @@
     {
       "name": "Long-Bodied Grey Dog",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Longhorn Sharpshooter",
@@ -15771,8 +15771,8 @@
     {
       "name": "Magnifying Glass",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Magnigoth Sentry",
@@ -16665,8 +16665,8 @@
     {
       "name": "Mintstrosity",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Minwu, White Mage",
@@ -17841,8 +17841,8 @@
     {
       "name": "Novice Inspector",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Nowhere to Run",
@@ -17853,8 +17853,8 @@
     {
       "name": "Noxious Newt",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Null Group Biological Assets",
@@ -17907,8 +17907,8 @@
     {
       "name": "Oasis Gardener",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Obeka, Splitter of Seconds",
@@ -18117,8 +18117,8 @@
     {
       "name": "Omni-Cheese Pizza",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Omnipresence",
@@ -18159,8 +18159,8 @@
     {
       "name": "Ooze Spill",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Opera Love Song",
@@ -18963,8 +18963,8 @@
     {
       "name": "Piggy Bank",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Pigment Wrangler // Striking Palette",
@@ -19143,8 +19143,8 @@
     {
       "name": "Plundering Pirate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Plunge into Winter",
@@ -19569,8 +19569,8 @@
     {
       "name": "Prophetic Prism",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Prosperity Tycoon",
@@ -20253,8 +20253,8 @@
     {
       "name": "Rapacious Dragon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Raph & Leo, Sibling Rivals",
@@ -20313,8 +20313,8 @@
     {
       "name": "Rapturous Moment",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Rat King, Verminister",
@@ -20607,8 +20607,8 @@
     {
       "name": "Redcap Thief",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Redirect Lightning",
@@ -21531,8 +21531,8 @@
     {
       "name": "Rootrider Faun",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Rootwise Survivor",
@@ -22209,8 +22209,8 @@
     {
       "name": "Savor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Saw",
@@ -22287,8 +22287,8 @@
     {
       "name": "Scarecrow Guide",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Scarlet Spider, Ben Reilly",
@@ -24633,8 +24633,8 @@
     {
       "name": "Stark Industries Executive",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Starlight Snare",
@@ -25257,8 +25257,8 @@
     {
       "name": "Sultai Devotee",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Sultai Monument",
@@ -26259,8 +26259,8 @@
     {
       "name": "Temur Devotee",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Temur Monument",
@@ -27423,8 +27423,8 @@
     {
       "name": "Three Tree Rootweaver",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Three Tree Scribe",
@@ -27951,8 +27951,8 @@
     {
       "name": "Transdimensional Bovine",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Transformative Commons",
@@ -28029,8 +28029,8 @@
     {
       "name": "Treasure Dredger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Treasure Map // Treasure Cove",

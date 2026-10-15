@@ -1,6 +1,6 @@
 use crate::cards::{
-    ActivatedAbility, ActivationCost, CounterKind, Counters, Effect, Instruction, PlayerSet,
-    Subject, TargetRule, TargetSpec, TargetZone, TriggerCondition, payments,
+    ActivatedAbility, ActivationCost, CounterKind, Counters, Effect, Instruction, ManaProduction,
+    PlayerSet, Subject, TargetRule, TargetSpec, TargetZone, TriggerCondition, payments,
 };
 #[path = "engine_activations.rs"]
 mod activations;
@@ -58,6 +58,9 @@ mod activation_tests;
 #[cfg(test)]
 #[path = "engine_counter_tests.rs"]
 mod counter_tests;
+#[cfg(test)]
+#[path = "engine_mana_tests.rs"]
+mod mana_tests;
 #[cfg(test)]
 #[path = "engine_program_tests.rs"]
 mod program_tests;
@@ -144,6 +147,16 @@ pub enum Action {
         target: Option<Target>,
         payment: Mana,
         counter_payment: Counters,
+    },
+    ActivateMana {
+        card: CardId,
+        ability: u16,
+        payment: Mana,
+        counter_payment: Counters,
+        production: Mana,
+    },
+    ChooseMana {
+        production: Mana,
     },
     BeginActivate {
         card: CardId,
@@ -341,12 +354,29 @@ struct LifeGainEvent {
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
     Mulligan(Player),
-    Bottom { player: Player, remaining: u8 },
+    Bottom {
+        player: Player,
+        remaining: u8,
+    },
     Priority,
-    Targets { player: Player },
-    OrderTriggers { player: Player },
-    EffectOptional { player: Player, skip_to: usize },
-    EffectDiscard { player: Player, remaining: u16 },
+    EffectMana {
+        player: Player,
+        production: ManaProduction,
+    },
+    Targets {
+        player: Player,
+    },
+    OrderTriggers {
+        player: Player,
+    },
+    EffectOptional {
+        player: Player,
+        skip_to: usize,
+    },
+    EffectDiscard {
+        player: Player,
+        remaining: u16,
+    },
     Attackers,
     Blockers,
     Damage,
@@ -460,6 +490,7 @@ pub struct Observation {
     pub resolving: Option<SpellView>,
     pub announcing: Option<SpellView>,
     pub announcing_payment: Option<PendingPaymentView>,
+    pub mana_choices: Vec<Mana>,
     pub waiting_triggers: Vec<SpellView>,
     pub effect_discards: Vec<CardId>,
     pub attackers: Vec<CardId>,
@@ -520,7 +551,7 @@ impl Game {
         let mut objects = Vec::with_capacity(config.decks.iter().map(Vec::len).sum());
         let mut players = std::array::from_fn(|_| PlayerState {
             life: 20,
-            mana: [0; 5],
+            mana: [0; 6],
             library: Vec::new(),
             mulligans: 0,
             kept: false,
@@ -607,7 +638,8 @@ impl Game {
         match self.state.pending {
             Pending::Mulligan(p) | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
-            Pending::Targets { player }
+            Pending::EffectMana { player, .. }
+            | Pending::Targets { player }
             | Pending::OrderTriggers { player }
             | Pending::EffectOptional { player, .. }
             | Pending::EffectDiscard { player, .. } => Some(player),
@@ -693,6 +725,11 @@ impl Game {
             return true;
         }
         match s.pending {
+            Pending::EffectMana { production, .. } => {
+                if production.visit(|production| emit(Action::ChooseMana { production })) {
+                    return true;
+                }
+            }
             Pending::Mulligan(p) => {
                 if emit(Action::Keep) {
                     return true;
@@ -1007,6 +1044,21 @@ impl Game {
                 self.state.stack.push(item);
                 self.state.passes = 0;
             }
+            Action::ActivateMana {
+                card,
+                ability,
+                payment,
+                counter_payment,
+                production,
+            } => {
+                let item = self.activation_item(actor, card, ability);
+                self.pay_activation(&item, payment, counter_payment);
+                self.add_mana(actor, production);
+            }
+            Action::ChooseMana { production } => {
+                self.add_mana(actor, production);
+                self.run_program();
+            }
             Action::BeginActivate {
                 card,
                 ability,
@@ -1024,7 +1076,7 @@ impl Game {
                 }
             }
             Action::BeginCast { card, payment } => {
-                let item = self.cast_item(actor, card, [0; 5]);
+                let item = self.cast_item(actor, card, [0; 6]);
                 if self.start_announcement(item, false) {
                     self.state.announcing.as_mut().unwrap().payment = Some(payment);
                 } else {
@@ -1366,7 +1418,7 @@ impl Game {
 
     fn advance_step(&mut self) {
         for player in &mut self.state.players {
-            player.mana = [0; 5];
+            player.mana = [0; 6];
         }
         match self.state.step {
             Step::Upkeep => {
@@ -1734,7 +1786,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 9,
+            schema: 10,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -1749,6 +1801,7 @@ impl Game {
                 Pending::Targets { .. } => "targets",
                 Pending::OrderTriggers { .. } => "order_triggers",
                 Pending::EffectOptional { .. } => "optional_effect",
+                Pending::EffectMana { .. } => "mana_choice",
                 Pending::EffectDiscard { .. } => "effect_discard",
                 Pending::Attackers => "attackers",
                 Pending::Blockers => "blockers",
@@ -1784,6 +1837,16 @@ impl Game {
                 })
             } else {
                 None
+            },
+            mana_choices: {
+                let mut options = Vec::new();
+                if owns_choice && let Pending::EffectMana { production, .. } = s.pending {
+                    production.visit(|mana| {
+                        options.push(mana);
+                        false
+                    });
+                }
+                options
             },
             waiting_triggers: s.ordering_triggers.clone(),
             effect_discards: s
