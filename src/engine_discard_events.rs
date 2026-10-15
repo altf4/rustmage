@@ -39,8 +39,8 @@ impl Game {
             // Self-discard/cycle triggers use the card in its destination zone.
             let source = self.object_view(event.after.card);
             for (index, ability) in source.card.triggers().iter().enumerate() {
-                if ability.condition == TriggerCondition::SelfDiscarded
-                    || cycling && ability.condition == TriggerCondition::SelfCycled
+                if ability.condition.event() == TriggerCondition::SelfDiscarded
+                    || cycling && ability.condition.event() == TriggerCondition::SelfCycled
                 {
                     self.queue_discard_trigger(
                         &source,
@@ -59,7 +59,7 @@ impl Game {
                 let TriggerCondition::Discarded {
                     relation,
                     one_or_more,
-                } = ability.condition
+                } = ability.condition.event()
                 else {
                     continue;
                 };
@@ -98,7 +98,9 @@ impl Game {
         index: usize,
         event: DiscardTriggerView,
     ) {
-        self.queue_trigger(source, index);
+        if !self.queue_trigger(source, index) {
+            return;
+        }
         self.state
             .pending_triggers
             .last_mut()

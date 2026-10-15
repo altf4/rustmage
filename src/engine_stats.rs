@@ -12,33 +12,41 @@ impl Game {
             self.state.attachment_sources.push(id);
         }
         let triggers = self.state.objects[id as usize].card.triggers();
-        if triggers
-            .iter()
-            .any(|ability| matches!(ability.condition, TriggerCondition::CardDrawn { .. }))
-        {
+        if triggers.iter().any(|ability| {
+            matches!(
+                ability.condition.event(),
+                TriggerCondition::CardDrawn { .. }
+            )
+        }) {
             self.state.draw_sources.push(id);
         }
-        if triggers
-            .iter()
-            .any(|ability| matches!(ability.condition, TriggerCondition::Discarded { .. }))
-        {
+        if triggers.iter().any(|ability| {
+            matches!(
+                ability.condition.event(),
+                TriggerCondition::Discarded { .. }
+            )
+        }) {
             self.state.discard_sources.push(id);
         }
-        if triggers
-            .iter()
-            .any(|ability| matches!(ability.condition, TriggerCondition::PlayerDamaged { .. }))
-        {
+        if triggers.iter().any(|ability| {
+            matches!(
+                ability.condition.event(),
+                TriggerCondition::PlayerDamaged { .. }
+            )
+        }) {
             self.state.damage_sources.push(id);
         }
-        if triggers
-            .iter()
-            .any(|ability| matches!(ability.condition, TriggerCondition::LifeGained { .. }))
-        {
+        if triggers.iter().any(|ability| {
+            matches!(
+                ability.condition.event(),
+                TriggerCondition::LifeGained { .. }
+            )
+        }) {
             self.state.life_sources.push(id);
         }
         if triggers.iter().any(|ability| {
             matches!(
-                ability.condition,
+                ability.condition.event(),
                 TriggerCondition::SelfDies
                     | TriggerCondition::SelfEntersOrDies
                     | TriggerCondition::CreatureDies { .. }
@@ -50,7 +58,7 @@ impl Game {
             .card
             .triggers()
             .iter()
-            .any(|ability| matches!(ability.condition, TriggerCondition::AtStep { .. }))
+            .any(|ability| matches!(ability.condition.event(), TriggerCondition::AtStep { .. }))
         {
             self.state.step_sources.push(id);
         }
@@ -58,7 +66,12 @@ impl Game {
             .card
             .triggers()
             .iter()
-            .any(|ability| matches!(ability.condition, TriggerCondition::SpellCast { .. }))
+            .any(|ability| {
+                matches!(
+                    ability.condition.event(),
+                    TriggerCondition::SpellCast { .. }
+                )
+            })
         {
             self.state.cast_sources.push(id);
         }

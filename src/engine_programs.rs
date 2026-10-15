@@ -107,7 +107,7 @@ impl Game {
                 if let TriggerCondition::LifeGained {
                     first_only,
                     own_turn,
-                } = ability.condition
+                } = ability.condition.event()
                     && (!first_only || first)
                     && (!own_turn || self.state.active == player)
                 {
@@ -137,7 +137,7 @@ impl Game {
             // a source that dies simultaneously still sees the other creatures.
             for source in death_sources {
                 for (index, ability) in source.card.triggers().iter().enumerate() {
-                    let matched = match ability.condition {
+                    let matched = match ability.condition.event() {
                         TriggerCondition::SelfDies | TriggerCondition::SelfEntersOrDies => {
                             source.reference == event.before.reference
                         }
@@ -192,7 +192,8 @@ impl Game {
             let same = source.reference == event.after;
             let yours = source.owner == entered.owner;
             for (index, ability) in source.card.triggers().iter().enumerate() {
-                let matched = match ability.condition {
+                let matched = match ability.condition.event() {
+                    TriggerCondition::OncePerTurn(_) => unreachable!("unwrapped event"),
                     TriggerCondition::SelfEnters
                     | TriggerCondition::SelfEntersOrAttacks
                     | TriggerCondition::SelfEntersOrDies => same,
@@ -218,6 +219,16 @@ impl Game {
                                 |(_, types)| types.split_whitespace().any(|ty| ty == subtype),
                             )
                     }
+                    TriggerCondition::SubtypeEntersYou(subtype) => {
+                        yours
+                            && entered.card.info().type_line.split_once(" — ").is_some_and(
+                                |(_, types)| types.split_whitespace().any(|ty| ty == subtype),
+                            )
+                    }
+                    TriggerCondition::ArtifactEntersYou => yours && entered.card.is_artifact(),
+                    TriggerCondition::EnchantmentEntersYou => {
+                        yours && entered.card.kind_mask() & 32 != 0
+                    }
                     TriggerCondition::CreatureEntersYou => yours && entered.card.is_creature(),
                     TriggerCondition::LandEntersYou => yours && entered.card.is_land(),
                     TriggerCondition::OtherArtifactEntersYou => {
@@ -231,7 +242,22 @@ impl Game {
         }
     }
 
-    pub(super) fn queue_trigger(&mut self, source: &ObjectView, index: usize) {
+    pub(super) fn queue_trigger(&mut self, source: &ObjectView, index: usize) -> bool {
+        if matches!(
+            source.card.triggers()[index].condition,
+            TriggerCondition::OncePerTurn(_)
+        ) {
+            let used = TriggerUse {
+                source: source.reference,
+                ability: u16::try_from(index).expect("ability index"),
+            };
+            if self.state.triggered_this_turn.contains(&used) {
+                return false;
+            }
+            // The ability has triggered even if its later announcement has no
+            // legal targets, is countered, or its effect is declined.
+            self.state.triggered_this_turn.push(used);
+        }
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
             id,
@@ -253,6 +279,7 @@ impl Game {
             targets: Vec::new(),
             mode: None,
         });
+        true
     }
 
     /// A spell becomes cast only after every declaration and cost is complete.
@@ -280,7 +307,7 @@ impl Game {
                     relation,
                     filter,
                     ordinal: wanted,
-                } = ability.condition
+                } = ability.condition.event()
                 {
                     let related = match relation {
                         CastRelation::You => source.owner == caster,
@@ -301,7 +328,7 @@ impl Game {
     pub(super) fn attack_triggers(&mut self, source: &ObjectView) {
         for (index, ability) in source.card.triggers().iter().enumerate() {
             if matches!(
-                ability.condition,
+                ability.condition.event(),
                 TriggerCondition::SelfAttacks | TriggerCondition::SelfEntersOrAttacks
             ) {
                 self.queue_trigger(source, index);
@@ -355,8 +382,10 @@ impl Game {
     pub(super) fn resolve_top(&mut self) {
         let mut item = self.state.stack.pop().unwrap();
         if let StackKind::TriggeredAbility { ability } = item.kind
-            && let TriggerCondition::AtStep { guard, .. } =
-                item.source_card.triggers()[ability as usize].condition
+            && let TriggerCondition::AtStep { guard, .. } = item.source_card.triggers()
+                [ability as usize]
+                .condition
+                .event()
             && !self.step_guard(guard, item.controller, item.object, item.source_tapped)
         {
             self.give_priority();

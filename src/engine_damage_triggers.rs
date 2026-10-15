@@ -126,7 +126,7 @@ impl Game {
                     combat_only,
                     opponent_only,
                     one_or_more,
-                } = ability.condition
+                } = ability.condition.event()
                 else {
                     continue;
                 };
@@ -180,7 +180,9 @@ impl Game {
         index: usize,
         event: DamageTriggerView,
     ) {
-        self.queue_trigger(source, index);
+        if !self.queue_trigger(source, index) {
+            return;
+        }
         self.state.pending_triggers.last_mut().unwrap().damage_event = Some(event);
     }
 }

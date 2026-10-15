@@ -21,7 +21,8 @@ impl Game {
             .collect();
         for source in sources {
             for (index, ability) in source.card.triggers().iter().enumerate() {
-                let TriggerCondition::CardDrawn { relation, ordinal } = ability.condition else {
+                let TriggerCondition::CardDrawn { relation, ordinal } = ability.condition.event()
+                else {
                     continue;
                 };
                 if ordinal.is_none_or(|n| n == event.ordinal)
@@ -30,8 +31,8 @@ impl Game {
                         CastRelation::Opponent => source.owner != player,
                         CastRelation::Any => true,
                     }
+                    && self.queue_trigger(&source, index)
                 {
-                    self.queue_trigger(&source, index);
                     self.state.pending_triggers.last_mut().unwrap().draw_event = Some(event);
                 }
             }

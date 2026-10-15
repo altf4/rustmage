@@ -526,7 +526,7 @@ fn damage_observer_index_matches_all_admissions_and_snapshot_restoration() {
         let expected = card
             .triggers()
             .iter()
-            .any(|t| matches!(t.condition, TriggerCondition::PlayerDamaged { .. }));
+            .any(|t| matches!(t.condition.event(), TriggerCondition::PlayerDamaged { .. }));
         assert_eq!(
             g.state.damage_sources.contains(&id),
             expected,

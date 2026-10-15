@@ -584,6 +584,7 @@ struct State {
     discard_sources: Vec<CardId>,
     draw_sources: Vec<CardId>,
     cleanup_discards: Vec<CardId>,
+    triggered_this_turn: Vec<TriggerUse>,
     step_sources: Vec<CardId>,
     life_sources: Vec<CardId>,
     death_sources: Vec<CardId>,
@@ -756,6 +757,13 @@ pub struct ExileLink {
     pub return_zone: Zone,
 }
 
+/// A public triggered-ability limit consumed by an exact source incarnation.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct TriggerUse {
+    pub source: ObjectRef,
+    pub ability: u16,
+}
+
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
     pub schema: u32,
@@ -770,6 +778,7 @@ pub struct Observation {
     pub players: [PlayerView; 2],
     pub objects: Vec<ObjectView>,
     pub exile_links: Vec<ExileLink>,
+    pub triggered_this_turn: Vec<TriggerUse>,
     pub legend_choices: Vec<LegendGroupView>,
     pub stack: Vec<SpellView>,
     pub resolving: Option<SpellView>,
@@ -891,6 +900,7 @@ impl Game {
                 discard_sources: Vec::new(),
                 draw_sources: Vec::new(),
                 cleanup_discards: Vec::new(),
+                triggered_this_turn: Vec::new(),
                 step_sources: Vec::new(),
                 life_sources: Vec::new(),
                 death_sources: Vec::new(),
@@ -2083,6 +2093,7 @@ impl Game {
     }
 
     fn begin_turn(&mut self) {
+        self.state.triggered_this_turn.clear();
         for player in &mut self.state.players {
             player.spells_cast_this_turn = 0;
             player.cards_drawn_this_turn = 0;
@@ -2407,7 +2418,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 30,
+            schema: 31,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -2471,6 +2482,7 @@ impl Game {
             aura_entry: self.aura_entry_view(viewer),
             objects,
             exile_links: s.exile_links.clone(),
+            triggered_this_turn: s.triggered_this_turn.clone(),
             legend_choices: s
                 .sba_batch
                 .as_ref()
@@ -2672,6 +2684,7 @@ impl Game {
         std::mem::size_of::<State>()
             + s.objects.len() * std::mem::size_of::<Object>()
             + s.exile_links.len() * std::mem::size_of::<ExileLink>()
+            + s.triggered_this_turn.len() * std::mem::size_of::<TriggerUse>()
             + s.sba_batch.as_ref().map(|batch| batch.bytes()).unwrap_or(0)
             + s.entry_batch
                 .as_ref()
@@ -2861,3 +2874,7 @@ pub use connive::{ConniveChoiceView, ConniverView};
 #[cfg(test)]
 #[path = "engine_connive_tests.rs"]
 mod connive_tests;
+
+#[cfg(test)]
+#[path = "engine_limited_trigger_tests.rs"]
+mod limited_trigger_tests;

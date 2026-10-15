@@ -14,6 +14,56 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_once_per_turn_wraps_complete_events_and_rejects_other_limit_meanings(self):
+        for prefix in ['Whenever you draw a card, ', 'Whenever you discard a card, ',
+                       'Whenever you gain life, ', 'Whenever you cast your second spell each turn, ',
+                       'Whenever this creature attacks, ', 'At the beginning of your end step, ',
+                       'Whenever a creature you control deals combat damage to a player, ']:
+            base=generate.trigger_creature_template(self.card(oracle_text=prefix+'draw a card.'))
+            limited=generate.trigger_creature_template(self.card(oracle_text=prefix+'draw a card. This ability triggers only once each turn.'))
+            self.assertEqual(limited[2][0],('OncePerTurn(&TriggerCondition::'+base[2][0][0]+')',*base[2][0][1:]))
+        for text in ['Whenever you gain life, draw a card. Do this only once each turn.',
+                     'Whenever you gain life, draw a card. This ability triggers only twice each turn.',
+                     'Whenever you gain life, draw a card. This ability triggers only once.',
+                     'Flying This ability triggers only once each turn.',
+                     'Prowess This ability triggers only once each turn.',
+                     'Whenever you gain life, draw a card. This ability triggers only once each turn. You gain 1 life.']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=text)),text)
+
+    def test_entry_subtypes_are_exact_and_once_limited_batches_have_no_ambiguous_binding(self):
+        for prefix,condition in [('Whenever a Spider you control enters, ','SubtypeEntersYou("Spider")'),
+                                 ('Whenever another Faerie you control enters, ','OtherSubtypeEntersYou("Faerie")'),
+                                 ('Whenever an Aura you control enters, ','SubtypeEntersYou("Aura")'),
+                                 ('Whenever an artifact you control enters, ','ArtifactEntersYou'),
+                                 ('Whenever an enchantment you control enters, ','EnchantmentEntersYou')]:
+            self.assertEqual(generate.trigger_creature_template(self.card(oracle_text=prefix+'draw a card.'))[2][0][0],condition)
+        prefixes=['Whenever one or more artifacts you control enter, ',
+                  'Whenever one or more enchantments you control enter, ',
+                  'Whenever one or more nontoken creatures you control die, ']
+        for prefix in prefixes:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=prefix+'draw a card.')))
+            self.assertIsNotNone(generate.trigger_creature_template(self.card(oracle_text=prefix+'draw a card. This ability triggers only once each turn.')))
+        for text in ['Whenever a Spider or Villain you control enters, draw a card.',
+                     'Whenever another nontoken Bird you control enters, draw a card.',
+                     'Whenever one or more players discard one or more cards, draw that many cards. This ability triggers only once each turn.',
+                     'Whenever one or more players discard one or more cards, that player loses 1 life. This ability triggers only once each turn.']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=text)),text)
+
+    def test_limited_trigger_complete_admissions_and_residual_gates(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,coverage=generate.compile_catalogue(rows,target)
+        supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for name in ['Avatar Enthusiasts','Bloombrute','Donatello, Way with Machines','Elvish Archivist','Fateful Discovery',
+                     'Flying Octobot','Homicide Investigator','Hostile Investigator','Koth of the Homestead','Mechan Assembler',
+                     "Mm'menon, Uthros Exile",'Obyra, Dreaming Duelist','Rimefur Reindeer','Tanglespan Lookout',
+                     'Tidus, Blitzball Star','Youthful Valkyrie']:
+            self.assertIn(name,supported)
+        for name in ['Mary Jane Watson','Crossbones, Malicious Mercenary','Caretaker\'s Talent','Enduring Innocence',
+                     'Knightfisher','Twilight Diviner','Mikey & Leo, Chaos & Order','Deepmuck Desperado']:
+            self.assertNotIn(name,supported)
+
     def test_connive_source_pronouns_names_and_fixed_amounts_require_bound_sources(self):
         for pronoun in ['it','he','she']:
             row=self.card(oracle_text='When this creature enters, '+pronoun+' connives.')
@@ -69,8 +119,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertEqual(generate.draw_event_program(body),('None',[program]))
             self.assertIsNone(generate.statement_program(body))
             self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='When this creature enters, '+body)))
-        for text in ['Whenever you draw a card, draw a card. This ability triggers only once each turn.',
-                     'Whenever you draw your second card each turn, if you control another Hero, draw a card.',
+        for text in ['Whenever you draw your second card each turn, if you control another Hero, draw a card.',
                      'Whenever you draw a card, that player loses 1 life. You gain 1 life.',
                      'Whenever you draw a card, you may pay {B}. If you do, draw a card.',
                      'Whenever you draw a card, reveal it.']:
@@ -123,7 +172,6 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIsNone(generate.statement_program(body))
             self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='When this creature enters, '+body)))
         for text in ['Whenever you discard a nonland card, draw a card.',
-                     'Whenever you discard a card, draw a card. This ability triggers only once each turn.',
                      'When you cycle this card, draw cards equal to the amount of mana spent to cycle it.',
                      'Whenever you discard one or more cards, put that many +1/+1 counters on target creature.',
                      'Whenever you discard a card, exile that card from your graveyard.']:
@@ -269,7 +317,6 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertIsNone(generate.statement_program('Draw that many cards.'))
         self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='When this creature enters, draw that many cards.')))
         for text in ['Whenever this creature deals combat damage to a player, draw a card for each modified creature you control.',
-                     'Whenever a creature you control deals combat damage to a player, draw a card. This ability triggers only once each turn.',
                      'Whenever this creature deals combat damage to a player, destroy target artifact that player controls.',
                      'Whenever this creature deals combat damage to a player or planeswalker, draw a card.',
                      'Whenever a creature you control with two counters on it deals combat damage to a player, draw a card.',
@@ -424,7 +471,6 @@ class CatalogueCompilerTests(unittest.TestCase):
         first=generate.trigger_creature_template(self.card(oracle_text='Whenever you gain life for the first time during each of your turns, draw a card.'))
         self.assertIn('first_only: true, own_turn: true',first[2][0][0])
         for text in ['Whenever you gain 3 or more life, draw a card.',
-                     'Whenever you gain life, draw a card. This ability triggers only once each turn.',
                      'Whenever one or more creatures you control die, draw a card.',
                      'Whenever another creature you control with flying dies, draw a card.',
                      'Whenever another creature or artifact you control dies, draw a card.',
@@ -452,7 +498,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIsNotNone(generate.trigger_creature_template(cards[name]),name)
         for name in ['Engine Rat',"Thrór's Map"]:
             self.assertIsNotNone(generate.permanent_program_template(cards[name]),name)
-        for name in ['Bloombrute','Aerith Gainsborough','Vein Ripper','Twinblade Paladin']:
+        for name in ['Aerith Gainsborough','Vein Ripper','Twinblade Paladin']:
             self.assertIsNone(generate.trigger_creature_template(cards[name]),name)
             self.assertIsNone(generate.permanent_program_template(cards[name]),name)
 
@@ -573,7 +619,6 @@ class CatalogueCompilerTests(unittest.TestCase):
             result = generate.trigger_creature_template(self.card(oracle_text=prefix+'Draw a card.'))
             self.assertEqual(result[2], [(generate.cast_condition(relation, filter_, ordinal), ['Draw(PlayerSet::Controller, 1)'], 'None')])
         for line in [
-            'Whenever you cast your second spell each turn, draw a card. This ability triggers only once each turn.',
             'Whenever you cast a noncreature spell, if four mana was spent to cast it, draw a card.',
             'Magecraft — Whenever you cast or copy an instant or sorcery spell, draw a card.',
             'Whenever you cast your second creature spell each turn, draw a card.',

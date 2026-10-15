@@ -32,8 +32,9 @@ impl Game {
             return;
         }
         for (index, ability) in source.card.triggers().iter().enumerate() {
-            if ability.condition == TriggerCondition::Ward {
-                self.queue_trigger(&source, index);
+            if ability.condition.event() == TriggerCondition::Ward
+                && self.queue_trigger(&source, index)
+            {
                 self.state
                     .pending_triggers
                     .last_mut()

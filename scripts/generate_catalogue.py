@@ -1005,6 +1005,8 @@ def trigger_creature_template(card):
         'Whenever this creature attacks, ': 'SelfAttacks',
         'Whenever this creature enters or attacks, ': 'SelfEntersOrAttacks',
         'Whenever another artifact you control enters, ': 'OtherArtifactEntersYou',
+        'Whenever an artifact you control enters, ': 'ArtifactEntersYou',
+        'Whenever an enchantment you control enters, ': 'EnchantmentEntersYou',
         'Whenever another creature you control enters, ': 'OtherCreatureEntersYou',
         'Whenever another Villain you control enters, ': 'OtherSubtypeEntersYou("Villain")',
         'Whenever this creature or another creature you control enters, ': 'CreatureEntersYou',
@@ -1015,6 +1017,8 @@ def trigger_creature_template(card):
     text = re.sub(r'\([^()]*\)', '', card['oracle_text']).strip()
     for line in text.split('\n'):
         line = line.strip()
+        limited = line.endswith(' This ability triggers only once each turn.')
+        if limited: line = line[:-len(' This ability triggers only once each turn.')]
         name = card.get('name', '')
         names = [name] if name else []
         if name and card.get('type_line', '').startswith('Legendary '):
@@ -1030,9 +1034,11 @@ def trigger_creature_template(card):
             line=re.sub(r'^Whenever '+re.escape(alias)+r' deals? ((?:combat )?damage to )',r'Whenever this creature deals \1',line)
             line=line.replace('Whenever '+alias+' enters or attacks, ','Whenever this creature enters or attacks, ')
         if line.casefold() in TEXT_FLAGS:
+            if limited: return None
             keywords |= TEXT_FLAGS[line.casefold()]; continue
         words = [word.strip().casefold() for word in line.split(',') if word.strip()]
         if words and all(word in KEYWORDS or word == 'prowess' or ward_word(word) is not None for word in words):
+            if limited: return None
             keywords |= sum(KEYWORDS[word] for word in set(words) if word in KEYWORDS)
             for word in words:
                 if word=='prowess': abilities.append((cast_condition(filter_='Noncreature'),[grow_instruction('Source',1,1)],'None'))
@@ -1040,6 +1046,19 @@ def trigger_creature_template(card):
             continue
         damage_prefix=player_damage_prefix(line)
         line_prefixes=[damage_prefix] if damage_prefix else []
+        if m:=re.match(r'Whenever (a|an|another) ([A-Z][a-z]+) you control enters, ',line):
+            kind='OtherSubtypeEntersYou' if m[1]=='another' else 'SubtypeEntersYou'
+            line_prefixes.append((m[0],kind+'('+json.dumps(m[2])+')'))
+        # These first-trigger limits collapse simultaneous event multiplicity.
+        # Do not generalize to unrestricted batched events without batch context.
+        if limited:
+            for prefix,condition in {
+                'Whenever one or more artifacts you control enter, ': 'ArtifactEntersYou',
+                'Whenever one or more enchantments you control enter, ': 'EnchantmentEntersYou',
+                'Whenever one or more nontoken creatures you control die, ': death_condition(nontoken=True),
+                'Whenever one or more players discard one or more cards, ': discard_condition(relation='Any',one_or_more=True),
+            }.items():
+                line_prefixes.append((prefix,condition))
         for prefix, condition in [*line_prefixes,*prefixes.items()]:
             if line.startswith(prefix):
                 effect_text = line[len(prefix):]
@@ -1073,6 +1092,12 @@ def trigger_creature_template(card):
                 if condition.startswith('CardDrawn {'):
                     result=draw_event_program(effect_text)
                     targets,program=result if result else ('None',None)
+                elif prefix == 'Whenever one or more players discard one or more cards, ':
+                    # An aggregated multi-player event has no unique that-player
+                    # or quantity binding. Only this complete event-free body is
+                    # currently admitted.
+                    if effect_text.casefold() != 'investigate.': return None
+                    targets,program='None',statement_program(effect_text)
                 elif condition.startswith('Discarded {'):
                     result=discard_event_program(effect_text)
                     targets,program=result if result else ('None',None)
@@ -1087,6 +1112,7 @@ def trigger_creature_template(card):
                         targets, program = 'None', statement_program(effect_text)
                 if program is None:
                     return None
+                if limited: condition='OncePerTurn(&TriggerCondition::'+condition+')'
                 abilities.append((condition, program, targets))
                 break
         else:

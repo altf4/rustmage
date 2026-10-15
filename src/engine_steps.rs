@@ -15,7 +15,7 @@ impl Game {
                     step: wanted,
                     relation,
                     guard,
-                } = ability.condition
+                } = ability.condition.event()
                 {
                     let matches_step = match wanted {
                         TriggerStep::Upkeep => step == Step::Upkeep,
