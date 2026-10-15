@@ -210,10 +210,22 @@ pub enum Action {
     PutTrigger {
         id: u64,
     },
+    ArrangeLibrary {
+        card: CardId,
+        destination: LibraryDestination,
+    },
     ChooseOptional {
         accept: bool,
     },
     Concede,
+}
+
+/// Within each destination, selected first is highest in that ordered group.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub enum LibraryDestination {
+    Top,
+    Bottom,
+    Graveyard,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -382,6 +394,9 @@ enum Pending {
         remaining: u8,
     },
     Priority,
+    EffectLibrary {
+        player: Player,
+    },
     EffectMana {
         player: Player,
         production: ManaProduction,
@@ -507,6 +522,16 @@ pub struct PendingPaymentView {
     pub counters: Counters,
 }
 
+/// Private cards and partial order of a resolving scry/surveil choice.
+#[derive(Clone, Debug, Serialize)]
+pub struct LibraryChoiceView {
+    pub surveil: bool,
+    pub remaining: Vec<ObjectView>,
+    pub top: Vec<CardId>,
+    pub bottom: Vec<CardId>,
+    pub graveyard: Vec<CardId>,
+}
+
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
     pub schema: u32,
@@ -525,6 +550,7 @@ pub struct Observation {
     pub announcing: Option<SpellView>,
     pub announcing_payment: Option<PendingPaymentView>,
     pub mana_choices: Vec<Mana>,
+    pub library_choice: Option<LibraryChoiceView>,
     pub payment_request: Option<PaymentRequestView>,
     pub waiting_triggers: Vec<SpellView>,
     pub effect_discards: Vec<CardId>,
@@ -673,7 +699,8 @@ impl Game {
         match self.state.pending {
             Pending::Mulligan(p) | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
-            Pending::EffectMana { player, .. }
+            Pending::EffectLibrary { player }
+            | Pending::EffectMana { player, .. }
             | Pending::PayCosts { player }
             | Pending::Targets { player }
             | Pending::OrderTriggers { player }
@@ -1023,6 +1050,23 @@ impl Game {
                     );
                 }
             }
+            Pending::EffectLibrary { .. } => {
+                let choice = s.resolving.as_ref().unwrap().library.as_ref().unwrap();
+                for &card in &choice.remaining {
+                    for destination in [
+                        LibraryDestination::Top,
+                        if choice.surveil {
+                            LibraryDestination::Graveyard
+                        } else {
+                            LibraryDestination::Bottom
+                        },
+                    ] {
+                        if emit(Action::ArrangeLibrary { card, destination }) {
+                            return true;
+                        }
+                    }
+                }
+            }
             Pending::OrderTriggers { player } => {
                 for item in &s.ordering_triggers {
                     if item.controller == player && emit(Action::PutTrigger { id: item.id }) {
@@ -1282,6 +1326,9 @@ impl Game {
                 if !self.start_announcement(item, true) {
                     self.continue_trigger_order();
                 }
+            }
+            Action::ArrangeLibrary { card, destination } => {
+                self.arrange_library(actor, card, destination);
             }
             Action::ChooseOptional { accept } => {
                 let Pending::EffectOptional { skip_to, .. } = self.state.pending else {
@@ -1894,7 +1941,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 11,
+            schema: 12,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -1911,6 +1958,7 @@ impl Game {
                 Pending::OrderTriggers { .. } => "order_triggers",
                 Pending::EffectOptional { .. } => "optional_effect",
                 Pending::EffectMana { .. } => "mana_choice",
+                Pending::EffectLibrary { .. } => "library_choice",
                 Pending::EffectDiscard { .. } => "effect_discard",
                 Pending::Attackers => "attackers",
                 Pending::Blockers => "blockers",
@@ -1973,6 +2021,24 @@ impl Game {
                 }
                 options
             },
+            library_choice: if owns_choice {
+                s.resolving
+                    .as_ref()
+                    .and_then(|r| r.library.as_ref())
+                    .map(|choice| LibraryChoiceView {
+                        surveil: choice.surveil,
+                        remaining: choice
+                            .remaining
+                            .iter()
+                            .map(|&id| self.object_view(id))
+                            .collect(),
+                        top: choice.top.clone(),
+                        bottom: choice.bottom.clone(),
+                        graveyard: choice.graveyard.clone(),
+                    })
+            } else {
+                None
+            },
             waiting_triggers: s.ordering_triggers.clone(),
             effect_discards: s
                 .resolving
@@ -2030,11 +2096,22 @@ impl Game {
                 .as_ref()
                 .map(|resolution| {
                     resolution
-                        .selected_discards
-                        .iter()
-                        .map(Vec::len)
-                        .sum::<usize>()
-                        * std::mem::size_of::<CardId>()
+                        .library
+                        .as_ref()
+                        .map(|choice| {
+                            (choice.remaining.len()
+                                + choice.top.len()
+                                + choice.bottom.len()
+                                + choice.graveyard.len())
+                                * std::mem::size_of::<CardId>()
+                        })
+                        .unwrap_or(0)
+                        + resolution
+                            .selected_discards
+                            .iter()
+                            .map(Vec::len)
+                            .sum::<usize>()
+                            * std::mem::size_of::<CardId>()
                 })
                 .unwrap_or(0)
             + s.stack
@@ -2059,3 +2136,7 @@ impl Game {
                 .sum::<usize>()
     }
 }
+
+#[cfg(test)]
+#[path = "engine_library_tests.rs"]
+mod library_tests;

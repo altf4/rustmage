@@ -14,6 +14,20 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_scry_and_surveil_compile_whole_fixed_count_programs(self):
+        for name in ('scry', 'surveil'):
+            for count in (0, 1, 2, 65535):
+                self.assertEqual(generate.statement_program(f'{name} {count}.'), [f'{name.capitalize()}({count})'])
+            for text in (f'{name} X.', f'{name} 65536.', f'{name} -1.',
+                         f'{name} 2. Then win the game.', f'{name} 1, then add mana.'):
+                self.assertIsNone(generate.statement_program(text), text)
+            row = self.card(type_line='Instant', mana_cost='{U}', oracle_text=f'{name.capitalize()} 2.\nDraw a card.')
+            self.assertEqual(generate.spell_program_template(row), ('None', [f'{name.capitalize()}(2)', 'Draw(PlayerSet::Controller, 1)']))
+            self.assertEqual(generate.statement_program(f'{name} 2, then draw two cards.'), [f'{name.capitalize()}(2)', 'Draw(PlayerSet::Controller, 2)'])
+        for text in ('Whenever you scry, draw a card.', 'Whenever you surveil, draw a card.',
+                     'At the beginning of your upkeep, scry 1.'):
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=text)))
+
     def test_exact_creature_template_rejects_other_mechanics(self):
         self.assertEqual(generate.creature_template(self.card()), ('Creature(2, 1)', 0))
         for changes in [dict(oracle_text='Flying\nWhen this creature enters, draw a card.'),
@@ -82,7 +96,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         card = self.card(type_line='Instant', oracle_text='Draw two cards.')
         self.assertEqual(generate.spell_program_template(card), ('None', ['Draw(PlayerSet::Controller, 2)']))
         self.assertIsNone(generate.spell_program_template(dict(card, type_line='Creature — Wizard')))
-        self.assertIsNone(generate.spell_program_template(dict(card, oracle_text='Draw two cards. Scry 1.')))
+        self.assertIsNone(generate.spell_program_template(dict(card, oracle_text='Draw two cards. Mill a card.')))
         for prefix, condition in [('Whenever another creature you control enters, ', 'OtherCreatureEntersYou'),
                                   ('Whenever this creature or another creature you control enters, ', 'CreatureEntersYou'),
                                   ('Landfall — Whenever a land you control enters, ', 'LandEntersYou'),
@@ -99,7 +113,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                          (('Creature', 1, 2), ['Untap', 'Grow(2)']))
         self.assertEqual(generate.targeted_program('Target creature gets -2/-2 until end of turn. You gain 2 life.'),
                          ('Creature', ['Grow(-2)', 'GainLife(PlayerSet::Controller, 2)']))
-        for text in ['Target creature gets +1/+3 until end of turn.', 'Tap target creature. Scry 1.',
+        for text in ['Target creature gets +1/+3 until end of turn.', 'Tap target creature. Mill a card.',
                      'Return target creature card from your graveyard to the battlefield with a counter.',
                      'Target player draws a card. Target opponent loses 1 life.',
                      'Tap target creature. It does not untap next turn.']:

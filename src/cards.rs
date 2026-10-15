@@ -97,6 +97,8 @@ impl ManaProduction {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
     AddMana(ManaProduction),
+    Scry(u16),
+    Surveil(u16),
     Damage(i32),
     Grow(i32),
     Counter,
