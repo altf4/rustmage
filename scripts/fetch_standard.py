@@ -21,6 +21,14 @@ FACE_FIELDS = ("name", "mana_cost", "type_line", "oracle_text", "power", "toughn
                "loyalty", "defense", "colors", "color_indicator")
 
 
+def validate_rules_text(row):
+    if row.get('layout') == 'normal' and not isinstance(row.get('oracle_text'), str):
+        raise ValueError(f"normal card is missing explicit rules text: {row.get('name')}")
+    for face in row.get('card_faces', []):
+        if not isinstance(face.get('oracle_text'), str):
+            raise ValueError(f"card face is missing explicit rules text: {face.get('name')}")
+
+
 def fetch(as_of):
     # Date-filter printings as well: unique=cards can otherwise choose an
     # unreleased reprint of a card already legal in Standard.
@@ -48,6 +56,7 @@ def fetch(as_of):
         elif page["total_cards"] != expected_total:
             raise ValueError("format changed while paging; retry as a fresh snapshot")
         for row in page["data"]:
+            validate_rules_text(row)
             if row["legalities"]["standard"] != "legal" or row.get("digital", False):
                 raise ValueError(f"non-tabletop Standard card in response: {row['name']}")
             if row["released_at"] > as_of:

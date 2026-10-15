@@ -27,6 +27,16 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertEqual(generate.creature_template(self.card(oracle_text='Reach (This creature can block creatures with flying.)')), ('Creature(2, 1)', 2))
         self.assertIsNone(generate.creature_template(self.card(oracle_text='Reach (reminder)\nOther Cats you control get +1/+1.')))
 
+    def test_missing_or_null_rules_text_never_means_vanilla(self):
+        row = self.card(oracle_text='When this creature enters, create a token.')
+        self.assertIsNone(generate.creature_template(row))
+        del row['oracle_text']
+        self.assertIsNone(generate.creature_template(row))
+        row['oracle_text'] = None
+        self.assertIsNone(generate.creature_template(row))
+        row['oracle_text'] = ''
+        self.assertEqual(generate.creature_template(row), ('Creature(2, 1)', 0))
+
     def test_cost_parser_does_not_approximate_unimplemented_symbols(self):
         self.assertEqual(generate.fixed_cost('{3}{R}{R}'), ([0, 0, 0, 2, 0], 3))
         for value in ('{C}', '{S}', '{X}', '{2/R}', '{R/P}', '', '{W}{unrecognized}'):

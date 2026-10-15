@@ -40,6 +40,10 @@ def fixed_cost(cost):
 
 
 def creature_template(card):
+    # Missing/unknown rules text is not a blank text box. A fresh checksum only
+    # establishes data integrity; it cannot establish omitted card semantics.
+    if not isinstance(card.get('oracle_text'), str):
+        return None
     if card.get('layout') != 'normal' or card.get('type_line', '').split(' — ')[0] not in ('Creature', 'Artifact Creature'):
         return None
     if not card.get('power', '').isdigit() or not card.get('toughness', '').isdigit():
@@ -47,7 +51,7 @@ def creature_template(card):
     if fixed_cost(card.get('mana_cost', '')) is None:
         return None
     # Remove only balanced, unnested reminder text; fail closed on residual text.
-    text = re.sub(r'\([^()]*\)', '', card.get('oracle_text', '')).strip()
+    text = re.sub(r'\([^()]*\)', '', card['oracle_text']).strip()
     words = {word.strip().casefold() for word in text.replace('\n', ',').split(',') if word.strip()}
     if not words <= KEYWORDS.keys():
         return None
