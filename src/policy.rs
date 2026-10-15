@@ -28,6 +28,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                         .any(|o| o.id == id && o.zone == Zone::Graveyard),
                     _ => false,
                 }),
+                Instruction::Exile | Instruction::ExileUntilSourceLeaves => Some(false),
                 Instruction::Counter
                 | Instruction::Destroy
                 | Instruction::Damage(_)

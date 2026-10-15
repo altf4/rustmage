@@ -48,7 +48,7 @@ pool, 60-card minimum and copy limits, then rejects every unsupported card.
 The known Standard unlimited-copy exceptions are represented independently of
 whether their rules have been implemented.
 
-Coverage is **346 / 5,164 executable Standard cards**, plus six legacy regression
+Coverage is **364 / 5,164 executable Standard cards**, plus six legacy regression
 cards. The additions are ten exact vanilla-creature templates and 25 creatures
 whose entire text consists of implemented static keywords, plus four exact
 single-instruction bounce/destruction spells, additional spell programs and creatures with complete supported trigger programs.
@@ -108,3 +108,6 @@ Current executable coverage is 335/5,164; 4,829 legal identities remain unsuppor
 [Blocking restrictions](blocking-restrictions.md) adds 11 complete Standard definitions
 and one referenced token factory. Current coverage is 346/5,164; 4,818 legal
 identities remain unsupported.
+
+[Face-up exile and linked returns](linked-exile.md) adds 18 complete Standard definitions.
+Current executable coverage is 364/5,164; 4,800 legal identities remain unsupported.

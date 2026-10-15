@@ -93,6 +93,28 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertIsNone(generate.statement_program("Creatures you control can't be blocked this turn."))
         self.assertIsNotNone(generate.statement_program('Create a 1/1 white Rabbit creature token with menace.'))
 
+    def test_exile_and_linked_return_programs_require_complete_supported_predicates(self):
+        for text, rule, program in [
+            ('Exile target creature.', 'Creature', ['Exile']),
+            ('Exile target creature or enchantment.', 'CreatureEnchantment', ['Exile']),
+            ('Exile target card from a graveyard.', 'CardGrave', ['Exile']),
+            ('Exile target creature with mana value 3 or greater.', 'CreatureMin3', ['Exile']),
+            ('Exile target nonland permanent an opponent controls until this enchantment leaves the battlefield.', 'NonlandOpponent', ['ExileUntilSourceLeaves']),
+            ('Exile target tapped creature an opponent controls until this creature leaves the battlefield.', 'CreatureOpponentTapped', ['ExileUntilSourceLeaves']),
+            ('Exile target creature an opponent controls with mana value 3 or less until this artifact leaves the battlefield.', 'CreatureOpponentMax3', ['ExileUntilSourceLeaves']),
+            ("Exile target player's graveyard.", 'Player', ['ExileGraveyard(PlayerSet::Targeted)']),
+        ]:
+            self.assertEqual(generate.targeted_program(text), (rule,program))
+        self.assertEqual(generate.statement_program("Exile each opponent's graveyard."), ['ExileGraveyard(PlayerSet::Opponent)'])
+        for text in ('Exile target permanent with power 4 or greater.',
+                     'Exile target creature until the next end step.',
+                     'Exile target nonland permanent an opponent controls with mana value X or less until this enchantment leaves the battlefield.',
+                     'Exile target creature face down.',
+                     'Exile target creature. Its controller draws a card.'):
+            self.assertIsNone(generate.targeted_program(text),text)
+        self.assertIn('max_mana: 3',generate.TARGET_RULES['CreatureOpponentMax3'])
+        self.assertIn('tapped: true',generate.TARGET_RULES['CreatureOpponentTapped'])
+
     def test_exact_creature_template_rejects_other_mechanics(self):
         self.assertEqual(generate.creature_template(self.card()), ('Creature(2, 1)', 0))
         for changes in [dict(oracle_text='Flying\nWhen this creature enters, draw a card.'),

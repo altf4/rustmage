@@ -270,6 +270,8 @@ def statement_program(text):
     text = normalize_duration(text[0].lower() + text[1:])
     token = token_program(text) or predefined_program(text)
     if token: return token
+    if text == "exile each opponent's graveyard.": return ['ExileGraveyard(PlayerSet::Opponent)']
+    if text == "exile your graveyard.": return ['ExileGraveyard(PlayerSet::Controller)']
     if text == 'investigate.': return predefined_program('create a Clue token.')
     if mana := mana_program(text): return mana
     if not text.endswith('.'):
@@ -342,6 +344,9 @@ for _name, _zone, _kinds, _relation, _other, _nonland in [
     ('Permanent', 'Battlefield', 0, -1, False, False),
     ('Nonland', 'Battlefield', 0, -1, False, True),
     ('OtherNonlandYou', 'Battlefield', 0, 0, True, True),
+    ('NonlandOpponent', 'Battlefield', 0, 1, False, True),
+    ('CreatureEnchantment', 'Battlefield', 33, -1, False, False),
+    ('CardGrave', 'Graveyard', 0, -1, False, False),
     ('Land', 'Battlefield', 2, -1, False, False),
     ('Artifact', 'Battlefield', 16, -1, False, False),
     ('ArtifactCreature', 'Battlefield', 17, -1, False, False),
@@ -351,7 +356,32 @@ for _name, _zone, _kinds, _relation, _other, _nonland in [
     ('CreatureGrave', 'Graveyard', 1, -1, False, False),
 ]:
     TARGET_RULES[_name] = (f'TargetRule::Object {{ zone: TargetZone::{_zone}, kinds: {_kinds}, '
-                          f'relation: {_relation}, other: {str(_other).lower()}, nonland: {str(_nonland).lower()} }}')
+                          f'relation: {_relation}, other: {str(_other).lower()}, nonland: {str(_nonland).lower()}, tapped: false, min_mana: 0, max_mana: u32::MAX }}')
+
+
+for _name, _kinds, _relation, _nonland, _tapped, _minimum, _maximum in [
+    ('CreatureOpponentTapped', 1, 1, False, True, 0, 4294967295),
+    ('CreatureOpponentMax3', 1, 1, False, False, 0, 3),
+    ('NonlandOpponentMax2', 0, 1, True, False, 0, 2),
+    ('CreatureMin3', 1, -1, False, False, 3, 4294967295),
+]:
+    TARGET_RULES[_name] = (f'TargetRule::Object {{ zone: TargetZone::Battlefield, kinds: {_kinds}, '
+                          f'relation: {_relation}, other: false, nonland: {str(_nonland).lower()}, '
+                          f'tapped: {str(_tapped).lower()}, min_mana: {_minimum}, max_mana: {_maximum} }}')
+
+EXILE_SUBJECTS = {
+    'target creature': 'Creature', 'target artifact': 'Artifact',
+    'target enchantment': 'Enchantment', 'target artifact or enchantment': 'ArtifactEnchantment',
+    'target creature or enchantment': 'CreatureEnchantment',
+    'target nonland permanent': 'Nonland',
+    'target creature an opponent controls': 'CreatureOpponent',
+    'target nonland permanent an opponent controls': 'NonlandOpponent',
+    'target tapped creature an opponent controls': 'CreatureOpponentTapped',
+    'target creature an opponent controls with mana value 3 or less': 'CreatureOpponentMax3',
+    'target nonland permanent an opponent controls with mana value 2 or less': 'NonlandOpponentMax2',
+    'target creature with mana value 3 or greater': 'CreatureMin3',
+    'target card from a graveyard': 'CardGrave',
+}
 
 
 def rust_targets(spec):
@@ -379,6 +409,11 @@ def targeted_program(text):
             clause = m[2][:-len(" and can't be blocked this turn.")] + '.'
             if program := keyword_effect(clause, 'Targets'):
                 return rule, program + ['GrantKeywords { subject: Subject::Targets, keywords: Keywords(16384) }']
+    if text == "exile target player's graveyard.": return 'Player', ['ExileGraveyard(PlayerSet::Targeted)']
+    if m := re.fullmatch(r'exile (.+?)( until this (?:creature|artifact|enchantment) leaves the battlefield|)\.', text):
+        subject, linked = m.groups()
+        if subject in EXILE_SUBJECTS:
+            return EXILE_SUBJECTS[subject], ['ExileUntilSourceLeaves' if linked else 'Exile']
     # Optional effects still require targets at announcement (CR603.5).
     if text.startswith('you may '):
         result = targeted_program(text[len('you may '):])

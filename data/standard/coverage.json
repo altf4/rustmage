@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "3d1b7eb99d16ebec4b9551457368c7ad37ab06f33192c15e8a12f049122c11b1",
+  "catalogue_version": "ec06ce38a2ef63810633ff57f43eed160c9062ffa769ec68d26b81de95e20616",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 346,
-  "implemented_total": 352,
+  "implemented_standard_cards": 364,
+  "implemented_total": 370,
   "token_definitions": 29,
   "cards": [
     {
@@ -981,8 +981,8 @@
     {
       "name": "Angel of Finality",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Angel of Vitality",
@@ -999,8 +999,8 @@
     {
       "name": "Angelic Edict",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Angry Rabble",
@@ -1935,8 +1935,8 @@
     {
       "name": "Banishing Light",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Banner of Kinship",
@@ -8121,8 +8121,8 @@
     {
       "name": "Epic Downfall",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Epic Fight",
@@ -9501,8 +9501,8 @@
     {
       "name": "Food Coma",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Food Fight",
@@ -10617,8 +10617,8 @@
     {
       "name": "Glass Casket",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Glassworks // Shattered Yard",
@@ -12039,8 +12039,8 @@
     {
       "name": "Henchbots",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Herald of Eternal Dawn",
@@ -15711,8 +15711,8 @@
     {
       "name": "Magic Pot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Magitek Armor",
@@ -15819,8 +15819,8 @@
     {
       "name": "Makeshift Binding",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Malamet Battle Glyph",
@@ -16305,8 +16305,8 @@
     {
       "name": "Memory Trap",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Memory Vessel",
@@ -22485,8 +22485,8 @@
     {
       "name": "Seam Rip",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Sear",
@@ -23859,8 +23859,8 @@
     {
       "name": "Soul-Guide Lantern",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Soul-Shackled Zombie",
@@ -24711,8 +24711,8 @@
     {
       "name": "Stasis Snare",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Static Snare",
@@ -25065,8 +25065,8 @@
     {
       "name": "Stormplain Detainment",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Stormscale Scion",
@@ -25551,8 +25551,8 @@
     {
       "name": "Super Villain Lockup",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Super-Adaptoid",
@@ -29781,8 +29781,8 @@
     {
       "name": "Wander Off",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Wanderbrine Preacher",
@@ -30153,8 +30153,8 @@
     {
       "name": "Web Up",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Web of Life and Destiny",
@@ -30261,8 +30261,8 @@
     {
       "name": "White Auracite",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "White Lotus Hideout",

@@ -17,7 +17,7 @@ class BindingTests(unittest.TestCase):
             observation = game.observe("P0")
             coverage = json.loads((Path(__file__).resolve().parents[1] / "data/standard/coverage.json").read_text())
             self.assertEqual(observation["catalogue"], coverage["catalogue_version"])
-            self.assertEqual(observation["schema"], 12)
+            self.assertEqual(observation["schema"], 13)
             self.assertEqual(len(observation["objects"]), 7)
             self.assertTrue(all(o["owner"] == "P0" for o in observation["objects"]))
             self.assertEqual(game.observe("P1")["actions"], [])
@@ -219,6 +219,57 @@ class BindingTests(unittest.TestCase):
             self.assertEqual(len(after["blocks"]), 2)
             game.restore(saved)
             again = complete(game, game.observe("P1"))
+            self.assertGreater(again.pop("revision"), after.pop("revision"))
+            self.assertEqual(again, after)
+            game.drop_snapshot(saved)
+
+    def test_public_linked_exile_returns_and_replays_through_library(self):
+        decks = [["Plains"] * 32 + ["Banishing Light"] * 12 + ["Disenchant"] * 16,
+                 ["Forest"] * 36 + ["Grizzly Bears"] * 24]
+        with Game(decks, seed=7, deck_rules="Freeform") as game:
+            obs = game.observe("P0")
+            for _ in range(1600):
+                self.assertIsNone(obs["outcome"])
+                if obs["viewer"] != obs["actor"]:
+                    obs = game.observe(obs["actor"])
+                objects = {o["id"]: o for o in obs["objects"]}
+                source = obs["exile_links"][0]["source"]["card"] if obs["exile_links"] else None
+                index = next((i for i, a in enumerate(obs["actions"]) if a["kind"] == "Cast"
+                              and objects[a["card"]]["card"] == "Disenchant" and a["target"] == {"Card": source}), None)
+                if index is not None and obs["actor"] == "P0":
+                    break
+                def score(action):
+                    if action["kind"] == "TapMana":
+                        return 20 if obs["active"] == obs["actor"] and obs["step"] in ("Main1", "Main2") else -5
+                    return {"Keep": 100, "PlayLand": 90, "Cast": 80, "AnnounceCast": -20, "ChooseTarget": 70,
+                            "Mulligan": -100, "Concede": -1000}.get(action["kind"], 0)
+                selected = max(range(len(obs["actions"])), key=lambda i: score(obs["actions"][i]))
+                obs = game.step(obs, selected)
+            else:
+                self.fail("linked exile fixture not reached")
+            link = next(link for link in obs["exile_links"] if link["source"]["card"] == source)
+            target = link["exiled"]["card"]
+            self.assertEqual(link["return_zone"], "Battlefield")
+            self.assertEqual(objects[target]["zone"], "Exile")
+            self.assertEqual(game.observe("P1")["exile_links"], obs["exile_links"])
+            saved = game.snapshot()
+            def resolve(engine, observation):
+                engine.step(observation, index)
+                for _ in range(2):
+                    current = engine.observe(engine.observe("P0")["actor"])
+                    passed = next(i for i, a in enumerate(current["actions"]) if a["kind"] == "Pass")
+                    engine.step(current, passed)
+                return engine.observe("P0")
+            with game.clone() as branch:
+                expected = resolve(branch, branch.observe("P0"))
+            after = resolve(game, obs)
+            self.assertEqual(after, expected)
+            returned = next(o for o in after["objects"] if o["id"] == target)
+            self.assertEqual((returned["zone"], returned["owner"]), ("Battlefield", "P1"))
+            self.assertNotEqual(returned["reference"], link["exiled"])
+            self.assertFalse(any(other["source"]["card"] == source for other in after["exile_links"]))
+            game.restore(saved)
+            again = resolve(game, game.observe("P0"))
             self.assertGreater(again.pop("revision"), after.pop("revision"))
             self.assertEqual(again, after)
             game.drop_snapshot(saved)

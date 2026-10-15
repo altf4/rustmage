@@ -60,9 +60,7 @@ impl Game {
             });
         }
         // Every newcomer exists before any entry event inspects the battlefield.
-        for event in &events {
-            self.zone_triggers(event, &[]);
-        }
+        self.finish_zone_events(&events, &[]);
     }
 
     pub(super) fn cease_token(&mut self, id: CardId) {
@@ -74,6 +72,13 @@ impl Game {
                 .library
                 .retain(|&card| card != id);
         }
+        self.state.exile_links.retain(|link| {
+            link.exiled
+                != ObjectRef {
+                    card: id,
+                    generation: object.generation,
+                }
+        });
         object.zone = Zone::Outside;
         object.generation = object
             .generation
