@@ -4,8 +4,9 @@ An **in-process Rust library** for fast, deterministic Magic simulation and sear
 No JVM, client/server connection, or network protocol runs in the simulation loop.
 Python can load the same library directly using the included `ctypes` binding.
 
-**Status: executable foundation, not a full XMage rewrite.** This version accepts
-14 explicitly supported cards. Arbitrary XMage decks cannot run yet. The full
+**Status: migration in progress, not a full XMage rewrite.** The native catalogue
+knows all 5,164 pinned Standard identities; 26 have executable rules so far.
+There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
 
@@ -20,6 +21,8 @@ cargo build --release
 PYTHONPATH=python python3 -m unittest discover -s python -p 'test_*.py' -v
 cargo run --release --bin benchmark -- 1000
 cargo run --release --example branch
+cargo run --release --example standard
+cargo run --bin coverage
 ```
 
 Use the Rust API from another crate with a path or Git dependency:
@@ -67,9 +70,10 @@ Python control interface. A packed/batched interface is a later profiling task.
 
 ## Current coverage
 
-Supported cards: Plains, Island, Swamp, Mountain, Forest, Grizzly Bears, Goblin
-Piker, Hill Giant, Llanowar Elves, Lightning Bolt, Shock, Giant Growth, Divination,
-and Counterspell. JSON uses enum spellings such as `GrizzlyBears`.
+The [inventory and coverage report](docs/standard-inventory.md) records all legal
+identities and implemented definitions. `cargo run --bin coverage` reports actual
+native coverage. JSON uses canonical English names; legacy tokens such as
+`GrizzlyBears` remain accepted as aliases.
 
 The implemented slice includes two-player 20-life games, London mulligans,
 bottom-card ordering, turn steps, priority and passes, instant/sorcery timing,
@@ -79,18 +83,25 @@ loss, lethal damage, simultaneous losses, summoning sickness, attack/block
 declarations, multiple blockers, damage division, cleanup discard, and temporary
 power/toughness effects. Declarations and damage choices are incremental, so legal
 action generation does not enumerate all subsets or blocking configurations.
+The implemented keyword rules are flying, reach, haste, vigilance, defender and
+flash. A strict compiler admits exact vanilla/keyword-only creatures; cards with
+other text still require implementations.
 
 `Constructed` checks 60-card minimum and the four-copy limit; **it does not claim
-Modern/Standard or other format legality**. `Freeform` explicitly opts out of
+Modern/Standard or other format legality**. `Standard` separately enforces the
+frozen legal-card pool and copy restrictions, then rejects unsupported semantics.
+`Freeform` explicitly opts out of
 those construction restrictions for experiments. Both modes require 7..=65535
 cards per deck, an explicit current representation limit. Unknown cards fail to
-deserialize. There is no fallback that treats unsupported cards as vanilla.
+deserialize; known cards with unimplemented rules fail game creation. There is
+no fallback that treats unsupported cards as vanilla.
 
 Missing: general triggered/static abilities, replacement/prevention effects,
 continuous-effect layers and dependencies, most keywords, tokens/copies, counters,
 planeswalkers, battles, control changes, reanimation/blink and generation-aware
 references, alternate costs/modes/X, sideboarding, formats and multiplayer.
-Those cards are not accepted by the catalogue. There is no claim of complete
+Those cards are known by the catalogue when Standard legal, but cannot enter a
+game until implemented. There is no claim of complete
 rules conformance, XMage parity, or a ready-to-train general Magic environment.
 
 ## Search and information boundaries

@@ -16,7 +16,8 @@ it, with no server behavior embedded into game state.
 
 ## State and branch costs
 
-Card definitions are immutable enum/static data. Objects occupy a contiguous
+Card definitions are immutable generated static data. Two-byte card identities
+index those definitions. Objects occupy a contiguous
 arena indexed by small integer IDs. Libraries are vectors of IDs with the top at
 the end. The initial slice has no ability object graphs, UUIDs, per-card strings,
 reference cycles, serialization-based copies, or per-game asynchronous tasks.
@@ -46,7 +47,7 @@ decision decomposition differ. Expand benchmarks as mechanics are migrated.
 
 ## Rules expansion requirements
 
-The simple effect enum is intentionally limited to the accepted catalogue. The
+The simple effect enum is intentionally limited to executable definitions. The
 next kernel needs explicit events, replacement/prevention choice continuations,
 trigger queues with APNAP ordering, SBA fixed points, and continuous-effect
 layers/dependencies. Avoid a growing list of card-name exceptions in `apply`.

@@ -1,9 +1,10 @@
 # First training target: current Standard
 
 The user selected current Standard on October 15, 2026. Prioritize the rules and
-cards required by that pool before expanding to older formats. The initial
-14-card library slice is an engine foundation and does **not** implement this
-format. Its generic `Constructed` option does not enforce set legality or bans.
+cards required by that pool before expanding to older formats. The library does
+**not** yet implement the full format. `Standard` enforces the frozen legal pool
+but rejects unimplemented cards. Generic `Constructed` does not enforce Standard
+set legality or bans.
 
 The initial target snapshot is
 [standard-2026-10-15.json](../data/targets/standard-2026-10-15.json), researched
@@ -18,7 +19,9 @@ Next acceptance gates:
 
 1. Build a pinned inventory of unique legal card identities/printings for the
    listed sets and legal reprints; reconcile bans and incomplete XMage entries.
-   The target JSON is planning data, not that inventory.
+   The target JSON is planning data. The initial inventory and reconciliation are
+   now in [standard-inventory.md](standard-inventory.md), with 26 source gaps
+   explicitly recorded; executable rules coverage remains incomplete.
 2. Group Standard cards by required mechanics, port reusable rule primitives,
    and establish a machine-readable implemented/unsupported report. Missing
    dependencies must block deck admission.

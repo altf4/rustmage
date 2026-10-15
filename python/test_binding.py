@@ -15,6 +15,9 @@ class BindingTests(unittest.TestCase):
     def test_private_views_clone_restore_and_stale_indices(self):
         with self.game() as game:
             observation = game.observe("P0")
+            coverage = json.loads((Path(__file__).resolve().parents[1] / "data/standard/coverage.json").read_text())
+            self.assertEqual(observation["catalogue"], coverage["catalogue_version"])
+            self.assertEqual(observation["schema"], 2)
             self.assertEqual(len(observation["objects"]), 7)
             self.assertTrue(all(o["owner"] == "P0" for o in observation["objects"]))
             self.assertEqual(game.observe("P1")["actions"], [])
@@ -49,6 +52,15 @@ class BindingTests(unittest.TestCase):
         with self.assertRaisesRegex(EngineError, "closed"):
             game.observe("P0")
 
+    def test_standard_admission_distinguishes_legality_and_rule_coverage(self):
+        deck = ["Plains"] * 56 + ["Savannah Lions"] * 4
+        with Game([deck, deck], deck_rules="Standard") as game:
+            self.assertEqual(game.observe("P0")["players"][0]["library_count"], 53)
+        with self.assertRaisesRegex(EngineError, "not Standard legal"):
+            Game([["Mountain"] * 56 + ["Lightning Bolt"] * 4] * 2, deck_rules="Standard")
+        with self.assertRaisesRegex(EngineError, "rules not implemented"):
+            Game([["Hare Apparent"] * 60] * 2, deck_rules="Standard")
+
     def test_decoded_nul_in_invalid_card_is_an_error_without_aborting_host(self):
         # A regression in this boundary can abort the interpreter, so exercise it
         # in a child and assert normal exit rather than crashing the whole suite.
@@ -57,7 +69,7 @@ from rustmage import EngineError, Game
 try:
     Game([["bad\\x00"] * 60] * 2)
 except EngineError as error:
-    assert "unknown variant" in str(error)
+    assert "unknown card" in str(error)
 else:
     raise AssertionError("invalid card accepted")
 """], env={**os.environ, "PYTHONPATH": str(Path(__file__).resolve().parent)}, capture_output=True, text=True)
