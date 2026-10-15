@@ -53,6 +53,43 @@ class CatalogueCompilerTests(unittest.TestCase):
                         dict(mana_cost='{X}{U}'), dict(type_line='Kindred Instant — Elf')]:
             self.assertIsNone(generate.spell_template(dict(row, **changes)), changes)
 
+    def test_program_statements_preserve_order_and_reject_residual_text(self):
+        self.assertEqual(generate.statement_program('Draw two cards. You lose 2 life.'),
+                         ['Draw(PlayerSet::Controller, 2)', 'LoseLife(PlayerSet::Controller, 2)'])
+        self.assertEqual(generate.statement_program('you gain 1 life and draw a card.'),
+                         ['GainLife(PlayerSet::Controller, 1)', 'Draw(PlayerSet::Controller, 1)'])
+        self.assertEqual(generate.statement_program('you may draw a card. If you do, discard a card.'),
+                         ['May { skip: 2 }', 'Draw(PlayerSet::Controller, 1)', 'Discard(PlayerSet::Controller, 1)'])
+        for text in [None, '', 'Draw two cards. Unknown instruction.', 'You gain X life.',
+                     'Draw a card if you control a Hero.', 'Draw a card. You gain 2 life',
+                     'You gain 999999 life.', 'you may discard a card. If you do, draw a card.']:
+            self.assertIsNone(generate.statement_program(text), text)
+
+    def test_trigger_creatures_require_complete_supported_abilities(self):
+        card = self.card(oracle_text='Flying\nWhen this creature enters, draw a card.')
+        self.assertEqual(generate.trigger_creature_template(card),
+                         ('Creature(2, 1)', 1, [('SelfEnters', ['Draw(PlayerSet::Controller, 1)'])]))
+        card['oracle_text'] += '\nWhen this creature dies, you gain 2 life.'
+        self.assertEqual(len(generate.trigger_creature_template(card)[2]), 2)
+        for change in [dict(oracle_text=None), dict(oracle_text=card['oracle_text'] + '\n{T}: Draw a card.'),
+                       dict(oracle_text='When this creature enters, draw a card if you control an Elf.'),
+                       dict(oracle_text='When this creature enters, draw a card.\nWard {2}'),
+                       dict(mana_cost='{G/U}{G/U}'), dict(layout='transform'),
+                       dict(type_line='Legendary Creature — Cat'), dict(toughness='*')]:
+            self.assertIsNone(generate.trigger_creature_template(dict(card, **change)), change)
+
+    def test_program_spells_and_trigger_filters_remain_exact(self):
+        card = self.card(type_line='Instant', oracle_text='Draw two cards.')
+        self.assertEqual(generate.spell_program_template(card), ('None', ['Draw(PlayerSet::Controller, 2)']))
+        self.assertIsNone(generate.spell_program_template(dict(card, type_line='Creature — Wizard')))
+        self.assertIsNone(generate.spell_program_template(dict(card, oracle_text='Draw two cards. Scry 1.')))
+        for prefix, condition in [('Whenever another creature you control enters, ', 'OtherCreatureEntersYou'),
+                                  ('Whenever this creature or another creature you control enters, ', 'CreatureEntersYou'),
+                                  ('Landfall — Whenever a land you control enters, ', 'LandEntersYou'),
+                                  ('Whenever another artifact you control enters, ', 'OtherArtifactEntersYou')]:
+            row = self.card(oracle_text=prefix + 'you gain 1 life.')
+            self.assertEqual(generate.trigger_creature_template(row)[2][0][0], condition)
+
 
 if __name__ == '__main__':
     unittest.main()

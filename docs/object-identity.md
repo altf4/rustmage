@@ -34,8 +34,8 @@ use physical card IDs for submitted choices; only validated casts bind internal
 references. C function signatures and protocol response schema remain unchanged.
 The catalogue fingerprint changes because compiler admissions change.
 
-This is groundwork, not a complete event/trigger engine. Returned events are not
-yet dispatched or retained in a trigger queue. Simultaneous leave-trigger discovery,
+The [effect-program engine](programs.md) now dispatches admitted entry/death
+triggers, including simultaneous self-death sources. General leave-trigger discovery,
 zone-following exceptions to rule 400.7, stack-to-permanent characteristic changes,
 control layers, tokens and reanimation remain gated behind future implementations.
 The LKI view covers currently implemented characteristics, not those future systems.

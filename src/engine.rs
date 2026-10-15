@@ -1,4 +1,4 @@
-use crate::cards::{Effect, payments};
+use crate::cards::{Effect, Instruction, PlayerSet, TargetRule, TriggerCondition, payments};
 use crate::rng::Rng;
 use crate::{Card, Keywords, Mana};
 use serde::{Deserialize, Serialize};
@@ -38,6 +38,12 @@ mod damage_tests;
 #[cfg(test)]
 #[path = "engine_identity_tests.rs"]
 mod identity_tests;
+#[path = "engine_programs.rs"]
+mod programs;
+use programs::Resolution;
+#[cfg(test)]
+#[path = "engine_program_tests.rs"]
+mod program_tests;
 #[cfg(test)]
 #[path = "engine_tests.rs"]
 mod tests;
@@ -112,6 +118,12 @@ pub enum Action {
     },
     Discard {
         card: CardId,
+    },
+    PutTrigger {
+        id: u64,
+    },
+    ChooseOptional {
+        accept: bool,
     },
     Concede,
 }
@@ -202,11 +214,21 @@ struct PlayerState {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
+    pub id: u64,
+    pub kind: StackKind,
+    pub source_card: Card,
+    pub source_keywords: Keywords,
     pub card: CardId,
     pub object: ObjectRef,
     pub target_object: Option<ObjectRef>,
     pub controller: Player,
     pub target: Option<Target>,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum StackKind {
+    Spell,
+    TriggeredAbility { ability: u16 },
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -253,6 +275,9 @@ enum Pending {
     Mulligan(Player),
     Bottom { player: Player, remaining: u8 },
     Priority,
+    OrderTriggers { player: Player },
+    EffectOptional { player: Player, skip_to: usize },
+    EffectDiscard { player: Player, remaining: u16 },
     Attackers,
     Blockers,
     Damage,
@@ -275,6 +300,10 @@ struct State {
     pending: Pending,
     mulligan_round: [bool; 2],
     stack: Vec<SpellView>,
+    resolving: Option<Resolution>,
+    pending_triggers: Vec<SpellView>,
+    ordering_triggers: Vec<SpellView>,
+    next_stack_id: u64,
     passes: u8,
     land_played: bool,
     attack_declared: bool,
@@ -346,6 +375,9 @@ pub struct Observation {
     pub players: [PlayerView; 2],
     pub objects: Vec<ObjectView>,
     pub stack: Vec<SpellView>,
+    pub resolving: Option<SpellView>,
+    pub waiting_triggers: Vec<SpellView>,
+    pub effect_discards: Vec<CardId>,
     pub attackers: Vec<CardId>,
     pub blocking: Vec<CardId>,
     pub blocks: Vec<(CardId, CardId)>,
@@ -437,6 +469,10 @@ impl Game {
                 step: Step::Pregame,
                 pending: Pending::Mulligan(config.starting_player),
                 stack: Vec::new(),
+                resolving: None,
+                pending_triggers: Vec::new(),
+                ordering_triggers: Vec::new(),
+                next_stack_id: 0,
                 passes: 0,
                 mulligan_round: [false; 2],
                 land_played: false,
@@ -478,6 +514,9 @@ impl Game {
         match self.state.pending {
             Pending::Mulligan(p) | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
+            Pending::OrderTriggers { player }
+            | Pending::EffectOptional { player, .. }
+            | Pending::EffectDiscard { player, .. } => Some(player),
             Pending::Attackers | Pending::Damage | Pending::Discard => Some(self.state.active),
             Pending::Blockers => Some(self.state.active.other()),
             Pending::Terminal => None,
@@ -519,7 +558,12 @@ impl Game {
                 return Err(Error::IllegalAction);
             }
             self.apply_legal(actor, action);
-            self.state_based_actions();
+            // Resolution is atomic with respect to SBAs and priority, even when
+            // a program is suspended for an optional effect or discard choice.
+            if self.state.resolving.is_none() {
+                self.state_based_actions();
+                self.prepare_triggers();
+            }
         }
         self.revision = self.revision.checked_add(1).expect("revision exhausted");
         Ok(())
@@ -563,9 +607,15 @@ impl Game {
                     return true;
                 }
             }
-            Pending::Bottom { .. } | Pending::Discard => {
+            Pending::Bottom { .. } | Pending::Discard | Pending::EffectDiscard { .. } => {
                 for (i, obj) in s.objects.iter().enumerate() {
                     if obj.owner == actor && obj.zone == Zone::Hand {
+                        if matches!(s.pending, Pending::EffectDiscard { .. })
+                            && s.resolving.as_ref().unwrap().selected_discards[actor.index()]
+                                .contains(&(i as CardId))
+                        {
+                            continue;
+                        }
                         let a = if matches!(s.pending, Pending::Bottom { .. }) {
                             Action::Bottom { card: i as CardId }
                         } else {
@@ -620,8 +670,12 @@ impl Game {
                         if done {
                             return;
                         }
-                        match obj.card.effect() {
-                            Effect::Damage(_) => {
+                        let rule = match obj.card.effect() {
+                            Effect::Spell(rule, _) => rule,
+                            _ => TargetRule::None,
+                        };
+                        match rule {
+                            TargetRule::Any => {
                                 for p in [Player::P0, Player::P1] {
                                     if emit(Action::Cast {
                                         card,
@@ -646,7 +700,7 @@ impl Game {
                                     }
                                 }
                             }
-                            Effect::Grow | Effect::ReturnToHand | Effect::Destroy => {
+                            TargetRule::Creature => {
                                 for (j, target) in s.objects.iter().enumerate() {
                                     if target.zone == Zone::Battlefield
                                         && target.card.is_creature()
@@ -661,8 +715,10 @@ impl Game {
                                     }
                                 }
                             }
-                            Effect::Counter => {
-                                for target in &s.stack {
+                            TargetRule::Spell => {
+                                for target in
+                                    s.stack.iter().filter(|item| item.kind == StackKind::Spell)
+                                {
                                     if emit(Action::Cast {
                                         card,
                                         target: Some(Target::Spell(target.card)),
@@ -673,7 +729,7 @@ impl Game {
                                     }
                                 }
                             }
-                            _ => {
+                            TargetRule::None => {
                                 done = emit(Action::Cast {
                                     card,
                                     target: None,
@@ -757,6 +813,20 @@ impl Game {
                     }
                 }
             }
+            Pending::OrderTriggers { player } => {
+                for item in &s.ordering_triggers {
+                    if item.controller == player && emit(Action::PutTrigger { id: item.id }) {
+                        return true;
+                    }
+                }
+            }
+            Pending::EffectOptional { .. } => {
+                if emit(Action::ChooseOptional { accept: true })
+                    || emit(Action::ChooseOptional { accept: false })
+                {
+                    return true;
+                }
+            }
             Pending::Terminal => {}
         }
         false
@@ -806,7 +876,6 @@ impl Game {
                         self.advance_step();
                     } else {
                         self.resolve_top();
-                        self.give_priority();
                     }
                 }
             }
@@ -838,7 +907,12 @@ impl Game {
                     Target::Player(_) => None,
                 });
                 let object = self.move_object(card, Zone::Stack).after;
+                let id = self.next_stack_id();
                 self.state.stack.push(SpellView {
+                    id,
+                    kind: StackKind::Spell,
+                    source_card: self.state.objects[card as usize].card,
+                    source_keywords: self.state.objects[card as usize].card.keywords(),
                     card,
                     object,
                     target_object,
@@ -851,7 +925,8 @@ impl Game {
             Action::Attack { card } => self.state.selected_attackers.push(card),
             Action::FinishAttackers => {
                 self.state.attack_declared = !self.state.selected_attackers.is_empty();
-                for card in self.state.selected_attackers.drain(..) {
+                let declared = std::mem::take(&mut self.state.selected_attackers);
+                for card in declared {
                     let obj = &mut self.state.objects[card as usize];
                     if !obj.card.keywords().contains(Keywords::VIGILANCE) {
                         obj.tapped = true;
@@ -860,6 +935,7 @@ impl Game {
                         card,
                         blocked: false,
                     });
+                    self.attack_triggers(&self.object_view(card));
                 }
                 self.give_priority();
             }
@@ -899,10 +975,37 @@ impl Game {
                 self.advance_damage_choices();
             }
             Action::Discard { card } => {
-                self.move_object(card, Zone::Graveyard);
-                if self.hand_count(actor) <= 7 {
-                    self.finish_cleanup();
+                if matches!(self.state.pending, Pending::EffectDiscard { .. }) {
+                    let resolution = self.state.resolving.as_mut().unwrap();
+                    resolution.discards[actor.index()] -= 1;
+                    resolution.selected_discards[actor.index()].push(card);
+                    self.run_program();
+                } else {
+                    self.move_object(card, Zone::Graveyard);
+                    if self.hand_count(actor) <= 7 {
+                        self.finish_cleanup();
+                    }
                 }
+            }
+            Action::PutTrigger { id } => {
+                let index = self
+                    .state
+                    .ordering_triggers
+                    .iter()
+                    .position(|item| item.id == id)
+                    .unwrap();
+                let item = self.state.ordering_triggers.remove(index);
+                self.state.stack.push(item);
+                self.continue_trigger_order();
+            }
+            Action::ChooseOptional { accept } => {
+                let Pending::EffectOptional { skip_to, .. } = self.state.pending else {
+                    unreachable!()
+                };
+                if !accept {
+                    self.state.resolving.as_mut().unwrap().pc = skip_to;
+                }
+                self.run_program();
             }
             Action::Concede => unreachable!(),
         }
@@ -1026,6 +1129,19 @@ impl Game {
     /// its top; effects that specify ordering reposition after the transition.
     /// The returned event is owned so later trigger processing can retain LKI.
     fn move_object(&mut self, id: CardId, destination: Zone) -> ZoneChange {
+        let sources = if self.state.objects[id as usize].zone == Zone::Battlefield
+            && destination == Zone::Graveyard
+        {
+            self.death_trigger_sources()
+        } else {
+            Vec::new()
+        };
+        let event = self.move_object_raw(id, destination);
+        self.zone_triggers(&event, &sources);
+        event
+    }
+
+    fn move_object_raw(&mut self, id: CardId, destination: Zone) -> ZoneChange {
         let before = self.object_view(id);
         assert_ne!(
             before.zone, destination,
@@ -1047,7 +1163,7 @@ impl Game {
         if before.zone == Zone::Stack {
             self.state
                 .stack
-                .retain(|spell| spell.object != before.reference);
+                .retain(|spell| spell.kind != StackKind::Spell || spell.object != before.reference);
         }
         if before.zone == Zone::Battlefield {
             self.state.attackers.retain(|attacker| attacker.card != id);
@@ -1201,71 +1317,6 @@ impl Game {
         self.state.active = self.state.active.other();
         self.state.turn += 1;
         self.begin_turn();
-    }
-
-    fn resolve_top(&mut self) {
-        let spell = self.state.stack.pop().unwrap();
-        let effect = self.state.objects[spell.card as usize].card.effect();
-        let valid = match spell.target {
-            Some(Target::Card(id)) => {
-                spell.target_object == Some(self.object_ref(id))
-                    && self.on_battlefield(id)
-                    && self.state.objects[id as usize].card.is_creature()
-            }
-            Some(Target::Spell(_)) => self
-                .state
-                .stack
-                .iter()
-                .any(|s| Some(s.object) == spell.target_object),
-            _ => true,
-        };
-        if valid {
-            match effect {
-                Effect::Creature(..) => {
-                    self.move_object(spell.card, Zone::Battlefield);
-                    return;
-                }
-                Effect::Damage(amount) => {
-                    let event = DamageEvent {
-                        source: self.damage_source(spell.card),
-                        target: spell.target.unwrap(),
-                        amount,
-                        combat: false,
-                    };
-                    self.apply_damage_batch(&[event]);
-                }
-                Effect::Grow => {
-                    if let Some(Target::Card(id)) = spell.target {
-                        self.state.objects[id as usize].growth += 3;
-                    }
-                }
-                Effect::Draw => {
-                    self.draw(spell.controller);
-                    self.draw(spell.controller);
-                }
-                Effect::Counter => {
-                    if let Some(Target::Spell(id)) = spell.target {
-                        self.move_object(id, Zone::Graveyard);
-                    }
-                }
-                Effect::ReturnToHand => {
-                    if let Some(Target::Card(id)) = spell.target {
-                        self.move_object(id, Zone::Hand);
-                    }
-                }
-                Effect::Destroy => {
-                    if let Some(Target::Card(id)) = spell.target {
-                        // No admitted permanent has indestructible, regeneration,
-                        // or a destruction/zone-change replacement effect yet.
-                        self.move_object(id, Zone::Graveyard);
-                    }
-                }
-                Effect::Land | Effect::Unsupported => {
-                    unreachable!("unsupported card passed admission")
-                }
-            }
-        }
-        self.move_object(spell.card, Zone::Graveyard);
     }
 
     fn damage_source(&self, object: CardId) -> DamageSource {
@@ -1456,8 +1507,15 @@ impl Game {
             })
             .map(|(i, _)| i as CardId)
             .collect();
-        for id in deaths {
-            self.move_object(id, Zone::Graveyard);
+        if !deaths.is_empty() {
+            let sources = self.death_trigger_sources();
+            let events: Vec<_> = deaths
+                .into_iter()
+                .map(|id| self.move_object_raw(id, Zone::Graveyard))
+                .collect();
+            for event in &events {
+                self.zone_triggers(event, &sources);
+            }
         }
         // Deathtouch applies only since the previous SBA check, not forever.
         for obj in &mut self.state.objects {
@@ -1492,7 +1550,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 4,
+            schema: 5,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -1504,6 +1562,9 @@ impl Game {
                 Pending::Mulligan(_) => "mulligan",
                 Pending::Bottom { .. } => "bottom",
                 Pending::Priority => "priority",
+                Pending::OrderTriggers { .. } => "order_triggers",
+                Pending::EffectOptional { .. } => "optional_effect",
+                Pending::EffectDiscard { .. } => "effect_discard",
                 Pending::Attackers => "attackers",
                 Pending::Blockers => "blockers",
                 Pending::Damage => "damage",
@@ -1518,6 +1579,16 @@ impl Game {
             }),
             objects,
             stack: s.stack.clone(),
+            resolving: s
+                .resolving
+                .as_ref()
+                .map(|resolution| resolution.item.clone()),
+            waiting_triggers: s.ordering_triggers.clone(),
+            effect_discards: s
+                .resolving
+                .as_ref()
+                .map(|resolution| resolution.selected_discards[viewer.index()].clone())
+                .unwrap_or_default(),
             attackers: if owns_choice && s.pending == Pending::Attackers {
                 s.selected_attackers.clone()
             } else {
@@ -1562,7 +1633,19 @@ impl Game {
                 .iter()
                 .map(|p| p.library.len() * std::mem::size_of::<CardId>())
                 .sum::<usize>()
-            + s.stack.len() * std::mem::size_of::<SpellView>()
+            + (s.stack.len() + s.pending_triggers.len() + s.ordering_triggers.len())
+                * std::mem::size_of::<SpellView>()
+            + s.resolving
+                .as_ref()
+                .map(|resolution| {
+                    resolution
+                        .selected_discards
+                        .iter()
+                        .map(Vec::len)
+                        .sum::<usize>()
+                        * std::mem::size_of::<CardId>()
+                })
+                .unwrap_or(0)
             + s.attackers.len() * std::mem::size_of::<Attacker>()
             + s.blocking.len() * std::mem::size_of::<CardId>()
             + s.blocks.len() * std::mem::size_of::<(CardId, CardId)>()

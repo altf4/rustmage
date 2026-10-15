@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "c31ece82fd1c607cbebab32a243f60c9b27e9b3251bec26e5e950c8833f5f9e1",
+  "catalogue_version": "de0792b0b61b1dcbbc1b2d9bec9a232e4f4e713cd2aa16dd0d606ebbb4ff4dfc",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 47,
-  "implemented_total": 53,
+  "implemented_standard_cards": 80,
+  "implemented_total": 86,
   "cards": [
     {
       "name": "Plains",
@@ -950,8 +950,8 @@
     {
       "name": "Ancestral Reminiscence",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Anchovy & Banana Pizza",
@@ -2294,8 +2294,8 @@
     {
       "name": "Bellowing Crier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Beluna Grandsquall // Seek Thrills",
@@ -2888,8 +2888,8 @@
     {
       "name": "Bogwater Lumaret",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Boilerbilges Ripper",
@@ -3530,8 +3530,8 @@
     {
       "name": "Burglar Rat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Buried Treasure",
@@ -3632,8 +3632,8 @@
     {
       "name": "Buzz Bots",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Buzzard-Wasp Colony",
@@ -4682,8 +4682,8 @@
     {
       "name": "Cloudblazer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Cloudbound Moogle",
@@ -5942,8 +5942,8 @@
     {
       "name": "Dazzling Angel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Dazzling Denial",
@@ -8306,8 +8306,8 @@
     {
       "name": "Eumidian Terrabotanist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Eusocial Engineering",
@@ -9764,8 +9764,8 @@
     {
       "name": "Friendly Teddy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Frilled Cave-Wurm",
@@ -10664,8 +10664,8 @@
     {
       "name": "Glidedive Duo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Glider Kids",
@@ -11924,8 +11924,8 @@
     {
       "name": "Hecteyes",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Hedge Maze",
@@ -12020,8 +12020,8 @@
     {
       "name": "Helpful Hunter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Helping Hand",
@@ -12050,8 +12050,8 @@
     {
       "name": "Herald of Faith",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Heraldic Banner",
@@ -12284,8 +12284,8 @@
     {
       "name": "Hinterland Sanctifier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Hire a Crew",
@@ -12764,8 +12764,8 @@
     {
       "name": "Icewind Elemental",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Icewrought Sentry",
@@ -13136,8 +13136,8 @@
     {
       "name": "Inspiring Overseer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Inspiring Paladin",
@@ -14960,8 +14960,8 @@
     {
       "name": "Lifecreed Duo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Light of Judgment",
@@ -18368,8 +18368,8 @@
     {
       "name": "Outlaw Medic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Outlaw Stitcher",
@@ -18746,8 +18746,8 @@
     {
       "name": "Pelakka Wurm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Pensive Professor",
@@ -19430,8 +19430,8 @@
     {
       "name": "Primordial Pachyderm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Prishe's Wanderings",
@@ -19880,8 +19880,8 @@
     {
       "name": "Quick Study",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Quick-Draw Katana",
@@ -20240,8 +20240,8 @@
     {
       "name": "Rank Rat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Rankle's Prank",
@@ -21512,8 +21512,8 @@
     {
       "name": "Rook Turret",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Room of Refuge",
@@ -22124,8 +22124,8 @@
     {
       "name": "Sanguine Syphoner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Sanitation Automaton",
@@ -23066,8 +23066,8 @@
     {
       "name": "Shopkeeper's Bane",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Shore Lurker",
@@ -23366,8 +23366,8 @@
     {
       "name": "Skirmish Rhino",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Skulduggery",
@@ -23672,8 +23672,8 @@
     {
       "name": "Sneering Shadewriter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Snooping Page",
@@ -24518,8 +24518,8 @@
     {
       "name": "Stadium Tidalmage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Stagecoach Security",
@@ -25004,8 +25004,8 @@
     {
       "name": "Stony-Voiced Goblins",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Stop Cold",
@@ -25280,8 +25280,8 @@
     {
       "name": "Summit Sentinel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Summon: Anima",
@@ -29060,8 +29060,8 @@
     {
       "name": "Vampire Spawn",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Vampiric Rites",
@@ -29468,8 +29468,8 @@
     {
       "name": "Virulent Emissary",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Virulent Silencer",
@@ -29480,8 +29480,8 @@
     {
       "name": "Virus Beetle",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Visage Bandit",

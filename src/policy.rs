@@ -54,6 +54,14 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::Attack { .. } | Action::Block { .. } => 60,
             Action::AssignDamage { amount, .. } => 50 + *amount,
             Action::Bottom { .. } | Action::Discard { .. } => 50,
+            Action::PutTrigger { .. } => 50,
+            Action::ChooseOptional { accept } => {
+                if *accept {
+                    50
+                } else {
+                    0
+                }
+            }
             Action::TapMana { .. } => {
                 if tap_for_main {
                     10

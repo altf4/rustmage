@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """Compile pinned card facts into immutable native definitions.
 
-Only explicit implementations and exact vanilla/keyword-only templates are
-and single-instruction removal templates are executable. All other identities
+Only explicit implementations and exact complete-text templates are executable. All other identities
 remain known but unsupported, never guessed.
 """
 import argparse
@@ -70,6 +69,101 @@ def spell_template(card):
     }.get(card.get('oracle_text'))
 
 
+
+DRAW_COUNTS = {'a card': 1, 'two cards': 2, 'three cards': 3, 'four cards': 4}
+
+
+def statement_program(text):
+    """Compile only these complete sentences; residual text never gets ignored."""
+    if not isinstance(text, str) or not text or not text.endswith('.'):
+        return None
+    text = text[0].lower() + text[1:]
+    draw = r'(a card|two cards|three cards|four cards)'
+    if m := re.fullmatch(r'draw ' + draw + r'\.', text):
+        return [f'Draw(PlayerSet::Controller, {DRAW_COUNTS[m[1]]})']
+    if m := re.fullmatch(r'you gain ([0-9]+) life\.', text):
+        return [f'GainLife(PlayerSet::Controller, {int(m[1])})'] if int(m[1]) <= 65535 else None
+    if m := re.fullmatch(r'you lose ([0-9]+) life\.', text):
+        return [f'LoseLife(PlayerSet::Controller, {int(m[1])})'] if int(m[1]) <= 65535 else None
+    if text == 'you may draw a card. If you do, discard a card.':
+        return ['May { skip: 2 }', 'Draw(PlayerSet::Controller, 1)', 'Discard(PlayerSet::Controller, 1)']
+    if text == 'each player discards a card.':
+        return ['Discard(PlayerSet::Each, 1)']
+    if text == 'each opponent discards a card.':
+        return ['Discard(PlayerSet::Opponent, 1)']
+    if text == 'each player draws a card.':
+        return ['Draw(PlayerSet::Each, 1)']
+    if m := re.fullmatch(r'you gain ([0-9]+) life and draw ' + draw + r'\.', text):
+        return [f'GainLife(PlayerSet::Controller, {int(m[1])})', f'Draw(PlayerSet::Controller, {DRAW_COUNTS[m[2]]})'] if int(m[1]) <= 65535 else None
+    if m := re.fullmatch(r'each opponent loses ([0-9]+) life and you gain ([0-9]+) life\.', text):
+        return [f'LoseLife(PlayerSet::Opponent, {int(m[1])})', f'GainLife(PlayerSet::Controller, {int(m[2])})'] if max(int(m[1]), int(m[2])) <= 65535 else None
+    if m := re.fullmatch(r'draw ' + draw + r', then discard (a card|two cards|three cards|four cards)\.', text):
+        return [f'Draw(PlayerSet::Controller, {DRAW_COUNTS[m[1]]})', f'Discard(PlayerSet::Controller, {DRAW_COUNTS[m[2]]})']
+    if m := re.fullmatch(r'you may draw ' + draw + r'\.', text):
+        return ['May { skip: 1 }', f'Draw(PlayerSet::Controller, {DRAW_COUNTS[m[1]]})']
+    if '. ' in text:
+        instructions = []
+        for sentence in text.split('. '):
+            result = statement_program(sentence if sentence.endswith('.') else sentence + '.')
+            if result is None:
+                return None
+            instructions.extend(result)
+        return instructions
+    return None
+
+
+def trigger_creature_template(card):
+    if not isinstance(card.get('oracle_text'), str):
+        return None
+    # Reuse the same complete body/type/cost checks as the keyword-only template.
+    if creature_template(dict(card, oracle_text='')) is None:
+        return None
+    keywords = 0
+    abilities = []
+    prefixes = {
+        'When this creature enters, ': 'SelfEnters',
+        'When this creature dies, ': 'SelfDies',
+        'Whenever this creature attacks, ': 'SelfAttacks',
+        'Whenever this creature enters or attacks, ': 'SelfEntersOrAttacks',
+        'Whenever another artifact you control enters, ': 'OtherArtifactEntersYou',
+        'Whenever another creature you control enters, ': 'OtherCreatureEntersYou',
+        'Whenever this creature or another creature you control enters, ': 'CreatureEntersYou',
+        'Landfall — Whenever a land you control enters, ': 'LandEntersYou',
+    }
+    text = re.sub(r'\([^()]*\)', '', card['oracle_text']).strip()
+    for line in text.split('\n'):
+        words = {word.strip().casefold() for word in line.split(',') if word.strip()}
+        if words and words <= KEYWORDS.keys():
+            keywords |= sum(KEYWORDS[word] for word in words)
+            continue
+        for prefix, condition in prefixes.items():
+            if line.startswith(prefix):
+                program = statement_program(line[len(prefix):])
+                if program is None:
+                    return None
+                abilities.append((condition, program))
+                break
+        else:
+            return None
+    if not abilities:
+        return None
+    return f"Creature({int(card['power'])}, {int(card['toughness'])})", keywords, abilities
+
+
+def spell_program_template(card):
+    old = spell_template(card)
+    if old:
+        return 'Creature', [old]
+    if (card.get('layout') != 'normal' or card.get('type_line') not in ('Instant', 'Sorcery')
+            or fixed_cost(card.get('mana_cost', '')) is None):
+        return None
+    program = statement_program(card.get('oracle_text'))
+    return ('None', program) if program else None
+
+
+def rust_program(program):
+    return '&[' + ', '.join('Instruction::' + instruction for instruction in program) + ']'
+
 def compile_catalogue(snapshot, target):
     canonical = json.dumps(snapshot['cards'], ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()
     if hashlib.sha256(canonical).hexdigest() != snapshot['cards_sha256'] or len(snapshot['cards']) != snapshot['card_count']:
@@ -96,7 +190,9 @@ def compile_catalogue(snapshot, target):
         effect = 'Unsupported'
         color = None
         template = creature_template(card)
-        spell = spell_template(card)
+        trigger_template = trigger_creature_template(card)
+        spell = spell_program_template(card)
+        abilities = []
         if name in legacy:
             effect, fallback_cost, color = legacy[name]
             # Lands have no mana cost. Their legacy cost token encodes colour only.
@@ -104,11 +200,26 @@ def compile_catalogue(snapshot, target):
             kind = 2 if effect == 'Land' else 1 if effect.startswith('Creature') else 4 if effect in ('Draw',) else 8
         else:
             types = card.get('type_line', '').split(' — ')[0].split()
-            kind = (1 if 'Creature' in types else 0) | (2 if 'Land' in types else 0) | (4 if 'Sorcery' in types else 0) | (8 if 'Instant' in types else 0)
+            kind = (1 if 'Creature' in types else 0) | (2 if 'Land' in types else 0) | (4 if 'Sorcery' in types else 0) | (8 if 'Instant' in types else 0) | (16 if 'Artifact' in types else 0)
             if template is not None:
                 effect, keywords = template
+            elif trigger_template is not None:
+                effect, keywords, abilities = trigger_template
             elif spell is not None:
-                effect = spell
+                effect = 'Spell'
+        programs = {
+            'Damage(3)': ('Any', ['Damage(3)']), 'Damage(2)': ('Any', ['Damage(2)']),
+            'Grow': ('Creature', ['Grow(3)']), 'Draw': ('None', ['Draw(PlayerSet::Controller, 2)']),
+            'Counter': ('Spell', ['Counter']),
+        }
+        if effect in programs:
+            rule, program = programs[effect]
+            effect = f'Spell(TargetRule::{rule}, {rust_program(program)})'
+        elif effect == 'Spell':
+            rule, program = spell
+            effect = f'Spell(TargetRule::{rule}, {rust_program(program)})'
+        triggers_rust = '&[' + ', '.join(f'TriggeredAbility {{ condition: TriggerCondition::{condition}, program: {rust_program(program)} }}' for condition, program in abilities) + ']'
+
         if effect != 'Unsupported':
             supported.append(index)
         basic = name in {'Plains', 'Island', 'Swamp', 'Mountain', 'Forest'}
@@ -118,9 +229,9 @@ def compile_catalogue(snapshot, target):
         oracle_id = f"Some({quote(card['oracle_id'])})" if card else 'None'
         type_line = card.get('type_line', 'Basic Land' if basic else 'Creature' if kind & 1 else 'Instant' if kind & 8 else 'Sorcery' if kind & 4 else '')
         oracle_keywords = '&[' + ', '.join(quote(word) for word in card.get('keywords', [])) + ']'
-        definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(name)}, oracle_id: {oracle_id}, mana_cost: {quote(cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in cards).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
+        definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(name)}, oracle_id: {oracle_id}, mana_cost: {quote(cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in cards).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
         coverage.append({'name': name, 'standard_legal': name in cards, 'implemented': effect != 'Unsupported',
-                         'implementation': 'explicit' if name in legacy else 'creature_template' if template else 'spell_template' if spell else None})
+                         'implementation': 'explicit' if name in legacy else 'creature_template' if template else 'trigger_template' if trigger_template else 'spell_template' if spell else None})
     # The fingerprint covers data and compiler logic; card IDs are local to it.
     target_bytes = json.dumps(target, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()
     version = hashlib.sha256(canonical + target_bytes + Path(__file__).read_bytes()).hexdigest()
