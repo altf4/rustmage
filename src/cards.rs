@@ -1,23 +1,9 @@
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
-/// Closed, explicit catalogue. Unknown cards fail deserialization, never become vanilla cards.
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum Card {
-    Plains,
-    Island,
-    Swamp,
-    Mountain,
-    Forest,
-    GrizzlyBears,
-    GoblinPiker,
-    HillGiant,
-    LlanowarElves,
-    LightningBolt,
-    Shock,
-    GiantGrowth,
-    Divination,
-    Counterspell,
-}
+/// Compact catalogue identity. The immutable definitions are shared across all
+/// games; no card strings, JSON, or rule objects are cloned into game states.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub struct Card(u16);
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Effect {
@@ -27,100 +13,133 @@ pub(crate) enum Effect {
     Draw,
     Counter,
     Land,
+    Unsupported,
 }
+
+/// Implemented static keyword flags. Other keyword cards remain unsupported.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(transparent)]
+pub struct Keywords(u16);
+
+impl Keywords {
+    pub const FLYING: Self = Self(1);
+    pub const REACH: Self = Self(2);
+    pub const HASTE: Self = Self(4);
+    pub const VIGILANCE: Self = Self(8);
+    pub const DEFENDER: Self = Self(16);
+    pub const FLASH: Self = Self(32);
+    pub fn contains(self, keyword: Self) -> bool {
+        self.0 & keyword.0 == keyword.0
+    }
+}
+
+#[derive(Clone, Copy, Debug, Serialize)]
+pub struct CardInfo {
+    pub name: &'static str,
+    pub oracle_id: Option<&'static str>,
+    pub mana_cost: &'static str,
+    pub type_line: &'static str,
+    pub oracle_keywords: &'static [&'static str],
+    pub standard_legal: bool,
+    pub implemented: bool,
+    pub keywords: Keywords,
+    pub deck_limit: Option<u8>,
+}
+
+struct Definition {
+    info: CardInfo,
+    effect: Effect,
+    kind: u8,
+    basic: bool,
+    mana_color: Option<usize>,
+    colored: Mana,
+    generic: u32,
+}
+
+mod generated {
+    use super::*;
+    include!("generated/catalogue.rs");
+}
+pub use generated::CATALOGUE_VERSION;
 
 /// Mana is W U B R G. Generic costs deliberately have no colour slot.
 pub type Mana = [u32; 5];
 
 impl Card {
-    pub const ALL: [Card; 14] = [
-        Self::Plains,
-        Self::Island,
-        Self::Swamp,
-        Self::Mountain,
-        Self::Forest,
-        Self::GrizzlyBears,
-        Self::GoblinPiker,
-        Self::HillGiant,
-        Self::LlanowarElves,
-        Self::LightningBolt,
-        Self::Shock,
-        Self::GiantGrowth,
-        Self::Divination,
-        Self::Counterspell,
-    ];
-
+    pub fn from_name(name: &str) -> Option<Self> {
+        // Accept the foundation's JSON tokens as aliases for canonical names.
+        let canonical = match name {
+            "GrizzlyBears" => "Grizzly Bears",
+            "GoblinPiker" => "Goblin Piker",
+            "HillGiant" => "Hill Giant",
+            "LlanowarElves" => "Llanowar Elves",
+            "LightningBolt" => "Lightning Bolt",
+            "GiantGrowth" => "Giant Growth",
+            _ => name,
+        };
+        generated::NAME_INDEX
+            .binary_search_by_key(&canonical, |&(name, _)| name)
+            .ok()
+            .map(|index| Self(generated::NAME_INDEX[index].1))
+    }
+    pub fn catalogue() -> impl ExactSizeIterator<Item = Card> {
+        (0..generated::DEFINITIONS.len()).map(|index| Card(index as u16))
+    }
+    pub fn catalogue_len() -> usize {
+        generated::DEFINITIONS.len()
+    }
+    pub fn info(self) -> &'static CardInfo {
+        &generated::DEFINITIONS[self.0 as usize].info
+    }
     pub fn name(self) -> &'static str {
-        match self {
-            Self::Plains => "Plains",
-            Self::Island => "Island",
-            Self::Swamp => "Swamp",
-            Self::Mountain => "Mountain",
-            Self::Forest => "Forest",
-            Self::GrizzlyBears => "Grizzly Bears",
-            Self::GoblinPiker => "Goblin Piker",
-            Self::HillGiant => "Hill Giant",
-            Self::LlanowarElves => "Llanowar Elves",
-            Self::LightningBolt => "Lightning Bolt",
-            Self::Shock => "Shock",
-            Self::GiantGrowth => "Giant Growth",
-            Self::Divination => "Divination",
-            Self::Counterspell => "Counterspell",
-        }
+        self.info().name
     }
-
-    pub(crate) fn effect(self) -> Effect {
-        match self {
-            Self::Plains | Self::Island | Self::Swamp | Self::Mountain | Self::Forest => {
-                Effect::Land
-            }
-            Self::GrizzlyBears => Effect::Creature(2, 2),
-            Self::GoblinPiker => Effect::Creature(2, 1),
-            Self::HillGiant => Effect::Creature(3, 3),
-            Self::LlanowarElves => Effect::Creature(1, 1),
-            Self::LightningBolt => Effect::Damage(3),
-            Self::Shock => Effect::Damage(2),
-            Self::GiantGrowth => Effect::Grow,
-            Self::Divination => Effect::Draw,
-            Self::Counterspell => Effect::Counter,
-        }
+    pub fn is_supported(self) -> bool {
+        self.info().implemented
     }
-
+    pub fn is_standard_legal(self) -> bool {
+        self.info().standard_legal
+    }
+    pub fn keywords(self) -> Keywords {
+        self.info().keywords
+    }
     pub fn is_creature(self) -> bool {
-        matches!(self.effect(), Effect::Creature(..))
+        generated::DEFINITIONS[self.0 as usize].kind & 1 != 0
     }
     pub fn is_land(self) -> bool {
-        self.effect() == Effect::Land
+        generated::DEFINITIONS[self.0 as usize].kind & 2 != 0
+    }
+    pub fn is_basic_land(self) -> bool {
+        generated::DEFINITIONS[self.0 as usize].basic
     }
     pub fn is_instant(self) -> bool {
-        matches!(
-            self.effect(),
-            Effect::Damage(_) | Effect::Grow | Effect::Counter
-        )
+        generated::DEFINITIONS[self.0 as usize].kind & 8 != 0
     }
-
+    pub(crate) fn effect(self) -> Effect {
+        generated::DEFINITIONS[self.0 as usize].effect
+    }
     pub(crate) fn mana_color(self) -> Option<usize> {
-        match self {
-            Self::Plains => Some(0),
-            Self::Island => Some(1),
-            Self::Swamp => Some(2),
-            Self::Mountain => Some(3),
-            Self::Forest | Self::LlanowarElves => Some(4),
-            _ => None,
-        }
+        generated::DEFINITIONS[self.0 as usize].mana_color
     }
-
     pub(crate) fn cost(self) -> (Mana, u32) {
-        match self {
-            Self::GrizzlyBears => ([0, 0, 0, 0, 1], 1),
-            Self::GoblinPiker => ([0, 0, 0, 1, 0], 1),
-            Self::HillGiant => ([0, 0, 0, 1, 0], 3),
-            Self::LlanowarElves | Self::GiantGrowth => ([0, 0, 0, 0, 1], 0),
-            Self::LightningBolt | Self::Shock => ([0, 0, 0, 1, 0], 0),
-            Self::Divination => ([0, 1, 0, 0, 0], 2),
-            Self::Counterspell => ([0, 2, 0, 0, 0], 0),
-            _ => ([0; 5], 0),
-        }
+        let definition = &generated::DEFINITIONS[self.0 as usize];
+        (definition.colored, definition.generic)
+    }
+    pub(crate) fn index(self) -> usize {
+        self.0 as usize
+    }
+}
+
+impl Serialize for Card {
+    fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        serializer.serialize_str(self.name())
+    }
+}
+impl<'de> Deserialize<'de> for Card {
+    fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let name = String::deserialize(deserializer)?;
+        Self::from_name(&name)
+            .ok_or_else(|| serde::de::Error::custom(format!("unknown card: {name}")))
     }
 }
 

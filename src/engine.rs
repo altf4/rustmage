@@ -1,6 +1,6 @@
 use crate::cards::{Effect, payments};
 use crate::rng::Rng;
-use crate::{Card, Mana};
+use crate::{Card, Keywords, Mana};
 use serde::{Deserialize, Serialize};
 
 pub type CardId = u32;
@@ -128,6 +128,8 @@ pub enum DeckRules {
     #[default]
     Constructed,
     Freeform,
+    /// Standard pool frozen at the compiled catalogue version, not host time.
+    Standard,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -259,6 +261,7 @@ pub struct ObjectView {
     pub damage: i32,
     pub power: i32,
     pub toughness: i32,
+    pub keywords: Keywords,
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -272,6 +275,7 @@ pub struct PlayerView {
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
     pub schema: u32,
+    pub catalogue: &'static str,
     pub viewer: Player,
     pub revision: u64,
     pub actor: Option<Player>,
@@ -298,17 +302,35 @@ impl Game {
                     "supported deck size is 7..=65535".into(),
                 ));
             }
-            if config.deck_rules == DeckRules::Constructed {
+            if config.deck_rules != DeckRules::Freeform {
                 if deck.len() < 60 {
                     return Err(Error::InvalidDeck("constructed needs 60 cards".into()));
                 }
-                for card in Card::ALL {
-                    if !card.is_land() && deck.iter().filter(|&&c| c == card).count() > 4 {
-                        return Err(Error::InvalidDeck(format!(
-                            "more than four {}",
-                            card.name()
-                        )));
+                let mut counts = vec![0u8; Card::catalogue_len()];
+                for &card in deck {
+                    if let Some(limit) = card.info().deck_limit {
+                        counts[card.index()] = counts[card.index()].saturating_add(1);
+                        if counts[card.index()] > limit {
+                            return Err(Error::InvalidDeck(format!(
+                                "more than {limit} {}",
+                                card.name()
+                            )));
+                        }
                     }
+                }
+            }
+            for &card in deck {
+                if config.deck_rules == DeckRules::Standard && !card.is_standard_legal() {
+                    return Err(Error::InvalidDeck(format!(
+                        "not Standard legal in this catalogue: {}",
+                        card.name()
+                    )));
+                }
+                if !card.is_supported() {
+                    return Err(Error::InvalidDeck(format!(
+                        "rules not implemented: {}",
+                        card.name()
+                    )));
                 }
             }
         }
@@ -503,7 +525,9 @@ impl Game {
                     if obj.zone == Zone::Battlefield
                         && !obj.tapped
                         && obj.card.mana_color().is_some()
-                        && (!obj.card.is_creature() || !obj.summoning_sick)
+                        && (!obj.card.is_creature()
+                            || !obj.summoning_sick
+                            || obj.card.keywords().contains(Keywords::HASTE))
                         && emit(Action::TapMana { card })
                     {
                         return true;
@@ -517,7 +541,10 @@ impl Game {
                         }
                         continue;
                     }
-                    if !sorcery && !obj.card.is_instant() {
+                    if !sorcery
+                        && !obj.card.is_instant()
+                        && !obj.card.keywords().contains(Keywords::FLASH)
+                    {
                         continue;
                     }
                     let (colored, generic) = obj.card.cost();
@@ -603,7 +630,8 @@ impl Game {
                         && obj.zone == Zone::Battlefield
                         && obj.card.is_creature()
                         && !obj.tapped
-                        && !obj.summoning_sick
+                        && (!obj.summoning_sick || obj.card.keywords().contains(Keywords::HASTE))
+                        && !obj.card.keywords().contains(Keywords::DEFENDER)
                         && !s.selected_attackers.contains(&card)
                         && emit(Action::Attack { card })
                     {
@@ -627,6 +655,12 @@ impl Game {
                     }
                     for attacker in &s.attackers {
                         if self.on_battlefield(attacker.card)
+                            && (!s.objects[attacker.card as usize]
+                                .card
+                                .keywords()
+                                .contains(Keywords::FLYING)
+                                || obj.card.keywords().contains(Keywords::FLYING)
+                                || obj.card.keywords().contains(Keywords::REACH))
                             && emit(Action::Block {
                                 blocker,
                                 attacker: attacker.card,
@@ -732,7 +766,10 @@ impl Game {
             Action::Attack { card } => self.state.selected_attackers.push(card),
             Action::FinishAttackers => {
                 for card in self.state.selected_attackers.drain(..) {
-                    self.state.objects[card as usize].tapped = true;
+                    let obj = &mut self.state.objects[card as usize];
+                    if !obj.card.keywords().contains(Keywords::VIGILANCE) {
+                        obj.tapped = true;
+                    }
                     self.state.attackers.push(Attacker {
                         card,
                         blocked: false,
@@ -991,7 +1028,9 @@ impl Game {
                         self.state.objects[id as usize].zone = Zone::Graveyard;
                     }
                 }
-                Effect::Land => unreachable!(),
+                Effect::Land | Effect::Unsupported => {
+                    unreachable!("unsupported card passed admission")
+                }
             }
         }
         self.state.objects[spell.card as usize].zone = Zone::Graveyard;
@@ -1103,10 +1142,12 @@ impl Game {
                 damage: o.damage,
                 power: o.power(),
                 toughness: o.toughness(),
+                keywords: o.card.keywords(),
             })
             .collect();
         Observation {
-            schema: 1,
+            schema: 2,
+            catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
             actor: self.actor(),

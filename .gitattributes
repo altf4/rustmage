@@ -1,0 +1,2 @@
+data/standard/*.json linguist-generated=true
+src/generated/*.rs linguist-generated=true

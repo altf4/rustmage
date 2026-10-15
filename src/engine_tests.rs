@@ -571,3 +571,102 @@ fn random_legal_play_preserves_invariants_and_every_replay_checkpoint() {
         }
     }
 }
+
+#[test]
+fn flying_requires_flying_or_reach_and_vigilance_does_not_tap() {
+    let mut game = scenario();
+    let angel = spawn(
+        &mut game,
+        Player::P0,
+        Card::from_name("Serra Angel").unwrap(),
+        Zone::Battlefield,
+    );
+    let ground = spawn(&mut game, Player::P1, Card::GrizzlyBears, Zone::Battlefield);
+    let reach = spawn(
+        &mut game,
+        Player::P1,
+        Card::from_name("Magnigoth Sentry").unwrap(),
+        Zone::Battlefield,
+    );
+    game.state.step = Step::Attackers;
+    game.state.pending = Pending::Attackers;
+    act(&mut game, Action::Attack { card: angel });
+    act(&mut game, Action::FinishAttackers);
+    assert!(!game.state.objects[angel as usize].tapped);
+    pass_pair(&mut game);
+    assert!(!game.legal_actions().contains(&Action::Block {
+        blocker: ground,
+        attacker: angel
+    }));
+    assert!(game.legal_actions().contains(&Action::Block {
+        blocker: reach,
+        attacker: angel
+    }));
+    let before = game.snapshot();
+    assert_eq!(
+        game.apply(
+            Player::P1,
+            Action::Block {
+                blocker: ground,
+                attacker: angel
+            }
+        ),
+        Err(Error::IllegalAction)
+    );
+    assert_eq!(game.snapshot(), before);
+}
+
+#[test]
+fn haste_ignores_sickness_and_defender_still_cannot_attack() {
+    let mut game = scenario();
+    let haste = spawn(
+        &mut game,
+        Player::P0,
+        Card::from_name("Brazen Scourge").unwrap(),
+        Zone::Battlefield,
+    );
+    let defender = spawn(
+        &mut game,
+        Player::P0,
+        Card::from_name("Monoist Sentry").unwrap(),
+        Zone::Battlefield,
+    );
+    game.state.objects[haste as usize].summoning_sick = true;
+    game.state.step = Step::Attackers;
+    game.state.pending = Pending::Attackers;
+    assert!(
+        game.legal_actions()
+            .contains(&Action::Attack { card: haste })
+    );
+    assert!(
+        !game
+            .legal_actions()
+            .contains(&Action::Attack { card: defender })
+    );
+}
+
+#[test]
+fn flash_creature_can_be_cast_in_opponents_upkeep() {
+    let mut game = scenario();
+    let flash = spawn(
+        &mut game,
+        Player::P1,
+        Card::from_name("Dawn's Light Archer").unwrap(),
+        Zone::Hand,
+    );
+    let bears = spawn(&mut game, Player::P1, Card::GrizzlyBears, Zone::Hand);
+    game.state.step = Step::Upkeep;
+    game.state.priority = Player::P1;
+    game.state.players[1].mana[4] = 3;
+    assert!(
+        !game
+            .legal_actions()
+            .iter()
+            .any(|a| matches!(a, Action::Cast { card, .. } if *card == bears))
+    );
+    cast(&mut game, flash, None);
+    pass_pair(&mut game);
+    assert_eq!(game.state.objects[flash as usize].zone, Zone::Battlefield);
+    assert!(game.state.objects[flash as usize].summoning_sick);
+    assert_eq!(game.actor(), Some(Player::P0));
+}

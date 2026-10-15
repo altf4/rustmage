@@ -6,5 +6,5 @@ pub mod policy;
 pub mod protocol;
 mod rng;
 
-pub use cards::{Card, Mana};
+pub use cards::{CATALOGUE_VERSION, Card, CardInfo, Keywords, Mana};
 pub use engine::*;
