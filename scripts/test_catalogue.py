@@ -14,6 +14,34 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_modal_spells_require_every_complete_mode_and_preserve_labels(self):
+        row = self.card(name='Test Spell', type_line='Instant', mana_cost='{1}{R}',
+            oracle_text='Choose one —\n• Test Spell deals 3 damage to target creature.\n• Destroy target artifact.')
+        modes = generate.modal_spell_template(row)
+        self.assertEqual(len(modes), 2)
+        self.assertEqual(modes[0][1:], ('Creature', ['Damage(3)']))
+        self.assertEqual(modes[1][1:], ('Artifact', ['Destroy']))
+        labelled = dict(row, oracle_text='Choose one —\n• Do Homework — Draw three cards.\n• Fight Crime — Counter target spell. Draw a card.')
+        modes = generate.modal_spell_template(labelled)
+        self.assertEqual(modes[0][0], 'Do Homework — Draw three cards.')
+        self.assertEqual(modes[0][1:], ('None', ['Draw(PlayerSet::Controller, 3)']))
+        self.assertEqual(modes[1][1:], ('Spell', ['Counter', 'Draw(PlayerSet::Controller, 1)']))
+        for text in [
+            'Choose one —\n• Draw two cards.\n• Win the game.',
+            'Choose two —\n• Draw two cards.\n• You gain 2 life.',
+            'Choose one or both —\n• Draw two cards.\n• You gain 2 life.',
+            'Choose one —\n• Draw two cards.',
+            'Choose one —\n• Draw two cards.\n• You gain 2 life.\nThen win the game.',
+            'Choose one —\nDraw two cards.\n• You gain 2 life.',
+            'Choose one —\n• Counter target spell unless its controller pays {2}.\n• Draw two cards.',
+            'Choose one —\n• Draw two cards.\n• Test Spell deals X damage to target creature.',
+            'Choose one —\n• Draw two cards.\n• Other creatures you control get +1/+1.']:
+            self.assertIsNone(generate.modal_spell_template(dict(row, oracle_text=text)), text)
+        self.assertIsNone(generate.modal_spell_template(dict(row, layout='adventure')))
+        self.assertIsNone(generate.modal_spell_template(dict(row, mana_cost='{X}{R}')))
+        self.assertIsNone(generate.modal_spell_template(dict(row, type_line='Enchantment')))
+        self.assertIsNone(generate.modal_spell_template(dict(row, oracle_text=None)))
+
     def test_search_quality_quantity_destination_and_residual_text(self):
         for quality, name in [('basic land', 'BasicLand'), ('land', 'Land'),
                               ('creature', 'Creature'), ('artifact', 'Artifact'), ('enchantment', 'Enchantment')]:

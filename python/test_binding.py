@@ -17,7 +17,7 @@ class BindingTests(unittest.TestCase):
             observation = game.observe("P0")
             coverage = json.loads((Path(__file__).resolve().parents[1] / "data/standard/coverage.json").read_text())
             self.assertEqual(observation["catalogue"], coverage["catalogue_version"])
-            self.assertEqual(observation["schema"], 14)
+            self.assertEqual(observation["schema"], 15)
             self.assertEqual(len(observation["objects"]), 7)
             self.assertTrue(all(o["owner"] == "P0" for o in observation["objects"]))
             self.assertEqual(game.observe("P1")["actions"], [])
@@ -38,6 +38,79 @@ class BindingTests(unittest.TestCase):
             game.drop_snapshot(saved)
             with self.assertRaisesRegex(EngineError, "unknown snapshot"):
                 game.restore(saved)
+
+    def test_modal_cast_mode_targets_payment_and_resolution_replay(self):
+        fixtures = [(["Mountain"] * 24 + ["Abrade"] * 18 + ["Hill Giant"] * 18, "Abrade", 0),
+                    (["Island"] * 36 + ["Spellgyre"] * 24, "Spellgyre", 1)]
+        for deck, name, mode in fixtures:
+            with Game([deck, deck], seed=17, deck_rules="Freeform") as game:
+                obs = game.observe("P0")
+                for _ in range(1800):
+                    self.assertIsNone(obs["outcome"])
+                    if obs["viewer"] != obs["actor"]:
+                        obs = game.observe(obs["actor"])
+                    if obs["decision"] == "spell_mode":
+                        break
+                    def score(action):
+                        kind = action["kind"]
+                        if kind == "TapMana":
+                            return 15 if obs["active"] == obs["actor"] and obs["step"] in ("Main1", "Main2") else -5
+                        return {"Keep": 100, "PlayLand": 90, "Cast": 80, "AnnounceCast": 79,
+                                "Mulligan": -100, "Concede": -1000}.get(kind, 0)
+                    index = max(range(len(obs["actions"])), key=lambda i: score(obs["actions"][i]))
+                    obs = game.step(obs, index)
+                else:
+                    self.fail("no mode selection reached: " + name)
+                actor = obs["actor"]
+                other = "P1" if actor == "P0" else "P0"
+                self.assertEqual(obs["announcing"]["source_card"], name)
+                self.assertIsNone(obs["announcing"]["mode"])
+                self.assertTrue(obs["mode_choices"])
+                self.assertFalse(game.observe(other)["mode_choices"])
+                self.assertFalse(game.observe(other)["actions"])
+                saw_target = False
+                saw_payment = False
+                for _ in range(30):
+                    kinds = [a["kind"] for a in obs["actions"]]
+                    if "ChooseMode" in kinds:
+                        index = next(i for i, a in enumerate(obs["actions"])
+                                     if a["kind"] == "ChooseMode" and a["mode"] == mode)
+                    elif "ChooseTarget" in kinds:
+                        index = kinds.index("ChooseTarget")
+                        saw_target = True
+                    elif "PayCosts" in kinds:
+                        index = kinds.index("PayCosts")
+                        saw_payment = True
+                    elif "TapMana" in kinds:
+                        index = kinds.index("TapMana")
+                    else:
+                        break
+                    saved = game.snapshot()
+                    with game.clone() as branch:
+                        expected = branch.step(branch.observe(actor), index)
+                    actual = game.step(obs, index)
+                    self.assertEqual(actual, expected)
+                    game.restore(saved)
+                    replay = game.step(game.observe(actor), index)
+                    comparison = dict(replay)
+                    comparison.pop("revision")
+                    actual.pop("revision")
+                    self.assertEqual(actual, comparison)
+                    game.drop_snapshot(saved)
+                    obs = replay
+                self.assertTrue(saw_payment)
+                self.assertEqual(saw_target, name == "Abrade")
+                item = next(item for item in obs["stack"] if item["source_card"] == name)
+                self.assertEqual(item["mode"], mode)
+                for _ in range(2):
+                    obs = game.observe(obs["actor"])
+                    index = next(i for i, a in enumerate(obs["actions"]) if a["kind"] == "Pass")
+                    obs = game.step(obs, index)
+                if name == "Spellgyre":
+                    obs = game.observe(actor)
+                    self.assertIsNotNone(obs["library_choice"])
+                    self.assertEqual(obs["resolving"]["mode"], 1)
+                    self.assertIsNone(game.observe(other)["library_choice"])
 
     def test_search_private_selection_public_destination_and_clone_restore(self):
         for source in ("Evolving Wilds", "World Map"):

@@ -577,6 +577,29 @@ def spell_program_template(card):
     return ('None', program) if program else None
 
 
+def modal_spell_template(card):
+    """Every mode must compile completely; unsupported alternatives gate the card."""
+    if (card.get('layout') != 'normal' or card.get('type_line') not in ('Instant', 'Sorcery')
+            or fixed_cost(card.get('mana_cost', '')) is None
+            or not isinstance(card.get('oracle_text'), str)):
+        return None
+    lines = re.sub(r'\([^()]*\)', '', card['oracle_text']).strip().split('\n')
+    if not lines or lines[0] != 'Choose one —' or not 2 <= len(lines) - 1 <= 64:
+        return None
+    modes = []
+    for line in lines[1:]:
+        if not line.startswith('• '): return None
+        text = line[2:].strip()
+        body = text
+        if ' — ' in body:
+            label, body = body.split(' — ', 1)
+            if not re.fullmatch(r"[A-Z][A-Za-z0-9' -]*", label): return None
+        compiled = spell_program_template(dict(card, oracle_text=body))
+        if compiled is None: return None
+        modes.append((text, *compiled))
+    return modes
+
+
 def activation_cost(text):
     cost = dict(colored=[0] * 6, generic=0, mana_component=False, tap=False, sacrifice=False, life=0, remove=None)
     seen = set()
@@ -751,6 +774,7 @@ def compile_catalogue(snapshot, target):
         template = creature_template(card)
         trigger_template = trigger_creature_template(card)
         spell = spell_program_template(card)
+        modal = modal_spell_template(card)
         permanent = permanent_program_template(card)
         static = static_permanent_template(card)
         activations, enters = [], [0, 0, 0]
@@ -771,6 +795,8 @@ def compile_catalogue(snapshot, target):
                 effect, keywords = template
             elif trigger_template is not None:
                 effect, keywords, abilities = trigger_template
+            elif modal is not None:
+                effect = 'Modal'
             elif spell is not None:
                 effect = 'Spell'
             elif permanent is not None:
@@ -786,6 +812,8 @@ def compile_catalogue(snapshot, target):
         if effect in programs:
             rule, program = programs[effect]
             effect = f'Spell({rust_targets(rule)}, {rust_program(program)})'
+        elif effect == 'Modal':
+            effect = 'Modal(&[' + ', '.join(f'SpellMode {{ text: {json.dumps(text, ensure_ascii=False)}, targets: {rust_targets(rule)}, program: {rust_program(program)} }}' for text, rule, program in modal) + '])'
         elif effect == 'Spell':
             rule, program = spell
             effect = f'Spell({rust_targets(rule)}, {rust_program(program)})'
@@ -802,7 +830,7 @@ def compile_catalogue(snapshot, target):
         oracle_keywords = '&[' + ', '.join(quote(word) for word in card.get('keywords', [])) + ']'
         definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(name)}, oracle_id: {oracle_id}, mana_cost: {quote(cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in cards).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, activated: {rust_activations(activations)}, enters: Counters {{ plus_one: {enters[0]}, minus_one: {enters[1]}, stun: {enters[2]} }}, entry: EntryTapped::{entry}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
         coverage.append({'name': name, 'standard_legal': name in cards, 'implemented': effect != 'Unsupported',
-                         'implementation': 'explicit' if name in legacy else 'land_template' if land else 'creature_template' if template else 'trigger_template' if trigger_template else 'spell_template' if spell else 'permanent_template' if permanent else 'static_template' if static else None})
+                         'implementation': 'explicit' if name in legacy else 'land_template' if land else 'creature_template' if template else 'trigger_template' if trigger_template else 'modal_template' if modal else 'spell_template' if spell else 'permanent_template' if permanent else 'static_template' if static else None})
 
     # Only factories referenced by wholly accepted cards enter the executable catalogue.
     used_tokens = sorted(set(re.findall(r'__TOKEN_([0-9a-f]+)__', '\n'.join(definitions))))

@@ -197,6 +197,9 @@ pub enum Action {
         payment: Mana,
         counter_payment: Counters,
     },
+    ChooseMode {
+        mode: u16,
+    },
     ChooseTarget {
         target: Target,
     },
@@ -355,6 +358,7 @@ pub struct SpellView {
     pub card: CardId,
     pub object: ObjectRef,
     pub targets: Vec<BoundTarget>,
+    pub mode: Option<u16>,
     pub controller: Player,
 }
 
@@ -423,6 +427,9 @@ enum Pending {
         production: ManaProduction,
     },
     Targets {
+        player: Player,
+    },
+    Modes {
         player: Player,
     },
     PayCosts {
@@ -546,6 +553,13 @@ pub struct PendingPaymentView {
     pub counters: Counters,
 }
 
+/// Legal modes of the currently announced modal spell.
+#[derive(Clone, Debug, Serialize)]
+pub struct ModeChoiceView {
+    pub mode: u16,
+    pub text: &'static str,
+}
+
 /// Private cards and partial order of a resolving scry/surveil choice.
 #[derive(Clone, Debug, Serialize)]
 pub struct LibraryChoiceView {
@@ -595,6 +609,7 @@ pub struct Observation {
     pub announcing: Option<SpellView>,
     pub announcing_payment: Option<PendingPaymentView>,
     pub mana_choices: Vec<Mana>,
+    pub mode_choices: Vec<ModeChoiceView>,
     pub library_choice: Option<LibraryChoiceView>,
     pub search_choice: Option<SearchChoiceView>,
     pub known_hand: Vec<ObjectRef>,
@@ -754,6 +769,7 @@ impl Game {
             | Pending::EffectLibrary { player }
             | Pending::EffectMana { player, .. }
             | Pending::PayCosts { player }
+            | Pending::Modes { player }
             | Pending::Targets { player }
             | Pending::OrderTriggers { player }
             | Pending::EffectOptional { player, .. }
@@ -924,18 +940,16 @@ impl Game {
                         continue;
                     }
                     let (colored, generic) = obj.card.cost();
-                    let spec = match obj.card.effect() {
-                        Effect::Spell(spec, _) => spec,
-                        _ => TargetSpec::NONE,
+                    let completable = match obj.card.effect() {
+                        Effect::Modal(modes) => modes.iter().any(|mode| {
+                            self.targets_available(mode.targets, actor, self.object_ref(card))
+                        }),
+                        Effect::Spell(spec, _) => {
+                            self.targets_available(spec, actor, self.object_ref(card))
+                        }
+                        _ => true,
                     };
-                    let mut target_count = 0;
-                    if spec.min > 0 {
-                        self.visit_targets(spec.rule, actor, self.object_ref(card), |_| {
-                            target_count += 1;
-                            false
-                        });
-                    }
-                    if target_count >= usize::from(spec.min) {
+                    if completable {
                         let cached = spell_funding_cache
                             .iter()
                             .flatten()
@@ -962,6 +976,10 @@ impl Game {
                         if can_fund && emit(Action::AnnounceCast { card }) {
                             return true;
                         }
+                    }
+                    if matches!(obj.card.effect(), Effect::Modal(_)) {
+                        // Modal spells use the staged path: mode, targets, payment.
+                        continue;
                     }
                     let mut done = false;
                     payments(s.players[actor.index()].mana, colored, generic, |payment| {
@@ -1066,6 +1084,19 @@ impl Game {
                 };
                 for amount in minimum..=choice.remaining {
                     if emit(Action::AssignDamage { target, amount }) {
+                        return true;
+                    }
+                }
+            }
+            Pending::Modes { player } => {
+                let item = &s.announcing.as_ref().unwrap().item;
+                let Effect::Modal(modes) = item.source_card.effect() else {
+                    unreachable!()
+                };
+                for (index, mode) in modes.iter().enumerate() {
+                    if self.targets_available(mode.targets, player, item.object)
+                        && emit(Action::ChooseMode { mode: index as u16 })
+                    {
                         return true;
                     }
                 }
@@ -1300,6 +1331,7 @@ impl Game {
                     }
                 }
             }
+            Action::ChooseMode { mode } => self.choose_mode(mode),
             Action::ChooseTarget { target } => {
                 let bound = self.bind_target(target);
                 let announcement = self.state.announcing.as_mut().unwrap();
@@ -2095,7 +2127,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 14,
+            schema: 15,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -2108,6 +2140,7 @@ impl Game {
                 Pending::Bottom { .. } => "bottom",
                 Pending::Priority => "priority",
                 Pending::Targets { .. } => "targets",
+                Pending::Modes { .. } => "spell_mode",
                 Pending::PayCosts { .. } => "pay_costs",
                 Pending::OrderTriggers { .. } => "order_triggers",
                 Pending::EffectOptional { .. } => "optional_effect",
@@ -2166,6 +2199,25 @@ impl Game {
                     })
             } else {
                 None
+            },
+            mode_choices: if owns_choice && matches!(s.pending, Pending::Modes { .. }) {
+                let item = &s.announcing.as_ref().unwrap().item;
+                let Effect::Modal(modes) = item.source_card.effect() else {
+                    unreachable!()
+                };
+                modes
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, mode)| {
+                        self.targets_available(mode.targets, item.controller, item.object)
+                    })
+                    .map(|(index, mode)| ModeChoiceView {
+                        mode: index as u16,
+                        text: mode.text,
+                    })
+                    .collect()
+            } else {
+                Vec::new()
             },
             mana_choices: {
                 let mut options = Vec::new();
@@ -2356,3 +2408,7 @@ mod land_tests;
 #[cfg(test)]
 #[path = "engine_search_tests.rs"]
 mod search_tests;
+
+#[cfg(test)]
+#[path = "engine_mode_tests.rs"]
+mod mode_tests;

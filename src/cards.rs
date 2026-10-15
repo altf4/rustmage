@@ -9,9 +9,17 @@ pub struct Card(u16);
 pub(crate) enum Effect {
     Creature(i32, i32),
     Spell(TargetSpec, &'static [Instruction]),
+    Modal(&'static [SpellMode]),
     Land,
     Permanent,
     Unsupported,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct SpellMode {
+    pub text: &'static str,
+    pub targets: TargetSpec,
+    pub program: &'static [Instruction],
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -469,6 +477,18 @@ impl Card {
     }
     pub(crate) fn effect(self) -> Effect {
         generated::DEFINITIONS[self.0 as usize].effect
+    }
+    pub(crate) fn spell_program(
+        self,
+        mode: Option<u16>,
+    ) -> Option<(TargetSpec, &'static [Instruction])> {
+        match self.effect() {
+            Effect::Spell(spec, program) => Some((spec, program)),
+            Effect::Modal(modes) => mode
+                .and_then(|id| modes.get(usize::from(id)))
+                .map(|mode| (mode.targets, mode.program)),
+            _ => None,
+        }
     }
     pub(crate) fn triggers(self) -> &'static [TriggeredAbility] {
         generated::DEFINITIONS[self.0 as usize].triggers
