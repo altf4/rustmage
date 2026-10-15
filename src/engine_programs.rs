@@ -177,8 +177,11 @@ impl Game {
             StackKind::TriggeredAbility { ability } => {
                 item.source_card.triggers()[ability as usize].program
             }
+            StackKind::ActivatedAbility { ability } => {
+                item.source_card.activations()[ability as usize].program
+            }
             StackKind::Spell => match item.source_card.effect() {
-                Effect::Creature(..) => {
+                Effect::Creature(..) | Effect::Permanent => {
                     self.move_object(item.card, Zone::Battlefield);
                     self.give_priority();
                     return;

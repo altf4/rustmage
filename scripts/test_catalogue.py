@@ -185,6 +185,41 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertNotIn('Beast Token', rust)
         self.assertEqual(generate.compile_catalogue(snapshot, target), (rust, coverage))
 
+    def test_activated_costs_and_restrictions_require_complete_supported_text(self):
+        result = generate.permanent_program_template(self.card(
+            oracle_text='{1}, {T}: Target creature gets +1/+1 until end of turn. Activate only as a sorcery.'))
+        self.assertIsNotNone(result)
+        ability = result[3][0]
+        self.assertEqual((ability[0]['generic'], ability[0]['tap'], ability[3]), (1, True, True))
+        self.assertEqual(generate.activation_cost('Remove two counters from this creature')['remove'], (None, 2))
+        self.assertEqual(generate.activation_cost('Remove a stun counter from this artifact')['remove'], ('Stun', 1))
+        self.assertEqual(generate.activation_cost('{T}, Pay 2 life')['life'], 2)
+        for line in ['{X}: Draw a card.', '{1}, Discard a card: Draw a card.',
+                     '{1}, Sacrifice another creature: Draw a card.',
+                     '{1}: Draw a card. Activate only if you control a Hero.',
+                     'Power-up — {1}: Draw a card.', '{1}: Add {U}.',
+                     '{1}: Draw a card. Unknown instruction.',
+                     '{1}: Draw a card. Activate only once.',
+                     'Pay 999999 life: Draw a card.']:
+            self.assertIsNone(generate.permanent_program_template(self.card(oracle_text=line)), line)
+        self.assertIsNone(generate.permanent_program_template(self.card(
+            type_line='Legendary Creature — Cat', oracle_text='{1}: Draw a card.')))
+
+    def test_permanent_entry_counters_and_all_abilities_are_compiled(self):
+        row = self.card(oracle_text='This creature enters with two -1/-1 counters on it.\n'
+                                  '{2}, Remove two counters from this creature: Target creature gets -2/-2 until end of turn. Activate only as a sorcery.')
+        result = generate.permanent_program_template(row)
+        self.assertEqual(result[4], [0, 2, 0])
+        self.assertIsNotNone(result[3][0][0]['remove'])
+        self.assertIsNone(generate.permanent_program_template(dict(row,
+            oracle_text=row['oracle_text'] + '\nOther creatures get +1/+1.')))
+        conditional = self.card(oracle_text='This creature enters with a +1/+1 counter on it if a creature died this turn.')
+        self.assertIsNone(generate.permanent_program_template(conditional))
+        artifact = self.card(type_line='Artifact — Food', oracle_text='Flash\nWhen this artifact enters, draw a card.\n{2}, {T}, Sacrifice this artifact: You gain 3 life.')
+        self.assertEqual(generate.permanent_program_template(artifact)[0], 'Permanent')
+        restricted = self.card(oracle_text='{1}: Draw a card. Activate only once each turn.')
+        self.assertTrue(generate.permanent_program_template(restricted)[3][0][4])
+
 
 if __name__ == '__main__':
     unittest.main()

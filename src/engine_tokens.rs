@@ -35,6 +35,7 @@ impl Game {
                 deathtouch_since_sba: false,
                 growth: 0,
                 counters: Counters::default(),
+                used_abilities: 0,
             };
             if id as usize == self.state.objects.len() {
                 self.state.objects.push(object);
@@ -82,6 +83,7 @@ impl Game {
         object.deathtouch_since_sba = false;
         object.growth = 0;
         object.counters = Counters::default();
+        object.used_abilities = 0;
         // No zone-change event: this game object ceases to exist (CR111.7).
         self.state.free_tokens.push(id);
     }

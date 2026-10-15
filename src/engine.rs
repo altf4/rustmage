@@ -1,7 +1,9 @@
 use crate::cards::{
-    Counters, Effect, Instruction, PlayerSet, Subject, TargetRule, TargetSpec, TargetZone,
-    TriggerCondition, payments,
+    ActivatedAbility, ActivationCost, CounterKind, Counters, Effect, Instruction, PlayerSet,
+    Subject, TargetRule, TargetSpec, TargetZone, TriggerCondition, payments,
 };
+#[path = "engine_activations.rs"]
+mod activations;
 #[path = "engine_tokens.rs"]
 mod tokens;
 use crate::rng::Rng;
@@ -50,6 +52,9 @@ use programs::Resolution;
 #[path = "engine_targeting.rs"]
 mod targeting;
 use targeting::Announcement;
+#[cfg(test)]
+#[path = "engine_activation_tests.rs"]
+mod activation_tests;
 #[cfg(test)]
 #[path = "engine_counter_tests.rs"]
 mod counter_tests;
@@ -132,6 +137,19 @@ pub enum Action {
     BeginCast {
         card: CardId,
         payment: Mana,
+    },
+    Activate {
+        card: CardId,
+        ability: u16,
+        target: Option<Target>,
+        payment: Mana,
+        counter_payment: Counters,
+    },
+    BeginActivate {
+        card: CardId,
+        ability: u16,
+        payment: Mana,
+        counter_payment: Counters,
     },
     ChooseTarget {
         target: Target,
@@ -220,6 +238,7 @@ struct Object {
     deathtouch_since_sba: bool,
     growth: i32,
     counters: Counters,
+    used_abilities: u64,
 }
 
 impl Object {
@@ -277,6 +296,7 @@ pub struct SpellView {
 pub enum StackKind {
     Spell,
     TriggeredAbility { ability: u16 },
+    ActivatedAbility { ability: u16 },
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -391,6 +411,7 @@ pub struct ObjectView {
     pub summoning_sick: bool,
     pub damage: i32,
     pub counters: Counters,
+    pub used_abilities: u64,
     pub power: i32,
     pub toughness: i32,
     pub keywords: Keywords,
@@ -512,6 +533,7 @@ impl Game {
                     deathtouch_since_sba: false,
                     growth: 0,
                     counters: Counters::default(),
+                    used_abilities: 0,
                 });
                 players[p.index()].library.push(id);
             }
@@ -710,6 +732,11 @@ impl Game {
                             || !obj.summoning_sick
                             || obj.card.keywords().contains(Keywords::HASTE))
                         && emit(Action::TapMana { card })
+                    {
+                        return true;
+                    }
+                    if obj.zone == Zone::Battlefield
+                        && self.visit_activations(card, actor, sorcery, &mut emit)
                     {
                         return true;
                     }
@@ -957,6 +984,37 @@ impl Game {
                 self.state.stack.push(item);
                 self.state.passes = 0;
             }
+            Action::Activate {
+                card,
+                ability,
+                target,
+                payment,
+                counter_payment,
+            } => {
+                let mut item = self.activation_item(actor, card, ability);
+                if let Some(target) = target {
+                    item.targets.push(self.bind_target(target));
+                }
+                self.pay_activation(&item, payment, counter_payment);
+                self.state.stack.push(item);
+                self.state.passes = 0;
+            }
+            Action::BeginActivate {
+                card,
+                ability,
+                payment,
+                counter_payment,
+            } => {
+                let item = self.activation_item(actor, card, ability);
+                if self.start_announcement(item, false) {
+                    let announcement = self.state.announcing.as_mut().unwrap();
+                    announcement.payment = Some(payment);
+                    announcement.counter_payment = counter_payment;
+                } else {
+                    let item = self.state.stack.last().unwrap().clone();
+                    self.pay_activation(&item, payment, counter_payment);
+                }
+            }
             Action::BeginCast { card, payment } => {
                 let item = self.cast_item(actor, card, [0; 5]);
                 if self.start_announcement(item, false) {
@@ -1179,6 +1237,7 @@ impl Game {
             summoning_sick: obj.summoning_sick,
             damage: obj.damage,
             counters: obj.counters,
+            used_abilities: obj.used_abilities,
             power: obj.power(),
             toughness: obj.toughness(),
             keywords: obj.card.keywords(),
@@ -1256,7 +1315,12 @@ impl Game {
         obj.damage = 0;
         obj.deathtouch_since_sba = false;
         obj.growth = 0;
-        obj.counters = Counters::default();
+        obj.counters = if destination == Zone::Battlefield {
+            obj.card.enters_counters()
+        } else {
+            Counters::default()
+        };
+        obj.used_abilities = 0;
         if destination == Zone::Library {
             self.state.players[obj.owner.index()].library.push(id);
         }
@@ -1282,6 +1346,7 @@ impl Game {
         self.state.blocks.clear();
         self.state.first_strikers.clear();
         for obj in &mut self.state.objects {
+            obj.used_abilities = 0;
             if obj.owner == self.state.active && obj.zone == Zone::Battlefield {
                 obj.untap();
                 obj.summoning_sick = false;
@@ -1661,7 +1726,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 8,
+            schema: 9,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,

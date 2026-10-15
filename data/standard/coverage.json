@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "2451b71a3cb0e1c8b02f2ebd1677f093323c2ed6f924616acb2a567aded88202",
+  "catalogue_version": "03207648bf70d3a0b263588c2536721c9f3366badb7668bcc43070b39fd5df99",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 142,
-  "implemented_total": 148,
+  "implemented_standard_cards": 171,
+  "implemented_total": 177,
   "token_definitions": 23,
   "cards": [
     {
@@ -957,8 +957,8 @@
     {
       "name": "Anchovy & Banana Pizza",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Ancient Adamantoise",
@@ -2157,8 +2157,8 @@
     {
       "name": "Bear Trap",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Bearer of Glory",
@@ -3195,8 +3195,8 @@
     {
       "name": "Brave-Kin Duo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Brazen Blademaster",
@@ -4089,8 +4089,8 @@
     {
       "name": "Cathar Commando",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Catharsis",
@@ -5967,8 +5967,8 @@
     {
       "name": "Deadeye Duelist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Deadly Brew",
@@ -8115,8 +8115,8 @@
     {
       "name": "Envoy of Okinec Ahau",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Epic Downfall",
@@ -8637,8 +8637,8 @@
     {
       "name": "Fanatical Firebrand",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Fanatical Offering",
@@ -8919,8 +8919,8 @@
     {
       "name": "Felidar Cub",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Felidar Retreat",
@@ -9837,8 +9837,8 @@
     {
       "name": "Frostbridge Guard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Frostcliff Siege",
@@ -9939,8 +9939,8 @@
     {
       "name": "Futurist Forge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Fynn, the Fangbearer",
@@ -10773,8 +10773,8 @@
     {
       "name": "Gnarlbark Elm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Gnarlid Colony",
@@ -11415,8 +11415,8 @@
     {
       "name": "Guardian of the Halls",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Guerrilla Gorilla",
@@ -11739,8 +11739,8 @@
     {
       "name": "Harrier Strix",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Harsh Annotation",
@@ -12837,8 +12837,8 @@
     {
       "name": "Illvoi Galeblade",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Illvoi Infiltrator",
@@ -13161,8 +13161,8 @@
     {
       "name": "Instant Ramen",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Interceptor Mechan",
@@ -13245,8 +13245,8 @@
     {
       "name": "Intrepid Tenderfoot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Intrepid Trufflesnout // Go Hog Wild",
@@ -17067,8 +17067,8 @@
     {
       "name": "Moonlit Lamenter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Moonlit Meditation",
@@ -17397,8 +17397,8 @@
     {
       "name": "Mystic Archaeologist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Mystic Monastery",
@@ -18291,8 +18291,8 @@
     {
       "name": "Oscorp Research Team",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Osseous Exhale",
@@ -22923,8 +22923,8 @@
     {
       "name": "Shattered Acolyte",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Shattered Sanctum",
@@ -24015,8 +24015,8 @@
     {
       "name": "Spectral Sailor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Spectral Snatcher",
@@ -25137,8 +25137,8 @@
     {
       "name": "Strix Lookout",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Strixhaven Skycoach",
@@ -27375,8 +27375,8 @@
     {
       "name": "Thrashing Brontodon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Threadbind Clique // Rip the Seams",
@@ -27639,8 +27639,8 @@
     {
       "name": "Tinker's Tote",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Tinybones Joins Up",
@@ -28059,8 +28059,8 @@
     {
       "name": "Treetop Snarespinner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Treno, Dark City",
@@ -28623,8 +28623,8 @@
     {
       "name": "Undergrowth Leopard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Undergrowth Recon",
@@ -28947,8 +28947,8 @@
     {
       "name": "Valgavoth's Faithful",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Valgavoth's Lair",
@@ -29043,8 +29043,8 @@
     {
       "name": "Vampire Neonate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Vampire Nighthawk",
@@ -29631,8 +29631,8 @@
     {
       "name": "Voracious Varmint",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Voracious Vermin",

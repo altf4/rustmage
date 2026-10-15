@@ -20,8 +20,8 @@ therefore require multiple attempts.
 The compiler accepts only complete, exact supported clauses. Eight added
 Standard admissions are Bile-Vial Boggart, Blight Rot, Ironpaw Aspirant,
 Jeong Jeong's Deserters, Machinesmith Automaton, Sazh's Chocobo, Sterling Supplier,
-and Utrom Scientists. This milestone brought coverage to **114/5,164**. Entry counters,
-counter transfer/removal/doubling, new counter kinds, counter-placement triggers
+and Utrom Scientists. This milestone brought coverage to **114/5,164**. Entry counters and counter-removal costs now appear in [activated abilities](activations.md).
+Counter transfer/doubling, new counter kinds, counter-placement triggers
 and replacements, and unsupported additional text still block admission.
 
 Rules reference: [September 25, 2026 Comprehensive Rules](https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf),

@@ -7,6 +7,7 @@ pub(super) struct Announcement {
     pub spec: TargetSpec,
     pub trigger: bool,
     pub payment: Option<Mana>,
+    pub counter_payment: Counters,
 }
 
 impl Game {
@@ -14,6 +15,9 @@ impl Game {
         match item.kind {
             StackKind::TriggeredAbility { ability } => {
                 item.source_card.triggers()[ability as usize].targets
+            }
+            StackKind::ActivatedAbility { ability } => {
+                item.source_card.activations()[ability as usize].targets
             }
             StackKind::Spell => match item.source_card.effect() {
                 Effect::Spell(spec, _) => spec,
@@ -177,6 +181,7 @@ impl Game {
             spec,
             trigger,
             payment: None,
+            counter_payment: Counters::default(),
         });
         self.state.pending = Pending::Targets { player };
         true
@@ -186,12 +191,16 @@ impl Game {
         let mut announcement = self.state.announcing.take().unwrap();
         announcement.item.targets.sort_by_key(|bound| bound.target);
         if let Some(payment) = announcement.payment {
-            for (pool, cost) in self.state.players[announcement.item.controller.index()]
-                .mana
-                .iter_mut()
-                .zip(payment)
-            {
-                *pool -= cost;
+            if matches!(announcement.item.kind, StackKind::ActivatedAbility { .. }) {
+                self.pay_activation(&announcement.item, payment, announcement.counter_payment);
+            } else {
+                for (pool, cost) in self.state.players[announcement.item.controller.index()]
+                    .mana
+                    .iter_mut()
+                    .zip(payment)
+                {
+                    *pool -= cost;
+                }
             }
         }
         self.state.priority = if announcement.trigger {

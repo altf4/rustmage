@@ -59,6 +59,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     StackKind::TriggeredAbility { ability } => {
                         item.source_card.triggers()[ability as usize].program
                     }
+                    StackKind::ActivatedAbility { ability } => {
+                        item.source_card.activations()[ability as usize].program
+                    }
                     StackKind::Spell => match item.source_card.effect() {
                         Effect::Spell(_, program) => program,
                         _ => &[],
@@ -67,6 +70,23 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 target_score(program, *target)
             }
             Action::FinishTargets => 0,
+            Action::BeginActivate { .. } => 35,
+            Action::Activate {
+                card,
+                ability,
+                target,
+                ..
+            } => {
+                let object = observation
+                    .objects
+                    .iter()
+                    .find(|object| object.id == *card)
+                    .unwrap();
+                let program = object.card.activations()[*ability as usize].program;
+                target
+                    .map(|target| target_score(program, target) - 25)
+                    .unwrap_or(35)
+            }
             Action::Cast { card, target, .. } => {
                 let definition = observation
                     .objects
@@ -74,7 +94,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     .find(|o| o.id == *card)
                     .unwrap()
                     .card;
-                if definition.is_creature() {
+                if definition.is_creature() || matches!(definition.effect(), Effect::Permanent) {
                     80
                 } else {
                     let program = match definition.effect() {
