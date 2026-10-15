@@ -402,7 +402,7 @@ EXILE_SUBJECTS = {
 }
 
 
-def rust_targets(spec):
+def rust_target_group(spec):
     if spec == 'None':
         return 'TargetSpec::NONE'
     if isinstance(spec, str):
@@ -411,11 +411,34 @@ def rust_targets(spec):
     return f'TargetSpec {{ rule: {TARGET_RULES[rule]}, min: {minimum}, max: {maximum} }}'
 
 
+def rust_targets(spec):
+    if isinstance(spec, list):
+        return 'TargetPlan::Groups(&[' + ', '.join(rust_target_group(group) for group in spec) + '])'
+    return 'TargetPlan::Single(' + rust_target_group(spec) + ')'
+
+
+def power_damage_program(text):
+    opponent = r"target creature (?:an opponent controls|you don't control)"
+    if m := re.fullmatch(r'target creature you control (fights|deals damage equal to its power to) ' + opponent + r'\.', text):
+        action = 'Fight' if m[1] == 'fights' else 'PowerDamage'
+        return ['CreatureYou', 'CreatureOpponent'], [f'{action} {{ source: 0, recipient: 1 }}']
+    # A buff refers to the first occurrence; its pronoun introduces no new target.
+    if m := re.fullmatch(r'target creature you control gets ([+-][0-9]+)/([+-][0-9]+) until end of turn\. (?:Then it|It) (fights|deals damage equal to its power to) ' + opponent + r'\.', text):
+        if max(abs(int(m[1])), abs(int(m[2]))) > 32767: return None
+        action = 'Fight' if m[3] == 'fights' else 'PowerDamage'
+        return ['CreatureYou', 'CreatureOpponent'], [grow_instruction('Targets', int(m[1]), int(m[2])), f'{action} {{ source: 0, recipient: 1 }}']
+    if m := re.fullmatch(r'put (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on target creature you control(?:\. (?:Then it|It)|, then it) (fights|deals damage equal to its power to) ' + opponent + r'\.', text):
+        action = 'Fight' if m[3] == 'fights' else 'PowerDamage'
+        return ['CreatureYou', 'CreatureOpponent'], [counter_instruction('Targets', m[1], m[2]), f'{action} {{ source: 0, recipient: 1 }}']
+    return None
+
+
 def targeted_program(text):
-    """One homogeneous target group, requiring the entire effect to compile."""
+    """Complete target occurrences with independent predicates and effect focus."""
     if not isinstance(text, str) or not text.endswith('.'):
         return None
     text = normalize_duration(text[0].lower() + text[1:])
+    if result := power_damage_program(text): return result
     if m := re.fullmatch(r'(another target creature you control|target creature you control|target creature) (.+)', text):
         rule = {'target creature': 'Creature', 'target creature you control': 'CreatureYou', 'another target creature you control': 'OtherCreatureYou'}[m[1]]
         if program := keyword_effect(m[2], 'Targets'): return rule, program
@@ -507,12 +530,25 @@ def targeted_program(text):
         result = targeted_program(first + '.')
         tail = statement_program(rest)
         if result and rest == 'Untap it.':
+            if isinstance(result[0], list): return None
             rule = result[0][0] if isinstance(result[0], tuple) else result[0]
             maximum = result[0][2] if isinstance(result[0], tuple) else 1
             if maximum == 1 and rule not in ('None', 'Player', 'Opponent', 'Spell', 'CreatureGrave', 'CreatureGraveYou'): tail = ['Untap']
         if result and tail:
             spec, program = result
             return spec, program + tail
+        if result and (second := targeted_program(rest)):
+            if 'another target ' in rest.casefold(): return None
+            left = result[0] if isinstance(result[0], list) else [result[0]]
+            right = second[0] if isinstance(second[0], list) else [second[0]]
+            offset = len(left)
+            if offset + len(right) > 64: return None
+            rebased = []
+            for instruction in second[1]:
+                instruction = re.sub(r'(source: |recipient: )([0-9]+)', lambda m: m[1] + str(int(m[2]) + offset), instruction)
+                instruction = re.sub(r'SelectGroup\(([0-9]+)\)', lambda m: f'SelectGroup({int(m[1]) + offset})', instruction)
+                rebased.append(instruction)
+            return left + right, result[1] + [f'SelectGroup({offset})'] + rebased
     return None
 
 def trigger_creature_template(card):

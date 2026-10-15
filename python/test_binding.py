@@ -17,7 +17,7 @@ class BindingTests(unittest.TestCase):
             observation = game.observe("P0")
             coverage = json.loads((Path(__file__).resolve().parents[1] / "data/standard/coverage.json").read_text())
             self.assertEqual(observation["catalogue"], coverage["catalogue_version"])
-            self.assertEqual(observation["schema"], 15)
+            self.assertEqual(observation["schema"], 16)
             self.assertEqual(len(observation["objects"]), 7)
             self.assertTrue(all(o["owner"] == "P0" for o in observation["objects"]))
             self.assertEqual(game.observe("P1")["actions"], [])
@@ -38,6 +38,71 @@ class BindingTests(unittest.TestCase):
             game.drop_snapshot(saved)
             with self.assertRaisesRegex(EngineError, "unknown snapshot"):
                 game.restore(saved)
+
+    def test_distinct_target_groups_power_damage_and_partial_restore(self):
+        deck = ["Forest"] * 24 + ["Grizzly Bears"] * 18 + ["Quarrel"] * 18
+        with Game([deck, deck], seed=17, deck_rules="Freeform") as game:
+            obs = game.observe("P0")
+            for _ in range(1800):
+                self.assertIsNone(obs["outcome"])
+                if obs["viewer"] != obs["actor"]:
+                    obs = game.observe(obs["actor"])
+                if obs["targeting_group"] == 0 and obs["announcing"]["source_card"] == "Quarrel":
+                    break
+                def score(action):
+                    if action["kind"] == "TapMana":
+                        return 15 if obs["active"] == obs["actor"] and obs["step"] in ("Main1", "Main2") else -5
+                    return {"Keep": 100, "PlayLand": 90, "Cast": 80, "AnnounceCast": 79,
+                            "Mulligan": -100, "Concede": -1000}.get(action["kind"], 0)
+                index = max(range(len(obs["actions"])), key=lambda i: score(obs["actions"][i]))
+                obs = game.step(obs, index)
+            else:
+                self.fail("no distinct target declaration reached")
+            actor = obs["actor"]
+            other = "P1" if actor == "P0" else "P0"
+            selected = []
+            for group in (0, 1):
+                self.assertEqual(obs["targeting_group"], group)
+                hidden = game.observe(other)
+                self.assertIsNone(hidden["targeting_group"])
+                self.assertEqual(hidden["announcing"]["targets"], [])
+                index = next(i for i, a in enumerate(obs["actions"]) if a["kind"] == "ChooseTarget")
+                chosen = obs["actions"][index]["target"]["Card"]
+                obj = next(o for o in obs["objects"] if o["id"] == chosen)
+                self.assertEqual(obj["owner"], actor if group == 0 else other)
+                selected.append(chosen)
+                saved = game.snapshot()
+                with game.clone() as branch:
+                    expected = branch.step(branch.observe(actor), index)
+                actual = game.step(obs, index)
+                self.assertEqual(actual, expected)
+                game.restore(saved)
+                replay = game.step(game.observe(actor), index)
+                comparison = dict(replay)
+                comparison.pop("revision")
+                actual.pop("revision")
+                self.assertEqual(actual, comparison)
+                game.drop_snapshot(saved)
+                obs = replay
+            for _ in range(20):
+                kinds = [a["kind"] for a in obs["actions"]]
+                if "PayCosts" in kinds:
+                    obs = game.step(obs, kinds.index("PayCosts"))
+                    break
+                obs = game.step(obs, kinds.index("TapMana"))
+            else:
+                self.fail("no completed group payment")
+            item = next(i for i in obs["stack"] if i["source_card"] == "Quarrel")
+            self.assertEqual([b["group"] for b in item["targets"]], [0, 1])
+            for _ in range(2):
+                obs = game.observe(obs["actor"])
+                obs = game.step(obs, next(i for i, a in enumerate(obs["actions"]) if a["kind"] == "Pass"))
+            view = game.observe(actor)
+            source = next(o for o in view["objects"] if o["id"] == selected[0])
+            victim = next(o for o in view["objects"] if o["id"] == selected[1])
+            self.assertEqual(source["zone"], "Battlefield")
+            self.assertEqual(source["damage"], 0)
+            self.assertEqual(victim["zone"], "Graveyard")
 
     def test_modal_cast_mode_targets_payment_and_resolution_replay(self):
         fixtures = [(["Mountain"] * 24 + ["Abrade"] * 18 + ["Hill Giant"] * 18, "Abrade", 0),

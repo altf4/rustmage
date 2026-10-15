@@ -14,6 +14,31 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_distinct_target_groups_and_power_damage_keep_operands(self):
+        for verb, action in [('fights', 'Fight'), ('deals damage equal to its power to', 'PowerDamage')]:
+            result = generate.targeted_program(f'Target creature you control {verb} target creature an opponent controls.')
+            self.assertEqual(result, (['CreatureYou', 'CreatureOpponent'], [f'{action} {{ source: 0, recipient: 1 }}']))
+        self.assertEqual(generate.targeted_program('Target creature you control gets +1/+0 until end of turn. It deals damage equal to its power to target creature an opponent controls.')[0], ['CreatureYou','CreatureOpponent'])
+        result = generate.targeted_program('Put two +1/+1 counters on target creature you control. Then it fights target creature an opponent controls.')
+        self.assertEqual(result[1][0], generate.counter_instruction('Targets', 'two', '+1/+1'))
+        result = generate.targeted_program('Target player draws a card. Target opponent loses 1 life.')
+        self.assertEqual(result, (['Player','Opponent'], ['Draw(PlayerSet::Targeted, 1)', 'SelectGroup(1)', 'LoseLife(PlayerSet::Targeted, 1)']))
+        result = generate.targeted_program('Target player draws a card. Target creature you control fights target creature an opponent controls.')
+        self.assertEqual(result[0], ['Player','CreatureYou','CreatureOpponent'])
+        self.assertEqual(result[1][-1], 'Fight { source: 1, recipient: 2 }')
+        result = generate.targeted_program('Target player draws a card. Target opponent loses 1 life. Tap target creature.')
+        self.assertEqual(result[0], ['Player','Opponent',('Creature',1,1)])
+        self.assertIn('SelectGroup(2)', result[1])
+        self.assertIn('TargetPlan::Groups', generate.rust_targets(result[0]))
+        for text in [
+            'Target creature you control fights another target creature.',
+            'Target creature you control deals damage equal to its power to target creature or planeswalker.',
+            'Target creature you control fights target creature an opponent controls. When excess damage is dealt this way, draw a card.',
+            'Target creature gets +1/+1 until end of turn. Put a +1/+1 counter on another target creature you control.',
+            'Target creature you control gets +X/+X until end of turn. It fights target creature an opponent controls.',
+            'Target creature you control fights target creature with power less than its power.']:
+            self.assertIsNone(generate.targeted_program(text), text)
+
     def test_modal_spells_require_every_complete_mode_and_preserve_labels(self):
         row = self.card(name='Test Spell', type_line='Instant', mana_cost='{1}{R}',
             oracle_text='Choose one —\n• Test Spell deals 3 damage to target creature.\n• Destroy target artifact.')
@@ -293,7 +318,6 @@ class CatalogueCompilerTests(unittest.TestCase):
                          ('Creature', ['Grow { subject: Subject::Targets, power: -2, toughness: -2 }', 'GainLife(PlayerSet::Controller, 2)']))
         for text in ['Target creature gets +1/+X until end of turn.', 'Tap target creature. Mill a card.',
                      'Return target creature card from your graveyard to the battlefield with a counter.',
-                     'Target player draws a card. Target opponent loses 1 life.',
                      'Tap target creature. It does not untap next turn.']:
             self.assertIsNone(generate.targeted_program(text), text)
 

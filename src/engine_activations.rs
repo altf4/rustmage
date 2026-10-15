@@ -87,13 +87,6 @@ impl Game {
                 continue;
             }
             let done = counter_payments(ability.cost, object.counters, |counter_payment| {
-                let mut count = 0;
-                if ability.targets.min > 0 {
-                    self.visit_targets(ability.targets.rule, actor, self.object_ref(card), |_| {
-                        count += 1;
-                        false
-                    });
-                }
                 let goal = FundingGoal {
                     actor,
                     required: ability.cost.colored,
@@ -105,7 +98,9 @@ impl Game {
                         object.card,
                     )),
                 };
-                if count >= usize::from(ability.targets.min) && self.can_fund(goal) {
+                if self.targets_available(ability.targets, actor, self.object_ref(card))
+                    && self.can_fund(goal)
+                {
                     let done = if let Some(production) = ability.mana_production() {
                         production.visit(|production| {
                             emit(Action::AnnounceMana {
@@ -147,7 +142,18 @@ impl Game {
                             });
                             return;
                         }
-                        let spec = ability.targets;
+                        let plan = ability.targets;
+                        let Some(spec) = plan.single() else {
+                            if self.targets_available(plan, actor, self.object_ref(card)) {
+                                done = emit(Action::BeginActivate {
+                                    card,
+                                    ability: index as u16,
+                                    payment,
+                                    counter_payment,
+                                });
+                            }
+                            return;
+                        };
                         if spec.max > 1 || (spec.max > 0 && ability.cost.remove.is_some()) {
                             let mut count = 0;
                             self.visit_targets(spec.rule, actor, self.object_ref(card), |_| {

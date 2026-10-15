@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "4c1480b0c944dfdb7ffaaf9ac36fcf3f10606f00e5579d28a333bf0c28d87cb3",
+  "catalogue_version": "a057dbb0eb212750337210d0e8aae378d43bd9987f07585b43676e8ff9c99ef6",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 523,
-  "implemented_total": 529,
+  "implemented_standard_cards": 537,
+  "implemented_total": 543,
   "token_definitions": 31,
   "cards": [
     {
@@ -3615,8 +3615,8 @@
     {
       "name": "Bushwhack",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Bushy Bodyguard",
@@ -4839,8 +4839,8 @@
     {
       "name": "Combat Tutorial",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Combustion Man",
@@ -5199,8 +5199,8 @@
     {
       "name": "Cost of Brilliance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Costume Closet",
@@ -10461,8 +10461,8 @@
     {
       "name": "Giantfall",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Gideon the Oathless",
@@ -12543,8 +12543,8 @@
     {
       "name": "Huatli's Final Strike",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Huatli, Poet of Unity // Roar of the Fifth People",
@@ -13887,8 +13887,8 @@
     {
       "name": "Kapow!",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Karai's Technique",
@@ -14343,8 +14343,8 @@
     {
       "name": "Knockout Maneuver",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Knowledge Seeker",
@@ -19851,8 +19851,8 @@
     {
       "name": "Quarrel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Queen Brahne",
@@ -19977,14 +19977,14 @@
     {
       "name": "Rabid Bite",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Rabid Gnaw",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Raccoon Rallier",
@@ -21447,8 +21447,8 @@
     {
       "name": "Rocky Rebuke",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Rocky Roads",
@@ -26295,8 +26295,8 @@
     {
       "name": "Tenderize",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Tendril of the Mycotyrant",
@@ -28125,8 +28125,8 @@
     {
       "name": "Troll Negotiations",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Troop of Ponies",
@@ -29319,8 +29319,8 @@
     {
       "name": "Vibrant Outburst",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Vicious Clown",

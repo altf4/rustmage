@@ -6,6 +6,7 @@ pub(super) struct Resolution {
     pub item: SpellView,
     pub program: &'static [Instruction],
     pub pc: usize,
+    pub target_group: u16,
     pub discards: [u16; 2],
     pub selected_discards: [Vec<CardId>; 2],
     pub library: Option<LibraryChoice>,
@@ -221,7 +222,9 @@ impl Game {
         let spec = self.target_spec(&item);
         item.targets.retain(|bound| {
             self.same_target_object(*bound)
-                && self.target_matches(spec.rule, item.controller, item.object, bound.target)
+                && spec.group(bound.group).is_some_and(|group| {
+                    self.target_matches(group.rule, item.controller, item.object, bound.target)
+                })
         });
         let valid = !was_targeted || !item.targets.is_empty();
         if !valid {
@@ -255,6 +258,7 @@ impl Game {
             item,
             program,
             pc: 0,
+            target_group: 0,
             discards: [0; 2],
             selected_discards: [Vec::new(), Vec::new()],
             library: None,
@@ -325,8 +329,27 @@ impl Game {
                 return;
             };
             resolution.pc += 1;
-            let item = resolution.item.clone();
+            let mut item = resolution.item.clone();
+            if !matches!(
+                instruction,
+                Instruction::Fight { .. } | Instruction::PowerDamage { .. }
+            ) {
+                item.targets
+                    .retain(|bound| bound.group == resolution.target_group);
+            }
             match instruction {
+                Instruction::SelectGroup(group) => {
+                    self.state.resolving.as_mut().unwrap().target_group = group;
+                }
+                Instruction::Fight { source, recipient }
+                | Instruction::PowerDamage { source, recipient } => {
+                    self.creature_power_damage(
+                        &item,
+                        source,
+                        recipient,
+                        matches!(instruction, Instruction::Fight { .. }),
+                    );
+                }
                 Instruction::AddMana(production) => match production {
                     ManaProduction::Fixed(mana) => self.add_mana(item.controller, mana),
                     ManaProduction::Choice { .. } => {
