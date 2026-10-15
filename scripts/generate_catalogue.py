@@ -2,7 +2,8 @@
 """Compile pinned card facts into immutable native definitions.
 
 Only explicit implementations and exact vanilla/keyword-only templates are
-executable. All other identities remain known but unsupported, never guessed.
+and single-instruction removal templates are executable. All other identities
+remain known but unsupported, never guessed.
 """
 import argparse
 import hashlib
@@ -59,6 +60,16 @@ def creature_template(card):
     return f"Creature({int(card['power'])}, {int(card['toughness'])})", sum(KEYWORDS[word] for word in words)
 
 
+def spell_template(card):
+    if (card.get('layout') != 'normal' or card.get('type_line') not in ('Instant', 'Sorcery')
+            or fixed_cost(card.get('mana_cost', '')) is None):
+        return None
+    return {
+        "Return target creature to its owner's hand.": 'ReturnToHand',
+        'Destroy target creature.': 'Destroy',
+    }.get(card.get('oracle_text'))
+
+
 def compile_catalogue(snapshot, target):
     canonical = json.dumps(snapshot['cards'], ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()
     if hashlib.sha256(canonical).hexdigest() != snapshot['cards_sha256'] or len(snapshot['cards']) != snapshot['card_count']:
@@ -85,6 +96,7 @@ def compile_catalogue(snapshot, target):
         effect = 'Unsupported'
         color = None
         template = creature_template(card)
+        spell = spell_template(card)
         if name in legacy:
             effect, fallback_cost, color = legacy[name]
             # Lands have no mana cost. Their legacy cost token encodes colour only.
@@ -95,6 +107,8 @@ def compile_catalogue(snapshot, target):
             kind = (1 if 'Creature' in types else 0) | (2 if 'Land' in types else 0) | (4 if 'Sorcery' in types else 0) | (8 if 'Instant' in types else 0)
             if template is not None:
                 effect, keywords = template
+            elif spell is not None:
+                effect = spell
         if effect != 'Unsupported':
             supported.append(index)
         basic = name in {'Plains', 'Island', 'Swamp', 'Mountain', 'Forest'}
@@ -106,7 +120,7 @@ def compile_catalogue(snapshot, target):
         oracle_keywords = '&[' + ', '.join(quote(word) for word in card.get('keywords', [])) + ']'
         definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(name)}, oracle_id: {oracle_id}, mana_cost: {quote(cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in cards).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
         coverage.append({'name': name, 'standard_legal': name in cards, 'implemented': effect != 'Unsupported',
-                         'implementation': 'explicit' if name in legacy else 'creature_template' if template else None})
+                         'implementation': 'explicit' if name in legacy else 'creature_template' if template else 'spell_template' if spell else None})
     # The fingerprint covers data and compiler logic; card IDs are local to it.
     target_bytes = json.dumps(target, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()
     version = hashlib.sha256(canonical + target_bytes + Path(__file__).read_bytes()).hexdigest()

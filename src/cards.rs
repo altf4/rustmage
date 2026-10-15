@@ -12,6 +12,8 @@ pub(crate) enum Effect {
     Grow,
     Draw,
     Counter,
+    ReturnToHand,
+    Destroy,
     Land,
     Unsupported,
 }

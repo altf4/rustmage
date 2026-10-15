@@ -5,7 +5,7 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 43 have executable rules so far.
+knows all 5,164 pinned Standard identities; 47 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
@@ -86,8 +86,10 @@ action generation does not enumerate all subsets or blocking configurations.
 The implemented keyword rules are flying, reach, haste, vigilance, defender,
 flash, lifelink, deathtouch, trample, first strike and double strike. Damage uses
 source-aware simultaneous batches; strike steps and damage choices can be copied
-and restored. A strict compiler admits exact vanilla/keyword-only creatures; cards with
-other text still require implementations.
+and restored. Zone transitions assign new object generations, reset transient state, and remove
+combat membership. Targets retain their chosen incarnation. A strict compiler
+admits exact vanilla/keyword-only creatures and the complete text of Unsummon,
+Fell, Murder and Bilbo’s Deadly Slice. See [object identity](docs/object-identity.md).
 
 `Constructed` checks 60-card minimum and the four-copy limit; **it does not claim
 Modern/Standard or other format legality**. `Standard` separately enforces the
@@ -100,8 +102,7 @@ no fallback that treats unsupported cards as vanilla.
 
 Missing: general triggered/static abilities, replacement/prevention effects,
 continuous-effect layers and dependencies, most keywords, tokens/copies, counters,
-planeswalkers, battles, control changes, reanimation/blink and generation-aware
-references, alternate costs/modes/X, sideboarding, formats and multiplayer.
+planeswalkers, battles, control changes, reanimation/blink, alternate costs/modes/X, sideboarding, formats and multiplayer.
 Those cards are known by the catalogue when Standard legal, but cannot enter a
 game until implemented. There is no claim of complete
 rules conformance, XMage parity, or a ready-to-train general Magic environment.

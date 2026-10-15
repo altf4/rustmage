@@ -54,16 +54,18 @@ layers/dependencies. Avoid a growing list of card-name exceptions in `apply`.
 Target/cost/mode choices should share the same validation logic for masks and
 submission, with intermediate selection kept private until committed.
 
-Current IDs are stable because no accepted card can reenter the battlefield or
-be recast from a graveyard. Before adding those mechanics, replace target IDs
-with index + zone-change generation references and implement last-known
-information. Before adding control-changing effects, distinguish owner from
-controller everywhere. Simultaneous damage is now represented as a batch with
-captured source/controller/keyword attributes. The next trigger/prevention work
-must consume and modify these events; a general last-known-information registry
-and generation-aware object references are still prerequisites for zone-return
-mechanics.
-These are prerequisites for card admission, not optional compatibility details.
+Physical card slots remain stable, while `ObjectRef` pairs a slot with a zone-change
+generation. All current zone transitions share reset, library-index and combat-removal
+logic; spell targets capture their incarnation when cast. Damage sources retain their
+captured incarnation and attributes. Transition results own the departing object's
+last-known view. See [object-identity.md](object-identity.md) for scope and schema.
+
+Trigger dispatch and immutable effect programs are the next prerequisites. A central
+transition primitive does not establish trigger support: simultaneous trigger discovery,
+APNAP/controller ordering, resolution continuations and zone-following exceptions still
+need implementation. Before control-changing effects, distinguish owner from controller
+everywhere. Before prevention/replacement cards, extend damage/zone event processing.
+These are prerequisites for card admission.
 
 The current rules reference is Wizards' [September 25, 2026 Comprehensive Rules](https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt).
 Fixtures cover starting/turn flow, priority, payment, stack, combat, and losses.

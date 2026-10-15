@@ -18,6 +18,7 @@ fn combat(game: &mut Game, attacker: CardId, blockers: &[CardId]) {
     });
     for &blocker in blockers {
         game.state.blocks.push((blocker, attacker));
+        game.state.blocking.push(blocker);
     }
     game.state.step = Step::Blockers;
     game.give_priority();
@@ -113,7 +114,7 @@ fn deathtouch_and_lifelink_use_last_known_source_and_noncombat_damage() {
     let nighthawk = permanent(&mut game, Player::P0, "Vampire Nighthawk");
     let giant = permanent(&mut game, Player::P1, "Hill Giant");
     let source = game.damage_source(nighthawk);
-    game.state.objects[nighthawk as usize].zone = Zone::Graveyard;
+    game.move_object(nighthawk, Zone::Graveyard);
     // A changed source slot cannot change the already captured attribution.
     game.state.objects[nighthawk as usize].card = Card::Forest;
     let gains = game.apply_damage_batch(&[DamageEvent {
@@ -249,7 +250,7 @@ fn blocked_trample_deals_to_player_after_all_blockers_disappear() {
     let dino = permanent(&mut game, Player::P0, "Colossadactyl");
     let piker = permanent(&mut game, Player::P1, "Goblin Piker");
     combat(&mut game, dino, &[piker]);
-    game.state.objects[piker as usize].zone = Zone::Graveyard;
+    game.move_object(piker, Zone::Graveyard);
     pass_pair(&mut game);
     assert_eq!(game.state.players[1].life, 16);
 }

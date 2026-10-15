@@ -17,7 +17,7 @@ class BindingTests(unittest.TestCase):
             observation = game.observe("P0")
             coverage = json.loads((Path(__file__).resolve().parents[1] / "data/standard/coverage.json").read_text())
             self.assertEqual(observation["catalogue"], coverage["catalogue_version"])
-            self.assertEqual(observation["schema"], 3)
+            self.assertEqual(observation["schema"], 4)
             self.assertEqual(len(observation["objects"]), 7)
             self.assertTrue(all(o["owner"] == "P0" for o in observation["objects"]))
             self.assertEqual(game.observe("P1")["actions"], [])
@@ -151,6 +151,62 @@ else:
                 self.fail("Standard keyword game did not end")
             self.assertIn("FirstStrikeDamage", seen_steps)
             self.assertIn("CombatDamage", seen_steps)
+            self.assertIn("Winner", obs["outcome"])
+
+    def test_standard_removal_and_object_identity_through_shared_library(self):
+        removal = {"Unsummon", "Fell", "Murder", "Bilbo's Deadly Slice"}
+        blue_black = ["Island"] * 12 + ["Swamp"] * 12
+        for name in sorted(removal) + ["Vampire Nighthawk", "Hullcarver", "Monoist Sentry",
+                                        "Squirrelanoids", "Highborn Vampire"]:
+            blue_black.extend([name] * 4)
+        green = ["Forest"] * 24
+        for name in ["Ankle Biter", "Dragon Sniper", "Magnigoth Sentry", "Colossadactyl",
+                     "Tajuru Pathwarden", "Galewind Moose", "Gigantosaurus", "Bear Cub", "Jibbirik Omnivore"]:
+            green.extend([name] * 4)
+        replayed = False
+        with Game([blue_black, green], seed=9, deck_rules="Standard") as game:
+            obs = game.observe("P0")
+            for _ in range(10000):
+                if obs["outcome"] is not None:
+                    break
+                if obs["viewer"] != obs["actor"]:
+                    obs = game.observe(obs["actor"])
+                objects = {obj["id"]: obj for obj in obs["objects"]}
+                for obj in objects.values():
+                    self.assertEqual(obj["reference"]["card"], obj["id"])
+                for spell in obs["stack"]:
+                    self.assertEqual(spell["object"], objects[spell["card"]]["reference"])
+                def score(action):
+                    kind = action["kind"]
+                    if kind == "Cast" and action["target"] is not None:
+                        target = objects[action["target"]["Card"]]
+                        return 85 if target["owner"] != obs["actor"] else -10
+                    if kind == "TapMana":
+                        return 10 if obs["active"] == obs["actor"] and obs["step"] in ("Main1", "Main2") else -20
+                    if kind == "AssignDamage":
+                        return 50 + action["amount"]
+                    return {"Concede": -1000, "Mulligan": -100, "Keep": 100, "PlayLand": 90,
+                            "Cast": 80, "Attack": 60, "Block": 60, "Discard": 50}.get(kind, 0)
+                index = max(range(len(obs["actions"])), key=lambda i: (score(obs["actions"][i]), i))
+                action = obs["actions"][index]
+                check_replay = (not replayed and action["kind"] == "Cast"
+                                and objects[action["card"]]["card"] in removal)
+                if check_replay:
+                    saved = game.snapshot()
+                    after = game.step(obs, index)
+                    game.restore(saved)
+                    restored = game.observe(obs["viewer"])
+                    again = game.step(restored, index)
+                    self.assertGreater(again.pop("revision"), after.pop("revision"))
+                    self.assertEqual(again, after)
+                    game.drop_snapshot(saved)
+                    replayed = True
+                    obs = game.observe(restored["viewer"])
+                else:
+                    obs = game.step(obs, index)
+            else:
+                self.fail("Standard removal game did not end")
+            self.assertTrue(replayed)
             self.assertIn("Winner", obs["outcome"])
 
 

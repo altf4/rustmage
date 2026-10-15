@@ -42,6 +42,17 @@ class CatalogueCompilerTests(unittest.TestCase):
         for value in ('{C}', '{S}', '{X}', '{2/R}', '{R/P}', '', '{W}{unrecognized}'):
             self.assertIsNone(generate.fixed_cost(value))
 
+    def test_removal_template_requires_exact_text_types_and_cost(self):
+        row = self.card(type_line='Instant', mana_cost='{U}',
+                        oracle_text="Return target creature to its owner's hand.")
+        self.assertEqual(generate.spell_template(row), 'ReturnToHand')
+        self.assertEqual(generate.spell_template(dict(row, oracle_text='Destroy target creature.')), 'Destroy')
+        for changes in [dict(oracle_text=None), dict(oracle_text=''),
+                        dict(oracle_text=row['oracle_text'] + '\nDraw a card.'),
+                        dict(type_line='Creature — Wizard'), dict(layout='adventure'),
+                        dict(mana_cost='{X}{U}'), dict(type_line='Kindred Instant — Elf')]:
+            self.assertIsNone(generate.spell_template(dict(row, **changes)), changes)
+
 
 if __name__ == '__main__':
     unittest.main()
