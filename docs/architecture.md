@@ -47,12 +47,14 @@ decision decomposition differ. Expand benchmarks as mechanics are migrated.
 
 ## Rules expansion requirements
 
-The simple effect enum is intentionally limited to executable definitions. The
-next kernel needs explicit events, replacement/prevention choice continuations,
-trigger queues with APNAP ordering, SBA fixed points, and continuous-effect
-layers/dependencies. Avoid a growing list of card-name exceptions in `apply`.
-Target/cost/mode choices should share the same validation logic for masks and
-submission, with intermediate selection kept private until committed.
+Card bodies and immutable instruction programs share static catalogue storage.
+Owned resolving continuations retain a program counter, source context and pending
+choices. Trigger instances use distinct stack identities, queue until priority,
+and are placed in APNAP/controller order. See [programs.md](programs.md) for exact
+admission scope. Wider events, replacement/prevention continuations, general SBA
+fixed points and continuous layers remain prerequisites for dependent cards.
+Target/cost/mode choices must share validation between masks and submission, with
+intermediate selections private until committed.
 
 Physical card slots remain stable, while `ObjectRef` pairs a slot with a zone-change
 generation. All current zone transitions share reset, library-index and combat-removal
@@ -60,10 +62,10 @@ logic; spell targets capture their incarnation when cast. Damage sources retain 
 captured incarnation and attributes. Transition results own the departing object's
 last-known view. See [object-identity.md](object-identity.md) for scope and schema.
 
-Trigger dispatch and immutable effect programs are the next prerequisites. A central
-transition primitive does not establish trigger support: simultaneous trigger discovery,
-APNAP/controller ordering, resolution continuations and zone-following exceptions still
-need implementation. Before control-changing effects, distinguish owner from controller
+Zone transitions now dispatch the admitted entry/death triggers; attack declarations
+dispatch admitted attack triggers. Simultaneous death sources are captured before
+any object moves. Zone-following exceptions and wider event conditions still need
+implementation. Before control-changing effects, distinguish owner from controller
 everywhere. Before prevention/replacement cards, extend damage/zone event processing.
 These are prerequisites for card admission.
 

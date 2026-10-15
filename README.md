@@ -5,7 +5,7 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 47 have executable rules so far.
+knows all 5,164 pinned Standard identities; 80 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
@@ -22,6 +22,7 @@ PYTHONPATH=python python3 -m unittest discover -s python -p 'test_*.py' -v
 cargo run --release --bin benchmark -- 1000
 cargo run --release --example branch
 cargo run --release --example standard
+cargo run --release --example standard_triggers -- 100
 cargo run --bin coverage
 ```
 
@@ -89,7 +90,11 @@ source-aware simultaneous batches; strike steps and damage choices can be copied
 and restored. Zone transitions assign new object generations, reset transient state, and remove
 combat membership. Targets retain their chosen incarnation. A strict compiler
 admits exact vanilla/keyword-only creatures and the complete text of Unsummon,
-Fell, Murder and Bilbo’s Deadly Slice. See [object identity](docs/object-identity.md).
+Fell, Murder and Bilbo’s Deadly Slice. Typed immutable programs also implement
+entry/death/attack triggers, controller ordering, draw/discard and life effects for
+31 additional creatures and two draw spells. Optional effects and private discard
+choices suspend in owned continuations. See [effect programs](docs/programs.md) and
+[object identity](docs/object-identity.md).
 
 `Constructed` checks 60-card minimum and the four-copy limit; **it does not claim
 Modern/Standard or other format legality**. `Standard` separately enforces the
@@ -100,7 +105,7 @@ cards per deck, an explicit current representation limit. Unknown cards fail to
 deserialize; known cards with unimplemented rules fail game creation. There is
 no fallback that treats unsupported cards as vanilla.
 
-Missing: general triggered/static abilities, replacement/prevention effects,
+Missing: targeted and most other triggered/static abilities, replacement/prevention effects,
 continuous-effect layers and dependencies, most keywords, tokens/copies, counters,
 planeswalkers, battles, control changes, reanimation/blink, alternate costs/modes/X, sideboarding, formats and multiplayer.
 Those cards are known by the catalogue when Standard legal, but cannot enter a

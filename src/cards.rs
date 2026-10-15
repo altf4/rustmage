@@ -8,14 +8,60 @@ pub struct Card(u16);
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Effect {
     Creature(i32, i32),
+    Spell(TargetRule, &'static [Instruction]),
+    Land,
+    Unsupported,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum TargetRule {
+    None,
+    Creature,
+    Any,
+    Spell,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum PlayerSet {
+    Controller,
+    Opponent,
+    Each,
+}
+
+/// Immutable rule bytecode. Only the program counter and choices live in state.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum Instruction {
     Damage(i32),
-    Grow,
-    Draw,
+    Grow(i32),
     Counter,
     ReturnToHand,
     Destroy,
-    Land,
-    Unsupported,
+    Draw(PlayerSet, u16),
+    Discard(PlayerSet, u16),
+    GainLife(PlayerSet, u16),
+    LoseLife(PlayerSet, u16),
+    /// Optional block containing the following `skip` instructions.
+    May {
+        skip: usize,
+    },
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum TriggerCondition {
+    SelfEnters,
+    SelfDies,
+    SelfAttacks,
+    SelfEntersOrAttacks,
+    OtherCreatureEntersYou,
+    CreatureEntersYou,
+    OtherArtifactEntersYou,
+    LandEntersYou,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct TriggeredAbility {
+    pub condition: TriggerCondition,
+    pub program: &'static [Instruction],
 }
 
 /// Implemented static keyword flags. Other keyword cards remain unsupported.
@@ -59,6 +105,7 @@ pub struct CardInfo {
 struct Definition {
     info: CardInfo,
     effect: Effect,
+    triggers: &'static [TriggeredAbility],
     kind: u8,
     basic: bool,
     mana_color: Option<usize>,
@@ -119,6 +166,9 @@ impl Card {
     pub fn is_land(self) -> bool {
         generated::DEFINITIONS[self.0 as usize].kind & 2 != 0
     }
+    pub fn is_artifact(self) -> bool {
+        generated::DEFINITIONS[self.0 as usize].kind & 16 != 0
+    }
     pub fn is_basic_land(self) -> bool {
         generated::DEFINITIONS[self.0 as usize].basic
     }
@@ -127,6 +177,9 @@ impl Card {
     }
     pub(crate) fn effect(self) -> Effect {
         generated::DEFINITIONS[self.0 as usize].effect
+    }
+    pub(crate) fn triggers(self) -> &'static [TriggeredAbility] {
+        generated::DEFINITIONS[self.0 as usize].triggers
     }
     pub(crate) fn mana_color(self) -> Option<usize> {
         generated::DEFINITIONS[self.0 as usize].mana_color

@@ -82,10 +82,30 @@ fn assert_invariants(game: &Game) {
         assert_eq!(
             s.stack
                 .iter()
-                .filter(|spell| spell.card == i as CardId)
-                .count(),
+                .filter(|spell| spell.kind == StackKind::Spell && spell.card == i as CardId)
+                .count()
+                + usize::from(
+                    s.resolving.as_ref().is_some_and(
+                        |r| r.item.kind == StackKind::Spell && r.item.card == i as CardId
+                    )
+                ),
             usize::from(obj.zone == Zone::Stack)
         );
+    }
+    let mut stack_ids = std::collections::BTreeSet::new();
+    for item in s
+        .stack
+        .iter()
+        .chain(&s.pending_triggers)
+        .chain(&s.ordering_triggers)
+        .chain(s.resolving.iter().map(|r| &r.item))
+    {
+        assert!(stack_ids.insert(item.id));
+        assert!(item.id < s.next_stack_id);
+        if item.kind == StackKind::Spell {
+            assert_eq!(game.object_ref(item.card), item.object);
+            assert_eq!(s.objects[item.card as usize].zone, Zone::Stack);
+        }
     }
     for (i, player) in s.players.iter().enumerate() {
         assert!(

@@ -17,7 +17,7 @@ class BindingTests(unittest.TestCase):
             observation = game.observe("P0")
             coverage = json.loads((Path(__file__).resolve().parents[1] / "data/standard/coverage.json").read_text())
             self.assertEqual(observation["catalogue"], coverage["catalogue_version"])
-            self.assertEqual(observation["schema"], 4)
+            self.assertEqual(observation["schema"], 5)
             self.assertEqual(len(observation["objects"]), 7)
             self.assertTrue(all(o["owner"] == "P0" for o in observation["objects"]))
             self.assertEqual(game.observe("P1")["actions"], [])
@@ -208,6 +208,62 @@ else:
                 self.fail("Standard removal game did not end")
             self.assertTrue(replayed)
             self.assertIn("Winner", obs["outcome"])
+
+    def test_standard_trigger_programs_and_pending_choice_replay(self):
+        white_blue = ["Plains"] * 12 + ["Island"] * 12
+        for name in ["Helpful Hunter", "Inspiring Overseer", "Bellowing Crier", "Buzz Bots",
+                     "Summit Sentinel", "Icewind Elemental", "Lifecreed Duo", "Rook Turret", "Cloudblazer"]:
+            white_blue.extend([name] * 4)
+        black_green = ["Swamp"] * 12 + ["Forest"] * 12
+        for name in ["Bogwater Lumaret", "Burglar Rat", "Hecteyes", "Vampire Spawn", "Glidedive Duo",
+                     "Virulent Emissary", "Eumidian Terrabotanist", "Pelakka Wurm", "Primordial Pachyderm"]:
+            black_green.extend([name] * 4)
+        replayed = set()
+        seen_trigger = False
+        for seed in range(5):
+            with Game([white_blue, black_green], seed=seed, deck_rules="Standard") as game:
+                obs = game.observe("P0")
+                for _ in range(10000):
+                    if obs["outcome"] is not None:
+                        break
+                    if obs["viewer"] != obs["actor"]:
+                        obs = game.observe(obs["actor"])
+                    if any(item["kind"] != "Spell" for item in obs["stack"]):
+                        seen_trigger = True
+                    def score(action):
+                        kind = action["kind"]
+                        if kind == "TapMana":
+                            return 10 if obs["active"] == obs["actor"] and obs["step"] in ("Main1", "Main2") else -20
+                        if kind == "AssignDamage": return 50 + action["amount"]
+                        if kind == "ChooseOptional": return 50 if action["accept"] else 0
+                        return {"Concede": -1000, "Mulligan": -100, "Keep": 100, "PlayLand": 90,
+                                "Cast": 80, "Attack": 60, "Block": 60, "Discard": 50,
+                                "PutTrigger": 50}.get(kind, 0)
+                    index = max(range(len(obs["actions"])), key=lambda i: (score(obs["actions"][i]), i))
+                    decision = obs["decision"]
+                    if decision in {"order_triggers", "optional_effect", "effect_discard"} and decision not in replayed:
+                        saved = game.snapshot()
+                        with game.clone() as branch:
+                            expected = branch.step(obs, index)
+                        first = game.step(obs, index)
+                        self.assertEqual(first, expected)
+                        game.restore(saved)
+                        restored = game.observe(obs["viewer"])
+                        again = game.step(restored, index)
+                        self.assertGreater(again.pop("revision"), expected.pop("revision"))
+                        self.assertEqual(again, expected)
+                        game.drop_snapshot(saved)
+                        replayed.add(decision)
+                        obs = game.observe(restored["viewer"])
+                    else:
+                        obs = game.step(obs, index)
+                else:
+                    self.fail("Standard trigger game did not finish")
+                self.assertIn("Winner", obs["outcome"])
+            if len(replayed) == 3:
+                break
+        self.assertTrue(seen_trigger)
+        self.assertEqual(replayed, {"order_triggers", "optional_effect", "effect_discard"})
 
 
 if __name__ == "__main__":
