@@ -15,6 +15,15 @@ pub(super) struct Announcement {
     pub production: Option<Mana>,
 }
 
+impl Announcement {
+    pub(super) fn needs_spell_cost(&self) -> bool {
+        self.pay_window
+            && self.item.kind == StackKind::Spell
+            && self.item.source_card.has_hybrid_cost()
+            && self.cost.is_none()
+    }
+}
+
 impl Game {
     pub(super) fn target_spec(&self, item: &SpellView) -> TargetPlan {
         match item.kind {
@@ -95,11 +104,7 @@ impl Game {
         // declarations precede targets, mana abilities and payment.
         if needs_mode {
             self.state.pending = Pending::Modes { player };
-        } else if a.pay_window
-            && a.item.kind == StackKind::Spell
-            && a.item.source_card.has_hybrid_cost()
-            && a.cost.is_none()
-        {
+        } else if a.needs_spell_cost() {
             self.state.pending = Pending::SpellCost { player };
         } else {
             self.state.pending = Pending::Targets { player };

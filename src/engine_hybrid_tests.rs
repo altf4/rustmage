@@ -659,6 +659,10 @@ fn synthetic_modal_hybrid_declaration_commits_mode_then_cost_then_targets_then_p
     // these mode/target facts from the immutable definition in choose_mode.
     g.continue_announcement_choices(true);
     assert_eq!(g.state.pending, Pending::Modes { player: Player::P0 });
+    // Exercise the exact payment projection used by observe(actor), without
+    // inventing a static printed modal definition just for this IR fixture.
+    assert!(g.announcement_payment_request(Player::P0).is_none());
+    assert!(g.announcement_payment_request(Player::P1).is_none());
     // Querying a mode list requires a real modal definition; this IR fixture
     // instead checks the routing state, then declares its explicit target plan.
     let saved = g.snapshot();
@@ -668,6 +672,7 @@ fn synthetic_modal_hybrid_declaration_commits_mode_then_cost_then_targets_then_p
     fork.declare_mode(0, plan);
     assert_eq!(g.snapshot(), fork.snapshot());
     assert_eq!(g.state.pending, Pending::SpellCost { player: Player::P0 });
+    assert!(g.announcement_payment_request(Player::P0).is_none());
     assert_eq!(g.state.announcing.as_ref().unwrap().item.mode, Some(0));
     let expected = g.snapshot();
     g.restore(&saved);
@@ -675,6 +680,11 @@ fn synthetic_modal_hybrid_declaration_commits_mode_then_cost_then_targets_then_p
     assert_eq!(g.snapshot(), expected);
     choose(&mut g, [0, 1, 0, 0, 0, 0]);
     assert_eq!(g.state.pending, Pending::Targets { player: Player::P0 });
+    assert_eq!(
+        g.announcement_payment_request(Player::P0).unwrap().required,
+        [0, 1, 0, 0, 0, 0]
+    );
+    assert!(g.announcement_payment_request(Player::P1).is_none());
     replay(
         &mut g,
         Action::ChooseTarget {

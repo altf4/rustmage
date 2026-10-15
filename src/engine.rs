@@ -2567,24 +2567,7 @@ impl Game {
                     victim: p.victim,
                     exile: p.exile,
                 }),
-            payment_request: if owns_choice {
-                s.announcing
-                    .as_ref()
-                    .filter(|announcement| {
-                        announcement.pay_window && !matches!(s.pending, Pending::SpellCost { .. })
-                    })
-                    .map(|announcement| {
-                        let goal = self.funding_goal(announcement);
-                        PaymentRequestView {
-                            required: goal.required,
-                            generic: goal.generic,
-                            counters: announcement.counter_payment,
-                            production: announcement.production,
-                        }
-                    })
-            } else {
-                None
-            },
+            payment_request: self.announcement_payment_request(viewer),
             targeting_group: if owns_choice && matches!(s.pending, Pending::Targets { .. }) {
                 s.announcing.as_ref().map(|announcement| announcement.group)
             } else {
