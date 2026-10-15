@@ -39,7 +39,8 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Whenever a creature you control deals combat damage to a player, draw a card. This ability triggers only once each turn.',
                      'Whenever this creature deals combat damage to a player, destroy target artifact that player controls.',
                      'Whenever this creature deals combat damage to a player or planeswalker, draw a card.',
-                     'Whenever a creature you control with two counters on it deals combat damage to a player, draw a card.']:
+                     'Whenever a creature you control with two counters on it deals combat damage to a player, draw a card.',
+                     'Whenever this creature deals combat damage to a player, target creature gets +1/+1 until end of turn. Put a +1/+1 counter on it.']:
             self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=text)),text)
 
     def test_damage_trigger_complete_admissions_and_residual_gates(self):

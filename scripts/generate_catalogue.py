@@ -924,7 +924,10 @@ def trigger_creature_template(card):
                 # event-subject pronouns still have no inferred binding.
                 for alias in names:
                     effect_text = effect_text.replace(' on ' + alias + '.', ' on this creature.')
-                if condition.startswith('PlayerDamaged { subject: DamageSubject::Source,'):
+                if (condition.startswith('PlayerDamaged { subject: DamageSubject::Source,')
+                        and re.fullmatch(r'[Pp]ut (?:a|one|two|three|four|five|six) (?:\+1/\+1|-1/-1|stun) counters? on it\.',effect_text)):
+                    # Only this whole source-counter sentence proves its antecedent.
+                    # A later 'it' can refer to an earlier target or another object.
                     effect_text=effect_text.replace(' on it.',' on this creature.')
                 if condition.startswith('PlayerDamaged {'):
                     result=damage_event_program(effect_text)
