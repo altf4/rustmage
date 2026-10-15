@@ -9,6 +9,7 @@ pub(super) struct Resolution {
     pub target_group: u16,
     pub discards: [u16; 2],
     pub selected_discards: [Vec<CardId>; 2],
+    pub milled: Vec<ObjectRef>,
     pub library: Option<LibraryChoice>,
     pub search: Option<super::search::SearchChoice>,
     pub choice: Option<Box<super::effect_choices::EffectChoice>>,
@@ -135,7 +136,9 @@ impl Game {
             for source in death_sources {
                 for (index, ability) in source.card.triggers().iter().enumerate() {
                     let matched = match ability.condition {
-                        TriggerCondition::SelfDies => source.reference == event.before.reference,
+                        TriggerCondition::SelfDies | TriggerCondition::SelfEntersOrDies => {
+                            source.reference == event.before.reference
+                        }
                         TriggerCondition::CreatureDies {
                             relation,
                             other,
@@ -188,7 +191,9 @@ impl Game {
             let yours = source.owner == entered.owner;
             for (index, ability) in source.card.triggers().iter().enumerate() {
                 let matched = match ability.condition {
-                    TriggerCondition::SelfEnters | TriggerCondition::SelfEntersOrAttacks => same,
+                    TriggerCondition::SelfEnters
+                    | TriggerCondition::SelfEntersOrAttacks
+                    | TriggerCondition::SelfEntersOrDies => same,
                     TriggerCondition::SelfDies
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::LifeGained { .. }
@@ -392,6 +397,7 @@ impl Game {
             target_group: 0,
             discards: [0; 2],
             selected_discards: [Vec::new(), Vec::new()],
+            milled: Vec::new(),
             library: None,
             search: None,
             choice: None,
@@ -473,6 +479,42 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::Mill(players, amount) => {
+                    let players: Vec<_> = self.program_players(players, &item).collect();
+                    self.mill_batch(&players, amount, item.controller);
+                }
+                Instruction::MayMill(amount) => {
+                    // CR701.17b forbids choosing to mill more than the library.
+                    let resolution = self.state.resolving.as_mut().unwrap();
+                    if self.state.players[item.controller.index()].library.len()
+                        < usize::from(amount)
+                    {
+                        resolution.pc += 1;
+                    } else {
+                        self.state.pending = Pending::EffectOptional {
+                            player: item.controller,
+                            skip_to: resolution.pc + 1,
+                        };
+                        return;
+                    }
+                }
+                Instruction::RecoverMilled(filter) => {
+                    if self
+                        .state
+                        .resolving
+                        .as_ref()
+                        .unwrap()
+                        .milled
+                        .iter()
+                        .any(|&object| self.can_recover_milled(item.controller, filter, object))
+                    {
+                        self.state.pending = Pending::RecoverMilled {
+                            player: item.controller,
+                            filter,
+                        };
+                        return;
+                    }
+                }
                 Instruction::TapAttached => {
                     if let Some(id) = self.attached_subject(&item) {
                         self.state.objects[id as usize].tapped = true;

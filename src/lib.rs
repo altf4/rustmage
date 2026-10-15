@@ -8,6 +8,6 @@ mod rng;
 
 pub use cards::{
     CATALOGUE_VERSION, Card, CardInfo, CounterKind, Counters, EffectChoiceKind, Keywords, Mana,
-    SearchDestination, SearchFilter, TokenInfo,
+    RecoveryFilter, SearchDestination, SearchFilter, TokenInfo,
 };
 pub use engine::*;

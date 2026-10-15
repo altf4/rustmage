@@ -319,7 +319,9 @@ fn source_indices_follow_every_admitted_definition_and_round_trip_restore() {
         let death = card.triggers().iter().any(|a| {
             matches!(
                 a.condition,
-                TriggerCondition::SelfDies | TriggerCondition::CreatureDies { .. }
+                TriggerCondition::SelfDies
+                    | TriggerCondition::SelfEntersOrDies
+                    | TriggerCondition::CreatureDies { .. }
             )
         });
         assert_eq!(g.state.life_sources.contains(&id), life, "{}", card.name());

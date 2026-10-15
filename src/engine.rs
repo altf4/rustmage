@@ -1,8 +1,8 @@
 use crate::cards::{
     ActivatedAbility, ActivationCost, CastRelation, CounterKind, Counters, CreatureFilter, Effect,
-    EffectChoiceKind, EntryTapped, Instruction, ManaProduction, PlayerSet, SacrificeFilter,
-    SearchSpec, Stats, StepGuard, StepValue, Subject, TargetPlan, TargetRule, TargetSpec,
-    TargetZone, TriggerCondition, TriggerStep, payments,
+    EffectChoiceKind, EntryTapped, Instruction, ManaProduction, MillAmount, PlayerSet,
+    RecoveryFilter, SacrificeFilter, SearchSpec, Stats, StepGuard, StepValue, Subject, TargetPlan,
+    TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
 #[path = "engine_activations.rs"]
 mod activations;
@@ -17,6 +17,8 @@ mod effect_choices;
 mod exile;
 #[path = "engine_fight.rs"]
 mod fight;
+#[path = "engine_milling.rs"]
+mod milling;
 #[path = "engine_sba.rs"]
 mod sba;
 #[path = "engine_search.rs"]
@@ -146,6 +148,9 @@ pub struct BoundTarget {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
 pub enum Action {
+    RecoverMilled {
+        object: Option<ObjectRef>,
+    },
     ChooseAuraAttachment {
         object: ObjectRef,
     },
@@ -436,6 +441,10 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    RecoverMilled {
+        player: Player,
+        filter: RecoveryFilter,
+    },
     AuraEntry {
         player: Player,
     },
@@ -628,6 +637,15 @@ pub struct SearchChoiceView {
     pub selected: Vec<CardId>,
 }
 
+/// All milled identities and legal recovery candidates are public graveyard facts.
+#[derive(Clone, Debug, Serialize)]
+pub struct RecoveryChoiceView {
+    pub player: Player,
+    pub filter: RecoveryFilter,
+    pub milled: Vec<ObjectRef>,
+    pub candidates: Vec<ObjectRef>,
+}
+
 /// Private discard costs and public sacrifice choices suspended during resolution.
 #[derive(Clone, Debug, Serialize)]
 pub struct EffectChoiceView {
@@ -679,6 +697,7 @@ pub struct Observation {
     pub mode_choices: Vec<ModeChoiceView>,
     pub targeting_group: Option<u16>,
     pub library_choice: Option<LibraryChoiceView>,
+    pub recovery_choice: Option<RecoveryChoiceView>,
     pub search_choice: Option<SearchChoiceView>,
     pub effect_choice: Option<EffectChoiceView>,
     pub aura_entry: Option<entries::AuraEntryView>,
@@ -849,6 +868,7 @@ impl Game {
             Pending::AuraEntry { player }
             | Pending::EffectChoice { player }
             | Pending::Legend { player }
+            | Pending::RecoverMilled { player, .. }
             | Pending::EffectSearch { player }
             | Pending::EffectLibrary { player }
             | Pending::EffectMana { player, .. }
@@ -1262,6 +1282,20 @@ impl Game {
                     );
                 }
             }
+            Pending::RecoverMilled { player, filter } => {
+                if emit(Action::RecoverMilled { object: None }) {
+                    return true;
+                }
+                for &object in &s.resolving.as_ref().unwrap().milled {
+                    if self.can_recover_milled(player, filter, object)
+                        && emit(Action::RecoverMilled {
+                            object: Some(object),
+                        })
+                    {
+                        return true;
+                    }
+                }
+            }
             Pending::EffectSearch { player } => {
                 let choice = s.resolving.as_ref().unwrap().search.as_ref().unwrap();
                 if emit(Action::FinishSearch) {
@@ -1571,6 +1605,7 @@ impl Game {
                     self.continue_trigger_order();
                 }
             }
+            Action::RecoverMilled { object } => self.recover_milled(object),
             Action::ChooseSearch { card } => self.choose_search(card),
             Action::FinishSearch => self.finish_search(actor),
             Action::ArrangeLibrary { card, destination } => {
@@ -2226,7 +2261,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 23,
+            schema: 24,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -2246,6 +2281,7 @@ impl Game {
                 Pending::EffectOptional { .. } => "optional_effect",
                 Pending::EffectMana { .. } => "mana_choice",
                 Pending::EffectLibrary { .. } => "library_choice",
+                Pending::RecoverMilled { .. } => "recover_milled",
                 Pending::EffectSearch { .. } => "library_search",
                 Pending::EffectDiscard { .. } => "effect_discard",
                 Pending::EffectChoice { .. } => "effect_choice",
@@ -2265,6 +2301,23 @@ impl Game {
                 library_count: s.players[i].library.len(),
                 hand_count: self.hand_count(if i == 0 { Player::P0 } else { Player::P1 }),
             }),
+            recovery_choice: match s.pending {
+                Pending::RecoverMilled { player, filter } => Some(RecoveryChoiceView {
+                    player,
+                    filter,
+                    milled: s.resolving.as_ref().unwrap().milled.clone(),
+                    candidates: s
+                        .resolving
+                        .as_ref()
+                        .unwrap()
+                        .milled
+                        .iter()
+                        .copied()
+                        .filter(|&object| self.can_recover_milled(player, filter, object))
+                        .collect(),
+                }),
+                _ => None,
+            },
             effect_choice: self.effect_choice_view(viewer),
             aura_entry: self.aura_entry_view(viewer),
             objects,
@@ -2474,11 +2527,12 @@ impl Game {
             + s.resolving
                 .as_ref()
                 .map(|resolution| {
-                    resolution
-                        .choice
-                        .as_ref()
-                        .map(|choice| choice.bytes())
-                        .unwrap_or(0)
+                    resolution.milled.len() * std::mem::size_of::<ObjectRef>()
+                        + resolution
+                            .choice
+                            .as_ref()
+                            .map(|choice| choice.bytes())
+                            .unwrap_or(0)
                         + resolution
                             .search
                             .as_ref()
@@ -2596,3 +2650,7 @@ pub use entries::{AuraAttachmentView, AuraEntryView};
 #[cfg(test)]
 #[path = "engine_aura_tests.rs"]
 mod aura_tests;
+
+#[cfg(test)]
+#[path = "engine_milling_tests.rs"]
+mod milling_tests;

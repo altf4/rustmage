@@ -36,7 +36,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 | Instruction::Damage(_)
                 | Instruction::Tap
                 | Instruction::LoseLife(PlayerSet::Targeted, _)
-                | Instruction::Discard(PlayerSet::Targeted, _) => Some(false),
+                | Instruction::Discard(PlayerSet::Targeted, _)
+                | Instruction::Mill(PlayerSet::Targeted, _) => Some(false),
                 _ => None,
             })
             .unwrap_or(false);
@@ -80,6 +81,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 observation.aura_entry.as_ref().unwrap().card,
                 Target::Card(object.card),
             ),
+            Action::RecoverMilled { object } => {
+                if object.is_some() {
+                    60
+                } else {
+                    0
+                }
+            }
             Action::Concede => -1000,
             Action::Sacrifice { .. } => 50,
             Action::DeclineEffectPayment => -1,
