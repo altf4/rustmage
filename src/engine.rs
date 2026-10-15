@@ -10,6 +10,8 @@ mod funding;
 use funding::FundingGoal;
 #[path = "engine_blocking.rs"]
 mod blocking;
+#[path = "engine_exile.rs"]
+mod exile;
 #[path = "engine_stats.rs"]
 mod stats;
 #[path = "engine_tokens.rs"]
@@ -92,6 +94,7 @@ pub enum Zone {
     Battlefield,
     Stack,
     Graveyard,
+    Exile,
     /// Vacant slot after a token ceases to exist; never a game zone.
     Outside,
 }
@@ -441,6 +444,7 @@ struct State {
     objects: Vec<Object>,
     free_tokens: Vec<CardId>,
     static_sources: Vec<CardId>,
+    exile_links: Vec<ExileLink>,
     players: [PlayerState; 2],
     rng: Rng,
     active: Player,
@@ -542,6 +546,14 @@ pub struct LibraryChoiceView {
     pub graveyard: Vec<ObjectView>,
 }
 
+/// Public face-up exile relation, bound to both exact incarnations.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct ExileLink {
+    pub source: ObjectRef,
+    pub exiled: ObjectRef,
+    pub return_zone: Zone,
+}
+
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
     pub schema: u32,
@@ -555,6 +567,7 @@ pub struct Observation {
     pub decision: &'static str,
     pub players: [PlayerView; 2],
     pub objects: Vec<ObjectView>,
+    pub exile_links: Vec<ExileLink>,
     pub stack: Vec<SpellView>,
     pub resolving: Option<SpellView>,
     pub announcing: Option<SpellView>,
@@ -656,6 +669,7 @@ impl Game {
                 objects,
                 free_tokens: Vec::new(),
                 static_sources: Vec::new(),
+                exile_links: Vec::new(),
                 players,
                 rng,
                 active: config.starting_player,
@@ -1476,7 +1490,7 @@ impl Game {
             Vec::new()
         };
         let event = self.move_object_raw(id, destination);
-        self.zone_triggers(&event, &sources);
+        self.finish_zone_events(std::slice::from_ref(&event), &sources);
         event
     }
 
@@ -1520,6 +1534,11 @@ impl Game {
                 .rposition(|&card| card == id)
                 .expect("library membership");
             library.remove(position);
+        }
+        if before.zone == Zone::Exile {
+            self.state
+                .exile_links
+                .retain(|link| link.exiled != before.reference);
         }
         if before.zone == Zone::Stack {
             self.state
@@ -1922,9 +1941,7 @@ impl Game {
             if !deaths.is_empty() {
                 let sources = self.death_trigger_sources();
                 let events = self.move_objects_raw(&deaths, Zone::Graveyard);
-                for event in &events {
-                    self.zone_triggers(event, &sources);
-                }
+                self.finish_zone_events(&events, &sources);
             }
             // Counter pairs cancel in the same SBA batch as deaths. Departing
             // objects' last-known characteristics were captured before cancellation.
@@ -1978,7 +1995,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 12,
+            schema: 13,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -2010,6 +2027,7 @@ impl Game {
                 hand_count: self.hand_count(if i == 0 { Player::P0 } else { Player::P1 }),
             }),
             objects,
+            exile_links: s.exile_links.clone(),
             stack: s.stack.clone(),
             resolving: s
                 .resolving
@@ -2130,6 +2148,7 @@ impl Game {
         let s = &self.state;
         std::mem::size_of::<State>()
             + s.objects.len() * std::mem::size_of::<Object>()
+            + s.exile_links.len() * std::mem::size_of::<ExileLink>()
             + (s.free_tokens.len() + s.static_sources.len()) * std::mem::size_of::<CardId>()
             + s.players
                 .iter()
@@ -2197,3 +2216,7 @@ mod keyword_tests;
 #[cfg(test)]
 #[path = "engine_blocking_tests.rs"]
 mod blocking_tests;
+
+#[cfg(test)]
+#[path = "engine_exile_tests.rs"]
+mod exile_tests;

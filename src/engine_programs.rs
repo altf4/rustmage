@@ -370,6 +370,22 @@ impl Game {
                     };
                     return;
                 }
+                Instruction::ExileUntilSourceLeaves => self.exile_until_source_leaves(&item),
+                Instruction::ExileGraveyard(set) => {
+                    let players: Vec<_> = self.program_players(set, &item).collect();
+                    let ids: Vec<_> = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter(|(_, object)| {
+                            object.zone == Zone::Graveyard && players.contains(&object.owner)
+                        })
+                        .map(|(id, _)| id as CardId)
+                        .collect();
+                    let events = self.move_objects_raw(&ids, Zone::Exile);
+                    self.finish_zone_events(&events, &[]);
+                }
                 Instruction::Draw(set, amount) => {
                     for player in self.program_players(set, &item) {
                         for _ in 0..amount {
@@ -529,10 +545,13 @@ impl Game {
                     }
                 }
                 Instruction::Counter
+                | Instruction::Exile
                 | Instruction::Destroy
                 | Instruction::ReturnToHand
                 | Instruction::ReturnToBattlefield => {
-                    let zone = if instruction == Instruction::ReturnToHand {
+                    let zone = if instruction == Instruction::Exile {
+                        Zone::Exile
+                    } else if instruction == Instruction::ReturnToHand {
                         Zone::Hand
                     } else if instruction == Instruction::ReturnToBattlefield {
                         Zone::Battlefield

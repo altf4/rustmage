@@ -77,6 +77,9 @@ impl Game {
                         relation,
                         other,
                         nonland,
+                        tapped,
+                        min_mana,
+                        max_mana,
                     } => {
                         let expected = match zone {
                             TargetZone::Battlefield => Zone::Battlefield,
@@ -88,6 +91,11 @@ impl Game {
                             && (relation == -1 || (obj.owner == controller) == (relation == 0))
                             && (!other || self.object_ref(id) != source)
                             && (!nonland || !obj.card.is_land())
+                            && (!tapped || obj.tapped)
+                            && ((min_mana == 0 && max_mana == u32::MAX) || {
+                                let value = obj.card.fixed_mana_value();
+                                value >= u64::from(min_mana) && value <= u64::from(max_mana)
+                            })
                     }
                     _ => false,
                 }
@@ -288,8 +296,6 @@ impl Game {
             })
             .collect();
         let events = self.move_objects_raw(&ids, destination);
-        for event in &events {
-            self.zone_triggers(event, &sources);
-        }
+        self.finish_zone_events(&events, &sources);
     }
 }

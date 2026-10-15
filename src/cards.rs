@@ -29,6 +29,9 @@ pub(crate) enum TargetRule {
         relation: i8,
         other: bool,
         nonland: bool,
+        tapped: bool,
+        min_mana: u32,
+        max_mana: u32,
     },
 }
 
@@ -119,6 +122,9 @@ pub(crate) enum Instruction {
         toughness: i32,
     },
     Counter,
+    Exile,
+    ExileUntilSourceLeaves,
+    ExileGraveyard(PlayerSet),
     ReturnToHand,
     ReturnToBattlefield,
     Destroy,
@@ -427,6 +433,10 @@ impl Card {
     }
     pub(crate) fn mana_color(self) -> Option<usize> {
         generated::DEFINITIONS[self.0 as usize].mana_color
+    }
+    pub(crate) fn fixed_mana_value(self) -> u64 {
+        let (colored, generic) = self.cost();
+        u64::from(generic) + colored.into_iter().map(u64::from).sum::<u64>()
     }
     pub(crate) fn cost(self) -> (Mana, u32) {
         let definition = &generated::DEFINITIONS[self.0 as usize];

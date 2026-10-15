@@ -364,6 +364,9 @@ fn object_filters_respect_owner_type_zone_and_original_source_reference() {
         relation: 0,
         other: true,
         nonland: true,
+        tapped: false,
+        min_mana: 0,
+        max_mana: u32::MAX,
     };
     assert!(!game.target_matches(rule, Player::P0, old, Target::Card(source)));
     assert!(game.target_matches(rule, Player::P0, old, Target::Card(other)));
