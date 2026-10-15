@@ -86,3 +86,8 @@ Each implementation milestone should arrive in a reviewed PR with tests and an
 updated coverage manifest. Do not mark the migration complete based on the
 initial subset's throughput. No general-format or unsupported-card training
 should proceed on approximated rules.
+
+The user selected **current Standard first**. The
+[Standard target](standard-target.md) pins the initial format date and describes
+the next acceptance gates. Prioritize #3/#4 around that card pool. The initial
+Freeform benchmark is not a Standard acceptance test.

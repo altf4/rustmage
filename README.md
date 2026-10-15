@@ -7,6 +7,7 @@ Python can load the same library directly using the included `ctypes` binding.
 **Status: executable foundation, not a full XMage rewrite.** This version accepts
 14 explicitly supported cards. Arbitrary XMage decks cannot run yet. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
+The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
 
 ## Build and use
 
@@ -128,3 +129,5 @@ current tests are not differential acceptance tests against Java XMage.
 `scripts/benchmark.py --games 10000 --repeats 5 --cpu N --output report.json`
 records repeated release measurements with CPU/compiler metadata. Build the
 release binary first; `--cpu` is optional and pins only the benchmark subprocess.
+The [initial measurements](docs/benchmarks.md) report roughly 2 million native
+decisions/second on the limited workload, with 2.7 KB of initial state payload.

@@ -38,6 +38,8 @@ instead of terminating the interpreter. No remaining confirmed findings.
 - `cargo build --release --offline`
 - `PYTHONPATH=python python3 -m unittest discover -s python -p 'test_*.py' -v`:
   four tests against the native shared library.
+- A subsequent fifth Python test plays a complete game through ctypes with
+  separate per-actor observations and a natural terminal result.
 - `cargo run --release --offline --example branch`: native branching example.
 
 Benchmarks and limitations are recorded separately. Both reviewers explicitly

@@ -1,0 +1,116 @@
+{
+  "schema": 1,
+  "cpu_model": "Intel(R) Core(TM) Ultra 5 335",
+  "platform": "Linux-7.0.0-34-generic-x86_64-with-glibc2.43",
+  "rustc": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
+  "source_commit": "3c6c237b52dc4d00fc16cf94a6b4daf3f8ee0a8e",
+  "source_dirty": false,
+  "pinned_cpu": 0,
+  "games_per_sample": 10000,
+  "warmup_games_excluded": 1000,
+  "deck": {
+    "Mountain": 24,
+    "LightningBolt": 20,
+    "GoblinPiker": 12,
+    "HillGiant": 4
+  },
+  "deck_rules": "Freeform",
+  "includes": [
+    "episode setup",
+    "native action generation and validation",
+    "player observation construction",
+    "smoke policy",
+    "natural game endings"
+  ],
+  "excludes": [
+    "model inference",
+    "tensor encoding",
+    "JSON",
+    "Python binding",
+    "general rules and card coverage"
+  ],
+  "summary": {
+    "decisions_per_second": {
+      "median": 2013914.5344730378,
+      "min": 2000011.3421163433,
+      "max": 2026981.450513172
+    },
+    "games_per_second": {
+      "median": 3633.0836329726935,
+      "min": 3608.0023995178713,
+      "max": 3656.656231504667
+    },
+    "clone_ns": {
+      "median": 81.96745,
+      "min": 78.99982,
+      "max": 88.64784
+    },
+    "restore_ns": {
+      "median": 74.33943,
+      "min": 73.74355,
+      "max": 92.47508
+    }
+  },
+  "samples": [
+    {
+      "clone_ns": 88.64784,
+      "decisions": 5543265,
+      "decisions_per_second": 2000014.6196496808,
+      "games": 10000,
+      "games_per_second": 3608.0083121584134,
+      "initial_state_bytes_excluding_capacity_and_allocator": 2672,
+      "max_decisions_per_game": 1445,
+      "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
+      "restore_ns": 74.86384,
+      "seconds": 2.77161224
+    },
+    {
+      "clone_ns": 82.24745,
+      "decisions": 5543265,
+      "decisions_per_second": 2013914.5344730378,
+      "games": 10000,
+      "games_per_second": 3633.0836329726935,
+      "initial_state_bytes_excluding_capacity_and_allocator": 2672,
+      "max_decisions_per_game": 1445,
+      "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
+      "restore_ns": 74.33943,
+      "seconds": 2.7524827419999998
+    },
+    {
+      "clone_ns": 78.99982,
+      "decisions": 5543265,
+      "decisions_per_second": 2026981.450513172,
+      "games": 10000,
+      "games_per_second": 3656.656231504667,
+      "initial_state_bytes_excluding_capacity_and_allocator": 2672,
+      "max_decisions_per_game": 1445,
+      "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
+      "restore_ns": 73.74355,
+      "seconds": 2.734738889
+    },
+    {
+      "clone_ns": 81.96745,
+      "decisions": 5543265,
+      "decisions_per_second": 2021500.809318555,
+      "games": 10000,
+      "games_per_second": 3646.7692042840367,
+      "initial_state_bytes_excluding_capacity_and_allocator": 2672,
+      "max_decisions_per_game": 1445,
+      "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
+      "restore_ns": 73.8897,
+      "seconds": 2.7421532429999997
+    },
+    {
+      "clone_ns": 81.25559,
+      "decisions": 5543265,
+      "decisions_per_second": 2000011.3421163433,
+      "games": 10000,
+      "games_per_second": 3608.0023995178713,
+      "initial_state_bytes_excluding_capacity_and_allocator": 2672,
+      "max_decisions_per_game": 1445,
+      "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
+      "restore_ns": 92.47508,
+      "seconds": 2.7716167819999997
+    }
+  ]
+}

@@ -74,6 +74,36 @@ else:
             outputs = list(pool.map(run, range(8)))
         self.assertEqual(len(set(outputs)), 1)
 
+    def test_complete_selfplay_through_shared_library(self):
+        # The complete control loop stays in this process. Actor changes require
+        # a fresh observation for the new player, never a union of both hands.
+        with self.game() as game:
+            observation = game.observe("P0")
+            cast_count = 0
+            for _ in range(5000):
+                if observation["outcome"] is not None:
+                    break
+                actor = observation["actor"]
+                if observation["viewer"] != actor:
+                    observation = game.observe(actor)
+                opponent = "P1" if actor == "P0" else "P0"
+
+                def score(action):
+                    kind = action["kind"]
+                    if kind == "Cast":
+                        return 80 if action["target"] == {"Player": opponent} else -10
+                    return {"Keep": 100, "PlayLand": 90, "TapMana": 20,
+                            "Discard": 40, "Concede": -1000, "Mulligan": -100}.get(kind, 0)
+
+                index = max(range(len(observation["actions"])), key=lambda i: score(observation["actions"][i]))
+                cast_count += observation["actions"][index]["kind"] == "Cast"
+                observation = game.step(observation, index)
+            else:
+                self.fail("self-play did not end naturally")
+            self.assertGreaterEqual(cast_count, 7)
+            self.assertIn("Winner", observation["outcome"])
+            self.assertEqual(game.observe("P0")["outcome"], game.observe("P1")["outcome"])
+
 
 if __name__ == "__main__":
     unittest.main()
