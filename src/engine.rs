@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 pub type CardId = u32;
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Player {
     P0,
     P1,
@@ -23,6 +23,9 @@ impl Player {
     }
 }
 
+#[cfg(test)]
+#[path = "engine_damage_tests.rs"]
+mod damage_tests;
 #[cfg(test)]
 #[path = "engine_tests.rs"]
 mod tests;
@@ -45,6 +48,7 @@ pub enum Step {
     BeginCombat,
     Attackers,
     Blockers,
+    FirstStrikeDamage,
     CombatDamage,
     EndCombat,
     Main2,
@@ -91,7 +95,7 @@ pub enum Action {
     },
     FinishBlockers,
     AssignDamage {
-        blocker: CardId,
+        target: Target,
         amount: i32,
     },
     Discard {
@@ -154,6 +158,7 @@ struct Object {
     // True until this creature's controller begins their next turn.
     summoning_sick: bool,
     damage: i32,
+    deathtouch_since_sba: bool,
     growth: i32,
 }
 
@@ -174,7 +179,7 @@ impl Object {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct PlayerState {
-    life: i32,
+    life: i64,
     mana: Mana,
     library: Vec<CardId>, // top is last, bottom is first
     mulligans: u8,
@@ -197,8 +202,34 @@ struct Attacker {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct DamageChoice {
+    source: DamageSource,
     blockers: Vec<CardId>,
     remaining: i32,
+    trample: bool,
+    prior_blockers_lethal: bool,
+}
+
+/// Source characteristics captured when a damage event is constructed. Damage
+/// need not originate from a permanent that survives the simultaneous batch.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+pub struct DamageSource {
+    pub object: CardId,
+    pub controller: Player,
+    pub keywords: Keywords,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct DamageEvent {
+    pub source: DamageSource,
+    pub target: Target,
+    pub amount: i32,
+    pub combat: bool,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct LifeGainEvent {
+    source: DamageSource,
+    amount: i32,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -234,8 +265,9 @@ struct State {
     blocks: Vec<(CardId, CardId)>, // blocker, attacker
     selected_attackers: Vec<CardId>,
     selected_blocks: Vec<(CardId, CardId)>,
-    hits: Vec<(Target, i32)>,
+    hits: Vec<DamageEvent>,
     damage_choices: Vec<DamageChoice>,
+    first_strikers: Vec<CardId>,
     outcome: Option<Outcome>,
 }
 
@@ -266,7 +298,7 @@ pub struct ObjectView {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct PlayerView {
-    pub life: i32,
+    pub life: i64,
     pub mana: Mana,
     pub library_count: usize,
     pub hand_count: usize,
@@ -288,7 +320,8 @@ pub struct Observation {
     pub stack: Vec<SpellView>,
     pub attackers: Vec<CardId>,
     pub blocks: Vec<(CardId, CardId)>,
-    pub damage_assigned: Vec<(Target, i32)>,
+    pub damage_assigned: Vec<DamageEvent>,
+    pub damage_source: Option<CardId>,
     pub outcome: Option<Outcome>,
     pub actions: Vec<Action>,
 }
@@ -354,6 +387,7 @@ impl Game {
                     tapped: false,
                     summoning_sick: false,
                     damage: 0,
+                    deathtouch_since_sba: false,
                     growth: 0,
                 });
                 players[p.index()].library.push(id);
@@ -382,6 +416,7 @@ impl Game {
                 selected_blocks: Vec::new(),
                 hits: Vec::new(),
                 damage_choices: Vec::new(),
+                first_strikers: Vec::new(),
                 outcome: None,
             },
         };
@@ -673,9 +708,19 @@ impl Game {
             }
             Pending::Damage => {
                 let choice = s.damage_choices.last().expect("damage choice");
-                let blocker = choice.blockers[0];
-                for amount in 0..=choice.remaining {
-                    if emit(Action::AssignDamage { blocker, amount }) {
+                let target = Target::Card(choice.blockers[0]);
+                let minimum = if choice.blockers.len() == 1 && choice.trample {
+                    if choice.prior_blockers_lethal {
+                        self.lethal_assignment(choice.source, choice.blockers[0])
+                            .min(choice.remaining)
+                    } else {
+                        choice.remaining
+                    }
+                } else {
+                    0
+                };
+                for amount in minimum..=choice.remaining {
+                    if emit(Action::AssignDamage { target, amount }) {
                         return true;
                     }
                 }
@@ -787,20 +832,27 @@ impl Game {
                 }
                 self.give_priority();
             }
-            Action::AssignDamage { blocker, amount } => {
-                self.state.hits.push((Target::Card(blocker), amount));
+            Action::AssignDamage { target, amount } => {
+                let Target::Card(blocker) = target else {
+                    unreachable!()
+                };
+                let source = self.state.damage_choices.last().unwrap().source;
+                let lethal = amount >= self.lethal_assignment(source, blocker);
+                self.queue_hit(source, target, amount, true);
                 let choice = self.state.damage_choices.last_mut().unwrap();
                 choice.remaining -= amount;
                 choice.blockers.remove(0);
-                if choice.blockers.len() == 1 {
-                    self.state
-                        .hits
-                        .push((Target::Card(choice.blockers[0]), choice.remaining));
-                    self.state.damage_choices.pop();
+                choice.prior_blockers_lethal &= lethal;
+                if choice.blockers.is_empty() {
+                    let choice = self.state.damage_choices.pop().unwrap();
+                    self.queue_hit(
+                        source,
+                        Target::Player(self.state.active.other()),
+                        choice.remaining,
+                        true,
+                    );
                 }
-                if self.state.damage_choices.is_empty() {
-                    self.deal_combat_damage();
-                }
+                self.advance_damage_choices();
             }
             Action::Discard { card } => {
                 self.state.objects[card as usize].zone = Zone::Graveyard;
@@ -905,6 +957,7 @@ impl Game {
         self.state.land_played = false;
         self.state.attackers.clear();
         self.state.blocks.clear();
+        self.state.first_strikers.clear();
         for obj in &mut self.state.objects {
             if obj.owner == self.state.active && obj.zone == Zone::Battlefield {
                 obj.tapped = false;
@@ -951,6 +1004,23 @@ impl Game {
                 }
             }
             Step::Blockers => {
+                self.state.first_strikers = self
+                    .combatants()
+                    .into_iter()
+                    .filter(|&id| {
+                        let keywords = self.state.objects[id as usize].card.keywords();
+                        keywords.contains(Keywords::FIRST_STRIKE)
+                            || keywords.contains(Keywords::DOUBLE_STRIKE)
+                    })
+                    .collect();
+                self.state.step = if self.state.first_strikers.is_empty() {
+                    Step::CombatDamage
+                } else {
+                    Step::FirstStrikeDamage
+                };
+                self.prepare_damage();
+            }
+            Step::FirstStrikeDamage => {
                 self.state.step = Step::CombatDamage;
                 self.prepare_damage();
             }
@@ -961,6 +1031,7 @@ impl Game {
             Step::EndCombat => {
                 self.state.attackers.clear();
                 self.state.blocks.clear();
+                self.state.first_strikers.clear();
                 self.state.step = Step::Main2;
                 self.give_priority();
             }
@@ -985,6 +1056,7 @@ impl Game {
         // Damage removal and expiration of until-end-of-turn effects are simultaneous.
         for obj in &mut self.state.objects {
             obj.damage = 0;
+            obj.deathtouch_since_sba = false;
             obj.growth = 0;
         }
         // Supported creatures all have positive printed toughness and there are no
@@ -1012,7 +1084,15 @@ impl Game {
                     obj.summoning_sick = true;
                     return;
                 }
-                Effect::Damage(amount) => self.damage(spell.target.unwrap(), amount),
+                Effect::Damage(amount) => {
+                    let event = DamageEvent {
+                        source: self.damage_source(spell.card),
+                        target: spell.target.unwrap(),
+                        amount,
+                        combat: false,
+                    };
+                    self.apply_damage_batch(&[event]);
+                }
                 Effect::Grow => {
                     if let Some(Target::Card(id)) = spell.target {
                         self.state.objects[id as usize].growth += 3;
@@ -1036,22 +1116,108 @@ impl Game {
         self.state.objects[spell.card as usize].zone = Zone::Graveyard;
     }
 
-    fn damage(&mut self, target: Target, amount: i32) {
-        match target {
-            Target::Player(p) => self.state.players[p.index()].life -= amount,
-            Target::Card(id) => self.state.objects[id as usize].damage += amount,
-            Target::Spell(_) => unreachable!(),
+    fn damage_source(&self, object: CardId) -> DamageSource {
+        let obj = &self.state.objects[object as usize];
+        // Control-changing cards are not admitted yet. This is the single place
+        // where current controller must be used once control layers are added.
+        DamageSource {
+            object,
+            controller: obj.owner,
+            keywords: obj.card.keywords(),
+        }
+    }
+
+    fn queue_hit(&mut self, source: DamageSource, target: Target, amount: i32, combat: bool) {
+        if amount > 0 {
+            self.state.hits.push(DamageEvent {
+                source,
+                target,
+                amount,
+                combat,
+            });
+        }
+    }
+
+    fn apply_damage_batch(&mut self, events: &[DamageEvent]) -> Vec<LifeGainEvent> {
+        let mut gains: Vec<LifeGainEvent> = Vec::new();
+        let mut gain_indices: std::collections::BTreeMap<DamageSource, usize> =
+            std::collections::BTreeMap::new();
+        for event in events {
+            if event.amount <= 0 {
+                continue;
+            }
+            match event.target {
+                Target::Player(p) => self.state.players[p.index()].life -= i64::from(event.amount),
+                Target::Card(id) => {
+                    let obj = &mut self.state.objects[id as usize];
+                    obj.damage += event.amount;
+                    obj.deathtouch_since_sba |=
+                        event.source.keywords.contains(Keywords::DEATHTOUCH);
+                }
+                Target::Spell(_) => unreachable!("damage cannot target stack objects"),
+            }
+            if event.source.keywords.contains(Keywords::LIFELINK) {
+                // One source damaging multiple objects simultaneously causes a
+                // single life-gain event; distinct sources remain distinct.
+                if let Some(&index) = gain_indices.get(&event.source) {
+                    gains[index].amount += event.amount;
+                } else {
+                    gain_indices.insert(event.source, gains.len());
+                    gains.push(LifeGainEvent {
+                        source: event.source,
+                        amount: event.amount,
+                    });
+                }
+            }
+        }
+        for gain in &gains {
+            self.state.players[gain.source.controller.index()].life += i64::from(gain.amount);
+        }
+        // Future trigger dispatch consumes damage + gain events here, before
+        // their storage is discarded. SBAs run only after the whole batch.
+        gains
+    }
+
+    fn combatants(&self) -> Vec<CardId> {
+        self.state
+            .attackers
+            .iter()
+            .map(|attacker| attacker.card)
+            .chain(self.state.blocks.iter().map(|&(blocker, _)| blocker))
+            .filter(|&id| self.on_battlefield(id))
+            .collect()
+    }
+
+    fn assigns_this_step(&self, id: CardId) -> bool {
+        if self.state.step == Step::FirstStrikeDamage {
+            self.state.first_strikers.contains(&id)
+        } else {
+            !self.state.first_strikers.contains(&id)
+                || self.state.objects[id as usize]
+                    .card
+                    .keywords()
+                    .contains(Keywords::DOUBLE_STRIKE)
+        }
+    }
+
+    fn lethal_assignment(&self, source: DamageSource, blocker: CardId) -> i32 {
+        let obj = &self.state.objects[blocker as usize];
+        let remaining = (obj.toughness() - obj.damage).max(0);
+        if source.keywords.contains(Keywords::DEATHTOUCH) {
+            remaining.min(1)
+        } else {
+            remaining
         }
     }
 
     fn prepare_damage(&mut self) {
         self.state.hits.clear();
         self.state.damage_choices.clear();
-        for attacker in &self.state.attackers {
+        // Clone only the declaration list so construction may append events.
+        for attacker in self.state.attackers.clone() {
             if !self.on_battlefield(attacker.card) {
                 continue;
             }
-            let power = self.state.objects[attacker.card as usize].power().max(0);
             let blockers: Vec<_> = self
                 .state
                 .blocks
@@ -1059,37 +1225,65 @@ impl Game {
                 .filter(|&&(b, a)| a == attacker.card && self.on_battlefield(b))
                 .map(|&(b, _)| b)
                 .collect();
-            for &b in &blockers {
-                self.state.hits.push((
-                    Target::Card(attacker.card),
-                    self.state.objects[b as usize].power().max(0),
-                ));
+            for &blocker in &blockers {
+                if self.assigns_this_step(blocker) {
+                    let source = self.damage_source(blocker);
+                    let amount = self.state.objects[blocker as usize].power().max(0);
+                    self.queue_hit(source, Target::Card(attacker.card), amount, true);
+                }
             }
-            if !attacker.blocked {
-                self.state
-                    .hits
-                    .push((Target::Player(self.state.active.other()), power));
-            } else if blockers.len() == 1 {
-                self.state.hits.push((Target::Card(blockers[0]), power));
-            } else if blockers.len() > 1 {
+            if !self.assigns_this_step(attacker.card) {
+                continue;
+            }
+            let source = self.damage_source(attacker.card);
+            let power = self.state.objects[attacker.card as usize].power().max(0);
+            let trample = source.keywords.contains(Keywords::TRAMPLE);
+            if !attacker.blocked || (trample && blockers.is_empty()) {
+                self.queue_hit(
+                    source,
+                    Target::Player(self.state.active.other()),
+                    power,
+                    true,
+                );
+            } else if !blockers.is_empty() && power > 0 {
                 self.state.damage_choices.push(DamageChoice {
+                    source,
                     blockers,
                     remaining: power,
+                    trample,
+                    prior_blockers_lethal: true,
                 });
             }
         }
-        if self.state.damage_choices.is_empty() {
-            self.deal_combat_damage();
-        } else {
-            self.state.pending = Pending::Damage;
+        self.advance_damage_choices();
+    }
+
+    fn advance_damage_choices(&mut self) {
+        while let Some(choice) = self.state.damage_choices.last() {
+            let forced = choice.remaining == 0
+                || (choice.blockers.len() == 1
+                    && (!choice.trample
+                        || !choice.prior_blockers_lethal
+                        || choice.remaining
+                            <= self.lethal_assignment(choice.source, choice.blockers[0])));
+            if !forced {
+                self.state.pending = Pending::Damage;
+                return;
+            }
+            let choice = self.state.damage_choices.pop().unwrap();
+            self.queue_hit(
+                choice.source,
+                Target::Card(choice.blockers[0]),
+                choice.remaining,
+                true,
+            );
         }
+        self.deal_combat_damage();
     }
 
     fn deal_combat_damage(&mut self) {
         let hits = std::mem::take(&mut self.state.hits);
-        for (target, amount) in hits {
-            self.damage(target, amount);
-        }
+        self.apply_damage_batch(&hits);
         self.give_priority();
     }
 
@@ -1097,7 +1291,9 @@ impl Game {
         for obj in &mut self.state.objects {
             if obj.zone == Zone::Battlefield
                 && obj.card.is_creature()
-                && (obj.toughness() <= 0 || obj.damage >= obj.toughness())
+                && (obj.toughness() <= 0
+                    || obj.damage >= obj.toughness()
+                    || obj.deathtouch_since_sba)
             {
                 obj.zone = Zone::Graveyard;
                 obj.damage = 0;
@@ -1105,6 +1301,10 @@ impl Game {
                 obj.tapped = false;
                 obj.summoning_sick = false;
             }
+        }
+        // Deathtouch applies only since the previous SBA check, not forever.
+        for obj in &mut self.state.objects {
+            obj.deathtouch_since_sba = false;
         }
         let lost = self
             .state
@@ -1146,7 +1346,7 @@ impl Game {
             })
             .collect();
         Observation {
-            schema: 2,
+            schema: 3,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -1182,7 +1382,16 @@ impl Game {
             } else {
                 s.blocks.clone()
             },
-            damage_assigned: s.hits.clone(),
+            damage_assigned: if owns_choice {
+                s.hits.clone()
+            } else {
+                Vec::new()
+            },
+            damage_source: if owns_choice {
+                s.damage_choices.last().map(|choice| choice.source.object)
+            } else {
+                None
+            },
             outcome: s.outcome,
             actions: if owns_choice {
                 self.legal_actions()
@@ -1207,7 +1416,8 @@ impl Game {
             + s.blocks.len() * std::mem::size_of::<(CardId, CardId)>()
             + s.selected_attackers.len() * std::mem::size_of::<CardId>()
             + s.selected_blocks.len() * std::mem::size_of::<(CardId, CardId)>()
-            + s.hits.len() * std::mem::size_of::<(Target, i32)>()
+            + s.hits.len() * std::mem::size_of::<DamageEvent>()
+            + s.first_strikers.len() * std::mem::size_of::<CardId>()
             + s.damage_choices.len() * std::mem::size_of::<DamageChoice>()
             + s.damage_choices
                 .iter()

@@ -1,11 +1,13 @@
 //! Smoke policies for tests and benchmarks; not a training implementation.
-use crate::{Action, Game, Target};
+use crate::{Action, Game, Step, Target};
 
 /// Deterministic simple policy: keep, play lands, cast, attack, block, tap, pass.
 /// Uses only the acting player's observation and the offered action list.
 pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
     let actor = game.actor().expect("nonterminal game");
     let observation = game.observe(actor);
+    let tap_for_main =
+        observation.active == actor && matches!(observation.step, Step::Main1 | Step::Main2);
     let score = |action: &Action| -> i32 {
         match action {
             Action::Concede => -1000,
@@ -52,7 +54,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::Attack { .. } | Action::Block { .. } => 60,
             Action::AssignDamage { amount, .. } => 50 + *amount,
             Action::Bottom { .. } | Action::Discard { .. } => 50,
-            Action::TapMana { .. } => 10,
+            Action::TapMana { .. } => {
+                if tap_for_main {
+                    10
+                } else {
+                    -20
+                }
+            }
             Action::Pass | Action::FinishAttackers | Action::FinishBlockers => 0,
         }
     };

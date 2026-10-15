@@ -17,7 +17,7 @@ class BindingTests(unittest.TestCase):
             observation = game.observe("P0")
             coverage = json.loads((Path(__file__).resolve().parents[1] / "data/standard/coverage.json").read_text())
             self.assertEqual(observation["catalogue"], coverage["catalogue_version"])
-            self.assertEqual(observation["schema"], 2)
+            self.assertEqual(observation["schema"], 3)
             self.assertEqual(len(observation["objects"]), 7)
             self.assertTrue(all(o["owner"] == "P0" for o in observation["objects"]))
             self.assertEqual(game.observe("P1")["actions"], [])
@@ -115,6 +115,43 @@ else:
             self.assertGreaterEqual(cast_count, 7)
             self.assertIn("Winner", observation["outcome"])
             self.assertEqual(game.observe("P0")["outcome"], game.observe("P1")["outcome"])
+
+    def test_standard_keyword_combat_through_shared_library(self):
+        white = ["Plains"] * 28
+        for name in ["Savannah Lions", "Healer's Hawk", "Bishop's Soldier", "Brightblade Stoat",
+                     "Leonin Skyhunter", "Serra Angel", "Shrike Force", "Iron Giant"]:
+            white.extend([name] * 4)
+        green = ["Forest"] * 24
+        for name in ["Ankle Biter", "Dragon Sniper", "Magnigoth Sentry", "Colossadactyl",
+                     "Tajuru Pathwarden", "Galewind Moose", "Gigantosaurus", "Bear Cub", "Jibbirik Omnivore"]:
+            green.extend([name] * 4)
+        seen_steps = set()
+        with Game([white, green], seed=2, deck_rules="Standard") as game:
+            obs = game.observe("P0")
+            for _ in range(10000):
+                if obs["outcome"] is not None:
+                    break
+                if obs["viewer"] != obs["actor"]:
+                    obs = game.observe(obs["actor"])
+                seen_steps.add(obs["step"])
+                def score(action):
+                    if action["kind"] == "AssignDamage":
+                        self.assertIn("target", action)
+                        if obs["damage_assigned"]:
+                            self.assertIn("source", obs["damage_assigned"][0])
+                        return 50 + action["amount"]
+                    if action["kind"] == "TapMana":
+                        return 10 if obs["active"] == obs["actor"] and obs["step"] in ("Main1", "Main2") else -20
+                    return {"Concede": -1000, "Mulligan": -100, "Keep": 100, "PlayLand": 90,
+                            "Cast": 80, "Attack": 60, "Block": 60,
+                            "Discard": 50}.get(action["kind"], 0)
+                index = max(range(len(obs["actions"])), key=lambda i: (score(obs["actions"][i]), i))
+                obs = game.step(obs, index)
+            else:
+                self.fail("Standard keyword game did not end")
+            self.assertIn("FirstStrikeDamage", seen_steps)
+            self.assertIn("CombatDamage", seen_steps)
+            self.assertIn("Winner", obs["outcome"])
 
 
 if __name__ == "__main__":

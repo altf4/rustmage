@@ -5,7 +5,7 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 26 have executable rules so far.
+knows all 5,164 pinned Standard identities; 43 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
@@ -83,15 +83,17 @@ loss, lethal damage, simultaneous losses, summoning sickness, attack/block
 declarations, multiple blockers, damage division, cleanup discard, and temporary
 power/toughness effects. Declarations and damage choices are incremental, so legal
 action generation does not enumerate all subsets or blocking configurations.
-The implemented keyword rules are flying, reach, haste, vigilance, defender and
-flash. A strict compiler admits exact vanilla/keyword-only creatures; cards with
+The implemented keyword rules are flying, reach, haste, vigilance, defender,
+flash, lifelink, deathtouch, trample, first strike and double strike. Damage uses
+source-aware simultaneous batches; strike steps and damage choices can be copied
+and restored. A strict compiler admits exact vanilla/keyword-only creatures; cards with
 other text still require implementations.
 
 `Constructed` checks 60-card minimum and the four-copy limit; **it does not claim
 Modern/Standard or other format legality**. `Standard` separately enforces the
 frozen legal-card pool and copy restrictions, then rejects unsupported semantics.
 `Freeform` explicitly opts out of
-those construction restrictions for experiments. Both modes require 7..=65535
+those construction restrictions for experiments. All modes require 7..=65535
 cards per deck, an explicit current representation limit. Unknown cards fail to
 deserialize; known cards with unimplemented rules fail game creation. There is
 no fallback that treats unsupported cards as vanilla.

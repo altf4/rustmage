@@ -58,8 +58,11 @@ Current IDs are stable because no accepted card can reenter the battlefield or
 be recast from a graveyard. Before adding those mechanics, replace target IDs
 with index + zone-change generation references and implement last-known
 information. Before adding control-changing effects, distinguish owner from
-controller everywhere. Before adding damage triggers/prevention, represent
-simultaneous damage as an event batch carrying source and target information.
+controller everywhere. Simultaneous damage is now represented as a batch with
+captured source/controller/keyword attributes. The next trigger/prevention work
+must consume and modify these events; a general last-known-information registry
+and generation-aware object references are still prerequisites for zone-return
+mechanics.
 These are prerequisites for card admission, not optional compatibility details.
 
 The current rules reference is Wizards' [September 25, 2026 Comprehensive Rules](https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt).

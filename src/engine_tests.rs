@@ -13,15 +13,15 @@ fn fresh() -> Game {
     Game::new(config(vec![Card::Forest; 60])).unwrap()
 }
 
-fn act(game: &mut Game, action: Action) {
+pub(super) fn act(game: &mut Game, action: Action) {
     game.apply(game.actor().unwrap(), action).unwrap();
 }
-fn pass_pair(game: &mut Game) {
+pub(super) fn pass_pair(game: &mut Game) {
     act(game, Action::Pass);
     act(game, Action::Pass);
 }
 
-fn spawn(game: &mut Game, p: Player, card: Card, zone: Zone) -> CardId {
+pub(super) fn spawn(game: &mut Game, p: Player, card: Card, zone: Zone) -> CardId {
     let id = game.state.objects.len() as CardId;
     game.state.objects.push(Object {
         card,
@@ -30,6 +30,7 @@ fn spawn(game: &mut Game, p: Player, card: Card, zone: Zone) -> CardId {
         tapped: false,
         summoning_sick: false,
         damage: 0,
+        deathtouch_since_sba: false,
         growth: 0,
     });
     if zone == Zone::Library {
@@ -38,7 +39,7 @@ fn spawn(game: &mut Game, p: Player, card: Card, zone: Zone) -> CardId {
     id
 }
 
-fn scenario() -> Game {
+pub(super) fn scenario() -> Game {
     let mut game = fresh();
     game.state.objects.clear();
     for player in &mut game.state.players {
@@ -56,7 +57,7 @@ fn scenario() -> Game {
     game
 }
 
-fn cast(game: &mut Game, card: CardId, target: Option<Target>) {
+pub(super) fn cast(game: &mut Game, card: CardId, target: Option<Target>) {
     let action = game
         .legal_actions()
         .into_iter()
@@ -416,7 +417,7 @@ fn combat_damage_is_simultaneous_and_multiblock_damage_is_a_real_choice() {
     act(
         &mut game,
         Action::AssignDamage {
-            blocker: b1,
+            target: Target::Card(b1),
             amount: 2,
         },
     );
@@ -427,7 +428,7 @@ fn combat_damage_is_simultaneous_and_multiblock_damage_is_a_real_choice() {
     act(
         &mut game,
         Action::AssignDamage {
-            blocker: b1,
+            target: Target::Card(b1),
             amount: 0,
         },
     );

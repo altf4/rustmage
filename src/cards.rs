@@ -17,7 +17,7 @@ pub(crate) enum Effect {
 }
 
 /// Implemented static keyword flags. Other keyword cards remain unsupported.
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 #[serde(transparent)]
 pub struct Keywords(u16);
 
@@ -28,8 +28,16 @@ impl Keywords {
     pub const VIGILANCE: Self = Self(8);
     pub const DEFENDER: Self = Self(16);
     pub const FLASH: Self = Self(32);
+    pub const LIFELINK: Self = Self(64);
+    pub const DEATHTOUCH: Self = Self(128);
+    pub const TRAMPLE: Self = Self(256);
+    pub const FIRST_STRIKE: Self = Self(512);
+    pub const DOUBLE_STRIKE: Self = Self(1024);
     pub fn contains(self, keyword: Self) -> bool {
         self.0 & keyword.0 == keyword.0
+    }
+    pub const fn union(self, other: Self) -> Self {
+        Self(self.0 | other.0)
     }
 }
 

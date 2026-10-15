@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "b69159b7298ab34dedb880b2faee6e589fcdbcfc47079384ed59c91b30559d1a",
+  "catalogue_version": "e5a6a0e2ac358eb740bf84f19444c89d80982cc85cefb05f7c4002e5a2f33ce5",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 26,
-  "implemented_total": 32,
+  "implemented_standard_cards": 43,
+  "implemented_total": 49,
   "cards": [
     {
       "name": "Plains",
@@ -1016,8 +1016,8 @@
     {
       "name": "Ankle Biter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Annie Flash, the Veteran",
@@ -2540,8 +2540,8 @@
     {
       "name": "Bishop's Soldier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Bite Down",
@@ -3284,8 +3284,8 @@
     {
       "name": "Brightblade Stoat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Brightfield Glider",
@@ -4814,8 +4814,8 @@
     {
       "name": "Colossadactyl",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Colossal Rattlewurm",
@@ -6932,8 +6932,8 @@
     {
       "name": "Dragon Sniper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Dragon Trainer",
@@ -9992,8 +9992,8 @@
     {
       "name": "Galewind Moose",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Galion, Elvenking's Butler",
@@ -11858,8 +11858,8 @@
     {
       "name": "Healer's Hawk",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Heaped Harvest",
@@ -12578,8 +12578,8 @@
     {
       "name": "Hullcarver",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Hulldrifter",
@@ -13358,8 +13358,8 @@
     {
       "name": "Iron Giant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Iron Hills",
@@ -19826,8 +19826,8 @@
     {
       "name": "Quaketusk Boar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Quandrix Charm",
@@ -20066,8 +20066,8 @@
     {
       "name": "Raging Redcap",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Ragnarok, Divine Deliverance",
@@ -23132,8 +23132,8 @@
     {
       "name": "Shrike Force",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Shrouded Shepherd // Cleave Shadows",
@@ -24500,8 +24500,8 @@
     {
       "name": "Squirrelanoids",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Stab",
@@ -25754,8 +25754,8 @@
     {
       "name": "Swiftblade Vindicator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Swiftfoot Boots",
@@ -25922,8 +25922,8 @@
     {
       "name": "Tajuru Pathwarden",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Take Out the Trash",
@@ -27284,8 +27284,8 @@
     {
       "name": "Thornweald Archer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Thornwood Falls",
@@ -29048,8 +29048,8 @@
     {
       "name": "Vampire Nighthawk",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Vampire Soulcaller",
