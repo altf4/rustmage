@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "ec260f7f622bf935aeaa47b86b51738f876188bec68e203e5c9f749ef9b9a990",
+  "catalogue_version": "74e5d02190a48e82a4446c848e655984a6e79a1b1fe71bfa8f64fc3d223a8d87",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1112,
-  "implemented_total": 1118,
+  "implemented_standard_cards": 1114,
+  "implemented_total": 1120,
   "token_definitions": 49,
   "emblem_definitions": 1,
   "cards": [
@@ -11230,8 +11230,8 @@
     {
       "name": "Green Goblin, Revenant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Greenbelt Guardian",
@@ -16798,8 +16798,8 @@
     {
       "name": "Misty Knight, Hero for Hire",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Misty Mountains Raider",

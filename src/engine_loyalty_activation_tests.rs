@@ -311,7 +311,7 @@ fn wide_life_event_amount_is_public_captured_and_replayable_through_target_annou
     g.prepare_triggers();
     let view = g.observe(Player::P0);
     let json = serde_json::to_value(&view).unwrap();
-    assert_eq!(json["schema"], 46);
+    assert_eq!(json["schema"], 47);
     let trigger = view
         .waiting_triggers
         .first()

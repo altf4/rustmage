@@ -457,7 +457,7 @@ fn real_c_abi_accepts_generation_bound_attack_and_owns_pending_defenders_across_
         crate::protocol::Session::from_game(g),
     )));
     let before = observe(&h, "P0");
-    assert_eq!(before["schema"], 46);
+    assert_eq!(before["schema"], 47);
     let saved = request(&h, serde_json::json!({"op":"snapshot"}))["snapshot"].clone();
     let mut action = serde_json::to_value(Action::AttackPlaneswalker {
         card: a,
