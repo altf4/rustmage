@@ -28,6 +28,14 @@ pub(super) struct LibraryChoice {
 }
 
 impl Game {
+    pub(super) fn entering_subject(&self, item: &SpellView) -> Option<CardId> {
+        item.entering_object
+            .filter(|object| {
+                self.on_battlefield(object.card) && self.object_ref(object.card) == *object
+            })
+            .map(|object| object.card)
+    }
+
     pub(super) fn arrange_library(
         &mut self,
         player: Player,
@@ -326,8 +334,12 @@ impl Game {
                         yours && !same && entered.card.is_artifact()
                     }
                 };
-                if matched {
-                    self.queue_trigger(source, index);
+                if matched && self.queue_trigger(source, index) {
+                    self.state
+                        .pending_triggers
+                        .last_mut()
+                        .unwrap()
+                        .entering_object = Some(event.after);
                 }
             }
         }
@@ -361,6 +373,7 @@ impl Game {
             source_tapped: source.tapped,
             source_facts: DamageFacts::from_view(source),
             related_stack: None,
+            entering_object: None,
             damage_event: None,
             discard_event: None,
             draw_event: None,
@@ -1096,6 +1109,11 @@ impl Game {
                                 self.state.objects[id as usize].growth += stats;
                             }
                         }
+                        Subject::Entering => {
+                            if let Some(id) = self.entering_subject(&item) {
+                                self.state.objects[id as usize].growth += stats;
+                            }
+                        }
                         Subject::Targets => {
                             for bound in &item.targets {
                                 if self.same_target_object(*bound)
@@ -1108,6 +1126,12 @@ impl Game {
                     }
                 }
                 Instruction::GrantKeywords { subject, keywords } => match subject {
+                    Subject::Entering => {
+                        if let Some(id) = self.entering_subject(&item) {
+                            let object = &mut self.state.objects[id as usize];
+                            object.gained_keywords = object.gained_keywords.union(keywords);
+                        }
+                    }
                     Subject::Attached => {
                         if let Some(id) = self.attached_subject(&item) {
                             let object = &mut self.state.objects[id as usize];
@@ -1223,6 +1247,13 @@ impl Game {
                     kind,
                     amount,
                 } => match subject {
+                    Subject::Entering => {
+                        if let Some(id) = self.entering_subject(&item) {
+                            self.state.objects[id as usize]
+                                .counters
+                                .add(kind, u64::from(amount));
+                        }
+                    }
                     Subject::Attached => {
                         if let Some(id) = self.attached_subject(&item) {
                             self.state.objects[id as usize]

@@ -371,7 +371,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             pairs += check(&a, &l);
             check(&g.observe(actor.other()), &l);
-            assert_eq!(a.schema, 51);
+            assert_eq!(a.schema, rustmage::OBSERVATION_SCHEMA);
             if let Some(f) = fork {
                 let expected = g.snapshot();
                 assert_eq!(f.snapshot(), expected);

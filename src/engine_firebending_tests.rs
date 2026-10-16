@@ -142,7 +142,7 @@ fn pool(g: &Game, p: Player) -> (Mana, u32) {
     assert!(state.combat_red_mana <= state.mana[3]);
     for viewer in [p, p.other()] {
         let o = g.observe(viewer);
-        assert_eq!(o.schema, 51);
+        assert_eq!(o.schema, crate::engine::OBSERVATION_SCHEMA);
         assert_eq!(o.players[p.index()].mana, state.mana);
         assert_eq!(o.players[p.index()].combat_red_mana, state.combat_red_mana);
     }

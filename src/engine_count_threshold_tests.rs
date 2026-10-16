@@ -145,7 +145,7 @@ fn all_nine_bodies_really_cast_with_full_stats_keywords_mill_and_hybrid_costs() 
                 before - if i == 1 { 3 } else { 0 }
             );
             assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 1);
-            assert_eq!(g.observe(p).schema, 51);
+            assert_eq!(g.observe(p).schema, crate::engine::OBSERVATION_SCHEMA);
         }
     }
 }

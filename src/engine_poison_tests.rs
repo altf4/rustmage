@@ -153,7 +153,7 @@ fn all_four_bodies_cast_with_complete_stats_keywords_legend_and_clue_entry() {
             );
             for viewer in [p, p.other()] {
                 let o = g.observe(viewer);
-                assert_eq!(o.schema, 51);
+                assert_eq!(o.schema, crate::engine::OBSERVATION_SCHEMA);
                 assert_eq!(o.players[0].poison_counters, 0);
                 assert_eq!(o.players[1].poison_counters, 0);
             }

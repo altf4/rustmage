@@ -26,7 +26,7 @@ fn passes(g: &mut Game) {
 fn losses(g: &Game, expected: [u128; 2]) {
     for p in [Player::P0, Player::P1] {
         let o = g.observe(p);
-        assert_eq!(o.schema, 51);
+        assert_eq!(o.schema, crate::engine::OBSERVATION_SCHEMA);
         assert_eq!(
             [
                 o.players[0].life_lost_this_turn,

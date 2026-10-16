@@ -376,7 +376,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     "private hand leaked"
                 );
             }
-            assert_eq!(after.schema, 51);
+            assert_eq!(after.schema, rustmage::OBSERVATION_SCHEMA);
 
             if before.turn == after.turn {
                 // This deck has no exile/bounce or zero-toughness incoming

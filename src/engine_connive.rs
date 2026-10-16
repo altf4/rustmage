@@ -28,6 +28,14 @@ impl Game {
             return;
         }
         let remaining = match subject {
+            Subject::Entering => item
+                .entering_object
+                .map(|object| ConniverView {
+                    object,
+                    controller: item.controller,
+                })
+                .into_iter()
+                .collect(),
             Subject::Source => {
                 if !item.source_facts.battlefield {
                     return;

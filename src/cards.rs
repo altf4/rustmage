@@ -621,6 +621,7 @@ pub(crate) struct AuraSpec {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Subject {
+    Entering,
     Source,
     Targets,
     Attached,

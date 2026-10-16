@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "0ac521c3fa1ebcc2943528fe61a1004c40ddc01d8843444ed0befa7f2e56315b",
+  "catalogue_version": "deda95097088fd61e88d9fe7720b7da18d54fdcb5f0e0c47444e6eaf81eda9f6",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1353,
-  "implemented_total": 1359,
+  "implemented_standard_cards": 1356,
+  "implemented_total": 1362,
   "token_definitions": 57,
   "emblem_definitions": 1,
   "cards": [
@@ -11008,8 +11008,8 @@
     {
       "name": "Good-Fortune Unicorn",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Gorehorn Raider",
@@ -22798,8 +22798,8 @@
     {
       "name": "Serra Redeemer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Servant of the Stinger",
@@ -29932,8 +29932,8 @@
     {
       "name": "Wartime Protestors",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Wary Farmer",
