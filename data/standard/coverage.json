@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "5602c1a377c8ae3e7c7d6437d36d759d20632143990102df39f2399ebb6df076",
+  "catalogue_version": "fa40aadd8775ee9b67e006aae0ecca30d1f3d06240acf3e84471732718758b95",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1242,
-  "implemented_total": 1248,
+  "implemented_standard_cards": 1246,
+  "implemented_total": 1252,
   "token_definitions": 56,
   "emblem_definitions": 1,
   "cards": [
@@ -9946,8 +9946,8 @@
     {
       "name": "Fynn, the Fangbearer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Fíli the Pathfinder",
@@ -18820,8 +18820,8 @@
     {
       "name": "Persuasive Interrogators",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Pest Control",
@@ -26992,8 +26992,8 @@
     {
       "name": "The Serpent Society",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "The Sibsig Ceremony",
@@ -29476,8 +29476,8 @@
     {
       "name": "Virulent Silencer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Virus Beetle",

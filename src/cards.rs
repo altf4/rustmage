@@ -140,6 +140,7 @@ impl TargetPlan {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum PlayerSet {
     DrawingPlayer,
+    DamagedPlayer,
     Controller,
     Opponent,
     Each,
@@ -322,6 +323,10 @@ pub(crate) enum Instruction {
         tapped: bool,
     },
     CounterRelated,
+    AddPoison(PlayerSet, u16),
+    MayOpponent {
+        skip: usize,
+    },
     MayPayOpponentLife {
         amount: u16,
         skip: usize,
@@ -854,6 +859,9 @@ pub(crate) enum TriggerCondition {
     Sacrificed {
         filter: SacrificeFilter,
         own_turn: bool,
+    },
+    CreatureDiesFiltered {
+        filter: CreatureFilter,
     },
     PermanentToGraveyard {
         kinds: u16,

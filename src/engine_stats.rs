@@ -51,6 +51,7 @@ impl Game {
                     | TriggerCondition::SelfEntersOrDies
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::PermanentToGraveyard { .. }
+                    | TriggerCondition::CreatureDiesFiltered { .. }
                     | TriggerCondition::Sacrificed { .. }
             )
         }) {
