@@ -225,7 +225,14 @@ fn named_and_multicolor_factories_preserve_characteristics_and_block_restriction
         .unwrap();
     assert_eq!(inkling.token.unwrap().colors, 5);
     assert!(inkling.keywords.contains(Keywords::FLYING));
-    let rat = factory("Rat Token");
+    // Multiple Rat recipes now share the printed name; select the actual
+    // cannot-block factory rather than relying on catalogue sort order.
+    let rat = Card::catalogue()
+        .find(|c| {
+            c.token_info().is_some_and(|info| info.name == "Rat Token")
+                && c.keywords().contains(Keywords::CANT_BLOCK)
+        })
+        .unwrap();
     game.create_tokens(Player::P1, rat, 1, false);
     let rat_id = *tokens(&game).last().unwrap();
     let attacker = spawn(&mut game, Player::P0, Card::HillGiant, Zone::Battlefield);

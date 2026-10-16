@@ -11,6 +11,7 @@ impl Game {
             generation: 0,
             tapped: false,
             summoning_sick: false,
+            flashback: false,
             damage: 0,
             damaged_this_turn: false,
             dealt_damage_this_turn: false,

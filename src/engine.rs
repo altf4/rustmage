@@ -9,7 +9,7 @@ use crate::cards::{
     TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
 /// Version of the public observation structure, including owned trigger context.
-pub const OBSERVATION_SCHEMA: u32 = 52;
+pub const OBSERVATION_SCHEMA: u32 = 53;
 
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
@@ -260,6 +260,9 @@ define_actions! {
     AnnounceCast {
         card: CardId,
     },
+    AnnounceFlashback {
+        card: CardId,
+    },
     AnnounceActivate {
         card: CardId,
         ability: u16,
@@ -425,6 +428,8 @@ struct Object {
     tapped: bool,
     // True until this creature's controller begins their next turn.
     summoning_sick: bool,
+    // Exact current stack incarnation was cast using flashback (CR702.34a).
+    flashback: bool,
     damage: i128,
     damaged_this_turn: bool,
     dealt_damage_this_turn: bool,
@@ -493,8 +498,21 @@ struct PlayerState {
     combat_red_mana: u32,
 }
 
+/// How an actual spell was cast; abilities have no cast information.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum CastMethod {
+    Normal,
+    Flashback,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct CastInfo {
+    pub origin: Zone,
+    pub method: CastMethod,
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
+    pub cast: Option<CastInfo>,
     /// The exact event object; this is a non-targeted reference, never rebound.
     pub entering_object: Option<ObjectRef>,
     pub id: u64,
@@ -1102,6 +1120,7 @@ impl Game {
                     generation: 0,
                     tapped: false,
                     summoning_sick: false,
+                    flashback: false,
                     damage: 0,
                     damaged_this_turn: false,
                     dealt_damage_this_turn: false,
@@ -1535,7 +1554,9 @@ impl Game {
                     {
                         return true;
                     }
-                    if obj.zone != Zone::Hand || obj.card.is_token() {
+                    let flashback =
+                        obj.zone == Zone::Graveyard && obj.card.flashback_cost().is_some();
+                    if (obj.zone != Zone::Hand && !flashback) || obj.card.is_token() {
                         continue;
                     }
                     if obj.card.is_land() {
@@ -1552,20 +1573,31 @@ impl Game {
                     }
                     let completable = match obj.card.effect() {
                         Effect::Modal(modes) => modes.iter().any(|mode| {
-                            self.targets_available(mode.targets, actor, self.object_ref(card))
+                            self.cast_targets_available(mode.targets, actor, self.object_ref(card))
                         }),
                         Effect::Spell(spec, _) | Effect::Aura(spec) => {
-                            self.targets_available(spec, actor, self.object_ref(card))
+                            self.cast_targets_available(spec, actor, self.object_ref(card))
                         }
                         _ => true,
                     };
-                    let reduction = if completable {
+                    let has_generic = if flashback {
+                        obj.card.flashback_cost().unwrap().generic > 0
+                    } else {
+                        obj.card.cost().1 > 0
+                    };
+                    let reduction = if completable && has_generic {
                         self.spell_reduction(actor, card)
                     } else {
                         0
                     };
                     if completable {
-                        let can_fund = obj.card.cost_options().any(|cost| {
+                        let costs = if flashback {
+                            std::iter::once(obj.card.flashback_cost().unwrap())
+                                .chain([].iter().copied())
+                        } else {
+                            obj.card.cost_options()
+                        };
+                        let can_fund = costs.into_iter().any(|cost| {
                             if obj.card.additional_cost().is_some() {
                                 return self.spell_can_fund(actor, card, cost);
                             }
@@ -1596,11 +1628,18 @@ impl Game {
                                 result
                             }
                         });
-                        if can_fund && emit(Action::AnnounceCast { card }) {
+                        if can_fund
+                            && emit(if flashback {
+                                Action::AnnounceFlashback { card }
+                            } else {
+                                Action::AnnounceCast { card }
+                            })
+                        {
                             return true;
                         }
                     }
-                    if obj.card.additional_cost().is_some()
+                    if flashback
+                        || obj.card.additional_cost().is_some()
                         || matches!(obj.card.effect(), Effect::Modal(_))
                     {
                         // Modal spells use the staged path: mode, targets, payment.
@@ -1977,6 +2016,12 @@ impl Game {
             }
             Action::AnnounceCast { card } => {
                 let item = self.cast_item(actor, card, [0; 6]);
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
+            Action::AnnounceFlashback { card } => {
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                item.cast.as_mut().unwrap().method = CastMethod::Flashback;
+                self.state.objects[card as usize].flashback = true;
                 self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceActivate {
@@ -2494,6 +2539,12 @@ impl Game {
         counters: Counters,
     ) -> ZoneChange {
         let id = before.id;
+        let destination = if before.zone == Zone::Stack && self.state.objects[id as usize].flashback
+        {
+            Zone::Exile
+        } else {
+            destination
+        };
         // CR111.8: after leaving the battlefield, a token cannot move again.
         if before.card.is_emblem() || (before.card.is_token() && before.zone != Zone::Battlefield) {
             return ZoneChange {
@@ -2599,6 +2650,7 @@ impl Game {
         }
         let obj = &mut self.state.objects[id as usize];
         obj.zone = destination;
+        obj.flashback = false;
         obj.generation = generation;
         obj.tapped = tapped;
         obj.summoning_sick = destination == Zone::Battlefield;
@@ -3783,3 +3835,7 @@ mod attack_declaration_tests;
 #[cfg(test)]
 #[path = "engine_contextual_cast_tests.rs"]
 mod contextual_cast_tests;
+
+#[cfg(test)]
+#[path = "engine_flashback_tests.rs"]
+mod flashback_tests;

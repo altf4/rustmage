@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "543f9a0bb517df61bcd7b901c1da4bcc1a8c3607b73b6a51e6a49fc25ecfaca0",
+  "catalogue_version": "0049f32655b778863e81899073df110ffd9d586b64fcc2384a2a3b748bcacc30",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1415,
-  "implemented_total": 1421,
-  "token_definitions": 58,
+  "implemented_standard_cards": 1424,
+  "implemented_total": 1430,
+  "token_definitions": 60,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -1618,8 +1618,8 @@
     {
       "name": "Auron's Inspiration",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Aurora Awakener",
@@ -2386,8 +2386,8 @@
     {
       "name": "Bestial Incursion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Bestow Greatness",
@@ -6454,8 +6454,8 @@
     {
       "name": "Dig Site Inventory",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Digsite Conservator",
@@ -7114,8 +7114,8 @@
     {
       "name": "Dreams of Laguna",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Dredger's Insight",
@@ -14746,8 +14746,8 @@
     {
       "name": "Laughing Mad",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Lavaleaper",
@@ -19336,8 +19336,8 @@
     {
       "name": "Predictive Preparations",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Prehistoric Pet",
@@ -21052,8 +21052,8 @@
     {
       "name": "Revenge of the Rats",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Reverberating Summons",
@@ -27190,8 +27190,8 @@
     {
       "name": "Think Twice",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Thinking Cap",
@@ -27766,8 +27766,8 @@
     {
       "name": "Tome Blast",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Tomik, Izzet Sparkmage",

@@ -124,7 +124,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::Concede => -1000,
             Action::Sacrifice { .. } => 50,
             Action::DeclineEffectPayment => -1,
-            Action::AnnounceCast { .. } => 79,
+            Action::AnnounceCast { .. } | Action::AnnounceFlashback { .. } => 79,
             Action::AnnounceActivate { .. } => 34,
             Action::AnnounceMana { .. } => -2,
             Action::PayCosts { .. } => 100,

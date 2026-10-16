@@ -281,6 +281,7 @@ impl Game {
     ) -> SpellView {
         self.state.passes = 0;
         SpellView {
+            cast: None,
             id: self.next_stack_id(),
             kind: StackKind::ActivatedAbility { ability },
             source_card: self.state.objects[card as usize].card,

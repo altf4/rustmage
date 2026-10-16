@@ -378,6 +378,7 @@ impl Game {
         }
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
+            cast: None,
             id,
             kind: StackKind::TriggeredAbility {
                 ability: u16::try_from(index).expect("ability index"),
