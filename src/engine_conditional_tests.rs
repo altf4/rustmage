@@ -665,6 +665,7 @@ fn flat_if_else_offsets_and_scry_pc_keep_common_tail_outside_both_branches() {
             milled: Vec::new(),
             library: None,
             selection: None,
+            target_library: None,
             search: None,
             choice: None,
         });

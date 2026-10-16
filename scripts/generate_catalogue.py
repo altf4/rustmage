@@ -1207,6 +1207,10 @@ def statement_program(text):
         program=search_program(text[len('you may '):])
         return [f'May {{ skip: {len(program)} }}',*program] if program else None
     if search := search_program(text): return search
+    if text=='you create a Mutagen token.':
+        return predefined_program('create a Mutagen token.')
+    if text=='you lose 2 life unless you control a Villain.':
+        return ['If { guard: StepGuard::Expression { value: '+stat_value('Villains you control')+', minimum: None, maximum: Some(0) }, skip: 1 }','LoseLife(PlayerSet::Controller, 2)']
     if not text.endswith('.'):
         return None
     if m := re.fullmatch(r'put (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on this creature\.', text):
@@ -1553,6 +1557,12 @@ def targeted_program(text):
         if text.startswith(subject+' '):
             result=targeted_program('target creature '+text[len(subject)+1:])
             return (rule,result[1]) if result and result[0]=='Creature' else None
+    # Exact single target moves. Owner choice never denotes a spell target.
+    library_subjects={'target creature':'Creature','target artifact or creature':'ArtifactCreature','target nonland permanent':'Nonland'}
+    if m:=re.fullmatch(r"(?:(target creature|target artifact or creature|target nonland permanent)'s owner|the owner of (target nonland permanent)) puts it on their choice of the top or bottom of their library\.",text):
+        return library_subjects[m[1] or m[2]],['OwnerLibrary']
+    if m:=re.fullmatch(r"put (target creature|target card from a graveyard) on the bottom of its owner's library\.",text):
+        return {'target creature':'Creature','target card from a graveyard':'CardGrave'}[m[1]],['BottomLibrary']
     # Exact subject/cardinality mapping shared by announcement and resolution.
     object_subjects={
         'target creature':'Creature','target creature you control':'CreatureYou',

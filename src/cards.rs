@@ -447,6 +447,8 @@ pub(crate) enum Instruction {
     ExileUntilSourceLeaves,
     ExileGraveyard(PlayerSet),
     ReturnToHand,
+    BottomLibrary,
+    OwnerLibrary,
     ReturnToBattlefield,
     Destroy,
     Tap,

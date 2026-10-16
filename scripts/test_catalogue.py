@@ -67,6 +67,33 @@ class CatalogueCompilerTests(unittest.TestCase):
         changed=dict(snapshot,cards=[dict(c,oracle_text=c['oracle_text'].replace('Until the end of your next turn','Until end of turn')) if c['name']=="Alania's Pathmaker" else c for c in snapshot['cards']]);changed['cards_sha256']=hashlib.sha256(json.dumps(changed['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();_,altered=generate.compile_catalogue(changed,target)
         self.assertNotEqual(original['catalogue_version'],altered['catalogue_version']);self.assertTrue(next(c['implemented'] for c in altered['cards'] if c['name']=="Alania's Pathmaker"))
 
+    def test_library_tuck_exact_owner_and_fixed_bottom_grammar(self):
+        bodies=[("Target creature's owner puts it on their choice of the top or bottom of their library.",'Creature','OwnerLibrary'),("Target artifact or creature's owner puts it on their choice of the top or bottom of their library.",'ArtifactCreature','OwnerLibrary'),("Target nonland permanent's owner puts it on their choice of the top or bottom of their library.",'Nonland','OwnerLibrary'),("The owner of target nonland permanent puts it on their choice of the top or bottom of their library.",'Nonland','OwnerLibrary'),("Put target card from a graveyard on the bottom of its owner's library.",'CardGrave','BottomLibrary')]
+        for text,target,op in bodies:
+            self.assertEqual(generate.targeted_program(text),(target,[op]))
+            self.assertIsNone(generate.targeted_program(text+' Then discover 3.'))
+        self.assertEqual(generate.targeted_program("You may put target creature on the bottom of its owner's library."),('Creature',['May { skip: 1 }','BottomLibrary']))
+        for text in ["Target spell or creature's owner puts it on their choice of the top or bottom of their library.","Target creature's controller puts it on their choice of the top or bottom of their library.","Target attacking nontoken creature's owner puts it on their choice of the top or bottom of their library.","Put target card from a graveyard on top of its owner's library.","Target creature's owner may put it on their choice of the top or bottom of their library."]:
+            self.assertIsNone(generate.targeted_program(text))
+
+    def test_library_tuck_thirteen_full_bodies_and_three_cost_gates(self):
+        import json,hashlib
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());manifest=json.loads((generate.ROOT/'docs/library-tuck-admissions.json').read_text())
+        self.assertEqual((len(manifest['cards']),len(manifest['gated'])),(13,3))
+        source,coverage=generate.compile_catalogue(snapshot,target);supported={c['name'] for c in coverage['cards'] if c['implemented']};names={c['name'] for c in manifest['cards']};self.assertTrue(names<=supported)
+        for c in manifest['cards']+manifest['gated']:self.assertEqual(c['oracle_text'],next(r['oracle_text'] for r in snapshot['cards'] if r['name']==c['name']))
+        self.assertFalse({c['name'] for c in manifest['gated']}&supported)
+        altered=dict(snapshot,cards=[dict(c,oracle_text=c.get('oracle_text','')+'\nDiscover 3.') if c['name'] in names else c for c in snapshot['cards']]);altered['cards_sha256']=hashlib.sha256(json.dumps(altered['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();_,bad=generate.compile_catalogue(altered,target);self.assertFalse(names&{c['name'] for c in bad['cards'] if c['implemented']})
+        for name in ['Sudden Setback','Swat Away','Dire Downdraft','Run Behind','Uneasy Partings']:self.assertNotIn(name,supported)
+        self.assertIn('Mutagen Token',source)
+
+    def test_library_tuck_tail_order_and_villain_condition_are_complete(self):
+        result=generate.targeted_program("Put target creature on the bottom of its owner's library. You lose 2 life unless you control a Villain.")
+        self.assertEqual(result[0],'Creature');self.assertEqual(result[1][0],'BottomLibrary');self.assertIn('maximum: Some(0)',result[1][1]);self.assertEqual(result[1][2],'LoseLife(PlayerSet::Controller, 2)')
+        for tail,instruction in [('Surveil 1.','Surveil(1)'),('You create a Mutagen token.','CreateTokens')]:
+            result=generate.targeted_program("Target creature's owner puts it on their choice of the top or bottom of their library. "+tail);self.assertEqual(result[1][0],'OwnerLibrary');self.assertTrue(result[1][1].startswith(instruction))
+        self.assertIsNone(generate.targeted_program("Target creature's owner puts it on their choice of the top or bottom of their library. You create an arbitrary token."))
+
     def test_contextual_cast_headers_keep_complete_target_and_spell_qualifications(self):
         headers={
             'Whenever you cast a spell that targets a creature you control, ':'CastTarget::Creature(CastRelation::You)',

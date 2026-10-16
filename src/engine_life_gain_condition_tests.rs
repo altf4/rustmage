@@ -367,6 +367,7 @@ fn gain_only_suspension_cannot_commit_unrepresentable_continuous_stats() {
                     milled: Vec::new(),
                     library: None,
                     selection: None,
+                    target_library: None,
                     search: None,
                     choice: None,
                 });

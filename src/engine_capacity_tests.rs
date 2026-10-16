@@ -280,6 +280,7 @@ fn unrepresentable_derived_stats_cannot_escape_at_an_optional_resolution_boundar
         milled: Vec::new(),
         library: None,
         selection: None,
+        target_library: None,
         search: None,
         choice: None,
     });

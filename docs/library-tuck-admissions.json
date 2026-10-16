@@ -1,0 +1,598 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-16",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Chrome Companion",
+      "oracle_text": "Whenever this creature becomes tapped, you gain 1 life.\n{2}, {T}: Put target card from a graveyard on the bottom of its owner's library.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/ChromeCompanion.java",
+          "java_sha256": "344d78ffccd11a7866755234569fd97687e30957f902b4341faf626870a90dce"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+          "java_sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "java_sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "java_sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+          "java_sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInGraveyard.java",
+          "java_sha256": "906e86825eed8b6d1a0e9e72c0761aa181aabdc61abbf99fd526f2d3531020b7"
+        }
+      ]
+    },
+    {
+      "name": "Hoverstone Pilgrim",
+      "oracle_text": "Flying\nWard {2} (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)\n{2}: Put target card from a graveyard on the bottom of its owner's library.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HoverstonePilgrim.java",
+          "java_sha256": "cc9a98cd0c3ee802805be923ad8b4eda35c861ee078ba91ec2d25a2fc4143b23"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "java_sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+          "java_sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInGraveyard.java",
+          "java_sha256": "906e86825eed8b6d1a0e9e72c0761aa181aabdc61abbf99fd526f2d3531020b7"
+        }
+      ]
+    },
+    {
+      "name": "Jade-Cast Sentinel",
+      "oracle_text": "Reach\n{2}, {T}: Put target card from a graveyard on the bottom of its owner's library.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/j/JadeCastSentinel.java",
+          "java_sha256": "1a6de1dc6a832f0cfde9f97d5e17bf68d09caca69487cf5f2cdabd4a287e865d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "java_sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "java_sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+          "java_sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+          "java_sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInGraveyard.java",
+          "java_sha256": "906e86825eed8b6d1a0e9e72c0761aa181aabdc61abbf99fd526f2d3531020b7"
+        }
+      ]
+    },
+    {
+      "name": "Malevolent Chandelier",
+      "oracle_text": "Flying\n{2}: Put target card from a graveyard on the bottom of its owner's library. Activate only as a sorcery.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MalevolentChandelier.java",
+          "java_sha256": "d64f82c187d681b09f5b52e3d6e45099a93a08f6432a3e5a181e3fdf792e591e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "java_sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "java_sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+          "java_sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInGraveyard.java",
+          "java_sha256": "906e86825eed8b6d1a0e9e72c0761aa181aabdc61abbf99fd526f2d3531020b7"
+        }
+      ]
+    },
+    {
+      "name": "The Spot's Portal",
+      "oracle_text": "Put target creature on the bottom of its owner's library. You lose 2 life unless you control a Villain.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TheSpotsPortal.java",
+          "java_sha256": "422af8d006afa6544805ddf4054f68374d958555b22b54ead22f8acb5d61239b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+          "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+          "java_sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+          "java_sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+          "java_sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+          "java_sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "name": "Lost in Space",
+      "oracle_text": "Target artifact or creature's owner puts it on their choice of the top or bottom of their library. Surveil 1. (Look at the top card of your library. You may put it into your graveyard.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LostInSpace.java",
+          "java_sha256": "c058e98095f0523e906786ea7dcbf7d78572764433ab2121ceaac15adb07f200"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+          "java_sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnTopOrBottomLibraryTargetEffect.java",
+          "java_sha256": "95bb260b732c9424cbbd22d60f7904ae468ce3b0277707decdeef4466034be30"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+          "java_sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        }
+      ]
+    },
+    {
+      "name": "Misleading Motes",
+      "oracle_text": "Target creature's owner puts it on their choice of the top or bottom of their library.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MisleadingMotes.java",
+          "java_sha256": "209b71d763e4b09c33e91b33b142961a663103b91615e87344f26107a73d8777"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+          "java_sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnTopOrBottomLibraryTargetEffect.java",
+          "java_sha256": "95bb260b732c9424cbbd22d60f7904ae468ce3b0277707decdeef4466034be30"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "name": "Return to the Sewers",
+      "oracle_text": "Target creature's owner puts it on their choice of the top or bottom of their library. You create a Mutagen token. (It's an artifact with \"{1}, {T}, Sacrifice this token: Put a +1/+1 counter on target creature. Activate only as a sorcery.\")",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/ReturnToTheSewers.java",
+          "java_sha256": "2bd4cc9d10d4f304953d6ce4c091b7d09eb255a7fe77b6ef8e4f7d9e6e3330bf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+          "java_sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnTopOrBottomLibraryTargetEffect.java",
+          "java_sha256": "95bb260b732c9424cbbd22d60f7904ae468ce3b0277707decdeef4466034be30"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/MutagenToken.java",
+          "java_sha256": "bcb05068d2fd40b12c614b7be40e1fc353c9b5398e72ce493fa9c24e0354644d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "name": "Riverwalk Technique",
+      "oracle_text": "Choose one \u2014\n\u2022 The owner of target nonland permanent puts it on their choice of the top or bottom of their library.\n\u2022 Counter target noncreature spell.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RiverwalkTechnique.java",
+          "java_sha256": "e42f7325bc043b76ee8ff2708843ec2227d81aed284a49d5f3a5da085ea82eec"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Mode.java",
+          "java_sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterTargetEffect.java",
+          "java_sha256": "49282767e8f8d631bb38ae1d35bc91a29ab2ae8173030e3a89d3da495c1cf233"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+          "java_sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnTopOrBottomLibraryTargetEffect.java",
+          "java_sha256": "95bb260b732c9424cbbd22d60f7904ae468ce3b0277707decdeef4466034be30"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetSpell.java",
+          "java_sha256": "349d67f29235bc2e3ad846c3b177f18dc1097e87e80327a77c852667289f94cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetNonlandPermanent.java",
+          "java_sha256": "6e4720e1386bdaa8f84eaf97cc8d6646845307f0be8697190c25cd1285ba598a"
+        }
+      ]
+    },
+    {
+      "name": "Trip Up",
+      "oracle_text": "Target nonland permanent's owner puts it on their choice of the top or bottom of their library.\nCycling {2} ({2}, Discard this card: Draw a card.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TripUp.java",
+          "java_sha256": "7ade81af6a9366c24418a03ec71a9de3982dea5e404ec033e00da5ebf47b8e4d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+          "java_sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnTopOrBottomLibraryTargetEffect.java",
+          "java_sha256": "95bb260b732c9424cbbd22d60f7904ae468ce3b0277707decdeef4466034be30"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+          "java_sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetNonlandPermanent.java",
+          "java_sha256": "6e4720e1386bdaa8f84eaf97cc8d6646845307f0be8697190c25cd1285ba598a"
+        }
+      ]
+    },
+    {
+      "name": "Uncharted Voyage",
+      "oracle_text": "Target creature's owner puts it on their choice of the top or bottom of their library.\nSurveil 1. (Look at the top card of your library. You may put it into your graveyard.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/u/UnchartedVoyage.java",
+          "java_sha256": "7f8260454c85e5246ff63ada489a41ffbd89b48f49544b66ca44db520d614bea"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+          "java_sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnTopOrBottomLibraryTargetEffect.java",
+          "java_sha256": "95bb260b732c9424cbbd22d60f7904ae468ce3b0277707decdeef4466034be30"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+          "java_sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "name": "Unlucky Drop",
+      "oracle_text": "Target artifact or creature's owner puts it on their choice of the top or bottom of their library.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/u/UnluckyDrop.java",
+          "java_sha256": "9c4d8da64f89450838714e374c963afa5587a100d25d50bb5ef66550e3a88843"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+          "java_sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnTopOrBottomLibraryTargetEffect.java",
+          "java_sha256": "95bb260b732c9424cbbd22d60f7904ae468ce3b0277707decdeef4466034be30"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        }
+      ]
+    },
+    {
+      "name": "Vanish from Sight",
+      "oracle_text": "Target nonland permanent's owner puts it on their choice of the top or bottom of their library. Surveil 1. (Look at the top card of your library. You may put it into your graveyard.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VanishFromSight.java",
+          "java_sha256": "2c3bd1e53c4153f3777d15a18ec703386cac78a5bf8bbba149c499d41a763822"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+          "java_sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnTopOrBottomLibraryTargetEffect.java",
+          "java_sha256": "95bb260b732c9424cbbd22d60f7904ae468ce3b0277707decdeef4466034be30"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+          "java_sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetNonlandPermanent.java",
+          "java_sha256": "6e4720e1386bdaa8f84eaf97cc8d6646845307f0be8697190c25cd1285ba598a"
+        }
+      ]
+    }
+  ],
+  "gated": [
+    {
+      "name": "Dire Downdraft",
+      "oracle_text": "This spell costs {1} less to cast if it targets an attacking or tapped creature.\nTarget creature's owner puts it on their choice of the top or bottom of their library.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DireDowndraft.java",
+          "java_sha256": "53c1e4632f6fe1fe8b22ce52c99d34f912a25fbb0a211ce4f77cbc9ca3a2a5ca"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+          "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/SourceTargetsPermanentCondition.java",
+          "java_sha256": "e9588b28dba4b7d15dd3a9119f75b3b6b3837213fc8004750b4d6d5bca294852"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+          "java_sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnTopOrBottomLibraryTargetEffect.java",
+          "java_sha256": "95bb260b732c9424cbbd22d60f7904ae468ce3b0277707decdeef4466034be30"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionSourceEffect.java",
+          "java_sha256": "c877e6d5d339d0c8a602f1c16190e62f1dd0a5e1c11ba333a698b6dfee367304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+          "java_sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/AttackingPredicate.java",
+          "java_sha256": "31b80ba46b462c287c4c5d4a4867f7271dccaf8eedc555fb5cbbfe9fea156617"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/TappedPredicate.java",
+          "java_sha256": "71eabf46dc3838343404e9d40c88835361370549c67e42e8c694082ecd050436"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ],
+      "reason": "Target-dependent cost reductions require a separate proposed-target funding model; the full body remains gated."
+    },
+    {
+      "name": "Run Behind",
+      "oracle_text": "This spell costs {1} less to cast if it targets an attacking creature.\nTarget creature's owner puts it on their choice of the top or bottom of their library.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RunBehind.java",
+          "java_sha256": "797076c5083eafdffa339e0f6b01b8fc3bf4fed708f74e04b6e61e24e0d294f1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+          "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/SourceTargetsPermanentCondition.java",
+          "java_sha256": "e9588b28dba4b7d15dd3a9119f75b3b6b3837213fc8004750b4d6d5bca294852"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+          "java_sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnTopOrBottomLibraryTargetEffect.java",
+          "java_sha256": "95bb260b732c9424cbbd22d60f7904ae468ce3b0277707decdeef4466034be30"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionSourceEffect.java",
+          "java_sha256": "c877e6d5d339d0c8a602f1c16190e62f1dd0a5e1c11ba333a698b6dfee367304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ],
+      "reason": "Target-dependent cost reductions require a separate proposed-target funding model; the full body remains gated."
+    },
+    {
+      "name": "Uneasy Partings",
+      "oracle_text": "This spell costs {1} less to cast if it targets an attacking nontoken creature.\nTarget creature's owner puts it on their choice of the top or bottom of their library.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/u/UneasyPartings.java",
+          "java_sha256": "2b730ba43dae830262d0a3099409be4b2282d529807097f7cdb53df7775fd5c9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+          "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/SourceTargetsPermanentCondition.java",
+          "java_sha256": "e9588b28dba4b7d15dd3a9119f75b3b6b3837213fc8004750b4d6d5bca294852"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+          "java_sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnTopOrBottomLibraryTargetEffect.java",
+          "java_sha256": "95bb260b732c9424cbbd22d60f7904ae468ce3b0277707decdeef4466034be30"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionSourceEffect.java",
+          "java_sha256": "c877e6d5d339d0c8a602f1c16190e62f1dd0a5e1c11ba333a698b6dfee367304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterAttackingCreature.java",
+          "java_sha256": "e42cf80f6c0414aa1547a092102896d5149783e7179f782d77f2e1e0263ad191"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/TokenPredicate.java",
+          "java_sha256": "3213600d28e7e1f76d66cee4f781fb3eb01627759fa9306e22c42a6f6fb880da"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ],
+      "reason": "Target-dependent cost reductions require a separate proposed-target funding model; the full body remains gated."
+    }
+  ],
+  "shared_runtime_sources": [
+    {
+      "java_source": "Mage/src/main/java/mage/players/PlayerImpl.java",
+      "java_sha256": "cf703a3906b14381001e910e7213046262224d76fd6c3f1289537f77f1a49ff3"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/players/Library.java",
+      "java_sha256": "50283fdb3c3c29eb6c8182951e74bdd8a31bcdc887e23028f2e1c1d524052f2c"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/PermanentToken.java",
+      "java_sha256": "c14f7e90a0c2dc9dce9380babe9b65ca64d067a733bf6e546fd837cfd9221efd"
+    }
+  ]
+}
