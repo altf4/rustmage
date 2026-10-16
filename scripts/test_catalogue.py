@@ -424,7 +424,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             "Unforgiving Aim", "Valorous Stance", "Withering Torment", "Worthy Cost", "Your Fate Ends Here"]
         self.assertEqual(len(admitted),45)
         for name in admitted:self.assertIn(name,supported)
-        for name in ['Kin-Tree Severance','Unwanted Remake',
+        for name in ['Unwanted Remake',
                      'Consuming Ashes','Bovine Intervention','Get Lost',
                      'Long Goodbye','Ride\'s End','Protective Response','Dragon\'s Prey']:
             self.assertNotIn(name,supported,name)
@@ -585,18 +585,47 @@ class CatalogueCompilerTests(unittest.TestCase):
             costs=generate.spell_cost_options('{1}{'+pair+'}{'+pair+'}{'+pair+'}')
             self.assertEqual(len(costs),4)
             self.assertTrue(all(sum(colored)+generic==4 for colored,generic in costs))
-        for cost in ['{2/W}','{W/P}','{W/U/P}','{C/W}','{S}','{X}','{W/W}','{W/G}',
+        for cost in ['{3/W}','{W/P}','{W/U/P}','{C/W}','{S}','{X}','{W/W}','{W/G}',
                      '{W/U}junk','','{4294967296}{G/W}']:
             self.assertIsNone(generate.spell_cost_options(cost),cost)
         self.assertIsNone(generate.fixed_cost('{G/W}'))
         self.assertIsNone(generate.mana_cost_spec('{G/W}'))
         self.assertIsNone(generate.activation_cost('{G/W}'))
 
+    def test_two_brid_choices_vary_generic_cost_without_changing_canonical_mana_value(self):
+        self.assertEqual(generate.spell_cost_options('{2/W}'),[([0,0,0,0,0,0],2),([1,0,0,0,0,0],0)])
+        self.assertEqual(generate.spell_cost_options('{1}{2/R}{2/R}'),[
+            ([0,0,0,0,0,0],5),([0,0,0,1,0,0],3),([0,0,0,2,0,0],1)])
+        for cost,printed in [('{2/W}{2/B}{2/G}',6),('{W/U}{2/W}{2/U}',5),('{C}{2/G}{R/G}',4)]:
+            options=generate.spell_cost_options(cost)
+            self.assertEqual(sum(options[0][0])+options[0][1],printed)
+            self.assertEqual(len(options),len({(tuple(c),n) for c,n in options}))
+            self.assertTrue(all(sum(c)+n<=printed for c,n in options))
+        for cost in ['{W/2}','{2/C}','{2/2}','{3/W}','{2/W/P}','{4294967294}{2/G}']:
+            self.assertIsNone(generate.spell_cost_options(cost),cost)
+        for text in ['{2/W}: Draw a card.','Cycling {2/W}','Ward {2/W}']:
+            self.assertIsNone(generate.permanent_program_template(self.card(oracle_text=text)),text)
+
+    def test_three_two_brid_admissions_require_complete_bodies(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,report=generate.compile_catalogue(rows,target);supported={r['name'] for r in report['cards'] if r['implemented']}
+        for name in ['Kin-Tree Severance','Reputable Merchant','Temur Tawnyback']:
+            self.assertIn(name,supported)
+            card=next(c for c in rows['cards'] if c['name']==name)
+            extra=dict(card,oracle_text=card['oracle_text']+'\nWhenever you cast a spell, discover 3.')
+            self.assertIsNone(generate.spell_program_template(extra),name)
+            self.assertIsNone(generate.permanent_program_template(extra),name)
+        for name in ['Defibrillating Current','Dragonclaw Strike','Gurmag Nightwatch','Karn, Gilded Guardian',
+                     'Magmablood Archaic','Monastery Messenger',"Rakshasa's Bargain",'Reigning Victor','Riverwheel Sweep','Wildgrowth Archaic']:
+            self.assertNotIn(name,supported)
+
     def test_hybrid_spell_admission_never_approximates_other_symbols_or_ability_costs(self):
         row=self.card(mana_cost='{1}{G/W}',oracle_text='When this creature enters, draw a card.')
         self.assertIsNotNone(generate.trigger_creature_template(row))
         self.assertIsNotNone(generate.creature_template(dict(row,oracle_text='')))
-        for cost in ['{2/W}','{G/W/P}','{X}{G/W}','{S}{G/W}']:
+        for cost in ['{3/W}','{G/W/P}','{X}{G/W}','{S}{G/W}']:
             self.assertIsNone(generate.trigger_creature_template(dict(row,mana_cost=cost)))
         for text in ['{G/W}: Draw a card.','Cycling {G/W}',
                      'Ward {G/W}','When this creature enters, draw a card. Then discover 2.']:

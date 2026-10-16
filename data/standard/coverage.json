@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "286968062d99acd637b9c3d8d9767a3e0308b27299bcd0bce7c0fdaeb5cb68ed",
+  "catalogue_version": "ab285f29d8b903090e3f2334bfbfbe196dfd5810ea39d7e394c0a384bfdb7b66",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1040,
-  "implemented_total": 1046,
+  "implemented_standard_cards": 1043,
+  "implemented_total": 1049,
   "token_definitions": 48,
   "emblem_definitions": 1,
   "cards": [
@@ -14134,8 +14134,8 @@
     {
       "name": "Kin-Tree Severance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Kinbinding",
@@ -20824,8 +20824,8 @@
     {
       "name": "Reputable Merchant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Requiem Monolith",
@@ -26272,8 +26272,8 @@
     {
       "name": "Temur Tawnyback",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Tenacious Tomeseeker",

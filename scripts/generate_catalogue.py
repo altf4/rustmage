@@ -49,22 +49,25 @@ def fixed_cost(cost):
 
 
 def spell_cost_options(cost):
-    """Unique nonhybrid equivalents for ordinary/two-colored-hybrid spell costs."""
-    if not re.fullmatch(r'(?:\{(?:[0-9]+|[WUBRGC]|[WUBRG]/[WUBRG])\})+',cost): return None
+    """Unique exact equivalents; two-brid generic choices retain their full cost."""
+    if not re.fullmatch(r'(?:\{(?:[0-9]+|[WUBRGC]|[WUBRG]/[WUBRG]|2/[WUBRG])\})+',cost): return None
     allowed={'W/U','W/B','U/B','U/R','B/R','B/G','R/G','R/W','G/W','G/U'}
-    variants={(0,0,0,0,0,0)}
-    generic=0
+    variants={(0,0,0,0,0,0,0)}
     for symbol in re.findall(r'\{([^}]+)\}',cost):
-        if symbol.isdigit(): generic+=int(symbol)
+        if symbol.isdigit(): choices=[(6,int(symbol))]
+        elif symbol.startswith('2/'): choices=[(6,2),('WUBRGC'.index(symbol[2]),1)]
         else:
             if '/' in symbol:
                 if symbol not in allowed: return None
                 colors=symbol.split('/')
             else: colors=[symbol]
-            variants={tuple(n+(index=='WUBRGC'.index(color)) for index,n in enumerate(row))
-                      for row in variants for color in colors}
-        if generic>4294967295 or len(variants)>65536: return None
-    return [(list(row),generic) for row in sorted(variants)]
+            choices=[('WUBRGC'.index(color),1) for color in colors]
+        variants={tuple(n+(amount if index==component else 0) for index,n in enumerate(row))
+                  for row in variants for component,amount in choices}
+        if len(variants)>65536 or any(max(row)>4294967295 for row in variants): return None
+    # Colored components sort first, so the canonical choice uses the generic
+    # side of every two-brid symbol. Its total remains the printed mana value.
+    return [(list(row[:6]),row[6]) for row in sorted(variants)]
 
 def permanent_type(card):
     typ = card.get('type_line', '').split(' — ')[0]
@@ -2081,7 +2084,7 @@ def compile_catalogue(snapshot, target):
         costs = spell_cost_options(cost) or [([0] * 6, 0)]
         colored, generic = costs[0]
         if len(costs)>1:
-            hybrid_rows.append(f'        {index} => &['+', '.join(str(mana) for mana,_ in costs[1:])+'],')
+            hybrid_rows.append(f'        {index} => &['+', '.join(f'ManaCost {{ colored: {mana}, generic: {n} }}' for mana,n in costs[1:])+'],')
         deck_limit = 'None' if basic or name in UNLIMITED else 'Some(4)'
         quote = lambda value: json.dumps(value, ensure_ascii=False)
         oracle_id = f"Some({quote(card['oracle_id'])})" if card else 'None'
@@ -2170,7 +2173,7 @@ def compile_catalogue(snapshot, target):
     lines += ['#[rustfmt::skip]', "pub(super) fn keyword_grants(card: Card) -> &'static [KeywordGrant] {", '    match card.0 {', *grant_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn additional_cost(card: Card) -> Option<AdditionalCost> {', '    match card.0 {', *additional_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub const CREATURE_TYPES: &[&str] = &[', *('    '+json.dumps(name)+',' for name in creature_types), '];', '']
-    lines += ['#[rustfmt::skip]', "pub(super) fn cost_alternatives(card: Card) -> &'static [Mana] {", '    match card.0 {', *hybrid_rows, '        _ => &[],', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', "pub(super) fn cost_alternatives(card: Card) -> &'static [ManaCost] {", '    match card.0 {', *hybrid_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn starting_loyalty(card: Card) -> u64 {', '    match card.0 {', *loyalty_rows, '        _ => 0,', '    }', '}', '']
     return '\n'.join(lines), {'schema': 1, 'catalogue_version': version, 'standard_legal_cards': len(cards),
         'implemented_standard_cards': sum(row['implemented'] and row['standard_legal'] for row in coverage),

@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Kin-Tree Severance",
+      "oracle_text": "Exile target permanent with mana value 3 or greater.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/k/KinTreeSeverance.java",
+          "java_sha256": "87f4b07704d0200e821fd18095baf8ff35c4d7b7f631671bd059817ed3c94c39"
+        }
+      ]
+    },
+    {
+      "name": "Reputable Merchant",
+      "oracle_text": "When this creature enters or dies, put a +1/+1 counter on target creature you control.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/ReputableMerchant.java",
+          "java_sha256": "78b057c12cb61e14f3bb045928be8996e82d339bde7374a7ed17a14dc69195eb"
+        }
+      ]
+    },
+    {
+      "name": "Temur Tawnyback",
+      "oracle_text": "When this creature enters, draw a card, then discard a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TemurTawnyback.java",
+          "java_sha256": "caed60cbea0d32cf14ea135ef1af11b76f8402c95e8e914db70e7d121cb21dc4"
+        }
+      ]
+    }
+  ]
+}

@@ -5,13 +5,13 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,040 have executable rules so far.
+knows all 5,164 pinned Standard identities; 1,043 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
-The latest [restricted counterspell targets](docs/counter-spell-filters.md) add seven
-complete bodies with exact color/type unions, mana-value bounds, a four-mana tax
-and Voracious Greatshark's flash/entry trigger. Full Standard rules remain in progress.
+The latest [two-brid spell costs](docs/two-brid-spells.md) add exact committed
+payments and three complete bodies, preserving printed mana values across
+three- through six-mana payments. Full Standard rules remain in progress.
 
 ## Build and use
 
@@ -63,6 +63,7 @@ cargo run --release --example standard_scaled_effects -- 100
 cargo run --release --example standard_distinct_amounts -- 100
 cargo run --release --example standard_conditionals -- 100
 cargo run --release --example standard_counter_filters -- 100
+cargo run --release --example standard_two_brid -- 100
 cargo run --release --example standard_tokens -- 100
 cargo run --release --example standard_activations -- 100
 cargo run --release --example standard_mana -- 100
