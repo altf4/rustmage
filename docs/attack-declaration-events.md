@@ -2,7 +2,8 @@
 
 Issue: https://github.com/altf4/rustmage/issues/192
 
-Coverage is **1,372/5,164** pinned Standard cards, with **3,792 unsupported**.
+After integrating the source-tap and qualified-cast stages, coverage is
+**1,398/5,164** pinned Standard cards, with **3,766 unsupported**.
 Six non-Standard regression identities, **58 token factories** and one emblem remain
 separate. The complete Standard migration remains in progress, pinned to October 15, 2026.
 
@@ -90,12 +91,30 @@ Two 100-game release runs reproduced 75,548 decisions, casts
 no legal targets, 665,113 public stat/keyword/counter checks, 67,161 replay boundaries
 and 25,428 maximum initialized logical bytes. Counts follow the card order above.
 Differences between trigger/effect counts include illegal-target removal and terminal games.
-Catalogue: `4584b51cb98cfbf397b205df5aa8f0306fa20604a8b73ea905483fbbf90a3baf`.
+Standalone catalogue: `4584b51cb98cfbf397b205df5aa8f0306fa20604a8b73ea905483fbbf90a3baf`.
 
 The 1,000-game smoke benchmark measured 571,049 decisions, about 333,115 decisions/s,
 583 games/s, 137 ns clone and 135 ns restore on this host. Measurements include smoke
 policy/observations, exclude model inference, tensor encoding and JSON, vary with
 concurrent host work, and are not an XMage parity comparison.
 
-Validation: all **1,188 Rust tests**, **228 compiler/data tests**, **150 release Python tests**, formatting,
+Standalone validation passed **1,188 Rust tests**, **228 compiler/data tests**,
+**150 release Python tests**, formatting,
 all-target Clippy with warnings denied, catalogue consistency and diff checks pass.
+
+
+Final integration passed **1,222 Rust tests** (1,210 unit and 12 integration),
+**233 compiler/data tests**, **152 fresh release Python tests**, all-target
+Clippy, formatting, catalogue consistency and diff checks. The attack Standard100
+reproduced every vector above after integration. The tap Standard100 reproduced
+70,443 decisions and 57,094 replay boundaries with 21,920 maximum logical bytes;
+the corrected cast Standard100 reproduced 57,272 decisions/replays and all four
+surveil destination patterns with 21,696 maximum logical bytes. The attacker's
+complete declaration is installed before dispatching tap, individual-attack and
+aggregate-attack observers; both earlier event families remain intact.
+
+All 87 provenance hashes across 58 files were reverified against pinned blobs
+and checkout. Relative to the merged cast/tap base, the semantic delta remains
+exactly fourteen previously unsupported definitions and one Gremlin factory;
+all previous executable definitions and 5,183 ordinary IDs remain unchanged.
+Final catalogue: `4e19d02febef51b7252f6bcbaeb8e3c2edf28c487ca2c5ddc58a8b4c185a3568`.
