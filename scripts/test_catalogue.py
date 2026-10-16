@@ -44,7 +44,8 @@ class CatalogueCompilerTests(unittest.TestCase):
         # The predicate is valid for resolution/step programs, but cost queries
         # need the proposed casting state (three cards becomes two in hand).
         self.assertIn('StepValue::Hand',generate.step_guard('you have fewer than 3 cards in hand'))
-        card=self.card(name='Hand Reduction Regression',type_line='Sorcery',mana_cost='{1}{U}',
+        card=self.card(name='Hand Reduction Regression',oracle_id='hand-reduction-regression',
+                       type_line='Sorcery',mana_cost='{1}{U}',
                        colors=['U'],oracle_text=clause+'\nDraw two cards.')
         proxy,rules=generate.extract_cost_reductions(card)
         self.assertEqual(proxy,card);self.assertEqual(rules,[])
