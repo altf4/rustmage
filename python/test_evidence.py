@@ -31,9 +31,43 @@ class EvidenceTests(unittest.TestCase):
   for p in ('P0','P1'):
    for pay in (False,True):
     with self.subTest(seat=p,pay=pay):self.scenario(6,p,pay,ward_ability=True)
- def scenario(self,i,p,pay,zero_extra=False,ward_ability=False):
+ def test_real_mana_sacrifice_joins_evidence_before_and_after_finish(self):
+  class Complete(Exception):pass
+  original=self.replay
+  for p in ('P0','P1'):
+   for finish_first in (False,True):
+    with self.subTest(seat=p,finish_first=finish_first):
+     def probe(g,o,j):
+      if o['actions'][j]['kind']!='FinishEvidence' or not o['announcing'] or o['announcing']['source_card']!='Analyze the Pollen':return original(g,o,j)
+      initial=o['evidence'];self.assertGreaterEqual(initial['total_mana'],8)
+      with g.clone() as c:
+       x=original(c,o,j) if finish_first else c.observe(p)
+       pizza=next(v for v in x['objects'] if v['owner']==p and v['zone']=='Battlefield' and v['card']=='Omni-Cheese Pizza');old=pizza['reference']
+       for _ in range(20):
+        action=next((a for a in x['actions'] if a['kind']=='ActivateMana' and a['card']==pizza['id'] and a['ability']==0),None)
+        if action:break
+        action=next(a for a in x['actions'] if a['kind']=='TapMana');x=original(c,x,x['actions'].index(action))
+       else:self.fail('no funded real Pizza mana ability')
+       x=original(c,x,x['actions'].index(action));v=next(v for v in x['objects'] if v['id']==pizza['id'])
+       self.assertEqual(v['zone'],'Graveyard');self.assertGreater(v['reference']['generation'],old['generation']);self.assertEqual(x['decision'],'evidence');self.assertEqual(x['evidence']['selected'],initial['selected']);self.assertFalse(x['evidence']['complete']);self.assertIsNone(c.observe('P1' if p=='P0' else 'P0')['evidence'])
+       action={'kind':'ChooseEvidence','object':v['reference']};self.assertIn(action,x['actions']);self.reject(c,x,action,'P1' if p=='P0' else 'P0');self.reject(c,x,{'kind':'ChooseEvidence','object':old})
+       x=original(c,x,x['actions'].index(action));self.assertEqual(x['evidence']['total_mana'],initial['total_mana']+2)
+       x=original(c,x,next(j for j,a in enumerate(x['actions']) if a['kind']=='FinishEvidence'));self.assertEqual(next(v for v in x['objects'] if v['id']==pizza['id'])['zone'],'Graveyard')
+       for _ in range(20):
+        action=next((a for a in x['actions'] if a['kind']=='PayCosts'),None)
+        if action:break
+        action=next(a for a in x['actions'] if a['kind']=='TapMana');x=original(c,x,x['actions'].index(action))
+       else:self.fail('no complete cost payment')
+       x=original(c,x,x['actions'].index(action));self.assertEqual(next(v for v in x['objects'] if v['id']==pizza['id'])['zone'],'Exile');self.assertEqual(x['last_evidence']['total_mana'],initial['total_mana']+2);self.assertEqual(x['last_evidence']['sequence'],1);self.assertEqual(len(x['last_evidence']['exiled']),len(initial['selected'])+1)
+      raise Complete
+     self.replay=probe
+     try:
+      with self.assertRaises(Complete):self.scenario(0,p,True,pizza=True)
+     finally:self.replay=original
+ def scenario(self,i,p,pay,zero_extra=False,ward_ability=False,pizza=False):
   name=NAMES[i];other='P1' if p=='P0' else 'P0';owner=int(p[1]);enemy=1-owner
   deck=sum(([b]*12 for b in BASICS),[])+[name]*16+['Hamlet Glutton']*16+['Thrill of Possibility']*16+['Bear Cub']*16
+  if pizza:deck+=['Omni-Cheese Pizza']*16
   if zero_extra:deck+=['Evolving Wilds']*16
   foe=['Forest']*24+['Mountain']*24+['Bear Cub']*16+['Hamlet Glutton']*16+['Thrill of Possibility']*16+['Shock']*16
   if ward_ability:foe+=['Axebane Ferox']*16
@@ -56,6 +90,7 @@ class EvidenceTests(unittest.TestCase):
     threshold=8 if i==0 else 6 if i in (2,3,5,9) else 4 if i in (1,4,8) else 3
     if ward_ability:threshold=14
     ready=enough and (i==1 or not (pay or i in (4,6,7,8)) or grave(p)>=threshold) and (i not in (2,3,7,9) or friends) and (i not in (2,5,6) or foes) and (i!=5 or bigfoes)
+    if pizza:ready=ready and bool(bf(p,'Omni-Cheese Pizza'))
     if o['decision']=='evidence_intent':
      self.assertEqual(ann['source_card'],name);self.assertIsNone(ann['cast']['evidence']);self.assertEqual(ann['targets'],[]);self.assertIsNone(o['payment_request']);self.assertEqual(g.observe(other)['actions'],[])
      self.reject(g,o,{'kind':'ChooseCollectEvidence','collect':pay},other);self.reject(g,o,{'kind':'ChooseTarget','target':{'Player':other}})
@@ -112,6 +147,7 @@ class EvidenceTests(unittest.TestCase):
        if n=='Thrill of Possibility':return 1100 if i==1 and grave(other)<4 and any(v['owner']==other and v['zone']=='Hand' and v['card']=='Hamlet Glutton' for v in objects.values()) else -1000
        if n=='Shock':return 1300 if i==1 and body and not ward_seen and grave(other)>=4 else -1000
        return -1000
+      if pizza and n=='Omni-Cheese Pizza':return 1250 if grave(p)>=threshold and not bf(p,'Omni-Cheese Pizza') else -1000
       if n==name:return 1200 if ready and not paid and k=='AnnounceCast' else -1000
       if n=='Bear Cub':return 850 if i in (2,3,7,9) and not friends else -1000
       if n=='Thrill of Possibility':return 1100 if (pay or i in (4,6,7,8)) and grave(p)<threshold and any(v['owner']==p and v['zone']=='Hand' and v['card']=='Hamlet Glutton' for v in objects.values()) else -1000

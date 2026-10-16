@@ -118,19 +118,21 @@ impl Game {
     ) -> bool {
         let card = self.state.objects[id as usize].card;
         if collect {
-            if !self.can_collect_evidence(p, card.collect_evidence_cost().unwrap()) {
-                return false;
-            }
             mana.generic = mana.generic.saturating_sub(card.evidence_reduction());
         }
         let mana = self.reduced_spell_cost(p, id, mana);
-        self.can_fund(FundingGoal {
+        let goal = FundingGoal {
             actor: p,
             required: mana.colored,
             generic: mana.generic,
             source: None,
             reserve: None,
-        })
+        };
+        if collect {
+            self.can_fund_evidence(goal, card.collect_evidence_cost().unwrap())
+        } else {
+            self.can_fund(goal)
+        }
     }
     pub(super) fn evidence_intent_fundable(&self, collect: bool) -> bool {
         let a = self.state.announcing.as_ref().unwrap();
@@ -230,7 +232,25 @@ impl Game {
                 return true;
             }
         }
+        if self.state.announcing.is_some() {
+            return self.visit_cost_payment(emit);
+        }
         false
+    }
+    pub(super) fn reopen_evidence_after_mana_sacrifice(&mut self, source: CardId) {
+        let o = &self.state.objects[source as usize];
+        if o.zone != Zone::Graveyard || o.card.is_token() {
+            return;
+        }
+        if let Some(a) = &mut self.state.announcing
+            && a.item.controller == o.owner
+            && let Some(e) = &mut a.evidence
+        {
+            e.complete = false;
+            self.state.pending = Pending::Evidence {
+                player: a.item.controller,
+            };
+        }
     }
     pub(super) fn choose_evidence(&mut self, object: ObjectRef) {
         let value = self.state.objects[object.card as usize]
