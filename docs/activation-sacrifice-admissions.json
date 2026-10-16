@@ -1,0 +1,293 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Acolyte of Aclazotz",
+      "oracle_text": "{T}, Sacrifice another creature or artifact: Each opponent loses 1 life and you gain 1 life.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AcolyteOfAclazotz.java",
+          "java_sha256": "4b06b56e4d0156e389f63361fa81ff4dbb0eac4d41e72d2715f758af3c155cd3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        }
+      ]
+    },
+    {
+      "name": "Ahriman",
+      "oracle_text": "Flying, deathtouch\n{3}, Sacrifice another creature or artifact: Draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/Ahriman.java",
+          "java_sha256": "4e2ee98d4afa2e3eef1e473e0c4edcd63e61d737062348393a7c5ce81d35096f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        }
+      ]
+    },
+    {
+      "name": "Cauldron of Essence",
+      "oracle_text": "Whenever a creature you control dies, each opponent loses 1 life and you gain 1 life.\n{1}{B}{G}, {T}, Sacrifice a creature: Return target creature card from your graveyard to the battlefield. Activate only as a sorcery.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CauldronOfEssence.java",
+          "java_sha256": "7ed1bf89748271877cac2cc5e666ac96b39b77715b2a9a026f322ac56b1df441"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        }
+      ]
+    },
+    {
+      "name": "Fountainport",
+      "oracle_text": "{T}: Add {C}.\n{2}, {T}, Sacrifice a token: Draw a card.\n{3}, {T}, Pay 1 life: Create a 1/1 blue Fish creature token.\n{4}, {T}: Create a Treasure token.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/Fountainport.java",
+          "java_sha256": "8b3b20adbc69f064c85444a2b71a837b050802a3436ddb8929d13613a6c9cff1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/FishNoAbilityToken.java",
+          "java_sha256": "0598de8f369665c2cb4293dd8b597db529a4c985cc766156b86e563038ffb541"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+          "java_sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+        }
+      ]
+    },
+    {
+      "name": "Hardened Tactician",
+      "oracle_text": "{1}, Sacrifice a token: Draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HardenedTactician.java",
+          "java_sha256": "7154fa3a9811cfb95c030d03b4307b1d98c0cd4ada07322d1378779913324efc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        }
+      ]
+    },
+    {
+      "name": "Hungry Ghoul",
+      "oracle_text": "{1}, Sacrifice another creature: Put a +1/+1 counter on this creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HungryGhoul.java",
+          "java_sha256": "6a41a6c2cd79456d7c14fda11a5cbe0d8dc9fe46f03b6fea9f6bf6d4e64720b9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        }
+      ]
+    },
+    {
+      "name": "Kingpin's Enforcers",
+      "oracle_text": "Lifelink\n{2}{B}, Sacrifice an artifact or creature: Draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/k/KingpinsEnforcers.java",
+          "java_sha256": "2e9f5e7e3e0aa51d47787564e3721ae3ab58fa7be5c4c1ea25cca75ee29973bb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        }
+      ]
+    },
+    {
+      "name": "Legion Extruder",
+      "oracle_text": "When this artifact enters, it deals 2 damage to any target.\n{2}, {T}, Sacrifice another artifact: Create a 3/3 colorless Golem artifact creature token.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LegionExtruder.java",
+          "java_sha256": "ea9e7fb2bb3dcb3579bb9f4fa5b4329fcebc04272a021be752fa81e5b736dff6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/GolemToken.java",
+          "java_sha256": "eb8b536241d1ba60bb5d903d03169f2a64ed357957264d023f70ee2b8868f51f"
+        }
+      ]
+    },
+    {
+      "name": "Marwyn, the Clearcutter",
+      "oracle_text": "{2}, {T}, Sacrifice an artifact or land: Draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MarwynTheClearcutter.java",
+          "java_sha256": "1ee7a43c74a30f630c748c8a885d6f6a40a239f6f7c37ba2ad0b836f4fdd80dc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        }
+      ]
+    },
+    {
+      "name": "Ripchain Razorkin",
+      "oracle_text": "Reach\n{2}{R}, Sacrifice a land: Draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RipchainRazorkin.java",
+          "java_sha256": "8d72aa42fbce890435f2ad004d119c5b6022ed8a27f8d37a5726893c7c389188"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        }
+      ]
+    },
+    {
+      "name": "Seismic Monstrosaur",
+      "oracle_text": "Trample\n{2}{R}, Sacrifice a land: Draw a card.\nMountaincycling {2} ({2}, Discard this card: Search your library for a Mountain card, reveal it, put it into your hand, then shuffle.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SeismicMonstrosaur.java",
+          "java_sha256": "c6ef22ef5cbfc6b5d47eb805a687ac34ad4964ab9836ff5c5fd3e1c5c0698068"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MountaincyclingAbility.java",
+          "java_sha256": "dc2e67b4832257f91bcc790fdb3e2a355d287795326787699230bf0876e55b2c"
+        }
+      ]
+    },
+    {
+      "name": "Slagdrill Scrapper",
+      "oracle_text": "{2}, {T}, Sacrifice another artifact or land: Draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SlagdrillScrapper.java",
+          "java_sha256": "9c54e85e23ba98c1b9b325bce1a9233f995a19266cb5d4daa2171ee530abca05"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        }
+      ]
+    },
+    {
+      "name": "Sweettooth Witch",
+      "oracle_text": "When this creature enters, create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\n{2}, Sacrifice a Food: Target player loses 2 life.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SweettoothWitch.java",
+          "java_sha256": "dd73676c60a48ab0a79ede09d44be899435106e8d6e4c9dd4f19a588d78650b1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/FoodToken.java",
+          "java_sha256": "67fca2eef5afc92dc08eefebb5d25489a0ab37ac22ab3b1b06556b17e5f0b53a"
+        }
+      ]
+    },
+    {
+      "name": "Umbral Collar Zealot",
+      "oracle_text": "Sacrifice another creature or artifact: Surveil 1. (Look at the top card of your library. You may put it into your graveyard.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/u/UmbralCollarZealot.java",
+          "java_sha256": "8f418c8b830a5c7b9498dfc0d1daa432aae7868a347ed9f3251f56f9c7fb39ae"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        }
+      ]
+    },
+    {
+      "name": "Unburied Earthcarver",
+      "oracle_text": "{2}, Sacrifice another creature: Put a +1/+1 counter on this creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/u/UnburiedEarthcarver.java",
+          "java_sha256": "aa85654b77c60d45faef4264970d71828ff7e304d2b3e5cb0e9fcdb94c19a2cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        }
+      ]
+    },
+    {
+      "name": "Unrooted Ancestor",
+      "oracle_text": "Flash\n{1}, Sacrifice another creature: This creature gains indestructible until end of turn. Tap it. (Damage and effects that say \"destroy\" don't destroy it.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/u/UnrootedAncestor.java",
+          "java_sha256": "ace259b08a2ae13c068aeb5f4d2dfce83ff7d8a8ea8ff1fd252a347219d90523"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        }
+      ]
+    },
+    {
+      "name": "Vampiric Rites",
+      "oracle_text": "{1}{B}, Sacrifice a creature: You gain 1 life and draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VampiricRites.java",
+          "java_sha256": "22ff2b1d79f8cf85d8008d8706df59b19bed58f208d2bac277a4425aaab19598"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        }
+      ]
+    },
+    {
+      "name": "Vanguard of the Rose",
+      "oracle_text": "{1}, Sacrifice another creature or artifact: This creature gains indestructible until end of turn. Tap it.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VanguardOfTheRose.java",
+          "java_sha256": "77638f6dd9f84b256e1f29f260e5dd47ed153a528fcda2cbb92da3f7712b3c41"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        }
+      ]
+    },
+    {
+      "name": "Vito's Inquisitor",
+      "oracle_text": "{B}, Sacrifice another creature or artifact: Put a +1/+1 counter on this creature. It gains menace until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VitosInquisitor.java",
+          "java_sha256": "2422826fb60076cd85c69610e357aec9016567c1630124456b88c9f9e2997f9c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        }
+      ]
+    }
+  ]
+}

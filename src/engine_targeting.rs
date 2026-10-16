@@ -496,11 +496,19 @@ impl Game {
             .item
             .targets
             .sort_by_key(|bound| (bound.group, bound.target));
-        // External discard precedes source sacrifice so its event captures the
-        // battlefield observers before the source departs. No priority is granted.
+        // External discard precedes source sacrifice so it captures battlefield
+        // observers. External sacrifice follows source tap/mana costs: the chosen
+        // object may itself be this ability's source. No priority is granted.
         if matches!(announcement.item.kind, StackKind::ActivatedAbility { .. })
             && !announcement.additional_paid
         {
+            if announcement
+                .additional_cost()
+                .is_some_and(|spec| spec.kind == EffectChoiceKind::Sacrifice)
+                && let Some(payment) = announcement.payment.take()
+            {
+                self.pay_activation(&announcement.item, payment, announcement.counter_payment);
+            }
             self.pay_additional_cost(&mut announcement);
             announcement.additional_paid = true;
         }

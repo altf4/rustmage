@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "90a3af94b4edfde4746afe251ec1fe8aaff5c09d00009fa4ee3cf343e1744ccc",
+  "catalogue_version": "f461f669d1c4448f7ce038416c33546baf942ac7c0399bf9e8ee170dbb5a718e",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1162,
-  "implemented_total": 1168,
-  "token_definitions": 51,
+  "implemented_standard_cards": 1181,
+  "implemented_total": 1187,
+  "token_definitions": 53,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -304,8 +304,8 @@
     {
       "name": "Acolyte of Aclazotz",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Acrobatic Cheerleader",
@@ -616,8 +616,8 @@
     {
       "name": "Ahriman",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Ainok Wayfarer",
@@ -4120,8 +4120,8 @@
     {
       "name": "Cauldron of Essence",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Caustic Bronco",
@@ -9658,8 +9658,8 @@
     {
       "name": "Fountainport",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Fountainport Bell",
@@ -11680,8 +11680,8 @@
     {
       "name": "Hardened Tactician",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Hardlight Containment",
@@ -12616,8 +12616,8 @@
     {
       "name": "Hungry Ghoul",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Hungry Graffalon",
@@ -14182,8 +14182,8 @@
     {
       "name": "Kingpin's Enforcers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Kinjalli's Dawnrunner",
@@ -14830,8 +14830,8 @@
     {
       "name": "Legion Extruder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Leonardo's Technique",
@@ -16042,8 +16042,8 @@
     {
       "name": "Marwyn, the Clearcutter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Marwyn, the Preserver",
@@ -21214,8 +21214,8 @@
     {
       "name": "Ripchain Razorkin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Ripclaw Wrangler",
@@ -22636,8 +22636,8 @@
     {
       "name": "Seismic Monstrosaur",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Seismic Rupture",
@@ -23476,8 +23476,8 @@
     {
       "name": "Slagdrill Scrapper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Slagstorm",
@@ -25750,8 +25750,8 @@
     {
       "name": "Sweettooth Witch",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Swiftblade Vindicator",
@@ -28510,8 +28510,8 @@
     {
       "name": "Umbral Collar Zealot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Unable to Scream",
@@ -28534,8 +28534,8 @@
     {
       "name": "Unburied Earthcarver",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Unbury",
@@ -28768,8 +28768,8 @@
     {
       "name": "Unrooted Ancestor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Unruly Catapult",
@@ -29068,8 +29068,8 @@
     {
       "name": "Vampiric Rites",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Vanguard Seraph",
@@ -29080,8 +29080,8 @@
     {
       "name": "Vanguard of the Rose",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Vanille, Cheerful l'Cie",
@@ -29524,8 +29524,8 @@
     {
       "name": "Vito's Inquisitor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Vito, Fanatic of Aclazotz",
