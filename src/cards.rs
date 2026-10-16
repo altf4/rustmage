@@ -1564,6 +1564,9 @@ impl Card {
     pub(crate) fn evidence_reduction(self) -> u32 {
         generated::collect_evidence(self).map_or(0, |v| v.1)
     }
+    pub fn has_convoke(self) -> bool {
+        generated::has_convoke(self)
+    }
     pub fn has_bargain(self) -> bool {
         generated::bargain_reduction(self).is_some()
     }

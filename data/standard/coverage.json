@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "629d353d666c75ca37ee7a92786fea85a960d035366158c9c74faa5230e9ac5d",
+  "catalogue_version": "4111de2b9e0e408e56e879d2ae13d997da732ba05f683b51008f57275c1e3b82",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1638,
-  "implemented_total": 1644,
-  "token_definitions": 76,
+  "implemented_standard_cards": 1648,
+  "implemented_total": 1654,
+  "token_definitions": 77,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -1138,8 +1138,8 @@
     {
       "name": "Appeal to Eirdu",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Appendage Amalgam",
@@ -2374,8 +2374,8 @@
     {
       "name": "Bespoke Bō",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Bestial Bloodline",
@@ -6598,8 +6598,8 @@
     {
       "name": "Disruptor of Currents",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Dissection Practice",
@@ -15232,8 +15232,8 @@
     {
       "name": "Lofty Dreams",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Loki Laufeyson",
@@ -16366,8 +16366,8 @@
     {
       "name": "Merrow Skyswimmer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Merry Bards",
@@ -19588,8 +19588,8 @@
     {
       "name": "Protective Response",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Protege's Awakening",
@@ -25408,8 +25408,8 @@
     {
       "name": "Sun-Dappled Celebrant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Sun-Spider, Nimble Webber",
@@ -28672,8 +28672,8 @@
     {
       "name": "Unexpected Assistance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Unexpected Request",
@@ -29644,8 +29644,8 @@
     {
       "name": "Vote Out",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Vow to Erebor",
@@ -30526,8 +30526,8 @@
     {
       "name": "Winter, Team Player",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Winter, Tormented Loner",
