@@ -623,6 +623,27 @@ mod residual_tests {
             if begin {
                 replay(&mut g, Action::BeginConvoke);
                 assert!(g.convoke_choice().unwrap().can_pay);
+                // Convoke remains optional even when real mana already covers
+                // everything: a legal extra credit must not be pruned away.
+                let original = g.snapshot();
+                let mut extra = g.clone();
+                let object = extra.object_ref(helper);
+                replay(
+                    &mut extra,
+                    Action::ChooseConvoker {
+                        object,
+                        contribution: ConvokeContribution::Generic,
+                    },
+                );
+                replay(
+                    &mut extra,
+                    Action::PayCosts {
+                        payment: [2, 0, 0, 0, 0, 3],
+                    },
+                );
+                assert!(extra.object_view(helper).tapped);
+                assert_eq!(extra.state.players[0].mana, [0, 0, 0, 0, 0, 1]);
+                assert_eq!(g.snapshot(), original);
             }
             replay(
                 &mut g,
