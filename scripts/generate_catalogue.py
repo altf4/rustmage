@@ -11,6 +11,7 @@ from pathlib import Path
 import re
 
 ROOT = Path(__file__).resolve().parents[1]
+CREATURE_TYPE_NAMES = tuple(json.loads((ROOT / 'data/creature-types.json').read_text())['types'])
 EMBLEM_DEFS = {}
 LEGACY = [
     ('Plains', 'Land', '{W}', 0), ('Island', 'Land', '{U}', 1),
@@ -329,7 +330,7 @@ def stat_count_filter(text):
     elif noun in kinds:kind=kinds[noun]
     else:
         if noun.startswith('basic '):basic=True;noun=noun[6:]
-        singular={word.casefold():word for word in [*SUBTYPE_PLURALS.values(),'Plains','Island','Swamp','Mountain','Forest','Equipment','Desert','Gate','Treasure']}
+        singular={word.casefold():word for word in [*CREATURE_TYPE_NAMES,'Plains','Island','Swamp','Mountain','Forest','Equipment','Desert','Gate','Treasure']}
         plurals={word.casefold()+'s':word for word in ['Island','Swamp','Mountain','Forest','Desert','Gate','Treasure']}
         subtype=SUBTYPE_PLURALS.get(noun,plurals.get(noun,singular.get(noun)))
         if subtype is None:return None
@@ -487,6 +488,64 @@ def normalize_duration(text):
     if text.startswith(prefix) and text.count('.') == 1:
         return text[len(prefix):-1] + ' until end of turn.'
     return text
+
+
+RULE_LABELS = ('Delirium — ', 'Threshold — ', 'Descend 4 — ', 'Descend 8 — ', 'Ferocious — ')
+
+def strip_rule_label(text):
+    for label in RULE_LABELS:
+        if text.startswith(label):return text[len(label):]
+    return text
+
+def split_sentence(text):
+    quoted=False
+    for i,c in enumerate(text):
+        if c=='"':quoted=not quoted
+        if c=='.' and not quoted and text[i:i+2]=='. ':
+            return text[:i+1],text[i+2:]
+    return text,''
+
+def guarded_clause(text):
+    if not text.startswith('if '):return None
+    for m in re.finditer(', ',text):
+        if guard:=step_guard(text[3:m.start()]):return guard,text[m.end():]
+    return None
+
+def guarded_program(text,parse):
+    clause=guarded_clause(text)
+    if clause is None:return None
+    guard,body=clause
+    # Preserve the exact existing optional-payment construct as one nested block.
+    atomic=optional_payment_program(body[0].lower()+body[1:],False)
+    if atomic is not None and parse==statement_program:
+        if any('AddMana(' in p for p in atomic):return None
+        return [f'If {{ guard: {guard}, skip: {len(atomic)} }}',*atomic]
+    first,tail=split_sentence(body)
+    program=parse(first)
+    if not program or any('AddMana(' in p for p in program):return None
+    if tail.startswith('Otherwise, '):
+        other,tail=split_sentence(tail[len('Otherwise, '):])
+        alternative=parse(other)
+        if not alternative or any('AddMana(' in p for p in alternative):return None
+        program=[f'If {{ guard: {guard}, skip: {len(program)+1} }}',*program,f'Skip({len(alternative)})',*alternative]
+    else:program=[f'If {{ guard: {guard}, skip: {len(program)} }}',*program]
+    if tail:
+        rest=parse(tail)
+        if rest is None:return None
+        program+=rest
+    return program
+
+def focused_creature_program(text):
+    text=strip_rule_label(text)
+    if not text:return None
+    text=text[0].lower()+text[1:]
+    if result:=guarded_program(text,focused_creature_program):return result
+    if m:=re.fullmatch(r'(?:it|that creature) (.+)',text):
+        if grow:=re.fullmatch(r'gets ([+-][0-9]+)/([+-][0-9]+) until end of turn\.',m[1]):
+            p,t=map(int,grow.groups())
+            return [grow_instruction('Targets',p,t)] if max(abs(p),abs(t))<=32767 else None
+        return keyword_effect(m[1],'Targets')
+    return statement_program(text)
 
 
 def search_program(text):
@@ -702,7 +761,10 @@ def statement_program(text):
     """Compile only these complete sentences; residual text never gets ignored."""
     if not isinstance(text, str) or not text:
         return None
+    text = strip_rule_label(text)
+    if not text:return None
     text = normalize_duration(text[0].lower() + text[1:])
+    if program:=guarded_program(text,statement_program):return program
     if m:=re.fullmatch(r'(?:you )?draw (?:cards equal to (.+)|X cards, where X is (.+))\.',text):
         value=amount_value(m[1] or m[2])
         return [f'DrawScaled(PlayerSet::Controller, {value})'] if value else None
@@ -1050,6 +1112,7 @@ def targeted_program(text):
     """Complete target occurrences with independent predicates and effect focus."""
     if not isinstance(text, str) or not text.endswith('.'):
         return None
+    text = strip_rule_label(text)
     text = normalize_duration(text[0].lower() + text[1:])
     if m:=re.fullmatch(r'(target creature|target creature you control|another target creature you control) gets ([+-])X/([+-])X until end of turn, where X is (.+)\.',text):
         value=amount_value(m[4])
@@ -1199,6 +1262,18 @@ def targeted_program(text):
         first, rest = text.split('. ', 1)
         result = targeted_program(first + '.')
         tail = statement_program(rest)
+        if result:
+            spec=result[0]
+            rule=spec[0] if isinstance(spec,tuple) else spec
+            maximum=spec[2] if isinstance(spec,tuple) else 1
+            if maximum==1 and rule in ('Creature','CreatureYou','OtherCreatureYou','OtherCreature','CreatureOpponent'):
+                if replacement:=guarded_clause((strip_rule_label(rest)[0].lower()+strip_rule_label(rest)[1:])):
+                    guard,body=replacement
+                    if body.endswith(' until end of turn instead.'):
+                        alternative=focused_creature_program(body.removesuffix(' instead.')+'.')
+                        if alternative and all(p.startswith(('Grow {','GrantKeywords {')) for p in result[1]+alternative):
+                            return spec,[f'If {{ guard: {guard}, skip: {len(alternative)+1} }}',*alternative,f'Skip({len(result[1])})',*result[1]]
+                tail=focused_creature_program(rest)
         if result and rest == 'Untap it.':
             if isinstance(result[0], list): return None
             rule = result[0][0] if isinstance(result[0], tuple) else result[0]
@@ -1233,9 +1308,21 @@ def step_guard(text):
         lo = 'None' if minimum is None else f'Some({minimum})'
         hi = 'None' if maximum is None else f'Some({maximum})'
         return f'StepGuard::Threshold {{ value: StepValue::{value}, minimum: {lo}, maximum: {hi} }}'
+    def expression(value, minimum):
+        return f'StepGuard::Expression {{ value: {value}, minimum: Some({minimum}), maximum: None }}'
+    if m:=re.fullmatch(r'you control (?:a|an|another) (.+)',text):
+        noun=m[1]
+        if ' or ' not in noun and (value:=stat_value(('other ' if text.startswith('you control another ') else '')+noun+' you control')):
+            return expression(value,1)
+    if m:=re.fullmatch(r'(?:you control|there are) (two|three|four|five|six|seven|eight|[0-9]+) or more (.+)',text):
+        n={**COUNT_WORDS,'seven':7,'eight':8}.get(m[1],int(m[1]) if m[1].isdigit() else 0)
+        noun=m[2]+(' you control' if text.startswith('you control ') else '')
+        if n<=65535 and (value:=stat_value(noun)):return expression(value,n)
     if text == "you didn't cast a spell this turn": return threshold('SpellsCast', maximum=0)
     if m := re.fullmatch(r'you control a creature with power ([0-9]+) or greater', text):
         return threshold('GreatestCreaturePower', minimum=int(m[1])) if int(m[1]) <= 32767 else None
+    if m := re.fullmatch(r'you control another creature with power ([0-9]+) or greater', text):
+        return threshold('GreatestOtherCreaturePower',minimum=int(m[1])) if int(m[1])<=32767 else None
     if m := re.fullmatch(r'creatures you control have total (power|toughness) ([0-9]+) or greater', text):
         return threshold('TotalCreaturePower' if m[1]=='power' else 'TotalCreatureToughness', minimum=int(m[2])) if int(m[2]) <= 32767 else None
     if m := re.fullmatch(r'you control (two|three|four|five|six|[0-9]+) or more (tapped creatures|creatures|lands)', text):
@@ -1431,6 +1518,7 @@ def trigger_creature_template(card):
     text = re.sub(r'\([^()]*\)', '', card['oracle_text']).strip()
     for line in text.split('\n'):
         line = line.strip()
+        line = strip_rule_label(line)
         for label in ('Do You Like Squirrels? — ', 'I LOVE Squirrels! — ', 'Vivid — '):
             if line.startswith(label):line=line[len(label):]
         limited = line.endswith(' This ability triggers only once each turn.')
@@ -1481,11 +1569,17 @@ def trigger_creature_template(card):
         for prefix, condition in [*line_prefixes,*prefixes.items()]:
             if line.startswith(prefix):
                 effect_text = line[len(prefix):]
-                if condition.startswith('AtStep {') and effect_text.startswith('if '):
-                    parts = effect_text[3:].split(', ', 1)
-                    if len(parts) != 2 or (guard := step_guard(parts[0])) is None: return None
-                    condition = condition.replace('StepGuard::Always', guard)
-                    effect_text = parts[1]
+                intervening=None
+                if effect_text.startswith('if '):
+                    clause=guarded_clause(effect_text)
+                    if clause is None:return None
+                    guard,effect_text=clause
+                    if condition.startswith('AtStep {'):
+                        condition=condition.replace('StepGuard::Always',guard)
+                    elif (condition in ('SelfEnters','SelfAttacks','SelfEntersOrAttacks','OtherCreatureEntersYou','CreatureEntersYou','ArtifactEntersYou','OtherArtifactEntersYou','EnchantmentEntersYou','LandEntersYou')
+                            or condition.startswith(('SpellCast {','LifeGained {','CardDrawn {','PlayerDamaged {','OtherSubtypeEntersYou(','SubtypeEntersYou('))):
+                        intervening=guard
+                    else:return None  # Lookback-event conditions need prior-event state.
                 # Only self-event subjects prove an initial 'it' denotes this source.
                 # Other-creature events and later targeted clauses have other antecedents.
                 if condition in ('SelfEnters', 'SelfDies', 'SelfEntersOrDies', 'SelfAttacks', 'SelfEntersOrAttacks', 'SelfDiscarded', 'SelfCycled'):
@@ -1531,6 +1625,8 @@ def trigger_creature_template(card):
                         targets, program = 'None', statement_program(effect_text)
                 if program is None:
                     return None
+                if intervening is not None:
+                    condition=f'InterveningIf {{ guard: {intervening}, event: &TriggerCondition::{condition} }}'
                 if limited: condition='OncePerTurn(&TriggerCondition::'+condition+')'
                 abilities.append((condition, program, targets))
                 break

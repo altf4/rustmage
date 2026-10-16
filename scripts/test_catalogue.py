@@ -14,6 +14,62 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_guarded_blocks_keep_only_the_first_sentence_conditional_and_else_offsets_exact(self):
+        p=generate.statement_program('If you control an Elf, draw a card. You gain 2 life.')
+        self.assertEqual(len(p),3);self.assertIn('If {',p[0]);self.assertIn('skip: 1',p[0]);self.assertEqual(p[1:],[ 'Draw(PlayerSet::Controller, 1)','GainLife(PlayerSet::Controller, 2)'])
+        p=generate.statement_program('If you control an Elf, draw a card. Otherwise, you gain 2 life. Scry 1.')
+        self.assertIn('skip: 2',p[0]);self.assertEqual(p[2],'Skip(1)');self.assertEqual(p[-1],'Scry(1)')
+        p=generate.statement_program('If you control a Raccoon, you may discard a card. If you do, draw a card.')
+        self.assertIn('skip: 2',p[0]);self.assertIn('ChooseObjects',p[1]);self.assertEqual(p[-1],'Draw(PlayerSet::Controller, 1)')
+        self.assertIsNone(generate.statement_program('If you control an Elf, add {G}.'))
+        self.assertIsNone(generate.statement_program('If you control an Elf, you may discard a card. If you do, add {G}.'))
+
+    def test_intervening_if_and_effect_if_have_different_typed_timing(self):
+        prefix='When this creature enters, '
+        entry=generate.trigger_creature_template(self.card(oracle_text=prefix+'if you control an artifact, draw a card.'))
+        self.assertIn('InterveningIf',entry[2][0][0]);self.assertEqual(entry[2][0][1],['Draw(PlayerSet::Controller, 1)'])
+        effect=generate.trigger_creature_template(self.card(oracle_text=prefix+'draw a card. If you control another Hero, you gain 2 life.'))
+        self.assertEqual(effect[2][0][0],'SelfEnters');self.assertEqual(effect[2][0][1][0],'Draw(PlayerSet::Controller, 1)');self.assertIn('If {',effect[2][0][1][1])
+        limited=generate.trigger_creature_template(self.card(oracle_text=prefix+'if you control an artifact, draw a card. This ability triggers only once each turn.'))
+        self.assertTrue(limited[2][0][0].startswith('OncePerTurn(&TriggerCondition::InterveningIf'))
+        for prefix in ['When this creature dies, ','Whenever another creature you control dies, ','When you discard this card, ']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=prefix+'if you control an Elf, draw a card.')))
+
+    def test_condition_predicates_bind_live_counts_and_keep_unknown_history_gated(self):
+        for text,needle in [('you control another Elf','other: true'),('you control an enchantment','kind: 32'),
+                            ('there are seven or more cards in your graveyard','CountZone::Graveyard'),
+                            ('there are four or more permanent cards in your graveyard','kind: 371'),
+                            ('there are four or more card types among cards in your graveyard','CardTypes'),
+                            ('you control another creature with power 4 or greater','GreatestOtherCreaturePower')]:
+            self.assertIn(needle,generate.step_guard(text),text)
+        for text in ['you controlled a Mount as you cast this spell','you controlled that permanent','a creature died this turn',
+                     'you control another Elf that attacked this turn','there are four or more cards exiled with this creature',
+                     'you control 65536 or more creatures','you control a tapped Elf']:
+            self.assertIsNone(generate.step_guard(text),text)
+
+    def test_focused_creature_tails_preserve_target_ownership_and_replace_instead_of_stack(self):
+        result=generate.targeted_program('Target creature gets +2/+2 until end of turn. If you control three or more creatures, it gets +4/+4 until end of turn instead.')
+        self.assertEqual(result[0],'Creature');self.assertEqual(len(result[1]),4)
+        self.assertIn('If {',result[1][0]);self.assertIn('power: 4',result[1][1]);self.assertEqual(result[1][2],'Skip(1)');self.assertIn('power: 2',result[1][3])
+        result=generate.targeted_program('Put a +1/+1 counter on target creature you control. It gains hexproof until end of turn.')
+        self.assertEqual(result[0],'CreatureYou');self.assertIn('PutCounters',result[1][0]);self.assertIn('GrantKeywords',result[1][1])
+        for text in ['Target player draws a card. It gains hexproof until end of turn.',
+                     'Target creature gets +1/+1 until end of turn. If a creature died this turn, it gains flying until end of turn.',
+                     'Return target creature to its owner\'s hand. If you controlled that creature, draw a card.',
+                     'Target creature gets +2/+2 until end of turn. If you control three or more creatures, it gets +4/+4 until end of turn instead. Draw a card.']:
+            self.assertIsNone(generate.targeted_program(text),text)
+
+    def test_all_nineteen_conditional_and_focused_tail_admissions_require_complete_bodies(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,report=generate.compile_catalogue(rows,target);supported={r['name'] for r in report['cards'] if r['implemented']}
+        for name in ['Crypt Feaster','Donatello, Turtle Techie',"Dwynen's Elite",'Failed Fording','Hero in Training','Malamet Veteran','Moment of Valor','Nasty Little Rabbit','Nessian Hornbeetle','Rabbit Response','Rosa, Resolute White Mage','Snakeskin Veil','Spectacular Tactics','Stinging Cave Crawler','Take Out the Trash','Taken by Nightmares','Violent Urge','Warg Tactics',"You're Not Alone"]:
+            self.assertIn(name,supported)
+            c=next(c for c in rows['cards'] if c['name']==name);c=dict(c,oracle_text=c['oracle_text']+'\nWhenever you cast a spell, discover 3.')
+            self.assertIsNone(generate.permanent_program_template(c),name);self.assertIsNone(generate.spell_program_template(c),name);self.assertIsNone(generate.modal_spell_template(c),name)
+        for name in ['Boomerang Basics','Steer Clear','Keen-Eyed Curator','Starving Revenant','Raucous Audience','Take the Fall','Dazzling Denial']:
+            self.assertNotIn(name,supported)
+
     def test_distinct_characteristic_expressions_preserve_owner_zone_and_card_requirements(self):
         colors=generate.amount_value('the number of colors among permanents you control')
         self.assertIn('StatValue::Colors',colors);self.assertIn('CountZone::Battlefield',colors)
@@ -319,7 +375,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertEqual(len(admitted),45)
         for name in admitted:self.assertIn(name,supported)
         for name in ['Kin-Tree Severance','Unwanted Remake',
-                     'Consuming Ashes','Taken by Nightmares','Bovine Intervention','Get Lost',
+                     'Consuming Ashes','Bovine Intervention','Get Lost',
                      'Long Goodbye','Ride\'s End','Protective Response','Dragon\'s Prey']:
             self.assertNotIn(name,supported,name)
         import re
@@ -621,7 +677,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertEqual(generate.draw_event_program(body),('None',[program]))
             self.assertIsNone(generate.statement_program(body))
             self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='When this creature enters, '+body)))
-        for text in ['Whenever you draw your second card each turn, if you control another Hero, draw a card.',
+        for text in ['Whenever you draw your second card each turn, if you control another Hero that attacked this turn, draw a card.',
                      'Whenever you draw a card, that player loses 1 life. You gain 1 life.',
                      'Whenever you draw a card, you may pay {B}. If you do, draw a card.',
                      'Whenever you draw a card, reveal it.']:

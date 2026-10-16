@@ -1,4 +1,4 @@
-//! Beginning-of-step events and CR603.4 intervening-if checks.
+//! Shared live predicates, beginning-of-step events and intervening-if checks.
 use super::*;
 impl Game {
     pub(super) fn begin_step(&mut self, step: Step) {
@@ -14,7 +14,7 @@ impl Game {
                 if let TriggerCondition::AtStep {
                     step: wanted,
                     relation,
-                    guard,
+                    ..
                 } = ability.condition.event()
                 {
                     let matches_step = match wanted {
@@ -32,14 +32,33 @@ impl Game {
                         CastRelation::Opponent => source.owner != self.state.active,
                         CastRelation::Any => true,
                     };
-                    if matches_step
-                        && related
-                        && self.step_guard(guard, source.owner, source.reference, source.tapped)
-                    {
+                    if matches_step && related {
                         self.queue_trigger(&source, index);
                     }
                 }
             }
+        }
+    }
+
+    pub(super) fn trigger_guards_hold(
+        &self,
+        condition: TriggerCondition,
+        player: Player,
+        source: ObjectRef,
+        tapped: bool,
+    ) -> bool {
+        match condition {
+            TriggerCondition::OncePerTurn(event) => {
+                self.trigger_guards_hold(*event, player, source, tapped)
+            }
+            TriggerCondition::InterveningIf { guard, event } => {
+                self.step_guard(guard, player, source, tapped)
+                    && self.trigger_guards_hold(*event, player, source, tapped)
+            }
+            TriggerCondition::AtStep { guard, .. } => {
+                self.step_guard(guard, player, source, tapped)
+            }
+            _ => true,
         }
     }
 
@@ -53,6 +72,15 @@ impl Game {
         let p = &self.state.players[player.index()];
         let (value, minimum, maximum) = match guard {
             StepGuard::Always => return true,
+            StepGuard::Expression {
+                value,
+                minimum,
+                maximum,
+            } => {
+                let value = self.stat_value(value, source, player);
+                return minimum.is_none_or(|min| value >= min)
+                    && maximum.is_none_or(|max| value <= max);
+            }
             StepGuard::Attacked => return p.attacked_this_turn,
             StepGuard::SourceTapped => {
                 return if self.on_battlefield(source.card) && self.object_ref(source.card) == source
@@ -96,6 +124,10 @@ impl Game {
                     .count() as i128,
             ),
             StepValue::GreatestCreaturePower => creatures()
+                .map(|(id, _)| self.stats(id as CardId).power)
+                .max(),
+            StepValue::GreatestOtherCreaturePower => creatures()
+                .filter(|(id, _)| self.object_ref(*id as CardId) != source)
                 .map(|(id, _)| self.stats(id as CardId).power)
                 .max(),
             StepValue::TotalCreaturePower => Some(

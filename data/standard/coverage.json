@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "8c4fef84a9a3855dada4ebdb1b4c191b11ce694bad16d22ff95423598d7d5aa2",
+  "catalogue_version": "eeb9f0e31f0a51ff1b682b9fce1f63e23679b0895d1e692bb45b57e15e40cf8a",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1014,
-  "implemented_total": 1020,
+  "implemented_standard_cards": 1033,
+  "implemented_total": 1039,
   "token_definitions": 48,
   "emblem_definitions": 1,
   "cards": [
@@ -5482,8 +5482,8 @@
     {
       "name": "Crypt Feaster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Cryptcaller Chariot",
@@ -6790,8 +6790,8 @@
     {
       "name": "Donatello, Turtle Techie",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Donatello, Way with Machines",
@@ -7318,8 +7318,8 @@
     {
       "name": "Dwynen's Elite",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Dwynen, Gilt-Leaf Daen",
@@ -8590,8 +8590,8 @@
     {
       "name": "Failed Fording",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Fake Your Own Death",
@@ -12094,8 +12094,8 @@
     {
       "name": "Hero in Training",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Hero's Downfall",
@@ -15844,8 +15844,8 @@
     {
       "name": "Malamet Veteran",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Malamet War Scribe",
@@ -16954,8 +16954,8 @@
     {
       "name": "Moment of Valor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Momentum Breaker",
@@ -17470,8 +17470,8 @@
     {
       "name": "Nasty Little Rabbit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Nature's Rhythm",
@@ -17524,8 +17524,8 @@
     {
       "name": "Nessian Hornbeetle",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Nesting Bot",
@@ -19966,8 +19966,8 @@
     {
       "name": "Rabbit Response",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Rabid Attack",
@@ -21550,8 +21550,8 @@
     {
       "name": "Rosa, Resolute White Mage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Rot Farm Mortipede",
@@ -23650,8 +23650,8 @@
     {
       "name": "Snakeskin Veil",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Snaremaster Sprite",
@@ -23992,8 +23992,8 @@
     {
       "name": "Spectacular Tactics",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Specter of Mortality",
@@ -24892,8 +24892,8 @@
     {
       "name": "Stinging Cave Crawler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Stinging Vitriol",
@@ -25930,8 +25930,8 @@
     {
       "name": "Take Out the Trash",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Take Up the Shield",
@@ -25954,8 +25954,8 @@
     {
       "name": "Taken by Nightmares",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Talion's Messenger",
@@ -29434,8 +29434,8 @@
     {
       "name": "Violent Urge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Virtue of Courage // Embereth Blaze",
@@ -29878,8 +29878,8 @@
     {
       "name": "Warg Tactics",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Wargling",
@@ -30862,8 +30862,8 @@
     {
       "name": "You're Not Alone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Your Fate Ends Here",

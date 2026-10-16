@@ -277,6 +277,12 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    /// Skip the following block when its live condition is false.
+    If {
+        guard: StepGuard,
+        skip: usize,
+    },
+    Skip(usize),
     MoveBattlefield {
         filters: &'static [BattlefieldFilter],
         exile: bool,
@@ -671,6 +677,7 @@ pub(crate) enum StepValue {
     TappedCreatures,
     Lands,
     GreatestCreaturePower,
+    GreatestOtherCreaturePower,
     TotalCreaturePower,
     TotalCreatureToughness,
     SpellsCast,
@@ -680,6 +687,11 @@ pub(crate) enum StepGuard {
     Always,
     Attacked,
     SourceTapped,
+    Expression {
+        value: StatValue,
+        minimum: Option<i128>,
+        maximum: Option<i128>,
+    },
     Threshold {
         value: StepValue,
         minimum: Option<i128>,
@@ -720,6 +732,10 @@ pub(crate) enum DamageSubject {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
     OncePerTurn(&'static TriggerCondition),
+    InterveningIf {
+        guard: StepGuard,
+        event: &'static TriggerCondition,
+    },
     CardDrawn {
         relation: CastRelation,
         ordinal: Option<u64>,
@@ -775,8 +791,15 @@ pub(crate) enum TriggerCondition {
 impl TriggerCondition {
     pub(crate) fn event(self) -> Self {
         match self {
-            Self::OncePerTurn(event) => event.event(),
+            Self::OncePerTurn(event) | Self::InterveningIf { event, .. } => event.event(),
             event => event,
+        }
+    }
+    pub(crate) fn once_per_turn(self) -> bool {
+        match self {
+            Self::OncePerTurn(_) => true,
+            Self::InterveningIf { event, .. } => event.once_per_turn(),
+            _ => false,
         }
     }
 }

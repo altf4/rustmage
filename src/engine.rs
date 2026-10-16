@@ -3390,3 +3390,7 @@ mod scaled_effect_tests;
 #[cfg(test)]
 #[path = "engine_distinct_amount_tests.rs"]
 mod distinct_amount_tests;
+
+#[cfg(test)]
+#[path = "engine_conditional_tests.rs"]
+mod conditional_tests;
