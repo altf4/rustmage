@@ -1,6 +1,6 @@
 # Fixed kicker and exact paid-entry qualification
 
-Issue [#218](https://github.com/altf4/rustmage/issues/218) adds ten complete Standard bodies to the in-process library. The catalogue supports **1,543 / 5,164 Standard cards**, with 3,621 gated identities, 72 immutable token factories and one emblem. The fingerprint is `b2d22840da19c23aa4b1cbef02cb99b9b4e4a98cefc6bf5cb2247e3b724ef0ba`.
+Issue [#218](https://github.com/altf4/rustmage/issues/218) adds ten complete Standard bodies to the in-process library. The integrated catalogue supports **1,562 / 5,164 Standard cards**, with 3,602 gated identities, 73 immutable token factories and one emblem. The fingerprint is `7a5567666120686d16e87ebd525f0bbe72deb91095b58cd7e8ddce46674b934c`.
 
 | Card | Kicker | Complete behavior |
 | --- | --- | --- |
@@ -18,7 +18,7 @@ The [provenance manifest](fixed-kicker-admissions.json) records all complete sna
 
 ## Announcement and payment
 
-Observation schema **60** adds `Action::ChooseKicker { pay }`, decision `kicker`, and `CastInfo.kicker: Option<bool>`. `None` means no kicker recipe or an unchosen declaration; `Some(false)` and `Some(true)` record declining and paying. Casting method, origin and offspring retain separate fields. The C ABI and control protocol remain unchanged.
+Observation schema **61** includes `Action::ChooseKicker { pay }`, decision `kicker`, and `CastInfo.kicker: Option<bool>`. `None` means no kicker recipe or an unchosen declaration; `Some(false)` and `Some(true)` record declining and paying. Casting method, origin and offspring retain separate fields. The C ABI and control protocol remain unchanged.
 
 The declaration precedes targets and resources. Only continuations fundable from the complete selected cost are exposed. The fixed typed surcharge combines with the selected normal/alternative base and other typed surcharges before generic reductions; it never changes printed mana value. Targets complete before the final total locks. Later mana abilities and reducer departures cannot alter that locked total. The shared target-dependent funding calculation includes kicker. Direct casting cannot bypass the choice; Hand, exact exile permissions and flashback authorization retain their existing restrictions. None of these ten cards has its own flashback ability.
 
@@ -53,3 +53,11 @@ Canonical comparison against parent `edea3fd97dc5f9e308a2db9459a1acd4123b32c2` p
 Two legal 100-game Standard runs reproduce **102,219 decisions and owned replay boundaries**. Every card has positive cast and completed-effect witnesses in all four kicked/unkicked × controller cells. Independent public checks verify 36 searches, 53 normal-entry lands, 89 private frames, 153 live counter grants, 14 sacrifices, 40 reanimations, 72 bounces, 37 additional draws, three all-invalid fizzles and 545 rejected actions. Both arrays are printed in manifest order for review.
 
 Initialized logical state remains **19,944 bytes**, excluding spare capacity and allocator overhead; the Standard workload reaches **22,992 bytes**. Kicker adds no per-object field: cast/entry event context owns its qualification. The 1,000-game native smoke benchmark completed 571,049 decisions at about 191,000 decisions/s, with roughly 263 ns clone and 371 ns restore in a concurrent validation run. These timings include native observations and policy, exclude inference/JSON/tensors, and do not claim XMage parity.
+
+## Integration with exact search
+
+The standalone validation above predates PR #220. On the merged search base, the combined suites pass **1,409 native tests (1,397 unit and 12 integration), 270 compiler tests and 176 fresh-release Python tests**. Clippy, formatting, catalogue regeneration and whitespace checks pass. The fixed-kicker workload reproduces all 102,219 decisions and replay boundaries; the adjacent exact-search workload preserves all 105,176 decisions and its witness arrays.
+
+Canonical comparison with the final search runtime proves exactly **10 changed / 5,247 unchanged definitions**, all 73 existing factory recipes and metadata, all ordinary card identities and colors, and all 481 previous numeric helper arms preserved. Twelve new helper arms encode kicker costs, paid-entry counters and counter-qualified grants. All 116 provenance records across 63 Java files match the pinned source.
+
+Initialized logical state remains **19,944 bytes**. A concurrent 1,000-game native smoke run completes 571,049 decisions at about 368,000 decisions/s, with 156 ns clone and 156 ns restore. This limited-catalogue workload includes native observations and policy, excludes model inference and JSON, and provides no Java performance comparison.
