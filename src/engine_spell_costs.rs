@@ -30,6 +30,30 @@ impl Game {
         };
         let amount = |rule: &crate::cards::SpellReduction, source: CardId| match rule.amount {
             crate::cards::SpellReductionAmount::Fixed(n) => n,
+            crate::cards::SpellReductionAmount::SourcePower => {
+                u32::try_from(self.stats(source).power.max(0)).unwrap_or(u32::MAX)
+            }
+            crate::cards::SpellReductionAmount::CreaturePower { filter, greatest } => {
+                let mut powers = self
+                    .state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|&(id, _)| {
+                        self.creature_matches(filter, actor, self.object_ref(source), id as CardId)
+                    })
+                    .map(|(id, _)| self.stats(id as CardId).power);
+                // Sum signed values before clamping: negative-power creatures
+                // reduce the total, but cannot create a negative discount.
+                let value = if greatest {
+                    powers.max().unwrap_or(0)
+                } else {
+                    powers
+                        .try_fold(0i128, i128::checked_add)
+                        .capacity("spell power aggregate exhausted")
+                };
+                u32::try_from(value.max(0)).unwrap_or(u32::MAX)
+            }
             crate::cards::SpellReductionAmount::Stat { value, factor } => {
                 // Clamp before multiplying: reductions above u32::MAX are
                 // equivalent for every representable generic requirement.

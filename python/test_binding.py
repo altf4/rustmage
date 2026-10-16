@@ -12,6 +12,55 @@ class BindingTests(unittest.TestCase):
     def game(self):
         return Game([["Mountain"] * 24 + ["LightningBolt"] * 36] * 2, seed=17, deck_rules="Freeform")
 
+    def derived_index(self,obs,which):
+        objects={o['id']:o for o in obs['objects']};own=[o for o in objects.values() if o['owner']=='P0' and o['zone']=='Battlefield']
+        present=any(o['card']=='The Scarlet Witch' for o in own)
+        names={o['card'] for o in own if o['card'] in ('Forest','Island','Plains','Mountain')}
+        wanted='Arcane Epiphany' if which=='power' else 'Fungal Colossus'
+        def score(a):
+            if a['kind']=='PlayLand' and objects[a['card']]['card'] not in names:return 190
+            if a['kind'] in ('Cast','AnnounceCast'):
+                name=objects[a['card']]['card']
+                if name=='The Scarlet Witch':return 150 if not present else -100
+                if name==wanted:return (180 if a['kind']=='AnnounceCast' else 170) if (present if which=='power' else len(names)>=2) else -100
+                return -100
+            return self.professor_score(obs,a)
+        return max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i]))
+
+    def test_derived_power_and_distinct_name_payments_replay_complete_bodies(self):
+        for which in ['power','names']:
+            wanted='Arcane Epiphany' if which=='power' else 'Fungal Colossus'
+            deck=(['Mountain']*12+['Island']*12+['The Scarlet Witch']*12+[wanted]*24 if which=='power'
+                  else ['Forest']*12+['Island']*12+['Plains']*12+[wanted]*24)
+            with self.subTest(which=which),Game([deck,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+                for _ in range(6000):
+                    obs=game.observe('P0');obs=game.observe(obs['actor']);self.assertIsNone(obs['outcome'])
+                    if obs['decision']=='pay_costs' and obs['announcing']['source_card']==wanted:break
+                    game.step(obs,self.derived_index(obs,which))
+                else:self.fail('derived payment not reached')
+                own=[o for o in obs['objects'] if o['owner']=='P0' and o['zone']=='Battlefield']
+                if which=='power':expected_generic=max(0,3-next(o['power'] for o in own if o['card']=='The Scarlet Witch'))
+                else:expected_generic=6-len({o['card'] for o in own if o['card'] in ('Forest','Island','Plains')})
+                self.assertEqual(obs['payment_request']['generic'],expected_generic);saved=game.snapshot()
+                def finish(handle):
+                    paid=None
+                    for _ in range(100):
+                        current=handle.observe('P0');current=handle.observe(current['actor'])
+                        if current['stack'] and current['stack'][-1]['source_card']==wanted:
+                            self.assertEqual(sum(paid),expected_generic+(2 if which=='power' else 1))
+                            card=current['stack'][-1]['card'];old=current['players'][0]['library_count'];after=self.resolve_vital_top(handle,'P0')
+                            if which=='power':self.assertEqual(after['players'][0]['library_count'],old-3)
+                            else:
+                                obj=next(o for o in after['objects'] if o['id']==card);self.assertEqual(obj['zone'],'Battlefield');self.assertEqual((obj['power'],obj['toughness']),(5,5))
+                            return after
+                        action=current['actions'][self.derived_index(current,which)]
+                        if action['kind']=='PayCosts':paid=action['payment']
+                        handle.act(current,action)
+                    self.fail('derived cast stalled')
+                with game.clone() as fork:expected=finish(fork)
+                after=finish(game);self.assertEqual(after,expected);game.restore(saved);again=finish(game)
+                after['revision']=again['revision'];self.assertEqual(again,after);game.drop_snapshot(saved)
+
     def affinity_index(self,obs,wanted):
         objects={o['id']:o for o in obs['objects']}
         artifacts=[o for o in objects.values() if o['owner']=='P0' and o['zone']=='Battlefield' and o['card'] in ('Three Tree Mascot','Memory Guardian','Valkyrie Aerial Unit')]

@@ -52,6 +52,31 @@ impl Game {
                     .count(),
             )
             .capacity("stat count exhausted"),
+            StatValue::DistinctNames(filter) => {
+                let mut names: Vec<_> = self
+                    .state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|&(id, _)| self.count_matches(filter, source, owner, id as CardId))
+                    .map(|(_, object)| {
+                        object
+                            .card
+                            .token_info()
+                            .map_or_else(|| object.card.name(), |info| info.name)
+                    })
+                    .collect();
+                names.sort_unstable();
+                names.dedup();
+                names.len() as i128
+            }
+            StatValue::CountUnion(filters) => (0..self.state.objects.len())
+                .filter(|&id| {
+                    filters
+                        .iter()
+                        .any(|&filter| self.count_matches(filter, source, owner, id as CardId))
+                })
+                .count() as i128,
             StatValue::GreatestManaValue(filter) => i128::from(
                 self.state
                     .objects

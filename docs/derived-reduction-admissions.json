@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "All-Fates Scroll",
+      "oracle_text": "{T}: Add one mana of any color.\n{7}, {T}, Sacrifice this artifact: Draw X cards, where X is the number of differently named lands you control.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AllFatesScroll.java",
+          "java_sha256": "eef5772813293ea33de1f59dace0b2cb8bb92cd2c2b2135864849236c4f4615d"
+        }
+      ]
+    },
+    {
+      "name": "Fungal Colossus",
+      "oracle_text": "This spell costs {X} less to cast, where X is the number of differently named lands you control.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FungalColossus.java",
+          "java_sha256": "0abf3663df541e221949cc4eea65e66c147282a7b89e509c3b7a75c4abe8ea89"
+        }
+      ]
+    },
+    {
+      "name": "Ghalta the Unstoppable",
+      "oracle_text": "This spell costs {X} less to cast, where X is the greatest power among creatures you control.\nTrample\nOther creatures you control have trample.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GhaltaTheUnstoppable.java",
+          "java_sha256": "e02571836ea5382eb8d6b1c6c481cd3c29c5c15628c28f066096fc1b0baab801"
+        }
+      ]
+    },
+    {
+      "name": "Ghalta, Primal Hunger",
+      "oracle_text": "This spell costs {X} less to cast, where X is the total power of creatures you control.\nTrample (This creature can deal excess combat damage to the player or planeswalker it's attacking.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GhaltaPrimalHunger.java",
+          "java_sha256": "226059244f65ec9763eb517741088cb82c0443a7a43ce6c18c7f5df0b3e38d28"
+        }
+      ]
+    },
+    {
+      "name": "Hellspur Brute",
+      "oracle_text": "Affinity for outlaws (This spell costs {1} less to cast for each Assassin, Mercenary, Pirate, Rogue, and/or Warlock you control.)\nTrample",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HellspurBrute.java",
+          "java_sha256": "256c4a4b95e190fefa7f0ad2b4361f40ede14ef6a71df1fd4dc1f075df95d77a"
+        }
+      ]
+    },
+    {
+      "name": "The Lord of the Eagles",
+      "oracle_text": "Flash\nThis spell costs {X} less to cast, where X is the total power of creatures you control with flying.\nFlying",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TheLordOfTheEagles.java",
+          "java_sha256": "e2fe1780855596ced9320898bf94a4adb17d7c66b33444ded2c6829f868eebe1"
+        }
+      ]
+    },
+    {
+      "name": "The Scarlet Witch",
+      "oracle_text": "Instant and sorcery spells you cast with mana value 4 or greater cost {X} less to cast, where X is The Scarlet Witch's power.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TheScarletWitch.java",
+          "java_sha256": "89084ed3f7d678a617cbaf4ed6a0932f13f9b963323dcf4500db14f0f0c030c2"
+        }
+      ]
+    }
+  ]
+}
