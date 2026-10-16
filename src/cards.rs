@@ -289,6 +289,8 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    /// Definition-only modal trigger header; selected before targets, never executed.
+    Modal(&'static [SpellMode]),
     /// Skip the following block when its live condition is false.
     If {
         guard: StepGuard,

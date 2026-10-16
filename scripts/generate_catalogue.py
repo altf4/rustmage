@@ -1840,6 +1840,28 @@ def draw_event_program(text):
     return ('None',program) if program else None
 
 
+def trigger_mode_lines(card, text):
+    """Compile every alternative before replacing a whole exact trigger header."""
+    lines=text.split('\n');body=[];modal={};i=0
+    while i<len(lines):
+        line=lines[i].strip();i+=1
+        if not line.endswith(', choose one —'):
+            body.append(line);continue
+        header=line[:-len('choose one —')];bullets=[]
+        while i<len(lines) and lines[i].strip().startswith('• '):
+            bullets.append(lines[i].strip());i+=1
+        modes=modal_spell_template(dict(card,type_line='Instant',oracle_text='Choose one —\n'+'\n'.join(bullets)))
+        # The existing exact trigger parser authenticates event/guard/source scope.
+        parsed=trigger_creature_template(dict(card,oracle_text=header+'draw a card.'))
+        if modes is None or parsed is None or len(parsed[2])!=1:
+            return None
+        condition,_,_=parsed[2][0]
+        data='&['+', '.join(f'SpellMode {{ text: {json.dumps(label,ensure_ascii=False)}, targets: {rust_targets(rule)}, program: {rust_program(program)} }}' for label,rule,program in modes)+']'
+        key=f'__rustmage_modal_trigger_{len(modal)}__'
+        modal[key]=(condition,['Modal('+data+')'],'None');body.append(key)
+    return body,modal
+
+
 def trigger_creature_template(card):
     if not isinstance(card.get('oracle_text'), str):
         return None
@@ -1902,7 +1924,12 @@ def trigger_creature_template(card):
     }
 
     text = re.sub(r'\([^()]*\)', '', card['oracle_text']).strip()
-    for line in text.split('\n'):
+    grouped=trigger_mode_lines(card,text)
+    if grouped is None:return None
+    lines,modal=grouped
+    for line in lines:
+        if line in modal:
+            abilities.append(modal[line]);continue
         line = line.strip()
         line = strip_rule_label(line)
         for label in ('Do You Like Squirrels? — ', 'I LOVE Squirrels! — ', 'Vivid — ', 'Valiant — '):

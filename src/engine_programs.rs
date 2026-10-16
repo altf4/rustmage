@@ -464,8 +464,8 @@ impl Game {
             return;
         }
         let program = match item.kind {
-            StackKind::TriggeredAbility { ability } => {
-                item.source_card.triggers()[ability as usize].program
+            StackKind::TriggeredAbility { .. } => {
+                item.program().expect("selected trigger program").1
             }
             StackKind::ActivatedAbility { ability } => {
                 item.source_card.activations()[ability as usize].program
@@ -618,6 +618,7 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::Modal(_) => unreachable!("unselected modal trigger executed"),
                 Instruction::If { guard, skip } => {
                     if !self.step_guard(guard, item.controller, item.object, item.source_tapped) {
                         self.state.resolving.as_mut().unwrap().pc += skip;

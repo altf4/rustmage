@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "818532ccea719f9b888ec7cacad11e9c277d2eeb77ed86a7af153e93d163bc2f",
+  "catalogue_version": "44da3ed1f28b3bc53067d75bf6f577cf0301659ff8e11cdb442df71cdc49206c",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1303,
-  "implemented_total": 1309,
-  "token_definitions": 56,
+  "implemented_standard_cards": 1315,
+  "implemented_total": 1321,
+  "token_definitions": 57,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -1120,8 +1120,8 @@
     {
       "name": "Apothecary Stomper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Appa, Loyal Sky Bison",
@@ -4774,8 +4774,8 @@
     {
       "name": "Coliseum Behemoth",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Collective Inferno",
@@ -5194,8 +5194,8 @@
     {
       "name": "Cosmogrand Zenith",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Cost of Brilliance",
@@ -6676,8 +6676,8 @@
     {
       "name": "Divining Duelist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Djinn of Fool's Fall",
@@ -6874,8 +6874,8 @@
     {
       "name": "Downwind Ambusher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Dowsing Device // Geode Grotto",
@@ -7786,8 +7786,8 @@
     {
       "name": "Elven Raft-Steerer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Elvenking's Halls",
@@ -8986,8 +8986,8 @@
     {
       "name": "Ferocification",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Ferocious Werefox // Guard Change",
@@ -9982,8 +9982,8 @@
     {
       "name": "Gaius van Baelsar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Galactic Wayfarer",
@@ -10456,8 +10456,8 @@
     {
       "name": "Giant-Sized Flying Ant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Giantfall",
@@ -10606,8 +10606,8 @@
     {
       "name": "Glamermite",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Glarb, Calamity's Augur",
@@ -15352,8 +15352,8 @@
     {
       "name": "Lord Skitter's Butcher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Lord Skitter, Sewer King",
@@ -29866,8 +29866,8 @@
     {
       "name": "Wardens of the Cycle",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Warehouse Tabby",

@@ -60,19 +60,9 @@ impl Announcement {
 
 impl Game {
     pub(super) fn target_spec(&self, item: &SpellView) -> TargetPlan {
-        match item.kind {
-            StackKind::TriggeredAbility { ability } => {
-                item.source_card.triggers()[ability as usize].targets
-            }
-            StackKind::ActivatedAbility { ability } => {
-                item.source_card.activations()[ability as usize].targets
-            }
-            StackKind::Spell => item
-                .source_card
-                .spell_program(item.mode)
-                .map(|(spec, _)| spec)
-                .unwrap_or(TargetPlan::NONE),
-        }
+        item.program()
+            .map(|(plan, _)| plan)
+            .unwrap_or(TargetPlan::NONE)
     }
 
     pub(super) fn targets_available(
@@ -110,10 +100,9 @@ impl Game {
             .as_ref()
             .unwrap()
             .item
-            .source_card
-            .spell_program(Some(mode))
-            .unwrap()
-            .0;
+            .modes()
+            .unwrap()[usize::from(mode)]
+        .targets;
         self.declare_mode(mode, plan);
     }
 
@@ -385,28 +374,39 @@ impl Game {
 
     /// Returns true only when a decision suspends the enclosing ordering/cast work.
     pub(super) fn start_announcement(&mut self, item: SpellView, trigger: bool) -> bool {
+        let needs_mode = item.modes().is_some() && item.mode.is_none();
+        if needs_mode
+            && !item
+                .modes()
+                .unwrap()
+                .iter()
+                .any(|mode| self.targets_available(mode.targets, item.controller, item.object))
+        {
+            assert!(trigger, "validated modal spell");
+            return false;
+        }
         let plan = self.target_spec(&item);
         if !self.targets_available(plan, item.controller, item.object) {
             assert!(trigger, "validated spell announcement");
             return false;
         }
-        let has_choice = match plan {
-            TargetPlan::Single(spec) => {
-                spec.max > 0
-                    && self.visit_targets(spec.rule, item.controller, item.object, |_| true)
-            }
-            TargetPlan::Groups(groups) => groups.iter().any(|spec| {
-                spec.max > 0
-                    && self.visit_targets(spec.rule, item.controller, item.object, |_| true)
-            }),
-        };
+        let has_choice = needs_mode
+            || match plan {
+                TargetPlan::Single(spec) => {
+                    spec.max > 0
+                        && self.visit_targets(spec.rule, item.controller, item.object, |_| true)
+                }
+                TargetPlan::Groups(groups) => groups.iter().any(|spec| {
+                    spec.max > 0
+                        && self.visit_targets(spec.rule, item.controller, item.object, |_| true)
+                }),
+            };
         if !has_choice {
             // Prepaid declarations settle their deferred costs in the caller.
             // A spell is still only a proposal here, so do not fire cast triggers.
             self.state.stack.push(item);
             return false;
         }
-        let player = item.controller;
         assert!(self.state.announcing.is_none());
         self.state.announcing = Some(Announcement {
             item,
@@ -423,8 +423,7 @@ impl Game {
             pay_window: false,
             production: None,
         });
-        self.state.pending = Pending::Targets { player };
-        self.advance_target_groups();
+        self.continue_announcement_choices(needs_mode);
         true
     }
 

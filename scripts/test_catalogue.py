@@ -8,6 +8,31 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_modal_trigger_metadata_preserves_every_mode_event_and_target_plan(self):
+        card=self.card(oracle_text='Flying\nWhen this creature enters, choose one —\n• Tap target creature an opponent controls.\n• Draw a card.')
+        result=generate.trigger_creature_template(card);self.assertIsNotNone(result);self.assertEqual(result[1],1);condition,program,target=result[2][0];self.assertEqual((condition,target),('SelfEnters','None'));self.assertEqual(len(program),1);self.assertTrue(program[0].startswith('Modal(&['));self.assertIn('TargetRule::Object',program[0]);self.assertIn('relation: 1',program[0]);self.assertIn('Instruction::Draw(PlayerSet::Controller, 1)',program[0])
+        card=self.card(oracle_text='Morbid — At the beginning of your end step, if a creature died this turn, choose one —\n• You gain 2 life.\n• Draw a card.')
+        result=generate.trigger_creature_template(card);self.assertIsNotNone(result);self.assertIn('CreatureDied',result[2][0][0])
+        card=self.card(oracle_text='When this creature enters, choose one —\n• Tap target creature.\n• Untap target creature.\nWhenever this creature attacks, draw a card.')
+        result=generate.trigger_creature_template(card);self.assertEqual(len(result[2]),2);self.assertEqual(result[2][1],('SelfAttacks',['Draw(PlayerSet::Controller, 1)'],'None'))
+
+    def test_modal_trigger_complete_bullet_scope_bounds_and_unknown_modes_gate_the_body(self):
+        header='When this creature enters, choose one —\n'
+        for count in [2,64]:self.assertIsNotNone(generate.trigger_creature_template(self.card(oracle_text=header+'\n'.join(['• Draw a card.']*count))))
+        for count in [0,1,65]:self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=header+'\n'.join(['• Draw a card.']*count))))
+        for body in [header+'• Draw a card.\n• Discover 3.',header+'• Draw a card.\nDraw a card.',header+'• Draw a card.\n• Untap target creature.\nWhenever you attack, discover 3.',header.replace('choose one —','choose one or both —')+'• Draw a card.\n• You gain 2 life.',header.replace('choose one —','choose up to one —')+'• Draw a card.\n• You gain 2 life.',header.replace('When this creature enters, ','Whenever you commit a crime, ')+'• Draw a card.\n• You gain 2 life.']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=body)),body)
+        self.assertIsNone(generate.permanent_program_template(self.card(oracle_text='{2}: Choose one —\n• Draw a card.\n• You gain 2 life.')))
+
+    def test_modal_trigger_admissions_require_all_twelve_complete_bodies_and_each_residual(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());manifest=json.loads((generate.ROOT/'docs/modal-trigger-admissions.json').read_text());_,coverage=generate.compile_catalogue(rows,target);supported={c['name'] for c in coverage['cards'] if c['implemented']};self.assertEqual(len(manifest['cards']),12)
+        for row in manifest['cards']:
+            self.assertIn(row['name'],supported);card=next(c for c in rows['cards'] if c['name']==row['name']);self.assertEqual(card['oracle_text'],row['oracle_text']);bad=dict(card,oracle_text=card['oracle_text']+'\nWhenever you attack, discover 3.')
+            for compiler in [generate.permanent_program_template,generate.trigger_creature_template,generate.static_permanent_template]:self.assertIsNone(compiler(bad),row['name'])
+        for name in ['Archive Arbiter','Black Panther, Vanguard','Flash Thompson, Spider-Fan','Monument to Endurance','Three Bowls of Porridge']:
+            self.assertNotIn(name,supported)
+
     def test_targeted_object_actions_keep_exact_subject_and_optional_cardinality(self):
         subjects={'target creature an opponent controls':'CreatureOpponent','target creature you control':'CreatureYou','other target creature':'OtherCreature','other target permanent you control':'OtherPermanentYou','target tapped creature':'CreatureTapped','target creature or Vehicle':'CreatureVehicle','target nonland permanent':'Nonland','target artifact or creature':'ArtifactCreature','target land':'Land'}
         for subject,rule in subjects.items():
@@ -770,7 +795,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             proxy,_=generate.extract_cost_reductions(dict(original,oracle_text=original['oracle_text']+'\nWhenever you cast a spell, discover 3.'))
             proxy,_=generate.extract_entry_counters(proxy)
             self.assertIsNone(generate.creature_template(proxy));self.assertIsNone(generate.trigger_creature_template(proxy));self.assertIsNone(generate.permanent_program_template(proxy));self.assertIsNone(generate.static_permanent_template(proxy))
-        for name in ['Blacksnag Buzzard','Rictus Robber','Old Flitterfang','Wardens of the Cycle','Tragic Banshee']:
+        for name in ['Blacksnag Buzzard','Rictus Robber','Old Flitterfang','Tragic Banshee']:
             self.assertNotIn(name,supported)
 
     def test_entry_counter_replacements_use_exact_pre_entry_predicates(self):
@@ -2164,7 +2189,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             'At the beginning of your upkeep, draw a card if you control a Dragon.',
             'At the beginning of your upkeep, if you have 40 or more life, you win the game.',
             'At the beginning of your next upkeep, draw a card.',
-            'At the beginning of combat on your turn, choose one —\n• Draw a card.\n• You gain 2 life.',
+            'At the beginning of combat on your turn, choose one or both —\n• Draw a card.\n• You gain 2 life.',
             'At the beginning of your end step, draw a card. This ability triggers only once.',
         ]:
             self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=text)),text)

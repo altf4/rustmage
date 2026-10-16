@@ -4,9 +4,9 @@ use crate::cards::{
     AmountValue, BattlefieldFilter, CastRelation, CostTurn, CountFilter, CountZone, CounterKind,
     CounterSubject, Counters, CreatureFilter, DamageQualification, DamageSubject, Effect,
     EffectChoiceKind, EmblemInfo, EntryCounterAmount, EntryTapped, Instruction, ManaCost,
-    ManaProduction, MillAmount, PlayerSet, RecoveryFilter, SacrificeFilter, SearchSpec, StatExpr,
-    StatValue, Stats, StepGuard, StepValue, Subject, TargetPlan, TargetPredicate, TargetRule,
-    TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
+    ManaProduction, MillAmount, PlayerSet, RecoveryFilter, SacrificeFilter, SearchSpec, SpellMode,
+    StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetPlan, TargetPredicate,
+    TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
@@ -509,6 +509,45 @@ pub struct SpellView {
     pub targets: Vec<BoundTarget>,
     pub mode: Option<u16>,
     pub controller: Player,
+}
+
+impl SpellView {
+    pub(crate) fn modes(&self) -> Option<&'static [SpellMode]> {
+        match self.kind {
+            StackKind::Spell => match self.source_card.effect() {
+                Effect::Modal(modes) => Some(modes),
+                _ => None,
+            },
+            StackKind::TriggeredAbility { ability } => match self.source_card.triggers()
+                [ability as usize]
+                .program
+                .first()
+            {
+                Some(Instruction::Modal(modes)) => Some(modes),
+                _ => None,
+            },
+            StackKind::ActivatedAbility { .. } => None,
+        }
+    }
+    pub(crate) fn program(&self) -> Option<(TargetPlan, &'static [Instruction])> {
+        if let Some(modes) = self.modes() {
+            return self
+                .mode
+                .and_then(|mode| modes.get(usize::from(mode)))
+                .map(|mode| (mode.targets, mode.program));
+        }
+        match self.kind {
+            StackKind::TriggeredAbility { ability } => {
+                let a = &self.source_card.triggers()[ability as usize];
+                Some((a.targets, a.program))
+            }
+            StackKind::ActivatedAbility { ability } => {
+                let a = &self.source_card.activations()[ability as usize];
+                Some((a.targets, a.program))
+            }
+            StackKind::Spell => self.source_card.spell_program(self.mode),
+        }
+    }
 }
 
 /// Exact stack identity and its controller, retained after that item leaves.
@@ -1724,9 +1763,7 @@ impl Game {
             }
             Pending::Modes { player } => {
                 let item = &s.announcing.as_ref().unwrap().item;
-                let Effect::Modal(modes) = item.source_card.effect() else {
-                    unreachable!()
-                };
+                let modes = item.modes().expect("modal announcement");
                 for (index, mode) in modes.iter().enumerate() {
                     if self.targets_available(mode.targets, player, item.object)
                         && emit(Action::ChooseMode { mode: index as u16 })
@@ -3157,9 +3194,7 @@ impl Game {
             },
             mode_choices: if owns_choice && matches!(s.pending, Pending::Modes { .. }) {
                 let item = &s.announcing.as_ref().unwrap().item;
-                let Effect::Modal(modes) = item.source_card.effect() else {
-                    unreachable!()
-                };
+                let modes = item.modes().expect("modal announcement");
                 modes
                     .iter()
                     .enumerate()
@@ -3674,3 +3709,7 @@ mod source_predicate_tests;
 #[cfg(test)]
 #[path = "engine_targeted_bounce_tap_tests.rs"]
 mod targeted_bounce_tap_tests;
+
+#[cfg(test)]
+#[path = "engine_modal_trigger_tests.rs"]
+mod modal_trigger_tests;
