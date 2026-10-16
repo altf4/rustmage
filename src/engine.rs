@@ -9,7 +9,7 @@ use crate::cards::{
     TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
 /// Version of the public observation structure, including owned trigger context.
-pub const OBSERVATION_SCHEMA: u32 = 55;
+pub const OBSERVATION_SCHEMA: u32 = 56;
 
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
@@ -17,6 +17,10 @@ mod additional_costs;
 #[path = "engine_library_selection.rs"]
 mod library_selection;
 pub use library_selection::LibrarySelectionView;
+
+#[path = "engine_forage.rs"]
+mod forage;
+pub use forage::{ForageRoute, ForageView};
 #[path = "engine_spell_costs.rs"]
 mod spell_costs;
 pub use additional_costs::AdditionalCostView;
@@ -223,6 +227,9 @@ macro_rules! define_actions {
     }
 }
 define_actions! {
+    ChooseForageRoute { route: ForageRoute },
+    ChooseForage { object: ObjectRef },
+    DeclineForage,
     ChooseAdditionalCost {
         object: ObjectRef,
     },
@@ -694,6 +701,12 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    ForageMethod {
+        player: Player,
+    },
+    Forage {
+        player: Player,
+    },
     Offspring {
         player: Player,
     },
@@ -1043,6 +1056,7 @@ pub struct Observation {
     pub aura_entry: Option<entries::AuraEntryView>,
     pub entry_life: Option<entries::EntryLifeView>,
     pub additional_cost: Option<AdditionalCostView>,
+    pub forage: Option<ForageView>,
     pub connive_choice: Option<connive::ConniveChoiceView>,
     pub known_hand: Vec<ObjectRef>,
     pub payment_request: Option<PaymentRequestView>,
@@ -1258,6 +1272,8 @@ impl Game {
             | Pending::Modes { player }
             | Pending::Targets { player }
             | Pending::OrderTriggers { player }
+            | Pending::ForageMethod { player }
+            | Pending::Forage { player }
             | Pending::EffectOptional { player, .. }
             | Pending::EffectDiscard { player, .. } => Some(player),
             Pending::Attackers | Pending::Damage | Pending::Discard => Some(self.state.active),
@@ -1446,6 +1462,11 @@ impl Game {
         // result. Cache capacity affects work only, never the admitted action set.
         let mut spell_funding_cache: [Option<(Mana, u32, bool)>; 8] = [None; 8];
         match s.pending {
+            Pending::ForageMethod { .. } | Pending::Forage { .. } => {
+                if self.visit_forage_actions(&mut emit) {
+                    return true;
+                }
+            }
             Pending::ResolutionMana { .. } => {
                 if self.visit_resolution_payment(&mut emit) {
                     return true;
@@ -1478,6 +1499,7 @@ impl Game {
                         let action = match choice.kind {
                             EffectChoiceKind::Sacrifice => Action::Sacrifice { object },
                             EffectChoiceKind::Discard => Action::Discard { card: object.card },
+                            _ => unreachable!("forage has its own choice"),
                         };
                         if emit(action) {
                             return true;
@@ -1985,6 +2007,9 @@ impl Game {
 
     fn apply_legal(&mut self, actor: Player, action: Action) {
         match action {
+            Action::ChooseForageRoute { route } => self.choose_forage_route(route),
+            Action::ChooseForage { object } => self.choose_forage(object),
+            Action::DeclineForage => self.decline_forage(),
             Action::ChooseConniver { object } => {
                 self.choose_conniver(object);
                 self.run_program();
@@ -2474,6 +2499,7 @@ impl Game {
             );
         }
         let sources = self.death_trigger_sources();
+        self.food_sacrifice_triggers(sacrifices, &sources);
         // Most sacrifice costs move one object. Avoid batch-vector allocations
         // in this hot path while retaining the same frozen observer boundary.
         if let [(actor, id)] = sacrifices {
@@ -3214,6 +3240,8 @@ impl Game {
                 Pending::PayCosts { .. } => "pay_costs",
                 Pending::OrderTriggers { .. } => "order_triggers",
                 Pending::EffectOptional { .. } => "optional_effect",
+                Pending::ForageMethod { .. } => "forage_method",
+                Pending::Forage { .. } => "forage",
                 Pending::EffectMana { .. } => "mana_choice",
                 Pending::EffectLibrary { .. } => "library_choice",
                 Pending::EffectLibrarySelection { .. } => "library_selection",
@@ -3265,6 +3293,7 @@ impl Game {
             aura_entry: self.aura_entry_view(viewer),
             entry_life: self.entry_life_view(viewer),
             additional_cost: self.additional_cost_view(viewer),
+            forage: self.forage_view(viewer),
             objects,
             exile_links: s.exile_links.clone(),
             triggered_this_turn: s.triggered_this_turn.clone(),
@@ -3518,7 +3547,8 @@ impl Game {
             + s.resolving
                 .as_ref()
                 .map(|resolution| {
-                    resolution.connive.as_ref().map_or(0, |c| c.bytes())
+                    resolution.forage.as_ref().map_or(0, |f| f.bytes())
+                        + resolution.connive.as_ref().map_or(0, |c| c.bytes())
                         + resolution.mana_payment.as_ref().map_or(0, |_| {
                             std::mem::size_of::<resolution_mana::ResolutionPayment>()
                         })
@@ -3553,6 +3583,10 @@ impl Game {
                             * std::mem::size_of::<CardId>()
                 })
                 .unwrap_or(0)
+            + s.announcing
+                .as_ref()
+                .and_then(|a| a.forage.as_ref())
+                .map_or(0, |f| f.bytes())
             + s.stack
                 .iter()
                 .chain(&s.pending_triggers)
@@ -3924,3 +3958,7 @@ mod offspring_tests;
 #[cfg(test)]
 #[path = "engine_library_selection_tests.rs"]
 mod library_selection_tests;
+
+#[cfg(test)]
+#[path = "engine_forage_tests.rs"]
+mod forage_tests;

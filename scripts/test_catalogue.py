@@ -43,6 +43,24 @@ class CatalogueCompilerTests(unittest.TestCase):
         changed=dict(rows,cards=[dict(c,oracle_text=c['oracle_text']+'\nWhenever you cast a spell, discover 3.') if c['name'] in names else c for c in rows['cards']]);changed['cards_sha256']=hashlib.sha256(json.dumps(changed['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();_,cov=generate.compile_catalogue(changed,target);self.assertTrue(all(not c['implemented'] for c in cov['cards'] if c['name'] in names))
 
 
+    def test_forage_complete_bodies_and_reflexive_post_payment_plan(self):
+        import json,hashlib
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());manifest=json.loads((generate.ROOT/'docs/forage-admissions.json').read_text());self.assertEqual(len(manifest['cards']),6)
+        source,coverage=generate.compile_catalogue(snapshot,target);supported={c['name'] for c in coverage['cards'] if c['implemented']};names={c['name'] for c in manifest['cards']}
+        for c in manifest['cards']:
+            self.assertIn(c['name'],supported);self.assertEqual(next(r for r in snapshot['cards'] if r['name']==c['name'])['oracle_text'],c['oracle_text'])
+        for name in ['Thornvault Forager','Osteomancer Adept']:self.assertNotIn(name,supported)
+        curious=next(row for row in source.splitlines() if 'Definition { info:' in row and 'name: "Curious Forager"' in row);self.assertIn('Forage { skip: 1 }',curious);self.assertIn('Reflexive { ability: 1 }',curious);self.assertIn('TargetPredicate::Permanent',curious)
+        altered=dict(snapshot,cards=[dict(c,oracle_text=c['oracle_text']+'\nDiscover 3.') if c['name'] in names else c for c in snapshot['cards']]);altered['cards_sha256']=hashlib.sha256(json.dumps(altered['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();_,gated=generate.compile_catalogue(altered,target);self.assertTrue(all(not c['implemented'] for c in gated['cards'] if c['name'] in names))
+
+    def test_forage_grammar_keeps_operation_and_additional_cost_scope_closed(self):
+        self.assertEqual(generate.statement_program('you may forage.'),['Forage { skip: 0 }']);self.assertEqual(generate.statement_program('you may forage. If you do, draw a card.'),['Forage { skip: 1 }','Draw(PlayerSet::Controller, 1)'])
+        for text in ['you may forage twice.','you may forage. If you do, discover 3.','you may forage or pay {G}.']:
+            self.assertIsNone(generate.statement_program(text),text)
+        self.assertIsNotNone(generate.activation_cost('{2}, Forage'));self.assertIsNone(generate.activation_cost('{2}, Forage, Forage'))
+        self.assertIsNone(generate.activation_cost('{T}, Forage, Sacrifice this creature'))
+
+
     def test_offspring_exact_keyword_and_reminder_costs_stay_closed(self):
         for cost in ['{2}','{1}{U}','{2}{B}']:
             c=self.card(oracle_text='Offspring '+cost+' (You may pay an additional '+cost+' as you cast this spell. If you do, when this creature enters, create a 1/1 token copy of it.)\nFlying')
@@ -57,7 +75,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         for c in manifest['cards']:
             self.assertIn(c['name'],supported);self.assertEqual(next(r for r in snapshot['cards'] if r['name']==c['name'])['oracle_text'],c['oracle_text'])
             definitions=[row for row in source.splitlines() if row.startswith('    Definition {') and 'name: '+json.dumps(c['name'])+',' in row];self.assertEqual(len(definitions),2,c['name']);self.assertIn('Effect::Creature(1, 1)',definitions[1]);self.assertIn('SelfOffspring',definitions[1]);self.assertIn('standard_legal: false',definitions[1])
-        for name in ['Bushy Bodyguard','Darkstar Augur','Manifold Mouse','Pawpatch Recruit','Thornplate Intimidator','Thundertrap Trainer','Warren Warleader']:self.assertNotIn(name,supported)
+        for name in ['Darkstar Augur','Manifold Mouse','Pawpatch Recruit','Thornplate Intimidator','Thundertrap Trainer','Warren Warleader']:self.assertNotIn(name,supported)
         altered=dict(snapshot,cards=[dict(c,oracle_text=c['oracle_text']+'\nDiscover 3.') if c['name'] in names else c for c in snapshot['cards']]);altered['cards_sha256']=hashlib.sha256(json.dumps(altered['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();_,gated=generate.compile_catalogue(altered,target);self.assertTrue(all(not c['implemented'] for c in gated['cards'] if c['name'] in names))
 
 
@@ -599,7 +617,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIn(name,supported)
             c=next(c for c in rows['cards'] if c['name']==name);bad=dict(c,oracle_text=c['oracle_text']+'\nWhenever you cast a spell, discover 3.')
             for compiler in [generate.permanent_program_template,generate.trigger_creature_template,generate.spell_program_template]:self.assertIsNone(compiler(bad),name)
-        for name in ['Fanatical Offering','Dyadrine, Synthesis Amalgam','Esoteric Duplicator','Camellia, the Seedmiser']:
+        for name in ['Fanatical Offering','Dyadrine, Synthesis Amalgam','Esoteric Duplicator']:
             self.assertNotIn(name,supported)
 
     def test_sacrifice_triggers_compile_exact_filters_and_triggered_mana(self):
@@ -621,7 +639,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIn(name,supported)
             c=next(c for c in rows['cards'] if c['name']==name);bad=dict(c,oracle_text=c['oracle_text']+'\nWhenever you cast a spell, discover 3.')
             for compiler in [generate.permanent_program_template,generate.trigger_creature_template]:self.assertIsNone(compiler(bad),name)
-        for name in ['Curious Cadaver','Esoteric Duplicator','Magnetic Snuffler','Camellia, the Seedmiser']:
+        for name in ['Curious Cadaver','Esoteric Duplicator','Magnetic Snuffler']:
             self.assertNotIn(name,supported)
 
     def test_permanent_departures_compile_exact_sources_and_kind_scoped_exclusions(self):
@@ -1858,7 +1876,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIn(name,supported)
         for name in ['Grab the Prize','Pumpkin Bombardment','Souls Lost','Fear of Isolation']:
             self.assertNotIn(name,supported)
-        self.assertEqual(rust.count('=> Some(AdditionalCost {'),8)
+        self.assertEqual(rust.count('=> Some(AdditionalCost {'),9)
         prefix='As an additional cost to cast this spell, '
         for cost in ['discard two cards.','you may discard a card.','sacrifice two creatures.',
                      'discard a card or pay {2}.','sacrifice an artifact or pay {2}.',

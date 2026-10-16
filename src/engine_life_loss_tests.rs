@@ -236,6 +236,7 @@ fn program(g: &mut Game, code: &'static [Instruction]) {
         connive: None,
         item,
         mana_payment: None,
+        forage: None,
         program: code,
         pc: 0,
         target_group: 0,

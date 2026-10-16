@@ -15,6 +15,7 @@ pub(super) struct Announcement {
     pub pay_window: bool,
     pub production: Option<Mana>,
     pub additional: Option<ObjectRef>,
+    pub forage: Option<Box<forage::ForageSelection>>,
     pub additional_paid: bool,
 }
 
@@ -176,6 +177,8 @@ impl Game {
             } else {
                 Pending::ActivationCost { player }
             };
+        } else if a.additional_cost().is_some_and(forage::is_forage_cost) && a.forage.is_none() {
+            self.state.pending = Pending::ForageMethod { player };
         } else {
             self.state.pending = Pending::Targets { player };
             self.advance_target_groups();
@@ -260,6 +263,9 @@ impl Game {
                     TargetPredicate::Keyword(keyword) => self.keywords(id).contains(keyword),
                     TargetPredicate::Token => object.card.is_token(),
                     TargetPredicate::Subtype(subtype) => object.card.has_subtype(subtype),
+                    TargetPredicate::Permanent => {
+                        object.card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256) != 0
+                    }
                     TargetPredicate::Nonbasic => !object.card.is_basic_land(),
                     TargetPredicate::NonOutlaw => {
                         !["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"]
@@ -475,6 +481,7 @@ impl Game {
             total_cost: None,
             counter_payment: Counters::default(),
             additional: None,
+            forage: None,
             additional_paid: false,
             pay_window: false,
             production: None,
@@ -506,6 +513,7 @@ impl Game {
             total_cost: None,
             counter_payment: counters,
             additional: None,
+            forage: None,
             additional_paid: false,
             pay_window: true,
             production,
@@ -528,16 +536,27 @@ impl Game {
                 self.state.announcing.as_mut().unwrap().total_cost = Some(total);
             }
             let announcement = self.state.announcing.as_ref().unwrap();
-            self.state.pending =
-                if announcement.additional_cost().is_some() && announcement.additional.is_none() {
-                    Pending::AdditionalCost {
-                        player: announcement.item.controller,
-                    }
-                } else {
-                    Pending::PayCosts {
-                        player: announcement.item.controller,
-                    }
-                };
+            self.state.pending = if announcement
+                .additional_cost()
+                .is_some_and(forage::is_forage_cost)
+                && announcement.forage.as_ref().is_some_and(|f| !f.complete())
+            {
+                Pending::Forage {
+                    player: announcement.item.controller,
+                }
+            } else if announcement
+                .additional_cost()
+                .is_some_and(|spec| !forage::is_forage_cost(spec))
+                && announcement.additional.is_none()
+            {
+                Pending::AdditionalCost {
+                    player: announcement.item.controller,
+                }
+            } else {
+                Pending::PayCosts {
+                    player: announcement.item.controller,
+                }
+            };
             return;
         }
         let mut announcement = self.state.announcing.take().unwrap();
@@ -551,10 +570,9 @@ impl Game {
         if matches!(announcement.item.kind, StackKind::ActivatedAbility { .. })
             && !announcement.additional_paid
         {
-            if announcement
-                .additional_cost()
-                .is_some_and(|spec| spec.kind == EffectChoiceKind::Sacrifice)
-                && let Some(payment) = announcement.payment.take()
+            if announcement.additional_cost().is_some_and(|spec| {
+                spec.kind == EffectChoiceKind::Sacrifice || forage::is_forage_cost(spec)
+            }) && let Some(payment) = announcement.payment.take()
             {
                 self.pay_activation(&announcement.item, payment, announcement.counter_payment);
             }

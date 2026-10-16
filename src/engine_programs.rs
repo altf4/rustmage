@@ -7,6 +7,7 @@ pub(super) struct Resolution {
     pub connive: Option<Box<super::connive::ConniveSequence>>,
     pub item: SpellView,
     pub mana_payment: Option<Box<resolution_mana::ResolutionPayment>>,
+    pub forage: Option<Box<forage::ForageSelection>>,
     pub program: &'static [Instruction],
     pub pc: usize,
     pub target_group: u16,
@@ -272,7 +273,10 @@ impl Game {
                     TriggerCondition::SelfEnters
                     | TriggerCondition::SelfEntersOrAttacks
                     | TriggerCondition::SelfEntersOrDies => same,
-                    TriggerCondition::Ward
+                    TriggerCondition::Foraged
+                    | TriggerCondition::FoodsSacrificed
+                    | TriggerCondition::Reflexive
+                    | TriggerCondition::Ward
                     | TriggerCondition::SelfTargeted { .. }
                     | TriggerCondition::CardDrawn { .. }
                     | TriggerCondition::SelfDiscarded
@@ -754,6 +758,7 @@ impl Game {
             moved_count: None,
             discards: [0; 2],
             mana_payment: None,
+            forage: None,
             selected_discards: [Vec::new(), Vec::new()],
             milled: Vec::new(),
             library: None,
@@ -867,6 +872,18 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::Forage { skip } => {
+                    self.start_resolution_forage(skip);
+                    return;
+                }
+                Instruction::Reflexive { ability } => {
+                    let mut reflexive = item.clone();
+                    reflexive.id = self.next_stack_id();
+                    reflexive.kind = StackKind::TriggeredAbility { ability };
+                    reflexive.targets.clear();
+                    reflexive.mode = None;
+                    self.state.pending_triggers.push(reflexive);
+                }
                 Instruction::Modal(_) => unreachable!("unselected modal trigger executed"),
                 Instruction::If { guard, skip } => {
                     if !self.step_guard(guard, item.controller, item.object, item.source_tapped) {

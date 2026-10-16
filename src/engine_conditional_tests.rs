@@ -659,6 +659,7 @@ fn flat_if_else_offsets_and_scry_pc_keep_common_tail_outside_both_branches() {
             moved_count: None,
             connive: None,
             mana_payment: None,
+            forage: None,
             discards: [0; 2],
             selected_discards: [Vec::new(), Vec::new()],
             milled: Vec::new(),

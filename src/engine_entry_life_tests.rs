@@ -64,6 +64,7 @@ fn program(g: &mut Game, code: &'static [Instruction]) {
         moved_count: None,
         discards: [0; 2],
         mana_payment: None,
+        forage: None,
         selected_discards: [Vec::new(), Vec::new()],
         milled: Vec::new(),
         library: None,

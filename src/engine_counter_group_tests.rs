@@ -419,6 +419,7 @@ fn group_counter_instructions_finish_before_state_based_deaths_and_pair_cancella
         moved_count: None,
         connive: None,
         mana_payment: None,
+        forage: None,
         discards: [0; 2],
         selected_discards: [Vec::new(), Vec::new()],
         milled: Vec::new(),
