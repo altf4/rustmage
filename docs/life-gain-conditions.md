@@ -79,7 +79,7 @@ Apprentice, and the self-target behavior for Tenured Concocter. Also see CR 119,
 
 ## Validation and limits
 
-- 858 Rust tests: 846 unit and 12 integration, including eight new rules tests
+- 859 Rust tests: 847 unit and 12 integration, including nine new rules tests
   and one virtual-funding regression.
 - 161 compiler/data tests, including two new whole-body/guard methods.
 - 117 fresh release Python binding tests. Three new methods cover three
@@ -92,6 +92,12 @@ Native rules fixtures cover net life loss, zero/negative/opposing gains,
 `u128::MAX` history, reset, source removal/re-entry, late response gains, mandatory
 targets while false, atomic illegal-action rejection, all thirteen other clauses,
 indestructible/zero-toughness branch differences and owned private surveil replay.
+Suspended observations revalidate derived stats when life totals or gain predicates
+change, even without object mutations. Four capacity fixtures cover real Dream
+Beavers gain-to-scry and synthetic net-zero-life history changes with source/global
+bonuses, requiring complete state/revision rollback and safe observations.
+The replacement parser accepts only one alternative sentence; multi-sentence
+replacement scopes are explicitly rejected, including whole spell bodies.
 Python cases independently clone/restore/replay through the native C ABI.
 
 `cargo run --release --example standard_life_gain_conditions -- 100` runs legal
@@ -116,7 +122,7 @@ Grim Bauble surveil choices**, **26,183 clone/restore replays**, and **20,720 ma
 logical initialized bytes**.
 
 A fresh unpinned 1,000-game Freeform benchmark yields 571,049 decisions,
-401,710.40 decisions/s, 703.46 games/s, clone 131.52 ns and restore 110.49 ns.
+383,031.35 decisions/s, 670.75 games/s, clone 127.71 ns and restore 113.39 ns.
 Initial state remains **19,784 logical bytes**, excluding capacity/allocator/COW
 metadata, static definitions, observations and external snapshots. The sample
 includes native smoke policy and observations, excludes model inference, tensor

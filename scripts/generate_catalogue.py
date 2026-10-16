@@ -921,7 +921,9 @@ def statement_program(text):
     tail=strip_rule_label(tail)
     if tail and (clause:=guarded_clause(tail[0].lower()+tail[1:])):
         guard,alternative=clause
-        if alternative.endswith(' instead.'):
+        # Only a single replacement sentence establishes this exact scope.
+        # Earlier/later sentences may have independent conditions or antecedents.
+        if alternative.endswith(' instead.') and not split_sentence(alternative)[1]:
             normal=statement_program(first);other=statement_program(alternative.removesuffix(' instead.')+'.')
             if normal and other and not any('AddMana(' in p for p in normal+other):
                 return [f'If {{ guard: {guard}, skip: {len(other)+1} }}',*other,f'Skip({len(normal)})',*normal]

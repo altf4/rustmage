@@ -28,6 +28,11 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertEqual(len(branch),4);self.assertIn('skip: 2',branch[0]);self.assertTrue(branch[1].startswith('MoveBattlefield'));self.assertEqual(branch[2],'Skip(1)');self.assertTrue(branch[3].startswith('GrowCreatures'))
         for text in ['Draw a card if an opponent gained life this turn.','Draw a card if you gained life last turn.','Draw a card. Scry 1. If you gained life this turn, destroy all creatures instead.']:
             self.assertIsNone(generate.statement_program(text),text)
+        for text in ['Draw a card. If you gained life this turn, you gain 2 life. Draw two cards instead.',
+                     'Draw a card. If you gained life this turn, you gain 2 life. Scry 1 instead.',
+                     'All creatures get -2/-2 until end of turn. If you gained life this turn, draw a card. Destroy all creatures instead.']:
+            self.assertIsNone(generate.statement_program(text),text)
+            self.assertIsNone(generate.spell_program_template(self.card(type_line='Sorcery',oracle_text=text)),text)
         self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='Whenever another creature enters, put two +1/+1 counters on it if you gained life this turn.')))
 
     def test_thirteen_life_gain_and_opponent_debuff_bodies_remain_complete(self):

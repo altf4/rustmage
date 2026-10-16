@@ -323,3 +323,82 @@ fn tenured_optional_opponent_target_draw_coexists_with_live_history_bonus() {
     assert_eq!(g.state.players[1].cards_drawn_this_turn, 1);
     assert_eq!(g.stats(a).power, 9);
 }
+
+#[test]
+fn gain_only_suspension_cannot_commit_unrepresentable_continuous_stats() {
+    for global in [false, true] {
+        for net_zero in [false, true] {
+            let mut g = scenario();
+            let target = if global {
+                named(&mut g, Player::P0, "Thornfist Striker", Zone::Battlefield);
+                named(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield)
+            } else {
+                named(&mut g, Player::P0, "Tenured Concocter", Zone::Battlefield)
+            };
+            g.state.objects[target as usize].growth.power = i128::MAX - if global { 2 } else { 4 };
+            assert_eq!(g.stats(target).power, i128::MAX);
+            let beavers = named(&mut g, Player::P0, "Dream Beavers", Zone::Hand);
+            g.move_object(beavers, Zone::Battlefield);
+            g.prepare_triggers();
+            assert_eq!(
+                g.state.stack.last().unwrap().source_card.name(),
+                "Dream Beavers"
+            );
+            let action = if net_zero {
+                // Synthetic owned IR isolates history dirtiness when every
+                // life total is unchanged; no printed-body admission is implied.
+                let item = g.state.stack.pop().unwrap();
+                g.state.resolving = Some(Resolution {
+                    item,
+                    program: &[
+                        Instruction::May { skip: 3 },
+                        Instruction::LoseLife(PlayerSet::Controller, 1),
+                        Instruction::GainLife(PlayerSet::Controller, 1),
+                        Instruction::Scry(1),
+                    ],
+                    pc: 0,
+                    target_group: 0,
+                    moved_count: None,
+                    connive: None,
+                    mana_payment: None,
+                    discards: [0; 2],
+                    selected_discards: [Vec::new(), Vec::new()],
+                    milled: Vec::new(),
+                    library: None,
+                    search: None,
+                    choice: None,
+                });
+                g.run_program();
+                Action::ChooseOptional { accept: true }
+            } else {
+                replay(&mut g, Action::Pass);
+                Action::Pass
+            };
+            let saved = g.snapshot();
+            let revision = g.revision();
+            let p = g.actor().unwrap();
+            let mut fork = g.clone();
+            assert!(matches!(
+                fork.apply(p, action.clone()),
+                Err(Error::CapacityExceeded(_))
+            ));
+            assert_eq!(fork.snapshot(), saved);
+            for _ in 0..2 {
+                assert!(matches!(
+                    g.apply(p, action.clone()),
+                    Err(Error::CapacityExceeded(_))
+                ));
+                assert_eq!(g.snapshot(), saved);
+                assert_eq!(g.revision(), revision);
+                assert_eq!(g.observe(Player::P0).players[0].life_gained_this_turn, 0);
+                assert_eq!(g.stats(target).power, i128::MAX);
+            }
+            g.restore(&saved).unwrap();
+            assert!(matches!(
+                g.apply(p, action),
+                Err(Error::CapacityExceeded(_))
+            ));
+            assert_eq!(g.snapshot(), saved);
+        }
+    }
+}

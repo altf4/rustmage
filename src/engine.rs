@@ -1236,7 +1236,17 @@ impl Game {
                 && (!self.state.objects.ptr_eq(&checkpoint.objects)
                     || self.state.active != checkpoint.active
                     || self.state.attackers != checkpoint.attackers
-                    || self.state.static_sources != checkpoint.static_sources)
+                    || self.state.static_sources != checkpoint.static_sources
+                    || self
+                        .state
+                        .players
+                        .iter()
+                        .zip(&checkpoint.players)
+                        .any(|(now, old)| {
+                            now.life != old.life
+                                || (now.life_gained_this_turn > 0)
+                                    != (old.life_gained_this_turn > 0)
+                        }))
             {
                 for (id, object) in self.state.objects.iter().enumerate() {
                     if object.zone == Zone::Battlefield {
