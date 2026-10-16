@@ -8,6 +8,34 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_filtered_entry_conditions_preserve_self_other_nontoken_kind_and_subtype(self):
+        cases=[('another nontoken creature',1,True,None,False),('another nontoken Bird',0,True,'Bird',False),('this creature or another nontoken Cat',0,True,'Cat',True),('this creature or another Mutant',0,False,'Mutant',True),('this creature or another artifact',16,False,None,True)]
+        for subject,kinds,nontoken,subtype,include in cases:
+            result=generate.trigger_creature_template(self.card(oracle_text='Whenever '+subject+' you control enters, draw a card.'));self.assertIsNotNone(result)
+            condition,program,targets=result[2][0];self.assertIn('PermanentEntersYou {',condition);self.assertIn('kinds: '+str(kinds),condition);self.assertIn('nontoken: '+str(nontoken).lower(),condition);self.assertIn('include_source: '+str(include).lower(),condition);self.assertIn('subtype: '+('Some("'+subtype+'")' if subtype else 'None'),condition);self.assertEqual(program,['Draw(PlayerSet::Controller, 1)']);self.assertEqual(targets,'None')
+        old=generate.trigger_creature_template(self.card(oracle_text='Whenever this creature or another creature you control enters, draw a card.'));self.assertEqual(old[2][0][0],'CreatureEntersYou')
+        guarded=generate.trigger_creature_template(self.card(oracle_text='Whenever another nontoken Bird you control enters, if you gained life this turn, draw a card. This ability triggers only once each turn.'));self.assertIsNotNone(guarded);self.assertIn('OncePerTurn',guarded[2][0][0]);self.assertIn('InterveningIf',guarded[2][0][0]);self.assertIn('PermanentEntersYou',guarded[2][0][0])
+
+    def test_filtered_entry_unknown_predicates_multiplicity_and_pronouns_remain_gated(self):
+        for subject in ['another nontoken Wizard with flying','one or more nontoken Birds','another nontoken Bird or Dragon','another nontoken noncreature artifact','another nontoken Robot Villain','another nontoken Unknown','another creature with power 2 or less']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='Whenever '+subject+' you control enters, draw a card.')),subject)
+        for effect in ['put a +1/+1 counter on it.','it gets +1/+1 until end of turn.','discover 3.','draw a card. Then discover 3.']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='Whenever another nontoken Bird you control enters, '+effect)),effect)
+        good=self.card(name='Arni, Humble Scribe',type_line='Legendary Creature — Human Wizard',oracle_text='Whenever another nontoken creature you control enters, untap Arni.\n{T}: Draw a card, then discard a card.')
+        self.assertIsNotNone(generate.permanent_program_template(good))
+        for wrong in ['Another Arni','it','the entering creature']:
+            self.assertIsNone(generate.permanent_program_template(dict(good,oracle_text=good['oracle_text'].replace('untap Arni.','untap '+wrong+'.'))))
+        self.assertIsNone(generate.permanent_program_template(dict(good,type_line='Creature — Human Wizard')))
+
+    def test_filtered_entry_admissions_are_eight_complete_bodies_and_reject_unknown_residuals(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());manifest=json.loads((generate.ROOT/'docs/filtered-entry-admissions.json').read_text());_,coverage=generate.compile_catalogue(rows,target);supported={c['name'] for c in coverage['cards'] if c['implemented']};self.assertEqual(len(manifest['cards']),8)
+        for row in manifest['cards']:
+            self.assertIn(row['name'],supported);card=next(c for c in rows['cards'] if c['name']==row['name']);self.assertEqual(card['oracle_text'],row['oracle_text']);bad=dict(card,oracle_text=card['oracle_text']+'\nWhenever you attack, discover 3.')
+            for compiler in [generate.permanent_program_template,generate.trigger_creature_template,generate.static_permanent_template]:self.assertIsNone(compiler(bad),row['name'])
+        for name in ['Ultron, Artificial Malevolence','Wartime Protestors','Harvestrite Host','Giott, King of the Dwarves']:
+            self.assertNotIn(name,supported)
+
     def test_alliance_is_cosmetic_and_preserves_exact_full_event_and_program(self):
         text='Whenever another creature you control enters, put a +1/+1 counter on this creature.'
         expected=generate.trigger_creature_template(self.card(oracle_text=text))
@@ -29,7 +57,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertEqual(generate.trigger_creature_template(card),generate.trigger_creature_template(plain))
             bad=dict(card,oracle_text=card['oracle_text']+'\nWhenever you attack, discover 3.')
             for compiler in [generate.permanent_program_template,generate.trigger_creature_template,generate.static_permanent_template]:self.assertIsNone(compiler(bad),row['name'])
-        for name in ['Wartime Protestors','Knightfisher','Arahbo, the First Fang','Harvestrite Host']:
+        for name in ['Wartime Protestors','Harvestrite Host']:
             self.assertNotIn(name,supported)
 
     def test_modal_trigger_metadata_preserves_every_mode_event_and_target_plan(self):
@@ -54,7 +82,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         for row in manifest['cards']:
             self.assertIn(row['name'],supported);card=next(c for c in rows['cards'] if c['name']==row['name']);self.assertEqual(card['oracle_text'],row['oracle_text']);bad=dict(card,oracle_text=card['oracle_text']+'\nWhenever you attack, discover 3.')
             for compiler in [generate.permanent_program_template,generate.trigger_creature_template,generate.static_permanent_template]:self.assertIsNone(compiler(bad),row['name'])
-        for name in ['Archive Arbiter','Black Panther, Vanguard','Flash Thompson, Spider-Fan','Monument to Endurance','Three Bowls of Porridge']:
+        for name in ['Archive Arbiter','Flash Thompson, Spider-Fan','Monument to Endurance','Three Bowls of Porridge']:
             self.assertNotIn(name,supported)
 
     def test_targeted_object_actions_keep_exact_subject_and_optional_cardinality(self):
@@ -1684,7 +1712,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=prefix+'draw a card.')))
             self.assertIsNotNone(generate.trigger_creature_template(self.card(oracle_text=prefix+'draw a card. This ability triggers only once each turn.')))
         for text in ['Whenever a Spider or Villain you control enters, draw a card.',
-                     'Whenever another nontoken Bird you control enters, draw a card.',
+                     'Whenever another nontoken Bird with flying you control enters, draw a card.',
                      'Whenever one or more players discard one or more cards, draw that many cards. This ability triggers only once each turn.',
                      'Whenever one or more players discard one or more cards, that player loses 1 life. This ability triggers only once each turn.']:
             self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=text)),text)
@@ -1701,7 +1729,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Tidus, Blitzball Star','Youthful Valkyrie']:
             self.assertIn(name,supported)
         for name in ['Crossbones, Malicious Mercenary','Caretaker\'s Talent','Enduring Innocence',
-                     'Knightfisher','Twilight Diviner','Mikey & Leo, Chaos & Order','Deepmuck Desperado']:
+                     'Twilight Diviner','Mikey & Leo, Chaos & Order','Deepmuck Desperado']:
             self.assertNotIn(name,supported)
 
     def test_connive_source_pronouns_names_and_fixed_amounts_require_bound_sources(self):

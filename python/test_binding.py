@@ -9,6 +9,71 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def test_eight_filtered_entry_bodies_modes_activations_and_private_replay(self):
+        names=['Arahbo, the First Fang', 'Arni, Humble Scribe', 'Black Panther, Vanguard', 'Genghis Frog', 'Knightfisher', 'Lathliss, Dragon Queen', 'Pactdoll Terror', 'Thoughtweft Lieutenant'];helpers=['Helpful Hunter','Bear Cub','Agent of Atlas','Mutant Town Musicians',"Healer's Hawk",'Shivan Dragon','Goldvein Pick','Goldmeadow Nomad']
+        for i,mode in [(j,0) for j in range(8)]+[(2,1)]:
+            wanted=names[i];helper=helpers[i];lands=sum(([n]*6 for n in ['Plains','Island','Swamp','Mountain','Forest']),[])
+            with self.subTest(card=wanted,mode=mode),Game([lands+[wanted]*12+[helper]*18,['Forest']*36+['Bear Cub']*24],seed=7,deck_rules='Freeform') as game:
+                entry=False;activation=False;replayed=0;pending={};private=0
+                for _ in range(16000):
+                    obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor']);objects={o['id']:o for o in obs['objects']};board=[o for o in objects.values() if o['owner']=='P0' and o['zone']=='Battlefield'];sources=[o for o in board if o['card']==wanted];helper_board=[o for o in board if o['card']==helper]
+                    def score(a):
+                        k=a['kind']
+                        if k in ('Cast','AnnounceCast'):
+                            n=objects[a['card']]['card']
+                            if n==wanted:return 250 if not sources else -100
+                            if n==helper:return 240 if sources and not helper_board and (i!=1 or activation) else -100
+                            return -100
+                        if k=='AnnounceActivate':
+                            n=objects[a['card']]['card'];v=objects[a['card']]
+                            return 245 if not activation and ((i==1 and n==wanted) or (i==5 and n==wanted and entry) or (i==3 and v['token'] is not None and v['token']['subtypes']=='Mutagen' and entry)) else -100
+                        if k=='ChooseMode':return 300 if a['mode']==mode else -100
+                        if k=='ChooseTarget' and 'Card' in a['target']:return 280 if objects[a['target']['Card']]['card']==wanted else 100
+                        if k=='TapMana':return 180 if obs['decision']=='pay_costs' else -100
+                        if k in ('ChooseSpellCost','ChooseActivationCost'):return 220
+                        if k in ('Activate','BeginActivate','ActivateMana','AnnounceMana'):return -100
+                        return self.professor_score(obs,a)
+                    choice=max(range(len(obs['actions'])),key=lambda j:score(obs['actions'][j]));action=obs['actions'][choice]
+                    if obs['decision']=='effect_discard':
+                        other=game.observe('P1' if obs['actor']=='P0' else 'P0');self.assertEqual(other['effect_discards'],[]);self.assertEqual(other['actions'],[]);private+=1
+                    if obs['announcing'] or obs['resolving'] or obs['stack']:
+                        saved=game.snapshot()
+                        with game.clone() as fork:after=fork.step(fork.observe(obs['actor']),choice)
+                        self.assertEqual(game.step(obs,choice),after);game.restore(saved)
+                        with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,choice)
+                        again=game.step(game.observe(obs['actor']),choice);after['revision']=again['revision'];self.assertEqual(after,again);game.drop_snapshot(saved);replayed+=1
+                    else:after=game.step(obs,choice)
+                    if obs['stack'] and action['kind']=='Pass':
+                        root=obs['stack'][-1]
+                        if root['kind']!='Spell' and root['id'] not in {v['id'] for v in after['stack']}:
+                            is_mutagen=i==3 and root['source_card'].startswith('@token/') and root['kind']=={'ActivatedAbility':{'ability':0}}
+                            if root['source_card']==wanted or is_mutagen:pending[root['id']]=(root,obs,bool(helper_board),is_mutagen)
+                    for root_id in list(pending):
+                        if any(v['id']==root_id for v in after['stack']) or after['resolving'] and after['resolving']['id']==root_id:continue
+                        root,b,had_helper,is_mutagen=pending.pop(root_id);before_objects={v['id']:v for v in b['objects']};after_objects={v['id']:v for v in after['objects']}
+                        if 'ActivatedAbility' in root['kind']:
+                            activation=True
+                            if i==1:self.assertEqual(after['players'][0]['library_count'],b['players'][0]['library_count']-1);self.assertEqual(after['players'][0]['hand_count'],b['players'][0]['hand_count'])
+                            if i==5:
+                                old=before_objects[root['card']];new=after_objects[root['card']];self.assertEqual((new['power'],new['toughness']),(old['power']+1,old['toughness']))
+                            if is_mutagen:
+                                ref=root['targets'][0]['object'];self.assertEqual(after_objects[ref['card']]['counters']['plus_one'],before_objects[ref['card']]['counters']['plus_one']+1)
+                        else:
+                            if i in (0,3,4,5) or i==2 and mode==0:
+                                subtype={0:'Cat',2:'Soldier',3:'Mutagen',4:'Fish',5:'Dragon'}[i];count=lambda o:sum(v['owner']=='P0' and v['zone']=='Battlefield' and v['token'] is not None and v['token']['subtypes']==subtype for v in o['objects']);self.assertEqual(count(after),count(b)+1)
+                            if i==1:self.assertFalse(after_objects[root['card']]['tapped'])
+                            if i==2 and mode==1:
+                                for old in b['objects']:
+                                    if old['owner']=='P0' and old['zone']=='Battlefield' and old['card'] in (wanted,helper):new=after_objects[old['id']];self.assertEqual((new['power'],new['toughness']),(old['power']+1,old['toughness']+1))
+                            if i==6:self.assertEqual(after['players'][0]['life'],b['players'][0]['life']+1);self.assertEqual(after['players'][1]['life'],b['players'][1]['life']-1)
+                            if i==7:
+                                ref=root['targets'][0]['object'];old=before_objects[ref['card']];new=after_objects[ref['card']];self.assertEqual((new['power'],new['toughness']),(old['power']+1,old['toughness']+1));self.assertTrue(new['keywords']&256)
+                            if had_helper:entry=True
+                    if entry and (activation or i not in (1,3,5)):break
+                else:self.fail('full filtered-entry body did not complete')
+                self.assertGreater(replayed,0);self.assertEqual(after['schema'],51)
+                if i==1:self.assertGreater(private,0)
+
     def test_six_alliance_bodies_cast_and_replay_independent_trigger_effects(self):
         names=['EPF Point Squad', 'East Wind Avatar', 'Mighty Mutanimals', 'Mutant Town Musicians', 'Raphael, Tough Turtle', 'Slash, Reptile Rampager']
         for i,wanted in enumerate(names):

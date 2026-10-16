@@ -1,0 +1,443 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Arahbo, the First Fang",
+      "oracle_text": "Other Cats you control get +1/+1.\nWhenever Arahbo or another nontoken Cat you control enters, create a 1/1 white Cat creature token.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+          "java_sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+          "java_sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldThisOrAnotherTriggeredAbility.java",
+          "java_sha256": "2f5818fd959ec418604af2da920faa13d4eab583848e899591ef1a473a3b126f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+          "java_sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanentThisOrAnother.java",
+          "java_sha256": "f5513101336889bfff822f2b6e4d4fbf901eb76ee91d6f307d87b1d9e28081d4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+          "java_sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/TokenPredicate.java",
+          "java_sha256": "3213600d28e7e1f76d66cee4f781fb3eb01627759fa9306e22c42a6f6fb880da"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/Cat11Token.java",
+          "java_sha256": "e0b9cbae08c273ae5931003080e423aba577a51e5e07fc86ce73b5dd9aaf01bf"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/ArahboTheFirstFang.java",
+          "java_sha256": "1f03355aac1d0a867fdd437bfca4a7e08398c8ba406b56fd83078f1af2ef7d5f"
+        }
+      ]
+    },
+    {
+      "name": "Arni, Humble Scribe",
+      "oracle_text": "Whenever another nontoken creature you control enters, untap Arni.\n{T}: Draw a card, then discard a card.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+          "java_sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+          "java_sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "java_sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+          "java_sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/UntapSourceEffect.java",
+          "java_sha256": "8c7620af194cc7b4085783cc6bc7d8644e670a0c96931c087ecb4a3b7bd6ac71"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanentThisOrAnother.java",
+          "java_sha256": "f5513101336889bfff822f2b6e4d4fbf901eb76ee91d6f307d87b1d9e28081d4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+          "java_sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+          "java_sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/TokenPredicate.java",
+          "java_sha256": "3213600d28e7e1f76d66cee4f781fb3eb01627759fa9306e22c42a6f6fb880da"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/ArniHumbleScribe.java",
+          "java_sha256": "b2f5d04637b2fd3bc6354dc37c4c981dee88649f6b1ca39c47ba204088a3dd43"
+        }
+      ]
+    },
+    {
+      "name": "Black Panther, Vanguard",
+      "oracle_text": "Whenever another nontoken Hero you control enters, choose one \u2014\n\u2022 Create a 1/1 white Soldier creature token.\n\u2022 Creatures you control get +1/+1 until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Mode.java",
+          "java_sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+          "java_sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+          "java_sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+          "java_sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanentThisOrAnother.java",
+          "java_sha256": "f5513101336889bfff822f2b6e4d4fbf901eb76ee91d6f307d87b1d9e28081d4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+          "java_sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+          "java_sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/TokenPredicate.java",
+          "java_sha256": "3213600d28e7e1f76d66cee4f781fb3eb01627759fa9306e22c42a6f6fb880da"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/SoldierToken.java",
+          "java_sha256": "7c859e450b096f19105ca3418abdce2a01555a2d61e0c545e2c04fb162cb891c"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BlackPantherVanguard.java",
+          "java_sha256": "674faa2b58d333edf2be0660d0d9f4b490c75605b3ce37d8aeba702221e16a4c"
+        }
+      ]
+    },
+    {
+      "name": "Genghis Frog",
+      "oracle_text": "Trample\nWhenever Genghis Frog or another Mutant you control enters, create a Mutagen token. (It's an artifact with \"{1}, {T}, Sacrifice this token: Put a +1/+1 counter on target creature. Activate only as a sorcery.\")",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+          "java_sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+          "java_sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldThisOrAnotherTriggeredAbility.java",
+          "java_sha256": "2f5818fd959ec418604af2da920faa13d4eab583848e899591ef1a473a3b126f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+          "java_sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanentThisOrAnother.java",
+          "java_sha256": "f5513101336889bfff822f2b6e4d4fbf901eb76ee91d6f307d87b1d9e28081d4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/MutagenToken.java",
+          "java_sha256": "bcb05068d2fd40b12c614b7be40e1fc353c9b5398e72ce493fa9c24e0354644d"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GenghisFrog.java",
+          "java_sha256": "6d8e9e8660a0d2ef995e11498485b835d71cfd93b346f9abf3b0e506cbb989e7"
+        }
+      ]
+    },
+    {
+      "name": "Knightfisher",
+      "oracle_text": "Flying\nWhenever another nontoken Bird you control enters, create a 1/1 blue Fish creature token.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+          "java_sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+          "java_sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanentThisOrAnother.java",
+          "java_sha256": "f5513101336889bfff822f2b6e4d4fbf901eb76ee91d6f307d87b1d9e28081d4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+          "java_sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+          "java_sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/TokenPredicate.java",
+          "java_sha256": "3213600d28e7e1f76d66cee4f781fb3eb01627759fa9306e22c42a6f6fb880da"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/FishNoAbilityToken.java",
+          "java_sha256": "0598de8f369665c2cb4293dd8b597db529a4c985cc766156b86e563038ffb541"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/k/Knightfisher.java",
+          "java_sha256": "111c3b513b1eae55a3c300ba6ee8a3a4ea81b72bd834cb2069aab4e6d71a4210"
+        }
+      ]
+    },
+    {
+      "name": "Lathliss, Dragon Queen",
+      "oracle_text": "Flying\nWhenever another nontoken Dragon you control enters, create a 5/5 red Dragon creature token with flying.\n{1}{R}: Dragons you control get +1/+0 until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+          "java_sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+          "java_sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+          "java_sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanentThisOrAnother.java",
+          "java_sha256": "f5513101336889bfff822f2b6e4d4fbf901eb76ee91d6f307d87b1d9e28081d4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+          "java_sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/TokenPredicate.java",
+          "java_sha256": "3213600d28e7e1f76d66cee4f781fb3eb01627759fa9306e22c42a6f6fb880da"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/Dragon55Token.java",
+          "java_sha256": "e0aac85574a7722ee8e5177208ec041fe1136b87e92395bd382911e19011fa82"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LathlissDragonQueen.java",
+          "java_sha256": "9e32125c718edc9bb9b66ab0cd7eb6ef82acd23634747db6f62d050d69d444d5"
+        }
+      ]
+    },
+    {
+      "name": "Pactdoll Terror",
+      "oracle_text": "Whenever this creature or another artifact you control enters, each opponent loses 1 life and you gain 1 life.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+          "java_sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+          "java_sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldThisOrAnotherTriggeredAbility.java",
+          "java_sha256": "2f5818fd959ec418604af2da920faa13d4eab583848e899591ef1a473a3b126f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsEffect.java",
+          "java_sha256": "0efbab18123aec32ac502d57e9a8d9571965d09f3f4e09c448a4ed4cf10aa0e1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanentThisOrAnother.java",
+          "java_sha256": "f5513101336889bfff822f2b6e4d4fbf901eb76ee91d6f307d87b1d9e28081d4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PactdollTerror.java",
+          "java_sha256": "0bbc953e5df3413a30e3bdbe8983f2f861af700d1b1ac9cf16b101999c83afcc"
+        }
+      ]
+    },
+    {
+      "name": "Thoughtweft Lieutenant",
+      "oracle_text": "Whenever this creature or another Kithkin you control enters, target creature you control gets +1/+1 and gains trample until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+          "java_sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+          "java_sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldThisOrAnotherTriggeredAbility.java",
+          "java_sha256": "2f5818fd959ec418604af2da920faa13d4eab583848e899591ef1a473a3b126f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+          "java_sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanentThisOrAnother.java",
+          "java_sha256": "f5513101336889bfff822f2b6e4d4fbf901eb76ee91d6f307d87b1d9e28081d4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/ThoughtweftLieutenant.java",
+          "java_sha256": "1c14732633244bb5d205adac194963f11466c182c19a52fc7872ca855a493bdd"
+        }
+      ]
+    }
+  ]
+}

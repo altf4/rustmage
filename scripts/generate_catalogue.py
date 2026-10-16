@@ -1990,11 +1990,23 @@ def trigger_creature_template(card):
                 if word=='prowess': abilities.append((cast_condition(filter_='Noncreature'),[grow_instruction('Source',1,1)],'None'))
                 elif (cost:=ward_word(word)) is not None: abilities.append(('Ward',[counter_unless(cost,'Related')],'None'))
             continue
+        for alias in names:
+            prefix='Whenever '+alias+' or another '
+            if line.startswith(prefix):line='Whenever this creature or another '+line[len(prefix):]
         damage_prefix=player_damage_prefix(line)
         line_prefixes=[damage_prefix] if damage_prefix else []
         if m:=re.match(r'Whenever (a|an|another) ([A-Z][a-z]+) you control enters, ',line):
             kind='OtherSubtypeEntersYou' if m[1]=='another' else 'SubtypeEntersYou'
             line_prefixes.append((m[0],kind+'('+json.dumps(m[2])+')'))
+        if m:=re.match(r'Whenever (this creature or another |another )(nontoken )?(creature|artifact|[A-Z][a-z]+) you control enters, ',line):
+            include=m[1].startswith('this creature')
+            if m[2] or (include and m[3]!='creature'):
+                noun=m[3]
+                if noun in ('creature','artifact'):kinds,subtype=({'creature':1,'artifact':16}[noun],'None')
+                elif noun in CREATURE_TYPE_NAMES:kinds,subtype=(0,'Some('+json.dumps(noun)+')')
+                else:return None
+                condition=f'PermanentEntersYou {{ kinds: {kinds}, nontoken: {str(bool(m[2])).lower()}, subtype: {subtype}, include_source: {str(include).lower()} }}'
+                line_prefixes.insert(0,(m[0],condition))
         # These first-trigger limits collapse simultaneous event multiplicity.
         # Do not generalize to unrestricted batched events without batch context.
         if limited:
@@ -2016,7 +2028,7 @@ def trigger_creature_template(card):
                     if condition.startswith('AtStep {'):
                         condition=condition.replace('StepGuard::Always',guard)
                     elif (condition in ('SelfEnters','SelfAttacks','SelfEntersOrAttacks','OtherCreatureEntersYou','CreatureEntersYou','ArtifactEntersYou','OtherArtifactEntersYou','EnchantmentEntersYou','LandEntersYou')
-                            or condition.startswith(('SpellCast {','LifeGained {','CardDrawn {','PlayerDamaged {','OtherSubtypeEntersYou(','SubtypeEntersYou('))):
+                            or condition.startswith(('SpellCast {','LifeGained {','CardDrawn {','PlayerDamaged {','OtherSubtypeEntersYou(','SubtypeEntersYou(','PermanentEntersYou {'))):
                         intervening=guard
                     else:return None  # Lookback-event conditions need prior-event state.
                 # Only self-event subjects prove an initial 'it' denotes this source.
@@ -2038,6 +2050,7 @@ def trigger_creature_template(card):
                         effect_text = 'this creature deals ' + effect_text[len(alias) + len(' deals '):]
                     if m:=re.fullmatch(re.escape(alias)+r' connives(?: ([0-9]+))?\.',effect_text):
                         effect_text='this creature connives'+(' '+m[1] if m[1] else '')+'.'
+                    if effect_text=='untap '+alias+'.':effect_text='untap this creature.'
                     if effect_text.startswith(alias + ' gets '):
                         effect_text = 'this creature gets ' + effect_text[len(alias) + len(' gets '):]
                 # An explicit occurrence of this card's name denotes this source;
@@ -2273,6 +2286,16 @@ def permanent_program_template(card):
             enters[list(COUNTER_KINDS).index(m[2])] += COUNT_WORDS[m[1]]
             continue
         if ': ' not in line:
+            # Authenticate source aliases before the creature-shaped proxy
+            # drops legendary type text. Only the whole untap clause is bound.
+            name=card.get('name','')
+            names=[name] if name else []
+            if name and card.get('type_line','').startswith('Legendary '):
+                names.append(name.split(',')[0])
+                if ' the ' in name:names.append(name.split(' the ')[0])
+            for alias in names:
+                tail=', untap '+alias+'.'
+                if line.endswith(tail):line=line[:-len(tail)]+', untap this creature.'
             body.append(line)
             continue
         renew=line.startswith('Renew — ')

@@ -269,6 +269,21 @@ impl Game {
                     | TriggerCondition::SelfAttacks
                     | TriggerCondition::SpellCast { .. }
                     | TriggerCondition::AtStep { .. } => false,
+                    TriggerCondition::PermanentEntersYou {
+                        kinds,
+                        nontoken,
+                        subtype,
+                        include_source,
+                    } => {
+                        yours
+                            && if same {
+                                include_source
+                            } else {
+                                (kinds == 0 || entered.card.kind_mask() & kinds != 0)
+                                    && (!nontoken || entered.token.is_none())
+                                    && subtype.is_none_or(|t| entered.card.has_subtype(t))
+                            }
+                    }
                     TriggerCondition::OtherCreatureEntersYou => {
                         yours && !same && entered.card.is_creature()
                     }

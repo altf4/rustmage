@@ -3717,3 +3717,7 @@ mod modal_trigger_tests;
 #[cfg(test)]
 #[path = "engine_alliance_tests.rs"]
 mod alliance_tests;
+
+#[cfg(test)]
+#[path = "engine_filtered_entry_tests.rs"]
+mod filtered_entry_tests;
