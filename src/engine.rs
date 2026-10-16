@@ -3713,3 +3713,7 @@ mod targeted_bounce_tap_tests;
 #[cfg(test)]
 #[path = "engine_modal_trigger_tests.rs"]
 mod modal_trigger_tests;
+
+#[cfg(test)]
+#[path = "engine_alliance_tests.rs"]
+mod alliance_tests;

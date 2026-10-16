@@ -9,6 +9,55 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def test_six_alliance_bodies_cast_and_replay_independent_trigger_effects(self):
+        names=['EPF Point Squad', 'East Wind Avatar', 'Mighty Mutanimals', 'Mutant Town Musicians', 'Raphael, Tough Turtle', 'Slash, Reptile Rampager']
+        for i,wanted in enumerate(names):
+            with self.subTest(card=wanted),Game([['Plains']*16+['Mountain']*14+[wanted]*12+['Helpful Hunter']*18,['Forest']*36+['Bear Cub']*24],seed=7,deck_rules='Freeform') as game:
+                replayed=0;finished=False;token_effect=False
+                for _ in range(10000):
+                    obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor']);objects={o['id']:o for o in obs['objects']};sources=[o for o in objects.values() if o['card']==wanted and o['owner']=='P0' and o['zone']=='Battlefield']
+                    def score(a):
+                        k=a['kind']
+                        if k in ('Cast','AnnounceCast'):
+                            n=objects[a['card']]['card']
+                            if n==wanted:return 250 if not sources else -100
+                            if n=='Helpful Hunter':return 240 if sources and i!=5 else -100
+                            return -100
+                        if k=='Attack':return 240 if i==5 and objects[a['card']]['card']==wanted else -100
+                        if k=='TapMana':return 180 if obs['decision']=='pay_costs' else -100
+                        if k in ('ChooseSpellCost','ChooseActivationCost'):return 220
+                        if k=='ChooseTarget' and 'Card' in a['target']:return 230 if objects[a['target']['Card']]['card']==wanted else 100
+                        if k in ('Activate','AnnounceActivate','ActivateMana','AnnounceMana'):return -100
+                        return self.professor_score(obs,a)
+                    choice=max(range(len(obs['actions'])),key=lambda j:score(obs['actions'][j]));action=obs['actions'][choice]
+                    boundary=obs['announcing'] or obs['stack'] or obs['resolving']
+                    if boundary:
+                        saved=game.snapshot()
+                        with game.clone() as fork:after=fork.step(fork.observe(obs['actor']),choice)
+                        self.assertEqual(game.step(obs,choice),after);game.restore(saved)
+                        with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,choice)
+                        again=game.step(game.observe(obs['actor']),choice);after['revision']=again['revision'];self.assertEqual(after,again);game.drop_snapshot(saved);replayed+=1
+                    else:after=game.step(obs,choice)
+                    if obs['stack'] and action['kind']=='Pass':
+                        root=obs['stack'][-1]
+                        if root['source_card']==wanted and root['kind']!='Spell' and root['id'] not in {v['id'] for v in after['stack']}:
+                            before_objects={v['id']:v for v in obs['objects']};after_objects={v['id']:v for v in after['objects']};ability=root['kind']['TriggeredAbility']['ability']
+                            if (i==2 and ability==0) or (i==5 and ability==1):
+                                count=lambda o:sum(v['owner']=='P0' and v['zone']=='Battlefield' and v['token'] is not None and v['token']['subtypes']=='Mutant' for v in o['objects'])
+                                self.assertEqual(count(after),count(obs)+1);token_effect=True
+                            else:
+                                self.assertEqual(ability,1 if i==2 else 0)
+                                if i in (0,2):
+                                    ref=root['object'] if i==0 else root['targets'][0]['object'];b=before_objects[ref['card']];a=after_objects[ref['card']];self.assertEqual(a['counters']['plus_one'],b['counters']['plus_one']+1)
+                                elif i in (1,3):
+                                    b=before_objects[root['card']];a=after_objects[root['card']];self.assertEqual((a['power'],a['toughness']),(b['power']+1,b['toughness']))
+                                else:self.assertEqual(after['players'][1]['life'],obs['players'][1]['life']-(1 if i==4 else 2))
+                                finished=True
+                    if finished:break
+                else:self.fail('Alliance body never resolved')
+                self.assertGreater(replayed,0);self.assertEqual(after['schema'],51)
+                if i in (2,5):self.assertTrue(token_effect)
+
     def test_twelve_modal_trigger_bodies_choose_before_targets_and_replay_private_programs(self):
         names=['Apothecary Stomper', 'Coliseum Behemoth', 'Cosmogrand Zenith', 'Divining Duelist', 'Downwind Ambusher', 'Elven Raft-Steerer', 'Ferocification', 'Gaius van Baelsar', 'Giant-Sized Flying Ant', 'Glamermite', "Lord Skitter's Butcher", 'Wardens of the Cycle'];preferred=[0,1,0,2,0,1,1,1,1,1,1,1]
         for i,wanted in enumerate(names):

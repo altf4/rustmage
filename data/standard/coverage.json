@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "44da3ed1f28b3bc53067d75bf6f577cf0301659ff8e11cdb442df71cdc49206c",
+  "catalogue_version": "ba36de456d1d9624059f74891bbb081e123507cab9e1086aaa5345e366799062",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1315,
-  "implemented_total": 1321,
+  "implemented_standard_cards": 1321,
+  "implemented_total": 1327,
   "token_definitions": 57,
   "emblem_definitions": 1,
   "cards": [
@@ -7360,8 +7360,8 @@
     {
       "name": "EPF Point Squad",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Eager Glyphmage",
@@ -7486,8 +7486,8 @@
     {
       "name": "East Wind Avatar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Eaten Alive",
@@ -16528,8 +16528,8 @@
     {
       "name": "Mighty Mutanimals",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Migrating Ketradon",
@@ -17356,8 +17356,8 @@
     {
       "name": "Mutant Town Musicians",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Mutinous Massacre",
@@ -20290,8 +20290,8 @@
     {
       "name": "Raphael, Tough Turtle",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Raphael, the Nightwatcher",
@@ -23494,8 +23494,8 @@
     {
       "name": "Slash, Reptile Rampager",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Slavering Branchsnapper",

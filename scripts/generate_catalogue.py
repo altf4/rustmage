@@ -712,7 +712,7 @@ def normalize_duration(text):
     return text
 
 
-RULE_LABELS = ('Infusion — ', 'Delirium — ', 'Threshold — ', 'Descend 4 — ', 'Descend 8 — ', 'Ferocious — ')
+RULE_LABELS = ('Infusion — ', 'Delirium — ', 'Threshold — ', 'Descend 4 — ', 'Descend 8 — ', 'Ferocious — ', 'Alliance — ')
 
 def strip_rule_label(text):
     for label in RULE_LABELS:
