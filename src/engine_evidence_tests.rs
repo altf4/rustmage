@@ -762,3 +762,131 @@ fn bite_group_zero_only_growth_and_each_partial_illegal_target_resolve_independe
         }
     }
 }
+#[test]
+fn partial_exile_and_late_observer_allocation_failures_restore_mana_resources_and_tap() {
+    for p in [Player::P0, Player::P1] {
+        for observer_failure in [false, true] {
+            let mut g = setup(p);
+            let a = named(&mut g, p, "Hamlet Glutton", Zone::Graveyard);
+            let b = named(&mut g, p, "Hamlet Glutton", Zone::Graveyard);
+            if !observer_failure {
+                g.state.objects[b as usize].generation = u64::MAX;
+            }
+            let source = if observer_failure {
+                named(&mut g, p, "Evidence Examiner", Zone::Battlefield);
+                let foe = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+                let source = named(&mut g, p, "Forensic Researcher", Zone::Battlefield);
+                replay(
+                    &mut g,
+                    Action::AnnounceActivate {
+                        card: source,
+                        ability: 1,
+                        counter_payment: Counters::default(),
+                    },
+                );
+                while !matches!(g.state.pending, Pending::Evidence { .. }) {
+                    pick(&mut g, true, &[foe]);
+                }
+                source
+            } else {
+                let source = named(&mut g, p, "Analyze the Pollen", Zone::Hand);
+                replay(&mut g, Action::AnnounceCast { card: source });
+                while !matches!(g.state.pending, Pending::Evidence { .. }) {
+                    pick(&mut g, true, &[]);
+                }
+                source
+            };
+            let ar = g.object_ref(a);
+            let br = g.object_ref(b);
+            replay(&mut g, Action::ChooseEvidence { object: ar });
+            replay(&mut g, Action::ChooseEvidence { object: br });
+            replay(&mut g, Action::FinishEvidence);
+            if observer_failure {
+                g.state.next_stack_id = u64::MAX;
+            }
+            let old = g.snapshot();
+            let revision = g.revision();
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PayCosts { .. }))
+                .unwrap();
+            assert!(matches!(
+                g.apply(p, action),
+                Err(Error::CapacityExceeded(_))
+            ));
+            assert_eq!(g.snapshot(), old);
+            assert_eq!(g.revision(), revision);
+            assert_eq!(g.object_view(a).zone, Zone::Graveyard);
+            assert_eq!(g.object_view(b).zone, Zone::Graveyard);
+            assert!(g.observe(p).last_evidence.is_none());
+            assert!(!g.object_view(source).tapped);
+        }
+    }
+}
+#[test]
+fn actual_authorized_exile_casts_share_optional_evidence_and_no_shortcut_bypasses() {
+    for p in [Player::P0, Player::P1] {
+        for collect in [false, true] {
+            for n in [
+                "Analyze the Pollen",
+                "Bite Down on Crime",
+                "Crimestopper Sprite",
+                "Extract a Confession",
+                "Vitu-Ghazi Inspector",
+            ] {
+                let mut g = setup(p);
+                grave(&mut g, p);
+                let own = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+                let foe = named(&mut g, p.other(), "Hamlet Glutton", Zone::Battlefield);
+                let wanted = named(&mut g, p, n, Zone::Library);
+                let alania = named(&mut g, p, "Alania's Pathmaker", Zone::Hand);
+                cast(&mut g, alania, false, &[]);
+                settle(&mut g, false, &[]);
+                assert_eq!(g.object_view(wanted).zone, Zone::Exile);
+                assert!(
+                    g.observe(p)
+                        .exile_permissions
+                        .iter()
+                        .any(|r| r.object == g.object_ref(wanted))
+                );
+                reject(
+                    &mut g,
+                    Action::Cast {
+                        card: wanted,
+                        target: None,
+                        payment: [0; 6],
+                    },
+                );
+                reject(
+                    &mut g,
+                    Action::BeginCast {
+                        card: wanted,
+                        payment: [0; 6],
+                    },
+                );
+                reject(&mut g, Action::AnnounceCast { card: wanted });
+                replay(&mut g, Action::AnnounceExile { card: wanted });
+                assert_eq!(g.observe(p).decision, "evidence_intent");
+                while g.state.announcing.is_some() {
+                    pick(&mut g, collect, &[own, foe]);
+                }
+                let item = g.state.stack.iter().find(|s| s.card == wanted).unwrap();
+                let info = item.cast.unwrap();
+                assert_eq!(info.origin, Zone::Exile);
+                assert_eq!(info.method, CastMethod::Normal);
+                assert_eq!(info.evidence, Some(collect));
+                assert!(
+                    info.kicker.is_none() && info.offspring.is_none() && info.bargain.is_none()
+                );
+                assert!(
+                    !g.observe(p)
+                        .exile_permissions
+                        .iter()
+                        .any(|r| r.object.card == wanted)
+                );
+                settle(&mut g, collect, &[own, foe]);
+            }
+        }
+    }
+}
