@@ -22,7 +22,7 @@ Verified complete modes, cycling, Ward, Chrome life gain, live Villain condition
 
 Additional instrumentation checked **50,712 public observations**, **64 private owner windows**, **84 exact-source/target public movement events** and **454 unchanged historical steps**, including six private reorder steps and 32 subsequent draws. Public events changed only on successful targeted moves and matched both viewers.
 
-Evidence: `/tmp/issue209-rules-review-{verdict,native,compiler,standard100,public-probe,provenance,audit,negative}.log`; supplementary scripts share that prefix. The reviewer read the final PR objects locally when a web cache lookup failed, and verified the exact final commit directly.
+Evidence: `/tmp/issue209-rules-review-{verdict,native,compiler,standard100,public-probe,audit,catalogue,checkpoint}.log`; supplementary scripts share that prefix. The reviewer read the final PR objects locally when a web cache lookup failed, and verified the exact final commit directly.
 
 ## Integration and preaudit fixes
 
