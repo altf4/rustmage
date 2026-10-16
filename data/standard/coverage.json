@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "5fa8ec107ec2a9b01c64712624110d572dcdd21eadca4528df897d23440174b5",
+  "catalogue_version": "d626deeb0f374a35b92ae26a41606578ea72b18e5bd69db5b095b87810cafd93",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1185,
-  "implemented_total": 1191,
-  "token_definitions": 53,
+  "implemented_standard_cards": 1201,
+  "implemented_total": 1207,
+  "token_definitions": 55,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -370,8 +370,8 @@
     {
       "name": "Adorned Crocodile",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Adrenaline Jockey",
@@ -568,8 +568,8 @@
     {
       "name": "Agent of Kotis",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Agents of HYDRA",
@@ -2236,8 +2236,8 @@
     {
       "name": "Beetle, Legacy Criminal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Beetle-Headed Merchants",
@@ -2974,8 +2974,8 @@
     {
       "name": "Bonebind Orator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Bonecache Overseer",
@@ -5476,8 +5476,8 @@
     {
       "name": "Cryotheory Adept",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Crypt Feaster",
@@ -8284,8 +8284,8 @@
     {
       "name": "Eternal Student",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Ether",
@@ -8566,8 +8566,8 @@
     {
       "name": "Faerie Dreamthief",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Faerie Fencing",
@@ -10942,8 +10942,8 @@
     {
       "name": "Goldmeadow Nomad",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Goldvein Hydra",
@@ -11146,8 +11146,8 @@
     {
       "name": "Gravestone Strider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Gravkill",
@@ -14824,8 +14824,8 @@
     {
       "name": "Leering Onlooker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Legion Extruder",
@@ -21658,8 +21658,8 @@
     {
       "name": "Rubblebelt Maverick",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Ruby, Daring Tracker",
@@ -24946,8 +24946,8 @@
     {
       "name": "Stoic Grove-Guide",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Stoic Sphinx",
@@ -24982,8 +24982,8 @@
     {
       "name": "Stone Docent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Stone by Sunlight",
@@ -25684,8 +25684,8 @@
     {
       "name": "Suspicious Shambler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Susur Secundi, Void Altar",
@@ -27136,8 +27136,8 @@
     {
       "name": "Theoretical Necromancer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Theorist's Proxy",
@@ -29230,8 +29230,8 @@
     {
       "name": "Venom, Evil Unleashed",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Venomized Cat",

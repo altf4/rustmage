@@ -9,6 +9,48 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def reach_graveyard_activation_payment(self,game,wanted):
+        for _ in range(15000):
+            obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor']);objects={o['id']:o for o in obs['objects']};root=obs['announcing']
+            if obs['decision']=='pay_costs' and root['source_card']==wanted and isinstance(root['kind'],dict) and 'ActivatedAbility' in root['kind'] and any(a['kind']=='PayCosts' for a in obs['actions']):return obs
+            def score(a):
+                k=a['kind']
+                if k in ('Cast','AnnounceCast'):
+                    name=objects[a['card']]['card']
+                    if name==wanted:return -100
+                    if obs['actor']=='P0':return 150 if name=='Deathcap Marionette' else 120 if not any(o['owner']=='P0' and o['zone']=='Battlefield' and o['card']=='Grizzly Bears' for o in objects.values()) else -100
+                if k=='AnnounceActivate':return 240 if objects[a['card']]['card']==wanted and objects[a['card']]['zone']=='Graveyard' else -100
+                if k in ('Activate','BeginActivate','AnnounceMana','ActivateMana'):return -100
+                if k=='Discard':return 230 if objects[a['card']]['card']==wanted else 100
+                if k=='ChooseActivationCost':return 200
+                if k=='ChooseTarget' and root and root['source_card']==wanted:
+                    t=objects.get(a['target'].get('Card'))
+                    if not t:return -100
+                    if wanted in ('Bonebind Orator','Theoretical Necromancer'):return 220 if t['zone']=='Graveyard' and t['owner']=='P0' and t['id']!=root['card'] else -100
+                    if wanted=='Gravestone Strider':return 220 if t['zone']=='Graveyard' and t['id']!=root['card'] else -100
+                    return 220 if t['zone']=='Battlefield' and t['owner']=='P0' else -100
+                if k=='TapMana':return 170 if obs['decision']=='pay_costs' else self.professor_score(obs,a)
+                return self.professor_score(obs,a)
+            game.step(obs,max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i])))
+        self.fail('graveyard activation payment not reached')
+
+    def test_sixteen_graveyard_self_exile_costs_use_owned_native_payment_and_full_replay(self):
+        names=['Adorned Crocodile','Agent of Kotis','Beetle, Legacy Criminal','Bonebind Orator','Cryotheory Adept','Eternal Student','Faerie Dreamthief','Goldmeadow Nomad','Gravestone Strider','Leering Onlooker','Rubblebelt Maverick','Stoic Grove-Guide','Stone Docent','Suspicious Shambler','Theoretical Necromancer','Venom, Evil Unleashed']
+        for wanted in names:
+            deck=['Plains']*6+['Island']*6+['Swamp']*6+['Forest']*6+[wanted]*12+['Deathcap Marionette']*12+['Grizzly Bears']*12
+            with self.subTest(card=wanted),Game([deck,['Forest']*24+['Grizzly Bears']*36],seed=7,deck_rules='Freeform') as game:
+                obs=self.reach_graveyard_activation_payment(game,wanted);root=obs['announcing'];source=next(o for o in obs['objects'] if o['id']==root['card']);self.assertEqual(source['zone'],'Graveyard');self.assertEqual(source['reference'],root['object']);self.assertEqual(game.observe('P1')['actions'],[]);action=next(a for a in obs['actions'] if a['kind']=='PayCosts');saved=game.snapshot()
+                def finish(handle):
+                    paid=handle.act(handle.observe('P0'),action);now=next(o for o in paid['objects'] if o['id']==source['id']);self.assertEqual(now['zone'],'Exile');self.assertNotEqual(now['reference'],source['reference']);self.assertEqual(paid['players'][0]['mana'],[n-c for n,c in zip(obs['players'][0]['mana'],action['payment'])]);self.assertTrue(any(s['id']==root['id'] and s['object']==root['object'] for s in paid['stack']))
+                    return self.finish_self_target(handle,'P0',root['id'])
+                with game.clone() as fork:expected=finish(fork)
+                after=finish(game);self.assertEqual(after,expected);self.assertEqual(next(o for o in after['objects'] if o['id']==source['id'])['zone'],'Exile')
+                if wanted in ('Agent of Kotis','Venom, Evil Unleashed','Adorned Crocodile','Beetle, Legacy Criminal','Rubblebelt Maverick'):
+                    target=root['targets'][0]['target']['Card'];prior=next(o for o in obs['objects'] if o['id']==target);body=next(o for o in after['objects'] if o['id']==target);self.assertEqual(body['counters']['plus_one'],prior['counters']['plus_one']+(2 if wanted in ('Agent of Kotis','Venom, Evil Unleashed') else 1))
+                game.restore(saved)
+                with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,0)
+                again=finish(game);after['revision']=again['revision'];self.assertEqual(after,again);game.drop_snapshot(saved)
+
     def test_uncounterable_eject_preserves_native_stack_through_ward_and_replay(self):
         for ward in ['Spectral Snatcher','Sunset Saboteur','Vein Ripper','Sire of Seven Deaths']:
             with self.subTest(ward=ward),Game([['Swamp']*24+[ward]*36,['Forest']*12+['Island']*12+['Grizzly Bears']*12+['Eject']*24],seed=7,deck_rules='Freeform') as game:

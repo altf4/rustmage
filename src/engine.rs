@@ -1475,7 +1475,7 @@ impl Game {
                     {
                         return true;
                     }
-                    if matches!(obj.zone, Zone::Battlefield | Zone::Hand)
+                    if matches!(obj.zone, Zone::Battlefield | Zone::Hand | Zone::Graveyard)
                         && self.visit_activations(card, actor, sorcery, &mut emit)
                     {
                         return true;
@@ -3567,3 +3567,7 @@ mod activation_sacrifice_tests;
 #[cfg(test)]
 #[path = "engine_uncounterable_tests.rs"]
 mod uncounterable_tests;
+
+#[cfg(test)]
+#[path = "engine_graveyard_activation_tests.rs"]
+mod graveyard_activation_tests;
