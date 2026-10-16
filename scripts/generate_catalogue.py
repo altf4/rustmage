@@ -1659,6 +1659,22 @@ def targeted_program(text):
             return left + right, result[1] + [f'SelectGroup({offset})'] + rebased
     return None
 
+OPPONENT_TURN_CAST_PREFIX = "Whenever you cast a spell during an opponent's turn, "
+
+def qualified_cast_prefix(line):
+    """Printed spell characteristics and event-only turn qualifications."""
+    if line.startswith(OPPONENT_TURN_CAST_PREFIX):
+        return OPPONENT_TURN_CAST_PREFIX, cast_condition()
+    prefix='Whenever you cast a multicolored spell, '
+    if line.startswith(prefix):return prefix,cast_condition(filter_='Multicolored')
+    if m:=re.match(r'Whenever (you cast|an opponent casts) a spell with mana value ([0-9]+) or (greater|less), ',line):
+        value=int(m[2])
+        if value>65535:return None
+        kind,field=('Minimum','minimum') if m[3]=='greater' else ('Maximum','maximum')
+        return m[0],cast_condition(relation='You' if m[1]=='you cast' else 'Opponent',filter_=f'ManaValue{kind} {{ filter: &CastFilter::Any, {field}: {value} }}')
+    return None
+
+
 def cast_condition(relation='You', filter_='Any', ordinal=None):
     ordinal = 'None' if ordinal is None else f'Some({ordinal})'
     return f'SpellCast {{ relation: CastRelation::{relation}, filter: CastFilter::{filter_}, ordinal: {ordinal} }}'
@@ -2049,6 +2065,7 @@ def trigger_creature_template(card):
             if line.startswith(prefix):line='Whenever this creature or another '+line[len(prefix):]
         damage_prefix=player_damage_prefix(line)
         line_prefixes=[damage_prefix] if damage_prefix else []
+        if qualified:=qualified_cast_prefix(line):line_prefixes.append(qualified)
         entry_prefix=entry_predicate_prefix(line)
         if entry_prefix:line_prefixes.append(entry_prefix)
         if m:=re.match(r'Whenever (a|an|another) ([A-Z][a-z]+) you control enters, ',line):
@@ -2146,6 +2163,7 @@ def trigger_creature_template(card):
                     return None
                 if intervening is not None:
                     condition=f'InterveningIf {{ guard: {intervening}, event: &TriggerCondition::{condition} }}'
+                if prefix==OPPONENT_TURN_CAST_PREFIX:condition='DuringOpponentsTurn(&TriggerCondition::'+condition+')'
                 if limited: condition='OncePerTurn(&TriggerCondition::'+condition+')'
                 abilities.append((condition, program, targets))
                 break

@@ -9,6 +9,61 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def test_thirteen_qualified_cast_bodies_and_private_replay(self):
+        names=['Angry Rabble','Brineborn Cutthroat','Enraged Flamecaster','Kulrath Mystic','Lurking Lizards','Mage Tower Referee','Nightmare Sower','Skybeast Tracker','Solarium Sentry','Spider Manifestation','Stormkeld Prowler','Tanufel Rimespeaker','Unwelcome Sprite']
+        for i,wanted in enumerate(names):
+            helper='Lightning Helix' if i==5 else 'Opt' if i in (1,6,12) else 'Shivan Dragon';lands=sum(([n]*6 for n in ['Plains','Island','Swamp','Mountain','Forest']),[])
+            with self.subTest(card=wanted),Game([lands+[wanted]*8+[helper]*22,['Forest']*30+['Bear Cub']*30],seed=7,deck_rules='Freeform') as game:
+                replayed=0;pending={};finished=False;private=0
+                for _ in range(18000):
+                    obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor']);objects={v['id']:v for v in obs['objects']};sources=[v for v in objects.values() if v['owner']=='P0' and v['zone']=='Battlefield' and v['card']==wanted]
+                    def score(a):
+                        k=a['kind']
+                        if k in ('Cast','AnnounceCast'):
+                            n=objects[a['card']]['card']
+                            if obs['actor']=='P1':return 230 if sources and n=='Bear Cub' and not any(v['owner']=='P1' and v['zone']=='Battlefield' and v['card']=='Bear Cub' for v in objects.values()) else -100
+                            if n==wanted:return 260 if not sources else -100
+                            if n==helper and sources and i!=8:return 250 if (i not in (1,6,12) or obs['active']=='P1') and (i!=6 or any(v['owner']=='P1' and v['zone']=='Battlefield' and v['card']=='Bear Cub' for v in objects.values())) else -100
+                            return -100
+                        if k=='ChooseTarget':
+                            t=a['target']
+                            if 'Player' in t:return 280 if t['Player']=='P1' else -100
+                            if 'Card' in t:return 280 if objects[t['Card']]['owner']=='P1' else -100
+                        if k=='PayCosts':return 500
+                        if k=='TapMana':return 150 if obs['decision']=='pay_costs' else -100
+                        if k in ('Attack','Block','Activate','BeginActivate','AnnounceActivate','ActivateMana','AnnounceMana'):return -100
+                        return self.professor_score(obs,a)
+                    choice=max(range(len(obs['actions'])),key=lambda j:score(obs['actions'][j]));a=obs['actions'][choice]
+                    if obs['library_choice']:
+                        hidden=game.observe('P1' if obs['actor']=='P0' else 'P0');self.assertIsNone(hidden['library_choice']);self.assertEqual(hidden['actions'],[]);private+=1
+                    if obs['announcing'] or obs['resolving'] or obs['stack'] or sources:
+                        saved=game.snapshot()
+                        with game.clone() as fork:expected=fork.step(fork.observe(obs['actor']),choice)
+                        self.assertEqual(game.step(obs,choice),expected);game.restore(saved)
+                        with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,choice)
+                        after=game.step(game.observe(obs['actor']),choice);expected['revision']=after['revision'];self.assertEqual(after,expected);game.drop_snapshot(saved);replayed+=1
+                    else:after=game.step(obs,choice)
+                    if obs['stack'] and a['kind']=='Pass':
+                        root=obs['stack'][-1]
+                        if root['source_card']==wanted and root['kind']!='Spell' and not any(v['id']==root['id'] for v in after['stack']):self.assertIsNone(root['entering_object']);pending[root['id']]=(root,obs)
+                    for root_id in list(pending):
+                        if any(v['id']==root_id for v in after['stack']) or after['resolving'] and after['resolving']['id']==root_id:continue
+                        root,b=pending.pop(root_id);old=next(v for v in b['objects'] if v['reference']==root['object']);new=next(v for v in after['objects'] if v['reference']==root['object'])
+                        if i in (0,2):self.assertEqual(after['players'][1]['life'],b['players'][1]['life']-(1 if i==0 else 2))
+                        if i in (1,4,5,10):self.assertEqual(new['counters']['plus_one'],old['counters']['plus_one']+(2 if i==10 else 1))
+                        if i==3:self.assertEqual(new['power'],old['power']+2);self.assertTrue(new['keywords']&8)
+                        if i==6:
+                            ref=root['targets'][0]['object'];before=next(v for v in b['objects'] if v['reference']==ref);now=next(v for v in after['objects'] if v['reference']==ref);self.assertEqual(now['counters']['minus_one'],before['counters']['minus_one']+1)
+                        if i==7:self.assertEqual(sum(v['zone']=='Battlefield' and v['owner']=='P0' and v['token'] is not None and v['token']['subtypes']=='Food' for v in after['objects']),1)
+                        if i==8:self.assertEqual(after['players'][0]['life'],b['players'][0]['life']+2)
+                        if i==9:self.assertFalse(new['tapped'])
+                        if i==11:self.assertEqual(after['players'][0]['library_count'],b['players'][0]['library_count']-1)
+                        if i==12:self.assertGreater(private,0)
+                        finished=True
+                    if finished:break
+                else:self.fail('qualified cast body did not resolve')
+                self.assertGreater(replayed,0);self.assertEqual(after['schema'],52)
+
     def test_thirteen_tap_trigger_bodies_external_tap_private_choices_and_replay(self):
         names=['Attentive Sunscribe','Mechan Navigator','Pestered Wellguard','Rescue Leopard','Seedship Agrarian','Silvergill Peddler','Spider-Gwen, Free Spirit','Starfighter Pilot','Swarm Culler','Volatile Wanderglyph','Wanderbrine Preacher','Wanderwine Distracter','Wylie Duke, Atiin Hero']
         colors=[['Plains'],['Island'],['Island'],['Mountain'],['Forest'],['Island'],['Mountain'],['Plains'],['Swamp'],['Mountain'],['Plains'],['Island'],['Plains','Forest']]

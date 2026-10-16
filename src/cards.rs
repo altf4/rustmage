@@ -704,6 +704,11 @@ pub(crate) enum CastFilter {
     Enchantment,
     Subtype(&'static str),
     AnyOf(&'static [CastFilter]),
+    Multicolored,
+    ManaValueMaximum {
+        filter: &'static CastFilter,
+        maximum: u64,
+    },
     ManaValueMinimum {
         filter: &'static CastFilter,
         minimum: u64,
@@ -713,6 +718,10 @@ impl CastFilter {
     pub fn matches(self, card: Card) -> bool {
         match self {
             Self::Any => true,
+            Self::Multicolored => card.colors().count_ones() >= 2,
+            Self::ManaValueMaximum { filter, maximum } => {
+                filter.matches(card) && card.fixed_mana_value() <= maximum
+            }
             Self::Creature => card.is_creature(),
             Self::Noncreature => !card.is_creature(),
             Self::InstantSorcery => card.kind_mask() & (4 | 8) != 0,
@@ -844,6 +853,8 @@ pub(crate) enum EntryPredicate {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    /// A cast-event qualification, not an intervening-if resolution guard.
+    DuringOpponentsTurn(&'static TriggerCondition),
     OncePerTurn(&'static TriggerCondition),
     InterveningIf {
         guard: StepGuard,
@@ -932,16 +943,29 @@ pub(crate) enum TriggerCondition {
 }
 
 impl TriggerCondition {
+    pub(crate) fn requires_opponents_turn(self) -> bool {
+        match self {
+            Self::DuringOpponentsTurn(_) => true,
+            Self::OncePerTurn(event) | Self::InterveningIf { event, .. } => {
+                event.requires_opponents_turn()
+            }
+            _ => false,
+        }
+    }
     pub(crate) fn event(self) -> Self {
         match self {
-            Self::OncePerTurn(event) | Self::InterveningIf { event, .. } => event.event(),
+            Self::OncePerTurn(event)
+            | Self::DuringOpponentsTurn(event)
+            | Self::InterveningIf { event, .. } => event.event(),
             event => event,
         }
     }
     pub(crate) fn once_per_turn(self) -> bool {
         match self {
             Self::OncePerTurn(_) => true,
-            Self::InterveningIf { event, .. } => event.once_per_turn(),
+            Self::InterveningIf { event, .. } | Self::DuringOpponentsTurn(event) => {
+                event.once_per_turn()
+            }
             _ => false,
         }
     }

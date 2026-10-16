@@ -3760,3 +3760,7 @@ mod opponent_entry_tapped_tests;
 #[cfg(test)]
 #[path = "engine_source_tap_tests.rs"]
 mod source_tap_tests;
+
+#[cfg(test)]
+#[path = "engine_qualified_cast_tests.rs"]
+mod qualified_cast_tests;

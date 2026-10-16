@@ -8,6 +8,22 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_qualified_cast_headers_keep_closed_bounds_colors_and_event_turn(self):
+        cases=[('you cast a spell with mana value 4 or greater','ManaValueMinimum','minimum: 4','CastRelation::You'),('an opponent casts a spell with mana value 2 or less','ManaValueMaximum','maximum: 2','CastRelation::Opponent'),('you cast a multicolored spell','Multicolored','','CastRelation::You')]
+        for header,kind,bound,relation in cases:
+            result=generate.trigger_creature_template(self.card(oracle_text='Whenever '+header+', draw a card.'));self.assertIsNotNone(result);condition,program,target=result[2][0];self.assertIn(kind,condition);self.assertIn(bound,condition);self.assertIn(relation,condition);self.assertEqual(program,['Draw(PlayerSet::Controller, 1)']);self.assertEqual(target,'None')
+        result=generate.trigger_creature_template(self.card(oracle_text="Whenever you cast a spell during an opponent's turn, if you gained life this turn, draw a card. This ability triggers only once each turn."));condition=result[2][0][0];self.assertIn('DuringOpponentsTurn',condition);self.assertIn('InterveningIf',condition);self.assertIn('OncePerTurn',condition)
+        for header in ['you cast a spell with mana value 65536 or greater','you cast a spell with mana value -1 or less','you cast a spell with power 4 or greater','you cast a creature spell with mana value 4 or greater','you cast a spell with mana value 4 or greater from your hand','you cast a spell with mana value X or greater','you cast a spell during your last turn','a player casts a multicolored spell','you cast a colorless spell']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='Whenever '+header+', draw a card.')),header)
+
+    def test_qualified_cast_thirteen_complete_admissions_and_unknown_residual_gates(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());manifest=json.loads((generate.ROOT/'docs/qualified-cast-admissions.json').read_text());_,coverage=generate.compile_catalogue(rows,target);supported={c['name'] for c in coverage['cards'] if c['implemented']};self.assertEqual(len(manifest['cards']),13)
+        for row in manifest['cards']:
+            self.assertIn(row['name'],supported);card=next(c for c in rows['cards'] if c['name']==row['name']);self.assertEqual(card['oracle_text'],row['oracle_text']);bad=dict(card,oracle_text=card['oracle_text']+'\nWhenever you attack, discover 3.')
+            for compiler in [generate.creature_template,generate.trigger_creature_template,generate.permanent_program_template,generate.static_permanent_template]:self.assertIsNone(compiler(bad),row['name'])
+        for name in ['Helga, Skittish Seer','Superior Foes of Spider-Man','Rhino, Barreling Brute','Dream Spoilers','Voracious Tome-Skimmer','Rodeo Pyromancers','Storyteller Pixie']:self.assertNotIn(name,supported)
+
     def test_self_tapped_header_and_authenticated_aliases_are_closed(self):
         for name,header in [('Tap Probe','this creature'),('Wylie Duke, Atiin Hero','Wylie Duke'),('Spider-Gwen, Free Spirit','Spider-Gwen'),('Volatile Wanderglyph','Volatile Wanderglyph')]:
             result=generate.trigger_creature_template(self.card(name=name,type_line='Legendary Creature — Human' if ',' in name else 'Creature — Cat',oracle_text='Whenever '+header+' becomes tapped, you gain 2 life.'))

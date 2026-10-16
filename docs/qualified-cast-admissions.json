@@ -1,0 +1,485 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Angry Rabble",
+      "oracle_text": "Trample\nWhenever you cast a spell with mana value 4 or greater, this creature deals 1 damage to each opponent.\n{5}{R}: Put two +1/+1 counters on this creature. Activate only as a sorcery.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AngryRabble.java",
+          "java_sha256": "41290f98b412f63c8a77b64c88bca607ea9bfe68cd5b2553729e9e31a46cfde1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "java_sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+          "java_sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+          "java_sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+          "java_sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+          "java_sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/MulticoloredPredicate.java",
+          "java_sha256": "ede92cce9b393cf72ebad797b96bfc682caee5678ee09db33673ed7e4cb0f167"
+        }
+      ]
+    },
+    {
+      "name": "Brineborn Cutthroat",
+      "oracle_text": "Flash (You may cast this spell any time you could cast an instant.)\nWhenever you cast a spell during an opponent's turn, put a +1/+1 counter on this creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BrinebornCutthroat.java",
+          "java_sha256": "46a968e1490029d2c5c038dbdd924aa6bca24e52c1e6f6e5c178deccba243466"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+          "java_sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/OpponentsTurnCondition.java",
+          "java_sha256": "330ac54c52d062ee5c27741e66cd9eaeb12372a2b7e138314d2664721d875a47"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/hint/common/OpponentsTurnHint.java",
+          "java_sha256": "516f8e6d4824c21317695dc749c50be9d5bc43d631fb1a0453970b50ce26a60c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+          "java_sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+        }
+      ]
+    },
+    {
+      "name": "Enraged Flamecaster",
+      "oracle_text": "Reach\nWhenever you cast a spell with mana value 4 or greater, this creature deals 2 damage to each opponent.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/EnragedFlamecaster.java",
+          "java_sha256": "2a01a6348dfe9e7fbde81832589596fcf9b24c706be22349394e0079b1bc366c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+          "java_sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+          "java_sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+          "java_sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+          "java_sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/MulticoloredPredicate.java",
+          "java_sha256": "ede92cce9b393cf72ebad797b96bfc682caee5678ee09db33673ed7e4cb0f167"
+        }
+      ]
+    },
+    {
+      "name": "Kulrath Mystic",
+      "oracle_text": "Whenever you cast a spell with mana value 4 or greater, this creature gets +2/+0 and gains vigilance until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/k/KulrathMystic.java",
+          "java_sha256": "48f6224fcc7df0e022ff84d840a6664c9920ec20f3dd8456a197b67b66d1bc74"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+          "java_sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+          "java_sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+          "java_sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "java_sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+          "java_sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/MulticoloredPredicate.java",
+          "java_sha256": "ede92cce9b393cf72ebad797b96bfc682caee5678ee09db33673ed7e4cb0f167"
+        }
+      ]
+    },
+    {
+      "name": "Lurking Lizards",
+      "oracle_text": "Trample\nWhenever you cast a spell with mana value 4 or greater, put a +1/+1 counter on this creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LurkingLizards.java",
+          "java_sha256": "0d690aeb59724d15ebba9ebfcd4266a68dca7d4c269d9072de0b32818a4aa952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+          "java_sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+          "java_sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+          "java_sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/MulticoloredPredicate.java",
+          "java_sha256": "ede92cce9b393cf72ebad797b96bfc682caee5678ee09db33673ed7e4cb0f167"
+        }
+      ]
+    },
+    {
+      "name": "Mage Tower Referee",
+      "oracle_text": "Whenever you cast a multicolored spell, put a +1/+1 counter on this creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MageTowerReferee.java",
+          "java_sha256": "ce254f7bc664dd4990a3ffaab5a8a521a30363812815e368d10602117a365f61"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+          "java_sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+          "java_sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/MulticoloredPredicate.java",
+          "java_sha256": "ede92cce9b393cf72ebad797b96bfc682caee5678ee09db33673ed7e4cb0f167"
+        }
+      ]
+    },
+    {
+      "name": "Nightmare Sower",
+      "oracle_text": "Flying, lifelink\nWhenever you cast a spell during an opponent's turn, put a -1/-1 counter on up to one target creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/n/NightmareSower.java",
+          "java_sha256": "28bf6e7ad85db3b2367c168f6084ce97eb5dc02237348aeef6e65070a8a32691"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+          "java_sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/OpponentsTurnCondition.java",
+          "java_sha256": "330ac54c52d062ee5c27741e66cd9eaeb12372a2b7e138314d2664721d875a47"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+          "java_sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+        }
+      ]
+    },
+    {
+      "name": "Skybeast Tracker",
+      "oracle_text": "Reach\nWhenever you cast a spell with mana value 5 or greater, create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SkybeastTracker.java",
+          "java_sha256": "7e67778262858099da6728c270bd9c34f243b6553b12183eb8182377be0e8ba1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+          "java_sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+          "java_sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ComparisonType.java",
+          "java_sha256": "33b0abc2b4214ece7d2f842b9f000d967dd8fb4e6cb073cb34eeab7e304731ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterSpell.java",
+          "java_sha256": "50fd3169b7ed9ae7f81bce450a44155f4326c657186c1ba6713e2d0f8c3e3a6c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+          "java_sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/MulticoloredPredicate.java",
+          "java_sha256": "ede92cce9b393cf72ebad797b96bfc682caee5678ee09db33673ed7e4cb0f167"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/FoodToken.java",
+          "java_sha256": "67fca2eef5afc92dc08eefebb5d25489a0ab37ac22ab3b1b06556b17e5f0b53a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "java_sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+          "java_sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/token/FoodAbility.java",
+          "java_sha256": "79d6d33dd5aa5cf0a53784c96639953598780ecb010fcb3adc5f3db677ee22b4"
+        }
+      ]
+    },
+    {
+      "name": "Solarium Sentry",
+      "oracle_text": "Whenever an opponent casts a spell with mana value 2 or less, you gain 2 life.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SolariumSentry.java",
+          "java_sha256": "b4a8a7d528d641a2584c39fc3c9bf434f60845d3652ea969ad2883b48eee176e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SpellCastOpponentTriggeredAbility.java",
+          "java_sha256": "84626f91214806489e0cd62e2dfae9fb0f0e510af41d84ca8bdd20d94ca9d9f3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterSpell.java",
+          "java_sha256": "50fd3169b7ed9ae7f81bce450a44155f4326c657186c1ba6713e2d0f8c3e3a6c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+          "java_sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ComparisonType.java",
+          "java_sha256": "33b0abc2b4214ece7d2f842b9f000d967dd8fb4e6cb073cb34eeab7e304731ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/MulticoloredPredicate.java",
+          "java_sha256": "ede92cce9b393cf72ebad797b96bfc682caee5678ee09db33673ed7e4cb0f167"
+        }
+      ]
+    },
+    {
+      "name": "Spider Manifestation",
+      "oracle_text": "Reach\n{T}: Add {R} or {G}.\nWhenever you cast a spell with mana value 4 or greater, untap this creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SpiderManifestation.java",
+          "java_sha256": "8f80474ffa4597c8539378a842a392aab71a9c744574d047d62ab9061df53b1a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+          "java_sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/UntapSourceEffect.java",
+          "java_sha256": "8c7620af194cc7b4085783cc6bc7d8644e670a0c96931c087ecb4a3b7bd6ac71"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+          "java_sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/mana/GreenManaAbility.java",
+          "java_sha256": "77cae7fc213823ee0bdb2f8447f60c1323776dae061b5062edacc26fd304808c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/mana/RedManaAbility.java",
+          "java_sha256": "1648a5c546271d42dd7cb1e3b988d6be224431812867755b96dd633593a5b8ee"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ComparisonType.java",
+          "java_sha256": "33b0abc2b4214ece7d2f842b9f000d967dd8fb4e6cb073cb34eeab7e304731ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterSpell.java",
+          "java_sha256": "50fd3169b7ed9ae7f81bce450a44155f4326c657186c1ba6713e2d0f8c3e3a6c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+          "java_sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/MulticoloredPredicate.java",
+          "java_sha256": "ede92cce9b393cf72ebad797b96bfc682caee5678ee09db33673ed7e4cb0f167"
+        }
+      ]
+    },
+    {
+      "name": "Stormkeld Prowler",
+      "oracle_text": "Whenever you cast a spell with mana value 5 or greater, put two +1/+1 counters on this creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StormkeldProwler.java",
+          "java_sha256": "bf63e9860100c9ede217684f274f66e6e53b79e26ac422ab1f2fb0f4310850c5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+          "java_sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ComparisonType.java",
+          "java_sha256": "33b0abc2b4214ece7d2f842b9f000d967dd8fb4e6cb073cb34eeab7e304731ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterSpell.java",
+          "java_sha256": "50fd3169b7ed9ae7f81bce450a44155f4326c657186c1ba6713e2d0f8c3e3a6c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+          "java_sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/MulticoloredPredicate.java",
+          "java_sha256": "ede92cce9b393cf72ebad797b96bfc682caee5678ee09db33673ed7e4cb0f167"
+        }
+      ]
+    },
+    {
+      "name": "Tanufel Rimespeaker",
+      "oracle_text": "Whenever you cast a spell with mana value 4 or greater, draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TanufelRimespeaker.java",
+          "java_sha256": "998f91c8426b5713add2148ed06807e25b844f56dc168e097370e3269f36f363"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+          "java_sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+          "java_sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/MulticoloredPredicate.java",
+          "java_sha256": "ede92cce9b393cf72ebad797b96bfc682caee5678ee09db33673ed7e4cb0f167"
+        }
+      ]
+    },
+    {
+      "name": "Unwelcome Sprite",
+      "oracle_text": "Flying\nWhenever you cast a spell during an opponent's turn, surveil 2. (Look at the top two cards of your library. You may put any number of them into your graveyard and the rest on top of your library in any order.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/u/UnwelcomeSprite.java",
+          "java_sha256": "69cd49fd06527318373ef9326b26ebb312880b595eff659ab1f5d828732b701b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+          "java_sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/OpponentsTurnCondition.java",
+          "java_sha256": "330ac54c52d062ee5c27741e66cd9eaeb12372a2b7e138314d2664721d875a47"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+          "java_sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        }
+      ]
+    }
+  ]
+}

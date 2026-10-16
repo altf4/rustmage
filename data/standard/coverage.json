@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "afb997cc5a85525b5622b5b64281fdd8bbbc7a787a8f742b697ded928b0870e2",
+  "catalogue_version": "43304f0d919fe89ac4d50a4a699fd02ecb9f8d88b2b920ea1ec030b5c279a1d2",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1371,
-  "implemented_total": 1377,
+  "implemented_standard_cards": 1384,
+  "implemented_total": 1390,
   "token_definitions": 57,
   "emblem_definitions": 1,
   "cards": [
@@ -1006,8 +1006,8 @@
     {
       "name": "Angry Rabble",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Anim Pakal, Thousandth Moon",
@@ -3340,8 +3340,8 @@
     {
       "name": "Brineborn Cutthroat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Bringer of the Last Gift",
@@ -8068,8 +8068,8 @@
     {
       "name": "Enraged Flamecaster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Enter the Avatar State",
@@ -14536,8 +14536,8 @@
     {
       "name": "Kulrath Mystic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Kulrath Zealot",
@@ -15526,8 +15526,8 @@
     {
       "name": "Lurking Lizards",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Lush Oasis",
@@ -15694,8 +15694,8 @@
     {
       "name": "Mage Tower Referee",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Magebane Lizard",
@@ -17644,8 +17644,8 @@
     {
       "name": "Nightmare Sower",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Nightwhorl Hermit",
@@ -23392,8 +23392,8 @@
     {
       "name": "Skybeast Tracker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Skybox Ferry",
@@ -23746,8 +23746,8 @@
     {
       "name": "Solarium Sentry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Sold Out",
@@ -24124,8 +24124,8 @@
     {
       "name": "Spider Manifestation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Spider-Bot",
@@ -25054,8 +25054,8 @@
     {
       "name": "Stormkeld Prowler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Stormkeld Vanguard // Bear Down",
@@ -26026,8 +26026,8 @@
     {
       "name": "Tanufel Rimespeaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Tapestry Warden",
@@ -28864,8 +28864,8 @@
     {
       "name": "Unwelcome Sprite",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Unwilling Vessel",
