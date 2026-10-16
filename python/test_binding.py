@@ -12,6 +12,75 @@ class BindingTests(unittest.TestCase):
     def game(self):
         return Game([["Mountain"] * 24 + ["LightningBolt"] * 36] * 2, seed=17, deck_rules="Freeform")
 
+    def affinity_index(self,obs,wanted):
+        objects={o['id']:o for o in obs['objects']}
+        artifacts=[o for o in objects.values() if o['owner']=='P0' and o['zone']=='Battlefield' and o['card'] in ('Three Tree Mascot','Memory Guardian','Valkyrie Aerial Unit')]
+        def score(a):
+            if a['kind'] in ('Cast','AnnounceCast'):
+                name=objects[a['card']]['card']
+                if name=='Three Tree Mascot':return 160
+                if name==wanted:return (180 if a['kind']=='AnnounceCast' else 170) if artifacts else -100
+                return -100
+            if a['kind']=='ArrangeLibrary':return 180 if a['destination']=='Graveyard' else 170
+            return self.professor_score(obs,a)
+        return max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i]))
+
+    def test_artifact_affinity_staged_payment_and_entry_replay_in_process(self):
+        wanted='Memory Guardian'
+        deck=['Island']*24+['Three Tree Mascot']*12+[wanted]*24
+        with Game([deck,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+            for _ in range(6000):
+                obs=game.observe('P0');obs=game.observe(obs['actor']);self.assertIsNone(obs['outcome'])
+                if obs['decision']=='pay_costs' and obs['announcing']['source_card']==wanted:break
+                game.step(obs,self.affinity_index(obs,wanted))
+            else:self.fail('affinity payment not reached')
+            n=sum(o['owner']=='P0' and o['zone']=='Battlefield' and o['card'] in ('Three Tree Mascot',wanted) for o in obs['objects'])
+            expected_generic=max(0,4-n);self.assertLess(expected_generic,4)
+            self.assertEqual(obs['payment_request']['generic'],expected_generic);saved=game.snapshot()
+            def finish(handle):
+                paid=None
+                for _ in range(80):
+                    current=handle.observe('P0');current=handle.observe(current['actor'])
+                    if current['stack'] and current['stack'][-1]['source_card']==wanted:
+                        self.assertEqual(sum(paid),expected_generic+1)
+                        card=current['stack'][-1]['card'];after=self.resolve_vital_top(handle,'P0')
+                        obj=next(o for o in after['objects'] if o['id']==card)
+                        self.assertEqual(obj['zone'],'Battlefield');self.assertEqual((obj['power'],obj['toughness']),(3,4));self.assertTrue(obj['keywords']&1)
+                        return after
+                    action=current['actions'][self.affinity_index(current,wanted)]
+                    if action['kind']=='PayCosts':paid=action['payment']
+                    handle.act(current,action)
+                self.fail('affinity cast stalled')
+            with game.clone() as fork:expected=finish(fork)
+            after=finish(game);self.assertEqual(after,expected);game.restore(saved);again=finish(game)
+            after['revision']=again['revision'];self.assertEqual(again,after);game.drop_snapshot(saved)
+
+    def test_affinity_entry_surveil_keeps_private_choices_and_graveyard_replay(self):
+        wanted='Valkyrie Aerial Unit'
+        deck=['Island']*24+['Three Tree Mascot']*12+[wanted]*24
+        with Game([deck,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+            checked=False
+            for _ in range(6000):
+                obs=game.observe('P0');obs=game.observe(obs['actor']);self.assertIsNone(obs['outcome'])
+                if obs['decision']=='pay_costs' and obs['announcing']['source_card']==wanted:
+                    n=sum(o['owner']=='P0' and o['zone']=='Battlefield' and o['card'] in ('Three Tree Mascot',wanted) for o in obs['objects'])
+                    self.assertEqual(obs['payment_request']['generic'],max(0,5-n));checked=True
+                if obs.get('library_choice') and obs.get('resolving',{}).get('source_card')==wanted:break
+                game.step(obs,self.affinity_index(obs,wanted))
+            else:self.fail('affinity private surveil not reached')
+            self.assertTrue(checked);self.assertTrue(obs['library_choice']['surveil']);self.assertEqual(len(obs['library_choice']['remaining']),2)
+            opponent=game.observe('P1');self.assertIsNone(opponent['library_choice']);self.assertEqual(opponent['actions'],[])
+            saved=game.snapshot();cards=[o['id'] for o in obs['library_choice']['remaining']]
+            def finish(handle):
+                for card in cards:handle.act(handle.observe('P0'),{'kind':'ArrangeLibrary','card':card,'destination':'Graveyard'})
+                after=handle.observe('P0')
+                for card in cards:self.assertEqual(next(o['zone'] for o in after['objects'] if o['id']==card),'Graveyard')
+                self.assertEqual(after['players'][0]['library_count'],obs['players'][0]['library_count']-2)
+                self.assertIsNone(after['library_choice']);return after
+            with game.clone() as fork:expected=finish(fork)
+            after=finish(game);self.assertEqual(after,expected);game.restore(saved);again=finish(game)
+            after['revision']=again['revision'];self.assertEqual(again,after);game.drop_snapshot(saved)
+
     def reduction_index(self,obs,which):
         objects={o['id']:o for o in obs['objects']};bf=[o for o in obs['objects'] if o['owner']=='P0' and o['zone']=='Battlefield']
         source='Geist of Saint Thalia' if which=='sacrifice' else 'Mocking Sprite'

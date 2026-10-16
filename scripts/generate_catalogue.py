@@ -81,15 +81,36 @@ def reduction_filter(noun):
     if noun.casefold() in subtypes:return 'CastFilter::Subtype('+json.dumps(subtypes[noun.casefold()])+')'
     return None
 
+def reduction_quantity(text):
+    if text.startswith('color among '):text='colors among '+text[len('color among '):]
+    if text.endswith(' you own in exile and in your graveyard'):
+        noun=text[:-len(' you own in exile and in your graveyard')]
+        values=[stat_value(noun+' you own in exile'),stat_value(noun+' in your graveyard')]
+        return 'StatValue::Sum(&['+', '.join(values)+'])' if all(values) else None
+    return stat_value(text)
+
 def extract_cost_reductions(card):
     text=card.get('oracle_text')
     if not isinstance(text,str) or card.get('layout')!='normal':return card,[]
     body,rules=[],[]
     for original in text.split('\n'):
-        line=original.strip();turn='Any';guard='StepGuard::Always';source_only=False;filt=None;amount=None
+        line=original.strip();turn='Any';guard='StepGuard::Always';source_only=False;filt=None;amount=None;quantity=None
         for prefix,timing in [('During turns other than yours, ','Other'),('During your turn, ','Own')]:
             if line.startswith(prefix):turn=timing;line=line[len(prefix):];break
-        if m:=re.fullmatch(r'(?:([A-Za-z -]+) )?[Ss]pells you cast cost \{([0-9]+)\} less to cast\.',line):
+        if m:=re.fullmatch(r'Affinity for ([A-Za-z -]+)(?: \(This spell costs \{1\} less to cast for each ([A-Za-z -]+) you control\.\))?',line):
+            noun=m[1]
+            candidate=reduction_quantity(noun.casefold()+' you control')
+            if m[2] is None or candidate==reduction_quantity(m[2].casefold()+' you control'):
+                quantity=candidate;amount=1;source_only=True;filt='CastFilter::Any'
+        elif m:=re.fullmatch(r'(?:Vivid — )?This spell costs \{([0-9]+)\} less to cast for each (.+)\.',line):
+            quantity=reduction_quantity(m[2]);amount=int(m[1]);source_only=True;filt='CastFilter::Any'
+        elif m:=re.fullmatch(r'This spell costs \{X\} less to cast, where X is (?:the number of )?(.+)\.',line):
+            quantity=reduction_quantity(m[1].removeprefix('the '));amount=1;source_only=True;filt='CastFilter::Any'
+        elif m:=re.fullmatch(r'(?:([A-Za-z -]+) )?[Ss]pells you cast have affinity for ([A-Za-z -]+)\.(?: \(They cost \{1\} less to cast for each ([A-Za-z -]+) you control\.\))?',line):
+            candidate=reduction_quantity(m[2].casefold()+' you control')
+            if m[3] is None or candidate==reduction_quantity(m[3].casefold()+' you control'):
+                quantity=candidate;amount=1;filt=reduction_filter(m[1] or '')
+        elif m:=re.fullmatch(r'(?:([A-Za-z -]+) )?[Ss]pells you cast cost \{([0-9]+)\} less to cast\.',line):
             filt=reduction_filter(m[1] or '');amount=int(m[2])
         elif m:=re.fullmatch(r'The second spell you cast each turn costs \{([0-9]+)\} less to cast\.',line):
             filt='CastFilter::Any';amount=int(m[1]);guard='StepGuard::Threshold { value: StepValue::SpellsCast, minimum: Some(1), maximum: Some(1) }'
@@ -103,8 +124,13 @@ def extract_cost_reductions(card):
                 # hand, so retain this clause until proposed-state checks exist.
                 if guard and 'StepValue::Hand' in guard:guard=None
             elif line.endswith(' during your turn.'):turn='Own'
-        if filt is None or guard is None or amount is None or amount>65535:
+        scaled=('Affinity for ' in line or 'affinity for ' in line or ' less to cast for each ' in line or 'less to cast, where X is ' in line)
+        if filt is None or guard is None or amount is None or amount>65535 or (scaled and quantity is None):
             body.append(original);continue
+        # Cost predicates/quantities must not inspect the pre-proposal hand.
+        # stat_value has only battlefield/graveyard/exile count vocabulary.
+        amount=(f'SpellReductionAmount::Stat {{ value: {quantity}, factor: {amount} }}' if quantity
+                else f'SpellReductionAmount::Fixed({amount})')
         rules.append(f'SpellReduction {{ source_only: {str(source_only).lower()}, filter: {filt}, amount: {amount}, turn: CostTurn::{turn}, guard: {guard} }}')
     return dict(card,oracle_text='\n'.join(body)),rules
 
@@ -308,7 +334,8 @@ SUBTYPE_PLURALS = {'elves': 'Elf', 'goblins': 'Goblin', 'dinosaurs': 'Dinosaur',
                    'kithkin': 'Kithkin', 'knights': 'Knight', 'warriors': 'Warrior', 'spirits': 'Spirit',
                    'giants': 'Giant', 'heroes': 'Hero', 'villains': 'Villain', 'faeries': 'Faerie',
                    'spiders': 'Spider', 'otters': 'Otter', 'squirrels': 'Squirrel', 'mounts': 'Mount',
-                   'insects': 'Insect', 'rats': 'Rat', 'snakes': 'Snake', 'wizards': 'Wizard', 'clerics':'Cleric', 'angels':'Angel'}
+                   'insects': 'Insect', 'rats': 'Rat', 'snakes': 'Snake', 'wizards': 'Wizard', 'clerics':'Cleric', 'angels':'Angel',
+                   'slivers':'Sliver', 'frogs':'Frog', 'lizards':'Lizard'}
 
 
 def creature_filter(text):
@@ -353,7 +380,7 @@ def stat_count_filter(text):
     zone,cards='Battlefield',False
     if text.endswith(' you control'): noun=text[:-12]
     elif text.endswith(' in your graveyard'): noun=text[:-18];zone,cards='Graveyard',True
-    elif text=='cards you own in exile': noun='cards';zone,cards='Exile',True
+    elif text.endswith(' you own in exile'): noun=text[:-len(' you own in exile')];zone,cards='Exile',True
     else:return None
     kinds={'creature':1,'creatures':1,'land':2,'lands':2,'artifact':16,'artifacts':16,
            'enchantment':32,'enchantments':32,'permanent':1|2|16|32|64|256,'permanents':1|2|16|32|64|256,
@@ -372,8 +399,8 @@ def stat_count_filter(text):
     elif noun in kinds:kind=kinds[noun]
     else:
         if noun.startswith('basic '):basic=True;noun=noun[6:]
-        singular={word.casefold():word for word in [*CREATURE_TYPE_NAMES,'Plains','Island','Swamp','Mountain','Forest','Equipment','Desert','Gate','Treasure']}
-        plurals={word.casefold()+'s':word for word in ['Island','Swamp','Mountain','Forest','Desert','Gate','Treasure']}
+        singular={word.casefold():word for word in [*CREATURE_TYPE_NAMES,'Plains','Island','Swamp','Mountain','Forest','Equipment','Desert','Gate','Cave','Town','Treasure']}
+        plurals={word.casefold()+'s':word for word in ['Island','Swamp','Mountain','Forest','Desert','Gate','Cave','Town','Treasure']}
         subtype=SUBTYPE_PLURALS.get(noun,plurals.get(noun,singular.get(noun)))
         if subtype is None:return None
         if basic and subtype not in ('Plains','Island','Swamp','Mountain','Forest'):return None

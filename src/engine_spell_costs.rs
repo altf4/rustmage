@@ -28,12 +28,25 @@ impl Game {
                 }
                 && self.step_guard(rule.guard, actor, self.object_ref(source), object.tapped)
         };
+        let amount = |rule: &crate::cards::SpellReduction, source: CardId| match rule.amount {
+            crate::cards::SpellReductionAmount::Fixed(n) => n,
+            crate::cards::SpellReductionAmount::Stat { value, factor } => {
+                // Clamp before multiplying: reductions above u32::MAX are
+                // equivalent for every representable generic requirement.
+                let n = self
+                    .stat_value(value, self.object_ref(source), actor)
+                    .max(0);
+                u32::try_from(n)
+                    .unwrap_or(u32::MAX)
+                    .saturating_mul(u32::from(factor))
+            }
+        };
         // Requirements are u32; saturation is exact for every representable
         // generic cost and avoids an artificial limit on the number of reducers.
         let mut reduction = 0u32;
         for rule in recipient.card.cost_reductions() {
             if rule.source_only && applies(rule, id) {
-                reduction = reduction.saturating_add(rule.amount);
+                reduction = reduction.saturating_add(amount(rule, id));
             }
         }
         for &source in &self.state.static_sources {
@@ -43,7 +56,7 @@ impl Game {
             }
             for rule in object.card.cost_reductions() {
                 if !rule.source_only && applies(rule, source) {
-                    reduction = reduction.saturating_add(rule.amount);
+                    reduction = reduction.saturating_add(amount(rule, source));
                 }
             }
         }
