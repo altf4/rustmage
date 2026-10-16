@@ -183,6 +183,10 @@ pub(crate) enum LibraryRemainder {
 pub(crate) enum LibrarySelectionFilter {
     Any,
     Kinds(u16),
+    ExcludingKinds(u16),
+    Subtype(&'static str),
+    AnyOf(&'static [LibrarySelectionFilter]),
+    AllOf(&'static [LibrarySelectionFilter]),
     CreaturePowerAtMost(i32),
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

@@ -1033,6 +1033,30 @@ def battlefield_damage_program(text):
     return ['DamageBattlefield { filters: &['+', '.join(filters)+f'], players: {players}, amount: {amount} }}']
 
 
+def library_selection_filter(noun):
+    """Exact Oracle noun phrases; subtype unions preserve all card kinds."""
+    def join(kind,*filters):
+        return kind+'(&['+', '.join('LibrarySelectionFilter::'+f for f in filters)+'])'
+    def sub(name):return 'Subtype('+json.dumps(name)+')'
+    return {
+        'a permanent card':'Kinds(371)',
+        'an artifact, creature, or land card':'Kinds(19)',
+        'a creature card':'Kinds(1)',
+        'a creature card with power 2 or less':'CreaturePowerAtMost(2)',
+        'an artifact card':'Kinds(16)',
+        'a Mutant, Ninja, Turtle, or land card':join('AnyOf',sub('Mutant'),sub('Ninja'),sub('Turtle'),'Kinds(2)'),
+        'a Goblin, Swamp, or Mountain card':join('AnyOf',sub('Goblin'),sub('Swamp'),sub('Mountain')),
+        'an Elf, Swamp, or Forest card':join('AnyOf',sub('Elf'),sub('Swamp'),sub('Forest')),
+        'an Elemental, Island, or Mountain card':join('AnyOf',sub('Elemental'),sub('Island'),sub('Mountain')),
+        'a Kithkin, Forest, or Plains card':join('AnyOf',sub('Kithkin'),sub('Forest'),sub('Plains')),
+        'a Merfolk, Plains, or Island card':join('AnyOf',sub('Merfolk'),sub('Plains'),sub('Island')),
+        'a Mount creature card or a Plains card':join('AnyOf',join('AllOf','Kinds(1)',sub('Mount')),sub('Plains')),
+        'an Ally, Equipment, or Lesson card':join('AnyOf',sub('Ally'),sub('Equipment'),sub('Lesson')),
+        'an artifact or Pirate card':join('AnyOf','Kinds(16)',sub('Pirate')),
+        'a noncreature, nonland card':'ExcludingKinds(3)',
+    }.get(noun)
+
+
 def library_selection_program(text):
     """Complete private look/pick/remainder clauses; no guessed pronouns or tails."""
     m=re.fullmatch(r'look at the top (three|four|five) cards of your library\. (.+)',text)
@@ -1050,8 +1074,9 @@ def library_selection_program(text):
         tail=statement_program(m[3]) if m[3] else []
         if tail is None:return None
         return emit('Fixed('+str({'one':1,'two':2}[m[1]])+')',remainder='Graveyard' if m[2]=='into your graveyard' else 'BottomAny')+tail
-    if m:=re.fullmatch(r'You may reveal (a permanent card|an artifact, creature, or land card|a creature card|a creature card with power 2 or less) from among them and put it into your hand\. Put the rest on the bottom of your library in (any|a random) order\.',body):
-        filter_={'a permanent card':'Kinds(371)','an artifact, creature, or land card':'Kinds(19)','a creature card':'Kinds(1)','a creature card with power 2 or less':'CreaturePowerAtMost(2)'}[m[1]]
+    if m:=re.fullmatch(r'You may reveal (.+) from among them and put it into your hand\. Put the rest on the bottom of your library in (any|a random) order\.',body):
+        filter_=library_selection_filter(m[1])
+        if filter_ is None:return None
         return emit('Fixed(1)',filter_,True,True,'BottomAny' if m[2]=='any' else 'BottomRandom')
     return None
 

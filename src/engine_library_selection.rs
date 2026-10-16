@@ -39,6 +39,14 @@ impl Game {
         match filter {
             LibrarySelectionFilter::Any => true,
             LibrarySelectionFilter::Kinds(mask) => c.kind_mask() & mask != 0,
+            LibrarySelectionFilter::ExcludingKinds(mask) => c.kind_mask() & mask == 0,
+            LibrarySelectionFilter::Subtype(subtype) => c.has_subtype(subtype),
+            LibrarySelectionFilter::AnyOf(filters) => filters
+                .iter()
+                .any(|filter| self.library_selection_matches(*filter, id)),
+            LibrarySelectionFilter::AllOf(filters) => filters
+                .iter()
+                .all(|filter| self.library_selection_matches(*filter, id)),
             LibrarySelectionFilter::CreaturePowerAtMost(power) => {
                 c.is_creature() && self.stats(id).power <= i128::from(power)
             }
