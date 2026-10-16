@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Chart a Course",
+      "oracle_text": "Draw two cards. Then discard a card unless you attacked this turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/ChartACourse.java",
+          "java_sha256": "5388b5afca2e9e1eba3393c2d77218342c29b95d0bfad981a77425cdf48716a2"
+        }
+      ]
+    },
+    {
+      "name": "Fire Nation Raider",
+      "oracle_text": "Raid — When this creature enters, if you attacked this turn, create a Clue token. (It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FireNationRaider.java",
+          "java_sha256": "359304bef640c001ebb2b0d793ad5c1298ef5ba56e61a6e948060ecc6236896b"
+        }
+      ]
+    },
+    {
+      "name": "Gorehorn Raider",
+      "oracle_text": "Raid — When this creature enters, if you attacked this turn, this creature deals 2 damage to any target.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GorehornRaider.java",
+          "java_sha256": "3147d2010ae68a4b2375a5365f23997581f79f90ffeed0726fa53ee14cab096e"
+        }
+      ]
+    },
+    {
+      "name": "Rowdy Research",
+      "oracle_text": "This spell costs {1} less to cast for each creature that attacked this turn.\nDraw three cards.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RowdyResearch.java",
+          "java_sha256": "3c2b8dfffbd740a402e7003e126ec3a09f78f6fa293563abf3b335f223cbdf08"
+        }
+      ]
+    },
+    {
+      "name": "Skyship Buccaneer",
+      "oracle_text": "Flying\nRaid — When this creature enters, if you attacked this turn, draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SkyshipBuccaneer.java",
+          "java_sha256": "9e8700f1f99236df2ca9f77e73ea068dd279aeb7093afc3597524aacc478b448"
+        }
+      ]
+    },
+    {
+      "name": "Storm Fleet Spy",
+      "oracle_text": "Raid — When this creature enters, if you attacked this turn, draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StormFleetSpy.java",
+          "java_sha256": "73d2314ef9620ba35a58076edf8628e3be8c5bfedb4d59bd1e3262b1e6beffe8"
+        }
+      ]
+    },
+    {
+      "name": "Witchstalker Frenzy",
+      "oracle_text": "This spell costs {1} less to cast for each creature that attacked this turn.\nWitchstalker Frenzy deals 5 damage to target creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WitchstalkerFrenzy.java",
+          "java_sha256": "def84a2b3091a90440b7e33786eb2d3148ab6bc33ddc93e81bd8bf751ab91350"
+        }
+      ]
+    }
+  ],
+  "supporting_sources": [
+    {
+      "java_source": "Mage/src/main/java/mage/watchers/common/AttackedThisTurnWatcher.java",
+      "java_sha256": "6c5e923e07c20b5532156598d59f92869d578f7fba9e42c238240b2dcd9b13df"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CreaturesThatAttackedThisTurnCount.java",
+      "java_sha256": "2092448dcd422f1389a78e47b318fdf7e94e37f7dece08175d01a12c97dcbbc1"
+    }
+  ]
+}

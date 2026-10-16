@@ -685,6 +685,9 @@ pub(crate) enum CostTurn {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum SpellReductionAmount {
     Fixed(u32),
+    Attackers {
+        factor: u16,
+    },
     Stat {
         value: StatValue,
         factor: u16,

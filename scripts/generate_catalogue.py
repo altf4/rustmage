@@ -115,6 +115,7 @@ def extract_cost_reductions(card):
                 quantity=candidate;amount=1;source_only=True;filt='CastFilter::Any'
         elif m:=re.fullmatch(r'(?:Vivid — )?This spell costs \{([0-9]+)\} less to cast for each (.+)\.',line):
             quantity=reduction_quantity(m[2]);amount=int(m[1]);source_only=True;filt='CastFilter::Any'
+            if m[2]=='creature that attacked this turn':derived=f'SpellReductionAmount::Attackers {{ factor: {amount} }}'
         elif m:=re.fullmatch(r'This spell costs \{X\} less to cast, where X is (?:the number of )?(.+)\.',line):
             quantity=reduction_quantity(m[1].removeprefix('the '));amount=1;source_only=True;filt='CastFilter::Any'
             if quantity is None:derived=derived_reduction(m[1],card)
@@ -872,6 +873,10 @@ def statement_program(text):
     text = strip_rule_label(text)
     if not text:return None
     text = normalize_duration(text[0].lower() + text[1:])
+    if text=='draw two cards. Then discard a card unless you attacked this turn.':
+        # On raid, execute the forward skip; otherwise bypass it and discard.
+        return ['Draw(PlayerSet::Controller, 2)', 'If { guard: StepGuard::Attacked, skip: 1 }',
+                'Skip(1)', 'Discard(PlayerSet::Controller, 1)']
     if program:=guarded_program(text,statement_program):return program
     if m:=re.fullmatch(r'(?:you )?draw (?:cards equal to (.+)|X cards, where X is (.+))\.',text):
         value=amount_value(m[1] or m[2])
@@ -1650,6 +1655,7 @@ def trigger_creature_template(card):
                 line = 'When this creature enters, ' + line[len('When ' + alias + ' enters, '):]
             if line.startswith('When ' + alias + ' dies, '):
                 line = 'When this creature dies, ' + line[len('When ' + alias + ' dies, '):]
+        if line.startswith('Raid — When '):line=line[len('Raid — '):]
         for label in ('Raid — ', 'Formidable — ', 'Survival — '):
             if line.startswith(label + 'At the beginning of '): line = line[len(label):]
         for alias in names:

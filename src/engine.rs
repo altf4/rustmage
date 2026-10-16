@@ -689,6 +689,7 @@ enum Pending {
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
     objects: SharedVec<Object>,
+    attacked_this_turn: SharedVec<ObjectRef>,
     free_tokens: Vec<CardId>,
     static_sources: Vec<CardId>,
     cast_sources: Vec<CardId>,
@@ -905,6 +906,8 @@ pub struct LegalActionSpace {
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
     pub schema: u32,
+    /// Number of distinct declared attacker objects this turn, including departures.
+    pub creatures_attacked_this_turn: usize,
     pub catalogue: &'static str,
     pub viewer: Player,
     pub revision: u64,
@@ -1046,6 +1049,7 @@ impl Game {
             revision: 0,
             state: State {
                 objects: objects.into(),
+                attacked_this_turn: Vec::new().into(),
                 free_tokens: Vec::new(),
                 static_sources: Vec::new(),
                 cast_sources: Vec::new(),
@@ -2026,6 +2030,14 @@ impl Game {
                 self.state.attack_declared = !self.state.selected_attackers.is_empty();
                 self.state.players[actor.index()].attacked_this_turn |= self.state.attack_declared;
                 let declared = std::mem::take(&mut self.state.selected_attackers);
+                // Only declared attackers count. Register the complete batch
+                // before any attack-trigger predicate observes turn history.
+                for attack in &declared {
+                    let reference = self.object_ref(attack.card);
+                    if !self.state.attacked_this_turn.contains(&reference) {
+                        self.state.attacked_this_turn.push(reference);
+                    }
+                }
                 for attack in declared {
                     let card = attack.card;
                     if !self.keywords(card).contains(Keywords::VIGILANCE) {
@@ -2480,6 +2492,7 @@ impl Game {
 
     fn begin_turn(&mut self) {
         self.state.triggered_this_turn.clear();
+        self.state.attacked_this_turn.clear();
         for player in &mut self.state.players {
             player.spells_cast_this_turn = 0;
             player.cards_drawn_this_turn = 0;
@@ -2862,7 +2875,8 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 41,
+            schema: 42,
+            creatures_attacked_this_turn: s.attacked_this_turn.len(),
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -3148,6 +3162,8 @@ impl Game {
         let s = &self.state;
         std::mem::size_of::<State>()
             + std::mem::size_of::<Vec<Object>>()
+            + std::mem::size_of::<Vec<ObjectRef>>()
+            + s.attacked_this_turn.len() * std::mem::size_of::<ObjectRef>()
             + 2 * std::mem::size_of::<Vec<CardId>>()
             + s.objects.len() * std::mem::size_of::<Object>()
             + s.exile_links.len() * std::mem::size_of::<ExileLink>()
@@ -3413,3 +3429,7 @@ mod distinct_amount_tests;
 #[cfg(test)]
 #[path = "engine_conditional_tests.rs"]
 mod conditional_tests;
+
+#[cfg(test)]
+#[path = "engine_attack_history_tests.rs"]
+mod attack_history_tests;
