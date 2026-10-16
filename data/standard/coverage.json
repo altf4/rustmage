@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "7237057fde969a23706ee77f2913131bf607c50a021f7b18984622e738d613e5",
+  "catalogue_version": "00ce0b10d18ef8617c28423f5f2504294d126e22937ab8b71bf0eb25240fda2f",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 922,
-  "implemented_total": 928,
-  "token_definitions": 41,
+  "implemented_standard_cards": 967,
+  "implemented_total": 973,
+  "token_definitions": 43,
   "cards": [
     {
       "name": "Plains",
@@ -657,8 +657,8 @@
     {
       "name": "Airship Crash",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Airship Engine Room",
@@ -2103,8 +2103,8 @@
     {
       "name": "Battle Menu",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Battle-Rattle Shaman",
@@ -3405,8 +3405,8 @@
     {
       "name": "Broken Wings",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Broodguard Elite",
@@ -3495,8 +3495,8 @@
     {
       "name": "Bumbleflower's Sharepot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Bumi Bash",
@@ -6027,8 +6027,8 @@
     {
       "name": "Death in the Family",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Death to Our Enemies",
@@ -6057,8 +6057,8 @@
     {
       "name": "Deathmark",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Debris Beetle",
@@ -6405,8 +6405,8 @@
     {
       "name": "Devout Decree",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Dewdrop Cure",
@@ -6591,8 +6591,8 @@
     {
       "name": "Disruptor Wanderglyph",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Disruptor of Currents",
@@ -7857,8 +7857,8 @@
     {
       "name": "Embrace Oblivion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Embrace the Paradox",
@@ -8145,8 +8145,8 @@
     {
       "name": "Eriette's Lullaby",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Eriette's Tempting Apple",
@@ -8403,8 +8403,8 @@
     {
       "name": "Exorcise",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Exosuit Savior",
@@ -10023,8 +10023,8 @@
     {
       "name": "Gallant Strike",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Gallia, Tragic Host",
@@ -10449,8 +10449,8 @@
     {
       "name": "Giant's Boulder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Giant-Sized Flying Ant",
@@ -10821,8 +10821,8 @@
     {
       "name": "Goblin Firebomb",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Goblin Glasswright // Craft with Pride",
@@ -11091,8 +11091,8 @@
     {
       "name": "Grapple with Death",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Grappling Kraken",
@@ -11151,8 +11151,8 @@
     {
       "name": "Gravkill",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Gravpack Monoist",
@@ -12099,8 +12099,8 @@
     {
       "name": "Hero's Downfall",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Heroes' Bane",
@@ -14445,8 +14445,8 @@
     {
       "name": "Kraul Whipcracker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Kraum, Violent Cacophony",
@@ -15801,8 +15801,8 @@
     {
       "name": "Make Your Move",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Make Your Own Luck",
@@ -16395,14 +16395,14 @@
     {
       "name": "Meteor Golem",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Meteor Sword",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Meticulous Archive",
@@ -17145,8 +17145,8 @@
     {
       "name": "Mortify",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Moseo, Vein's New Dean",
@@ -17823,8 +17823,8 @@
     {
       "name": "Not on My Watch",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Nova Hellkite",
@@ -18699,8 +18699,8 @@
     {
       "name": "Pawpatch Formation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Pawpatch Recruit",
@@ -20013,8 +20013,8 @@
     {
       "name": "Radiant Strike",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Radioactive Spider",
@@ -20427,8 +20427,8 @@
     {
       "name": "Ray of Ruin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Rayblade Trooper",
@@ -20565,8 +20565,8 @@
     {
       "name": "Red Guardian, Super-Soldier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Red Herring",
@@ -20667,8 +20667,8 @@
     {
       "name": "Refute Destiny",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Regal Bunnicorn",
@@ -20781,8 +20781,8 @@
     {
       "name": "Repel Calamity",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Reptil, Dinomorpher",
@@ -21501,8 +21501,8 @@
     {
       "name": "Rooftop Assassin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Rooftop Percher",
@@ -22143,8 +22143,8 @@
     {
       "name": "Sarkhan's Resolve",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Sarkhan, Dragon Ascendant",
@@ -22407,8 +22407,8 @@
     {
       "name": "Scout the City",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Scrabbling Skullcrab",
@@ -22419,8 +22419,8 @@
     {
       "name": "Scrap Compactor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Scrapshooter",
@@ -22935,8 +22935,8 @@
     {
       "name": "Shattered Wings",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Shatterwing Pegasus",
@@ -23061,8 +23061,8 @@
     {
       "name": "Shoot the Sheriff",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Shopkeeper's Bane",
@@ -24279,8 +24279,8 @@
     {
       "name": "Spin Out",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Spinerock Tyrant",
@@ -24573,8 +24573,8 @@
     {
       "name": "Stand Up for Yourself",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Star Charter",
@@ -24855,8 +24855,8 @@
     {
       "name": "Stingblade Assassin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Stingcaster Mage",
@@ -25227,8 +25227,8 @@
     {
       "name": "Sudden Strike",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Sugar Coat",
@@ -26331,8 +26331,8 @@
     {
       "name": "Terminal Criticism",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Terminal Velocity",
@@ -28695,8 +28695,8 @@
     {
       "name": "Unforgiving Aim",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Unfortunate Accident",
@@ -29025,8 +29025,8 @@
     {
       "name": "Valorous Stance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Vampire Gourmand",
@@ -30615,8 +30615,8 @@
     {
       "name": "Withering Torment",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Witness Protection",
@@ -30711,8 +30711,8 @@
     {
       "name": "Worthy Cost",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Wraith, Vicious Vigilante",
@@ -30867,8 +30867,8 @@
     {
       "name": "Your Fate Ends Here",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Youthful Valkyrie",

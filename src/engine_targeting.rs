@@ -157,6 +157,51 @@ impl Game {
         source: ObjectRef,
         target: Target,
     ) -> bool {
+        match rule {
+            TargetRule::Union(rules) => {
+                return rules
+                    .iter()
+                    .any(|&rule| self.target_matches(rule, controller, source, target));
+            }
+            TargetRule::Filtered { base, predicate } => {
+                if !self.target_matches(*base, controller, source, target) {
+                    return false;
+                }
+                let Target::Card(id) = target else {
+                    return false;
+                };
+                // The base rule validates the object index and zone before this lookup.
+                let object = &self.state.objects[id as usize];
+                return match *predicate {
+                    TargetPredicate::Attacking => self.state.attackers.iter().any(|a| a.card == id),
+                    TargetPredicate::AttackingOrBlocking => {
+                        self.state.attackers.iter().any(|a| a.card == id)
+                            || self.state.blocking.contains(&id)
+                    }
+                    TargetPredicate::Damaged => object.damaged_this_turn,
+                    TargetPredicate::DealtDamage => object.dealt_damage_this_turn,
+                    TargetPredicate::PowerAtLeast(n) => self.stats(id).power >= i128::from(n),
+                    TargetPredicate::ToughnessAtLeast(n) => {
+                        self.stats(id).toughness >= i128::from(n)
+                    }
+                    TargetPredicate::PowerOrToughnessAtLeast(n) => {
+                        let stats = self.stats(id);
+                        stats.power >= i128::from(n) || stats.toughness >= i128::from(n)
+                    }
+                    TargetPredicate::Colors(mask) => object.card.colors() & mask != 0,
+                    TargetPredicate::Keyword(keyword) => self.keywords(id).contains(keyword),
+                    TargetPredicate::Token => object.card.is_token(),
+                    TargetPredicate::Subtype(subtype) => object.card.has_subtype(subtype),
+                    TargetPredicate::Nonbasic => !object.card.is_basic_land(),
+                    TargetPredicate::NonOutlaw => {
+                        !["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"]
+                            .iter()
+                            .any(|subtype| object.card.has_subtype(subtype))
+                    }
+                };
+            }
+            _ => {}
+        }
         match target {
             Target::Player(player) => match rule {
                 TargetRule::Any => true,

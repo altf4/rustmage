@@ -10,9 +10,79 @@ spec.loader.exec_module(generate)
 class CatalogueCompilerTests(unittest.TestCase):
     def card(self, **overrides):
         row = {'layout': 'normal', 'type_line': 'Creature — Cat', 'power': '2', 'toughness': '1',
-               'mana_cost': '{W}', 'oracle_text': ''}
+               'mana_cost': '{W}', 'oracle_text': '', 'colors': ['W']}
         row.update(overrides)
         return row
+
+    def test_removal_target_predicates_are_exact_and_unions_keep_qualifiers(self):
+        cases={
+            'Destroy target attacking or blocking creature.':'CreatureAttackingBlocking',
+            'Exile target attacking creature.':'CreatureAttacking',
+            'Destroy target creature with power or toughness 4 or greater.':'CreatureEitherMin4',
+            'Destroy target artifact, enchantment, or creature with flying.':'ArtifactEnchantmentCreatureFlying',
+            'Exile target artifact, enchantment, or creature with power 4 or greater.':'ArtifactEnchantmentCreaturePowerMin4',
+            'Destroy target token an opponent controls.':'TokenOpponent',
+            "Exile target card from an opponent's graveyard.":'CardGraveOpponent',
+            'Destroy target non-outlaw creature.':'CreatureNonOutlaw',
+            'Destroy target creature an opponent controls that was dealt damage this turn.':'CreatureDamagedOpponent',
+            'Destroy target creature an opponent controls that dealt damage this turn.':'CreatureDealtDamageOpponent',
+        }
+        for text,rule in cases.items():
+            self.assertEqual(generate.targeted_program(text),(rule,[text.split()[0]]))
+        union=generate.TARGET_RULES['ArtifactEnchantmentCreatureFlying']
+        self.assertIn('TargetRule::Union',union);self.assertIn('kinds: 48',union)
+        self.assertIn('Keyword(Keywords(1))',union)
+        for text in [
+            'Destroy target creature an opponent controls that dealt combat damage this turn.',
+            'Destroy target non-outlaw creature. Its controller draws a card.',
+            'Destroy target creature with total power and toughness 4 or greater.',
+            'Destroy target artifact, enchantment, or creature with flying and reach.',
+            'Exile target creature or a card from a graveyard.',
+            'Destroy target creature with power 3 or less.',
+            'Destroy target creature. Its controller manifests dread.',
+        ]:
+            self.assertIsNone(generate.targeted_program(text),text)
+
+    def test_complete_removal_admissions_keep_other_mechanics_gated(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        rust,coverage=generate.compile_catalogue(rows,target)
+        supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        admitted=["Airship Crash", "Battle Menu", "Broken Wings", "Bumbleflower's Sharepot",
+            "Death in the Family", "Deathmark", "Devout Decree", "Disruptor Wanderglyph", "Embrace Oblivion",
+            "Eriette's Lullaby", "Exorcise", "Gallant Strike", "Giant's Boulder", "Goblin Firebomb",
+            "Grapple with Death", "Gravkill", "Hero's Downfall", "Kraul Whipcracker", "Make Your Move",
+            "Meteor Golem", "Meteor Sword", "Mortify", "Not on My Watch", "Pawpatch Formation",
+            "Radiant Strike", "Ray of Ruin", "Red Guardian, Super-Soldier", "Refute Destiny", "Repel Calamity", "Rooftop Assassin",
+            "Sarkhan's Resolve", "Scout the City", "Scrap Compactor", "Shattered Wings", "Shoot the Sheriff",
+            "Spin Out", "Stand Up for Yourself", "Stingblade Assassin", "Sudden Strike", "Terminal Criticism",
+            "Unforgiving Aim", "Valorous Stance", "Withering Torment", "Worthy Cost", "Your Fate Ends Here"]
+        self.assertEqual(len(admitted),45)
+        for name in admitted:self.assertIn(name,supported)
+        for name in ['Kin-Tree Severance','Unwanted Remake',
+                     'Consuming Ashes','Taken by Nightmares','Bovine Intervention','Get Lost',
+                     'Long Goodbye','Ride\'s End','Protective Response','Dragon\'s Prey']:
+            self.assertNotIn(name,supported,name)
+        import re
+        colors=json.loads(re.search(r'static COLORS: \[u8; [0-9]+\] = (\[[^;]+\]);',rust)[1])
+        definitions=coverage['cards']
+        for name,mask in [('Cat-Owl',3),('Forest',0),('Grizzly Bears',16),('Abandon Attachments',10)]:
+            self.assertEqual(colors[next(i for i,c in enumerate(definitions) if c['name']==name)],mask)
+        self.assertEqual(len(colors),len(definitions)+coverage['token_definitions'])
+
+    def test_missing_invalid_colors_fail_closed_even_with_fresh_checksum(self):
+        import json,hashlib,copy
+        original=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        for value in [None,['R','R'],['C'],[5]]:
+            rows=copy.deepcopy(original)
+            card=next(c for c in rows['cards'] if c['name']=='Bear Cub')
+            if value is None:del card['colors']
+            else:card['colors']=value
+            rows['cards_sha256']=hashlib.sha256(json.dumps(rows['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+            with self.assertRaisesRegex(ValueError,'colors: Bear Cub'):
+                generate.compile_catalogue(rows,target)
 
     def test_counter_groups_match_whole_non_targeted_sets_and_distinct_target_ranges(self):
         cases=[('Put a +1/+1 counter on each creature you control.','relation: 0','PlusOne'),
@@ -68,7 +138,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIn(name,supported)
         for name in ['Grab the Prize','Laughing Mad','Pumpkin Bombardment','Souls Lost','Fear of Isolation']:
             self.assertNotIn(name,supported)
-        self.assertEqual(rust.count('=> Some(AdditionalCost {'),4)
+        self.assertEqual(rust.count('=> Some(AdditionalCost {'),6)
         prefix='As an additional cost to cast this spell, '
         for cost in ['discard two cards.','you may discard a card.','sacrifice two creatures.',
                      'discard a card or pay {2}.','sacrifice an artifact or pay {2}.',

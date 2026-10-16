@@ -135,3 +135,23 @@ fn token_factories_are_not_submitted_cards_in_any_deck_mode() {
         }
     }
 }
+
+#[test]
+fn intrinsic_colors_match_every_pinned_face_and_token_factory() {
+    let snapshot: serde_json::Value =
+        serde_json::from_str(include_str!("../data/standard/cards.json")).unwrap();
+    for row in snapshot["cards"].as_array().unwrap() {
+        let name = row["name"].as_str().unwrap();
+        let card = rustmage::Card::from_name(name).unwrap();
+        let colors = row.get("colors").unwrap_or(&row["card_faces"][0]["colors"]);
+        let expected = colors.as_array().unwrap().iter().fold(0, |mask, c| {
+            mask | (1 << "WUBRG".find(c.as_str().unwrap()).unwrap())
+        });
+        assert_eq!(card.colors(), expected, "{name}");
+    }
+    for card in rustmage::Card::catalogue() {
+        if let Some(token) = card.token_info() {
+            assert_eq!(card.colors(), token.colors);
+        }
+    }
+}
