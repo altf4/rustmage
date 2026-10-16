@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "34a70c2fe2060ab6c58b9abb6075e834d1c084a5d96808ccd853429d8e2f1e54",
+  "catalogue_version": "e9b6095c934c6140abedbe9b6134717d3356af49c1a4fe9c217e9368203f5657",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1599,
-  "implemented_total": 1605,
+  "implemented_standard_cards": 1609,
+  "implemented_total": 1615,
   "token_definitions": 74,
   "emblem_definitions": 1,
   "cards": [
@@ -928,8 +928,8 @@
     {
       "name": "Analyze the Pollen",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Ancestor Dragon",
@@ -1750,7 +1750,7 @@
     {
       "name": "Axebane Ferox",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -2554,8 +2554,8 @@
     {
       "name": "Bite Down on Crime",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Bitter Chill",
@@ -5350,7 +5350,7 @@
     {
       "name": "Crimestopper Sprite",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -8338,7 +8338,7 @@
     {
       "name": "Evidence Examiner",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -8494,8 +8494,8 @@
     {
       "name": "Extract a Confession",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Extraordinary Journey",
@@ -9568,7 +9568,7 @@
     {
       "name": "Forensic Researcher",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -22000,7 +22000,7 @@
     {
       "name": "Sample Collector",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -25648,7 +25648,7 @@
     {
       "name": "Surveillance Monitor",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -29536,7 +29536,7 @@
     {
       "name": "Vitu-Ghazi Inspector",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {

@@ -402,6 +402,7 @@ fn group_counter_instructions_finish_before_state_based_deaths_and_pair_cancella
     };
     g.state.resolving = Some(Resolution {
         explore: None,
+        evidence: None,
         item,
         program: &[
             Instruction::PutCreatureCounters {

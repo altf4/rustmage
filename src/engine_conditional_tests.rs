@@ -653,6 +653,7 @@ fn flat_if_else_offsets_and_scry_pc_keep_common_tail_outside_both_branches() {
         let item = g.cast_item(Player::P0, source, [0; 6]);
         g.state.resolving = Some(Resolution {
             explore: None,
+            evidence: None,
             item,
             program,
             pc: 0,

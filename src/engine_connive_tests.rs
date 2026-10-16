@@ -79,6 +79,7 @@ fn program(g: &mut Game, source: CardId, code: &'static [Instruction], targets: 
         .collect();
     g.state.resolving = Some(Resolution {
         explore: None,
+        evidence: None,
         connive: None,
         item,
         program: code,

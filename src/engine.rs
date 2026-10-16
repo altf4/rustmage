@@ -9,13 +9,16 @@ use crate::cards::{
     TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
 /// Version of the public observation structure, including owned trigger context.
-pub const OBSERVATION_SCHEMA: u32 = 64;
+pub const OBSERVATION_SCHEMA: u32 = 65;
 
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
 mod additional_costs;
 #[path = "engine_bargain.rs"]
 mod bargain;
+#[path = "engine_evidence.rs"]
+mod evidence;
+pub use evidence::{EvidenceEventView, EvidenceView};
 #[path = "engine_library_selection.rs"]
 mod library_selection;
 pub use library_selection::LibrarySelectionView;
@@ -240,6 +243,10 @@ macro_rules! define_actions {
     }
 }
 define_actions! {
+    ChooseCollectEvidence { collect: bool },
+    ChooseEvidence { object: ObjectRef },
+    FinishEvidence,
+    DeclineEvidence,
     ChooseLibraryDestination { object: ObjectRef, destination: LibraryDestination },
     ChooseForageRoute { route: ForageRoute },
     ChooseForage { object: ObjectRef },
@@ -555,6 +562,7 @@ pub struct CastInfo {
     pub kicker: Option<bool>,
     /// Exact cast declaration; its reserved sacrifice is held by the announcement.
     pub bargain: Option<bool>,
+    pub evidence: Option<bool>,
 }
 
 /// Frozen attack and immutable program provenance, independent of later attachments.
@@ -576,6 +584,8 @@ pub struct SpellView {
     pub cast: Option<CastInfo>,
     /// The exact event object; this is a non-targeted reference, never rebound.
     pub entering_object: Option<ObjectRef>,
+    /// Historical qualification of an entry trigger; never inherited by reincarnations.
+    pub evidence_collected: bool,
     pub id: u64,
     pub kind: StackKind,
     pub source_card: Card,
@@ -782,6 +792,12 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    EvidenceIntent {
+        player: Player,
+    },
+    Evidence {
+        player: Player,
+    },
     Explore {
         player: Player,
     },
@@ -907,6 +923,7 @@ struct State {
     exile_permissions: Vec<ExilePlayPermission>,
     known_hand: Vec<ObjectRef>,
     explore_data: Option<Box<explore::ExploreState>>,
+    evidence_data: Option<Box<evidence::EvidenceState>>,
     last_target_library_move: Option<Box<TargetLibraryMovement>>,
     players: [PlayerState; 2],
     rng: Rng,
@@ -992,6 +1009,7 @@ pub struct ZoneChange {
     pub kicked: bool,
     pub bargained: bool,
     pub x: u32,
+    pub evidence_collected: bool,
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -1185,6 +1203,8 @@ pub struct Observation {
     pub entry_life: Option<entries::EntryLifeView>,
     pub additional_cost: Option<AdditionalCostView>,
     pub forage: Option<ForageView>,
+    pub evidence: Option<EvidenceView>,
+    pub last_evidence: Option<EvidenceEventView>,
     pub connive_choice: Option<connive::ConniveChoiceView>,
     pub known_hand: Vec<ObjectRef>,
     pub explore_choice: Option<ExploreChoiceView>,
@@ -1323,6 +1343,7 @@ impl Game {
                 exile_permissions: Vec::new(),
                 known_hand: Vec::new(),
                 explore_data: None,
+                evidence_data: None,
                 last_target_library_move: None,
                 players,
                 rng,
@@ -1387,7 +1408,9 @@ impl Game {
         match self.state.pending {
             Pending::Mulligan(p) | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
-            Pending::Explore { player }
+            Pending::EvidenceIntent { player }
+            | Pending::Evidence { player }
+            | Pending::Explore { player }
             | Pending::Bargain { player }
             | Pending::X { player }
             | Pending::Kicker { player }
@@ -1625,6 +1648,20 @@ impl Game {
                     }
                 }
             }
+            Pending::EvidenceIntent { .. } => {
+                for collect in [false, true] {
+                    if self.evidence_intent_fundable(collect)
+                        && emit(Action::ChooseCollectEvidence { collect })
+                    {
+                        return true;
+                    }
+                }
+            }
+            Pending::Evidence { .. } => {
+                if self.visit_evidence_actions(&mut emit) {
+                    return true;
+                }
+            }
             Pending::ForageMethod { .. } | Pending::Forage { .. } => {
                 if self.visit_forage_actions(&mut emit) {
                     return true;
@@ -1823,6 +1860,10 @@ impl Game {
                             if target_cost {
                                 return self.initial_target_cost_fundable(actor, card, cost);
                             }
+                            if obj.card.collect_evidence_cost().is_some() {
+                                return self.evidence_cast_fundable(actor, card, cost, false)
+                                    || self.evidence_cast_fundable(actor, card, cost, true);
+                            }
                             if obj.card.has_bargain() {
                                 return self.initial_bargain_fundable(actor, card, cost);
                             }
@@ -1872,6 +1913,7 @@ impl Game {
                         && obj.zone == Zone::Hand
                         && obj.card.offspring_cost().is_none()
                         && obj.card.kicker_cost().is_none()
+                        && obj.card.collect_evidence_cost().is_none()
                         && !obj.card.has_bargain()
                         && obj.card.additional_cost().is_none()
                     {
@@ -1926,6 +1968,7 @@ impl Game {
                         || target_cost
                         || obj.card.offspring_cost().is_some()
                         || obj.card.kicker_cost().is_some()
+                        || obj.card.collect_evidence_cost().is_some()
                         || obj.card.has_bargain()
                         || obj.card.additional_cost().is_some()
                         || matches!(obj.card.effect(), Effect::Modal(_))
@@ -2527,6 +2570,21 @@ impl Game {
                 }
             }
             Action::KeepLegend { object } => self.keep_legend(object),
+            Action::ChooseCollectEvidence { collect } => {
+                self.state
+                    .announcing
+                    .as_mut()
+                    .unwrap()
+                    .item
+                    .cast
+                    .as_mut()
+                    .unwrap()
+                    .evidence = Some(collect);
+                self.continue_announcement_choices(false);
+            }
+            Action::ChooseEvidence { object } => self.choose_evidence(object),
+            Action::FinishEvidence => self.finish_evidence(),
+            Action::DeclineEvidence => self.decline_evidence(),
             Action::ChooseExplore { graveyard, .. } => self.finish_explore(graveyard),
             Action::ChooseBargain { sacrifice } => {
                 let a = self.state.announcing.as_mut().unwrap();
@@ -3008,6 +3066,7 @@ impl Game {
                 kicked: false,
                 bargained: false,
                 x: 0,
+                evidence_collected: false,
             };
         }
         assert_ne!(
@@ -3077,6 +3136,9 @@ impl Game {
                     item.source_attachment = before.attached_to;
                     item.source_facts = DamageFacts::from_view(&before);
                 }
+            }
+            if let Some(data) = &mut self.state.evidence_data {
+                data.sources.retain(|&source| source != id);
             }
             if let Some(data) = &mut self.state.explore_data {
                 data.sources.retain(|&source| source != id);
@@ -3153,6 +3215,7 @@ impl Game {
             kicked: false,
             bargained: false,
             x: 0,
+            evidence_collected: false,
         }
     }
 
@@ -3620,6 +3683,8 @@ impl Game {
                 Pending::Kicker { .. } => "kicker",
                 Pending::Explore { .. } => "explore",
                 Pending::X { .. } => "x",
+                Pending::EvidenceIntent { .. } => "evidence_intent",
+                Pending::Evidence { .. } => "evidence",
                 Pending::SpellCost { .. } => "spell_cost",
                 Pending::ActivationCost { .. } => "activation_cost",
                 Pending::Modes { .. } => "spell_mode",
@@ -3682,6 +3747,8 @@ impl Game {
             entry_life: self.entry_life_view(viewer),
             additional_cost: self.additional_cost_view(viewer),
             forage: self.forage_view(viewer),
+            evidence: self.evidence_view(viewer),
+            last_evidence: s.evidence_data.as_ref().and_then(|d| d.last.clone()),
             objects,
             exile_links: s.exile_links.clone(),
             exile_permissions: s.exile_permissions.clone(),
@@ -3944,6 +4011,7 @@ impl Game {
                 .map_or(0, |_| std::mem::size_of::<TargetLibraryMovement>())
             + s.known_hand.len() * std::mem::size_of::<ObjectRef>()
             + s.explore_data.as_ref().map_or(0, |d| d.bytes())
+            + s.evidence_data.as_ref().map_or(0, |d| d.bytes())
             + (s.free_tokens.len()
                 + s.static_sources.len()
                 + s.cast_sources.len()
@@ -3972,6 +4040,7 @@ impl Game {
                         .map_or(0, |_| std::mem::size_of::<ExploreChoiceView>())
                         + resolution.target_library.as_ref().map_or(0, |f| f.bytes())
                         + resolution.forage.as_ref().map_or(0, |f| f.bytes())
+                        + resolution.evidence.as_ref().map_or(0, |f| f.bytes())
                         + resolution.connive.as_ref().map_or(0, |c| c.bytes())
                         + resolution.mana_payment.as_ref().map_or(0, |_| {
                             std::mem::size_of::<resolution_mana::ResolutionPayment>()
@@ -4007,6 +4076,10 @@ impl Game {
                             * std::mem::size_of::<CardId>()
                 })
                 .unwrap_or(0)
+            + s.announcing
+                .as_ref()
+                .and_then(|a| a.evidence.as_ref())
+                .map_or(0, |e| e.bytes())
             + s.announcing
                 .as_ref()
                 .and_then(|a| a.forage.as_ref())
@@ -4440,3 +4513,7 @@ mod bargain_tests;
 #[cfg(test)]
 #[path = "engine_scalar_x_tests.rs"]
 mod scalar_x_tests;
+
+#[cfg(test)]
+#[path = "engine_evidence_tests.rs"]
+mod evidence_tests;

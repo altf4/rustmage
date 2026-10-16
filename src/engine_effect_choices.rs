@@ -9,6 +9,7 @@ pub(super) struct EffectChoice {
     pub required: [u16; 2],
     pub selected: [Vec<ObjectRef>; 2],
     pub skip_to: Option<usize>,
+    pub greatest_power: [Option<i128>; 2],
 }
 impl EffectChoice {
     pub fn bytes(&self) -> usize {
@@ -33,6 +34,11 @@ impl Game {
         if choice.kind == EffectChoiceKind::Discard {
             return o.zone == Zone::Hand;
         }
+        if choice.greatest_power[player.index()]
+            .is_some_and(|max| self.object_view(object.card).power != max)
+        {
+            return false;
+        }
         let f = choice.filter;
         o.zone == Zone::Battlefield
             && self.keywords(object.card).contains(f.keywords)
@@ -44,6 +50,19 @@ impl Game {
             && f.subtype.is_none_or(|subtype| o.card.has_subtype(subtype))
     }
 
+    pub(super) fn start_greatest_power_choice(&mut self, item: &SpellView) -> bool {
+        let mut filter = evidence::cost(0).filter;
+        filter.kinds = 1;
+        self.start_effect_choice_inner(
+            item,
+            EffectChoiceKind::Sacrifice,
+            PlayerSet::Opponent,
+            filter,
+            1,
+            None,
+            true,
+        )
+    }
     pub(super) fn start_effect_choice(
         &mut self,
         item: &SpellView,
@@ -53,6 +72,19 @@ impl Game {
         amount: u16,
         optional_skip: Option<usize>,
     ) -> bool {
+        self.start_effect_choice_inner(item, kind, players, filter, amount, optional_skip, false)
+    }
+    #[allow(clippy::too_many_arguments)]
+    fn start_effect_choice_inner(
+        &mut self,
+        item: &SpellView,
+        kind: EffectChoiceKind,
+        players: PlayerSet,
+        filter: SacrificeFilter,
+        amount: u16,
+        optional_skip: Option<usize>,
+        greatest: bool,
+    ) -> bool {
         let pc = self.state.resolving.as_ref().unwrap().pc;
         let mut choice = EffectChoice {
             kind,
@@ -61,12 +93,25 @@ impl Game {
             source: item.object,
             required: [0; 2],
             selected: std::array::from_fn(|_| Vec::new()),
+            greatest_power: [None; 2],
             skip_to: optional_skip.map(|skip| pc.checked_add(skip).expect("program offset")),
         };
         if let Some(skip_to) = choice.skip_to {
             assert!(skip_to <= self.state.resolving.as_ref().unwrap().program.len());
         }
         for player in self.program_players(players, item) {
+            if greatest {
+                choice.greatest_power[player.index()] = self
+                    .state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, o)| {
+                        o.zone == Zone::Battlefield && o.owner == player && o.card.is_creature()
+                    })
+                    .map(|(id, _)| self.object_view(id as CardId).power)
+                    .max();
+            }
             let available = self
                 .state
                 .objects

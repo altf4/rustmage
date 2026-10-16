@@ -319,6 +319,7 @@ fn all_program_instructions_finish_before_loss_sba_even_across_discard() {
     game.state.players[0].life = 1;
     game.state.resolving = Some(programs::Resolution {
         explore: None,
+        evidence: None,
         connive: None,
         item,
         program: PROGRAM,
@@ -480,6 +481,7 @@ fn simultaneous_discards_keep_all_selections_private_until_committed() {
     }
     game.state.resolving = Some(programs::Resolution {
         explore: None,
+        evidence: None,
         connive: None,
         item,
         program: PROGRAM,

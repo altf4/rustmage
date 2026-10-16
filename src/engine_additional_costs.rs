@@ -99,6 +99,9 @@ impl Game {
             return self.can_fund(goal);
         };
         let source = goal.source.expect("activation source").0;
+        if let Some(n) = evidence::threshold(spec) {
+            return self.can_collect_evidence(goal.actor, n) && self.can_fund(goal);
+        }
         if forage::is_forage_cost(spec) {
             return self.forage_cost_fundable(goal, spec, None);
         }
@@ -134,6 +137,14 @@ impl Game {
         let Some(spec) = a.additional_cost() else {
             return;
         };
+        if evidence::threshold(spec).is_some() {
+            self.commit_evidence(
+                a.evidence.as_ref().expect("selected evidence"),
+                a.item.object,
+            );
+            a.additional_paid = true;
+            return;
+        }
         if forage::is_forage_cost(spec) {
             let selection = a.forage.as_ref().expect("forage cost selected");
             if selection.route != Some(ForageRoute::Black) {
@@ -149,7 +160,9 @@ impl Game {
         );
         a.additional_paid = true;
         match spec.kind {
-            EffectChoiceKind::Forage | EffectChoiceKind::ForageOrBlack => unreachable!(),
+            EffectChoiceKind::CollectEvidence(_)
+            | EffectChoiceKind::Forage
+            | EffectChoiceKind::ForageOrBlack => unreachable!(),
             EffectChoiceKind::Discard => self.discard_batch(&[object.card], None),
             EffectChoiceKind::Sacrifice => {
                 self.sacrifice_batch(&[(a.item.controller, object.card)]);
@@ -162,7 +175,7 @@ impl Game {
             return None;
         }
         let spec = a.additional_cost()?;
-        if forage::is_forage_cost(spec) {
+        if forage::is_forage_cost(spec) || evidence::threshold(spec).is_some() {
             return None;
         }
         let candidates = if matches!(self.state.pending, Pending::AdditionalCost { .. }) {

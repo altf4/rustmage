@@ -64,6 +64,7 @@ fn program(g: &mut Game, code: &'static [Instruction], targets: Vec<BoundTarget>
     item.targets = targets;
     g.state.resolving = Some(Resolution {
         explore: None,
+        evidence: None,
         connive: None,
         item,
         program: code,
@@ -494,6 +495,7 @@ fn self_payment_uses_exact_incarnation_and_damage_uses_departure_keywords() {
         let item = g.state.pending_triggers.pop().unwrap();
         g.state.resolving = Some(Resolution {
             explore: None,
+            evidence: None,
             connive: None,
             item,
             program: CODE,

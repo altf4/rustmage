@@ -685,12 +685,17 @@ impl Game {
             || a.needs_offspring()
             || a.needs_kicker()
             || a.needs_bargain()
+            || a.needs_evidence()
             || a.additional_cost().is_some_and(forage::is_forage_cost) && a.forage.is_none()
             || a.needs_mana_cost()
             || (a
                 .additional_cost()
                 .is_some_and(|spec| !forage::is_forage_cost(spec))
+                && !a
+                    .additional_cost()
+                    .is_some_and(|s| evidence::threshold(s).is_some())
                 && a.additional.is_none())
+            || a.evidence.as_ref().is_some_and(|e| !e.complete)
             || a.forage.as_ref().is_some_and(|f| !f.complete())
         {
             return None;
@@ -714,6 +719,14 @@ impl Game {
         }
         if a.item.source_card.target_cost_reduction().is_some() && a.item.kind == StackKind::Spell {
             return self.announcement_target_fundable(a, None, Some(cost), None, None, false);
+        }
+        if a.item.kind == StackKind::Spell && a.item.source_card.collect_evidence_cost().is_some() {
+            return self.evidence_cast_fundable(
+                a.item.controller,
+                a.item.card,
+                cost,
+                a.item.cast.is_some_and(|c| c.evidence == Some(true)),
+            );
         }
         if a.item.kind == StackKind::Spell && a.item.source_card.has_bargain() {
             return self.bargain_cost_fundable(a.item.controller, a.item.card, cost, a.additional);

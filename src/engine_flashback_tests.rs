@@ -117,6 +117,7 @@ fn all_nine_complete_bodies_cast_from_both_origins_and_have_independent_effects(
                     offspring: None,
                     kicker: None,
                     bargain: None,
+                    evidence: None,
                     origin: if flashback {
                         Zone::Graveyard
                     } else {

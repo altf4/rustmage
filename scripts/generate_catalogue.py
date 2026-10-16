@@ -946,6 +946,62 @@ def fixed_bargain_body(card):
     return effect,keywords,triggers,None,reduction
 
 
+def extract_evidence(card):
+    text=card.get('oracle_text','')
+    pattern=r'As an additional cost to cast this spell, you may collect evidence ([0-9]+)\. (?:(This spell costs \{2\} less to cast if evidence was collected\.) )?\((?:To collect evidence ([0-9]+), exile|Exile) cards with total mana value ([0-9]+) or greater from your graveyard\.\)'
+    lines=text.splitlines();found=[(i,re.fullmatch(pattern,line)) for i,line in enumerate(lines) if re.fullmatch(pattern,line)]
+    if len(found)!=1 or card.get('layout')!='normal':return card,None
+    i,m=found[0]
+    # The two repeated thresholds must agree; arbitrary reminders cannot qualify.
+    if any(value is not None and value!=m[1] for value in (m[3],m[4])):return card,None
+    return dict(card,oracle_text='\n'.join(lines[:i]+lines[i+1:])),(int(m[1]),2 if m[2] else 0)
+
+
+def evidence_text(text):
+    return "\n".join(line.rstrip() for line in re.sub(r"\([^()]*\)","",text).strip().splitlines()).replace("’", "\'").strip()
+
+def fixed_evidence_body(card, declaration):
+    if (card.get('layout')!='normal' or fixed_cost(card.get('mana_cost','')) is None
+            or spell_cost_options(card.get('mana_cost','')) is None):return None
+    text=evidence_text(card.get('oracle_text',''))
+    text='\n'.join(line.rstrip() for line in text.splitlines())
+    branch=lambda yes,no:['IfEvidence { skip: '+str(len(yes)+1)+' }',*yes,'Skip('+str(len(no))+')',*no]
+    if declaration:
+        n,discount=declaration
+        spells={
+          "Search your library for a basic land card. If evidence was collected, instead search your library for a creature or land card. Reveal that card, put it into your hand, then shuffle.":(8,0,'None',branch(['Search(SearchSpec { filter: SearchFilter::Kinds(3), maximum: 1, destination: SearchDestination::Hand, tapped: false, reveal: true })'],search_program('search your library for a basic land card, reveal it, put it into your hand, then shuffle.'))),
+          "Target creature you control gets +2/+0 until end of turn. It deals damage equal to its power to target creature you don’t control.":(6,2,['CreatureYou','CreatureOpponent'],[grow_instruction('Targets',2,0),'PowerDamage { source: 0, recipient: 1 }']),
+          "Each opponent sacrifices a creature of their choice. If evidence was collected, instead each opponent sacrifices a creature with the greatest power among creatures they control.":(6,0,'None',branch(['SacrificeGreatestPower'],sacrifice_program('each opponent sacrifices a creature.')[1])),
+        }
+        spells={evidence_text(k):v for k,v in spells.items()}
+        if text in spells and card.get('type_line','').split(' — ')[0] in ('Instant','Sorcery'):
+            expected,reduction,target,program=spells[text]
+            return ('Spell',0,[],(target,program),[]) if (n,discount)==(expected,reduction) else None
+        base=creature_template(dict(card,oracle_text=''))
+        if not base:return None
+        bodies={
+          "Flying\nWhen this creature enters, tap target creature. If evidence was collected, put a stun counter on it.":(6,KEYWORDS['flying'],[('SelfEnters',['Tap','IfEvidence { skip: 1 }',counter_instruction('Targets','a','stun')],'Creature')]),
+          "Reach\nWhen this creature enters, if evidence was collected, put a +1/+1 counter on target creature and you gain 2 life.":(6,KEYWORDS['reach'],[('SelfEvidence',[counter_instruction('Targets','a','+1/+1'),'GainLife(PlayerSet::Controller, 2)'],'Creature')]),
+        }
+        bodies={evidence_text(k):v for k,v in bodies.items()}
+        if text in bodies:
+            expected,keywords,triggers=bodies[text]
+            if n==expected and discount==0:return base[0],keywords,triggers,None,[]
+        return None
+    # Each remaining full body is exact; no unknown residuals are swallowed.
+    base=creature_template(dict(card,oracle_text=''))
+    if not base:return None
+    if text==evidence_text('Deathtouch, haste\nWard—Collect evidence 4.'):return base[0],KEYWORDS['deathtouch']|KEYWORDS['haste'],[('Ward',['EvidenceWard(4)'],'None')],None,[]
+    if text==evidence_text('At the beginning of combat on your turn, you may collect evidence 4. (Exile cards with total mana value 4 or greater from your graveyard.)\nWhenever you collect evidence, investigate. (Create a Clue token. It’s an artifact with "{2}, Sacrifice this token: Draw a card.")'):
+        return base[0],0,[('AtStep { step: TriggerStep::BeginCombat, relation: CastRelation::You, guard: StepGuard::Always }',['CollectEvidence { threshold: 4, skip: 0 }'],'None'),('EvidenceCollected',predefined_program('create a Clue token.'),'None')],None,[]
+    if text==evidence_text('{T}: Untap another target permanent you control.\n{T}, Collect evidence 3: Tap target creature you don’t control.'):
+        return base[0],0,[],None,[(activation_cost('{T}'),'OtherPermanentYou',['Untap'],False,False),(activation_cost('{T}, Collect evidence 3'),'CreatureOpponent',['Tap'],False,False)]
+    if text==evidence_text('Whenever this creature attacks, you may collect evidence 3. When you do, put a +1/+1 counter on target creature you control. (To collect evidence 3, exile cards with total mana value 3 or greater from your graveyard.)'):
+        return base[0],0,[('SelfAttacks',['CollectEvidence { threshold: 3, skip: 1 }','Reflexive { ability: 1 }'],'None'),('Reflexive',[counter_instruction('Targets','a','+1/+1')],'CreatureYou')],None,[]
+    if text==evidence_text('When this creature enters, you may collect evidence 4. (Exile cards with total mana value 4 or greater from your graveyard.)\nWhenever you collect evidence, create a 1/1 colorless Thopter artifact creature token with flying.'):
+        return base[0],0,[('SelfEnters',['CollectEvidence { threshold: 4, skip: 0 }'],'None'),('EvidenceCollected',token_program('create a 1/1 colorless Thopter artifact creature token with flying.'),'None')],None,[]
+    return None
+
 def extract_kicker(card):
     """One fixed additional mana cost; no multikicker, variables or duplicate declarations."""
     lines=card.get('oracle_text','').splitlines()
@@ -2660,6 +2716,11 @@ def activation_cost(text):
             cost['mana_component'] = True
             cost['colored'], cost['generic'] = mana[0]
             cost['alternatives'] = mana[1:]
+        elif re.fullmatch(r'Collect evidence [0-9]+',component):
+            if cost['additional'] is not None:return None
+            n=int(component.rsplit(' ',1)[1])
+            if not 0<n<=65535:return None
+            cost['additional']='AdditionalCost { kind: EffectChoiceKind::CollectEvidence('+str(n)+'), filter: '+sacrifice_spec('a permanent')[1]+' }'
         elif component == 'Forage':
             if cost['additional'] is not None:return None
             cost['additional']='AdditionalCost { kind: EffectChoiceKind::Forage, filter: '+sacrifice_spec('a permanent')[1]+' }'
@@ -2693,7 +2754,7 @@ def activation_cost(text):
     # Wider composite costs need payment-order choices before admission.
     if cost['additional'] is not None and (cost['life'] or cost['remove'] or cost['loyalty'] is not None): return None
     if external_sacrifice and cost['sacrifice']:return None
-    if cost['additional'] is not None and 'Forage' in cost['additional'] and cost['sacrifice']:return None
+    if cost['additional'] is not None and ('Forage' in cost['additional'] or 'CollectEvidence' in cost['additional']) and cost['sacrifice']:return None
     if cost.get('discard') and (cost['tap'] or cost['sacrifice'] or cost['exile_self'] or cost['remove'] or cost['loyalty'] is not None or cost['additional'] is not None or cost['life']):return None
     if cost['exile_self'] and (cost['tap'] or cost['sacrifice'] or cost['life'] or cost['remove'] or cost['additional'] is not None or cost['loyalty'] is not None): return None
     return cost
@@ -3109,6 +3170,7 @@ def compile_catalogue(snapshot, target):
     x_entry_rows = []
     kicker_rows = []
     bargain_rows = []
+    evidence_rows = []
     kicked_entry_rows = []
     counter_grant_rows = []
     offspring_rows = []
@@ -3129,6 +3191,7 @@ def compile_catalogue(snapshot, target):
         card, offspring = extract_offspring(card)
         card, kicker = extract_kicker(card)
         card, bargain = extract_bargain(card)
+        card, evidence = extract_evidence(card)
         card, additional = extract_additional_cost(card)
         card, target_reduction = extract_target_cost_reduction(card)
         card, reductions = extract_cost_reductions(card)
@@ -3183,7 +3246,7 @@ def compile_catalogue(snapshot, target):
                 effect, keywords, abilities, activations, enters, modifiers, grants = static
                 if modifiers: static_rows.append(f'        {index} => &[{", ".join(modifiers)}],')
                 if grants: grant_rows.append(f'        {index} => &[{", ".join(grants)}],')
-        scalar=scalar_x_body(card) if not bargain and all(v is None for v in (flashback,offspring,kicker,additional,target_reduction)) and (not reductions or len(reductions)==1 and 'SpellReductionAmount::CreaturePowerCount { minimum: 4 }' in reductions[0]) else None
+        scalar=scalar_x_body(card) if not bargain and evidence is None and all(v is None for v in (flashback,offspring,kicker,additional,target_reduction)) and (not reductions or len(reductions)==1 and 'SpellReductionAmount::CreaturePowerCount { minimum: 4 }' in reductions[0]) else None
         if '{X}' in cost:
             if scalar is None: effect='Unsupported'
             else:
@@ -3204,6 +3267,12 @@ def compile_catalogue(snapshot, target):
             else:
                 effect,keywords,abilities,spell,bargain_reduction=bargain_body
                 activations=[];enters=[0,0,0]
+        evidence_body=fixed_evidence_body(card,evidence) if not (bargain or offspring is not None or kicker is not None or additional is not None or flashback is not None or target_reduction is not None) else None
+        if evidence is not None or evidence_body is not None:
+            if evidence_body is None:effect='Unsupported'
+            else:
+                effect,keywords,abilities,spell,activations=evidence_body
+                enters=[0,0,0]
         # Later fixed-cost selectors must never revive a rejected variable-cost body.
         if '{X}' in card.get('mana_cost', '') and scalar is None:
             effect = 'Unsupported'
@@ -3245,6 +3314,7 @@ def compile_catalogue(snapshot, target):
             loyalty_rows.append(f'        {index} => {int(value)},')
         if effect != 'Unsupported':
             supported.append(index)
+            if evidence is not None: evidence_rows.append(f'        {index} => Some(({evidence[0]}, {evidence[1]})),')
             if bargain: bargain_rows.append(f'        {index} => Some({bargain_reduction}),')
             if scalar is not None:
                 x_rows.append(f'        {index} => 1,')
@@ -3390,6 +3460,7 @@ def compile_catalogue(snapshot, target):
     lines += ['#[rustfmt::skip]', 'pub(super) fn opponent_entry_tapped(card: Card) -> u16 {', '    match card.0 {', *opponent_entry_tapped_rows, '        _ => 0,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn keyword_grants(card: Card) -> &'static [KeywordGrant] {", '    match card.0 {', *grant_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn additional_cost(card: Card) -> Option<AdditionalCost> {', '    match card.0 {', *additional_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn collect_evidence(card: Card) -> Option<(u16, u32)> {', '    match card.0 {', *evidence_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn bargain_reduction(card: Card) -> Option<u32> {', '    match card.0 {', *bargain_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn x_symbols(card: Card) -> u8 {', '    match card.0 {', *x_rows, '        _ => 0,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn x_entry_counters(card: Card) -> bool {', '    '+('matches!(card.0, '+' | '.join(x_entry_rows)+')' if x_entry_rows else 'false'), '}', '']

@@ -16,12 +16,16 @@ pub(super) struct Announcement {
     pub production: Option<Mana>,
     pub additional: Option<ObjectRef>,
     pub forage: Option<Box<forage::ForageSelection>>,
+    pub evidence: Option<Box<evidence::EvidenceSelection>>,
     pub additional_paid: bool,
 }
 
 impl Announcement {
     pub(super) fn additional_cost(&self) -> Option<AdditionalCost> {
         match self.item.kind {
+            StackKind::Spell if self.item.cast.is_some_and(|c| c.evidence == Some(true)) => Some(
+                evidence::cost(self.item.source_card.collect_evidence_cost().unwrap()),
+            ),
             StackKind::Spell if self.item.cast.is_some_and(|c| c.bargain == Some(true)) => {
                 Some(bargain::COST)
             }
@@ -55,6 +59,12 @@ impl Announcement {
                 unreachable!("triggered ability has no activation cost")
             }
         }
+    }
+    pub(super) fn needs_evidence(&self) -> bool {
+        self.pay_window
+            && self.item.kind == StackKind::Spell
+            && self.item.source_card.collect_evidence_cost().is_some()
+            && self.item.cast.is_some_and(|c| c.evidence.is_none())
     }
     pub(super) fn needs_bargain(&self) -> bool {
         self.pay_window
@@ -192,6 +202,8 @@ impl Game {
             self.state.pending = Pending::X { player };
         } else if a.needs_offspring() {
             self.state.pending = Pending::Offspring { player };
+        } else if a.needs_evidence() {
+            self.state.pending = Pending::EvidenceIntent { player };
         } else if a.needs_bargain() {
             self.state.pending = Pending::Bargain { player };
         } else if a.needs_kicker() {
@@ -442,6 +454,7 @@ impl Game {
                 offspring: None,
                 kicker: None,
                 bargain: None,
+                evidence: None,
             }),
             id,
             kind: StackKind::Spell,
@@ -451,6 +464,7 @@ impl Game {
             source_facts: self.damage_facts(card),
             related_stack: None,
             entering_object: None,
+            evidence_collected: false,
             damage_event: None,
             discard_event: None,
             draw_event: None,
@@ -512,6 +526,7 @@ impl Game {
             counter_payment: Counters::default(),
             additional: None,
             forage: None,
+            evidence: None,
             additional_paid: false,
             pay_window: false,
             production: None,
@@ -544,6 +559,7 @@ impl Game {
             counter_payment: counters,
             additional: None,
             forage: None,
+            evidence: None,
             additional_paid: false,
             pay_window: true,
             production,
@@ -575,6 +591,18 @@ impl Game {
                     )
                 };
                 self.state.announcing.as_mut().unwrap().total_cost = Some(total);
+            }
+            if self
+                .state
+                .announcing
+                .as_ref()
+                .unwrap()
+                .additional_cost()
+                .and_then(evidence::threshold)
+                .is_some()
+            {
+                self.start_announcement_evidence();
+                return;
             }
             let announcement = self.state.announcing.as_ref().unwrap();
             self.state.pending = if announcement
@@ -612,7 +640,9 @@ impl Game {
             && !announcement.additional_paid
         {
             if announcement.additional_cost().is_some_and(|spec| {
-                spec.kind == EffectChoiceKind::Sacrifice || forage::is_forage_cost(spec)
+                spec.kind == EffectChoiceKind::Sacrifice
+                    || forage::is_forage_cost(spec)
+                    || evidence::threshold(spec).is_some()
             }) && let Some(payment) = announcement.payment.take()
             {
                 self.pay_activation(&announcement.item, payment, announcement.counter_payment);

@@ -14,6 +14,7 @@ pub(super) struct EntryMove {
     pub kicked: bool,
     pub bargained: bool,
     pub x: u32,
+    pub evidence_collected: bool,
     /// Frozen before replacement choices; payments in this event cannot enable it.
     pub counters: Counters,
 }
@@ -136,6 +137,7 @@ impl Game {
             kicked: false,
             bargained: false,
             x: 0,
+            evidence_collected: false,
             counters: Counters::default(),
         }
     }
@@ -240,6 +242,7 @@ impl Game {
             event.kicked = movement.kicked;
             event.bargained = movement.bargained;
             event.x = movement.x;
+            event.evidence_collected = movement.evidence_collected;
             if event.moved {
                 if let Some(target) = movement.attachment {
                     attachments.push((event.after, target));
