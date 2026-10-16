@@ -599,14 +599,65 @@ impl<'g> FundingState<'g> {
             })
             >= u128::from(goal.generic)
     }
+    fn evidence_value(&self) -> u128 {
+        let actual: u128 = self
+            .game
+            .state
+            .objects
+            .iter()
+            .filter(|o| o.owner == self.actor && o.zone == Zone::Graveyard && !o.card.is_token())
+            .map(|o| u128::from(o.card.fixed_mana_value()))
+            .sum();
+        actual
+            + self
+                .resources
+                .iter()
+                .filter(|r| {
+                    r.object.owner == self.actor
+                        && r.object.zone == Zone::Graveyard
+                        && self.game.state.objects[r.id as usize].zone != Zone::Graveyard
+                        && !r.object.card.is_token()
+                })
+                .map(|r| u128::from(r.object.card.fixed_mana_value()))
+                .sum::<u128>()
+    }
     fn reachable(&self, goal: FundingGoal, visited: &mut HashSet<FundingKey>) -> bool {
+        self.reachable_with_evidence(goal, None, visited)
+    }
+    fn reachable_with_evidence(
+        &self,
+        goal: FundingGoal,
+        evidence: Option<u16>,
+        visited: &mut HashSet<FundingKey>,
+    ) -> bool {
         if !self.obligations(goal) {
             return false;
         }
-        if payable(self.mana, goal.required, goal.generic) {
+        if payable(self.mana, goal.required, goal.generic)
+            && evidence.is_none_or(|n| self.evidence_value() >= u128::from(n))
+        {
             return true;
         }
-        if !self.optimistic(goal) {
+        if evidence.is_some_and(|n| {
+            let upper = self.evidence_value()
+                + self
+                    .resources
+                    .iter()
+                    .filter(|r| {
+                        r.object.owner == self.actor
+                            && r.object.zone == Zone::Battlefield
+                            && !r.object.card.is_token()
+                            && r.object.card.activations().iter().any(|a| {
+                                a.cost.sacrifice
+                                    && (!a.cost.tap || !r.object.tapped)
+                                    && a.mana_production().is_some()
+                            })
+                    })
+                    .map(|r| u128::from(r.object.card.fixed_mana_value()))
+                    .sum::<u128>();
+            upper < u128::from(n)
+        }) || !self.optimistic(goal)
+        {
             return false;
         }
         if !visited.insert(self.key(goal)) {
@@ -615,7 +666,7 @@ impl<'g> FundingState<'g> {
         for step in self.moves(goal) {
             let mut next = self.clone();
             next.apply(&step);
-            if next.reachable(goal, visited) {
+            if next.reachable_with_evidence(goal, evidence, visited) {
                 return true;
             }
         }
@@ -667,6 +718,16 @@ impl Game {
             return true;
         }
         FundingState::from_game(self, goal).reachable(goal, &mut HashSet::new())
+    }
+    pub(super) fn can_fund_evidence(&self, goal: FundingGoal, threshold: u16) -> bool {
+        if self.can_collect_evidence(goal.actor, threshold) {
+            return self.can_fund(goal);
+        }
+        FundingState::from_game(self, goal).reachable_with_evidence(
+            goal,
+            Some(threshold),
+            &mut HashSet::new(),
+        )
     }
     pub(super) fn announcement_payment_request(
         &self,
@@ -815,7 +876,7 @@ impl Game {
         let goal = self.funding_goal(announcement);
         let state = FundingState::from_game(self, goal);
         let mut done = false;
-        if state.obligations(goal) {
+        if state.obligations(goal) && announcement.evidence.as_ref().is_none_or(|e| e.complete) {
             funding_payments(state.mana, goal.required, goal.generic, |payment| {
                 if !done {
                     done = emit(Action::PayCosts {
@@ -837,7 +898,12 @@ impl Game {
         for step in state.moves(goal) {
             let mut next = state.clone();
             next.apply(&step);
-            if next.reachable(goal, &mut HashSet::new()) && emit(state.action(&step)) {
+            if next.reachable_with_evidence(
+                goal,
+                announcement.evidence.as_ref().map(|e| e.threshold),
+                &mut HashSet::new(),
+            ) && emit(state.action(&step))
+            {
                 return true;
             }
         }

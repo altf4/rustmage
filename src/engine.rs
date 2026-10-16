@@ -2535,6 +2535,7 @@ impl Game {
                 let item = self.activation_item(actor, card, ability);
                 self.pay_activation(&item, payment, counter_payment);
                 self.add_mana(actor, production);
+                self.reopen_evidence_after_mana_sacrifice(card);
             }
             Action::ChooseMana { production } => {
                 self.add_mana(actor, production);

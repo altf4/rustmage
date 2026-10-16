@@ -58,6 +58,12 @@ fn reject(g: &mut Game, a: Action) {
 }
 fn pick(g: &mut Game, collect: bool, targets: &[CardId]) {
     let aa = g.legal_actions();
+    if matches!(g.state.pending, Pending::Evidence { .. }) && g.state.announcing.is_none() {
+        assert!(
+            !aa.iter()
+                .any(|a| matches!(a, Action::TapMana { .. } | Action::ActivateMana { .. }))
+        );
+    }
     let a=aa.iter().find(|a|matches!(a,Action::ChooseCollectEvidence{collect:c}if *c==collect))
  .or_else(||aa.iter().find(|a|matches!(a,Action::ChooseTarget{target:Target::Card(id)}if targets.contains(id))))
  .or_else(||aa.iter().find(|a|matches!(a,Action::FinishEvidence)))
@@ -887,6 +893,176 @@ fn actual_authorized_exile_casts_share_optional_evidence_and_no_shortcut_bypasse
                 );
                 settle(&mut g, collect, &[own, foe]);
             }
+        }
+    }
+}
+
+#[test]
+fn mana_sacrificed_real_cards_join_evidence_before_and_after_finish() {
+    for p in [Player::P0, Player::P1] {
+        for initially_sufficient in [false, true] {
+            let mut g = setup(p);
+            let ham = named(&mut g, p, "Hamlet Glutton", Zone::Graveyard);
+            let pizza = named(&mut g, p, "Omni-Cheese Pizza", Zone::Battlefield);
+            let spell = named(
+                &mut g,
+                p,
+                if initially_sufficient {
+                    "Crimestopper Sprite"
+                } else {
+                    "Analyze the Pollen"
+                },
+                Zone::Hand,
+            );
+            replay(&mut g, Action::AnnounceCast { card: spell });
+            replay(&mut g, Action::ChooseCollectEvidence { collect: true });
+            while !matches!(g.state.pending, Pending::Evidence { .. }) {
+                pick(&mut g, true, &[]);
+            }
+            let object = g.object_ref(ham);
+            replay(&mut g, Action::ChooseEvidence { object });
+            if initially_sufficient {
+                replay(&mut g, Action::FinishEvidence);
+            }
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::ActivateMana { card, .. } if *card == pizza))
+                .unwrap();
+            replay(&mut g, action);
+            assert_eq!(g.object_view(pizza).zone, Zone::Graveyard);
+            assert!(matches!(g.state.pending, Pending::Evidence { .. }));
+            assert!(g.observe(p.other()).evidence.is_none());
+            assert_eq!(g.observe(p).evidence.unwrap().selected, vec![object]);
+            let object = g.object_ref(pizza);
+            replay(&mut g, Action::ChooseEvidence { object });
+            replay(&mut g, Action::FinishEvidence);
+            assert_eq!(g.object_view(pizza).zone, Zone::Graveyard);
+            let payment = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PayCosts { .. }))
+                .unwrap();
+            replay(&mut g, payment);
+            assert_eq!(g.object_view(pizza).zone, Zone::Exile);
+            let event = g.observe(p).last_evidence.unwrap();
+            assert_eq!(event.total_mana, 9);
+            assert_eq!(event.exiled.len(), 2);
+            assert_eq!(event.sequence, 1);
+        }
+    }
+}
+
+#[test]
+fn evidence_mana_reachability_rejects_unfunded_and_wrong_color_routes_and_no_window_activations() {
+    for p in [Player::P0, Player::P1] {
+        // Pizza cannot pay its own {1}; an unfunded future grave card is not evidence.
+        let mut g = setup(p);
+        g.state.players[p.index()].mana = [0; 6];
+        named(&mut g, p, "Hamlet Glutton", Zone::Graveyard);
+        named(&mut g, p, "Omni-Cheese Pizza", Zone::Battlefield);
+        let spell = named(&mut g, p, "Analyze the Pollen", Zone::Hand);
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceCast { card: spell })
+        );
+
+        // A pure-tap activation has no CR601.2g mana window, even if Pizza
+        // would supply enough evidence and the player already has spare mana.
+        let mut g = setup(p);
+        named(&mut g, p, "Bear Cub", Zone::Graveyard);
+        named(&mut g, p, "Omni-Cheese Pizza", Zone::Battlefield);
+        let source = named(&mut g, p, "Forensic Researcher", Zone::Battlefield);
+        let foe = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        assert!(!g.legal_actions().iter().any(
+            |a| matches!(a, Action::AnnounceActivate { card, ability:1, .. } if *card==source)
+        ));
+        named(&mut g, p, "Hamlet Glutton", Zone::Graveyard);
+        replay(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+        while !matches!(g.state.pending, Pending::Evidence { .. }) {
+            pick(&mut g, true, &[foe]);
+        }
+        assert!(
+            !g.legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::TapMana { .. } | Action::ActivateMana { .. }))
+        );
+
+        // After the only Forest has been tapped, spending that sole green on
+        // Pizza to produce blue would strand Analyze's green cost: reject it.
+        let mut g = setup(p);
+        g.state.players[p.index()].mana = [0; 6];
+        named(&mut g, p, "Hamlet Glutton", Zone::Graveyard);
+        let pizza = named(&mut g, p, "Omni-Cheese Pizza", Zone::Battlefield);
+        let forest = named(&mut g, p, "Forest", Zone::Battlefield);
+        let spell = named(&mut g, p, "Analyze the Pollen", Zone::Hand);
+        let saved = g.snapshot();
+        for _ in 0..20 {
+            assert!(
+                g.legal_actions()
+                    .contains(&Action::AnnounceCast { card: spell })
+            );
+        }
+        assert_eq!(g.snapshot(), saved);
+        replay(&mut g, Action::AnnounceCast { card: spell });
+        replay(&mut g, Action::ChooseCollectEvidence { collect: true });
+        while !matches!(g.state.pending, Pending::Evidence { .. }) {
+            pick(&mut g, true, &[]);
+        }
+        replay(&mut g, Action::TapMana { card: forest });
+        let wrong = Action::ActivateMana {
+            card: pizza,
+            ability: 0,
+            payment: [0, 0, 0, 0, 1, 0],
+            counter_payment: Counters::default(),
+            production: [0, 0, 1, 0, 0, 0],
+        };
+        reject(&mut g, wrong);
+        let right=g.legal_actions().into_iter().find(|a|matches!(a,Action::ActivateMana{card,production,..}if *card==pizza && production[4]==1)).unwrap();
+        let before = g.snapshot();
+        assert_eq!(g.apply(p.other(), right.clone()), Err(Error::WrongActor));
+        assert_eq!(g.snapshot(), before);
+        replay(&mut g, right);
+    }
+}
+
+#[test]
+fn tapped_mana_sacrifice_cannot_supply_future_evidence_on_many_source_boards() {
+    for p in [Player::P0, Player::P1] {
+        for tapped in [true, false] {
+            let mut g = setup(p);
+            g.state.players[p.index()].mana = [0; 6];
+            named(&mut g, p, "Hamlet Glutton", Zone::Graveyard);
+            let pizza = named(&mut g, p, "Omni-Cheese Pizza", Zone::Battlefield);
+            g.state.objects[pizza as usize].tapped = tapped;
+            for _ in 0..8 {
+                for land in ["Plains", "Island", "Swamp", "Mountain", "Forest"] {
+                    named(&mut g, p, land, Zone::Battlefield);
+                }
+            }
+            let spell = named(&mut g, p, "Analyze the Pollen", Zone::Hand);
+            let (colored, generic) = g.state.objects[spell as usize].card.cost();
+            let before = g.snapshot();
+            for _ in 0..10 {
+                assert_eq!(
+                    g.evidence_cast_fundable(p, spell, ManaCost { colored, generic }, true),
+                    !tapped
+                );
+            }
+            assert_eq!(g.snapshot(), before);
+            replay(&mut g, Action::AnnounceCast { card: spell });
+            assert_eq!(
+                g.legal_actions()
+                    .contains(&Action::ChooseCollectEvidence { collect: true }),
+                !tapped
+            );
         }
     }
 }
