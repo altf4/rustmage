@@ -2045,6 +2045,9 @@ def permanent_program_template(card):
         else:
             cost = activation_cost(cost_text)
         if cost is None: return None
+        # Loyalty use resets each turn; exhaustion persists across turns. Their
+        # shared use bits cannot represent both limits on the same ability.
+        if exhaust and cost['loyalty'] is not None: return None
         cost['exhaust']=exhaust
         if guard:=re.fullmatch(r'(.+) Activate only if you control (?:a|an) ([A-Z][A-Za-z ]+?)(?: or (?:a|an) ([A-Z][A-Za-z ]+?))?\.',effect_text):
             subtypes=[word for word in guard.groups()[1:] if word is not None]

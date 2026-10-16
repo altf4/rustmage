@@ -30,7 +30,9 @@ repeatable ability. Afterburner Expert, Elvish Refueler, Boom Scholar, Greasewre
 Goblin, Hog-Monkey, Mai, Mindspring Merfolk, Rangers' Refueler, Skyserpent Seeker,
 Sita Varma and Winter retain their unsupported body dependencies. Exhaust activation
 observers, reset exceptions, copies/control changes, X costs, keyword counters,
-Vehicles/animation and wider mechanics remain gated.
+Vehicles/animation and wider mechanics remain gated. Exhaust combined with a
+loyalty cost is also rejected: persistent exhaustion and per-turn loyalty use
+would need separate tracking before that composition can be admitted.
 
 ## Rules and state layout
 

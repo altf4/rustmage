@@ -32,6 +32,14 @@ class CatalogueCompilerTests(unittest.TestCase):
         # later target/card pronouns and unknown clauses remain unsupported.
         self.assertIsNotNone(generate.permanent_program_template(self.card(oracle_text='Exhaust — {R}: Put a +1/+1 counter on this creature. It gains double strike until end of turn.')))
 
+    def test_exhaust_loyalty_combinations_remain_gated(self):
+        for cost in ['+1', '0', '−1']:
+            walker=self.card(type_line='Planeswalker — Example',loyalty='5',
+                             oracle_text=f'Exhaust — {cost}: Draw a card.\n0: Draw a card.')
+            self.assertIsNone(generate.permanent_program_template(walker),cost)
+            ordinary=dict(walker,oracle_text=walker['oracle_text'].replace('Exhaust — ',''))
+            self.assertIsNotNone(generate.permanent_program_template(ordinary),cost)
+
     def test_ten_exhaust_bodies_match_pinned_text_and_gate_reset_exceptions_and_observers(self):
         import json
         snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
