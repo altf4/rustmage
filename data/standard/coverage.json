@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "e301f6718d2d8ca602c6dde9b4a53493af5eb39f41923cec0fe58aa7fbc28b16",
+  "catalogue_version": "1a8bcb368a9208f8d2aa2c9def82b8f33c2e2cd89b308fe0c0339d690a769a85",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1341,
-  "implemented_total": 1347,
+  "implemented_standard_cards": 1344,
+  "implemented_total": 1350,
   "token_definitions": 57,
   "emblem_definitions": 1,
   "cards": [
@@ -6814,8 +6814,8 @@
     {
       "name": "Doorkeeper Thrull",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Doppelgang",
@@ -13924,8 +13924,8 @@
     {
       "name": "Karn, Argent Defender",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Karn, Gilded Guardian",
@@ -27856,8 +27856,8 @@
     {
       "name": "Torpor Orb",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Totentanz, Swarm Piper",

@@ -2465,6 +2465,25 @@ def land_template(card):
     return 'Land', keywords, triggers, activations, enters, entry
 
 
+def extract_entry_trigger_suppression(card):
+    """Closed entry-event prohibitions; admit only with the entire residual body."""
+    if (card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'), str)
+            or permanent_type(card) not in ('Creature', 'Artifact Creature', 'Enchantment Creature', 'Artifact', 'Enchantment', 'Planeswalker')):
+        return card, 0
+    clauses = {
+        "Creatures entering don't cause abilities to trigger.": 1,
+        "Creatures entering the battlefield don't cause abilities to trigger.": 1,
+        "Artifacts and creatures entering don't cause abilities to trigger.": 17,
+        "Artifacts and creatures entering the battlefield don't cause abilities to trigger.": 17,
+    }
+    body, mask = [], 0
+    for line in card['oracle_text'].split('\n'):
+        value = clauses.get(line.strip())
+        if value is None: body.append(line)
+        else: mask |= value
+    return dict(card, oracle_text='\n'.join(body)), mask
+
+
 def cycling_abilities(card):
     """Extract only complete fixed-mana cycling lines; compile all residual text."""
     text=card.get('oracle_text')
@@ -2527,6 +2546,7 @@ def compile_catalogue(snapshot, target):
     color_masks = []
     exhaust_rows = []
     uncounterable_rows = []
+    entry_suppression_rows = []
     loyalty_rows = []
     supported = []
     coverage = []
@@ -2542,6 +2562,7 @@ def compile_catalogue(snapshot, target):
     aura_rows = []
     for index, name in enumerate(names):
         card, uncounterable = extract_uncounterable(cards.get(name, {}))
+        card, entry_suppression = extract_entry_trigger_suppression(card)
         card, cycling = cycling_abilities(card)
         card, additional = extract_additional_cost(card)
         card, reductions = extract_cost_reductions(card)
@@ -2626,6 +2647,7 @@ def compile_catalogue(snapshot, target):
             loyalty_rows.append(f'        {index} => {int(value)},')
         if effect != 'Unsupported':
             supported.append(index)
+            if entry_suppression: entry_suppression_rows.append(f'        {index} => {entry_suppression},')
             if entry_counters: entry_counter_rows.append(f'        {index} => &[{", ".join(entry_counters)}],')
             if reductions: reduction_rows.append(f'        {index} => &[{", ".join(reductions)}],')
             if additional is not None: additional_rows.append(f'        {index} => Some({additional}),')
@@ -2722,6 +2744,7 @@ def compile_catalogue(snapshot, target):
         lines.append(f'    pub const {name.replace(" ", "")}: Card = Card({index});')
     lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn equipment(card: Card) -> Option<EquipmentSpec> {', '    match card.0 {', *equipment_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn aura(card: Card) -> Option<AuraSpec> {', '    match card.0 {', *aura_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn dynamic_stats(card: Card) -> Option<DynamicStats> {', '    match card.0 {', *dynamic_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', "pub(super) fn scaling_modifiers(card: Card) -> &'static [ScalingModifier] {", '    match card.0 {', *scaling_rows, '        _ => &[],', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn entry_trigger_suppression(card: Card) -> u16 {', '    match card.0 {', *entry_suppression_rows, '        _ => 0,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn keyword_grants(card: Card) -> &'static [KeywordGrant] {", '    match card.0 {', *grant_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn additional_cost(card: Card) -> Option<AdditionalCost> {', '    match card.0 {', *additional_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub const CREATURE_TYPES: &[&str] = &[', *('    '+json.dumps(name)+',' for name in creature_types), '];', '']

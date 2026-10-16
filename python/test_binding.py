@@ -9,6 +9,47 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def test_entry_suppression_three_sources_creature_artifact_and_enchantment_replay(self):
+        for source in ['Torpor Orb','Doorkeeper Thrull','Karn, Argent Defender']:
+            for wanted in ['Helpful Hunter','Mephitic Draught','Hopeful Vigil']:
+                with self.subTest(source=source,entrant=wanted),Game([['Plains']*15+['Swamp']*15+[source]*12+[wanted]*18,['Forest']*30+['Bear Cub']*30],seed=7,deck_rules='Freeform') as game:
+                    replayed=0;pending=None;entered=False;done=False
+                    for _ in range(16000):
+                        obs=game.observe('P0');self.assertIsNone(obs['outcome'],(source,wanted,entered));obs=game.observe(obs['actor']);objects={v['id']:v for v in obs['objects']}
+                        live=any(v['zone']=='Battlefield' and v['card']==source for v in objects.values())
+                        def score(a):
+                            k=a['kind']
+                            if k in ('Cast','AnnounceCast') and obs['actor']=='P0':
+                                n=objects[a['card']]['card'];return 270 if n==source and not live else 260 if n==wanted and live else -100
+                            if k=='PayCosts':return 500
+                            if k=='TapMana':return 150 if obs['decision']=='pay_costs' else -100
+                            if k in ('Attack','Block','Activate','BeginActivate','AnnounceActivate','ActivateMana','AnnounceMana'):return -100
+                            if k=='PlayLand' and obs['actor']=='P0':
+                                n=objects[a['card']]['card'];count=sum(v['zone']=='Battlefield' and v['owner']=='P0' and v['card']==n for v in objects.values());return 320 if count==0 else 300
+                            return self.professor_score(obs,a)
+                        choice=max(range(len(obs['actions'])),key=lambda j:score(obs['actions'][j]));action=obs['actions'][choice]
+                        if obs['announcing'] or obs['stack'] or live:
+                            saved=game.snapshot()
+                            with game.clone() as fork:expected=fork.step(fork.observe(obs['actor']),choice)
+                            self.assertEqual(game.step(obs,choice),expected);game.restore(saved)
+                            with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,choice)
+                            after=game.step(game.observe(obs['actor']),choice);expected['revision']=after['revision'];self.assertEqual(after,expected);game.drop_snapshot(saved);replayed+=1
+                        else:after=game.step(obs,choice)
+                        new=[v for v in after['objects'] if v['zone']=='Battlefield' and v['card']==wanted and not any(b['zone']=='Battlefield' and b['reference']==v['reference'] for b in obs['objects'])]
+                        if new and live:
+                            entered=True
+                            items=after['stack']+after['waiting_triggers']+[v for v in [after['announcing'],after['resolving']] if v is not None]
+                            triggers={v['id'] for v in items if v['source_card']==wanted and v['kind']!="Spell"}
+                            allowed=wanted=='Hopeful Vigil' or wanted=='Mephitic Draught' and source=='Torpor Orb'
+                            self.assertEqual(len(triggers),int(allowed),(source,wanted,after['decision']))
+                            if not allowed:done=True;break
+                            pending=(obs['players'][0]['library_count'],obs['players'][0]['life'])
+                        if pending and not after['stack'] and after['resolving'] is None and after['announcing'] is None and after['decision']=='priority':
+                            if wanted=='Mephitic Draught':self.assertEqual(after['players'][0]['library_count'],pending[0]-1);self.assertEqual(after['players'][0]['life'],int(pending[1])-1)
+                            else:self.assertEqual(sum(v['zone']=='Battlefield' and v['token'] is not None and v['token']['subtypes']=='Knight' for v in after['objects']),1)
+                            done=True;break
+                    self.assertTrue(entered and done,(source,wanted));self.assertGreater(replayed,0)
+
     def test_twelve_fixed_effect_bodies_modes_private_discard_and_clue_replay(self):
         names=['Callous Inspector', 'Cosmium Blast', 'Deadly Riposte', 'Defibrillating Current', 'Fear of Lost Teeth', 'Joust Through', 'Keep Out', 'Lightning Helix', 'Ravenous Giant', 'Risky Shortcut', 'Romantic Rendezvous', 'Viashino Pyromancer'];lands=sum(([n]*6 for n in ['Plains','Island','Swamp','Mountain','Forest']),[])
         for i,mode in [(j,0) for j in range(12)]+[(6,1)]:

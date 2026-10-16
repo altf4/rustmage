@@ -8,6 +8,38 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_entry_suppression_extraction_is_closed_and_preserves_residual_rules(self):
+        for subject,mask in [('Creatures',1),('Artifacts and creatures',17)]:
+            for battlefield in ['', ' the battlefield']:
+                text=subject+" entering"+battlefield+" don't cause abilities to trigger."
+                card=self.card(oracle_text='Flash\nFlying\n'+text+'\nWhen this creature enters, draw a card.')
+                residual,value=generate.extract_entry_trigger_suppression(card)
+                self.assertEqual(value,mask);self.assertEqual(residual['oracle_text'],'Flash\nFlying\nWhen this creature enters, draw a card.')
+                self.assertIsNotNone(generate.trigger_creature_template(residual))
+        for text in ["Creatures entering or dying don't cause abilities to trigger.","Artifacts entering don't cause abilities to trigger.","Creatures entering don't cause abilities of opponents' permanents to trigger.","Creatures entering don't cause abilities to trigger. Draw a card.","Creature tokens entering don't cause abilities to trigger."]:
+            card=self.card(oracle_text=text);self.assertEqual(generate.extract_entry_trigger_suppression(card),(card,0))
+        for typ in ['Instant','Sorcery','Land']:
+            card=self.card(type_line=typ,oracle_text="Creatures entering don't cause abilities to trigger.")
+            self.assertEqual(generate.extract_entry_trigger_suppression(card),(card,0))
+        card=self.card(layout='transform',oracle_text="Creatures entering don't cause abilities to trigger.")
+        self.assertEqual(generate.extract_entry_trigger_suppression(card),(card,0))
+
+    def test_entry_suppression_admissions_require_complete_bodies_and_preserve_identity(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());manifest=json.loads((generate.ROOT/'docs/entry-suppression-admissions.json').read_text())
+        source,coverage=generate.compile_catalogue(rows,target);supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        self.assertEqual(len(manifest['cards']),3)
+        for row in manifest['cards']:
+            self.assertIn(row['name'],supported);card=next(c for c in rows['cards'] if c['name']==row['name']);self.assertEqual(row['oracle_text'],card['oracle_text'])
+            for tail in ['Whenever you attack, discover 3.','Creatures you control lose flying.','As this creature enters, choose a color.']:
+                proxy=dict(card,oracle_text=card['oracle_text']+'\n'+tail);residual,mask=generate.extract_entry_trigger_suppression(proxy);self.assertNotEqual(mask,0)
+                for compiler in [generate.creature_template,generate.trigger_creature_template,generate.permanent_program_template,generate.static_permanent_template]:self.assertIsNone(compiler(residual),(row['name'],tail))
+                altered=dict(rows,cards=[proxy if c['name']==card['name'] else c for c in rows['cards']]);import hashlib
+                canonical=json.dumps(altered['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode();altered['cards_sha256']=hashlib.sha256(canonical).hexdigest()
+                _,gated=generate.compile_catalogue(altered,target)
+                self.assertFalse(next(c['implemented'] for c in gated['cards'] if c['name']==card['name']))
+        self.assertIn('fn entry_trigger_suppression',source)
+
     def test_fixed_damage_subjects_and_gain_sequence_keep_exact_targets_and_bounds(self):
         subjects={'any target':'Any','target creature':'Creature','target creature or planeswalker':'CreaturePlaneswalker','target opponent':'Opponent','target player':'Player','target player or planeswalker':'PlayerPlaneswalker','target tapped creature':'CreatureTapped','target attacking or blocking creature':'CreatureAttackingBlocking'}
         for subject,rule in subjects.items():

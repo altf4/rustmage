@@ -95,6 +95,10 @@ impl Game {
                 .cost_reductions()
                 .iter()
                 .any(|rule| !rule.source_only)
+            || self.state.objects[id as usize]
+                .card
+                .entry_trigger_suppression()
+                != 0
         {
             self.state.static_sources.push(id);
         }
