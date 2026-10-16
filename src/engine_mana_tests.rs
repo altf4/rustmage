@@ -211,6 +211,7 @@ fn resolution_mana_choice_is_private_owned_and_replayable_before_later_instructi
     // Direct kernel fixture for a choice followed by more resolution work.
     game.state.resolving = Some(Resolution {
         explore: None,
+        evidence: None,
         connive: None,
         item,
         program: &[

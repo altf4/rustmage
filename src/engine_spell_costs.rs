@@ -24,6 +24,11 @@ impl Game {
                 .checked_add(1)
                 .capacity("forage alternative mana cost exhausted");
         }
+        if a.item.cast.is_some_and(|c| c.evidence == Some(true)) {
+            base.generic = base
+                .generic
+                .saturating_sub(a.item.source_card.evidence_reduction());
+        }
         if a.item.cast.is_some_and(|c| c.bargain == Some(true)) {
             base.generic = base
                 .generic

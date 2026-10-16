@@ -350,6 +350,7 @@ fn gain_only_suspension_cannot_commit_unrepresentable_continuous_stats() {
                 let item = g.state.stack.pop().unwrap();
                 g.state.resolving = Some(Resolution {
                     explore: None,
+                    evidence: None,
                     item,
                     program: &[
                         Instruction::May { skip: 3 },

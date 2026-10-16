@@ -263,6 +263,7 @@ pub(crate) struct SearchSpec {
 /// A resolution choice; discard here is a cost, not a forced discard effect.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EffectChoiceKind {
+    CollectEvidence(u16),
     Forage,
     ForageOrBlack,
     Sacrifice,
@@ -356,6 +357,15 @@ pub(crate) enum Instruction {
     Forage {
         skip: usize,
     },
+    CollectEvidence {
+        threshold: u16,
+        skip: usize,
+    },
+    EvidenceWard(u16),
+    IfEvidence {
+        skip: usize,
+    },
+    SacrificeGreatestPower,
     Reflexive {
         ability: u16,
     },
@@ -1046,6 +1056,8 @@ pub(crate) enum TriggerCondition {
     SelfKicked,
     CreatureExploresYou,
     SelfBargained,
+    SelfEvidence,
+    EvidenceCollected,
     SelfDies,
     SelfEntersOrDies,
     SelfAttacks,
@@ -1538,6 +1550,12 @@ impl Card {
     }
     pub(crate) fn has_hybrid_cost(self) -> bool {
         !generated::cost_alternatives(self).is_empty()
+    }
+    pub fn collect_evidence_cost(self) -> Option<u16> {
+        generated::collect_evidence(self).map(|v| v.0)
+    }
+    pub(crate) fn evidence_reduction(self) -> u32 {
+        generated::collect_evidence(self).map_or(0, |v| v.1)
     }
     pub fn has_bargain(self) -> bool {
         generated::bargain_reduction(self).is_some()

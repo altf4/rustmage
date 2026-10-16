@@ -292,6 +292,7 @@ impl Game {
             source_facts: self.damage_facts(card),
             related_stack: None,
             entering_object: None,
+            evidence_collected: false,
             damage_event: None,
             discard_event: None,
             draw_event: None,

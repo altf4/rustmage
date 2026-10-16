@@ -71,6 +71,7 @@ fn program(g: &mut Game, code: &'static [Instruction], targets: Vec<BoundTarget>
     item.targets = targets;
     g.state.resolving = Some(Resolution {
         explore: None,
+        evidence: None,
         connive: None,
         item,
         program: code,

@@ -76,6 +76,7 @@ fn program(g: &mut Game, code: &'static [Instruction]) {
     let item = g.cast_item(Player::P0, id, [0; 6]);
     g.state.resolving = Some(Resolution {
         explore: None,
+        evidence: None,
         connive: None,
         item,
         program: code,

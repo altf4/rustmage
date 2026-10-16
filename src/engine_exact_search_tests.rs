@@ -602,6 +602,7 @@ fn all_three_new_flashback_bodies_use_real_graveyard_costs_and_exile_on_completi
                     offspring: None,
                     kicker: None,
                     bargain: None,
+                    evidence: None,
                 })
             );
             settle(&mut g, None);

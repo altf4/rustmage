@@ -6,6 +6,7 @@ use crate::cards::{CastFilter, CastTarget};
 pub(super) struct Resolution {
     pub connive: Option<Box<super::connive::ConniveSequence>>,
     pub explore: Option<Box<ExploreChoiceView>>,
+    pub evidence: Option<Box<evidence::EvidenceSelection>>,
     pub item: SpellView,
     pub mana_payment: Option<Box<resolution_mana::ResolutionPayment>>,
     pub forage: Option<Box<forage::ForageSelection>>,
@@ -299,6 +300,8 @@ impl Game {
                     TriggerCondition::SelfOffspring => same && event.offspring_paid,
                     TriggerCondition::SelfKicked => same && event.kicked,
                     TriggerCondition::SelfBargained => same && event.bargained,
+                    TriggerCondition::SelfEvidence => same && event.evidence_collected,
+                    TriggerCondition::EvidenceCollected => false,
                     TriggerCondition::SelfEnters
                     | TriggerCondition::SelfEntersOrAttacks
                     | TriggerCondition::SelfEntersOrDies => same,
@@ -395,6 +398,11 @@ impl Game {
                         .last_mut()
                         .unwrap()
                         .entering_object = Some(event.after);
+                    self.state
+                        .pending_triggers
+                        .last_mut()
+                        .unwrap()
+                        .evidence_collected = event.evidence_collected;
                 }
             }
         }
@@ -445,6 +453,7 @@ impl Game {
             source_facts: DamageFacts::from_view(source),
             related_stack: None,
             entering_object: None,
+            evidence_collected: false,
             damage_event: None,
             discard_event: None,
             draw_event: None,
@@ -847,6 +856,7 @@ impl Game {
                         c.offspring == Some(true)
                             || c.kicker == Some(true)
                             || c.bargain == Some(true)
+                            || c.evidence == Some(true)
                     }) || item.x.is_some()
                     {
                         let mut movement = self.entry_move(
@@ -859,6 +869,8 @@ impl Game {
                         movement.kicked = item.cast.is_some_and(|c| c.kicker == Some(true));
                         movement.bargained = item.cast.is_some_and(|c| c.bargain == Some(true));
                         movement.x = item.x.unwrap_or(0);
+                        movement.evidence_collected =
+                            item.cast.is_some_and(|c| c.evidence == Some(true));
                         self.stage_entries(vec![movement], None);
                     } else {
                         self.move_object(item.card, Zone::Battlefield);
@@ -877,6 +889,7 @@ impl Game {
         assert!(self.state.resolving.is_none());
         self.state.resolving = Some(Resolution {
             explore: None,
+            evidence: None,
             connive: None,
             item,
             program,
@@ -1049,6 +1062,28 @@ impl Game {
                             }
                             self.create_tokens(controller, token, u128::from(amount), false);
                         }
+                    }
+                }
+                Instruction::CollectEvidence { threshold, skip } => {
+                    if self.start_resolution_evidence(threshold, skip, false) {
+                        return;
+                    }
+                }
+                Instruction::EvidenceWard(threshold) => {
+                    if self.start_resolution_evidence(threshold, 0, true) {
+                        return;
+                    }
+                }
+                Instruction::IfEvidence { skip } => {
+                    if !(item.evidence_collected
+                        || item.cast.is_some_and(|c| c.evidence == Some(true)))
+                    {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
+                Instruction::SacrificeGreatestPower => {
+                    if self.start_greatest_power_choice(&item) {
+                        return;
                     }
                 }
                 Instruction::IfBargained { skip } => {

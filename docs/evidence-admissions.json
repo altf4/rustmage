@@ -1,0 +1,1596 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-16",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "rules": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+  "engine_sources": [
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/costs/common/CollectEvidenceCost.java",
+      "java_sha256": "7de932207f4dacc199b5ca70152f0365b21c9a46bc34e9e3aa45df90b53543d3"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/CollectEvidenceAbility.java",
+      "java_sha256": "1ea9025eb7543ca48e370d708b8d945ca80031d6a3a93197ca018632cbe6e12e"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/condition/common/CollectedEvidenceCondition.java",
+      "java_sha256": "bd361350ead778f42d1614af685e0873ddeb77b67c0bfa153e649136f7c9bf3d"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/CollectEvidenceTriggeredAbility.java",
+      "java_sha256": "2cc07fac28334469bad72be2ff3fea415d4a50454aa0fa8a9185426d531be9f3"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "java_sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+      "java_sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "java_sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/GreatestPowerControlledPredicate.java",
+      "java_sha256": "886d9b6e0dccfb4b4300fcc924c6a72c5417cce32dd7057d172ceb2dec5f3e21"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/InvestigateEffect.java",
+      "java_sha256": "db04263634b8969dee966be525deac8165e358e3a0774b3e11de300f024ac3ed"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/ClueArtifactToken.java",
+      "java_sha256": "711939b0212d808576d149e8c95b0007df2e003c29095ddb26c4cdce94a3ddd8"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/ThopterColorlessToken.java",
+      "java_sha256": "b33786a4fd2e4da0f01b8c8fe86280aeb5e471737a5e092b18b1853a3c5665fb"
+    }
+  ],
+  "cards": [
+    {
+      "name": "Analyze the Pollen",
+      "oracle_text": "As an additional cost to cast this spell, you may collect evidence 8. (Exile cards with total mana value 8 or greater from your graveyard.)\nSearch your library for a basic land card. If evidence was collected, instead search your library for a creature or land card. Reveal that card, put it into your hand, then shuffle.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AnalyzeThePollen.java",
+          "java_sha256": "f241d162ce134e77e1da27d5f012bec15c91b62b58dbe88423f36ca5d9c19e75"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/CollectedEvidenceCondition.java",
+          "java_sha256": "bd361350ead778f42d1614af685e0873ddeb77b67c0bfa153e649136f7c9bf3d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+          "java_sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CollectEvidenceAbility.java",
+          "java_sha256": "1ea9025eb7543ca48e370d708b8d945ca80031d6a3a93197ca018632cbe6e12e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+          "java_sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+        }
+      ]
+    },
+    {
+      "name": "Axebane Ferox",
+      "oracle_text": "Deathtouch, haste\nWard\u2014Collect evidence 4. (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player exiles cards with total mana value 4 or greater from their graveyard.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AxebaneFerox.java",
+          "java_sha256": "15d44370879cb11a0f3ae4f3e14718fb909f24f3a8c53a8b31061701a29d520c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/CollectEvidenceCost.java",
+          "java_sha256": "7de932207f4dacc199b5ca70152f0365b21c9a46bc34e9e3aa45df90b53543d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+          "java_sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+          "java_sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        }
+      ]
+    },
+    {
+      "name": "Bite Down on Crime",
+      "oracle_text": "As an additional cost to cast this spell, you may collect evidence 6. This spell costs {2} less to cast if evidence was collected. (To collect evidence 6, exile cards with total mana value 6 or greater from your graveyard.)\nTarget creature you control gets +2/+0 until end of turn. It deals damage equal to its power to target creature you don't control.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BiteDownOnCrime.java",
+          "java_sha256": "ec8695d7763bd6b4ac934ad72ede3eb9e96afac5d661ab8de33e513f451c55e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/CollectedEvidenceCondition.java",
+          "java_sha256": "bd361350ead778f42d1614af685e0873ddeb77b67c0bfa153e649136f7c9bf3d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/CostAdjuster.java",
+          "java_sha256": "277da78431453809a3c0f3af150ceca2043854ccb3963675297f8ccd1a17e29a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/OptionalAdditionalCost.java",
+          "java_sha256": "4c45d44803baae9371bc2a7ebddff02444ad4051511cf4721e59a2588da5a8c1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/Effect.java",
+          "java_sha256": "92f49363848fa1b18215e3a0d516923e10d917638a38e5bbad73f274f6a1e917"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageWithPowerFromOneToAnotherTargetEffect.java",
+          "java_sha256": "cbe6b025fef2b13a46fcdddb02a0342eecd99af9db39d292c22b1f942d2729a3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CollectEvidenceAbility.java",
+          "java_sha256": "1ea9025eb7543ca48e370d708b8d945ca80031d6a3a93197ca018632cbe6e12e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/util/CardUtil.java",
+          "java_sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+        }
+      ]
+    },
+    {
+      "name": "Crimestopper Sprite",
+      "oracle_text": "As an additional cost to cast this spell, you may collect evidence 6. (Exile cards with total mana value 6 or greater from your graveyard.)\nFlying\nWhen this creature enters, tap target creature. If evidence was collected, put a stun counter on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CrimestopperSprite.java",
+          "java_sha256": "993be3d940da23545955fd9e75babedc2224b372ba270bcb9d8c3387a8c66662"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/CollectedEvidenceCondition.java",
+          "java_sha256": "bd361350ead778f42d1614af685e0873ddeb77b67c0bfa153e649136f7c9bf3d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+          "java_sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CollectEvidenceAbility.java",
+          "java_sha256": "1ea9025eb7543ca48e370d708b8d945ca80031d6a3a93197ca018632cbe6e12e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/counters/CounterType.java",
+          "java_sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "name": "Evidence Examiner",
+      "oracle_text": "At the beginning of combat on your turn, you may collect evidence 4. (Exile cards with total mana value 4 or greater from your graveyard.)\nWhenever you collect evidence, investigate. (Create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/EvidenceExaminer.java",
+          "java_sha256": "77207005b2fc0eefca46c3899f343ea57e2fee03fb9274060a76bbc74d0f80bd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/triggers/BeginningOfCombatTriggeredAbility.java",
+          "java_sha256": "c8f16a3b46db04f428d1bebc9c1ee8171d14dc9879ff0f6f825a2b49909f2f41"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/CollectEvidenceTriggeredAbility.java",
+          "java_sha256": "2cc07fac28334469bad72be2ff3fea415d4a50454aa0fa8a9185426d531be9f3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/CollectEvidenceCost.java",
+          "java_sha256": "7de932207f4dacc199b5ca70152f0365b21c9a46bc34e9e3aa45df90b53543d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+          "java_sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/InvestigateEffect.java",
+          "java_sha256": "db04263634b8969dee966be525deac8165e358e3a0774b3e11de300f024ac3ed"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        }
+      ]
+    },
+    {
+      "name": "Extract a Confession",
+      "oracle_text": "As an additional cost to cast this spell, you may collect evidence 6. (Exile cards with total mana value 6 or greater from your graveyard.)\nEach opponent sacrifices a creature of their choice. If evidence was collected, instead each opponent sacrifices a creature with the greatest power among creatures they control.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/ExtractAConfession.java",
+          "java_sha256": "c6c08b24b0d2afa96f26189f23742a85f232cfab3170a099e777bc6c7088e2b6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/CollectedEvidenceCondition.java",
+          "java_sha256": "bd361350ead778f42d1614af685e0873ddeb77b67c0bfa153e649136f7c9bf3d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/SacrificeOpponentsEffect.java",
+          "java_sha256": "87271d2cfbecbfa5595745bae8136f2a9d23002b394f5583e5bec3c24842d759"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CollectEvidenceAbility.java",
+          "java_sha256": "1ea9025eb7543ca48e370d708b8d945ca80031d6a3a93197ca018632cbe6e12e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+          "java_sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/GreatestPowerControlledPredicate.java",
+          "java_sha256": "886d9b6e0dccfb4b4300fcc924c6a72c5417cce32dd7057d172ceb2dec5f3e21"
+        }
+      ]
+    },
+    {
+      "name": "Forensic Researcher",
+      "oracle_text": "{T}: Untap another target permanent you control.\n{T}, Collect evidence 3: Tap target creature you don't control. (To collect evidence 3, exile cards with total mana value 3 or greater from your graveyard.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/ForensicResearcher.java",
+          "java_sha256": "022512bd92bc89df80d8cd597d89e4334182ee6302180adc46015e983d806b48"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/CollectEvidenceCost.java",
+          "java_sha256": "7de932207f4dacc199b5ca70152f0365b21c9a46bc34e9e3aa45df90b53543d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "java_sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+          "java_sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/UntapTargetEffect.java",
+          "java_sha256": "69bec57593db2620ef750768e381badf6843aefaf7584c796037dcdf87f1b973"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        }
+      ]
+    },
+    {
+      "name": "Sample Collector",
+      "oracle_text": "Whenever this creature attacks, you may collect evidence 3. When you do, put a +1/+1 counter on target creature you control. (To collect evidence 3, exile cards with total mana value 3 or greater from your graveyard.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SampleCollector.java",
+          "java_sha256": "ad910a65b629222d947bd196b461a4acfa5f2b1e5d565bc71e5fe9a1f53db6dc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+          "java_sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+          "java_sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/CollectEvidenceCost.java",
+          "java_sha256": "7de932207f4dacc199b5ca70152f0365b21c9a46bc34e9e3aa45df90b53543d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+          "java_sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/counters/CounterType.java",
+          "java_sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        }
+      ]
+    },
+    {
+      "name": "Surveillance Monitor",
+      "oracle_text": "When this creature enters, you may collect evidence 4. (Exile cards with total mana value 4 or greater from your graveyard.)\nWhenever you collect evidence, create a 1/1 colorless Thopter artifact creature token with flying.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SurveillanceMonitor.java",
+          "java_sha256": "9c5d1cc45e5f6a6b27303383cb230f314276b883f9f78996e44aab28db45cbb6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/CollectEvidenceTriggeredAbility.java",
+          "java_sha256": "2cc07fac28334469bad72be2ff3fea415d4a50454aa0fa8a9185426d531be9f3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/CollectEvidenceCost.java",
+          "java_sha256": "7de932207f4dacc199b5ca70152f0365b21c9a46bc34e9e3aa45df90b53543d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+          "java_sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/ThopterColorlessToken.java",
+          "java_sha256": "b33786a4fd2e4da0f01b8c8fe86280aeb5e471737a5e092b18b1853a3c5665fb"
+        }
+      ]
+    },
+    {
+      "name": "Vitu-Ghazi Inspector",
+      "oracle_text": "As an additional cost to cast this spell, you may collect evidence 6. (Exile cards with total mana value 6 or greater from your graveyard.)\nReach\nWhen this creature enters, if evidence was collected, put a +1/+1 counter on target creature and you gain 2 life.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VituGhaziInspector.java",
+          "java_sha256": "48211e287e57b87abd811a34e0ff503a3abcb45062f350bab7d9bea3fb7b4581"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/CollectedEvidenceCondition.java",
+          "java_sha256": "bd361350ead778f42d1614af685e0873ddeb77b67c0bfa153e649136f7c9bf3d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CollectEvidenceAbility.java",
+          "java_sha256": "1ea9025eb7543ca48e370d708b8d945ca80031d6a3a93197ca018632cbe6e12e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+          "java_sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/counters/CounterType.java",
+          "java_sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    }
+  ],
+  "gated_cards": [
+    {
+      "name": "Behind the Mask",
+      "oracle_text": "As an additional cost to cast this spell, you may collect evidence 6. (Exile cards with total mana value 6 or greater from your graveyard.)\nUntil end of turn, target artifact or creature becomes an artifact creature with base power and toughness 4/3. If evidence was collected, it has base power and toughness 1/1 until end of turn instead.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BehindTheMask.java",
+          "java_sha256": "b23e3fcbceb34296264e6853dd745ec1a2825f55a6d6c8c2fdf68505140833d0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/CollectedEvidenceCondition.java",
+          "java_sha256": "bd361350ead778f42d1614af685e0873ddeb77b67c0bfa153e649136f7c9bf3d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+          "java_sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesCreatureTargetEffect.java",
+          "java_sha256": "434e8c33e1b80342d01dc8475ebc78920a314f3265bae6e16da7902d4e40c4f8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CollectEvidenceAbility.java",
+          "java_sha256": "1ea9025eb7543ca48e370d708b8d945ca80031d6a3a93197ca018632cbe6e12e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/custom/CreatureToken.java",
+          "java_sha256": "71de72a2543d4471901857cc0d58c1a06c383b25760e2a59e46b094862b2f31c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        }
+      ],
+      "reason": "Type/base setting and the complete copied face-down disguise recipe are not implemented."
+    },
+    {
+      "name": "Conspiracy Unraveler",
+      "oracle_text": "Flying\nYou may collect evidence 10 rather than pay the mana cost for spells you cast. (To collect evidence 10, exile cards with total mana value 10 or greater from your graveyard.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/ConspiracyUnraveler.java",
+          "java_sha256": "de8d7f4c72f16cd42b540c686fbf1d8d4843e7b50cd0156791d5af492697bcda"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/SourceIsSpellCondition.java",
+          "java_sha256": "9e5ce1e6b629d33136723fd52cb62e5e7a7270f34165234a36b2eb94cd6bffed"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/AlternativeCostSourceAbility.java",
+          "java_sha256": "b0a55dc753a0b65f6075dd417a1cf6237599541a1e79d99c85aff3ccc0e73f98"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/CollectEvidenceCost.java",
+          "java_sha256": "7de932207f4dacc199b5ca70152f0365b21c9a46bc34e9e3aa45df90b53543d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/Player.java",
+          "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f"
+        }
+      ],
+      "reason": "Global alternative casting costs and overlapping spell/evidence payment recipes are not implemented."
+    },
+    {
+      "name": "Cryptex",
+      "oracle_text": "{T}, Collect evidence 3: Add one mana of any color. Put an unlock counter on this artifact. (To collect evidence 3, exile cards with total mana value 3 or greater from your graveyard.)\nSacrifice this artifact: Surveil 3, then draw three cards. Activate only if this artifact has five or more unlock counters on it.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/Cryptex.java",
+          "java_sha256": "4613e5ff2fcdcace0e26ee3161dedac2a55d43095ca14ee1e3ae311c8dd26b66"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ActivateIfConditionActivatedAbility.java",
+          "java_sha256": "9f9d45f4e624eaa78c99f720c00a3302f6936e7b5246bf76ae15f9e75ba327b0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+          "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/SourceHasCounterCondition.java",
+          "java_sha256": "1d9315e6b952df62a1bbe5cf57ce6d75c095866a5a3d8d661cf45a7b44e3b549"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/CollectEvidenceCost.java",
+          "java_sha256": "7de932207f4dacc199b5ca70152f0365b21c9a46bc34e9e3aa45df90b53543d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+          "java_sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+          "java_sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+          "java_sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ComparisonType.java",
+          "java_sha256": "33b0abc2b4214ece7d2f842b9f000d967dd8fb4e6cb073cb34eeab7e304731ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/counters/CounterType.java",
+          "java_sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+        }
+      ],
+      "reason": "Unlock counters and every mana/draw/sacrifice residual are not implemented."
+    },
+    {
+      "name": "Deadly Cover-Up",
+      "oracle_text": "As an additional cost to cast this spell, you may collect evidence 6.\nDestroy all creatures. If evidence was collected, exile a card from an opponent's graveyard. Then search its owner's graveyard, hand, and library for any number of cards with that name and exile them. That player shuffles, then draws a card for each card exiled from their hand this way.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DeadlyCoverUp.java",
+          "java_sha256": "f232aa0bcee3c8b1303311995a4ec7765cbf30f3ff8cd57a317276484e90cd70"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/CollectedEvidenceCondition.java",
+          "java_sha256": "bd361350ead778f42d1614af685e0873ddeb77b67c0bfa153e649136f7c9bf3d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DestroyAllEffect.java",
+          "java_sha256": "ff52578966339bd976dc24cb1505f5862e3ee9b7b1abf41d2d8fac78cb43b48d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/search/SearchTargetGraveyardHandLibraryForCardNameAndExileEffect.java",
+          "java_sha256": "016001641a5c77bb2787f141b904ad653803e5b9311f49324edbaba71defc90b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CollectEvidenceAbility.java",
+          "java_sha256": "1ea9025eb7543ca48e370d708b8d945ca80031d6a3a93197ca018632cbe6e12e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/Card.java",
+          "java_sha256": "86b9a512358a5c6814e62bc2f9cff87be07cf5a248e313686c137f0b76b798b0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Zone.java",
+          "java_sha256": "4d8040e25af69a6e12c441a029b7cb44f1115d1016148738eafa4d2096f5610e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/Player.java",
+          "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInOpponentsGraveyard.java",
+          "java_sha256": "130879427031c491824341bd85b54a7a35980a79058fb7cc6e3910be640ab724"
+        }
+      ],
+      "reason": "The complete private multi-zone named-card exile transaction is not implemented."
+    },
+    {
+      "name": "Hedge Whisperer",
+      "oracle_text": "You may choose not to untap this creature during your untap step.\n{3}{G}, {T}, Collect evidence 4: Target land you control becomes a 5/5 green Plant Boar creature with haste for as long as this creature remains tapped. It's still a land. Activate only as a sorcery. (To collect evidence 4, exile cards with total mana value 4 or greater from your graveyard.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HedgeWhisperer.java",
+          "java_sha256": "e753385d18886fe2792439eb6cee36605809900359d017f87eb69848127d5e85"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "java_sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SkipUntapOptionalAbility.java",
+          "java_sha256": "10e9548293dc78240cf3c70f477b8396db6e9ae936c7380c1ba7bbcc79a122f6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/SourceTappedCondition.java",
+          "java_sha256": "ded94770934a04183acf2cac38002a15e57ed40a4ca85b6ba659ba8dc550a05b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/CollectEvidenceCost.java",
+          "java_sha256": "7de932207f4dacc199b5ca70152f0365b21c9a46bc34e9e3aa45df90b53543d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "java_sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+          "java_sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesCreatureTargetEffect.java",
+          "java_sha256": "434e8c33e1b80342d01dc8475ebc78920a314f3265bae6e16da7902d4e40c4f8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+          "java_sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/custom/CreatureToken.java",
+          "java_sha256": "71de72a2543d4471901857cc0d58c1a06c383b25760e2a59e46b094862b2f31c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        }
+      ],
+      "reason": "Type/base animation of arbitrary targets is not implemented."
+    },
+    {
+      "name": "Incinerator of the Guilty",
+      "oracle_text": "Flying, trample\nWhenever this creature deals combat damage to a player, you may collect evidence X. When you do, this creature deals X damage to each creature and planeswalker that player controls. (To collect evidence X, exile cards with total mana value X or greater from your graveyard.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/i/IncineratorOfTheGuilty.java",
+          "java_sha256": "9f875f1443e96d82e087d64faebeabd27dbc999b41b4ae0be72af0e8960dc188"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+          "java_sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+          "java_sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/CollectEvidenceCost.java",
+          "java_sha256": "7de932207f4dacc199b5ca70152f0365b21c9a46bc34e9e3aa45df90b53543d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageAllControlledTargetEffect.java",
+          "java_sha256": "30af88e8eae5f479b12e505d8abf3739404228f4a8779df43044b08ffaeb6534"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+          "java_sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+          "java_sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/Player.java",
+          "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f"
+        }
+      ],
+      "reason": "Variable evidence thresholds and the full variable-damage recipe are not implemented."
+    },
+    {
+      "name": "Izoni, Center of the Web",
+      "oracle_text": "Menace\nWhenever Izoni enters or attacks, you may collect evidence 4. If you do, create two 2/1 black and green Spider creature tokens with reach and menace.\nSacrifice four tokens: Surveil 2, then draw two cards. You gain 2 life.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/i/IzoniCenterOfTheWeb.java",
+          "java_sha256": "ef6b52d45e1874b54ed9b38eee3559552f2cda35f4d1ff862556bae520b506d9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOrAttacksSourceTriggeredAbility.java",
+          "java_sha256": "b5c87d096aa0a689c9915ee2c8c8f8b6eb0fcd2acd4ad8c0c8696c6204f27224"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/CollectEvidenceCost.java",
+          "java_sha256": "7de932207f4dacc199b5ca70152f0365b21c9a46bc34e9e3aa45df90b53543d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+          "java_sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+          "java_sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+          "java_sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SuperType.java",
+          "java_sha256": "4ec4cf97e8c73dee7d1d0e4be9f4b90eb980dcdcd26698fcb610aed30da9e6cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/TokenPredicate.java",
+          "java_sha256": "3213600d28e7e1f76d66cee4f781fb3eb01627759fa9306e22c42a6f6fb880da"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/IzoniSpiderToken.java",
+          "java_sha256": "421235fcf78fd3e7f784fbfefbf7fb8cc1500ff92ea923a26694d7a0e0828079"
+        }
+      ],
+      "reason": "Four-token sacrifice activation payment is not implemented."
+    },
+    {
+      "name": "Kylox's Voltstrider",
+      "oracle_text": "Collect evidence 6: This Vehicle becomes an artifact creature until end of turn.\nWhenever this Vehicle attacks, you may cast an instant or sorcery spell from among cards exiled with it. If that spell would be put into a graveyard, put it on the bottom of its owner's library instead.\nCrew 2",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/k/KyloxsVoltstrider.java",
+          "java_sha256": "f66b0a3249e3ff6c1f9b03938fbd776085be4d75eb62927d75550bced15691f4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/ApprovingObject.java",
+          "java_sha256": "1222f150168d28a6317efbd920671221ce0fc73f452b53bedf8209b8f186654f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+          "java_sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/CollectEvidenceCost.java",
+          "java_sha256": "7de932207f4dacc199b5ca70152f0365b21c9a46bc34e9e3aa45df90b53543d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffect.java",
+          "java_sha256": "deea4c7c61bc169d2cc284d082e13df8322434d8784d94f2a744244ad96d24d9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ReplacementEffectImpl.java",
+          "java_sha256": "d575331184e31fd4a909956ff2822c038832dc6a6febff6e4502bcac82b836e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardTypeSourceEffect.java",
+          "java_sha256": "eebc0ef4cbc6c73c1d811abab3b1909a235d0dedf97ff992d1618e76644a325c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/Card.java",
+          "java_sha256": "86b9a512358a5c6814e62bc2f9cff87be07cf5a248e313686c137f0b76b798b0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+          "java_sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Zone.java",
+          "java_sha256": "4d8040e25af69a6e12c441a029b7cb44f1115d1016148738eafa4d2096f5610e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/ExileZone.java",
+          "java_sha256": "e480ac1fd5be779bae57f454a27f017055ee6e69cf9b86a3bd3b484bb987f410"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/events/GameEvent.java",
+          "java_sha256": "3df463d33eff295607e700578e547cef896cf183e1dba3c41131a353f53cb7dc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/events/ZoneChangeEvent.java",
+          "java_sha256": "eba0b01196de4b4ee1c99ca60b2734755800c5eedbc724f5573216d38b77df1e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/Player.java",
+          "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetCard.java",
+          "java_sha256": "e4ac7e19f604b43a36475592a0d13f75fcd6e21b287a813a2381b9b42ca4740e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInExile.java",
+          "java_sha256": "6f780da5ddeae8d933e0ae6900c6b38ff1e466089310d72c487ac3b6159f9b0c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+          "java_sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/util/CardUtil.java",
+          "java_sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+        }
+      ],
+      "reason": "Crew, source-linked exile cards and the full permitted cast transaction are not implemented."
+    },
+    {
+      "name": "Lamplight Phoenix",
+      "oracle_text": "Flying\nWhen this creature dies, you may exile it and collect evidence 4. If you do, return this card to the battlefield tapped. (To collect evidence 4, exile cards with total mana value 4 or greater from your graveyard.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LamplightPhoenix.java",
+          "java_sha256": "c129be78ee5b8d9e76f0e2cc89551a118d0802ad011aab57d6b252d58540946b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+          "java_sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/CompositeCost.java",
+          "java_sha256": "0dee422806fe7335978ad7f9ae7e4a8a7d43f83db8058792e806719725ee1fd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/CollectEvidenceCost.java",
+          "java_sha256": "7de932207f4dacc199b5ca70152f0365b21c9a46bc34e9e3aa45df90b53543d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceCost.java",
+          "java_sha256": "1cd064f3443f1a13cffbc141dbc6ddd71762a8a7a6b4c4d2aad6b432bf870d73"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+          "java_sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToBattlefieldUnderOwnerControlSourceEffect.java",
+          "java_sha256": "6ad6ac83bce7ecb77dbb17eb83c3bd2303b8163c38d6185b9692418eaf7ae394"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        }
+      ],
+      "reason": "The composite death/self-exile/reanimation payment is not implemented."
+    },
+    {
+      "name": "Polygraph Orb",
+      "oracle_text": "When this artifact enters, look at the top four cards of your library. Put two of them into your hand and the rest into your graveyard. You lose 2 life.\n{2}, {T}, Collect evidence 3: Each opponent loses 3 life unless they discard a card or sacrifice a creature. (To collect evidence 3, exile cards with total mana value 3 or greater from your graveyard.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PolygraphOrb.java",
+          "java_sha256": "a3dae208ade514257c6686c39c634fbdcca6c8105183e3142358dbeb5645aedd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/CollectEvidenceCost.java",
+          "java_sha256": "7de932207f4dacc199b5ca70152f0365b21c9a46bc34e9e3aa45df90b53543d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "java_sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "java_sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+          "java_sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+          "java_sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/Card.java",
+          "java_sha256": "86b9a512358a5c6814e62bc2f9cff87be07cf5a248e313686c137f0b76b798b0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PutCards.java",
+          "java_sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Zone.java",
+          "java_sha256": "4d8040e25af69a6e12c441a029b7cb44f1115d1016148738eafa4d2096f5610e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/Player.java",
+          "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetDiscard.java",
+          "java_sha256": "f165d4061cca290e354f611246bf39c1157977742d5d9ae93fca883b22118668"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetSacrifice.java",
+          "java_sha256": "24e8ec2dda0609630c60e91b1b890feebc7c8dbb0eb6002565897a07ca9113d7"
+        }
+      ],
+      "reason": "Its complete top/graveyard arrangement and evidence-linked residuals are not implemented."
+    },
+    {
+      "name": "Tenth District Hero",
+      "oracle_text": "{1}{W}, Collect evidence 2: This creature becomes a Human Detective with base power and toughness 4/4 and gains vigilance.\n{2}{W}, Collect evidence 4: If this creature is a Detective, it becomes a legendary creature named Mileva, the Stalwart, it has base power and toughness 5/5, and it gains \"Other creatures you control have indestructible.\"",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TenthDistrictHero.java",
+          "java_sha256": "5097b3b04f4fee939f2ab0a32af6a8b23fd01c691cf6813afff6c76e64c3fe2f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/CollectEvidenceCost.java",
+          "java_sha256": "7de932207f4dacc199b5ca70152f0365b21c9a46bc34e9e3aa45df90b53543d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardSubTypeSourceEffect.java",
+          "java_sha256": "7f49c9464a917091481b5f7636bbfbaf7f90041be840b2da070c57ca0214a765"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+          "java_sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+          "java_sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessSourceEffect.java",
+          "java_sha256": "278acb623e2d4c4db2efdc4764512cfe0a983770512e2eb2c73afb887a193fe3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+          "java_sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "java_sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        }
+      ],
+      "reason": "Type/base/ability-changing level transformations are not implemented."
+    },
+    {
+      "name": "Urgent Necropsy",
+      "oracle_text": "As an additional cost to cast this spell, collect evidence X, where X is the total mana value of the permanents this spell targets.\nDestroy up to one target artifact, up to one target creature, up to one target enchantment, and up to one target planeswalker.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/u/UrgentNecropsy.java",
+          "java_sha256": "4d31267f91d9fc19f203baf9e0650fe576a6e1846976e5631b5fc77d6fd1222e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageObject.java",
+          "java_sha256": "061a5412bcd48f83d961a10c987ddb072ab3ed3712ba70135305fb88565fa55a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/CostAdjuster.java",
+          "java_sha256": "277da78431453809a3c0f3af150ceca2043854ccb3963675297f8ccd1a17e29a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/CollectEvidenceCost.java",
+          "java_sha256": "7de932207f4dacc199b5ca70152f0365b21c9a46bc34e9e3aa45df90b53543d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+          "java_sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/InfoEffect.java",
+          "java_sha256": "48bac57c3707da691071b0fb266461819de4fbfef0608a0e1767de405a2eca4b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/Target.java",
+          "java_sha256": "bfa4bcb195f5bc43a53e61baf312f392c782fd177d36c4b232e4146156a6b916"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetArtifactPermanent.java",
+          "java_sha256": "7cbfb4763fc203a4f36b4b779bad8102d058066579a47e323b1ba1dc02153d53"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetEnchantmentPermanent.java",
+          "java_sha256": "25825f6881ec923b5ecf330ff5d0c79a60e8e305cd5f6d7e08920f16924dbbae"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetPlaneswalkerPermanent.java",
+          "java_sha256": "90879d844c35049ac6b41b3812fe558f1dc1ae25ab8394667fb012cec940a37c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/EachTargetPointer.java",
+          "java_sha256": "47409331c6a257595e641b63cb1eefe96070813dc4c8f37ce103a9220176a190"
+        }
+      ],
+      "reason": "Arbitrary mana-value allocation over distinct targeted permanent types is not implemented."
+    }
+  ]
+}

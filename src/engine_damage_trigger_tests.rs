@@ -554,6 +554,7 @@ fn departed_hero_damage_uses_frozen_battlefield_facts_for_observers() {
     let item = g.activation_item(Player::P0, hero, 0);
     g.state.resolving = Some(Resolution {
         explore: None,
+        evidence: None,
         connive: None,
         item,
         program: CODE,

@@ -32,6 +32,7 @@ fn scry_partition_orders_both_groups_and_keeps_middle() {
     let item = game.state.stack.pop().unwrap();
     game.state.resolving = Some(Resolution {
         explore: None,
+        evidence: None,
         connive: None,
         item,
         program: PROGRAM,
@@ -243,6 +244,7 @@ fn short_empty_and_zero_looks_do_not_attempt_empty_draws() {
     let item = game.state.stack.pop().unwrap();
     game.state.resolving = Some(Resolution {
         explore: None,
+        evidence: None,
         connive: None,
         item,
         program: PROGRAM,
@@ -346,6 +348,7 @@ fn sba_waits_through_library_choices_and_following_instructions() {
     let item = game.state.stack.pop().unwrap();
     game.state.resolving = Some(Resolution {
         explore: None,
+        evidence: None,
         connive: None,
         item,
         program: PROGRAM,
