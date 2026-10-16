@@ -632,13 +632,12 @@ impl Game {
     pub(super) fn funding_goal(&self, announcement: &Announcement) -> FundingGoal {
         match announcement.item.kind {
             StackKind::Spell => {
-                let cost = announcement.cost.unwrap_or_else(|| {
-                    assert!(
-                        !announcement.item.source_card.has_hybrid_cost(),
-                        "hybrid cost not chosen"
-                    );
-                    let (colored, generic) = announcement.item.source_card.cost();
-                    ManaCost { colored, generic }
+                let cost = announcement.total_cost.unwrap_or_else(|| {
+                    self.reduced_spell_cost(
+                        announcement.item.controller,
+                        announcement.item.card,
+                        Self::announcement_base_cost(announcement),
+                    )
                 });
                 let required = cost.colored;
                 let generic = cost.generic;

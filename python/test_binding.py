@@ -12,6 +12,97 @@ class BindingTests(unittest.TestCase):
     def game(self):
         return Game([["Mountain"] * 24 + ["LightningBolt"] * 36] * 2, seed=17, deck_rules="Freeform")
 
+    def reduction_index(self,obs,which):
+        objects={o['id']:o for o in obs['objects']};bf=[o for o in obs['objects'] if o['owner']=='P0' and o['zone']=='Battlefield']
+        source='Geist of Saint Thalia' if which=='sacrifice' else 'Mocking Sprite'
+        present=any(o['card']==source for o in bf);mascot=any(o['card']=='Three Tree Mascot' for o in bf)
+        wanted={'fixed':'Divination','two_brid':'Kin-Tree Severance','sacrifice':'Duty Beyond Death','focus':'Focus the Mind'}[which]
+        def score(a):
+            k=a['kind']
+            if k in ('Cast','AnnounceCast'):
+                name=objects[a['card']]['card']
+                if name==source:return 150 if not present else -100
+                if name==wanted:
+                    ready=(obs['players'][0]['spells_cast_this_turn']>=1 if which=='focus' else present and (mascot or which!='sacrifice'))
+                    if which=='two_brid':ready=ready and sum(obs['players'][0]['mana'])+sum(o['card']=='Island' and not o['tapped'] for o in bf)>=5
+                    return (170 if k=='AnnounceCast' else 160) if ready else -100
+                if name=='Three Tree Mascot':return 140 if which=='focus' or not mascot else -100
+            if k=='ChooseSpellCost':return 180 if a['cost']==0 else -100
+            if k=='ChooseAdditionalCost':return 180 if objects[a['object']['card']]['card']==source else -100
+            return self.professor_score(obs,a)
+        return max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i]))
+
+    def test_generic_reduction_fixed_and_two_brid_staged_payments_replay_native_totals(self):
+        for which in ['fixed','two_brid']:
+            wanted='Divination' if which=='fixed' else 'Kin-Tree Severance'
+            deck=['Island']*24+['Mocking Sprite']*12+[wanted]*12+['Three Tree Mascot']*12
+            with self.subTest(which=which),Game([deck,['Forest']*36+['Ordinary Bear']*24],seed=7,deck_rules='Freeform') as game:
+                for _ in range(6000):
+                    actor=game.observe('P0')['actor'];obs=game.observe(actor);self.assertIsNone(obs['outcome'])
+                    if obs['decision']==('pay_costs' if which=='fixed' else 'spell_cost') and obs['announcing']['source_card']==wanted:break
+                    game.step(obs,self.reduction_index(obs,which))
+                else:self.fail('reduced staged payment not reached')
+                if which=='two_brid':self.assertEqual(next(c['cost']['generic'] for c in obs['cost_choices'] if c['index']==0),6)
+                else:self.assertEqual(obs['payment_request']['generic'],1)
+                self.assertEqual(game.observe('P1')['actions'],[]);saved=game.snapshot()
+                def finish(handle):
+                    paid=None
+                    for _ in range(100):
+                        current=handle.observe('P0');current=handle.observe(current['actor'])
+                        if current['stack'] and current['stack'][-1]['source_card']==wanted:
+                            self.assertEqual(sum(paid),2 if which=='fixed' else 5)
+                            victim=current['stack'][-1]['targets'][0]['target']['Card'] if which=='two_brid' else None
+                            old=current['players'][0]['library_count'];after=self.resolve_vital_top(handle,'P0')
+                            if which=='fixed':self.assertEqual(after['players'][0]['library_count'],old-2)
+                            else:self.assertEqual(next(o['zone'] for o in after['objects'] if o['id']==victim),'Exile')
+                            return after
+                        action=current['actions'][self.reduction_index(current,which)]
+                        if action['kind']=='PayCosts':
+                            self.assertEqual(current['payment_request']['generic'],1 if which=='fixed' else 5);paid=action['payment']
+                        handle.act(current,action)
+                    self.fail('reduced cast did not complete')
+                with game.clone() as fork:expected=finish(fork)
+                after=finish(game);self.assertEqual(after,expected);game.restore(saved)
+                again=finish(game);after['revision']=again['revision'];self.assertEqual(again,after);game.drop_snapshot(saved)
+
+    def test_sacrificed_reducer_keeps_locked_payment_and_full_spell_body_in_process(self):
+        deck=['Island']*12+['Plains']*12+['Geist of Saint Thalia']*12+['Duty Beyond Death']*12+['Three Tree Mascot']*12
+        with Game([deck,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+            for _ in range(6000):
+                actor=game.observe('P0')['actor'];obs=game.observe(actor);self.assertIsNone(obs['outcome'])
+                if obs['decision']=='additional_cost' and obs['announcing']['source_card']=='Duty Beyond Death':break
+                game.step(obs,self.reduction_index(obs,'sacrifice'))
+            else:self.fail('discounted sacrifice not reached')
+            source=next(o for o in obs['objects'] if o['card']=='Geist of Saint Thalia' and o['zone']=='Battlefield')
+            mascot=next(o for o in obs['objects'] if o['card']=='Three Tree Mascot' and o['zone']=='Battlefield');saved=game.snapshot()
+            def finish(handle):
+                for _ in range(50):
+                    current=handle.observe('P0')
+                    if current['stack'] and current['stack'][-1]['source_card']=='Duty Beyond Death':
+                        self.assertEqual(next(o['zone'] for o in current['objects'] if o['id']==source['id']),'Graveyard')
+                        after=self.resolve_vital_top(handle,'P0');new=next(o for o in after['objects'] if o['id']==mascot['id'])
+                        self.assertEqual(new['counters']['plus_one'],mascot['counters']['plus_one']+1);self.assertTrue(new['keywords']&8192);return after
+                    action=current['actions'][self.reduction_index(current,'sacrifice')]
+                    if action['kind']=='PayCosts':self.assertEqual(sum(action['payment']),1);self.assertEqual(current['payment_request']['generic'],0)
+                    handle.act(current,action)
+                self.fail('sacrificed reducer cast stalled')
+            with game.clone() as fork:expected=finish(fork)
+            after=finish(game);self.assertEqual(after,expected);game.restore(saved);again=finish(game);after['revision']=again['revision'];self.assertEqual(again,after);game.drop_snapshot(saved)
+
+    def test_focus_self_discount_preserves_private_draw_then_discard_restore(self):
+        with Game([['Island']*36+['Focus the Mind']*12+['Three Tree Mascot']*12,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+            for _ in range(6000):
+                actor=game.observe('P0')['actor'];obs=game.observe(actor);self.assertIsNone(obs['outcome'])
+                if obs['decision']=='effect_discard' and obs['resolving']['source_card']=='Focus the Mind':break
+                if obs['decision']=='pay_costs' and obs['announcing']['source_card']=='Focus the Mind':self.assertEqual(obs['payment_request']['generic'],2)
+                game.step(obs,self.reduction_index(obs,'focus'))
+            else:self.fail('reduced focus private discard not reached')
+            self.assertEqual(obs['players'][0]['cards_drawn_this_turn'],4);self.assertEqual(game.observe('P1')['effect_discards'],[])
+            action=next(a for a in obs['actions'] if a['kind']=='Discard');saved=game.snapshot()
+            with game.clone() as fork:expected=fork.act(fork.observe('P0'),action)
+            after=game.act(obs,action);self.assertEqual(after,expected);self.assertEqual(after['players'][0]['library_count'],obs['players'][0]['library_count'])
+            game.restore(saved);again=game.act(game.observe('P0'),action);after['revision']=again['revision'];self.assertEqual(again,after);game.drop_snapshot(saved)
+
     def two_brid_index(self,obs,generic):
         objects={o['id']:o for o in obs['objects']}
         def score(a):

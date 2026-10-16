@@ -10,6 +10,7 @@ pub(super) struct Announcement {
     pub trigger: bool,
     pub payment: Option<Mana>,
     pub cost: Option<ManaCost>,
+    pub total_cost: Option<ManaCost>,
     pub counter_payment: Counters,
     pub pay_window: bool,
     pub production: Option<Mana>,
@@ -392,6 +393,7 @@ impl Game {
             trigger,
             payment: None,
             cost: None,
+            total_cost: None,
             counter_payment: Counters::default(),
             additional: None,
             additional_paid: false,
@@ -423,6 +425,7 @@ impl Game {
             trigger: false,
             payment: None,
             cost: None,
+            total_cost: None,
             counter_payment: counters,
             additional: None,
             additional_paid: false,
@@ -437,6 +440,16 @@ impl Game {
             && announcement.pay_window
             && matches!(self.state.pending, Pending::Targets { .. })
         {
+            if announcement.item.kind == StackKind::Spell && announcement.total_cost.is_none() {
+                let base = Self::announcement_base_cost(announcement);
+                let total = self.reduced_spell_cost(
+                    announcement.item.controller,
+                    announcement.item.card,
+                    base,
+                );
+                self.state.announcing.as_mut().unwrap().total_cost = Some(total);
+            }
+            let announcement = self.state.announcing.as_ref().unwrap();
             self.state.pending = if announcement.item.kind == StackKind::Spell
                 && announcement.item.source_card.additional_cost().is_some()
                 && announcement.additional.is_none()

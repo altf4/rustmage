@@ -1,7 +1,7 @@
 use crate::capacity::{CapacityExt, CapacitySignal};
 use crate::cards::{
     ActivatedAbility, ActivationCost, ActivationGuard, ActivationOrigin, AdditionalCost,
-    AmountValue, BattlefieldFilter, CastRelation, CountFilter, CountZone, CounterKind,
+    AmountValue, BattlefieldFilter, CastRelation, CostTurn, CountFilter, CountZone, CounterKind,
     CounterSubject, Counters, CreatureFilter, DamageQualification, DamageSubject, Effect,
     EffectChoiceKind, EmblemInfo, EntryTapped, Instruction, ManaCost, ManaProduction, MillAmount,
     PlayerSet, RecoveryFilter, SacrificeFilter, SearchSpec, StatExpr, StatValue, Stats, StepGuard,
@@ -11,6 +11,8 @@ use crate::cards::{
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
 mod additional_costs;
+#[path = "engine_spell_costs.rs"]
+mod spell_costs;
 pub use additional_costs::AdditionalCostView;
 #[path = "engine_activations.rs"]
 mod activations;
@@ -1469,13 +1471,18 @@ impl Game {
                         }
                         _ => true,
                     };
+                    let reduction = if completable {
+                        self.spell_reduction(actor, card)
+                    } else {
+                        0
+                    };
                     if completable {
                         let can_fund = obj.card.cost_options().any(|cost| {
                             if obj.card.additional_cost().is_some() {
                                 return self.spell_can_fund(actor, card, cost);
                             }
                             let colored = cost.colored;
-                            let generic = cost.generic;
+                            let generic = cost.generic.saturating_sub(reduction);
                             let cached = spell_funding_cache
                                 .iter()
                                 .flatten()
@@ -1512,8 +1519,10 @@ impl Game {
                         continue;
                     }
                     let mut done = false;
-                    obj.card
-                        .spell_payments(s.players[actor.index()].mana, |payment| {
+                    obj.card.reduced_spell_payments(
+                        s.players[actor.index()].mana,
+                        reduction,
+                        |payment| {
                             if done {
                                 return;
                             }
@@ -1557,7 +1566,8 @@ impl Game {
                                     });
                                 }
                             }
-                        });
+                        },
+                    );
                     if done {
                         return true;
                     }
@@ -3305,6 +3315,9 @@ mod milling_tests;
 #[path = "engine_damage_trigger_tests.rs"]
 mod damage_trigger_tests;
 
+#[cfg(test)]
+#[path = "engine_spell_cost_tests.rs"]
+mod spell_cost_tests;
 #[cfg(test)]
 #[path = "engine_spell_filter_tests.rs"]
 mod spell_filter_tests;

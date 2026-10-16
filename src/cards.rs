@@ -648,6 +648,8 @@ pub(crate) enum CastFilter {
     // Compiler vocabulary; no complete admitted card currently uses this filter.
     #[allow(dead_code)]
     Enchantment,
+    Subtype(&'static str),
+    AnyOf(&'static [CastFilter]),
 }
 impl CastFilter {
     pub fn matches(self, card: Card) -> bool {
@@ -658,8 +660,26 @@ impl CastFilter {
             Self::InstantSorcery => card.kind_mask() & (4 | 8) != 0,
             Self::Artifact => card.is_artifact(),
             Self::Enchantment => card.kind_mask() & 32 != 0,
+            Self::Subtype(subtype) => card.has_subtype(subtype),
+            Self::AnyOf(filters) => filters.iter().any(|filter| filter.matches(card)),
         }
     }
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum CostTurn {
+    Any,
+    // Parsed vocabulary; all complete own-turn bodies still have other dependencies.
+    #[allow(dead_code)]
+    Own,
+    Other,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct SpellReduction {
+    pub source_only: bool,
+    pub filter: CastFilter,
+    pub amount: u32,
+    pub turn: CostTurn,
+    pub guard: StepGuard,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum CastRelation {
@@ -1174,6 +1194,9 @@ impl Card {
         let definition = &generated::DEFINITIONS[self.0 as usize];
         (definition.colored, definition.generic)
     }
+    pub(crate) fn cost_reductions(self) -> &'static [SpellReduction] {
+        generated::cost_reductions(self)
+    }
     pub(crate) fn has_hybrid_cost(self) -> bool {
         !generated::cost_alternatives(self).is_empty()
     }
@@ -1186,21 +1209,41 @@ impl Card {
         .chain(generated::cost_alternatives(self).iter().copied())
     }
     pub(crate) fn spell_payments(self, pool: Mana, mut emit: impl FnMut(Mana)) {
+        self.spell_payments_for_reduction(pool, 0, &mut emit);
+    }
+    pub(crate) fn reduced_spell_payments(
+        self,
+        pool: Mana,
+        reduction: u32,
+        mut emit: impl FnMut(Mana),
+    ) {
+        if reduction == 0 {
+            self.spell_payments(pool, &mut emit);
+            return;
+        }
+        self.spell_payments_for_reduction(pool, reduction, &mut emit);
+    }
+    fn spell_payments_for_reduction(self, pool: Mana, reduction: u32, mut emit: impl FnMut(Mana)) {
         if !self.has_hybrid_cost() {
             let (colored, generic) = self.cost();
-            payments(pool, colored, generic, emit);
+            payments(pool, colored, generic.saturating_sub(reduction), emit);
             return;
         }
         // Different hybrid assignments can consume the same pool allocation.
         // Emit each action once, without charging fixed-cost casts an allocation.
         let mut seen = Vec::new();
         for cost in self.cost_options() {
-            payments(pool, cost.colored, cost.generic, |payment| {
-                if !seen.contains(&payment) {
-                    seen.push(payment);
-                    emit(payment);
-                }
-            });
+            payments(
+                pool,
+                cost.colored,
+                cost.generic.saturating_sub(reduction),
+                |payment| {
+                    if !seen.contains(&payment) {
+                        seen.push(payment);
+                        emit(payment);
+                    }
+                },
+            );
         }
     }
     pub(crate) fn index(self) -> usize {
