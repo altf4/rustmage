@@ -58,8 +58,10 @@ Printed intrinsic abilities remain when a conditional bonus disappears.
 
 Only exact supported count clauses and positive source keyword lists compile.
 Combined stat/keyword clauses retain the keyword clause as a residual that must
-compile before the whole body is admitted. Conditional flash remains gated
-because it needs permission outside the battlefield. Conditional changeling,
+compile before the whole body is admitted. Count conditions retain any recognized
+life-gain and own-turn requirements as a conjunction; unknown qualifiers remain
+rejected. Conditional flash remains gated because it needs permission outside
+the battlefield. Conditional changeling,
 unknown combat/entry/crime histories, ability removal, recipient dependencies,
 new type changes and unknown residual effects also remain gated.
 
@@ -99,7 +101,7 @@ conditional lifelink gain overflows during real damage.
 
 Three funding tests compare concrete and virtual keyword state after real
 nontoken/token mana sacrifices, preserve the original game, and exercise all
-shared quantity variants plus virtual actor life. Three compiler tests protect
+shared quantity variants plus virtual actor life. Four compiler tests protect
 exact predicates, compound residuals, whole-body admissions and negative scopes.
 The scaling-source inventory now checks all 25 sources. One fresh release
 Python method runs nine real-game scenarios to every conditional keyword and
@@ -119,11 +121,11 @@ Two native Standard100 runs use two legal 60-card deck families and reproduce:
 - 20,616 maximum initialized logical state bytes in this workload.
 
 Complete checks passed: **1,043 Rust tests** (1,031 unit, 12 integration),
-**197 compiler/data tests**, **139 fresh release Python tests**, all-target
+**198 compiler/data tests**, **139 fresh release Python tests**, all-target
 Clippy with warnings denied, formatting, catalogue consistency and diff checks.
 
 The separate 1,000-game native Freeform benchmark completed 571,049 decisions at
-roughly 405,085 decisions/s and 709 games/s, clone 421 ns and restore 434 ns in
+roughly 376,554 decisions/s and 659 games/s, clone 324 ns and restore 296 ns in
 this run. Initial logical state remains **19,784 bytes**. Timing is
 host-dependent; the benchmark includes policy and observation construction,
 excludes neural inference/tensors/JSON, and is not an XMage parity comparison.

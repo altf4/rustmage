@@ -8,6 +8,13 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_conditional_source_count_composition_preserves_life_gain_and_own_turn_requirements(self):
+        for prefix,own_turn in [('',False),('During your turn, ',True)]:
+            for line in ['As long as you control an artifact, this creature has flying as long as you gained life this turn.','This creature has flying as long as you control an artifact as long as you gained life this turn.']:
+                result=generate.static_permanent_template(self.card(oracle_text=prefix+line));self.assertIsNotNone(result);grant=result[6][0];self.assertIn('condition: Some(StatValue::AtLeast',grant);self.assertIn('requires_life_gain: true',grant);self.assertIn('own_turn: '+str(own_turn).lower(),grant)
+        for line in ['As long as you control an artifact, this creature has flying as long as an opponent gained life this turn.','As long as you control an artifact, this creature has flying as long as you gained life last turn.','As long as you control an artifact, this creature has flying as long as you gained life this turn. Then discover 3.']:
+            self.assertIsNone(generate.static_permanent_template(self.card(oracle_text=line)))
+
     def test_conditional_source_keywords_use_exact_count_predicates_and_reject_out_of_zone_flash(self):
         for text in ['As long as you control an artifact, this creature has haste.','This creature has flying as long as you control a Dragon.','This creature has lifelink as long as you control another Faerie.','Descend 4 — This creature has flying as long as there are four or more permanent cards in your graveyard.']:
             result=generate.static_permanent_template(self.card(oracle_text=text));self.assertIsNotNone(result,text);self.assertEqual(len(result[6]),1);self.assertIn('condition: Some(StatValue::AtLeast',result[6][0]);self.assertIn('source_only: true',result[6][0])

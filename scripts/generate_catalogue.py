@@ -628,7 +628,7 @@ def static_permanent_template(card):
             condition,words=prefix.groups() if prefix else (suffix[2],suffix[1])
             value=stat_threshold_condition(condition)
             if value is None:return None
-            extra=grant('this creature',words,own_turn,False,value)
+            extra=grant('this creature',words,own_turn,requires_life_gain,value)
             if extra is None:return None
             grants.append(extra);continue
         m = re.fullmatch(r'(.+) get ([+-][0-9]+)/([+-][0-9]+)(?: and have (.+))?\.', line)
