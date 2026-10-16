@@ -103,7 +103,7 @@ class LibraryTuckTests(unittest.TestCase):
                                 owner = int(target['owner'][1])
                                 self.assertEqual(after['players'][owner]['library_count'], obs['players'][owner]['library_count'] + 1)
                                 self.assertEqual(after['players'][owner]['hand_count'], obs['players'][owner]['hand_count'])
-                                self.assertEqual(after['schema'], 60)
+                                self.assertEqual(after['schema'], 61)
                                 movement = after['last_target_library_move']
                                 self.assertEqual(movement['target_before'], target['reference'])
                                 self.assertEqual(movement['card'], target['card'])

@@ -173,6 +173,11 @@ impl Game {
                 a.item.source_card,
                 offspring.unwrap_or_else(|| a.item.cast.is_some_and(|c| c.offspring == Some(true))),
             );
+            base = Self::with_kicker_cost(
+                base,
+                a.item.source_card,
+                a.item.cast.is_some_and(|c| c.kicker == Some(true)),
+            );
             if a.forage
                 .as_ref()
                 .is_some_and(|f| f.route == Some(ForageRoute::Black))

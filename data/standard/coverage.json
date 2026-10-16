@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "04ead6ed7234c31bb805d57b3726cd5810053daefca6166f5aedc0a047f93c07",
+  "catalogue_version": "7a5567666120686d16e87ebd525f0bbe72deb91095b58cd7e8ddce46674b934c",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1552,
-  "implemented_total": 1558,
+  "implemented_standard_cards": 1562,
+  "implemented_total": 1568,
   "token_definitions": 73,
   "emblem_definitions": 1,
   "cards": [
@@ -3610,8 +3610,8 @@
     {
       "name": "Burst Lightning",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Bushwhack",
@@ -9184,8 +9184,8 @@
     {
       "name": "Firebending Lesson",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Firebending Student",
@@ -10180,7 +10180,7 @@
     {
       "name": "Gatekeeper of Malakir",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -10780,7 +10780,7 @@
     {
       "name": "Gnarlid Colony",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -11338,8 +11338,8 @@
     {
       "name": "Grow from the Ashes",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Growing Dread",
@@ -13222,8 +13222,8 @@
     {
       "name": "Into the Roil",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Intrepid Paleontologist",
@@ -17872,7 +17872,7 @@
     {
       "name": "Nullpriest of Oblivion",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -25396,7 +25396,7 @@
     {
       "name": "Sun-Blessed Healer",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -30304,8 +30304,8 @@
     {
       "name": "Whoosh!",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Wiccan, Rising Magician",
@@ -31060,8 +31060,8 @@
     {
       "name": "Zuko's Conviction",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Zuko's Exile",

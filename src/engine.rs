@@ -9,7 +9,7 @@ use crate::cards::{
     TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
 /// Version of the public observation structure, including owned trigger context.
-pub const OBSERVATION_SCHEMA: u32 = 60;
+pub const OBSERVATION_SCHEMA: u32 = 61;
 
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
@@ -239,6 +239,9 @@ define_actions! {
     DeclineForage,
     ChooseAdditionalCost {
         object: ObjectRef,
+    },
+    ChooseKicker {
+        pay: bool,
     },
     ChooseOffspring {
         pay: bool,
@@ -536,6 +539,8 @@ pub struct CastInfo {
     pub method: CastMethod,
     /// Explicit optional additional cost, declared before targets; None until chosen.
     pub offspring: Option<bool>,
+    /// One fixed optional surcharge, independent of casting method and offspring.
+    pub kicker: Option<bool>,
 }
 
 /// Frozen attack and immutable program provenance, independent of later attachments.
@@ -761,6 +766,9 @@ enum Pending {
     Forage {
         player: Player,
     },
+    Kicker {
+        player: Player,
+    },
     Offspring {
         player: Player,
     },
@@ -945,6 +953,8 @@ pub struct ZoneChange {
     pub sacrificed_by: Option<Player>,
     /// Historical casting qualification, frozen for this single entry incarnation.
     pub offspring_paid: bool,
+    /// Paid qualification belongs only to this exact entry event.
+    pub kicked: bool,
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -1314,7 +1324,8 @@ impl Game {
         match self.state.pending {
             Pending::Mulligan(p) | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
-            Pending::Offspring { player }
+            Pending::Kicker { player }
+            | Pending::Offspring { player }
             | Pending::SpellCost { player }
             | Pending::ActivationCost { player }
             | Pending::ConniveOrder { player }
@@ -1774,6 +1785,7 @@ impl Game {
                     if target_cost
                         && obj.zone == Zone::Hand
                         && obj.card.offspring_cost().is_none()
+                        && obj.card.kicker_cost().is_none()
                         && obj.card.additional_cost().is_none()
                     {
                         let plan = match obj.card.effect() {
@@ -1826,6 +1838,7 @@ impl Game {
                         || exile
                         || target_cost
                         || obj.card.offspring_cost().is_some()
+                        || obj.card.kicker_cost().is_some()
                         || obj.card.additional_cost().is_some()
                         || matches!(obj.card.effect(), Effect::Modal(_))
                     {
@@ -1977,6 +1990,14 @@ impl Game {
                             return true;
                         }
                         prior = Some(amount);
+                    }
+                }
+            }
+            Pending::Kicker { .. } => {
+                let a = s.announcing.as_ref().unwrap();
+                for pay in [false, true] {
+                    if self.kicker_choice_fundable(a, pay) && emit(Action::ChooseKicker { pay }) {
+                        return true;
                     }
                 }
             }
@@ -2368,6 +2389,18 @@ impl Game {
                 }
             }
             Action::KeepLegend { object } => self.keep_legend(object),
+            Action::ChooseKicker { pay } => {
+                self.state
+                    .announcing
+                    .as_mut()
+                    .unwrap()
+                    .item
+                    .cast
+                    .as_mut()
+                    .unwrap()
+                    .kicker = Some(pay);
+                self.continue_announcement_choices(false);
+            }
             Action::ChooseOffspring { pay } => {
                 self.state
                     .announcing
@@ -2822,6 +2855,7 @@ impl Game {
                 moved: false,
                 sacrificed_by: None,
                 offspring_paid: false,
+                kicked: false,
             };
         }
         assert_ne!(
@@ -2951,6 +2985,7 @@ impl Game {
             moved: true,
             sacrificed_by: None,
             offspring_paid: false,
+            kicked: false,
         }
     }
 
@@ -3413,6 +3448,7 @@ impl Game {
                 Pending::Legend { .. } => "legend_rule",
                 Pending::Targets { .. } => "targets",
                 Pending::Offspring { .. } => "offspring",
+                Pending::Kicker { .. } => "kicker",
                 Pending::SpellCost { .. } => "spell_cost",
                 Pending::ActivationCost { .. } => "activation_cost",
                 Pending::Modes { .. } => "spell_mode",
@@ -4197,3 +4233,7 @@ mod attachment_attack_tests;
 #[cfg(test)]
 #[path = "engine_exact_search_tests.rs"]
 mod exact_search_tests;
+
+#[cfg(test)]
+#[path = "engine_kicker_tests.rs"]
+mod kicker_tests;

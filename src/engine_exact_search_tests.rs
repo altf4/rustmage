@@ -174,7 +174,7 @@ fn all_nineteen_complete_bodies_cast_in_both_seats() {
                 },
                 "{n}"
             );
-            assert_eq!(g.observe(p).schema, 60);
+            assert_eq!(g.observe(p).schema, 61);
         }
     }
 }
@@ -599,7 +599,8 @@ fn all_three_new_flashback_bodies_use_real_graveyard_costs_and_exile_on_completi
                 Some(CastInfo {
                     origin: Zone::Graveyard,
                     method: CastMethod::Flashback,
-                    offspring: None
+                    offspring: None,
+                    kicker: None,
                 })
             );
             settle(&mut g, None);

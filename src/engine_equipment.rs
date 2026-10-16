@@ -42,6 +42,13 @@ impl Game {
         let attacking = self.state.attackers.iter().any(|a| a.card == id);
         for &source in &self.state.static_sources {
             let object = &self.state.objects[source as usize];
+            if target.card.is_creature() && target.owner == object.owner {
+                for &(kind, grant) in object.card.counter_keyword_grants() {
+                    if target.counters.get(kind) > 0 {
+                        keywords = keywords.union(grant);
+                    }
+                }
+            }
             for grant in object.card.keyword_grants() {
                 if grant.condition.is_none_or(|value| {
                     self.stat_value(value, self.object_ref(source), object.owner) != 0
