@@ -3721,3 +3721,7 @@ mod alliance_tests;
 #[cfg(test)]
 #[path = "engine_filtered_entry_tests.rs"]
 mod filtered_entry_tests;
+
+#[cfg(test)]
+#[path = "engine_fixed_effect_tests.rs"]
+mod fixed_effect_tests;

@@ -8,6 +8,37 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_fixed_damage_subjects_and_gain_sequence_keep_exact_targets_and_bounds(self):
+        subjects={'any target':'Any','target creature':'Creature','target creature or planeswalker':'CreaturePlaneswalker','target opponent':'Opponent','target player':'Player','target player or planeswalker':'PlayerPlaneswalker','target tapped creature':'CreatureTapped','target attacking or blocking creature':'CreatureAttackingBlocking'}
+        for subject,rule in subjects.items():
+            for suffix,program in [('',[]),(' and you gain 2 life',['GainLife(PlayerSet::Controller, 2)'])]:
+                self.assertEqual(generate.targeted_program('this spell deals 3 damage to '+subject+suffix+'.'),(rule,['Damage(3)']+program))
+        self.assertIn('TargetRule::Union',generate.TARGET_RULES['PlayerPlaneswalker']);self.assertIn('kinds: 64',generate.TARGET_RULES['PlayerPlaneswalker']);self.assertIn('TargetRule::Player',generate.TARGET_RULES['PlayerPlaneswalker'])
+        self.assertEqual(generate.targeted_program('this spell deals 32767 damage to any target and you gain 65535 life.'),('Any',['Damage(32767)','GainLife(PlayerSet::Controller, 65535)']))
+        for body in ['this spell deals 32768 damage to any target.','this spell deals 3 damage to any target and you gain 65536 life.','this spell deals -1 damage to any target.','this spell deals 3 damage to target untapped creature.','this spell deals 3 damage to target creature with flying.','this spell deals 3 damage to any target and that player gains 2 life.','this spell deals 3 damage to any target and gain 2 life.']:
+            self.assertIsNone(generate.targeted_program(body),body)
+
+    def test_fixed_effect_tails_preserve_existing_damage_and_private_effect_order(self):
+        self.assertEqual(generate.targeted_program('this spell deals 1 damage to any target. Draw a card.'),('Any',['Damage(1)','Draw(PlayerSet::Controller, 1)']))
+        self.assertEqual(generate.targeted_program('this spell deals 3 damage to target attacking or blocking creature. You gain 1 life.'),('CreatureAttackingBlocking',['Damage(3)','GainLife(PlayerSet::Controller, 1)']))
+        self.assertEqual(generate.targeted_program('this spell deals 3 damage to any target and you gain 2 life. Draw a card.'),('Any',['Damage(3)','GainLife(PlayerSet::Controller, 2)','Draw(PlayerSet::Controller, 1)']))
+        self.assertEqual(generate.statement_program('Discard a card, then draw two cards.'),['Discard(PlayerSet::Controller, 1)','Draw(PlayerSet::Controller, 2)'])
+        self.assertEqual(generate.statement_program('Draw two cards. Each player loses 2 life.'),['Draw(PlayerSet::Controller, 2)','LoseLife(PlayerSet::Each, 2)'])
+        self.assertEqual(generate.statement_program('this creature deals 1 damage to you. Create a Clue token.')[0],'DamagePlayers(PlayerSet::Controller, 1)')
+        self.assertEqual(generate.statement_program('this creature deals 2 damage to you and you draw a card.'),['DamagePlayers(PlayerSet::Controller, 2)','Draw(PlayerSet::Controller, 1)'])
+        for body in ['Discard a card, then draw five cards.','Discard a card, then you draw two cards.','Each player loses 65536 life.','this creature deals 32768 damage to you.','this creature deals 1 damage to you. Discover 3.']:
+            self.assertIsNone(generate.statement_program(body),body)
+        self.assertIsNone(generate.targeted_program('this spell deals 3 damage to any target and you gain 2 life. Then discover 3.'))
+
+    def test_fixed_effect_admissions_cover_twelve_whole_bodies_without_old_damage_regressions(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());manifest=json.loads((generate.ROOT/'docs/fixed-effect-admissions.json').read_text());_,coverage=generate.compile_catalogue(rows,target);supported={c['name'] for c in coverage['cards'] if c['implemented']};self.assertEqual(len(manifest['cards']),12)
+        for row in manifest['cards']:
+            self.assertIn(row['name'],supported);card=next(c for c in rows['cards'] if c['name']==row['name']);self.assertEqual(card['oracle_text'],row['oracle_text']);bad=dict(card,oracle_text=card['oracle_text']+'\nWhenever you attack, discover 3.')
+            for compiler in [generate.permanent_program_template,generate.trigger_creature_template,generate.static_permanent_template,generate.spell_program_template,generate.modal_spell_template]:self.assertIsNone(compiler(bad),row['name'])
+        for name in ['Playful Shove','Tweeze','Take Out the Trash','Unsubtle Mockery','Broadside Barrage','Incinerating Blast','Vibrant Outburst',"Winter's Intervention",'Iron-Fist Pulverizer']:self.assertIn(name,supported)
+        for name in ['Boulder Dash','Twin Bolt','Strategic Betrayal','Vision of Love']:self.assertNotIn(name,supported)
+
     def test_filtered_entry_conditions_preserve_self_other_nontoken_kind_and_subtype(self):
         cases=[('another nontoken creature',1,True,None,False),('another nontoken Bird',0,True,'Bird',False),('this creature or another nontoken Cat',0,True,'Cat',True),('this creature or another Mutant',0,False,'Mutant',True),('this creature or another artifact',16,False,None,True)]
         for subject,kinds,nontoken,subtype,include in cases:
@@ -1648,7 +1679,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             extra=dict(card,oracle_text=card['oracle_text']+'\nWhenever you cast a spell, discover 3.')
             self.assertIsNone(generate.spell_program_template(extra),name)
             self.assertIsNone(generate.permanent_program_template(extra),name)
-        for name in ['Defibrillating Current','Dragonclaw Strike','Gurmag Nightwatch','Karn, Gilded Guardian',
+        for name in ['Dragonclaw Strike','Gurmag Nightwatch','Karn, Gilded Guardian',
                      'Magmablood Archaic','Monastery Messenger',"Rakshasa's Bargain",'Reigning Victor','Riverwheel Sweep','Wildgrowth Archaic']:
             self.assertNotIn(name,supported)
 

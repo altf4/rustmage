@@ -1,0 +1,339 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Callous Inspector",
+      "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)\nWhen this creature dies, it deals 1 damage to you. Create a Clue token. (It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+          "java_sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageControllerEffect.java",
+          "java_sha256": "069383d3272a14cdd7359dc6071c52621fa1dd8dedfba385a1f3d6601c2c3ab9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+          "java_sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/token/ClueAbility.java",
+          "java_sha256": "ade27801ef45e9379e70fa7a5a8528f847e9df65d86410f562818e94b1e908b6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/ClueArtifactToken.java",
+          "java_sha256": "711939b0212d808576d149e8c95b0007df2e003c29095ddb26c4cdce94a3ddd8"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CallousInspector.java",
+          "java_sha256": "4d9ad789fae9266f5530c163341670a5214ff29bfc988a0094d189b3369e2535"
+        }
+      ]
+    },
+    {
+      "name": "Cosmium Blast",
+      "oracle_text": "Cosmium Blast deals 4 damage to target attacking or blocking creature.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterAttackingOrBlockingCreature.java",
+          "java_sha256": "1f4a92728578cec6fc658da92ca75024d4cb1d72cdf01b23808022b055c1ba20"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetAttackingOrBlockingCreature.java",
+          "java_sha256": "9189ffcb3f50a8a262aa70b884d39333a1b1681897b0957724c77eb0bb163f09"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CosmiumBlast.java",
+          "java_sha256": "89abb28e77a0db0976034d25da9d013529e89b7cefb8e736bf8189442bafe25e"
+        }
+      ]
+    },
+    {
+      "name": "Deadly Riposte",
+      "oracle_text": "Deadly Riposte deals 3 damage to target tapped creature and you gain 2 life.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/TappedPredicate.java",
+          "java_sha256": "71eabf46dc3838343404e9d40c88835361370549c67e42e8c694082ecd050436"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DeadlyRiposte.java",
+          "java_sha256": "f6ff6d0bb0d9b8be49e8ea87acea7cae3ea4062f1ad7b2f7276a10468cc7a11b"
+        }
+      ]
+    },
+    {
+      "name": "Defibrillating Current",
+      "oracle_text": "Defibrillating Current deals 4 damage to target creature or planeswalker and you gain 2 life.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreatureOrPlaneswalker.java",
+          "java_sha256": "74a515df49ac9de9bab546fb06aa877375286ce8bb4ea19113e77d811177d85f"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DefibrillatingCurrent.java",
+          "java_sha256": "750668bb012fda8b25bae663cd6feaba9eab0f2a23474690b92f690221beb395"
+        }
+      ]
+    },
+    {
+      "name": "Fear of Lost Teeth",
+      "oracle_text": "When this creature dies, it deals 1 damage to any target and you gain 1 life.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+          "java_sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetAnyTarget.java",
+          "java_sha256": "94f28b8a4a9908ef9b7599805c0ac39faf0aae249231969cd51373db206ebf34"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FearOfLostTeeth.java",
+          "java_sha256": "2a62a8ddf74d259a3199f5be371b7ba295c8ad73fe1883e2410db73bd4276328"
+        }
+      ]
+    },
+    {
+      "name": "Joust Through",
+      "oracle_text": "Joust Through deals 3 damage to target attacking or blocking creature. You gain 1 life.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterAttackingOrBlockingCreature.java",
+          "java_sha256": "1f4a92728578cec6fc658da92ca75024d4cb1d72cdf01b23808022b055c1ba20"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetAttackingOrBlockingCreature.java",
+          "java_sha256": "9189ffcb3f50a8a262aa70b884d39333a1b1681897b0957724c77eb0bb163f09"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/j/JoustThrough.java",
+          "java_sha256": "6576529761f072e90ccec10b3c8a3c6c0eccbd303a0a955f242a3397c0d87920"
+        }
+      ]
+    },
+    {
+      "name": "Keep Out",
+      "oracle_text": "Choose one \u2014\n\u2022 Keep Out deals 4 damage to target tapped creature.\n\u2022 Destroy target enchantment.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Mode.java",
+          "java_sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+          "java_sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/TappedPredicate.java",
+          "java_sha256": "71eabf46dc3838343404e9d40c88835361370549c67e42e8c694082ecd050436"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetEnchantmentPermanent.java",
+          "java_sha256": "25825f6881ec923b5ecf330ff5d0c79a60e8e305cd5f6d7e08920f16924dbbae"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/k/KeepOut.java",
+          "java_sha256": "bb23290e0740b93c2080eeef4a557267f3776dc3d3324017bcd292c11236737d"
+        }
+      ]
+    },
+    {
+      "name": "Lightning Helix",
+      "oracle_text": "Lightning Helix deals 3 damage to any target and you gain 3 life.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetAnyTarget.java",
+          "java_sha256": "94f28b8a4a9908ef9b7599805c0ac39faf0aae249231969cd51373db206ebf34"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LightningHelix.java",
+          "java_sha256": "841368954836f8cedbe6a869ff7f4ddb860566510214676c2b560ecf32efaf09"
+        }
+      ]
+    },
+    {
+      "name": "Ravenous Giant",
+      "oracle_text": "At the beginning of your upkeep, this creature deals 1 damage to you.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageControllerEffect.java",
+          "java_sha256": "069383d3272a14cdd7359dc6071c52621fa1dd8dedfba385a1f3d6601c2c3ab9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/triggers/BeginningOfUpkeepTriggeredAbility.java",
+          "java_sha256": "19d54f1b78cb52ba734fba0b70e19280b8b342d8bfa9a8e49aaeb96edccd8732"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RavenousGiant.java",
+          "java_sha256": "e96d1dc701b0564191ecd87aa711f03e0b6add7f5c18420f130145209a7b0480"
+        }
+      ]
+    },
+    {
+      "name": "Risky Shortcut",
+      "oracle_text": "Draw two cards. Each player loses 2 life.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeAllPlayersEffect.java",
+          "java_sha256": "8a6c60097cf05e798d15af38c93d29d53044b9aa7accfa79da31f82e3e12e4e4"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RiskyShortcut.java",
+          "java_sha256": "4d325aeb4d492803508d871fd6c281743bd410b12d5d0476f25d2c532e6956b8"
+        }
+      ]
+    },
+    {
+      "name": "Romantic Rendezvous",
+      "oracle_text": "Discard a card, then draw two cards.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardControllerEffect.java",
+          "java_sha256": "48291599ed7d9537f89672284579f8c07f14b4ac974a3f482efa6ef593837717"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RomanticRendezvous.java",
+          "java_sha256": "fa7f1876d0463b2437722db4827c54f3741b41d655609175ae7f3119e00f1911"
+        }
+      ]
+    },
+    {
+      "name": "Viashino Pyromancer",
+      "oracle_text": "When this creature enters, it deals 2 damage to target player or planeswalker.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterPlaneswalkerPermanent.java",
+          "java_sha256": "a72e90b731d20fc3d145bd5cab4b2d05dd2ad9a6f12afc722f748e3b12a439ca"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterPlayerOrPlaneswalker.java",
+          "java_sha256": "4d99810d07f76d7dbaad88a648720574250fa40fc2880b9d8e27220092e50833"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetPlayerOrPlaneswalker.java",
+          "java_sha256": "e05224f8b5bbf03407c6c708400df618075841bc7c2123b25b941540abb820d8"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/ViashinoPyromancer.java",
+          "java_sha256": "183621c07b2ee9a59094dbfbdfa83fee1e47f20645cd535dd4e21875732945a8"
+        }
+      ]
+    }
+  ]
+}
