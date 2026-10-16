@@ -31,6 +31,8 @@ pub(super) fn spawn(game: &mut Game, p: Player, card: Card, zone: Zone) -> CardI
         tapped: false,
         summoning_sick: false,
         damage: 0,
+        damaged_this_turn: false,
+        dealt_damage_this_turn: false,
         deathtouch_since_sba: false,
         growth: Stats::default(),
         gained_keywords: Keywords::NONE,

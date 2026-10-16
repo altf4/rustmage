@@ -758,6 +758,86 @@ EXILE_SUBJECTS = {
     'target card from a graveyard': 'CardGrave',
 }
 
+# The same immutable rule is used at announcement and resolution. Unions retain
+# branch-local qualifiers: an artifact need not also be a flying creature.
+def filtered_target(base, predicate):
+    return f'TargetRule::Filtered {{ base: &{TARGET_RULES[base]}, predicate: &TargetPredicate::{predicate} }}'
+
+
+for _name, _kinds, _relation, _tapped, _minimum, _maximum in [
+    ('CreatureTapped', 1, -1, True, 0, 4294967295),
+    ('CreatureMax3', 1, -1, False, 0, 3),
+    ('PermanentMin3', 0, -1, False, 3, 4294967295),
+    ('CreaturePlaneswalker', 65, -1, False, 0, 4294967295),
+    ('CreaturePlaneswalkerMin3', 65, -1, False, 3, 4294967295),
+    ('CardGraveOpponent', 0, 1, False, 0, 4294967295),
+    ('PermanentOpponent', 0, 1, False, 0, 4294967295),
+]:
+    _zone = 'Graveyard' if _name == 'CardGraveOpponent' else 'Battlefield'
+    TARGET_RULES[_name] = (f'TargetRule::Object {{ zone: TargetZone::{_zone}, kinds: {_kinds}, '
+                          f'relation: {_relation}, other: false, nonland: false, '
+                          f'tapped: {str(_tapped).lower()}, min_mana: {_minimum}, max_mana: {_maximum} }}')
+for _name, _base, _predicate in [
+    ('CreatureAttacking', 'Creature', 'Attacking'),
+    ('CreatureAttackingBlocking', 'Creature', 'AttackingOrBlocking'),
+    ('CreatureDamagedOpponent', 'CreatureOpponent', 'Damaged'),
+    ('CreatureDealtDamageOpponent', 'CreatureOpponent', 'DealtDamage'),
+    ('CreaturePowerMin3', 'Creature', 'PowerAtLeast(3)'),
+    ('CreaturePowerMin4', 'Creature', 'PowerAtLeast(4)'),
+    ('CreatureToughnessMin4', 'Creature', 'ToughnessAtLeast(4)'),
+    ('CreatureEitherMin4', 'Creature', 'PowerOrToughnessAtLeast(4)'),
+    ('CreatureFlying', 'Creature', 'Keyword(Keywords(1))'),
+    ('CreatureGreenWhite', 'Creature', 'Colors(17)'),
+    ('CreaturePlaneswalkerBlackRed', 'CreaturePlaneswalker', 'Colors(12)'),
+    ('CreaturePlaneswalkerGreenBlue', 'CreaturePlaneswalker', 'Colors(18)'),
+    ('CreaturePlaneswalkerBlueRed', 'CreaturePlaneswalker', 'Colors(10)'),
+    ('TokenOpponent', 'PermanentOpponent', 'Token'),
+    ('Spacecraft', 'Permanent', 'Subtype("Spacecraft")'),
+    ('NonbasicLand', 'Land', 'Nonbasic'),
+    ('CreatureNonOutlaw', 'Creature', 'NonOutlaw'),
+]:
+    TARGET_RULES[_name] = filtered_target(_base, _predicate)
+for _name, _members in [
+    ('ArtifactEnchantmentCreatureFlying', ['ArtifactEnchantment', 'CreatureFlying']),
+    ('ArtifactEnchantmentCreaturePowerMin4', ['ArtifactEnchantment', 'CreaturePowerMin4']),
+    ('ArtifactCreatureTapped', ['Artifact', 'CreatureTapped']),
+    ('CreatureSpacecraft', ['Creature', 'Spacecraft']),
+    ('CreatureVehicleNonbasicLand', ['CreatureVehicle', 'NonbasicLand']),
+]:
+    TARGET_RULES[_name] = 'TargetRule::Union(&[' + ', '.join(TARGET_RULES[member] for member in _members) + '])'
+
+REMOVAL_SUBJECTS = dict(EXILE_SUBJECTS, **{
+    'target permanent': 'Permanent',
+    'target creature or Vehicle': 'CreatureVehicle',
+    'target creature or Spacecraft': 'CreatureSpacecraft',
+    'target artifact or creature': 'ArtifactCreature',
+    'target creature or planeswalker': 'CreaturePlaneswalker',
+    'target attacking creature': 'CreatureAttacking',
+    'target attacking or blocking creature': 'CreatureAttackingBlocking',
+    'target tapped creature': 'CreatureTapped',
+    'target creature with mana value 3 or less': 'CreatureMax3',
+    'target permanent with mana value 3 or greater': 'PermanentMin3',
+    'target creature or planeswalker with mana value 3 or greater': 'CreaturePlaneswalkerMin3',
+    'target creature with power 3 or greater': 'CreaturePowerMin3',
+    'target creature with power 4 or greater': 'CreaturePowerMin4',
+    'target creature with toughness 4 or greater': 'CreatureToughnessMin4',
+    'target creature with power or toughness 4 or greater': 'CreatureEitherMin4',
+    'target creature with flying': 'CreatureFlying',
+    'target artifact, enchantment, or creature with flying': 'ArtifactEnchantmentCreatureFlying',
+    'target artifact, enchantment, or creature with power 4 or greater': 'ArtifactEnchantmentCreaturePowerMin4',
+    'target artifact or tapped creature': 'ArtifactCreatureTapped',
+    'target creature, Vehicle, or nonbasic land': 'CreatureVehicleNonbasicLand',
+    'target non-outlaw creature': 'CreatureNonOutlaw',
+    'target green or white creature': 'CreatureGreenWhite',
+    "target creature or planeswalker that's black or red": 'CreaturePlaneswalkerBlackRed',
+    "target creature or planeswalker that's green or blue": 'CreaturePlaneswalkerGreenBlue',
+    "target creature or planeswalker that's blue or red": 'CreaturePlaneswalkerBlueRed',
+    'target token an opponent controls': 'TokenOpponent',
+    "target card from an opponent's graveyard": 'CardGraveOpponent',
+    'target creature an opponent controls that was dealt damage this turn': 'CreatureDamagedOpponent',
+    'target creature an opponent controls that dealt damage this turn': 'CreatureDealtDamageOpponent',
+})
+
 
 def rust_target_group(spec):
     if spec == 'None':
@@ -897,6 +977,10 @@ def targeted_program(text):
             if program := keyword_effect(clause, 'Targets'):
                 return rule, program + ['GrantKeywords { subject: Subject::Targets, keywords: Keywords(16384) }']
     if text == "exile target player's graveyard.": return 'Player', ['ExileGraveyard(PlayerSet::Targeted)']
+    if m := re.fullmatch(r'(destroy|exile) (.+?)\.', text):
+        rule = REMOVAL_SUBJECTS.get(m[2])
+        if rule and (m[1] == 'exile' or 'graveyard' not in m[2]):
+            return rule, [m[1].capitalize()]
     if m := re.fullmatch(r'exile (.+?)( until this (?:creature|artifact|enchantment) leaves the battlefield|)\.', text):
         subject, linked = m.groups()
         if subject in EXILE_SUBJECTS:
@@ -1624,6 +1708,7 @@ def compile_catalogue(snapshot, target):
     if len(names) > 65536:
         raise ValueError('catalogue exceeds u16 identity space')
     definitions = []
+    color_masks = []
     supported = []
     coverage = []
     static_rows = []
@@ -1716,6 +1801,22 @@ def compile_catalogue(snapshot, target):
         quote = lambda value: json.dumps(value, ensure_ascii=False)
         oracle_id = f"Some({quote(card['oracle_id'])})" if card else 'None'
         type_line = card.get('type_line', 'Basic Land' if basic else 'Creature' if kind & 1 else 'Instant' if kind & 8 else 'Sorcery' if kind & 4 else '')
+        if card:
+            # Multiple-face cards are still unsupported; expose front-face facts
+            # rather than deriving colors from color identity or one hybrid cost.
+            colors = card.get('colors')
+            if colors is None:
+                faces = card.get('card_faces')
+                if isinstance(faces, list) and faces and isinstance(faces[0], dict):
+                    colors = faces[0].get('colors')
+            if (not isinstance(colors, list)
+                    or not all(isinstance(color, str) and len(color) == 1 and color in 'WUBRG' for color in colors)
+                    or len(colors) != len(set(colors))):
+                raise ValueError(f'invalid or missing colors: {name}')
+            color_mask = sum(1 << 'WUBRG'.index(color) for color in colors)
+        else:
+            color_mask = sum(1 << i for i in range(5) if colored[i])
+        color_masks.append(color_mask)
         oracle_keywords = '&[' + ', '.join(quote(word) for word in card.get('keywords', [])) + ']'
         if effect != 'Unsupported':
             if dynamic is not None:dynamic_rows.append(f'        {index} => Some({dynamic}),')
@@ -1748,6 +1849,7 @@ def compile_catalogue(snapshot, target):
             token_abilities = []
         definitions.append(f"    Definition {{ info: CardInfo {{ name: {json.dumps(name)}, oracle_id: None, mana_cost: \"\", type_line: {json.dumps(type_line, ensure_ascii=False)}, oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: Keywords({factory['keywords']}), deck_limit: None }}, effect: Effect::{effect}, triggers: &[], activated: {rust_activations(token_abilities)}, enters: Counters {{ plus_one: 0, minus_one: 0, stun: 0 }}, entry: EntryTapped::Never, kind: {kind}, basic: false, mana_color: None, colored: [0; 6], generic: 0 }},")
         token_infos.append(f"    TokenInfo {{ name: {json.dumps(factory['name'])}, subtypes: {json.dumps(factory['subtypes'])}, colors: {factory['colors']} }},")
+        color_masks.append(factory['colors'])
         marker = '__TOKEN_' + key + '__'
         definitions = [definition.replace(marker, f'Card({index})') for definition in definitions]
     if len(names) > 65536:
@@ -1757,6 +1859,7 @@ def compile_catalogue(snapshot, target):
     version = hashlib.sha256(canonical + target_bytes + creature_types_bytes + Path(__file__).read_bytes()).hexdigest()
     lines = ['// Generated by scripts/generate_catalogue.py. Do not edit.',
              f'pub const CATALOGUE_VERSION: &str = "{version}";',
+             '#[rustfmt::skip]', f'pub(super) static COLORS: [u8; {len(names)}] = {color_masks};',
              '#[rustfmt::skip]', f'pub(super) static DEFINITIONS: [Definition; {len(names)}] = [', *definitions, '];',
              '#[rustfmt::skip]', f'pub(super) static NAME_INDEX: [(&str, u16); {len(names)}] = [']
     lines += [f'    ({json.dumps(name, ensure_ascii=False)}, {index}),' for name, index in sorted((name, index) for index, name in enumerate(names))]

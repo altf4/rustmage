@@ -4,8 +4,8 @@ use crate::cards::{
     CastRelation, CountFilter, CountZone, CounterKind, CounterSubject, Counters, CreatureFilter,
     DamageQualification, DamageSubject, Effect, EffectChoiceKind, EntryTapped, Instruction,
     ManaCost, ManaProduction, MillAmount, PlayerSet, RecoveryFilter, SacrificeFilter, SearchSpec,
-    StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetPlan, TargetRule, TargetSpec,
-    TargetZone, TriggerCondition, TriggerStep, payments,
+    StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetPlan, TargetPredicate,
+    TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
@@ -409,6 +409,8 @@ struct Object {
     // True until this creature's controller begins their next turn.
     summoning_sick: bool,
     damage: i128,
+    damaged_this_turn: bool,
+    dealt_damage_this_turn: bool,
     deathtouch_since_sba: bool,
     growth: Stats,
     gained_keywords: Keywords,
@@ -723,6 +725,8 @@ pub struct ObjectView {
     pub tapped: bool,
     pub summoning_sick: bool,
     pub damage: i128,
+    pub damaged_this_turn: bool,
+    pub dealt_damage_this_turn: bool,
     pub counters: Counters,
     pub used_abilities: u64,
     pub attached_to: Option<ObjectRef>,
@@ -985,6 +989,8 @@ impl Game {
                     tapped: false,
                     summoning_sick: false,
                     damage: 0,
+                    damaged_this_turn: false,
+                    dealt_damage_this_turn: false,
                     deathtouch_since_sba: false,
                     growth: Stats::default(),
                     gained_keywords: Keywords::NONE,
@@ -2148,6 +2154,8 @@ impl Game {
             tapped: obj.tapped,
             summoning_sick: obj.summoning_sick,
             damage: obj.damage,
+            damaged_this_turn: obj.damaged_this_turn,
+            dealt_damage_this_turn: obj.dealt_damage_this_turn,
             counters: obj.counters,
             used_abilities: obj.used_abilities,
             attached_to: obj.attached_to,
@@ -2353,6 +2361,8 @@ impl Game {
         obj.tapped = tapped;
         obj.summoning_sick = destination == Zone::Battlefield;
         obj.damage = 0;
+        obj.damaged_this_turn = false;
+        obj.dealt_damage_this_turn = false;
         obj.deathtouch_since_sba = false;
         obj.growth = Stats::default();
         obj.gained_keywords = Keywords::NONE;
@@ -2399,6 +2409,8 @@ impl Game {
         self.state.first_strikers.clear();
         for obj in &mut self.state.objects {
             obj.used_abilities = 0;
+            obj.damaged_this_turn = false;
+            obj.dealt_damage_this_turn = false;
             if obj.owner == self.state.active && obj.zone == Zone::Battlefield {
                 obj.untap();
                 obj.summoning_sick = false;
@@ -2568,10 +2580,21 @@ impl Game {
                         .damage
                         .checked_add(event.amount)
                         .capacity("damage representation exhausted");
+                    obj.damaged_this_turn = true;
                     obj.deathtouch_since_sba |=
                         event.source.keywords.contains(Keywords::DEATHTOUCH);
                 }
                 Target::Spell(_) => unreachable!("damage cannot target stack objects"),
+            }
+            // An ability can retain a departed source's last-known reference;
+            // do not transfer this history to its new zone incarnation.
+            if let Some(source) = self
+                .state
+                .objects
+                .get_mut(event.source.reference.card as usize)
+                && source.generation == event.source.reference.generation
+            {
+                source.dealt_damage_this_turn = true;
             }
             if event.source.keywords.contains(Keywords::LIFELINK) {
                 // One source damaging multiple objects simultaneously causes a
@@ -2729,7 +2752,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 35,
+            schema: 36,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -3222,3 +3245,7 @@ mod counter_group_tests;
 #[cfg(test)]
 #[path = "engine_capacity_tests.rs"]
 mod capacity_tests;
+
+#[cfg(test)]
+#[path = "engine_removal_target_tests.rs"]
+mod removal_target_tests;

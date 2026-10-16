@@ -1,0 +1,277 @@
+{
+  "schema": 1,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "as_of": "2026-10-15",
+  "cards": [
+    {
+      "name": "Airship Crash",
+      "java_source": "Mage.Sets/src/mage/cards/a/AirshipCrash.java",
+      "java_sha256": "d584f2849d42535dbad127d0cdea0f9c63b59077a32426b9ac76d58113f75da9",
+      "oracle_text": "Destroy target artifact, enchantment, or creature with flying.\nCycling {2} ({2}, Discard this card: Draw a card.)"
+    },
+    {
+      "name": "Battle Menu",
+      "java_source": "Mage.Sets/src/mage/cards/b/BattleMenu.java",
+      "java_sha256": "b314ff41196f56b8ce3cbfe965b7e8297f63a30bad61230a95dfe96ad57a9f9d",
+      "oracle_text": "Choose one —\n• Attack — Create a 2/2 white Knight creature token.\n• Ability — Target creature gets +0/+4 until end of turn.\n• Magic — Destroy target creature with power 4 or greater.\n• Item — You gain 4 life."
+    },
+    {
+      "name": "Broken Wings",
+      "java_source": "Mage.Sets/src/mage/cards/b/BrokenWings.java",
+      "java_sha256": "9c0d0d06af528f17e17895087cbc86ff185cec264b68be190753ae0a492f62f8",
+      "oracle_text": "Destroy target artifact, enchantment, or creature with flying."
+    },
+    {
+      "name": "Bumbleflower's Sharepot",
+      "java_source": "Mage.Sets/src/mage/cards/b/BumbleflowersSharepot.java",
+      "java_sha256": "ee96ac51236a05f6848d0a77bbd13ad7e1c52dc4e5972f5aaad16033d4e8845d",
+      "oracle_text": "When this artifact enters, create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\n{5}, {T}, Sacrifice this artifact: Destroy target nonland permanent. Activate only as a sorcery."
+    },
+    {
+      "name": "Death in the Family",
+      "java_source": "Mage.Sets/src/mage/cards/d/DeathInTheFamily.java",
+      "java_sha256": "a29a0bfe5a7cf5f1b41ce67ea9fb7b62d4c610d1f2cdf1579c691cab4dad010f",
+      "oracle_text": "Exile target creature with mana value 3 or less."
+    },
+    {
+      "name": "Deathmark",
+      "java_source": "Mage.Sets/src/mage/cards/d/Deathmark.java",
+      "java_sha256": "299893b72049565dc439402b0d73819f58e73c3b49970f44a8bcbf811ce618f0",
+      "oracle_text": "Destroy target green or white creature."
+    },
+    {
+      "name": "Devout Decree",
+      "java_source": "Mage.Sets/src/mage/cards/d/DevoutDecree.java",
+      "java_sha256": "43afa485382e02e1eb3f64eaa806023dd12a88de9e6255a31409ca85582087b0",
+      "oracle_text": "Exile target creature or planeswalker that's black or red. Scry 1. (Look at the top card of your library. You may put that card on the bottom.)"
+    },
+    {
+      "name": "Disruptor Wanderglyph",
+      "java_source": "Mage.Sets/src/mage/cards/d/DisruptorWanderglyph.java",
+      "java_sha256": "a36fd0312d49f5d27802881568ee2eb852dbe658b08606143b6100ead520f45c",
+      "oracle_text": "Whenever this creature attacks, exile target card from an opponent's graveyard."
+    },
+    {
+      "name": "Embrace Oblivion",
+      "java_source": "Mage.Sets/src/mage/cards/e/EmbraceOblivion.java",
+      "java_sha256": "01a6137885196b933dc754a2684e5d0e80dfbdf0a685a61acca7277ebe8677ab",
+      "oracle_text": "As an additional cost to cast this spell, sacrifice an artifact or creature.\nDestroy target creature or Spacecraft."
+    },
+    {
+      "name": "Eriette's Lullaby",
+      "java_source": "Mage.Sets/src/mage/cards/e/EriettesLullaby.java",
+      "java_sha256": "a040f0343e286e8074729cbd8bfb5f0e56416c2a28d88bf71437eaf2ee233295",
+      "oracle_text": "Destroy target tapped creature. You gain 2 life."
+    },
+    {
+      "name": "Exorcise",
+      "java_source": "Mage.Sets/src/mage/cards/e/Exorcise.java",
+      "java_sha256": "b6b524a2beffdf8328cf90ccc0fb8f6b97eb6033a7d4f396f886d51da0960c06",
+      "oracle_text": "Exile target artifact, enchantment, or creature with power 4 or greater."
+    },
+    {
+      "name": "Gallant Strike",
+      "java_source": "Mage.Sets/src/mage/cards/g/GallantStrike.java",
+      "java_sha256": "365c4f0013d9d82093c5669806e8b2bfe3daf15f0e580d6f952c5e31fcc6db99",
+      "oracle_text": "Destroy target creature with toughness 4 or greater.\nCycling {2} ({2}, Discard this card: Draw a card.)"
+    },
+    {
+      "name": "Giant's Boulder",
+      "java_source": "Mage.Sets/src/mage/cards/g/GiantsBoulder.java",
+      "java_sha256": "e7a5989799244136dfd66001968795583451b378002585f128d8a0d90adeba79",
+      "oracle_text": "When this artifact enters, scry 2. (Look at the top two cards of your library, then put any number of them on the bottom and the rest on top in any order.)\n{1}, {T}: Add one mana of any color.\n{7}, {T}, Sacrifice this artifact: Destroy target permanent."
+    },
+    {
+      "name": "Goblin Firebomb",
+      "java_source": "Mage.Sets/src/mage/cards/g/GoblinFirebomb.java",
+      "java_sha256": "3d470fa3e83113a9146463aab0fabfb55dc40ab12927a8206e7db475791305e6",
+      "oracle_text": "Flash\n{7}, {T}, Sacrifice this artifact: Destroy target permanent."
+    },
+    {
+      "name": "Grapple with Death",
+      "java_source": "Mage.Sets/src/mage/cards/g/GrappleWithDeath.java",
+      "java_sha256": "9073d80cd98b3dfdfb540b3f6419c6566ba8e5683bee054ec942f8c344649953",
+      "oracle_text": "Destroy target artifact or creature. You gain 1 life."
+    },
+    {
+      "name": "Gravkill",
+      "java_source": "Mage.Sets/src/mage/cards/g/Gravkill.java",
+      "java_sha256": "ad3354ac32f1dc241de1558f4e2626ae065ac5a1159b5f1409b72cc0307815c7",
+      "oracle_text": "Exile target creature or Spacecraft."
+    },
+    {
+      "name": "Hero's Downfall",
+      "java_source": "Mage.Sets/src/mage/cards/h/HerosDownfall.java",
+      "java_sha256": "2fa03e489f8fa186fb7614a234064ece778446dc901a12185cbf23812231d74f",
+      "oracle_text": "Destroy target creature or planeswalker."
+    },
+    {
+      "name": "Kraul Whipcracker",
+      "java_source": "Mage.Sets/src/mage/cards/k/KraulWhipcracker.java",
+      "java_sha256": "84134b0d733ea1d536258bc35351b84cff38b31d884905d46d64bdd092c244a6",
+      "oracle_text": "Reach\nWhen this creature enters, destroy target token an opponent controls."
+    },
+    {
+      "name": "Make Your Move",
+      "java_source": "Mage.Sets/src/mage/cards/m/MakeYourMove.java",
+      "java_sha256": "89538d0b8cb370df1512234e48977e91d196de8f50487ee0cb1b94fc504814c2",
+      "oracle_text": "Destroy target artifact, enchantment, or creature with power 4 or greater."
+    },
+    {
+      "name": "Meteor Golem",
+      "java_source": "Mage.Sets/src/mage/cards/m/MeteorGolem.java",
+      "java_sha256": "c09c291bac0f6ddea3d0082bee3c895a844cc6784256c0d4b4605037ffadd786",
+      "oracle_text": "When this creature enters, destroy target nonland permanent an opponent controls."
+    },
+    {
+      "name": "Meteor Sword",
+      "java_source": "Mage.Sets/src/mage/cards/m/MeteorSword.java",
+      "java_sha256": "0a0dac075c82ba56a6168447f1c8aabbcd318302b7d532764464645ccdc9f777",
+      "oracle_text": "When this Equipment enters, destroy target permanent.\nEquipped creature gets +3/+3.\nEquip {3} ({3}: Attach to target creature you control. Equip only as a sorcery.)"
+    },
+    {
+      "name": "Mortify",
+      "java_source": "Mage.Sets/src/mage/cards/m/Mortify.java",
+      "java_sha256": "f13154067214841da5eb3d31f5c9fc427b76fe4f03b85d702bd373aaacbc19ef",
+      "oracle_text": "Destroy target creature or enchantment."
+    },
+    {
+      "name": "Not on My Watch",
+      "java_source": "Mage.Sets/src/mage/cards/n/NotOnMyWatch.java",
+      "java_sha256": "f9750891470a90badef962b50d066ab58d787b45bdaf9eeb168f8ced028f43ee",
+      "oracle_text": "Exile target attacking creature."
+    },
+    {
+      "name": "Pawpatch Formation",
+      "java_source": "Mage.Sets/src/mage/cards/p/PawpatchFormation.java",
+      "java_sha256": "617b8abe1de3ad06dbc478facb5557de28dc1434a26647c04699f66b934cdda7",
+      "oracle_text": "Choose one —\n• Destroy target creature with flying.\n• Destroy target enchantment.\n• Draw a card. Create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")"
+    },
+    {
+      "name": "Radiant Strike",
+      "java_source": "Mage.Sets/src/mage/cards/r/RadiantStrike.java",
+      "java_sha256": "0ed6003a10e989472bd1697003bcf93f3ec36593130f837cc1b1cad6d65932c7",
+      "oracle_text": "Destroy target artifact or tapped creature. You gain 3 life."
+    },
+    {
+      "name": "Ray of Ruin",
+      "java_source": "Mage.Sets/src/mage/cards/r/RayOfRuin.java",
+      "java_sha256": "19d79ec7208e968149da60163a717a4545a54c4c805055694a5b0a04001164c7",
+      "oracle_text": "Exile target creature, Vehicle, or nonbasic land. Scry 1. (Look at the top card of your library. You may put that card on the bottom.)"
+    },
+    {
+      "name": "Red Guardian, Super-Soldier",
+      "java_source": "Mage.Sets/src/mage/cards/r/RedGuardianSuperSoldier.java",
+      "java_sha256": "4319ed1fc1d3bef4abe98f3f56df8f32615b59fe40a4bfbca7f1c080c3b0c034",
+      "oracle_text": "Flash\nWhen Red Guardian enters, destroy target creature an opponent controls that dealt damage this turn."
+    },
+    {
+      "name": "Refute Destiny",
+      "java_source": "Mage.Sets/src/mage/cards/r/RefuteDestiny.java",
+      "java_sha256": "6b39fbbca9e3fc2f30f7ffe44273d77890f51a2da2c09f43955ae1b02fa47435",
+      "oracle_text": "Exile target creature or planeswalker that's green or blue. Surveil 1. (Look at the top card of your library. You may put it into your graveyard.)"
+    },
+    {
+      "name": "Repel Calamity",
+      "java_source": "Mage.Sets/src/mage/cards/r/RepelCalamity.java",
+      "java_sha256": "81240271f2ec4644ab1a3e22e37162d5645d88a96ad588a93bce6ebca80cec4e",
+      "oracle_text": "Destroy target creature with power or toughness 4 or greater."
+    },
+    {
+      "name": "Rooftop Assassin",
+      "java_source": "Mage.Sets/src/mage/cards/r/RooftopAssassin.java",
+      "java_sha256": "cb99c0871457f6f428faad63972dc4caa622c1669e0cfdb3ec3c608158281e33",
+      "oracle_text": "Flash\nFlying, lifelink\nWhen this creature enters, destroy target creature an opponent controls that was dealt damage this turn."
+    },
+    {
+      "name": "Sarkhan's Resolve",
+      "java_source": "Mage.Sets/src/mage/cards/s/SarkhansResolve.java",
+      "java_sha256": "602aa7a3a11b7ec8e3e6ac1862e36fccc109a9549620cb93979e6d793ad64e0f",
+      "oracle_text": "Choose one —\n• Target creature gets +3/+3 until end of turn.\n• Destroy target creature with flying."
+    },
+    {
+      "name": "Scout the City",
+      "java_source": "Mage.Sets/src/mage/cards/s/ScoutTheCity.java",
+      "java_sha256": "b6056ecd85f4d26675b752f250ae48cc66c609cf38b10995ac014e32599402ad",
+      "oracle_text": "Choose one —\n• Look Around — Mill three cards. You may put a permanent card from among them into your hand. You gain 3 life. (To mill three cards, put the top three cards of your library into your graveyard.)\n• Bring Down — Destroy target creature with flying."
+    },
+    {
+      "name": "Scrap Compactor",
+      "java_source": "Mage.Sets/src/mage/cards/s/ScrapCompactor.java",
+      "java_sha256": "26920fc44427dc309a86ca1f397d59aeaa55b07bea9095c45ad0c77587e7f59c",
+      "oracle_text": "{3}, {T}, Sacrifice this artifact: It deals 3 damage to target creature.\n{6}, {T}, Sacrifice this artifact: Destroy target creature or Vehicle."
+    },
+    {
+      "name": "Shattered Wings",
+      "java_source": "Mage.Sets/src/mage/cards/s/ShatteredWings.java",
+      "java_sha256": "f99d1d4bd89fcf26e00d2d65c8a2c30f24ff069b250d41ea05004aef3902fe7b",
+      "oracle_text": "Destroy target artifact, enchantment, or creature with flying. Surveil 1. (Look at the top card of your library. You may put it into your graveyard.)"
+    },
+    {
+      "name": "Shoot the Sheriff",
+      "java_source": "Mage.Sets/src/mage/cards/s/ShootTheSheriff.java",
+      "java_sha256": "b572e3962452e35107a998cf8453b401fb1ca23e675f82eb5b50f5dd21a642cc",
+      "oracle_text": "Destroy target non-outlaw creature. (Assassins, Mercenaries, Pirates, Rogues, and Warlocks are outlaws. Everyone else is fair game.)"
+    },
+    {
+      "name": "Spin Out",
+      "java_source": "Mage.Sets/src/mage/cards/s/SpinOut.java",
+      "java_sha256": "46b8cfa8eb8718bf3a83ca8599f690764128123da738c1e20ba1b4ea47a2d6fb",
+      "oracle_text": "Destroy target creature or Vehicle."
+    },
+    {
+      "name": "Stand Up for Yourself",
+      "java_source": "Mage.Sets/src/mage/cards/s/StandUpForYourself.java",
+      "java_sha256": "2442441b3d4a191a12de01f0ed2317162ee07dfd66fd82e16fa68c3482bd0354",
+      "oracle_text": "Destroy target creature with power 3 or greater."
+    },
+    {
+      "name": "Stingblade Assassin",
+      "java_source": "Mage.Sets/src/mage/cards/s/StingbladeAssassin.java",
+      "java_sha256": "2f55672baf5f9fd5a166bfb9cd7f25547e5e5c0f88e0b473943bb89a533de9e1",
+      "oracle_text": "Flash\nFlying\nWhen this creature enters, destroy target creature an opponent controls that was dealt damage this turn."
+    },
+    {
+      "name": "Sudden Strike",
+      "java_source": "Mage.Sets/src/mage/cards/s/SuddenStrike.java",
+      "java_sha256": "615e7d7a0d30bfe666129fe569bfe36ed0155f88d73101e3cb70bfb1d3966a26",
+      "oracle_text": "Destroy target attacking or blocking creature."
+    },
+    {
+      "name": "Terminal Criticism",
+      "java_source": "Mage.Sets/src/mage/cards/t/TerminalCriticism.java",
+      "java_sha256": "8d1e8e0463858844153d5da5f2eee36bac348cd3633c17135fc31c9758ed247e",
+      "oracle_text": "Destroy target creature or planeswalker that's blue or red. You gain 1 life."
+    },
+    {
+      "name": "Unforgiving Aim",
+      "java_source": "Mage.Sets/src/mage/cards/u/UnforgivingAim.java",
+      "java_sha256": "f518594d8e59297caed8cc0fdc9ef893aa4e68bc5f24a2bf3976a4a7523bffe8",
+      "oracle_text": "Choose one —\n• Destroy target creature with flying.\n• Destroy target enchantment.\n• Create a 2/2 black and green Elf creature token."
+    },
+    {
+      "name": "Valorous Stance",
+      "java_source": "Mage.Sets/src/mage/cards/v/ValorousStance.java",
+      "java_sha256": "b24cb70fa738d9c6837c30e1de815e32cac8ebe3c7351242406f11cfd6414f96",
+      "oracle_text": "Choose one —\n• Target creature gains indestructible until end of turn. (Damage and effects that say \"destroy\" don't destroy it.)\n• Destroy target creature with toughness 4 or greater."
+    },
+    {
+      "name": "Withering Torment",
+      "java_source": "Mage.Sets/src/mage/cards/w/WitheringTorment.java",
+      "java_sha256": "219c14eeb09041ce8ce82c48ee42e347bd5597e7f2c3dd02760d7ecf753d390f",
+      "oracle_text": "Destroy target creature or enchantment. You lose 2 life."
+    },
+    {
+      "name": "Worthy Cost",
+      "java_source": "Mage.Sets/src/mage/cards/w/WorthyCost.java",
+      "java_sha256": "5063c8b4e18dfb958187e0be8ba3a9c6cc90748e427fa053339099dd43e14250",
+      "oracle_text": "As an additional cost to cast this spell, sacrifice a creature.\nExile target creature or planeswalker."
+    },
+    {
+      "name": "Your Fate Ends Here",
+      "java_source": "Mage.Sets/src/mage/cards/y/YourFateEndsHere.java",
+      "java_sha256": "088d39b08b66f98d7e3de7265a93a8959cdb5cd9964a7ade3ca86706e474609a",
+      "oracle_text": "Destroy target creature or planeswalker with mana value 3 or greater. Surveil 1. (Look at the top card of your library. You may put it into your graveyard.)"
+    }
+  ]
+}

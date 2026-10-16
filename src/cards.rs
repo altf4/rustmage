@@ -27,6 +27,11 @@ pub(crate) struct SpellMode {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetRule {
     None,
+    Union(&'static [TargetRule]),
+    Filtered {
+        base: &'static TargetRule,
+        predicate: &'static TargetPredicate,
+    },
     Creature,
     CreatureOrVehicle {
         relation: i8,
@@ -50,6 +55,24 @@ pub(crate) enum TargetRule {
         min_mana: u32,
         max_mana: u32,
     },
+}
+
+/// Immutable live constraints; indirection keeps target plans compact in checkpoints.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum TargetPredicate {
+    Attacking,
+    AttackingOrBlocking,
+    Damaged,
+    DealtDamage,
+    PowerAtLeast(i32),
+    ToughnessAtLeast(i32),
+    PowerOrToughnessAtLeast(i32),
+    Colors(u8),
+    Keyword(Keywords),
+    Token,
+    Subtype(&'static str),
+    Nonbasic,
+    NonOutlaw,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -858,6 +881,11 @@ fn printed_subtype(type_line: &str, subtype: &str) -> bool {
 pub type Mana = [u32; 6];
 
 impl Card {
+    /// Intrinsic colors (W=1, U=2, B=4, R=8, G=16), including both hybrid halves
+    /// and token colors. Unsupported multiple-face identities describe the front.
+    pub fn colors(self) -> u8 {
+        generated::COLORS[self.index()]
+    }
     /// Intrinsic subtype membership in every zone. Dynamic type/ability-changing
     /// effects remain gated; changeling adds creature types, never other subtypes.
     pub fn has_subtype(self, subtype: &str) -> bool {
