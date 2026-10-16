@@ -2068,7 +2068,11 @@ impl Game {
                     self.state.announcing.as_mut().unwrap().payment = Some(payment);
                 } else {
                     self.spend_mana(actor, payment);
-                    self.record_spell_cast(actor, self.state.objects[card as usize].card);
+                    self.record_cast(
+                        actor,
+                        self.state.objects[card as usize].card,
+                        Some(self.state.stack.len() - 1),
+                    );
                 }
             }
             Action::KeepLegend { object } => self.keep_legend(object),
@@ -3775,3 +3779,7 @@ mod qualified_cast_tests;
 #[cfg(test)]
 #[path = "engine_attack_declaration_tests.rs"]
 mod attack_declaration_tests;
+
+#[cfg(test)]
+#[path = "engine_contextual_cast_tests.rs"]
+mod contextual_cast_tests;

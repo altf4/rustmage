@@ -8,6 +8,40 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_contextual_cast_headers_keep_complete_target_and_spell_qualifications(self):
+        headers={
+            'Whenever you cast a spell that targets a creature you control, ':'CastTarget::Creature(CastRelation::You)',
+            'Whenever you cast a spell that targets an opponent or a creature an opponent controls, ':'CastTarget::OpponentOrCreature',
+            'Whenever you cast a spell that targets this creature, ':'CastTarget::Source',
+            'Whenever you cast an Equipment spell or a spell that targets a creature you control, ':'AnyOf',
+            'Whenever you cast an instant or sorcery spell that targets a creature, ':'CastTarget::Creature(CastRelation::Any)',
+            'Repartee — Whenever you cast an instant or sorcery spell that targets a creature, ':'CastTarget::Creature(CastRelation::Any)',
+            'Whenever you cast a noncreature or Dragon spell, ':'AnyOf',
+            'Whenever you cast a Villain spell, ':'Subtype("Villain")',
+            'Whenever you cast your first spell each turn, ':'ordinal: Some(1)',
+        }
+        for header,wanted in headers.items():
+            result=generate.trigger_creature_template(self.card(oracle_text=header+'draw a card.'));self.assertIsNotNone(result,header);self.assertIn(wanted,result[2][0][0])
+        union=generate.qualified_cast_prefix('Whenever you cast an Equipment spell or a spell that targets a creature you control, draw a card.')[1]
+        for wanted in ['Subtype("Equipment")','CastTarget::Creature(CastRelation::You)','AnyOf']:self.assertIn(wanted,union)
+        repartee=generate.qualified_cast_prefix('Repartee — Whenever you cast an instant or sorcery spell that targets a creature, draw a card.')[1];self.assertIn('filter: &CastFilter::InstantSorcery',repartee)
+        guarded=generate.trigger_creature_template(self.card(oracle_text='Whenever you cast a spell that targets a creature you control, if you gained life this turn, draw a card. This ability triggers only once each turn.'));self.assertIn('OncePerTurn',guarded[2][0][0]);self.assertIn('InterveningIf',guarded[2][0][0]);self.assertIn('Targeted',guarded[2][0][0])
+
+    def test_contextual_cast_unknown_scope_labels_multiplicity_and_tails_stay_gated(self):
+        for header in ['Whenever you cast a spell that targets only this creature, ','Whenever you cast a spell that targets two creatures, ','Whenever an opponent casts a spell that targets this creature, ','Whenever you copy a spell that targets a creature, ','Whenever you cast a spell that targets a tapped creature, ','Repartee — Whenever you cast a spell, ','Unknown — Whenever you cast an instant or sorcery spell that targets a creature, ']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=header+'draw a card.')),header)
+        for body in ['draw a card. Then discover 3.','put a +1/+1 counter on that creature.','it gets +1/+1 until end of turn.']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='Whenever you cast a spell that targets a creature you control, '+body)))
+
+    def test_seventeen_contextual_cast_bodies_are_complete_and_unknown_residuals_gate_them(self):
+        import json,hashlib
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());manifest=json.loads((generate.ROOT/'docs/contextual-cast-admissions.json').read_text());self.assertEqual(len(manifest['cards']),17)
+        _,cov=generate.compile_catalogue(rows,target);supported={c['name'] for c in cov['cards'] if c['implemented']};names={c['name'] for c in manifest['cards']}
+        for row in manifest['cards']:
+            self.assertIn(row['name'],supported);card=next(c for c in rows['cards'] if c['name']==row['name']);self.assertEqual(card['oracle_text'],row['oracle_text'])
+        self.assertNotIn('Storyteller Pixie',supported)
+        changed=dict(rows,cards=[dict(c,oracle_text=c['oracle_text']+'\nWhenever you cast a spell, discover 3.') if c['name'] in names else c for c in rows['cards']]);changed['cards_sha256']=hashlib.sha256(json.dumps(changed['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();_,cov=generate.compile_catalogue(changed,target);self.assertTrue(all(not c['implemented'] for c in cov['cards'] if c['name'] in names))
+
     def test_qualified_cast_headers_keep_closed_bounds_colors_and_event_turn(self):
         cases=[('you cast a spell with mana value 4 or greater','ManaValueMinimum','minimum: 4','CastRelation::You'),('an opponent casts a spell with mana value 2 or less','ManaValueMaximum','maximum: 2','CastRelation::Opponent'),('you cast a multicolored spell','Multicolored','','CastRelation::You')]
         for header,kind,bound,relation in cases:
@@ -22,7 +56,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         for row in manifest['cards']:
             self.assertIn(row['name'],supported);card=next(c for c in rows['cards'] if c['name']==row['name']);self.assertEqual(card['oracle_text'],row['oracle_text']);bad=dict(card,oracle_text=card['oracle_text']+'\nWhenever you attack, discover 3.')
             for compiler in [generate.creature_template,generate.trigger_creature_template,generate.permanent_program_template,generate.static_permanent_template]:self.assertIsNone(compiler(bad),row['name'])
-        for name in ['Helga, Skittish Seer','Superior Foes of Spider-Man','Rhino, Barreling Brute','Dream Spoilers','Voracious Tome-Skimmer','Rodeo Pyromancers','Storyteller Pixie']:self.assertNotIn(name,supported)
+        for name in ['Helga, Skittish Seer','Superior Foes of Spider-Man','Rhino, Barreling Brute','Dream Spoilers','Voracious Tome-Skimmer','Storyteller Pixie']:self.assertNotIn(name,supported)
 
     def test_self_tapped_header_and_authenticated_aliases_are_closed(self):
         for name,header in [('Tap Probe','this creature'),('Wylie Duke, Atiin Hero','Wylie Duke'),('Spider-Gwen, Free Spirit','Spider-Gwen'),('Volatile Wanderglyph','Volatile Wanderglyph')]:
@@ -1741,7 +1775,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Minwu, White Mage',"The Crystal's Chosen",'Web-Warriors','Zimone, Paradox Sculptor']:
             self.assertIn(name,supported)
         for name in ['Action News Crew','Atmospheric Greenhouse','Byrke, Long Ear of the Law',
-                     'Sandstorm Salvager','Iron Spider, Stark Upgrade','Stirring Hopesinger',
+                     'Sandstorm Salvager','Iron Spider, Stark Upgrade',
                      'Vraska Joins Up','Wilderland Scrounger','Raucous Entertainer']:
             self.assertNotIn(name,supported)
         for noun in ['each Angel you control','Angels you control','each Cleric you control','Clerics you control']:
@@ -2518,7 +2552,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             'Magecraft — Whenever you cast or copy an instant or sorcery spell, draw a card.',
             'Whenever you cast your second creature spell each turn, draw a card.',
             'Whenever you cast a spell, copy it.',
-            'Whenever you cast an instant or sorcery spell that targets a creature, draw a card.',
+            'Whenever you cast an instant or sorcery spell that targets two creatures, draw a card.',
         ]:
             self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=line)), line)
 

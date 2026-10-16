@@ -1671,6 +1671,21 @@ OPPONENT_TURN_CAST_PREFIX = "Whenever you cast a spell during an opponent's turn
 
 def qualified_cast_prefix(line):
     """Printed spell characteristics and event-only turn qualifications."""
+    targeted = {
+        'Whenever you cast a spell that targets a creature you control, ': 'Targeted { filter: &CastFilter::Any, target: CastTarget::Creature(CastRelation::You) }',
+        'Whenever you cast a spell that targets an opponent or a creature an opponent controls, ': 'Targeted { filter: &CastFilter::Any, target: CastTarget::OpponentOrCreature }',
+        'Whenever you cast a spell that targets this creature, ': 'Targeted { filter: &CastFilter::Any, target: CastTarget::Source }',
+        'Whenever you cast an Equipment spell or a spell that targets a creature you control, ': 'AnyOf(&[CastFilter::Subtype("Equipment"), CastFilter::Targeted { filter: &CastFilter::Any, target: CastTarget::Creature(CastRelation::You) }])',
+        'Whenever you cast an instant or sorcery spell that targets a creature, ': 'Targeted { filter: &CastFilter::InstantSorcery, target: CastTarget::Creature(CastRelation::Any) }',
+        'Repartee — Whenever you cast an instant or sorcery spell that targets a creature, ': 'Targeted { filter: &CastFilter::InstantSorcery, target: CastTarget::Creature(CastRelation::Any) }',
+        'Whenever you cast a noncreature or Dragon spell, ': 'AnyOf(&[CastFilter::Noncreature, CastFilter::Subtype("Dragon")])',
+        'Whenever you cast a Villain spell, ': 'Subtype("Villain")',
+    }
+    for prefix,filter_ in targeted.items():
+        if line.startswith(prefix):return prefix,cast_condition(filter_=filter_)
+    prefix='Whenever you cast your first spell each turn, '
+    if line.startswith(prefix):return prefix,cast_condition(ordinal=1)
+
     if line.startswith(OPPONENT_TURN_CAST_PREFIX):
         return OPPONENT_TURN_CAST_PREFIX, cast_condition()
     prefix='Whenever you cast a multicolored spell, '

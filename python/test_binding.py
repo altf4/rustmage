@@ -9,6 +9,67 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def test_seventeen_contextual_cast_bodies_targets_effects_private_choices_and_replay(self):
+        names=['Colleen Wing, Street Samurai','Danitha, Spear of Agony','Danitha, Sword of Hope','Firespitter Whelp','Forum Necroscribe','Gnarlback Rhino','Graduation Day','Informed Inkwright','Inkling Mascot','Inkshape Demonstrator','Lecturing Scornmage','Madame Hydra','Melancholic Poet','Mockingbird, Ace Agent','Rehearsed Debater','Rodeo Pyromancers','Stirring Hopesinger']
+        for i,name in enumerate(names):
+            with self.subTest(card=name),Game([['Plains','Island','Swamp','Mountain','Forest']*8+[name]*12+['Bear Cub']*12+['Giant Growth']*12+['Opt']*12+['Lightning Bolt']*8+['Goldvein Pick']*8+['Three Tree Mascot']*8+['Fell']*8,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+                done=False;replayed=0;private=0;pending={}
+                for _ in range(20000):
+                    obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor']);objects={v['id']:v for v in obs['objects']};sources=[v for v in objects.values() if v['zone']=='Battlefield' and v['owner']=='P0' and v['card']==name];mates=[v for v in objects.values() if v['zone']=='Battlefield' and v['owner']=='P0' and v['card']=='Bear Cub'];dead=[v for v in objects.values() if v['zone']=='Graveyard' and v['owner']=='P0' and v['card']=='Bear Cub'];catalyst='Lightning Bolt' if i==1 else 'Goldvein Pick' if i==2 else 'Opt' if i in (3,15) else 'Three Tree Mascot' if i==11 else 'Fell' if i==4 and not dead else 'Giant Growth'
+                    def score(a):
+                        k=a['kind']
+                        if k in ('Cast','AnnounceCast'):
+                            n=objects[a['card']]['card']
+                            if n==name and not sources:return 280
+                            if sources and n=='Bear Cub' and i in (4,6) and not mates:return 270
+                            return 260 if sources and n==catalyst and (i not in (4,6) or mates) and (i!=15 or int(obs['players'][0]['spells_cast_this_turn'])==0) else -100
+                        if k=='ChooseTarget':
+                            item=obs['announcing'];t=a['target']
+                            if 'Player' in t:return 400 if i==1 and t['Player']=='P1' else -100
+                            if 'Card' in t:
+                                v=objects[t['Card']]
+                                if item['kind']!='Spell':return 400 if (i==4 and v['zone']=='Graveyard') or (i==6 and v['owner']=='P0' and v['zone']=='Battlefield') else 100
+                                return 400 if (catalyst=='Fell' and v['card']=='Bear Cub') or (catalyst!='Fell' and ((i!=6 and v['card']==name) or (i==6 and v['card']=='Bear Cub'))) else 100
+                        if k=='PayCosts':return 500
+                        if k=='TapMana':return 150 if obs['decision']=='pay_costs' else -100
+                        if k=='ArrangeLibrary':return 400 if a['destination']==('Graveyard' if i==8 else 'Bottom') else -100
+                        if k=='PlayLand':return 330 if not any(v['zone']=='Battlefield' and v['owner']=='P0' and v['card']==objects[a['card']]['card'] for v in objects.values()) else 300
+                        if k in ('Attack','Block','Activate','BeginActivate','AnnounceActivate','ActivateMana','AnnounceMana'):return -100
+                        return self.professor_score(obs,a)
+                    j=max(range(len(obs['actions'])),key=lambda j:score(obs['actions'][j]));action=obs['actions'][j]
+                    if obs['library_choice'] is not None:self.assertIsNone(game.observe('P1')['library_choice']);private+=1
+                    if sources or obs['announcing'] or obs['stack'] or obs['resolving']:
+                        saved=game.snapshot()
+                        with game.clone() as fork:expected=fork.step(fork.observe(obs['actor']),j)
+                        self.assertEqual(game.step(obs,j),expected);game.restore(saved)
+                        with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,j)
+                        after=game.step(game.observe(obs['actor']),j);expected['revision']=after['revision'];self.assertEqual(after,expected);game.drop_snapshot(saved);replayed+=1
+                    else:after=game.step(obs,j)
+                    if action['kind']=='Pass' and obs['stack']:
+                        item=obs['stack'][-1]
+                        if item['source_card']==name and item['kind']!='Spell' and item['kind']['TriggeredAbility']['ability']==int(i in (4,9)) and all(v['id']!=item['id'] for v in after['stack']):pending[item['id']]=(item,obs)
+                    for sid,(item,before) in list(pending.items()):
+                        if any(v['id']==sid for v in after['stack']) or after['resolving'] and after['resolving']['id']==sid:continue
+                        self.assertIsNone(item['entering_object']);old={v['id']:v for v in before['objects']};now={v['id']:v for v in after['objects']};source=item['card'];target=next((v['object']['card'] for v in item['targets'] if v['object'] is not None),None)
+                        if i in (0,1,10,13):self.assertEqual(int(now[source]['counters']['plus_one']),int(old[source]['counters']['plus_one'])+1)
+                        if i in (0,8):self.assertGreater(private,0);self.assertEqual(after['players'][0]['library_count']+int(i==8),before['players'][0]['library_count'])
+                        if i in (2,5):self.assertEqual(after['players'][0]['library_count']+1,before['players'][0]['library_count'])
+                        elif i==3:self.assertEqual(int(after['players'][1]['life']),int(before['players'][1]['life'])-1)
+                        elif i==4:self.assertEqual(old[target]['zone'],'Graveyard');self.assertEqual(now[target]['zone'],'Battlefield');self.assertNotEqual(old[target]['reference'],now[target]['reference'])
+                        elif i==6:self.assertEqual(int(now[target]['counters']['plus_one']),int(old[target]['counters']['plus_one'])+1)
+                        elif i in (7,11):self.assertEqual(sum(v['zone']=='Battlefield' and v['token'] is not None and v['token']['subtypes']==('Inkling' if i==7 else 'Villain') and v['id'] not in old for v in after['objects']),1)
+                        elif i==8:self.assertEqual(now[source]['keywords'],old[source]['keywords']|1)
+                        elif i==9:self.assertEqual(int(now[source]['power']),int(old[source]['power'])+1);self.assertEqual(now[source]['keywords'],old[source]['keywords']|64)
+                        elif i==12:self.assertEqual(int(after['players'][0]['life']),int(before['players'][0]['life'])+1);self.assertEqual(int(after['players'][1]['life']),int(before['players'][1]['life'])-1)
+                        elif i==14:self.assertEqual(int(now[source]['power']),int(old[source]['power'])+1);self.assertEqual(int(now[source]['toughness']),int(old[source]['toughness'])+1)
+                        elif i==15:self.assertEqual(after['players'][0]['mana'][3],before['players'][0]['mana'][3]+2)
+                        elif i==16:
+                            for v in old.values():
+                                if v['owner']=='P0' and v['zone']=='Battlefield' and v['card'] in (name,'Bear Cub'):self.assertEqual(int(now[v['id']]['counters']['plus_one']),int(v['counters']['plus_one'])+1)
+                        self.assertEqual(after['schema'],52);done=True;break
+                    if done:break
+                self.assertTrue(done,name);self.assertGreater(replayed,0)
+
     def test_thirteen_qualified_cast_bodies_and_private_replay(self):
         names=['Angry Rabble','Brineborn Cutthroat','Enraged Flamecaster','Kulrath Mystic','Lurking Lizards','Mage Tower Referee','Nightmare Sower','Skybeast Tracker','Solarium Sentry','Spider Manifestation','Stormkeld Prowler','Tanufel Rimespeaker','Unwelcome Sprite']
         for i,wanted in enumerate(names):
