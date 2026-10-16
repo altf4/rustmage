@@ -851,6 +851,11 @@ pub(crate) enum TriggerCondition {
         nontoken: bool,
         subtype: Option<&'static str>,
     },
+    PermanentToGraveyard {
+        kinds: u16,
+        relation: CastRelation,
+        exclude_source_kinds: u16,
+    },
     AtStep {
         step: TriggerStep,
         relation: CastRelation,

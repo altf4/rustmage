@@ -8,6 +8,32 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_permanent_departures_compile_exact_sources_and_kind_scoped_exclusions(self):
+        for noun in ['artifact','enchantment','Aura','Equipment']:
+            for clause,condition in [('is put into a graveyard from the battlefield','SelfDies'),('enters or is put into a graveyard from the battlefield','SelfEntersOrDies')]:
+                result=generate.trigger_creature_template(self.card(oracle_text=f'When this {noun} {clause}, draw a card.'))
+                self.assertIsNotNone(result);self.assertEqual(result[2][0][0],condition)
+        for text,kinds,relation,excluded in [('an enchantment you control',32,'You',0),('an artifact',16,'Any',0),('another artifact you control',16,'You',16),('another artifact or creature',17,'Any',17),('another creature you control or a land you control',3,'You',1)]:
+            result=generate.trigger_creature_template(self.card(oracle_text=f'Whenever {text} is put into a graveyard from the battlefield, draw a card.'))
+            self.assertIsNotNone(result);self.assertEqual(result[2][0][0],f'PermanentToGraveyard {{ kinds: {kinds}, relation: CastRelation::{relation}, exclude_source_kinds: {excluded} }}')
+        for text in ['When this artifact is put into a graveyard from anywhere, draw a card.',
+                     'Whenever an enchantment you control leaves the battlefield, draw a card.',
+                     'Whenever one or more enchantments you control are put into a graveyard from the battlefield, draw a card.',
+                     'Whenever a nontoken artifact you control is put into a graveyard from the battlefield, draw a card.',
+                     'Whenever an enchantment you control is put into a graveyard from the battlefield, return it to the battlefield.']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=text)),text)
+
+    def test_permanent_departures_admit_ten_whole_bodies_and_keep_residuals_gated(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());_,coverage=generate.compile_catalogue(rows,target)
+        supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for name in ["Ashiok's Reaper",'Hopeful Vigil','Knight of Doves','Long Feng, Grand Secretariat','Mephitic Draught','Nutrient Block','Reach for the Sky','Savior of the Sleeping','Warehouse Tabby','Wicked Visitor']:
+            self.assertIn(name,supported)
+            c=next(c for c in rows['cards'] if c['name']==name);bad=dict(c,oracle_text=c['oracle_text']+'\nWhenever you cast a spell, discover 3.')
+            for compiler in [generate.permanent_program_template,generate.trigger_creature_template,generate.aura_template]:self.assertIsNone(compiler(bad),name)
+        for name in ['Bitter Chill','Demonic Ruckus','Krenko, Baron of Tin Street',"Tarrian's Soulcleaver",'Teysa, Opulent Oligarch','Ygra, Eater of All','Zoetic Glyph']:
+            self.assertNotIn(name,supported)
+
     def test_temporary_blocking_prohibition_has_exact_target_and_duration(self):
         instruction=['GrantKeywords { subject: Subject::Targets, keywords: Keywords(2048) }']
         for phrase,rule in [('Target creature','Creature'),('Target creature you control','CreatureYou'),

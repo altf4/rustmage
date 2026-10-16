@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "cfc113b9de5c1e736368d9530e5522749ea5910b4fd245ed7a28ed68f75f5b2b",
+  "catalogue_version": "951574a8bf42f1addd3fcef1e18b37d9d7c8d4c161ae4bf2227acd8ba934fc37",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1218,
-  "implemented_total": 1224,
-  "token_definitions": 55,
+  "implemented_standard_cards": 1228,
+  "implemented_total": 1234,
+  "token_definitions": 56,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -1450,8 +1450,8 @@
     {
       "name": "Ashiok's Reaper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Ashiok, Wicked Manipulator",
@@ -12436,8 +12436,8 @@
     {
       "name": "Hopeful Vigil",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Hopeless Nightmare",
@@ -14314,8 +14314,8 @@
     {
       "name": "Knight of Doves",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Knight of Grace",
@@ -15256,8 +15256,8 @@
     {
       "name": "Long Feng, Grand Secretariat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Long Goodbye",
@@ -16336,8 +16336,8 @@
     {
       "name": "Mephitic Draught",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Merchant of Many Hats",
@@ -17890,8 +17890,8 @@
     {
       "name": "Nutrient Block",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Oaken Siren",
@@ -20470,8 +20470,8 @@
     {
       "name": "Reach for the Sky",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Reach the Horizon",
@@ -22198,8 +22198,8 @@
     {
       "name": "Savior of the Sleeping",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Savior of the Small",
@@ -29872,8 +29872,8 @@
     {
       "name": "Warehouse Tabby",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Warg Tactics",
@@ -30328,8 +30328,8 @@
     {
       "name": "Wicked Visitor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Wickerfolk Indomitable",

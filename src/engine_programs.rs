@@ -157,12 +157,9 @@ impl Game {
         if !event.moved {
             return;
         }
-        if event.before.zone == Zone::Battlefield
-            && event.destination == Zone::Graveyard
-            && event.before.card.is_creature()
-        {
-            // Dies triggers look back at the entire battlefield before the batch;
-            // a source that dies simultaneously still sees the other creatures.
+        if event.before.zone == Zone::Battlefield && event.destination == Zone::Graveyard {
+            // Departure triggers look back at the entire pre-event battlefield;
+            // simultaneous departures still see each other exactly once.
             for source in death_sources {
                 for (index, ability) in source.card.triggers().iter().enumerate() {
                     let matched = match ability.condition.event() {
@@ -180,11 +177,27 @@ impl Game {
                                 CastRelation::Opponent => source.owner != event.before.owner,
                                 CastRelation::Any => true,
                             };
-                            related
+                            event.before.card.is_creature()
+                                && related
                                 && (!other || source.reference != event.before.reference)
                                 && (!nontoken || event.before.token.is_none())
                                 && subtype
                                     .is_none_or(|subtype| event.before.card.has_subtype(subtype))
+                        }
+                        TriggerCondition::PermanentToGraveyard {
+                            kinds,
+                            relation,
+                            exclude_source_kinds,
+                        } => {
+                            let related = match relation {
+                                CastRelation::You => source.owner == event.before.owner,
+                                CastRelation::Opponent => source.owner != event.before.owner,
+                                CastRelation::Any => true,
+                            };
+                            event.before.card.kind_mask() & kinds != 0
+                                && related
+                                && (source.reference != event.before.reference
+                                    || event.before.card.kind_mask() & exclude_source_kinds == 0)
                         }
                         _ => false,
                     };
@@ -222,6 +235,7 @@ impl Game {
                     | TriggerCondition::PlayerDamaged { .. }
                     | TriggerCondition::SelfDies
                     | TriggerCondition::CreatureDies { .. }
+                    | TriggerCondition::PermanentToGraveyard { .. }
                     | TriggerCondition::LifeGained { .. }
                     | TriggerCondition::SelfAttacks
                     | TriggerCondition::SpellCast { .. }

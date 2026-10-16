@@ -9,6 +9,68 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def test_ten_permanent_graveyard_bodies_use_owned_native_events_and_replay(self):
+        watchers=["Ashiok's Reaper",'Knight of Doves','Savior of the Sleeping','Warehouse Tabby','Wicked Visitor']
+        names=watchers+['Long Feng, Grand Secretariat','Mephitic Draught','Nutrient Block','Hopeful Vigil','Reach for the Sky']
+        for wanted in names:
+            if wanted in watchers:deck=['Plains']*12+['Swamp']*12+[wanted]*12+['Hopeful Vigil']*12+['Bear Cub']*12
+            elif wanted.startswith('Long Feng'):deck=['Swamp']*16+['Forest']*8+[wanted]*12+['Vampiric Rites']*12+['Bear Cub']*12
+            elif wanted=='Nutrient Block':deck=['Forest']*24+[wanted]*12+['Bear Cub']*24
+            elif wanted=='Reach for the Sky':deck=['Forest']*12+['Plains']*12+[wanted]*12+['Disenchant']*12+['Bear Cub']*12
+            else:deck=['Plains']*12+['Swamp']*12+[wanted]*12+['Disenchant']*12+['Bear Cub']*12
+            with self.subTest(card=wanted),Game([deck,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+                seen_entry=False
+                for _ in range(18000):
+                    obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor']);objects={o['id']:o for o in obs['objects']}
+                    own=[o for o in objects.values() if o['owner']=='P0' and o['zone']=='Battlefield'];sources=[o for o in own if o['card']==wanted];bears=[o for o in own if o['card']=='Bear Cub'];vigils=[o for o in own if o['card']=='Hopeful Vigil'];rites=[o for o in own if o['card']=='Vampiric Rites']
+                    if sources and wanted=='Reach for the Sky':
+                        self.assertTrue(sources[0]['keywords']&32);self.assertTrue(any(o['reference']==sources[0]['attached_to'] and (o['power'],o['toughness'])==(5,4) and o['keywords']&2 for o in bears));seen_entry=True
+                    if sources and wanted=='Mephitic Draught' and not obs['stack']:self.assertEqual(obs['players'][0]['life'],19);seen_entry=True
+                    roots=[s for s in obs['stack'] if s['source_card']==wanted and isinstance(s['kind'],dict) and 'TriggeredAbility' in s['kind'] and (wanted in watchers or wanted.startswith('Long Feng') or objects[s['card']]['zone']=='Graveyard')]
+                    if roots:break
+                    def score(a):
+                        k=a['kind']
+                        if k in ('Cast','AnnounceCast'):
+                            name=objects[a['card']]['card']
+                            if name==wanted:return 240 if not sources and (wanted!='Reach for the Sky' or bears) else -100
+                            if name=='Bear Cub':return 190 if not bears and (wanted.startswith('Long Feng') or wanted=='Reach for the Sky') else -100
+                            if name=='Hopeful Vigil':return 220 if wanted in watchers and sources and not vigils else -100
+                            if name=='Vampiric Rites':return 210 if wanted.startswith('Long Feng') and sources and not rites else -100
+                            if name=='Disenchant':return 260 if sources and not obs['stack'] and wanted in ('Mephitic Draught','Reach for the Sky') else -100
+                            return -100
+                        if k=='AnnounceActivate':
+                            good=not obs['stack'] and sources and (wanted in watchers and vigils and a['card']==vigils[0]['id'] or wanted in ('Hopeful Vigil','Nutrient Block') and a['card']==sources[0]['id'] or wanted.startswith('Long Feng') and rites and bears and a['card']==rites[0]['id'])
+                            return 250 if good else -100
+                        if k in ('Activate','ActivateMana','AnnounceMana','BeginActivate'):return -100
+                        if k=='ChooseAdditionalCost':return 240 if bears and a['object']['card']==bears[0]['id'] else -100
+                        if k=='ChooseTarget':
+                            root=obs['announcing'];targets=sources if root['source_card'] in ('Disenchant','Long Feng, Grand Secretariat') else bears
+                            return 220 if targets and a['target'].get('Card')==targets[0]['id'] else -100
+                        if k=='Sacrifice':return 220
+                        if k in ('ChooseSpellCost','ChooseActivationCost'):return 200
+                        if k=='TapMana' and obs['decision']=='pay_costs':return 180
+                        return self.professor_score(obs,a)
+                    game.step(obs,max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i])))
+                else:self.fail('permanent departure trigger not reached')
+                root=roots[-1];source=root['card'];before=game.observe('P0');saved=game.snapshot()
+                def finish(handle):return self.finish_self_target(handle,'P0',root['id'])
+                with game.clone() as fork:expected=finish(fork)
+                after=finish(game);self.assertEqual(after,expected);game.restore(saved)
+                with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(before,0)
+                again=finish(game);after['revision']=again['revision'];self.assertEqual(after,again);game.drop_snapshot(saved)
+                if wanted in ("Ashiok's Reaper",'Mephitic Draught','Nutrient Block','Reach for the Sky'):self.assertEqual(after['players'][0]['cards_drawn_this_turn'],before['players'][0]['cards_drawn_this_turn']+1)
+                if wanted in ('Mephitic Draught','Reach for the Sky'):self.assertTrue(seen_entry)
+                if wanted=='Mephitic Draught':self.assertEqual(after['players'][0]['life'],before['players'][0]['life']-1)
+                if wanted=='Wicked Visitor':self.assertEqual(after['players'][1]['life'],before['players'][1]['life']-1)
+                if wanted in ('Savior of the Sleeping','Long Feng, Grand Secretariat'):self.assertEqual(next(o for o in after['objects'] if o['id']==source)['counters']['plus_one'],1)
+                if wanted in ('Knight of Doves','Warehouse Tabby'):
+                    subtype='Bird' if wanted=='Knight of Doves' else 'Rat';ts=[o for o in after['objects'] if o['owner']=='P0' and o['zone']=='Battlefield' and o['token'] and o['token']['subtypes']==subtype];self.assertEqual(len(ts),1);self.assertEqual((ts[0]['power'],ts[0]['toughness']),(1,1));self.assertTrue(ts[0]['keywords']&(1 if subtype=='Bird' else 2048))
+                if wanted=='Hopeful Vigil':
+                    ks=[o for o in after['objects'] if o['zone']=='Battlefield' and o['token'] and o['token']['subtypes']=='Knight'];self.assertEqual(len(ks),1);self.assertEqual((ks[0]['power'],ks[0]['toughness']),(2,2));self.assertTrue(ks[0]['keywords']&8)
+                if wanted=='Nutrient Block':
+                    lower=next(s for s in after['stack'] if s['source_card']==wanted and 'ActivatedAbility' in s['kind']);life=after['players'][0]['life'];after=self.finish_self_target(game,'P0',lower['id']);self.assertEqual(after['players'][0]['life'],life+3)
+                public=game.observe('P1');self.assertTrue(all(o['owner']!='P0' or o['zone']!='Hand' or o['reference'] in public['known_hand'] for o in public['objects']))
+
     def test_six_temporary_blocking_bodies_resolve_expire_and_replay_in_process(self):
         names=['Brambleback Brute','Sandstorm Verge','Sower of Chaos','Summit Intimidator','War Squeak','Zog, Triceraton Castaway']
         for wanted in names:
