@@ -80,7 +80,7 @@ class SubjectConditionTests(unittest.TestCase):
                             if subject and not any(v['id'] == packet['id'] for v in after['stack']):
                                 current = next((v for v in after['objects'] if v['reference'] == subject['reference']), None)
                                 self.assertIsNotNone(current)
-                                self.assertEqual(after['schema'], 61)
+                                self.assertEqual(after['schema'], 62)
                                 owner = int(seat[1])
                                 plus = current['counters']['plus_one'] - subject['counters']['plus_one']
                                 if i == 0:

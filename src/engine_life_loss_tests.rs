@@ -233,6 +233,7 @@ fn program(g: &mut Game, code: &'static [Instruction]) {
         amount: 7,
     });
     g.state.resolving = Some(Resolution {
+        explore: None,
         connive: None,
         item,
         mana_payment: None,

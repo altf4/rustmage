@@ -349,6 +349,7 @@ fn gain_only_suspension_cannot_commit_unrepresentable_continuous_stats() {
                 // life total is unchanged; no printed-body admission is implied.
                 let item = g.state.stack.pop().unwrap();
                 g.state.resolving = Some(Resolution {
+                    explore: None,
                     item,
                     program: &[
                         Instruction::May { skip: 3 },

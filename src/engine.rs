@@ -9,7 +9,7 @@ use crate::cards::{
     TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
 /// Version of the public observation structure, including owned trigger context.
-pub const OBSERVATION_SCHEMA: u32 = 61;
+pub const OBSERVATION_SCHEMA: u32 = 62;
 
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
@@ -53,6 +53,8 @@ mod effect_choices;
 #[path = "engine_exile.rs"]
 mod exile;
 pub use exile::ExilePlayPermission;
+#[path = "engine_explore.rs"]
+mod explore;
 #[path = "engine_fight.rs"]
 mod fight;
 #[path = "engine_milling.rs"]
@@ -61,6 +63,7 @@ mod milling;
 mod sba;
 #[path = "engine_search.rs"]
 mod search;
+pub use explore::{ExploreChoiceView, ExploreEventView, ExplorerView, RevealedLibraryCard};
 #[path = "engine_stat_values.rs"]
 mod stat_values;
 #[path = "engine_stats.rs"]
@@ -240,6 +243,7 @@ define_actions! {
     ChooseAdditionalCost {
         object: ObjectRef,
     },
+    ChooseExplore { object: ObjectRef, graveyard: bool },
     ChooseKicker {
         pay: bool,
     },
@@ -757,6 +761,9 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    Explore {
+        player: Player,
+    },
     TargetLibrary {
         player: Player,
     },
@@ -872,6 +879,7 @@ struct State {
     exile_links: Vec<ExileLink>,
     exile_permissions: Vec<ExilePlayPermission>,
     known_hand: Vec<ObjectRef>,
+    explore_data: Option<Box<explore::ExploreState>>,
     last_target_library_move: Option<Box<TargetLibraryMovement>>,
     players: [PlayerState; 2],
     rng: Rng,
@@ -1128,6 +1136,9 @@ pub struct Observation {
     pub forage: Option<ForageView>,
     pub connive_choice: Option<connive::ConniveChoiceView>,
     pub known_hand: Vec<ObjectRef>,
+    pub explore_choice: Option<ExploreChoiceView>,
+    pub last_explore: Option<ExploreEventView>,
+    pub known_library_top: [Option<RevealedLibraryCard>; 2],
     pub payment_request: Option<PaymentRequestView>,
     pub resolution_payment: Option<resolution_mana::ResolutionPaymentView>,
     pub waiting_triggers: Vec<SpellView>,
@@ -1260,6 +1271,7 @@ impl Game {
                 exile_links: Vec::new(),
                 exile_permissions: Vec::new(),
                 known_hand: Vec::new(),
+                explore_data: None,
                 last_target_library_move: None,
                 players,
                 rng,
@@ -1324,7 +1336,8 @@ impl Game {
         match self.state.pending {
             Pending::Mulligan(p) | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
-            Pending::Kicker { player }
+            Pending::Explore { player }
+            | Pending::Kicker { player }
             | Pending::Offspring { player }
             | Pending::SpellCost { player }
             | Pending::ActivationCost { player }
@@ -1993,6 +2006,17 @@ impl Game {
                     }
                 }
             }
+            Pending::Explore { .. } => {
+                let choice = s.resolving.as_ref().unwrap().explore.as_ref().unwrap();
+                for graveyard in [false, true] {
+                    if emit(Action::ChooseExplore {
+                        object: choice.revealed.object,
+                        graveyard,
+                    }) {
+                        return true;
+                    }
+                }
+            }
             Pending::Kicker { .. } => {
                 let a = s.announcing.as_ref().unwrap();
                 for pay in [false, true] {
@@ -2389,6 +2413,7 @@ impl Game {
                 }
             }
             Action::KeepLegend { object } => self.keep_legend(object),
+            Action::ChooseExplore { graveyard, .. } => self.finish_explore(graveyard),
             Action::ChooseKicker { pay } => {
                 self.state
                     .announcing
@@ -2559,6 +2584,7 @@ impl Game {
                 for id in hand {
                     self.move_object(id, Zone::Library);
                 }
+                self.forget_library_top(p);
                 self.state
                     .rng
                     .shuffle(&mut self.state.players[p.index()].library);
@@ -2877,6 +2903,10 @@ impl Game {
             .generation
             .checked_add(1)
             .capacity("object generation exhausted");
+        let revealed_top = self.public_library_top(before.owner) == Some(before.reference);
+        if before.zone == Zone::Library && revealed_top || destination == Zone::Library {
+            self.forget_library_top(before.owner);
+        }
         if before.zone == Zone::Hand {
             self.state
                 .known_hand
@@ -2921,6 +2951,9 @@ impl Game {
                     item.source_attachment = before.attached_to;
                     item.source_facts = DamageFacts::from_view(&before);
                 }
+            }
+            if let Some(data) = &mut self.state.explore_data {
+                data.sources.retain(|&source| source != id);
             }
             self.state.static_sources.retain(|&source| source != id);
             self.state.cast_sources.retain(|&source| source != id);
@@ -2977,6 +3010,12 @@ impl Game {
         }
         if destination == Zone::Battlefield {
             self.register_battlefield_sources(id);
+        }
+        if revealed_top && before.zone == Zone::Library && destination == Zone::Hand {
+            let reference = self.object_ref(id);
+            if !self.state.known_hand.contains(&reference) {
+                self.state.known_hand.push(reference);
+            }
         }
         ZoneChange {
             before,
@@ -3449,6 +3488,7 @@ impl Game {
                 Pending::Targets { .. } => "targets",
                 Pending::Offspring { .. } => "offspring",
                 Pending::Kicker { .. } => "kicker",
+                Pending::Explore { .. } => "explore",
                 Pending::SpellCost { .. } => "spell_cost",
                 Pending::ActivationCost { .. } => "activation_cost",
                 Pending::Modes { .. } => "spell_mode",
@@ -3685,6 +3725,21 @@ impl Game {
                     current: c.current,
                 }),
             known_hand: s.known_hand.clone(),
+            explore_choice: s
+                .resolving
+                .as_ref()
+                .and_then(|r| r.explore.as_ref())
+                .map(|c| (**c).clone()),
+            last_explore: s.explore_data.as_ref().and_then(|d| d.last.clone()),
+            known_library_top: std::array::from_fn(|i| {
+                s.explore_data
+                    .as_ref()
+                    .and_then(|d| d.known_top[i])
+                    .map(|object| RevealedLibraryCard {
+                        object,
+                        card: s.objects[object.card as usize].card,
+                    })
+            }),
             waiting_triggers: s.ordering_triggers.clone(),
             effect_discards: s
                 .resolving
@@ -3757,6 +3812,7 @@ impl Game {
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<TargetLibraryMovement>())
             + s.known_hand.len() * std::mem::size_of::<ObjectRef>()
+            + s.explore_data.as_ref().map_or(0, |d| d.bytes())
             + (s.free_tokens.len()
                 + s.static_sources.len()
                 + s.cast_sources.len()
@@ -3779,7 +3835,11 @@ impl Game {
             + s.resolving
                 .as_ref()
                 .map(|resolution| {
-                    resolution.target_library.as_ref().map_or(0, |f| f.bytes())
+                    resolution
+                        .explore
+                        .as_ref()
+                        .map_or(0, |_| std::mem::size_of::<ExploreChoiceView>())
+                        + resolution.target_library.as_ref().map_or(0, |f| f.bytes())
                         + resolution.forage.as_ref().map_or(0, |f| f.bytes())
                         + resolution.connive.as_ref().map_or(0, |c| c.bytes())
                         + resolution.mana_payment.as_ref().map_or(0, |_| {

@@ -12,6 +12,12 @@ impl Game {
             self.state.attachment_sources.push(id);
         }
         let triggers = self.state.objects[id as usize].card.triggers();
+        if triggers
+            .iter()
+            .any(|a| a.condition.event() == TriggerCondition::CreatureExploresYou)
+        {
+            self.register_explore_source(id);
+        }
         if triggers.iter().any(|ability| {
             matches!(
                 ability.condition.event(),

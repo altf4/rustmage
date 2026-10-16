@@ -43,6 +43,7 @@ fn program(g: &mut Game, code: &'static [Instruction]) {
     g.prepare_triggers();
     let item = g.state.stack.pop().unwrap();
     g.state.resolving = Some(Resolution {
+        explore: None,
         connive: None,
         item,
         program: code,

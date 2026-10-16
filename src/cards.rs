@@ -365,6 +365,11 @@ pub(crate) enum Instruction {
         skip: usize,
     },
     /// Historical paid qualification of the exact cast.
+    Explore(Subject),
+    DestroyAndCreateForController {
+        token: Card,
+        amount: u16,
+    },
     IfKicked {
         skip: usize,
     },
@@ -1015,6 +1020,7 @@ pub(crate) enum TriggerCondition {
     SelfEnters,
     SelfOffspring,
     SelfKicked,
+    CreatureExploresYou,
     SelfDies,
     SelfEntersOrDies,
     SelfAttacks,
