@@ -748,6 +748,7 @@ pub(crate) enum StepValue {
 pub(crate) enum StepGuard {
     Always,
     Attacked,
+    CreatureDied,
     SourceTapped,
     Expression {
         value: StatValue,

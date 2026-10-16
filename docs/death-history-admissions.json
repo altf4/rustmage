@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Cackling Prowler",
+      "oracle_text": "Ward {2} (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)\nMorbid \u2014 At the beginning of your end step, if a creature died this turn, put a +1/+1 counter on this creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CacklingProwler.java",
+          "java_sha256": "dfffdff4333ce31dce3734ac722ff51014aaa6c55d216ac0df48bec6492b53bd"
+        }
+      ]
+    },
+    {
+      "name": "Cackling Slasher",
+      "oracle_text": "Deathtouch\nThis creature enters with a +1/+1 counter on it if a creature died this turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CacklingSlasher.java",
+          "java_sha256": "747c19c44542f61210c4c6421a68735ee8d36bb75085e1b49aa8a55a614ea2fb"
+        }
+      ]
+    },
+    {
+      "name": "Dreaded Bat-Cloud",
+      "oracle_text": "This spell costs {3} less to cast if a creature died this turn.\nFlying, deathtouch",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DreadedBatCloud.java",
+          "java_sha256": "f52b7a41843ae5aa51fb19f4e34ea9bd65e3ebc7e4283ea81f8258dbe3aed728"
+        }
+      ]
+    },
+    {
+      "name": "Needletooth Pack",
+      "oracle_text": "Morbid \u2014 At the beginning of your end step, if a creature died this turn, put two +1/+1 counters on target creature you control.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/n/NeedletoothPack.java",
+          "java_sha256": "41faa8f4483572c3560df885a7b0621c77321b043aa9436acc98c26e8abd4c62"
+        }
+      ]
+    },
+    {
+      "name": "Scorpion, Seething Striker",
+      "oracle_text": "Deathtouch\nAt the beginning of your end step, if a creature died this turn, target creature you control connives. (Draw a card, then discard a card. If you discarded a nonland card, put a +1/+1 counter on that creature.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/ScorpionSeethingStriker.java",
+          "java_sha256": "3d73cb73a17a5680afaba9790674db2356ed8071415894095fea28885508ad7b"
+        }
+      ]
+    }
+  ],
+  "supporting_sources": [
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/condition/common/MorbidCondition.java",
+      "java_sha256": "21adfb30d2aa5202e5d00f11e73480be8f0af2557cd5e03e05864b15a8485126"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/watchers/common/CreaturesDiedWatcher.java",
+      "java_sha256": "c54597f69b5487c4714868ce642f8fc78464db0bb508ed154206096a74ae1ab1"
+    }
+  ]
+}

@@ -5,14 +5,13 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,094 have executable rules so far.
+knows all 5,164 pinned Standard identities; 1,099 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
-The latest [conditional entry counters](docs/conditional-entry-counters.md)
-add three complete bodies and evaluate simultaneous entries against one pre-entry
-battlefield. Observation schema 42 remains unchanged. Full Standard rules remain
-in progress.
+The latest [creature-death history and morbid rules](docs/creature-death-history.md)
+add five complete bodies, public death counts and observation schema 43. Full
+Standard rules remain in progress.
 
 ## Build and use
 
@@ -70,6 +69,7 @@ cargo run --release --example standard_scaled_reductions -- 100
 cargo run --release --example standard_derived_reductions -- 100
 cargo run --release --example standard_attack_history -- 100
 cargo run --release --example standard_entry_counters -- 100
+cargo run --release --example standard_death_history -- 100
 cargo run --release --example standard_tokens -- 100
 cargo run --release --example standard_activations -- 100
 cargo run --release --example standard_mana -- 100

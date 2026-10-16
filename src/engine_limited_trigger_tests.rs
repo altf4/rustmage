@@ -369,7 +369,7 @@ fn public_limit_ledger_is_owned_accounted_and_restore_invalidates_actions() {
     );
     for p in [Player::P0, Player::P1] {
         let o = g.observe(p);
-        assert_eq!(o.schema, 42);
+        assert_eq!(o.schema, 43);
         assert_eq!(
             o.triggered_this_turn,
             vec![TriggerUse {
