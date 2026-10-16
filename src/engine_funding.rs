@@ -26,6 +26,7 @@ struct FundingState<'g> {
     mana: [u128; 6],
     life: i128,
     resources: Vec<Resource>,
+    convoke: bool,
 }
 #[derive(Clone)]
 struct FundingMove {
@@ -176,6 +177,9 @@ fn source_obligations(
 
 impl<'g> FundingState<'g> {
     fn from_game(game: &'g Game, goal: FundingGoal) -> Self {
+        Self::from_game_with_convoke(game, goal, false)
+    }
+    fn from_game_with_convoke(game: &'g Game, goal: FundingGoal, convoke: bool) -> Self {
         // A prerequisite need not itself produce mana (e.g. a changeling for
         // Mox Jasper). Keep only relevant owned witnesses, including removable
         // mana sources, so virtual sacrifices invalidate later guarded moves.
@@ -213,7 +217,8 @@ impl<'g> FundingState<'g> {
                                     .iter()
                                     .any(|subtype| object.card.has_subtype(subtype))
                             || (object.owner == goal.actor
-                                && (object.card.mana_color().is_some()
+                                && ((convoke && object.card.is_creature())
+                                    || object.card.mana_color().is_some()
                                     || object
                                         .card
                                         .activations()
@@ -228,6 +233,7 @@ impl<'g> FundingState<'g> {
             .collect();
         Self {
             game,
+            convoke,
             actor: goal.actor,
             life_gained: game
                 .state
@@ -588,6 +594,9 @@ impl<'g> FundingState<'g> {
                 }
             }
         }
+        if self.convoke {
+            return convoke::payable(upper, goal.required, goal.generic, &self.convoke_masks());
+        }
         if (0..6).any(|index| upper[index] < u128::from(goal.required[index])) {
             return false;
         }
@@ -598,6 +607,20 @@ impl<'g> FundingState<'g> {
                 total.saturating_add(bound - u128::from(required))
             })
             >= u128::from(goal.generic)
+    }
+    fn convoke_masks(&self) -> [u64; 32] {
+        let mut masks = [0; 32];
+        for r in &self.resources {
+            let o = &r.object;
+            if o.zone == Zone::Battlefield
+                && o.owner == self.actor
+                && o.card.is_creature()
+                && !o.tapped
+            {
+                masks[o.card.colors() as usize & 31] += 1;
+            }
+        }
+        masks
     }
     fn evidence_value(&self) -> u128 {
         let actual: u128 = self
@@ -633,8 +656,16 @@ impl<'g> FundingState<'g> {
         if !self.obligations(goal) {
             return false;
         }
-        if payable(self.mana, goal.required, goal.generic)
-            && evidence.is_none_or(|n| self.evidence_value() >= u128::from(n))
+        if (if self.convoke {
+            convoke::payable(
+                self.mana,
+                goal.required,
+                goal.generic,
+                &self.convoke_masks(),
+            )
+        } else {
+            payable(self.mana, goal.required, goal.generic)
+        }) && evidence.is_none_or(|n| self.evidence_value() >= u128::from(n))
         {
             return true;
         }
@@ -718,6 +749,17 @@ impl Game {
             return true;
         }
         FundingState::from_game(self, goal).reachable(goal, &mut HashSet::new())
+    }
+    pub(super) fn can_fund_convoke(&self, goal: FundingGoal) -> bool {
+        if convoke::payable(
+            self.state.players[goal.actor.index()].mana.map(u128::from),
+            goal.required,
+            goal.generic,
+            &self.convoke_masks(goal.actor, &[]),
+        ) {
+            return true;
+        }
+        FundingState::from_game_with_convoke(self, goal, true).reachable(goal, &mut HashSet::new())
     }
     pub(super) fn can_fund_evidence(&self, goal: FundingGoal, threshold: u16) -> bool {
         if self.can_collect_evidence(goal.actor, threshold) {
@@ -827,22 +869,27 @@ impl Game {
     pub(super) fn funding_goal(&self, announcement: &Announcement) -> FundingGoal {
         match announcement.item.kind {
             StackKind::Spell => {
-                let cost = announcement.total_cost.unwrap_or_else(|| {
-                    if announcement.item.source_card.x_symbols() > 0 {
-                        return self
-                            .scalar_x_total(
-                                announcement.item.controller,
-                                announcement.item.card,
-                                Self::announcement_base_cost(announcement),
-                                announcement.item.x.unwrap_or(0),
-                            )
-                            .expect("validated scalar cost");
-                    }
-                    self.provisional_target_cost(
-                        announcement,
-                        Self::announcement_base_cost(announcement),
-                    )
-                });
+                let cost = announcement
+                    .convoke
+                    .as_ref()
+                    .map(|f| f.remaining)
+                    .or(announcement.total_cost)
+                    .unwrap_or_else(|| {
+                        if announcement.item.source_card.x_symbols() > 0 {
+                            return self
+                                .scalar_x_total(
+                                    announcement.item.controller,
+                                    announcement.item.card,
+                                    Self::announcement_base_cost(announcement),
+                                    announcement.item.x.unwrap_or(0),
+                                )
+                                .expect("validated scalar cost");
+                        }
+                        self.provisional_target_cost(
+                            announcement,
+                            Self::announcement_base_cost(announcement),
+                        )
+                    });
                 let required = cost.colored;
                 let generic = cost.generic;
                 FundingGoal {
@@ -874,7 +921,9 @@ impl Game {
     pub(super) fn visit_cost_payment(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
         let announcement = self.state.announcing.as_ref().unwrap();
         let goal = self.funding_goal(announcement);
-        let state = FundingState::from_game(self, goal);
+        let convoke = announcement.item.kind == StackKind::Spell
+            && announcement.item.source_card.has_convoke();
+        let state = FundingState::from_game_with_convoke(self, goal, convoke);
         let mut done = false;
         if state.obligations(goal) && announcement.evidence.as_ref().is_none_or(|e| e.complete) {
             funding_payments(state.mana, goal.required, goal.generic, |payment| {
@@ -886,6 +935,17 @@ impl Game {
             });
         }
         if done {
+            return true;
+        }
+        if convoke
+            && convoke::payable(
+                state.mana,
+                goal.required,
+                goal.generic,
+                &state.convoke_masks(),
+            )
+            && emit(Action::BeginConvoke)
+        {
             return true;
         }
         // An explicit {0} still has a mana component; a pure tap/sacrifice
@@ -1245,6 +1305,7 @@ mod own_turn_guard_tests {
                 mana: [0; 6],
                 life: 20,
                 resources: Vec::new(),
+                convoke: false,
             };
             assert!(state.guard_available(ActivationGuard::OwnTurn, active));
             assert!(!state.guard_available(ActivationGuard::OwnTurn, active.other()));

@@ -71,6 +71,9 @@ impl Game {
             source: None,
             reserve: None,
         };
+        if definition.has_convoke() {
+            return self.can_fund_convoke(base);
+        }
         let Some(spec) = definition.additional_cost() else {
             return self.can_fund(base);
         };

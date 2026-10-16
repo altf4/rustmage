@@ -908,6 +908,13 @@ def sacrifice_spec(text):
     return amount,filt
 
 
+def extract_convoke(card):
+    lines=card.get('oracle_text','').splitlines()
+    declaration="Convoke (Your creatures can help cast this spell. Each creature you tap while casting this spell pays for {1} or one mana of that creature's color.)"
+    if lines.count(declaration)!=1 or card.get('layout')!='normal':return card,False
+    return dict(card,oracle_text='\n'.join(line for line in lines if line!=declaration)),True
+
+
 def extract_bargain(card):
     lines=card.get('oracle_text','').splitlines()
     declaration='Bargain (You may sacrifice an artifact, enchantment, or token as you cast this spell.)'
@@ -1559,6 +1566,7 @@ for _name, _zone, _kinds, _relation, _other, _nonland in [
     ('Permanent', 'Battlefield', 0, -1, False, False),
     ('Nonland', 'Battlefield', 0, -1, False, True),
     ('OtherNonlandYou', 'Battlefield', 0, 0, True, True),
+    ('OtherNonland', 'Battlefield', 0, -1, True, True),
     ('OtherPermanentYou', 'Battlefield', 0, 0, True, False),
     ('NonlandOpponent', 'Battlefield', 0, 1, False, True),
     ('CreatureEnchantment', 'Battlefield', 33, -1, False, False),
@@ -2008,6 +2016,8 @@ def targeted_program(text):
     rules = {
         "return target creature to its owner's hand.": ('Creature', ['ReturnToHand']),
         "return target nonland permanent to its owner's hand.": ('Nonland', ['ReturnToHand']),
+        "return up to one other target nonland permanent to its owner's hand.": (('OtherNonland', 0, 1), ['ReturnToHand']),
+        "one or two target creatures each get +2/+1 until end of turn.": (('Creature',1,2), [grow_instruction('Targets',2,1)]),
         "return up to one other target nonland permanent you control to its owner's hand.": (('OtherNonlandYou', 0, 1), ['ReturnToHand']),
         'untap target artifact or creature.': ('ArtifactCreature', ['Untap']),
         'untap target nonland permanent.': ('Nonland', ['Untap']),
@@ -3233,6 +3243,7 @@ def compile_catalogue(snapshot, target):
     x_entry_rows = []
     kicker_rows = []
     bargain_rows = []
+    convoke_rows = []
     evidence_rows = []
     kicked_entry_rows = []
     counter_grant_rows = []
@@ -3254,6 +3265,7 @@ def compile_catalogue(snapshot, target):
         card, offspring = extract_offspring(card)
         card, kicker = extract_kicker(card)
         card, bargain = extract_bargain(card)
+        card, convoke = extract_convoke(card)
         card, evidence = extract_evidence(card)
         card, additional = extract_additional_cost(card)
         card, target_reduction = extract_target_cost_reduction(card)
@@ -3340,6 +3352,10 @@ def compile_catalogue(snapshot, target):
             saddle=saddle_body(card) if evidence is None and not cycling and all(v is None for v in (flashback,offspring,kicker,additional,target_reduction)) and not bargain and not reductions and not dynamic and not scaling else None
             if saddle is None:effect='Unsupported'
             else:effect,keywords,abilities,activations,enters=saddle
+        # Convoke applies only to complete fixed intrinsic bodies. No selector may
+        # silently combine an unimplemented additional/alternative payment recipe.
+        if convoke and (bargain or evidence is not None or cycling or any(v is not None for v in (flashback,offspring,kicker,additional,target_reduction)) or '{X}' in card.get('mana_cost','') or any(line.startswith('Saddle ') for line in card.get('oracle_text','').splitlines())):
+            effect='Unsupported'
         # Later fixed-cost selectors must never revive a rejected variable-cost body.
         if '{X}' in card.get('mana_cost', '') and scalar is None:
             effect = 'Unsupported'
@@ -3382,6 +3398,7 @@ def compile_catalogue(snapshot, target):
         if effect != 'Unsupported':
             supported.append(index)
             if evidence is not None: evidence_rows.append(f'        {index} => Some(({evidence[0]}, {evidence[1]})),')
+            if convoke: convoke_rows.append(str(index))
             if bargain: bargain_rows.append(f'        {index} => Some({bargain_reduction}),')
             if scalar is not None:
                 x_rows.append(f'        {index} => 1,')
@@ -3544,6 +3561,8 @@ def compile_catalogue(snapshot, target):
     lines += ['#[rustfmt::skip]', "pub(super) fn entry_counter_rules(card: Card) -> &'static [EntryCounterRule] {", '    match card.0 {', *entry_counter_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn starting_loyalty(card: Card) -> u64 {', '    match card.0 {', *loyalty_rows, '        _ => 0,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn exhaust_mask(card: Card) -> u64 {', '    match card.0 {', *exhaust_rows, '        _ => 0,', '    }', '}', '']
+    convoke_match = 'matches!(card.0, ' + ' | '.join(convoke_rows) + ')' if convoke_rows else 'false'
+    lines += ['#[rustfmt::skip]', 'pub(super) fn has_convoke(card: Card) -> bool {', '    '+convoke_match, '}', '']
     protection = 'matches!(card.0, ' + ' | '.join(uncounterable_rows) + ')' if uncounterable_rows else 'false'
     lines += ['#[rustfmt::skip]', 'pub(super) fn uncounterable(card: Card) -> bool {', '    ' + protection, '}', '']
     return '\n'.join(lines), {'schema': 1, 'catalogue_version': version, 'standard_legal_cards': len(cards),

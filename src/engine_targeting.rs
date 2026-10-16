@@ -17,6 +17,7 @@ pub(super) struct Announcement {
     pub additional: Option<ObjectRef>,
     pub forage: Option<Box<forage::ForageSelection>>,
     pub evidence: Option<Box<evidence::EvidenceSelection>>,
+    pub convoke: Option<Box<convoke::ConvokeSelection>>,
     pub additional_paid: bool,
 }
 
@@ -527,6 +528,7 @@ impl Game {
             additional: None,
             forage: None,
             evidence: None,
+            convoke: None,
             additional_paid: false,
             pay_window: false,
             production: None,
@@ -560,6 +562,7 @@ impl Game {
             additional: None,
             forage: None,
             evidence: None,
+            convoke: None,
             additional_paid: false,
             pay_window: true,
             production,
@@ -632,6 +635,15 @@ impl Game {
             return;
         }
         let mut announcement = self.state.announcing.take().unwrap();
+        if let Some(frame) = announcement.convoke.take() {
+            self.tap_objects(
+                &frame
+                    .selected
+                    .iter()
+                    .map(|s| s.object.card)
+                    .collect::<Vec<_>>(),
+            );
+        }
         announcement
             .item
             .targets

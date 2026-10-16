@@ -12,7 +12,7 @@ use crate::cards::{
 mod saddle;
 pub use saddle::SaddleChoiceView;
 /// Version of the public observation structure, including private Saddle costs.
-pub const OBSERVATION_SCHEMA: u32 = 67;
+pub const OBSERVATION_SCHEMA: u32 = 68;
 
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
@@ -43,6 +43,8 @@ pub use additional_costs::AdditionalCostView;
 mod activations;
 #[path = "engine_connive.rs"]
 mod connive;
+#[path = "engine_convoke.rs"]
+mod convoke;
 #[path = "engine_damage_triggers.rs"]
 mod damage_triggers;
 #[path = "engine_discard_events.rs"]
@@ -51,6 +53,7 @@ mod discard_events;
 mod draw_events;
 #[path = "engine_funding.rs"]
 mod funding;
+pub use convoke::{ConvokeChoiceView, ConvokeContribution, ConvokePaymentView};
 #[path = "engine_resolution_mana.rs"]
 mod resolution_mana;
 use funding::FundingGoal;
@@ -250,6 +253,8 @@ define_actions! {
     ChooseEvidence { object: ObjectRef },
     FinishEvidence,
     DeclineEvidence,
+    BeginConvoke,
+    ChooseConvoker { object: ObjectRef, contribution: ConvokeContribution },
     ChooseSaddler { object: ObjectRef },
     FinishSaddle,
     ChooseLibraryDestination { object: ObjectRef, destination: LibraryDestination },
@@ -798,6 +803,9 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    Convoke {
+        player: Player,
+    },
     EvidenceIntent {
         player: Player,
     },
@@ -1175,6 +1183,7 @@ pub struct LegalActionSpace {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    pub convoke_choice: Option<ConvokeChoiceView>,
     pub saddle_choice: Option<SaddleChoiceView>,
     /// Complete scalar domain, visible only to its choosing actor.
     pub x_choice: Option<XChoiceView>,
@@ -1428,6 +1437,7 @@ impl Game {
             Pending::Priority => Some(self.state.priority),
             Pending::EvidenceIntent { player }
             | Pending::Evidence { player }
+            | Pending::Convoke { player }
             | Pending::Saddle { player }
             | Pending::Explore { player }
             | Pending::Bargain { player }
@@ -1647,6 +1657,11 @@ impl Game {
         // result. Cache capacity affects work only, never the admitted action set.
         let mut spell_funding_cache: [Option<(Mana, u32, bool)>; 8] = [None; 8];
         match s.pending {
+            Pending::Convoke { .. } => {
+                if self.visit_convoke_actions(&mut emit) {
+                    return true;
+                }
+            }
             Pending::Saddle { .. } => {
                 if self.visit_saddle_actions(&mut emit) {
                     return true;
@@ -1891,7 +1906,7 @@ impl Game {
                             if obj.card.has_bargain() {
                                 return self.initial_bargain_fundable(actor, card, cost);
                             }
-                            if obj.card.additional_cost().is_some() {
+                            if obj.card.has_convoke() || obj.card.additional_cost().is_some() {
                                 return self.spell_can_fund(actor, card, cost);
                             }
                             let colored = cost.colored;
@@ -1993,6 +2008,7 @@ impl Game {
                         || obj.card.offspring_cost().is_some()
                         || obj.card.kicker_cost().is_some()
                         || obj.card.collect_evidence_cost().is_some()
+                        || obj.card.has_convoke()
                         || obj.card.has_bargain()
                         || obj.card.additional_cost().is_some()
                         || matches!(obj.card.effect(), Effect::Modal(_))
@@ -2514,6 +2530,11 @@ impl Game {
                 let item = self.activation_item(actor, card, ability);
                 self.open_payment_announcement(item, counter_payment, Some(production));
             }
+            Action::BeginConvoke => self.begin_convoke(),
+            Action::ChooseConvoker {
+                object,
+                contribution,
+            } => self.choose_convoker(object, contribution),
             Action::PayCosts { payment } => {
                 self.state.announcing.as_mut().unwrap().payment = Some(payment);
                 self.finish_announcement();
@@ -3712,6 +3733,11 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
+            convoke_choice: if owns_choice {
+                self.convoke_choice()
+            } else {
+                None
+            },
             saddle_choice: if owns_choice {
                 self.saddle_choice()
             } else {
@@ -3739,6 +3765,7 @@ impl Game {
                 Pending::Offspring { .. } => "offspring",
                 Pending::Bargain { .. } => "bargain",
                 Pending::Kicker { .. } => "kicker",
+                Pending::Convoke { .. } => "convoke",
                 Pending::Saddle { .. } => "saddle",
                 Pending::Explore { .. } => "explore",
                 Pending::X { .. } => "x",
@@ -4141,6 +4168,10 @@ impl Game {
                             * std::mem::size_of::<CardId>()
                 })
                 .unwrap_or(0)
+            + s.announcing
+                .as_ref()
+                .and_then(|a| a.convoke.as_ref())
+                .map_or(0, |f| f.bytes())
             + s.announcing
                 .as_ref()
                 .and_then(|a| a.evidence.as_ref())
