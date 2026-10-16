@@ -750,10 +750,27 @@ impl Game {
                     let events = self.move_objects_raw(&ids, Zone::Exile);
                     self.finish_zone_events(&events, &[]);
                 }
-                Instruction::Draw(set, amount) => {
+                Instruction::Draw(set, _) | Instruction::DrawScaled(set, _) => {
+                    let amount = match instruction {
+                        Instruction::Draw(_, amount) => u128::from(amount),
+                        Instruction::DrawScaled(_, value) => {
+                            self.amount_value(value, item.object, item.controller)
+                        }
+                        _ => unreachable!(),
+                    };
                     for player in self.program_players(set, &item) {
-                        self.draw_many(player, u128::from(amount));
+                        self.draw_many(player, amount);
                     }
+                }
+                Instruction::DrainLifeScaled(value) => {
+                    let amount =
+                        i128::try_from(self.amount_value(value, item.object, item.controller))
+                            .capacity("life drain amount representation exhausted");
+                    let life = &mut self.state.players[item.controller.other().index()].life;
+                    *life = life
+                        .checked_sub(amount)
+                        .capacity("life representation exhausted");
+                    self.gain_life(item.controller, amount);
                 }
                 Instruction::Discard(set, amount) => {
                     for player in self.program_players(set, &item) {
@@ -876,10 +893,26 @@ impl Game {
                     subject,
                     power,
                     toughness,
+                }
+                | Instruction::GrowScaled {
+                    subject,
+                    power,
+                    toughness,
+                    ..
                 } => {
+                    let amount = if let Instruction::GrowScaled { amount, .. } = instruction {
+                        i128::try_from(self.amount_value(amount, item.object, item.controller))
+                            .capacity("growth amount representation exhausted")
+                    } else {
+                        1
+                    };
                     let stats = Stats {
-                        power: i128::from(power),
-                        toughness: i128::from(toughness),
+                        power: i128::from(power)
+                            .checked_mul(amount)
+                            .capacity("power representation exhausted"),
+                        toughness: i128::from(toughness)
+                            .checked_mul(amount)
+                            .capacity("toughness representation exhausted"),
                     };
                     match subject {
                         Subject::Source => {

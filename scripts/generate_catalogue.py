@@ -340,6 +340,10 @@ def stat_count_filter(text):
 def stat_value(text):
     if text=='your life total':return 'StatValue::ControllerLife'
     if text=='card types among cards in all graveyards':return 'StatValue::GraveyardCardTypes'
+    for prefix,variant in [('colors among ','Colors'),('card types among ','CardTypes')]:
+        if text.startswith(prefix):
+            filt=stat_count_filter(text[len(prefix):])
+            return f'StatValue::{variant}({filt})' if filt else None
     if text.startswith('greatest mana value among '):
         filt=stat_count_filter(text[len('greatest mana value among '):])
         return f'StatValue::GreatestManaValue({filt})' if filt else None
@@ -699,6 +703,13 @@ def statement_program(text):
     if not isinstance(text, str) or not text:
         return None
     text = normalize_duration(text[0].lower() + text[1:])
+    if m:=re.fullmatch(r'(?:you )?draw (?:cards equal to (.+)|X cards, where X is (.+))\.',text):
+        value=amount_value(m[1] or m[2])
+        return [f'DrawScaled(PlayerSet::Controller, {value})'] if value else None
+    if m:=re.fullmatch(r'each opponent loses X life and you gain X life, where X is (.+)\.',text):
+        value=amount_value(m[1])
+        return [f'DrainLifeScaled({value})'] if value else None
+    if text=='discard your hand.':return ['DiscardHand(PlayerSet::Controller)']
     if program:=scaled_life_program(text):return program
     if text == 'you get an emblem with "Whenever you gain life, target opponent loses that much life."':
         body='Whenever you gain life, target opponent loses that much life.'
@@ -1040,6 +1051,11 @@ def targeted_program(text):
     if not isinstance(text, str) or not text.endswith('.'):
         return None
     text = normalize_duration(text[0].lower() + text[1:])
+    if m:=re.fullmatch(r'(target creature|target creature you control|another target creature you control) gets ([+-])X/([+-])X until end of turn, where X is (.+)\.',text):
+        value=amount_value(m[4])
+        target={'target creature':'Creature','target creature you control':'CreatureYou','another target creature you control':'OtherCreatureYou'}[m[1]]
+        power,toughness=(1 if sign=='+' else -1 for sign in [m[2],m[3]])
+        return (target,[f'GrowScaled {{ subject: Subject::Targets, amount: {value}, power: {power}, toughness: {toughness} }}']) if value else None
     if program:=scaled_damage_program(text):return program
     if m:=re.fullmatch(r'put (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on each of (up to two|up to three|one or two|two) target creatures( you control)?\.',text):
         spec=('CreatureYou' if m[4] else 'Creature',0 if m[3].startswith('up to') else 1 if m[3]=='one or two' else 2,3 if m[3]=='up to three' else 2)
@@ -1415,7 +1431,7 @@ def trigger_creature_template(card):
     text = re.sub(r'\([^()]*\)', '', card['oracle_text']).strip()
     for line in text.split('\n'):
         line = line.strip()
-        for label in ('Do You Like Squirrels? — ', 'I LOVE Squirrels! — '):
+        for label in ('Do You Like Squirrels? — ', 'I LOVE Squirrels! — ', 'Vivid — '):
             if line.startswith(label):line=line[len(label):]
         limited = line.endswith(' This ability triggers only once each turn.')
         if limited: line = line[:-len(' This ability triggers only once each turn.')]

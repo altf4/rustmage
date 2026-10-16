@@ -12,6 +12,78 @@ class BindingTests(unittest.TestCase):
     def game(self):
         return Game([["Mountain"] * 24 + ["LightningBolt"] * 36] * 2, seed=17, deck_rules="Freeform")
 
+    def pinned_color_count(self,obs,player):
+        rows={c['name']:c for c in json.loads((Path(__file__).resolve().parents[1]/'data/standard/cards.json').read_text())['cards']}
+        colors=set()
+        for o in obs['objects']:
+            if o['owner']!=player or o['zone']!='Battlefield':continue
+            if o['token'] is not None:colors.update(c for i,c in enumerate('WUBRG') if o['token']['colors']&(1<<i))
+            else:colors.update(rows[o['card']]['colors'])
+        return len(colors)
+
+    def test_vivid_scaled_draw_and_drain_use_color_unions_through_native_replay(self):
+        cases=[('Shinestriker',['Island']*12+['Forest']*12+['Shinestriker']*12+['Glister Bairn']*12+['Bear Cub']*12),
+               ('Shimmercreep',['Swamp']*12+['Forest']*12+['Shimmercreep']*12+['Luminollusk']*12+['Glister Bairn']*12)]
+        for name,deck in cases:
+            with self.subTest(card=name),Game([deck,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+                for _ in range(5000):
+                    actor=game.observe('P0')['actor'];obs=game.observe(actor);self.assertIsNone(obs['outcome'])
+                    if obs['stack'] and obs['stack'][-1]['source_card']==name and 'TriggeredAbility' in obs['stack'][-1]['kind']:
+                        amount=self.pinned_color_count(obs,'P0')
+                        if amount>=2:
+                            saved=game.snapshot()
+                            with game.clone() as fork:expected=self.resolve_vital_top(fork,actor)
+                            after=self.resolve_vital_top(game,actor);self.assertEqual(after,expected)
+                            if name=='Shinestriker':
+                                self.assertEqual(after['players'][0]['library_count'],obs['players'][0]['library_count']-amount)
+                                self.assertEqual(after['players'][0]['hand_count'],obs['players'][0]['hand_count']+amount)
+                                self.assertEqual(after['players'][0]['cards_drawn_this_turn'],obs['players'][0]['cards_drawn_this_turn']+amount)
+                                self.assertFalse(any(o['owner']=='P0' and o['zone']=='Hand' for o in game.observe('P1')['objects']))
+                            else:
+                                self.assertEqual(after['players'][1]['life'],obs['players'][1]['life']-amount)
+                                self.assertEqual(after['players'][0]['life'],obs['players'][0]['life']+amount)
+                                self.assertEqual(after['players'][0]['life_gained_this_turn'],obs['players'][0]['life_gained_this_turn']+amount)
+                                self.assertEqual(after['players'][0]['life_gain_events_this_turn'],obs['players'][0]['life_gain_events_this_turn']+1)
+                            game.restore(saved);again=self.resolve_vital_top(game,actor);after['revision']=again['revision'];self.assertEqual(again,after);game.drop_snapshot(saved);break
+                    index=max(range(len(obs['actions'])),key=lambda i:self.professor_score(obs,obs['actions'][i]))
+                    game.step(obs,index)
+                else:self.fail('nontrivial distinct-color effect not reached')
+
+    def test_peer_private_batch_then_owned_graveyard_type_draw_replays_without_repeating_discards(self):
+        deck=['Forest']*12+['Mountain']*12+['Peer Past the Veil']*12+['Three Tree Mascot']*6+['Clachan Festival']*6+['Bear Cub']*6+['Goldvein Pick']*6
+        rows={c['name']:c for c in json.loads((Path(__file__).resolve().parents[1]/'data/standard/cards.json').read_text())['cards']}
+        with Game([deck,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+            for _ in range(5000):
+                actor=game.observe('P0')['actor'];obs=game.observe(actor);self.assertIsNone(obs['outcome'])
+                if obs['decision']=='effect_discard' and obs['resolving']['source_card']=='Peer Past the Veil' and obs['players'][0]['hand_count']>=2:
+                    hand=[o for o in obs['objects'] if o['owner']=='P0' and o['zone']=='Hand']
+                    typed=[o for o in obs['objects'] if o['owner']=='P0' and o['zone'] in ('Hand','Graveyard') and o['token'] is None]
+                    types=set()
+                    for o in typed:types.update(set(rows[o['card']]['type_line'].split(' — ')[0].split())&{'Artifact','Battle','Creature','Enchantment','Instant','Kindred','Land','Planeswalker','Sorcery'})
+                    amount=len(types);self.assertGreater(amount,1);self.assertGreater(obs['players'][0]['library_count'],amount)
+                    first=next(a for a in obs['actions'] if a['kind']=='Discard');chosen=game.act(obs,first)
+                    self.assertEqual(next(o['zone'] for o in chosen['objects'] if o['id']==first['card']),'Hand')
+                    other=game.observe('P1');self.assertEqual(other['effect_discards'],[]);self.assertFalse(any(o['id'] in {c['id'] for c in hand} for o in other['objects']))
+                    saved=game.snapshot()
+                    def finish(handle):
+                        for _ in range(100):
+                            current=handle.observe('P0')
+                            if current['decision']!='effect_discard':return current
+                            handle.act(current,next(a for a in current['actions'] if a['kind']=='Discard'))
+                        self.fail('private discard batch stalled')
+                    with game.clone() as fork:expected=finish(fork)
+                    after=finish(game);self.assertEqual(after,expected)
+                    self.assertEqual(after['players'][0]['library_count'],obs['players'][0]['library_count']-amount)
+                    self.assertEqual(after['players'][0]['hand_count'],amount)
+                    self.assertEqual(after['players'][0]['cards_drawn_this_turn'],obs['players'][0]['cards_drawn_this_turn']+amount)
+                    game.restore(saved);again=finish(game);after['revision']=again['revision'];self.assertEqual(again,after);game.drop_snapshot(saved);return
+                objects={o['id']:o for o in obs['objects']}
+                def score(a):
+                    if a['kind']=='Cast' and objects[a['card']]['card']=='Peer Past the Veil':return 90
+                    return self.professor_score(obs,a)
+                index=max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i]));game.step(obs,index)
+            self.fail('Peer private discard continuation not reached')
+
     def test_cat_gator_native_scaled_damage_and_lifelink_replay(self):
         deck=['Swamp']*24+['Cat-Gator']*36
         with Game([deck,['Forest']*60],seed=7,deck_rules='Freeform') as game:

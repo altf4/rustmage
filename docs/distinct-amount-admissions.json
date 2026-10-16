@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Explosive Prodigy",
+      "oracle_text": "Vivid \u2014 When this creature enters, it deals X damage to target creature an opponent controls, where X is the number of colors among permanents you control.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/ExplosiveProdigy.java",
+          "java_sha256": "8138af98d5db56143a0fddb9eea16c6e6c37ece44659e8031eb14beff7ca518b"
+        }
+      ]
+    },
+    {
+      "name": "Frontline Rush",
+      "oracle_text": "Choose one \u2014\n\u2022 Create two 1/1 red Goblin creature tokens.\n\u2022 Target creature gets +X/+X until end of turn, where X is the number of creatures you control.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FrontlineRush.java",
+          "java_sha256": "814471e5337f123b4b538413a99e9eca75876fca8a385ec6f9db7e89cfe7309c"
+        }
+      ]
+    },
+    {
+      "name": "Glister Bairn",
+      "oracle_text": "Vivid \u2014 At the beginning of combat on your turn, another target creature you control gets +X/+X until end of turn, where X is the number of colors among permanents you control.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GlisterBairn.java",
+          "java_sha256": "c6e8fca39ed91f8484091603df431f10e3fe109dfde664a64ca890c1714b6468"
+        }
+      ]
+    },
+    {
+      "name": "Luminollusk",
+      "oracle_text": "Deathtouch\nVivid \u2014 When this creature enters, you gain life equal to the number of colors among permanents you control.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/Luminollusk.java",
+          "java_sha256": "530b94c7cd788233a4133a9c1f9187ab8870a1a3c08cc2775205c42a9f5e9377"
+        }
+      ]
+    },
+    {
+      "name": "Peer Past the Veil",
+      "oracle_text": "Discard your hand. Then draw X cards, where X is the number of card types among cards in your graveyard.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PeerPastTheVeil.java",
+          "java_sha256": "525e6730c8cb52eaa6869441dcd13626ce41754c8ffd42f4e30b0b46ce800816"
+        }
+      ]
+    },
+    {
+      "name": "Shimmercreep",
+      "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)\nVivid \u2014 When this creature enters, each opponent loses X life and you gain X life, where X is the number of colors among permanents you control.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/Shimmercreep.java",
+          "java_sha256": "dceba7dbc5684203d319c8d43daac8c2fba709e811c818409276bd104f1b8b44"
+        }
+      ]
+    },
+    {
+      "name": "Shinestriker",
+      "oracle_text": "Flying\nVivid \u2014 When this creature enters, draw cards equal to the number of colors among permanents you control.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/Shinestriker.java",
+          "java_sha256": "802df6e7093a482b1fa6c112db9339f215ec9d5ac06675d1be237258cf975170"
+        }
+      ]
+    },
+    {
+      "name": "Squawkroaster",
+      "oracle_text": "Double strike\nVivid \u2014 Squawkroaster's power is equal to the number of colors among permanents you control.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/Squawkroaster.java",
+          "java_sha256": "28a73460ba17a54d8bf5b93bb959107936b6cbef1410ff2a8f300774e38a0f2e"
+        }
+      ]
+    }
+  ]
+}

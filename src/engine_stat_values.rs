@@ -31,6 +31,21 @@ impl Game {
     pub(super) fn stat_value(&self, value: StatValue, source: ObjectRef, owner: Player) -> i128 {
         match value {
             StatValue::ControllerLife => self.state.players[owner.index()].life,
+            StatValue::Colors(filter) | StatValue::CardTypes(filter) => {
+                self.state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|&(id, _)| self.count_matches(filter, source, owner, id as CardId))
+                    .fold(0u16, |mask, (_, object)| {
+                        mask | if matches!(value, StatValue::Colors(_)) {
+                            u16::from(object.card.colors())
+                        } else {
+                            object.card.kind_mask()
+                        }
+                    })
+                    .count_ones() as i128
+            }
             StatValue::Count(filter) => i128::try_from(
                 (0..self.state.objects.len())
                     .filter(|&id| self.count_matches(filter, source, owner, id as CardId))

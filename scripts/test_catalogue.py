@@ -14,6 +14,48 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_distinct_characteristic_expressions_preserve_owner_zone_and_card_requirements(self):
+        colors=generate.amount_value('the number of colors among permanents you control')
+        self.assertIn('StatValue::Colors',colors);self.assertIn('CountZone::Battlefield',colors)
+        types=generate.amount_value('the number of card types among cards in your graveyard')
+        self.assertIn('StatValue::CardTypes',types);self.assertIn('CountZone::Graveyard',types);self.assertIn('cards_only: true',types)
+        for text in ['colors of mana spent to cast this spell','colors in your color identity','colors among permanents your opponents control',
+                     'card types among cards exiled with this creature','colors among cards in your hand']:
+            self.assertIsNone(generate.amount_value(text),text)
+
+    def test_scaled_draw_growth_and_drain_are_complete_defined_amounts(self):
+        draw=generate.statement_program('draw X cards, where X is the number of card types among cards in your graveyard.')
+        self.assertIn('DrawScaled',draw[0]);self.assertIn('StatValue::CardTypes',draw[0])
+        draw=generate.statement_program('draw cards equal to the number of colors among permanents you control.')
+        self.assertIn('StatValue::Colors',draw[0])
+        drain=generate.statement_program('each opponent loses X life and you gain X life, where X is the number of colors among permanents you control.')
+        self.assertEqual(len(drain),1);self.assertIn('DrainLifeScaled',drain[0])
+        growth=generate.targeted_program('another target creature you control gets +X/+X until end of turn, where X is the number of colors among permanents you control.')
+        self.assertEqual(growth[0],'OtherCreatureYou');self.assertIn('GrowScaled',growth[1][0])
+        self.assertEqual(generate.statement_program('discard your hand.'),['DiscardHand(PlayerSet::Controller)'])
+        for text in ['draw X cards.','draw cards equal to the number of cards in your hand.',
+                     'target creature gets +X/+X until end of turn.',
+                     'target creature gets +X/+X until end of turn, where X is the sacrificed creature\'s power.',
+                     'each opponent loses X life and you gain that much life.',
+                     'draw X cards, where X is the number of colors of mana spent to cast this spell.']:
+            self.assertIsNone(generate.statement_program(text),text);self.assertIsNone(generate.targeted_program(text),text)
+
+    def test_distinct_amount_eight_admissions_require_complete_card_bodies(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,report=generate.compile_catalogue(rows,target);supported={r['name'] for r in report['cards'] if r['implemented']}
+        for name in ['Explosive Prodigy','Frontline Rush','Glister Bairn','Luminollusk','Peer Past the Veil','Shimmercreep','Shinestriker','Squawkroaster']:
+            self.assertIn(name,supported)
+            c=next(c for c in rows['cards'] if c['name']==name)
+            c=dict(c,oracle_text=c['oracle_text']+'\nWhenever you cast a spell, discover 3.')
+            proxy,_,_=generate.extract_stat_rules(c)
+            self.assertIsNone(generate.permanent_program_template(proxy),name)
+            self.assertIsNone(generate.spell_program_template(proxy),name)
+            self.assertIsNone(generate.modal_spell_template(proxy),name)
+        for name in ['Aurora Awakener','Bloom Tender','Fblthp, Knows the Way','Kithkeeper','Prismabasher','Rime Chill','Prismatic Undercurrents','Puca\'s Eye','Savanti Romero, Time\'s Exile']:
+            self.assertNotIn(name,supported)
+
     def test_scaled_damage_exact_amounts_targets_and_word_orders(self):
         for text,target,value in [
             ('this spell deals damage to target creature equal to the number of lands you control.','Creature','kind: 2'),
@@ -60,7 +102,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIsNone(generate.permanent_program_template(card),name)
             self.assertIsNone(generate.spell_program_template(card),name)
             self.assertIsNone(generate.modal_spell_template(card),name)
-        for name in ['Smaug, Wicked Worm','Stadium Headliner','Luminollusk','Barret Wallace','Razor Rings']:
+        for name in ['Smaug, Wicked Worm','Stadium Headliner','Barret Wallace','Razor Rings']:
             self.assertNotIn(name,supported)
 
     def test_damage_pronouns_require_self_event_and_exact_source_alias(self):
@@ -1753,7 +1795,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Kraven, Proud Predator','Mirkwood Pathmaker','Moon-Vigil Adherents','Regal Bunnicorn','Snow Villiers',
                      'Tarmogoyf','Tempest Djinn','Xande, Dark Mage','Breeding Pool','Undercity Sewers','Hallowed Fountain']:
             self.assertIn(name,supported)
-        for name in ['Squawkroaster','Diligent Zookeeper','Melek, Reforged Researcher','Namor the Sub-Mariner',
+        for name in ['Diligent Zookeeper','Melek, Reforged Researcher','Namor the Sub-Mariner',
                      'Improvised Arsenal','With Great Power . . .','Zell Dincht','Lumra, Bellow of the Woods']:
             self.assertNotIn(name,supported)
 
