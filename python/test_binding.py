@@ -101,7 +101,7 @@ class BindingTests(unittest.TestCase):
                             committed.add(bool(objects[root['card']]['token']))
                             if i!=11 or not pay or committed=={False,True}:break
                 else:self.fail('filtered body did not finish '+wanted)
-                self.assertGreater(replayed,0);self.assertEqual(after['schema'],55)
+                self.assertGreater(replayed,0);self.assertEqual(after['schema'],56)
                 if sacrificed_source:self.assertTrue(source_left)
                 if i in (3,4,5,6,7):self.assertTrue(hybrid)
                 if i==11:
