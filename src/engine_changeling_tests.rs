@@ -85,6 +85,7 @@ fn program(g: &mut Game, code: &'static [Instruction]) {
         selected_discards: [Vec::new(), Vec::new()],
         milled: Vec::new(),
         library: None,
+        selection: None,
         search: None,
         choice: None,
         mana_payment: None,

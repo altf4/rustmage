@@ -225,6 +225,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::AssignDamage { amount, .. } => 50 + *amount,
             Action::Bottom { .. } | Action::Discard { .. } => 50,
             Action::PutTrigger { .. } => 50,
+            Action::SelectLibrary { .. } => 60,
+            Action::FinishLibrarySelection | Action::OrderLibraryBottom { .. } => 50,
             Action::ArrangeLibrary { destination, .. } => {
                 if *destination == crate::LibraryDestination::Top {
                     50

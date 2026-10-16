@@ -329,6 +329,7 @@ fn all_program_instructions_finish_before_loss_sba_even_across_discard() {
         selected_discards: [Vec::new(), Vec::new()],
         milled: Vec::new(),
         library: None,
+        selection: None,
         search: None,
         choice: None,
     });
@@ -486,6 +487,7 @@ fn simultaneous_discards_keep_all_selections_private_until_committed() {
         selected_discards: [Vec::new(), Vec::new()],
         milled: Vec::new(),
         library: None,
+        selection: None,
         search: None,
         choice: None,
     });

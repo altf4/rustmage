@@ -224,6 +224,7 @@ fn resolution_mana_choice_is_private_owned_and_replayable_before_later_instructi
         selected_discards: [Vec::new(), Vec::new()],
         milled: Vec::new(),
         library: None,
+        selection: None,
         search: None,
         choice: None,
     });

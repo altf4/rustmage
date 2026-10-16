@@ -42,6 +42,7 @@ fn scry_partition_orders_both_groups_and_keeps_middle() {
         selected_discards: [Vec::new(), Vec::new()],
         milled: Vec::new(),
         library: None,
+        selection: None,
         search: None,
         choice: None,
     });
@@ -249,6 +250,7 @@ fn short_empty_and_zero_looks_do_not_attempt_empty_draws() {
         selected_discards: [Vec::new(), Vec::new()],
         milled: Vec::new(),
         library: None,
+        selection: None,
         search: None,
         choice: None,
     });
@@ -348,6 +350,7 @@ fn sba_waits_through_library_choices_and_following_instructions() {
         selected_discards: [Vec::new(), Vec::new()],
         milled: Vec::new(),
         library: None,
+        selection: None,
         search: None,
         choice: None,
     });
