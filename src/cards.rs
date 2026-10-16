@@ -628,6 +628,7 @@ pub(crate) enum AmountValue {
 pub(crate) enum StatValue {
     Not(&'static StatValue),
     CardsDrawnThisTurn,
+    ControllerHandSize,
     NonlandEntriesThisTurn,
     SourceAttacking,
     AttackingCreatures,
@@ -1449,6 +1450,9 @@ impl Card {
     }
     pub fn is_token(self) -> bool {
         self.token_info().is_some()
+    }
+    pub fn plot_cost(self) -> Option<ManaCost> {
+        generated::plot_cost(self)
     }
     pub(crate) fn additional_cost(self) -> Option<AdditionalCost> {
         generated::additional_cost(self)

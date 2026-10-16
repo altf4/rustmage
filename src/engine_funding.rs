@@ -972,6 +972,42 @@ impl Game {
 }
 
 impl Game {
+    pub(super) fn visit_plot_payment(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
+        let request = self.plot_payment().unwrap();
+        if self.object_ref(request.object.card) != request.object
+            || self.state.objects[request.object.card as usize].zone != Zone::Hand
+            || self.state.objects[request.object.card as usize].owner != request.controller
+        {
+            return false;
+        }
+        let goal = FundingGoal {
+            reserve: None,
+            actor: request.controller,
+            required: request.cost.colored,
+            generic: request.cost.generic,
+            source: None,
+        };
+        let state = FundingState::from_game(self, goal);
+        let mut done = false;
+        funding_payments(state.mana, goal.required, goal.generic, |payment| {
+            if !done {
+                done = emit(Action::PayPlot {
+                    payment: concrete_payment(payment),
+                });
+            }
+        });
+        if done {
+            return true;
+        }
+        for step in state.moves(goal) {
+            let mut next = state.clone();
+            next.apply(&step);
+            if next.reachable(goal, &mut HashSet::new()) && emit(state.action(&step)) {
+                return true;
+            }
+        }
+        false
+    }
     pub(super) fn visit_resolution_payment(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
         let request = self
             .state

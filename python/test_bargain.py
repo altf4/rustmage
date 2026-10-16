@@ -106,7 +106,7 @@ class BargainTests(unittest.TestCase):
     if a['kind']=='PayCosts' and ann and ann['source_card']==name:paid=True;source=ann['object'];self.assertEqual(sum(a['payment']),sum(required)+generic)
     if a['kind']=='SelectLibrary' and o['resolving']['source_card']==name:selected.append(a['card'])
     if a['kind']=='Pass' and o['stack'] and o['stack'][-1]['source_card']==name:root=o['stack'][-1];base=o
-    after=self.replay(g,o,j);self.assertEqual(after['schema'],70)
+    after=self.replay(g,o,j);self.assertEqual(after['schema'],71)
     if a['kind']=='PayCosts' and ann and ann['source_card']==name and resource_ref:
      v=next((v for v in after['objects'] if v['id']==resource_ref['card']),None);self.assertTrue(v is None or v['zone'] in ('Graveyard','Outside'))
     if root and not any(v['id']==root['id'] for v in after['stack']+after['waiting_triggers']) and not(after['announcing'] and after['announcing']['id']==root['id']) and not(after['resolving'] and after['resolving']['id']==root['id']):

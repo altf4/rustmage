@@ -11,12 +11,14 @@ use crate::cards::{
 #[path = "engine_saddle.rs"]
 mod saddle;
 pub use saddle::SaddleChoiceView;
-/// Version of the public observation structure, including Mobilize and private Endure decisions.
-pub const OBSERVATION_SCHEMA: u32 = 70;
-
+/// Public observation structure, including Endure choices and owned Plot permissions.
+pub const OBSERVATION_SCHEMA: u32 = 71;
 #[path = "engine_mobilize.rs"]
 mod mobilize;
+#[path = "engine_plot.rs"]
+mod plot;
 pub use mobilize::{DelayedSacrificeView, MobilizeChoiceView};
+pub use plot::{PlotPaymentView, PlottedCard};
 
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
@@ -323,6 +325,9 @@ define_actions! {
     AnnounceExile {
         card: CardId,
     },
+    AnnouncePlot { card: CardId },
+    PayPlot { payment: Mana },
+    AnnouncePlotted { card: CardId },
     AnnounceFlashback {
         card: CardId,
     },
@@ -570,6 +575,7 @@ struct PlayerState {
 pub enum CastMethod {
     Normal,
     Flashback,
+    Plot,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CastInfo {
@@ -822,6 +828,9 @@ enum Pending {
         amount: u16,
         token: Card,
     },
+    PlotPayment {
+        player: Player,
+    },
     Convoke {
         player: Player,
     },
@@ -967,6 +976,7 @@ struct State {
     attachment_sources: Vec<CardId>,
     exile_links: Vec<ExileLink>,
     exile_permissions: Vec<ExilePlayPermission>,
+    plot: Option<Box<plot::PlotState>>,
     known_hand: Vec<ObjectRef>,
     explore_data: Option<Box<explore::ExploreState>>,
     evidence_data: Option<Box<evidence::EvidenceState>>,
@@ -1241,6 +1251,8 @@ pub struct Observation {
     pub objects: Vec<ObjectView>,
     pub exile_links: Vec<ExileLink>,
     pub exile_permissions: Vec<ExilePlayPermission>,
+    pub plotted_cards: Vec<PlottedCard>,
+    pub plot_payment: Option<PlotPaymentView>,
     pub triggered_this_turn: Vec<TriggerUse>,
     pub legend_choices: Vec<LegendGroupView>,
     pub stack: Vec<SpellView>,
@@ -1403,6 +1415,7 @@ impl Game {
                 attachment_sources: Vec::new(),
                 exile_links: Vec::new(),
                 exile_permissions: Vec::new(),
+                plot: None,
                 known_hand: Vec::new(),
                 explore_data: None,
                 evidence_data: None,
@@ -1474,7 +1487,8 @@ impl Game {
         match self.state.pending {
             Pending::Mulligan(p) | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
-            Pending::EvidenceIntent { player }
+            Pending::PlotPayment { player }
+            | Pending::EvidenceIntent { player }
             | Pending::Evidence { player }
             | Pending::Endure { player, .. }
             | Pending::Convoke { player }
@@ -1578,6 +1592,7 @@ impl Game {
             // still have representable derived values. Ordinary resolutions have
             // already checked battlefield stats in the SBA pass.
             if (self.state.resolving.is_some()
+                || self.plot_payment().is_some()
                 || self.state.announcing.is_some()
                 || self.state.entry_batch.is_some())
                 && (!self.state.objects.ptr_eq(&checkpoint.objects)
@@ -1651,7 +1666,10 @@ impl Game {
                 if self.advance_entries() {
                     break;
                 }
-                if self.state.resolving.is_none() && self.state.announcing.is_none() {
+                if self.state.resolving.is_none()
+                    && self.state.announcing.is_none()
+                    && self.plot_payment().is_none()
+                {
                     self.state_based_actions();
                     if self.state.entry_batch.is_some() {
                         continue;
@@ -1822,6 +1840,11 @@ impl Game {
                     }
                 }
             }
+            Pending::PlotPayment { .. } => {
+                if self.visit_plot_payment(&mut emit) {
+                    return true;
+                }
+            }
             Pending::PayCosts { .. } => {
                 if self.visit_cost_payment(&mut emit) {
                     return true;
@@ -1889,6 +1912,24 @@ impl Game {
                     }
                     if matches!(obj.zone, Zone::Battlefield | Zone::Hand | Zone::Graveyard)
                         && self.visit_activations(card, actor, sorcery, &mut emit)
+                    {
+                        return true;
+                    }
+                    if sorcery
+                        && obj.zone == Zone::Hand
+                        && !obj.card.is_token()
+                        && obj
+                            .card
+                            .plot_cost()
+                            .is_some_and(|cost| self.plot_can_fund(actor, cost))
+                        && emit(Action::AnnouncePlot { card })
+                    {
+                        return true;
+                    }
+                    if sorcery
+                        && obj.zone == Zone::Exile
+                        && self.plotted_cast_available(actor, card)
+                        && emit(Action::AnnouncePlotted { card })
                     {
                         return true;
                     }
@@ -2562,6 +2603,16 @@ impl Game {
                 let item = self.cast_item(actor, card, [0; 6]);
                 self.open_payment_announcement(item, Counters::default(), None);
             }
+            Action::AnnouncePlot { card } => self.begin_plot(actor, card),
+            Action::PayPlot { payment } => self.finish_plot(payment),
+            Action::AnnouncePlotted { card } => {
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                item.cast.as_mut().unwrap().method = CastMethod::Plot;
+                if item.source_card.x_symbols() > 0 {
+                    item.x = Some(0);
+                }
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
             Action::AnnounceFlashback { card } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 item.cast.as_mut().unwrap().method = CastMethod::Flashback;
@@ -3221,6 +3272,7 @@ impl Game {
             library.remove(position);
         }
         if before.zone == Zone::Exile {
+            self.remove_plotted(before.reference);
             self.state
                 .exile_permissions
                 .retain(|p| p.object != before.reference);
@@ -3844,6 +3896,7 @@ impl Game {
                 Pending::Mulligan(_) => "mulligan",
                 Pending::Bottom { .. } => "bottom",
                 Pending::Priority => "priority",
+                Pending::PlotPayment { .. } => "plot_payment",
                 Pending::Legend { .. } => "legend_rule",
                 Pending::Targets { .. } => "targets",
                 Pending::Offspring { .. } => "offspring",
@@ -3926,6 +3979,11 @@ impl Game {
             objects,
             exile_links: s.exile_links.clone(),
             exile_permissions: s.exile_permissions.clone(),
+            plotted_cards: s.plot.as_ref().map_or_else(Vec::new, |p| p.cards.clone()),
+            plot_payment: self
+                .plot_payment()
+                .filter(|p| p.controller == viewer)
+                .copied(),
             triggered_this_turn: s.triggered_this_turn.clone(),
             legend_choices: s
                 .sba_batch
@@ -4179,6 +4237,7 @@ impl Game {
             + s.objects.len() * std::mem::size_of::<Object>()
             + s.exile_links.len() * std::mem::size_of::<ExileLink>()
             + s.exile_permissions.len() * std::mem::size_of::<ExilePlayPermission>()
+            + s.plot.as_ref().map_or(0, |p| p.bytes())
             + s.triggered_this_turn.len() * std::mem::size_of::<TriggerUse>()
             + s.sba_batch.as_ref().map(|batch| batch.bytes()).unwrap_or(0)
             + s.entry_batch
@@ -4709,3 +4768,7 @@ mod celebration_tests;
 #[cfg(test)]
 #[path = "engine_mobilize_tests.rs"]
 mod mobilize_tests;
+
+#[cfg(test)]
+#[path = "engine_plot_tests.rs"]
+mod plot_tests;
