@@ -1,0 +1,349 @@
+"""Explore through paid public-library continuations and owned replay."""
+import json
+from pathlib import Path
+import unittest
+from rustmage import EngineError, Game
+
+FACTS = {c['name']: c for c in json.loads((Path(__file__).resolve().parents[1] / 'data/standard/cards.json').read_text())['cards']}
+BASICS = ['Plains', 'Island', 'Swamp', 'Mountain', 'Forest']
+ENTER_EXPLORERS = ['Cenote Scout', "Kinjalli's Dawnrunner", 'Pathfinding Axejaw', 'River Herald Guide', 'River Herald Scout']
+
+
+class ExploreTests(unittest.TestCase):
+    def replay(self, game, obs, index):
+        saved = game.snapshot()
+        with game.clone() as fork:
+            expected = fork.step(fork.observe(obs['actor']), index)
+            other = 'P1' if obs['actor'] == 'P0' else 'P0'
+            expected_other = fork.observe(other)
+        game.step(obs, index)
+        game.restore(saved)
+        with self.assertRaisesRegex(EngineError, 'StaleRevision'):
+            game.step(obs, index)
+        actual = game.step(game.observe(obs['actor']), index)
+        expected['revision'] = actual['revision']
+        self.assertEqual(actual, expected)
+        observed_other = game.observe(other)
+        expected_other['revision'] = observed_other['revision']
+        self.assertEqual(observed_other, expected_other)
+        game.drop_snapshot(saved)
+        return actual
+
+    def choice(self, game, obs, counter_added=True):
+        choice = obs['explore_choice']
+        actor = obs['actor']
+        other = 'P1' if actor == 'P0' else 'P0'
+        self.assertEqual(choice, game.observe(other)['explore_choice'])
+        self.assertEqual(game.observe(other)['actions'], [])
+        revealed = choice['revealed']
+        self.assertNotIn('Land', FACTS[revealed['card']]['type_line'].split(' — ')[0])
+        self.assertEqual(obs['known_library_top'][int(actor[1])], revealed)
+        self.assertEqual(choice['explorer']['controller'], actor)
+        self.assertEqual(choice['counter_added'], counter_added)
+        if counter_added:
+            explorer = next(v for v in obs['objects'] if v['reference'] == choice['explorer']['object'])
+            self.assertGreater(explorer['counters']['plus_one'], 0)
+        actions = [a for a in obs['actions'] if a['kind'] == 'ChooseExplore']
+        self.assertEqual({a['graveyard'] for a in actions}, {False, True})
+        self.assertTrue(all(a['object'] == revealed['object'] for a in actions))
+        wrong = dict(revealed['object'], generation=revealed['object']['generation'] + 1)
+        before = [game.observe(v) for v in ('P0', 'P1')]
+        for offered, context in [
+            ({'kind': 'ChooseExplore', 'object': wrong, 'graveyard': False}, obs),
+            ({'kind': 'ChooseExplore', 'object': revealed['object'], 'graveyard': True}, dict(obs, actor=other)),
+        ]:
+            with self.assertRaises(EngineError):
+                game.act(context, offered)
+            self.assertEqual([game.observe(v) for v in ('P0', 'P1')], before)
+
+    def test_paid_entering_explorers_both_seats_and_nonland_choices(self):
+        results = {'Hand': 0, 'Library': 0, 'Graveyard': 0}
+        for name in ENTER_EXPLORERS:
+            for seat in ('P0', 'P1'):
+                for graveyard in (False, True):
+                    with self.subTest(card=name, seat=seat, graveyard=graveyard):
+                        destination = self.enter_scenario(name, seat, graveyard)
+                        results[destination] += 1
+        self.assertGreater(results['Library'], 0)
+        self.assertGreater(results['Graveyard'], 0)
+
+    def enter_scenario(self, name, seat, graveyard, seed=43, source_left=False, follow_draw=False):
+        other = 'P1' if seat == 'P0' else 'P0'
+        deck = sum(([n] * 6 for n in BASICS), []) + [name] * 16 + ['Bear Cub'] * 16 + ['Shock'] * 8
+        if name == 'Merfolk Cave-Diver': deck += ['Cenote Scout'] * 12
+        foe = ['Forest'] * 40 + ['Bear Cub'] * 30
+        decks = [deck, foe] if seat == 'P0' else [foe, deck]
+        paid = False
+        reveal = None
+        departed_explorer = None
+        with Game(decks, seed=seed, starting_player=seat, deck_rules='Freeform') as game:
+            for _ in range(30000):
+                obs = game.observe('P0')
+                self.assertIsNone(obs['outcome'], name)
+                obs = game.observe(obs['actor'])
+                actor = obs['actor']
+                objects = {v['id']: v for v in obs['objects']}
+                friends = [v for v in objects.values() if v['owner'] == seat and v['zone'] == 'Battlefield' and v['card'] == 'Bear Cub']
+                body = next((v for v in objects.values() if v['owner'] == seat and v['zone'] == 'Battlefield' and v['card'] == name), None)
+                if obs['explore_choice']:
+                    self.choice(game, obs, counter_added=not source_left)
+                    reveal = obs['explore_choice']['revealed']
+                def score(a):
+                    k = a['kind']
+                    if k in ('AnnounceCast', 'Cast'):
+                        n = objects[a['card']]['card']
+                        if actor != seat: return -1000
+                        if n == name:
+                            ready = name not in ("Miner's Guidewing", 'Over the Edge') or friends
+                            if source_left:
+                                available = [v for v in objects.values() if v['owner'] == seat and v['zone'] == 'Battlefield' and not v['tapped'] and v['card'] in BASICS]
+                                ready = any(v['card'] == 'Mountain' for v in available) and any(v['card'] == 'Forest' for v in available) and any(v['owner'] == seat and v['zone'] == 'Hand' and v['card'] == 'Shock' for v in objects.values())
+                            return 1100 if ready and not paid else -1000
+                        if n == 'Bear Cub': return 1050 if not friends else -1000
+                        if n == 'Cenote Scout' and name == 'Merfolk Cave-Diver': return 1100 if body else -1000
+                        if n == 'Shock' and (name == "Miner's Guidewing" or source_left): return 1200 if body else -1000
+                        return -1000
+                    if k == 'PlayLand':
+                        n = objects[a['card']]['card']
+                        count = sum(v['owner'] == actor and v['zone'] == 'Battlefield' and v['card'] == n for v in objects.values())
+                        return 1300 - 10 * count
+                    if k == 'TapMana': return 800 if obs['decision'] == 'pay_costs' else -1000
+                    if k in ('AnnounceActivate', 'BeginActivate', 'Activate'):
+                        return 1400 if actor == seat and objects[a['card']]['card'] == name and name == 'Seeker of Sunlight' else -1000
+                    if k == 'ChooseMode': return 1500 if a['mode'] == 1 else -1000
+                    if k == 'ChooseTarget':
+                        if 'Card' not in a['target']: return -1000
+                        target = objects[a['target']['Card']]
+                        target_name = name if obs['announcing'] and obs['announcing']['source_card'] == 'Shock' else 'Bear Cub'
+                        return 1500 if target['card'] == target_name and target['owner'] == seat else -1000
+                    if k == 'ChooseExplore': return 1500 if a['graveyard'] == graveyard else -1000
+                    if k == 'Discard': return 900 if objects[a['card']]['card'] in BASICS else 800
+                    return {'Keep': 2000, 'PayCosts': 1500, 'PutTrigger': 1400, 'FinishTargets': 1100, 'FinishAttackers': 500, 'FinishBlockers': 500, 'Pass': 0}.get(k, -1000)
+                j = max(range(len(obs['actions'])), key=lambda j: score(obs['actions'][j]))
+                action = obs['actions'][j]
+                if source_left and action['kind'] == 'ChooseTarget' and obs['announcing'] and obs['announcing']['source_card'] == 'Shock':
+                    departed_explorer = objects[action['target']['Card']]['reference']
+                if action['kind'] == 'PayCosts' and obs['announcing'] and obs['announcing']['source_card'] == name:
+                    paid = True
+                if action['kind'] == 'Cast' and objects[action['card']]['card'] == name:
+                    paid = True
+                after = self.replay(game, obs, j)
+                event = after['last_explore']
+                explorer_name = 'Bear Cub' if name in ("Miner's Guidewing", 'Over the Edge') else 'Cenote Scout' if name == 'Merfolk Cave-Diver' else name
+                expected_count = 2 if name == 'Over the Edge' else 1
+                observer_done = name != 'Merfolk Cave-Diver' or any(v['card'] == name and v['owner'] == seat and v['power'] == 3 for v in after['objects'])
+                if event and event['explorer']['card'] == explorer_name and event['explorer']['controller'] == seat and event['sequence'] == expected_count and observer_done:
+                    self.assertTrue(paid)
+                    self.assertEqual(game.observe(other)['last_explore'], event)
+                    self.assertEqual(event['sequence'], expected_count)
+                    self.assertIsNotNone(event['revealed'])
+                    r = event['revealed']
+                    land = 'Land' in FACTS[r['card']]['type_line'].split(' — ')[0]
+                    destination = 'Hand' if land else 'Graveyard' if graveyard else 'Library'
+                    self.assertEqual(event['destination'], destination)
+                    self.assertEqual(event['counter_added'], not land and not source_left)
+                    if source_left:
+                        self.assertEqual(event['explorer']['object'], departed_explorer)
+                        old = next(v for v in after['objects'] if v['id'] == departed_explorer['card'])
+                        self.assertEqual(old['zone'], 'Graveyard')
+                        self.assertGreater(old['reference']['generation'], departed_explorer['generation'])
+                        self.assertEqual(old['counters']['plus_one'], 0)
+                    if land:
+                        self.assertIn(event['result'], after['known_hand'])
+                        self.assertGreater(event['result']['generation'], r['object']['generation'])
+                        self.assertEqual(after['players'][int(seat[1])]['cards_drawn_this_turn'], obs['players'][int(seat[1])]['cards_drawn_this_turn'])
+                    elif graveyard:
+                        self.assertEqual(reveal, r)
+                        moved = next(v for v in after['objects'] if v['reference'] == event['result'])
+                        self.assertEqual(moved['zone'], 'Graveyard')
+                        self.assertGreater(event['result']['generation'], r['object']['generation'])
+                    else:
+                        self.assertEqual(event['result'], r['object'])
+                        self.assertEqual(after['known_library_top'][int(seat[1])], r)
+                    if follow_draw:
+                        self.assertEqual(destination, 'Library')
+                        self.follow_known_draw(game, event, seat)
+                    return destination
+            self.fail('No complete paid enter/explore continuation for ' + name)
+
+    def follow_known_draw(self, game, event, seat):
+        reference = event['revealed']['object']
+        other = 'P1' if seat == 'P0' else 'P0'
+        for _ in range(1000):
+            obs = game.observe('P0')
+            self.assertIsNone(obs['outcome'])
+            obs = game.observe(obs['actor'])
+            def score(a):
+                return {'Pass': 100, 'FinishAttackers': 500, 'FinishBlockers': 500, 'Discard': 600}.get(a['kind'], -1000)
+            j = max(range(len(obs['actions'])), key=lambda j: score(obs['actions'][j]))
+            after = self.replay(game, obs, j)
+            self.assertEqual(after['last_explore'], event)
+            drawn = next((v for v in after['objects'] if v['id'] == reference['card'] and v['zone'] == 'Hand'), None)
+            if drawn:
+                self.assertGreater(drawn['reference']['generation'], reference['generation'])
+                self.assertIn(drawn['reference'], after['known_hand'])
+                self.assertIsNone(after['known_library_top'][int(seat[1])])
+                visible = game.observe(other)
+                self.assertIn(drawn['reference'], visible['known_hand'])
+                self.assertTrue(any(v['reference'] == drawn['reference'] for v in visible['objects']))
+                return
+            self.assertEqual(after['known_library_top'][int(seat[1])]['object'], reference)
+        self.fail('Publicly known top did not retain knowledge on actual draw')
+
+    def test_known_top_remains_public_on_later_draw_both_seats(self):
+        for seat in ('P0', 'P1'):
+            with self.subTest(seat=seat):
+                self.assertEqual(self.enter_scenario('Cenote Scout', seat, False, follow_draw=True), 'Library')
+
+    def test_empty_library_still_counters_and_completes_both_seats(self):
+        for seat in ('P0', 'P1'):
+            with self.subTest(seat=seat):
+                deck = ['Forest'] * 6 + ['Cenote Scout']
+                foe = ['Forest'] * 40
+                with Game([deck, foe] if seat == 'P0' else [foe, deck], seed=3, starting_player=seat, deck_rules='Freeform') as game:
+                    for _ in range(400):
+                        obs = game.observe('P0')
+                        self.assertIsNone(obs['outcome'])
+                        obs = game.observe(obs['actor'])
+                        self.assertIsNone(obs['explore_choice'])
+                        self.assertEqual(obs['players'][int(seat[1])]['library_count'], 0)
+                        def score(a):
+                            k = a['kind']
+                            if k in ('Cast', 'AnnounceCast'): return 1200
+                            if k == 'TapMana': return 800 if obs['decision'] == 'pay_costs' else -1000
+                            return {'Keep': 2000, 'PlayLand': 1300, 'PayCosts': 1500, 'PutTrigger': 1400, 'FinishTargets': 1100, 'FinishAttackers': 500, 'FinishBlockers': 500, 'Pass': 0}.get(k, -1000)
+                        j = max(range(len(obs['actions'])), key=lambda j: score(obs['actions'][j]))
+                        after = self.replay(game, obs, j)
+                        event = after['last_explore']
+                        if event:
+                            self.assertEqual(event['explorer']['controller'], seat)
+                            self.assertEqual(event['explorer']['card'], 'Cenote Scout')
+                            self.assertTrue(event['counter_added'])
+                            self.assertIsNone(event['revealed'])
+                            self.assertIsNone(event['destination'])
+                            self.assertIsNone(event['result'])
+                            explorer = next(v for v in after['objects'] if v['reference'] == event['explorer']['object'])
+                            self.assertEqual(explorer['counters']['plus_one'], 1)
+                            self.assertEqual(after['known_library_top'], [None, None])
+                            break
+                    else: self.fail('Empty-library explore did not complete')
+
+    def test_real_source_departure_still_explores_without_counter_both_seats(self):
+        for seat in ('P0', 'P1'):
+            for graveyard in (False, True):
+                with self.subTest(seat=seat, graveyard=graveyard):
+                    self.enter_scenario('Cenote Scout', seat, graveyard, source_left=True)
+
+    def test_public_land_put_into_hand_without_draw_both_seats(self):
+        for seat in ('P0', 'P1'):
+            with self.subTest(seat=seat):
+                self.assertEqual(self.enter_scenario('Cenote Scout', seat, False, seed=0), 'Hand')
+
+    def test_real_death_activation_double_explore_and_completed_observer(self):
+        for name in ("Miner's Guidewing", 'Seeker of Sunlight', 'Over the Edge', 'Merfolk Cave-Diver'):
+            for seat in ('P0', 'P1'):
+                for graveyard in (False, True):
+                    with self.subTest(card=name, seat=seat, graveyard=graveyard):
+                        self.enter_scenario(name, seat, graveyard)
+
+    def test_complete_map_providers_and_real_token_activation_both_seats(self):
+        names = ["Cartographer's Companion", 'Fanatical Offering', 'Get Lost', 'Sentinel of the Nameless City', 'Spyglass Siren', 'Waterwind Scout']
+        for name in names:
+            for seat in ('P0', 'P1'):
+                with self.subTest(card=name, seat=seat):
+                    self.map_scenario(name, seat)
+
+    def map_scenario(self, name, seat):
+        other = 'P1' if seat == 'P0' else 'P0'
+        map_seat = other if name == 'Get Lost' else seat
+        deck = sum(([n] * 6 for n in BASICS), []) + [name] * 16 + ['Bear Cub'] * 24
+        foe = ['Forest'] * 40 + ['Bear Cub'] * 30
+        decks = [deck, foe] if seat == 'P0' else [foe, deck]
+        paid = False
+        activated = None
+        destroyed = None
+        sacrificed = None
+        source = None
+        maps_created = False
+        draw_baseline = None
+        with Game(decks, seed=43, starting_player=seat, deck_rules='Freeform') as game:
+            for _ in range(40000):
+                obs = game.observe('P0')
+                self.assertIsNone(obs['outcome'], name)
+                obs = game.observe(obs['actor'])
+                actor = obs['actor']
+                objects = {v['id']: v for v in obs['objects']}
+                friends = [v for v in objects.values() if v['owner'] == seat and v['zone'] == 'Battlefield' and v['card'] == 'Bear Cub']
+                foes = [v for v in objects.values() if v['owner'] == other and v['zone'] == 'Battlefield' and v['card'] == 'Bear Cub']
+                maps = [v for v in objects.values() if v['zone'] == 'Battlefield' and v['token'] and v['token']['subtypes'] == 'Map']
+                own_maps = [v for v in maps if v['owner'] == map_seat]
+                if own_maps and not maps_created:
+                    self.assertTrue(paid)
+                    self.assertEqual(len(own_maps), 2 if name == 'Get Lost' else 1)
+                    maps_created = True
+                    if destroyed:
+                        self.assertEqual(objects[destroyed['card']]['zone'], 'Graveyard')
+                    if sacrificed:
+                        self.assertEqual(objects[sacrificed['card']]['zone'], 'Graveyard')
+                    if draw_baseline is not None:
+                        self.assertEqual(obs['players'][int(seat[1])]['cards_drawn_this_turn'] - draw_baseline, 2)
+                if obs['explore_choice']:
+                    self.choice(game, obs)
+                ann = obs['announcing']
+                def score(a):
+                    k = a['kind']
+                    if k in ('AnnounceCast', 'Cast'):
+                        n = objects[a['card']]['card']
+                        if n == name and actor == seat:
+                            ready = len(friends) >= (2 if name == 'Fanatical Offering' else 1) and (name != 'Get Lost' or foes)
+                            return 1100 if ready and not paid else -1000
+                        return 1000 if n == 'Bear Cub' and (len(friends) if actor == seat else len(foes)) < 2 else -1000
+                    if k in ('AnnounceActivate', 'BeginActivate', 'Activate'):
+                        v = objects[a['card']]
+                        return 1500 if actor == map_seat and v in own_maps and activated is None else -1000
+                    if k == 'PlayLand':
+                        n = objects[a['card']]['card']
+                        count = sum(v['owner'] == actor and v['zone'] == 'Battlefield' and v['card'] == n for v in objects.values())
+                        return 1300 - 10 * count
+                    if k == 'TapMana': return 800 if obs['decision'] == 'pay_costs' else -1000
+                    if k == 'ChooseAdditionalCost': return 1500 if objects[a['object']['card']]['card'] == 'Bear Cub' else -1000
+                    if k == 'ChooseTarget':
+                        if 'Card' not in a['target']: return -1000
+                        v = objects[a['target']['Card']]
+                        target_owner = other if ann and ann['source_card'] == 'Get Lost' else actor
+                        return 1600 if v['owner'] == target_owner and v['card'] == 'Bear Cub' else -1000
+                    if k == 'ChooseExplore': return 1500 if a['graveyard'] else 1000
+                    if k == 'Discard': return 900 if objects[a['card']]['card'] in BASICS else 800
+                    return {'Keep': 2000, 'PayCosts': 1500, 'PutTrigger': 1400, 'FinishTargets': 1100, 'FinishAttackers': 500, 'FinishBlockers': 500, 'Pass': 0}.get(k, -1000)
+                j = max(range(len(obs['actions'])), key=lambda j: score(obs['actions'][j]))
+                a = obs['actions'][j]
+                if a['kind'] == 'ChooseAdditionalCost': sacrificed = a['object']
+                if a['kind'] == 'ChooseTarget' and ann and ann['source_card'] == 'Get Lost':
+                    destroyed = objects[a['target']['Card']]['reference']
+                if a['kind'] == 'PayCosts' and ann and ann['source_card'] == name:
+                    paid = True
+                    source = ann['object']
+                if a['kind'] == 'Cast' and objects[a['card']]['card'] == name:
+                    paid = True
+                    source = objects[a['card']]['reference']
+                if a['kind'] in ('AnnounceActivate', 'BeginActivate', 'Activate') and objects[a['card']] in own_maps:
+                    activated = objects[a['card']]['reference']
+                    self.assertEqual(actor, map_seat)
+                    self.assertEqual(obs['active'], actor)
+                    self.assertIn(obs['step'], ('Main1', 'Main2'))
+                    self.assertEqual(obs['stack'], [])
+                if a['kind'] == 'Pass' and obs['stack'] and obs['stack'][-1]['source_card'] == 'Fanatical Offering':
+                    draw_baseline = obs['players'][int(seat[1])]['cards_drawn_this_turn']
+                after = self.replay(game, obs, j)
+                event = after['last_explore']
+                if activated and event and event['explorer']['controller'] == map_seat:
+                    self.assertTrue(maps_created)
+                    self.assertIsNotNone(source)
+                    self.assertEqual(event['explorer']['card'], 'Bear Cub')
+                    self.assertFalse(any(v['reference'] == activated and v['zone'] == 'Battlefield' for v in after['objects']))
+                    return
+            self.fail('No complete provider and real Map activation for ' + name)
+
+
+if __name__ == '__main__':
+    unittest.main()
