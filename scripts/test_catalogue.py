@@ -8,6 +8,26 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_conditional_source_keywords_use_exact_count_predicates_and_reject_out_of_zone_flash(self):
+        for text in ['As long as you control an artifact, this creature has haste.','This creature has flying as long as you control a Dragon.','This creature has lifelink as long as you control another Faerie.','Descend 4 — This creature has flying as long as there are four or more permanent cards in your graveyard.']:
+            result=generate.static_permanent_template(self.card(oracle_text=text));self.assertIsNotNone(result,text);self.assertEqual(len(result[6]),1);self.assertIn('condition: Some(StatValue::AtLeast',result[6][0]);self.assertIn('source_only: true',result[6][0])
+        for text in ['This creature has flash as long as you control a Desert.','This creature has changeling as long as you control an artifact.','Creatures you control have flying as long as you control an artifact.','This creature has flying as long as you control a creature with flying.','This creature has flying as long as it is attacking.','This creature has flying as long as you control an artifact. Then discover 3.']:
+            self.assertIsNone(generate.static_permanent_template(self.card(oracle_text=text)),text)
+
+    def test_combined_source_count_stats_leave_exact_keyword_clause_for_whole_body_compilation(self):
+        for line in ['As long as you control an artifact, this creature gets +1/+0 and has haste.','This creature gets +1/+0 and has haste as long as you control an artifact.']:
+            proxy,_,scales=generate.extract_stat_rules(self.card(oracle_text=line));self.assertEqual(len(scales),1);self.assertEqual(proxy['oracle_text'],'This creature has haste as long as you control an artifact.');result=generate.static_permanent_template(proxy);self.assertIsNotNone(result);self.assertIn('keywords: Keywords(4)',result[6][0])
+        for line in ['As long as you control an artifact, this creature gets +32768/+0 and has haste.','As long as you control an artifact, this creature gets +1/+0 and has flash.','As long as you control an artifact, this creature gets +1/+0 and has trample and discover 3.']:
+            proxy,_,scales=generate.extract_stat_rules(self.card(oracle_text=line));self.assertEqual(scales,[]);self.assertIsNone(generate.static_permanent_template(proxy))
+
+    def test_conditional_source_keyword_admissions_preserve_all_nine_residual_bodies_and_gates(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());_,coverage=generate.compile_catalogue(rows,target);supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for name in ['Barrow Naughty','Didact Echo','Dreadwing Scavenger','Echo of Dusk','Goblin Tomb Raider','Gravblade Heavy','Kargan Dragonrider','Spineseeker Centipede','Wildfire Wickerfolk']:
+            self.assertIn(name,supported);c=next(c for c in rows['cards'] if c['name']==name);proxy,_,_=generate.extract_stat_rules(dict(c,oracle_text=c['oracle_text']+'\nWhenever you attack, discover 3.'));self.assertIsNone(generate.static_permanent_template(proxy));self.assertIsNone(generate.trigger_creature_template(proxy));self.assertIsNone(generate.permanent_program_template(proxy))
+        for name in ["Bolg's Company",'Colossal Rattlewurm','Druid of the Spade','Ghitu Lavarunner','Kitesail Corsair','Nightwhorl Hermit','Stoic Sphinx','Undercover Skrull']:
+            self.assertNotIn(name,supported)
+
     def test_source_stat_threshold_counts_have_exact_boolean_bounds_and_scopes(self):
         for condition,minimum in [('you control an artifact',1),('you control another creature',1),('you control seven or more lands',7),('there are four or more permanent cards in your graveyard',4),('there are seven or more cards in your graveyard',7),("you've cast two or more spells this turn",2),('you control 65535 or more lands',65535)]:
             value=generate.stat_threshold_condition(condition);self.assertIn('StatValue::AtLeast',value);self.assertIn('minimum: '+str(minimum),value)
@@ -18,7 +38,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         for line in ['As long as you control an artifact, this creature gets +1/+0.','This creature gets +1/+0 as long as you control an artifact.']:
             proxy,base,scales=generate.extract_stat_rules(self.card(oracle_text='Flying\n'+line));self.assertEqual(proxy['oracle_text'],'Flying');self.assertIsNone(base);self.assertEqual(len(scales),1);self.assertIn('minimum: 1',scales[0]);self.assertIn('power: 1, toughness: 0',scales[0])
         proxy,_,scales=generate.extract_stat_rules(self.card(oracle_text='Threshold — This creature gets -32767/+32767 as long as there are seven or more cards in your graveyard.'));self.assertEqual(len(scales),1)
-        for text in ['This creature gets +32768/+0 as long as you control an artifact.','Enchanted creature gets +1/+0 as long as you control an artifact.','This creature gets +1/+0 and has haste as long as you control an artifact.','This creature gets +1/+0 as long as you control an artifact. Then discover 3.','As long as this creature is attacking, this creature gets +1/+0.']:
+        for text in ['This creature gets +32768/+0 as long as you control an artifact.','Enchanted creature gets +1/+0 as long as you control an artifact.','This creature gets +1/+0 as long as you control an artifact. Then discover 3.','As long as this creature is attacking, this creature gets +1/+0.']:
             proxy,_,scales=generate.extract_stat_rules(self.card(oracle_text=text));self.assertEqual(scales,[]);self.assertEqual(proxy['oracle_text'],text)
         proxy,_,scales=generate.extract_stat_rules(self.card(oracle_text='This creature gets +1/+0 as long as you control an artifact.\nThis creature gets +1/+0 as long as you control an artifact.\nWhenever you attack, discover 3.'));self.assertEqual(len(scales),2);self.assertIn('discover 3',proxy['oracle_text'])
 
@@ -28,7 +48,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         names=['Basking Capybara','Billowing Shriekmass','Brightspear Zealot','Cloudsculpt Technician','Frilled Cave-Wurm','Gaelicat','Gigantoad','Mind Drill Assailant','Scorpion Sentinel']
         for name in names:
             self.assertIn(name,supported);c=next(c for c in rows['cards'] if c['name']==name);proxy,_,_=generate.extract_stat_rules(dict(c,oracle_text=c['oracle_text']+'\nWhenever you attack, discover 3.'));self.assertIsNone(generate.permanent_program_template(proxy));self.assertIsNone(generate.trigger_creature_template(proxy))
-        for name in ['Goblin Tomb Raider','Druid of the Spade','Dreadwing Scavenger','Kitesail Corsair','Armory Mice','First-Time Flyer','Colossal Rattlewurm','Spineseeker Centipede']:
+        for name in ['Druid of the Spade','Kitesail Corsair','Armory Mice','First-Time Flyer','Colossal Rattlewurm']:
             self.assertNotIn(name,supported)
 
     def test_firebending_exact_triggers_preserve_multiplicity_and_scaled_count(self):

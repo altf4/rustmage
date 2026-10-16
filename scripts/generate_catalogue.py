@@ -565,13 +565,15 @@ def extract_stat_rules(card):
             if 'Creature' not in types or max(abs(int(m[1])),abs(int(m[2])))>32767:body.append(original);continue
             scales.append(f'ScalingModifier {{ subject: Subject::Source, value: StatValue::LifeGainOccurredThisTurn, stats: Stats {{ power: {int(m[1])}, toughness: {int(m[2])} }} }}')
             continue
-        prefix=re.fullmatch(r'As long as (.+), this creature gets ([+-][0-9]+)/([+-][0-9]+)\.',conditional)
-        suffix=re.fullmatch(r'This creature gets ([+-][0-9]+)/([+-][0-9]+) as long as (.+)\.',conditional)
+        prefix=re.fullmatch(r'As long as (.+), this creature gets ([+-][0-9]+)/([+-][0-9]+)(?: and has (.+))?\.',conditional)
+        suffix=re.fullmatch(r'This creature gets ([+-][0-9]+)/([+-][0-9]+)(?: and has (.+?))? as long as (.+)\.',conditional)
         if prefix or suffix:
-            condition,power,toughness=prefix.groups() if prefix else (suffix[3],suffix[1],suffix[2])
+            condition,power,toughness,keywords=prefix.groups() if prefix else (suffix[4],suffix[1],suffix[2],suffix[3])
             value=stat_threshold_condition(condition)
-            if 'Creature' in types and value is not None and max(abs(int(power)),abs(int(toughness)))<=32767:
+            if ('Creature' in types and value is not None and max(abs(int(power)),abs(int(toughness)))<=32767
+                    and (keywords is None or (keyword_list(keywords.casefold()) is not None and not keyword_list(keywords.casefold()) & KEYWORDS['flash']))):
                 scales.append(f'ScalingModifier {{ subject: Subject::Source, value: {value}, stats: Stats {{ power: {int(power)}, toughness: {int(toughness)} }} }}')
+                if keywords:body.append(f'This creature has {keywords} as long as {condition}.')
                 continue
         m=re.fullmatch(r'(This creature|Enchanted creature|Equipped creature) gets ([+-][0-9]+)/([+-][0-9]+) for each (.+?)(?: and has (.+))?\.',line)
         if m:
@@ -600,7 +602,7 @@ def static_permanent_template(card):
     name=card.get('name','')
     names=[name] if name else []
     if name and card.get('type_line','').startswith('Legendary '): names.append(name.split(',')[0])
-    def grant(subject,words,own_turn,requires_life_gain=False):
+    def grant(subject,words,own_turn,requires_life_gain=False,condition=None):
         source_only=subject.casefold()=='this creature'
         if source_only and 'Creature' not in card.get('type_line','').split(' — ')[0].split(): return None
         filt=creature_filter('creatures you control' if source_only else subject)
@@ -608,7 +610,9 @@ def static_permanent_template(card):
         # Positive grants commute only when recipient selection does not depend
         # on another layer-6 ability. Dependency/removal machinery stays gated.
         if filt is None or keywords is None or 'keyword: Keywords(0)' not in filt: return None
-        return f'KeywordGrant {{ requires_life_gain: {str(requires_life_gain).lower()}, filter: {filt}, source_only: {str(source_only).lower()}, own_turn: {str(own_turn).lower()}, keywords: Keywords({keywords}) }}'
+        if condition is not None and (not source_only or keywords & KEYWORDS['flash']):return None
+        condition='None' if condition is None else f'Some({condition})'
+        return f'KeywordGrant {{ condition: {condition}, requires_life_gain: {str(requires_life_gain).lower()}, filter: {filt}, source_only: {str(source_only).lower()}, own_turn: {str(own_turn).lower()}, keywords: Keywords({keywords}) }}'
     for original in re.sub(r'\([^()]*\)', '', card['oracle_text']).strip().split('\n'):
         line=original.strip()
         line=strip_rule_label(line)
@@ -618,6 +622,15 @@ def static_permanent_template(card):
         if own_turn: line=line[len('During your turn, '):]
         for alias in names:
             if line.startswith(alias+' has '): line='this creature has '+line[len(alias+' has '):]
+        prefix=re.fullmatch(r'As long as (.+), this creature has (.+)\.',line)
+        suffix=re.fullmatch(r'[Tt]his creature has (.+?) as long as (.+)\.',line)
+        if prefix or suffix:
+            condition,words=prefix.groups() if prefix else (suffix[2],suffix[1])
+            value=stat_threshold_condition(condition)
+            if value is None:return None
+            extra=grant('this creature',words,own_turn,False,value)
+            if extra is None:return None
+            grants.append(extra);continue
         m = re.fullmatch(r'(.+) get ([+-][0-9]+)/([+-][0-9]+)(?: and have (.+))?\.', line)
         if m:
             if own_turn: return None

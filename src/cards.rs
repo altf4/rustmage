@@ -564,6 +564,7 @@ impl CreatureFilter {
 /// removal/prohibition remain unsupported; no recursive dependency solver is implied.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct KeywordGrant {
+    pub condition: Option<StatValue>,
     pub requires_life_gain: bool,
     pub filter: CreatureFilter,
     pub source_only: bool,

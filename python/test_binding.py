@@ -9,6 +9,53 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def test_nine_conditional_keyword_bodies_reach_exact_live_keywords_stats_and_private_replay(self):
+        rows=[('Barrow Naughty',(1,3),(0,0),1,64),('Didact Echo',(3,2),(0,0),0,1),('Dreadwing Scavenger',(2,2),(1,1),1,128),('Echo of Dusk',(2,2),(1,1),0,64),('Goblin Tomb Raider',(1,2),(1,0),0,4),('Gravblade Heavy',(3,4),(1,0),0,128),('Kargan Dragonrider',(2,2),(0,0),0,1),('Spineseeker Centipede',(2,1),(1,2),0,8),('Wildfire Wickerfolk',(3,2),(1,1),4,256)]
+        definitions={c['name']:c for c in json.loads((Path(__file__).resolve().parents[1]/'data/standard/cards.json').read_text())['cards']};types={n:set(c['type_line'].split(' — ')[0].split()) for n,c in definitions.items()}
+        for wanted,base,bonus,intrinsic,flag in rows:
+            tribal=wanted in ('Barrow Naughty','Kargan Dragonrider');artifact=wanted in ('Goblin Tomb Raider','Gravblade Heavy');delirium=wanted in ('Spineseeker Centipede','Wildfire Wickerfolk');enabler='Three Tree Mascot' if tribal or artifact else 'Mind Drill Assailant'
+            deck=sum(([n]*6 for n in ['Plains','Island','Swamp','Mountain','Forest']),[])+[wanted]*8+[enabler]*8+['Opt']*6+['Scorpion Sentinel']*4+['Anthem of Champions']*4 if delirium else sum(([n]*8 for n in ['Plains','Island','Swamp','Mountain','Forest']),[])+[wanted]*12+[enabler]*8
+            with self.subTest(card=wanted),Game([deck,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+                replayed=0
+                for _ in range(20000):
+                    obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor']);objects={o['id']:o for o in obs['objects']};owned=[o for o in objects.values() if o['owner']=='P0'];board=[o for o in owned if o['zone']=='Battlefield'];sources=[o for o in board if o['card']==wanted];helpers=[o for o in board if o['card']==enabler];grave=[o for o in owned if o['zone']=='Graveyard' and not o['token']];permanents=[o for o in grave if types[o['card']]&{'Artifact','Creature','Enchantment','Land','Planeswalker','Battle'}];grave_types=set().union(*(types[o['card']]&{'Artifact','Battle','Creature','Enchantment','Instant','Kindred','Land','Planeswalker','Sorcery'} for o in grave))
+                    if tribal:
+                        subtype='Faerie' if wanted=='Barrow Naughty' else 'Dragon'
+                        on=bool(sources and any(o['reference']!=sources[0]['reference'] and ('Changeling' in definitions[o['card']]['keywords'] or subtype in definitions[o['card']]['type_line'].split(' — ')[-1].split()) for o in board))
+                    elif artifact:on=any('Artifact' in types[o['card']] for o in board)
+                    elif delirium:on=len(grave_types)>=4
+                    elif wanted=='Dreadwing Scavenger':on=len(grave)>=7
+                    else:on=len(permanents)>=4
+                    for o in sources:self.assertEqual((o['power'],o['toughness'],o['keywords']),(base[0]+(bonus[0] if on else 0),base[1]+(bonus[1] if on else 0),intrinsic|(flag if on else 0)))
+                    if sources and on:break
+                    def score(a):
+                        k=a['kind']
+                        if k in ('Cast','AnnounceCast'):
+                            n=objects[a['card']]['card']
+                            if n==wanted:return 250 if not sources else -100
+                            if n==enabler and sources:return 230 if not helpers else -100
+                            return -100
+                        if k=='AnnounceActivate':return 240 if objects[a['card']]['card']=='Mind Drill Assailant' and sources and not obs['stack'] and not on else -100
+                        if k in ('Activate','BeginActivate','ActivateMana','AnnounceMana'):return -100
+                        if k in ('ChooseSpellCost','ChooseActivationCost'):return 220
+                        if k=='TapMana':return 180 if obs['decision']=='pay_costs' else -100
+                        if k=='ChooseSearch':return 260
+                        if k=='ArrangeLibrary':return 210 if a['destination']=='Graveyard' else -100
+                        if k=='Discard':return 200 if not types[objects[a['card']]['card']]<=grave_types else 100
+                        return self.professor_score(obs,a)
+                    choice=max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i]));private=obs['library_choice'] or obs['search_choice'] or obs['decision']=='effect_discard'
+                    if private:
+                        other=game.observe('P1' if obs['actor']=='P0' else 'P0');self.assertIsNone(other['library_choice']);self.assertIsNone(other['search_choice']);self.assertEqual(other['effect_discards'],[]);self.assertEqual(other['actions'],[])
+                    if obs['announcing'] or obs['resolving'] or private:
+                        saved=game.snapshot()
+                        with game.clone() as fork:expected=fork.step(fork.observe(obs['actor']),choice)
+                        after=game.step(obs,choice);self.assertEqual(after,expected);game.restore(saved)
+                        with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,choice)
+                        again=game.step(game.observe(obs['actor']),choice);after['revision']=again['revision'];self.assertEqual(after,again);game.drop_snapshot(saved);replayed+=1
+                    else:game.step(obs,choice)
+                else:self.fail('conditional source keyword not reached')
+                self.assertGreater(replayed,0);self.assertEqual(obs['schema'],51);public=game.observe('P1');source=next(o for o in public['objects'] if o['id']==sources[0]['id']);self.assertEqual((source['power'],source['toughness'],source['keywords']),(base[0]+bonus[0],base[1]+bonus[1],intrinsic|flag))
+
     def test_nine_count_threshold_bodies_reach_live_bonus_and_native_python_replay(self):
         rows=[('Basking Capybara',(1,3),(3,0)),('Billowing Shriekmass',(2,3),(2,1)),('Brightspear Zealot',(2,4),(2,0)),('Cloudsculpt Technician',(1,4),(1,0)),('Frilled Cave-Wurm',(2,5),(2,0)),('Gaelicat',(1,3),(2,0)),('Gigantoad',(4,4),(2,2)),('Mind Drill Assailant',(2,5),(3,0)),('Scorpion Sentinel',(1,4),(3,0))]
         types={c["name"]:c["type_line"].split(" — ")[0].split() for c in json.loads((Path(__file__).resolve().parents[1]/"data/standard/cards.json").read_text())["cards"]}

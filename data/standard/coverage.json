@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "b0f5e68e9711ea841924a48852b941b09ba7066bc3f7f926fd4f001a2c5a82dd",
+  "catalogue_version": "c3a1cb99340adc99a4fdebb5ed05db62c0abc38791b1b0dbfac2a92a4e630e44",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1263,
-  "implemented_total": 1269,
+  "implemented_standard_cards": 1272,
+  "implemented_total": 1278,
   "token_definitions": 56,
   "emblem_definitions": 1,
   "cards": [
@@ -2044,8 +2044,8 @@
     {
       "name": "Barrow Naughty",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Bartolomé del Presidio",
@@ -6448,8 +6448,8 @@
     {
       "name": "Didact Echo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Dig Site Inventory",
@@ -7072,8 +7072,8 @@
     {
       "name": "Dreadwing Scavenger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Dream Beavers",
@@ -7504,8 +7504,8 @@
     {
       "name": "Echo of Dusk",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Echo, Perceptive Prodigy",
@@ -10876,8 +10876,8 @@
     {
       "name": "Goblin Tomb Raider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Goblin-town",
@@ -11122,8 +11122,8 @@
     {
       "name": "Gravblade Heavy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Grave Researcher // Reanimate",
@@ -13912,8 +13912,8 @@
     {
       "name": "Kargan Dragonrider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Karlov Watchdog",
@@ -24292,8 +24292,8 @@
     {
       "name": "Spineseeker Centipede",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Spinewoods Armadillo",
@@ -30400,8 +30400,8 @@
     {
       "name": "Wildfire Wickerfolk",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Wildgrowth Archaic",

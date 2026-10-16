@@ -18,7 +18,9 @@ struct Resource {
     object: Object,
 }
 #[derive(Clone)]
-struct FundingState {
+struct FundingState<'g> {
+    game: &'g Game,
+    actor: Player,
     life_gained: [bool; 2],
     active: Player,
     mana: [u128; 6],
@@ -172,8 +174,8 @@ fn source_obligations(
     }
 }
 
-impl FundingState {
-    fn from_game(game: &Game, goal: FundingGoal) -> Self {
+impl<'g> FundingState<'g> {
+    fn from_game(game: &'g Game, goal: FundingGoal) -> Self {
         // A prerequisite need not itself produce mana (e.g. a changeling for
         // Mox Jasper). Keep only relevant owned witnesses, including removable
         // mana sources, so virtual sacrifices invalidate later guarded moves.
@@ -224,6 +226,8 @@ impl FundingState {
             })
             .collect();
         Self {
+            game,
+            actor: goal.actor,
             life_gained: game
                 .state
                 .players
@@ -259,6 +263,37 @@ impl FundingState {
                 .map_or(Keywords::NONE, |r| self.keywords(r)),
         ) && source_obligations(goal, object, keywords, self.life)
     }
+    fn stat_value(&self, value: StatValue, source: &Resource) -> i128 {
+        self.game.stat_value_with(
+            value,
+            ObjectRef {
+                card: source.id,
+                generation: source.object.generation,
+            },
+            source.object.owner,
+            &|| {
+                self.game
+                    .state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .map(|(id, original)| {
+                        let id = id as CardId;
+                        let object = self
+                            .resources
+                            .iter()
+                            .find(|r| r.id == id)
+                            .map_or(original, |r| &r.object);
+                        (id, object)
+                    })
+            },
+            if source.object.owner == self.actor {
+                self.life
+            } else {
+                self.game.state.players[source.object.owner.index()].life
+            },
+        )
+    }
     fn keywords(&self, target: &Resource) -> Keywords {
         let mut keywords = target.object.keywords();
         if target.object.zone == Zone::Battlefield && target.object.card.is_creature() {
@@ -282,7 +317,11 @@ impl FundingState {
                     continue;
                 }
                 for grant in source.object.card.keyword_grants() {
-                    if (!grant.requires_life_gain || self.life_gained[source.object.owner.index()])
+                    if grant
+                        .condition
+                        .is_none_or(|value| self.stat_value(value, source) != 0)
+                        && (!grant.requires_life_gain
+                            || self.life_gained[source.object.owner.index()])
                         && grant.matches(
                             target.object.card,
                             target.object.owner == source.object.owner,
@@ -1069,7 +1108,10 @@ mod own_turn_guard_tests {
         // Future mana-cost IR uses the same guard helper; neither new printed
         // ability in this stage produces mana.
         for active in [Player::P0, Player::P1] {
+            let game = super::super::tests::scenario();
             let state = FundingState {
+                game: &game,
+                actor: Player::P0,
                 life_gained: [false; 2],
                 active,
                 mana: [0; 6],
@@ -1172,5 +1214,176 @@ mod exhaust_funding_tests {
         g.move_object(loot, Zone::Battlefield);
         assert_eq!(g.object_view(loot).exhausted_abilities, 0);
         assert!(g.can_fund(goal));
+    }
+}
+
+#[cfg(test)]
+mod conditional_keyword_tests {
+    use super::super::tests::{act, scenario, spawn};
+    use super::*;
+    fn named(g: &mut Game, p: Player, n: &str, z: Zone) -> CardId {
+        let c = Card::from_name(n).unwrap();
+        assert!(c.is_supported());
+        spawn(g, p, c, z)
+    }
+    fn goal(p: Player) -> FundingGoal {
+        FundingGoal {
+            actor: p,
+            required: [0, 0, 0, 1, 0, 0],
+            generic: 0,
+            reserve: None,
+            source: None,
+        }
+    }
+    #[test]
+    fn borrowed_overlay_matches_actual_conditional_keywords_after_real_nontoken_mana_sacrifice() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = scenario();
+            g.state.active = p;
+            g.state.priority = p;
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+            let tomb = named(&mut g, p, "Goblin Tomb Raider", Zone::Battlefield);
+            let spine = named(&mut g, p, "Spineseeker Centipede", Zone::Battlefield);
+            let pizza = named(&mut g, p, "Omni-Cheese Pizza", Zone::Battlefield);
+            for n in ["Forest", "Opt", "Bear Cub"] {
+                named(&mut g, p, n, Zone::Graveyard);
+            }
+            let saved = g.snapshot();
+            let mut state = FundingState::from_game(&g, goal(p));
+            let before = state.key(goal(p));
+            assert!(
+                state
+                    .keywords(state.resources.iter().find(|r| r.id == tomb).unwrap())
+                    .contains(Keywords::HASTE)
+            );
+            assert!(
+                !state
+                    .keywords(state.resources.iter().find(|r| r.id == spine).unwrap())
+                    .contains(Keywords::VIGILANCE)
+            );
+            let step = state
+                .moves(goal(p))
+                .into_iter()
+                .find(|m| state.resources[m.resource].id == pizza && m.production[3] == 1)
+                .unwrap();
+            let action = state.action(&step);
+            state.apply(&step);
+            assert!(state.key(goal(p)) != before);
+            let mut actual = g.clone();
+            act(&mut actual, action);
+            for id in [tomb, spine] {
+                let r = state.resources.iter().find(|r| r.id == id).unwrap();
+                assert_eq!(state.keywords(r), actual.keywords(id));
+            }
+            assert!(
+                !state
+                    .keywords(state.resources.iter().find(|r| r.id == tomb).unwrap())
+                    .contains(Keywords::HASTE)
+            );
+            assert!(
+                state
+                    .keywords(state.resources.iter().find(|r| r.id == spine).unwrap())
+                    .contains(Keywords::VIGILANCE)
+            );
+            assert_eq!(g.snapshot(), saved);
+        }
+    }
+    #[test]
+    fn token_sacrifice_removes_artifact_witness_without_adding_a_graveyard_card_type() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = scenario();
+            g.state.active = p;
+            g.state.priority = p;
+            let tomb = named(&mut g, p, "Goblin Tomb Raider", Zone::Battlefield);
+            let spine = named(&mut g, p, "Spineseeker Centipede", Zone::Battlefield);
+            for n in ["Forest", "Opt", "Bear Cub"] {
+                named(&mut g, p, n, Zone::Graveyard);
+            }
+            let c = Card::catalogue()
+                .find(|c| c.token_info().is_some_and(|t| t.subtypes == "Treasure"))
+                .unwrap();
+            let treasure = spawn(&mut g, p, c, Zone::Battlefield);
+            let mut state = FundingState::from_game(&g, goal(p));
+            let step = state
+                .moves(goal(p))
+                .into_iter()
+                .find(|m| state.resources[m.resource].id == treasure && m.production[3] == 1)
+                .unwrap();
+            let action = state.action(&step);
+            state.apply(&step);
+            let mut actual = g.clone();
+            act(&mut actual, action);
+            assert!(
+                !state
+                    .keywords(state.resources.iter().find(|r| r.id == tomb).unwrap())
+                    .contains(Keywords::HASTE)
+            );
+            assert!(
+                !state
+                    .keywords(state.resources.iter().find(|r| r.id == spine).unwrap())
+                    .contains(Keywords::VIGILANCE)
+            );
+            for id in [tomb, spine] {
+                assert_eq!(
+                    state.keywords(state.resources.iter().find(|r| r.id == id).unwrap()),
+                    actual.keywords(id)
+                );
+            }
+        }
+    }
+    #[test]
+    fn one_shared_evaluator_covers_all_quantities_and_virtual_actor_life_without_mutation() {
+        const BF: CountFilter = CountFilter {
+            zone: CountZone::Battlefield,
+            relation: 0,
+            kind: 0,
+            exclude: 0,
+            subtype: None,
+            basic: false,
+            other: false,
+            cards_only: false,
+        };
+        const GRAVE: CountFilter = CountFilter {
+            zone: CountZone::Graveyard,
+            cards_only: true,
+            ..BF
+        };
+        let mut g = scenario();
+        let source = named(&mut g, Player::P0, "Goblin Tomb Raider", Zone::Battlefield);
+        named(&mut g, Player::P0, "Three Tree Mascot", Zone::Battlefield);
+        named(&mut g, Player::P0, "Forest", Zone::Battlefield);
+        for n in ["Opt", "Anthem of Champions", "Scorpion Sentinel", "Forest"] {
+            named(&mut g, Player::P0, n, Zone::Graveyard);
+        }
+        let s = g.snapshot();
+        let mut state = FundingState::from_game(&g, goal(Player::P0));
+        let resource = state.resources.iter().find(|r| r.id == source).unwrap();
+        for value in [
+            StatValue::ControllerLife,
+            StatValue::SpellsCastThisTurn,
+            StatValue::LifeGainOccurredThisTurn,
+            StatValue::Count(BF),
+            StatValue::Count(GRAVE),
+            StatValue::DistinctNames(BF),
+            StatValue::Colors(BF),
+            StatValue::CardTypes(GRAVE),
+            StatValue::GreatestManaValue(BF),
+            StatValue::GraveyardCardTypes,
+            StatValue::CountUnion(&[BF, GRAVE]),
+            StatValue::Sum(&[StatValue::Count(BF), StatValue::Count(GRAVE)]),
+            StatValue::AtLeast {
+                value: &StatValue::Count(GRAVE),
+                minimum: 4,
+            },
+        ] {
+            assert_eq!(
+                state.stat_value(value, resource),
+                g.stat_value(value, g.object_ref(source), Player::P0)
+            );
+        }
+        state.life = 7;
+        let r = state.resources.iter().find(|r| r.id == source).unwrap();
+        assert_eq!(state.stat_value(StatValue::ControllerLife, r), 7);
+        assert_eq!(g.snapshot(), s);
     }
 }
