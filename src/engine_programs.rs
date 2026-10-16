@@ -112,8 +112,10 @@ impl Game {
                 } = ability.condition.event()
                     && (!first_only || first)
                     && (!own_turn || self.state.active == player)
+                    && self.queue_trigger(&source, index)
                 {
-                    self.queue_trigger(&source, index);
+                    self.state.pending_triggers.last_mut().unwrap().life_event =
+                        Some(LifeTriggerView { player, amount });
                 }
             }
         }
@@ -258,6 +260,7 @@ impl Game {
             damage_event: None,
             discard_event: None,
             draw_event: None,
+            life_event: None,
             source_attachment: source.attached_to,
             card: source.id,
             object: source.reference,
@@ -421,7 +424,9 @@ impl Game {
                 Effect::Spell(..) | Effect::Modal(_) => {
                     item.source_card.spell_program(item.mode).unwrap().1
                 }
-                Effect::Land | Effect::Unsupported => unreachable!("unsupported spell admitted"),
+                Effect::Land | Effect::Emblem | Effect::Unsupported => {
+                    unreachable!("unsupported spell admitted")
+                }
             },
         };
         assert!(self.state.resolving.is_none());
@@ -742,6 +747,19 @@ impl Game {
                     for player in self.program_players(set, &item) {
                         self.state.resolving.as_mut().unwrap().discards[player.index()] =
                             usize::from(amount);
+                    }
+                }
+                Instruction::CreateEmblem(factory) => self.create_emblem(item.controller, factory),
+                Instruction::LoseGainedLife(set) => {
+                    let amount = item
+                        .life_event
+                        .expect("life-event program requires context")
+                        .amount;
+                    for player in self.program_players(set, &item) {
+                        let life = &mut self.state.players[player.index()].life;
+                        *life = life
+                            .checked_sub(amount)
+                            .capacity("life representation exhausted");
                     }
                 }
                 Instruction::GainLife(set, amount) => {

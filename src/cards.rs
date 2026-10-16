@@ -13,6 +13,7 @@ pub(crate) enum Effect {
     Modal(&'static [SpellMode]),
     Land,
     Permanent,
+    Emblem,
     Aura(TargetPlan),
     Unsupported,
 }
@@ -287,6 +288,8 @@ pub(crate) enum Instruction {
     },
     DrawMoved,
     GainLifeMoved,
+    CreateEmblem(Card),
+    LoseGainedLife(PlayerSet),
     Connive {
         subject: Subject,
         amount: u16,
@@ -767,6 +770,7 @@ pub(crate) struct ActivationCost {
     pub discard: bool,
     pub life: u16,
     pub remove: Option<(Option<CounterKind>, u32)>,
+    pub loyalty: Option<i32>,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ActivationOrigin {
@@ -806,6 +810,9 @@ pub(crate) struct ActivatedAbility {
 
 impl ActivatedAbility {
     pub(crate) fn mana_production(&self) -> Option<ManaProduction> {
+        if self.cost.loyalty.is_some() {
+            return None;
+        }
         match self.program {
             [Instruction::AddMana(production)] if !self.targets.has_targets() => Some(*production),
             _ => None,
@@ -871,6 +878,12 @@ pub struct TokenInfo {
     pub name: &'static str,
     pub subtypes: &'static str,
     pub colors: u8,
+}
+
+/// Immutable abilities of a generated command-zone emblem.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct EmblemInfo {
+    pub oracle_text: &'static str,
 }
 
 /// Self replacement evaluated against the battlefield immediately before entry.
@@ -985,6 +998,26 @@ impl Card {
         self.index()
             .checked_sub(generated::TOKEN_BASE)
             .and_then(|offset| generated::TOKENS.get(offset))
+    }
+    pub fn emblem_info(self) -> Option<&'static EmblemInfo> {
+        self.index()
+            .checked_sub(generated::EMBLEM_BASE)
+            .and_then(|offset| generated::EMBLEMS.get(offset))
+    }
+    pub fn is_emblem(self) -> bool {
+        self.emblem_info().is_some()
+    }
+    pub(crate) fn loyalty_mask(self) -> u64 {
+        self.activations()
+            .iter()
+            .enumerate()
+            .fold(0, |mask, (i, a)| {
+                mask | if a.cost.loyalty.is_some() {
+                    1u64 << i
+                } else {
+                    0
+                }
+            })
     }
     pub fn is_token(self) -> bool {
         self.token_info().is_some()

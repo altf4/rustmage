@@ -74,6 +74,13 @@ impl Game {
         {
             return false;
         }
+        if let Some(change) = ability.cost.loyalty
+            && (!sorcery
+                || object.used_abilities & object.card.loyalty_mask() != 0
+                || (change < 0 && object.counters.loyalty < u64::from(change.unsigned_abs())))
+        {
+            return false;
+        }
         if let Some((kind, amount)) = ability.cost.remove {
             let count = object.counters.available(kind);
             if count < u128::from(amount) {
@@ -234,6 +241,7 @@ impl Game {
             damage_event: None,
             discard_event: None,
             draw_event: None,
+            life_event: None,
             source_attachment: self.state.objects[card as usize].attached_to,
             card,
             object: self.object_ref(card),
@@ -265,7 +273,11 @@ impl Game {
         let object = &mut self.state.objects[item.card as usize];
         if object.generation != item.object.generation || object.zone != definition.source_zone() {
             assert!(
-                !cost.tap && !cost.sacrifice && !cost.discard && cost.remove.is_none(),
+                !cost.tap
+                    && !cost.sacrifice
+                    && !cost.discard
+                    && cost.remove.is_none()
+                    && cost.loyalty.is_none(),
                 "unpaid source cost"
             );
             return;
@@ -278,6 +290,13 @@ impl Game {
         object.counters.minus_one -= counter_payment.minus_one;
         object.counters.stun -= counter_payment.stun;
         object.counters.loyalty -= counter_payment.loyalty;
+        if let Some(change) = cost.loyalty {
+            if change < 0 {
+                object.counters.loyalty -= u64::from(change.unsigned_abs());
+            } else {
+                object.counters.add(CounterKind::Loyalty, change as u64);
+            }
+        }
         if cost.discard {
             self.discard_batch(&[item.card], definition.cycling.then_some(item.object));
         } else if cost.sacrifice {

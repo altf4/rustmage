@@ -1,10 +1,11 @@
 {
   "schema": 1,
-  "catalogue_version": "63cadb93a77d7ddb6ec4c44524508f76ec2335f681254b4171ea6677f1c3e70b",
+  "catalogue_version": "6840f15c6694c6db3ccaf801325d870bdf678517b5bedf4eb55b3ca93fe84c78",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 986,
-  "implemented_total": 992,
+  "implemented_standard_cards": 987,
+  "implemented_total": 993,
   "token_definitions": 43,
+  "emblem_definitions": 1,
   "cards": [
     {
       "name": "Plains",
@@ -19503,8 +19504,8 @@
     {
       "name": "Professor Dellian Fel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Professor Zei, Anthropologist",
