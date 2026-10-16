@@ -28,13 +28,24 @@ impl Game {
             return;
         }
         let source = self.object_view(id);
-        if source.owner == item.controller {
-            return;
-        }
         for (index, ability) in source.card.triggers().iter().enumerate() {
-            if ability.condition.event() == TriggerCondition::Ward
-                && self.queue_trigger(&source, index)
-            {
+            let event = ability.condition.event();
+            let matched = match event {
+                TriggerCondition::Ward => source.owner != item.controller,
+                TriggerCondition::SelfTargeted {
+                    relation,
+                    spells_only,
+                } => {
+                    (!spells_only || item.kind == StackKind::Spell)
+                        && match relation {
+                            CastRelation::You => source.owner == item.controller,
+                            CastRelation::Opponent => source.owner != item.controller,
+                            CastRelation::Any => true,
+                        }
+                }
+                _ => false,
+            };
+            if matched && self.queue_trigger(&source, index) && event == TriggerCondition::Ward {
                 self.state
                     .pending_triggers
                     .last_mut()

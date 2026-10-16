@@ -14,6 +14,40 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_self_target_events_keep_controller_kind_first_event_and_pronouns_exact(self):
+        for noun,spells_only in [('a spell or ability',False),('a spell',True)]:
+            for who,relation in [(' you control','You'),(' an opponent controls','Opponent'),('','Any')]:
+                body=f'Whenever this creature becomes the target of {noun}{who}, draw a card.'
+                got=generate.trigger_creature_template(self.card(oracle_text=body))
+                self.assertEqual(got[2][0],(f'SelfTargeted {{ relation: CastRelation::{relation}, spells_only: {str(spells_only).lower()} }}',['Draw(PlayerSet::Controller, 1)'],'None'))
+        prefix='Valiant — Whenever this creature becomes the target of a spell or ability you control for the first time each turn, '
+        got=generate.trigger_creature_template(self.card(oracle_text=prefix+'put a +1/+1 counter on it.'))
+        self.assertIn('OncePerTurn',got[2][0][0]);self.assertIn('Subject::Source',got[2][0][1][0])
+        for body in ['Whenever another creature becomes the target of a spell, draw a card.',
+                     'Whenever this creature becomes the target of an ability you control, draw a card.',
+                     prefix+'if you control a Desert, draw a card.',
+                     prefix+'put a +1/+1 counter on it. Scry 1.',
+                     prefix+'tap target creature. Put a +1/+1 counter on it.',
+                     prefix.replace('you control','an opponent controls')+'draw a card.']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=body)),body)
+        ruric=self.card(name='Ruric Thar, Biomagus',type_line='Legendary Creature — Ogre Crab Wizard',oracle_text='Prowess, prowess\nWhenever Ruric Thar becomes the target of a spell or ability an opponent controls, draw a card.')
+        self.assertEqual(len(generate.trigger_creature_template(ruric)[2]),3)
+        self.assertIsNone(generate.trigger_creature_template(dict(ruric,name='Unrelated')))
+
+    def test_eight_self_target_bodies_match_pinned_text_and_gate_residuals(self):
+        import json
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,coverage=generate.compile_catalogue(snapshot,target);supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        admitted=json.loads((generate.ROOT/'docs/self-target-admissions.json').read_text())['cards'];self.assertEqual(len(admitted),8)
+        for a in admitted:
+            c=next(c for c in snapshot['cards'] if c['name']==a['name']);self.assertEqual(c['oracle_text'],a['oracle_text']);self.assertIn(c['name'],supported)
+            changed=dict(c,oracle_text=c['oracle_text']+'\nDiscover 4.')
+            self.assertIsNone(generate.permanent_program_template(changed));self.assertIsNone(generate.trigger_creature_template(changed));self.assertIsNone(generate.creature_template(changed))
+        cactus=next(c for c in snapshot['cards'] if c['name']=='Cactarantula');_,rules=generate.extract_cost_reductions(cactus)
+        self.assertEqual(len(rules),1);self.assertIn('subtype: Some("Desert")',rules[0]);self.assertIn('source_only: true',rules[0])
+        for name in ['Altanak, the Thrice-Called','Tenured Concocter','Pawpatch Recruit','Surrak, Elusive Hunter','Emberheart Challenger','Flowerfoot Swordmaster','Whiskervale Forerunner']:
+            self.assertNotIn(name,supported)
+
     def test_power_blocking_flags_and_temporary_grants_keep_skulk_distinct(self):
         self.assertEqual(generate.KEYWORDS['skulk'],1048576)
         self.assertEqual(generate.creature_template(self.card(oracle_text='Skulk')),('Creature(2, 1)',1048576))
@@ -36,7 +70,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         april=next(c for c in snapshot['cards'] if c['name']=="April O'Neil, Kunoichi Trainee")
         self.assertIsNone(generate.trigger_creature_template(dict(april,name='Unrelated',type_line='Legendary Creature — Human Ninja')))
         self.assertIsNone(generate.trigger_creature_template(self.card(name='Unrelated',type_line='Legendary Creature — Human Ninja',oracle_text="When this creature enters, scry 2.\nApril O'Neil can't be blocked by creatures with power 3 or greater.")))
-        for name in ['Ingenious Prodigy','Old Fat Spider','Gate Colossus','Azure Beastbinder','Delney, Streetwise Lookout','Bristlebane Outrider','Foggy Swamp Vinebender','Rust-Shield Rampager','Sandman, Shifting Scoundrel']:
+        for name in ['Ingenious Prodigy','Gate Colossus','Azure Beastbinder','Delney, Streetwise Lookout','Bristlebane Outrider','Foggy Swamp Vinebender','Rust-Shield Rampager','Sandman, Shifting Scoundrel']:
             self.assertNotIn(name,supported)
 
     def test_own_turn_guard_and_authenticated_sacrifice_cost_names(self):

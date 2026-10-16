@@ -214,6 +214,7 @@ impl Game {
                     | TriggerCondition::SelfEntersOrAttacks
                     | TriggerCondition::SelfEntersOrDies => same,
                     TriggerCondition::Ward
+                    | TriggerCondition::SelfTargeted { .. }
                     | TriggerCondition::CardDrawn { .. }
                     | TriggerCondition::SelfDiscarded
                     | TriggerCondition::SelfCycled

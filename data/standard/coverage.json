@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "7009f10fbc93483fa7817fb51017f1809b225a80e1f05fbe246f73ffadb02498",
+  "catalogue_version": "6333afb39123174e776ef61f05ab7e25c71ca0c950d79712426a4abfa4a9e789",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1122,
-  "implemented_total": 1128,
+  "implemented_standard_cards": 1130,
+  "implemented_total": 1136,
   "token_definitions": 49,
   "emblem_definitions": 1,
   "cards": [
@@ -3682,8 +3682,8 @@
     {
       "name": "Cactarantula",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Cactuar",
@@ -17188,8 +17188,8 @@
     {
       "name": "Mouse Trapper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Mouser Attack!",
@@ -17536,8 +17536,8 @@
     {
       "name": "Nettle Guard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Neutralize the Guards",
@@ -18028,8 +18028,8 @@
     {
       "name": "Old Fat Spider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Old Fat Spider Can't See Me",
@@ -21760,8 +21760,8 @@
     {
       "name": "Ruric Thar, Biomagus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Ruric Thar, Magecrusher",
@@ -22588,8 +22588,8 @@
     {
       "name": "Seedglaive Mentor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Seedpod Squire",
@@ -29272,8 +29272,8 @@
     {
       "name": "Veteran Guardmouse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Veteran Ice Climber",
@@ -30250,8 +30250,8 @@
     {
       "name": "Whiskerquill Scribe",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Whiskervale Forerunner",
