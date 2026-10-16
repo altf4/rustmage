@@ -1,5 +1,7 @@
 # Celebration and historical nonland entries
 
+The integrated checkpoint includes collect evidence and supports **1,619 / 5,164 Standard cards**, schema **66**, with fingerprint `6ce4ca3e32700616feda565deeb7b7860f4023b065b09c98fc0302c48074c165`. The standalone measurements below retain their original base.
+
 Issue [#229](https://github.com/altf4/rustmage/issues/229) adds **ten complete Standard bodies**. This standalone stage executes **1,609 / 5,164 Standard identities**, plus six regression cards, with 74 immutable token factories and one emblem. Its fingerprint is `39c59f51d2ded342b767fa381c8f25f786cd016af2734133c89aec6f3c6e6681`.
 
 | Complete card | Behavior |
@@ -42,6 +44,8 @@ Canonical comparison with parent `0e0f181f789a85b665af833c7c4087ec82ddd372` prov
 ## Validation and reproduction
 
 Sixteen focused native groups cover all ten actual paid bodies in both seats; 0/1/2 history; simultaneous creature/noncreature tokens; source as second or later entry; departures/reentries; lands and actual Map exploration; event-versus-resolution checks; exact attachment incarnations; optional zero and paid equip; real double-strike/lifelink combat; shared virtual keywords; retained second-spell reductions with an actual selected-X spell; cleanup priority/reset and late overflow rollback. Four compiler methods enforce the complete bodies, exact historical qualifier, bounded costs, optional attachment grammar, whole equip/reducer residuals and unknown-tail rejection. The exhaustive scaling-source inventory explicitly includes the three newly admitted scaling sources.
+
+Final standalone validation passed **1,468 Rust tests**, **286 compiler/data tests** (423.612 s), and **192 fresh-library Python tests** (407.866 s), plus all-target Clippy, formatting and generated-catalogue checks. The standalone base excludes the separately integrated collect-evidence stage; combined counts are recorded during integration.
 
 The fresh public module has **two methods / 42 paid scenarios**: every card under both controllers at both false and true thresholds, plus both controllers declining optional attachment and then really paying equip. It checks both viewers, full clone/snapshot/restore/stale replay, illegal opponent targets and wrong actors. Lady's negative case reaches its actual end step; Ash's negative case makes an actual attack.
 
