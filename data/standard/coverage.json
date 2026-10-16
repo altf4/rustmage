@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "645980960a22c6932b79117b6d63c03efcaed89b2ca3954863e6c9c014dc03f7",
+  "catalogue_version": "7009f10fbc93483fa7817fb51017f1809b225a80e1f05fbe246f73ffadb02498",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1118,
-  "implemented_total": 1124,
+  "implemented_standard_cards": 1122,
+  "implemented_total": 1128,
   "token_definitions": 49,
   "emblem_definitions": 1,
   "cards": [
@@ -1162,8 +1162,8 @@
     {
       "name": "April O'Neil, Kunoichi Trainee",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "April, Reporter of the Weird",
@@ -4144,8 +4144,8 @@
     {
       "name": "Cavern Stomper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Cavern of Souls",
@@ -19342,8 +19342,8 @@
     {
       "name": "Prehistoric Pet",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Preposterous Proportions",
@@ -29260,8 +29260,8 @@
     {
       "name": "Verdant Outrider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Veteran Beastrider",

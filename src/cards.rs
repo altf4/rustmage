@@ -981,6 +981,11 @@ impl Keywords {
     pub const MIN_THREE_BLOCKERS: Self = Self(131072);
     pub const NO_TOKEN_BLOCKERS: Self = Self(262144);
     pub const CHANGELING: Self = Self(524288);
+    pub const SKULK: Self = Self(1048576);
+    pub const NO_POWER_LE_TWO_BLOCKERS: Self = Self(2097152);
+    pub const NO_POWER_GE_THREE_BLOCKERS: Self = Self(4194304);
+    /// Equivalent evasion text does not itself grant the skulk keyword.
+    pub const NO_GREATER_POWER_BLOCKERS: Self = Self(8388608);
     pub fn contains(self, keyword: Self) -> bool {
         self.0 & keyword.0 == keyword.0
     }

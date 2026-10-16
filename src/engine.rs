@@ -2931,7 +2931,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 47,
+            schema: 48,
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
             creatures_died_this_turn: s.creatures_died_this_turn,
             catalogue: crate::CATALOGUE_VERSION,
@@ -3523,3 +3523,7 @@ mod discard_history_tests;
 #[cfg(test)]
 #[path = "engine_own_turn_tests.rs"]
 mod own_turn_tests;
+
+#[cfg(test)]
+#[path = "engine_power_blocking_tests.rs"]
+mod power_blocking_tests;
