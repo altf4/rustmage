@@ -37,6 +37,39 @@ class CatalogueCompilerTests(unittest.TestCase):
             proxy,rules=generate.extract_cost_reductions(self.card(oracle_text=text))
             self.assertEqual(proxy['oracle_text'],text);self.assertEqual(rules,[],text)
 
+    def test_attack_intervening_guards_require_the_complete_tapped_declaration(self):
+        result=generate.trigger_creature_template(self.card(oracle_text='Whenever this creature attacks, if you control two or more tapped creatures, draw a card.'))
+        self.assertIsNotNone(result)
+        self.assertIn('InterveningIf',result[2][0][0]);self.assertIn('TappedCreatures',result[2][0][0]);self.assertIn('minimum: Some(2)',result[2][0][0]);self.assertIn('SelfAttacks',result[2][0][0])
+        self.assertEqual(result[2][0][1],['Draw(PlayerSet::Controller, 1)'])
+
+    def test_attack_history_costs_and_raid_entry_guards_are_exact(self):
+        text='This spell costs {1} less to cast for each creature that attacked this turn.'
+        proxy,rules=generate.extract_cost_reductions(self.card(oracle_text=text+'\nFlying'))
+        self.assertEqual(proxy['oracle_text'],'Flying');self.assertIn('SpellReductionAmount::Attackers { factor: 1 }',rules[0]);self.assertIn('source_only: true',rules[0])
+        for clause in ['creature that died this turn','creature you control that attacked this turn','creature put onto the battlefield attacking this turn']:
+            original='This spell costs {1} less to cast for each '+clause+'.'
+            proxy,rules=generate.extract_cost_reductions(self.card(oracle_text=original));self.assertEqual(proxy['oracle_text'],original);self.assertEqual(rules,[])
+        entry=generate.trigger_creature_template(self.card(oracle_text='Raid — When this creature enters, if you attacked this turn, draw a card.'))
+        self.assertIn('InterveningIf',entry[2][0][0]);self.assertIn('StepGuard::Attacked',entry[2][0][0]);self.assertEqual(entry[2][0][1],['Draw(PlayerSet::Controller, 1)'])
+        program=generate.statement_program('Draw two cards. Then discard a card unless you attacked this turn.')
+        self.assertEqual(program,['Draw(PlayerSet::Controller, 2)','If { guard: StepGuard::Attacked, skip: 1 }','Skip(1)','Discard(PlayerSet::Controller, 1)'])
+        self.assertIsNone(generate.statement_program('Draw two cards. Then discard a card unless a creature entered this turn.'))
+
+    def test_seven_attack_history_raid_bodies_require_complete_text(self):
+        import json
+        admissions=json.loads((generate.ROOT/'docs/attack-history-admissions.json').read_text())['cards'];self.assertEqual(len(admissions),7)
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,report=generate.compile_catalogue(rows,target);supported={r['name'] for r in report['cards'] if r['implemented']}
+        for admitted in admissions:
+            name=admitted['name'];self.assertIn(name,supported)
+            card=next(c for c in rows['cards'] if c['name']==name);self.assertEqual(card['oracle_text'],admitted['oracle_text'])
+            proxy,_=generate.extract_cost_reductions(dict(card,oracle_text=card['oracle_text']+'\nWhenever you cast a spell, discover 3.'))
+            self.assertIsNone(generate.spell_program_template(proxy),name);self.assertIsNone(generate.permanent_program_template(proxy),name)
+            self.assertIsNone(generate.static_permanent_template(proxy),name);self.assertIsNone(generate.modal_spell_template(proxy),name)
+        for name in ['Goblin Boarders','Cruel Administrator','Avengers Assemble!','Full Throttle','Hexhaven Dueling Arena','Strongbox Raider']:
+            self.assertNotIn(name,supported)
+
     def test_derived_cost_quantities_keep_live_stats_out_of_characteristic_layers(self):
         for text,needles in [
             ('This spell costs {X} less to cast, where X is the total power of creatures you control.',['CreaturePower','greatest: false','relation: 0']),
@@ -73,7 +106,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             proxy,_=generate.extract_cost_reductions(dict(card,oracle_text=card['oracle_text']+'\nWhenever you cast a spell, discover 3.'))
             self.assertIsNone(generate.spell_program_template(proxy),name);self.assertIsNone(generate.permanent_program_template(proxy),name)
             self.assertIsNone(generate.static_permanent_template(proxy),name);self.assertIsNone(generate.modal_spell_template(proxy),name)
-        for name in ['Ghalta the Immovable','The Pride of Hull Clade','The Skullspore Nexus','Rowdy Research','Sunderflock']:
+        for name in ['Ghalta the Immovable','The Pride of Hull Clade','The Skullspore Nexus','Full Throttle','Sunderflock']:
             self.assertNotIn(name,supported)
 
     def test_scaled_reductions_bind_exact_count_zones_unions_and_affinity(self):
@@ -95,7 +128,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         for text in [
             'Affinity for artifacts (This spell costs {1} less to cast for each creature you control.)',
             'Spells you cast have affinity for artifacts. (They cost {1} less to cast for each creature you control.)',
-            'This spell costs {1} less to cast for each creature that attacked this turn.',
+            'This spell costs {1} less to cast for each creature that died this turn.',
             'This spell costs {1} less to cast for each card in your hand.',
             'This spell costs {1} less to cast for each permanent sacrificed this way.',
             'This spell costs {1} less to cast for each creature you control with power 4 or greater.',
@@ -118,7 +151,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertTrue(rules,name)
             self.assertIsNone(generate.spell_program_template(proxy),name);self.assertIsNone(generate.permanent_program_template(proxy),name)
             self.assertIsNone(generate.static_permanent_template(proxy),name);self.assertIsNone(generate.modal_spell_template(proxy),name)
-        for name in ['Eddymurk Crab','Rowdy Research','Witchstalker Frenzy','Don & Raph, Hard Science','Spectral Denial',
+        for name in ['Eddymurk Crab','Cruel Administrator','Goblin Boarders','Don & Raph, Hard Science','Spectral Denial',
                      'The Dawning Archaic','Tomik, Wielder of Law','Rottenmouth Viper','Sunderflock','Sapling Nursery']:
             self.assertNotIn(name,supported)
 

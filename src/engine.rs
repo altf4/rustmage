@@ -689,6 +689,7 @@ enum Pending {
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
     objects: SharedVec<Object>,
+    attacked_this_turn: SharedVec<ObjectRef>,
     free_tokens: Vec<CardId>,
     static_sources: Vec<CardId>,
     cast_sources: Vec<CardId>,
@@ -905,6 +906,8 @@ pub struct LegalActionSpace {
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
     pub schema: u32,
+    /// Number of distinct declared attacker objects this turn, including departures.
+    pub creatures_attacked_this_turn: usize,
     pub catalogue: &'static str,
     pub viewer: Player,
     pub revision: u64,
@@ -1046,6 +1049,7 @@ impl Game {
             revision: 0,
             state: State {
                 objects: objects.into(),
+                attacked_this_turn: Vec::new().into(),
                 free_tokens: Vec::new(),
                 static_sources: Vec::new(),
                 cast_sources: Vec::new(),
@@ -2023,17 +2027,9 @@ impl Game {
                 })
             }
             Action::FinishAttackers => {
-                self.state.attack_declared = !self.state.selected_attackers.is_empty();
-                self.state.players[actor.index()].attacked_this_turn |= self.state.attack_declared;
-                let declared = std::mem::take(&mut self.state.selected_attackers);
-                for attack in declared {
-                    let card = attack.card;
-                    if !self.keywords(card).contains(Keywords::VIGILANCE) {
-                        self.state.objects[card as usize].tapped = true;
-                    }
-                    self.state.attackers.push(attack);
-                    self.attack_triggers(&self.object_view(card));
-                }
+                self.commit_attackers_with(actor, |game, card| {
+                    game.attack_triggers(&game.object_view(card));
+                });
                 self.give_priority();
             }
             Action::Block { blocker, attacker } => {
@@ -2472,6 +2468,33 @@ impl Game {
         }
     }
 
+    /// Complete the turn-based declaration before dispatching attack events.
+    /// Keeping this boundary explicit also permits testing live trigger guards.
+    fn commit_attackers_with(&mut self, actor: Player, mut event: impl FnMut(&mut Self, CardId)) {
+        self.state.attack_declared = !self.state.selected_attackers.is_empty();
+        self.state.players[actor.index()].attacked_this_turn |= self.state.attack_declared;
+        let declared = std::mem::take(&mut self.state.selected_attackers);
+        // Determine vigilance before any simultaneous tap changes characteristics.
+        let to_tap: Vec<_> = declared
+            .iter()
+            .filter(|a| !self.keywords(a.card).contains(Keywords::VIGILANCE))
+            .map(|a| a.card)
+            .collect();
+        for attack in &declared {
+            let reference = self.object_ref(attack.card);
+            if !self.state.attacked_this_turn.contains(&reference) {
+                self.state.attacked_this_turn.push(reference);
+            }
+        }
+        for card in to_tap {
+            self.state.objects[card as usize].tapped = true;
+        }
+        self.state.attackers.extend(declared.iter().cloned());
+        for attack in declared {
+            event(self, attack.card);
+        }
+    }
+
     fn give_priority(&mut self) {
         self.state.pending = Pending::Priority;
         self.state.priority = self.state.active;
@@ -2480,6 +2503,7 @@ impl Game {
 
     fn begin_turn(&mut self) {
         self.state.triggered_this_turn.clear();
+        self.state.attacked_this_turn.clear();
         for player in &mut self.state.players {
             player.spells_cast_this_turn = 0;
             player.cards_drawn_this_turn = 0;
@@ -2862,7 +2886,8 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 41,
+            schema: 42,
+            creatures_attacked_this_turn: s.attacked_this_turn.len(),
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -3148,6 +3173,8 @@ impl Game {
         let s = &self.state;
         std::mem::size_of::<State>()
             + std::mem::size_of::<Vec<Object>>()
+            + std::mem::size_of::<Vec<ObjectRef>>()
+            + s.attacked_this_turn.len() * std::mem::size_of::<ObjectRef>()
             + 2 * std::mem::size_of::<Vec<CardId>>()
             + s.objects.len() * std::mem::size_of::<Object>()
             + s.exile_links.len() * std::mem::size_of::<ExileLink>()
@@ -3413,3 +3440,7 @@ mod distinct_amount_tests;
 #[cfg(test)]
 #[path = "engine_conditional_tests.rs"]
 mod conditional_tests;
+
+#[cfg(test)]
+#[path = "engine_attack_history_tests.rs"]
+mod attack_history_tests;

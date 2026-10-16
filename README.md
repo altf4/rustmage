@@ -5,13 +5,13 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,084 have executable rules so far.
+knows all 5,164 pinned Standard identities; 1,091 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
-The latest [derived-power and distinct-name reductions](docs/derived-spell-reductions.md)
-add seven complete bodies with signed power quantities, exact name/subtype unions
-and locked payments. Full Standard rules remain in progress.
+The latest [attacker history and raid bodies](docs/attack-history-raid.md)
+add seven complete bodies, generation-aware turn history and public observation
+schema 42. Full Standard rules remain in progress.
 
 ## Build and use
 
@@ -67,6 +67,7 @@ cargo run --release --example standard_two_brid -- 100
 cargo run --release --example standard_spell_reductions -- 100
 cargo run --release --example standard_scaled_reductions -- 100
 cargo run --release --example standard_derived_reductions -- 100
+cargo run --release --example standard_attack_history -- 100
 cargo run --release --example standard_tokens -- 100
 cargo run --release --example standard_activations -- 100
 cargo run --release --example standard_mana -- 100

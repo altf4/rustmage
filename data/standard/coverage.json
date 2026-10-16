@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "6ea8db4e049b3868df1fce1114a6d1fbf4c1c235e452dc54c521458ec37889c0",
+  "catalogue_version": "08f1a32d42f12e009e917eb1fdd2268a466852c1c64f3accf18d008f90fa1249",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1084,
-  "implemented_total": 1090,
+  "implemented_standard_cards": 1091,
+  "implemented_total": 1097,
   "token_definitions": 49,
   "emblem_definitions": 1,
   "cards": [
@@ -4384,8 +4384,8 @@
     {
       "name": "Chart a Course",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Chase Inspiration",
@@ -9148,8 +9148,8 @@
     {
       "name": "Fire Nation Raider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Fire Nation Warship",
@@ -11014,8 +11014,8 @@
     {
       "name": "Gorehorn Raider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Gossip's Talent",
@@ -21616,8 +21616,8 @@
     {
       "name": "Rowdy Research",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Rowdy Snowballers",
@@ -23446,8 +23446,8 @@
     {
       "name": "Skyship Buccaneer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Skyskipper Duo",
@@ -25018,8 +25018,8 @@
     {
       "name": "Storm Fleet Spy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Storm, Windrider",
@@ -30586,8 +30586,8 @@
     {
       "name": "Witchstalker Frenzy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "With Great Power . . .",

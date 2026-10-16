@@ -30,6 +30,11 @@ impl Game {
         };
         let amount = |rule: &crate::cards::SpellReduction, source: CardId| match rule.amount {
             crate::cards::SpellReductionAmount::Fixed(n) => n,
+            crate::cards::SpellReductionAmount::Attackers { factor } => {
+                u32::try_from(self.state.attacked_this_turn.len())
+                    .unwrap_or(u32::MAX)
+                    .saturating_mul(u32::from(factor))
+            }
             crate::cards::SpellReductionAmount::SourcePower => {
                 u32::try_from(self.stats(source).power.max(0)).unwrap_or(u32::MAX)
             }
