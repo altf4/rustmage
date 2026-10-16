@@ -194,13 +194,7 @@ fn score(o: &Observation, a: &Action, i: usize, p: Player, pay: bool, s: &Pilot)
                             -1000
                         }
                     }
-                    "Candy Trail" => {
-                        if s.done {
-                            700
-                        } else {
-                            -1000
-                        }
-                    }
+                    "Candy Trail" if s.done => 700,
                     _ => -1000,
                 }
             } else if name == NAMES[i] {
@@ -232,13 +226,7 @@ fn score(o: &Observation, a: &Action, i: usize, p: Player, pay: bool, s: &Pilot)
                             -1000
                         }
                     }
-                    "Candy Trail" => {
-                        if s.done {
-                            700
-                        } else {
-                            -1000
-                        }
-                    }
+                    "Candy Trail" if s.done => 700,
                     _ => -1000,
                 }
             }
