@@ -32,8 +32,15 @@ Capacity failure restores life, earlier writes and suspended payment flags.
 
 The typed predicate reads the opposing player's total in the two-player engine.
 It is relative to the ability's controller, including during an opponent's turn.
-Entry counters are present before priority; life paid while applying the same
-entry transaction can enable another incoming permanent's conditional counter.
+Entry counters are present before priority and are frozen against pre-event
+history before any entry payment choices. Life paid for a simultaneously entering
+shock land cannot enable Frilled's counter replacement in that same event. It
+can enable Bloodtithe's subsequent ETB trigger, or counters on a later separate
+entry. The native regression covers both payment branches, both movement orders
+and both prior-history states, with pending-choice clone/restore/replay.
+This distinction follows the official simultaneous shock-land ruling in
+[Wizards' Duskmourn release notes](https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes),
+which evaluates other entry conditions before shock-land replacement choices.
 Entry/step triggers use intervening-if evaluation and normal owned continuations.
 Bloodtithe's opponent selects a private discard; the controller cannot see those
 hand candidates. Stromkirk requires a controlled Vampire permanent, including
@@ -75,7 +82,9 @@ Observation schema **44** adds each player's public `life_lost_this_turn`.
 ABI 1 and control protocol 2 remain unchanged. Two owned `u128` totals add 32
 initialized bytes: measured initial logical state is 19,752 bytes. Accounting
 excludes capacities, allocator/COW metadata, immutable catalogue data,
-observations and external snapshots. The fresh 1,000-game Freeform baseline
+observations and external snapshots. A pending EntryMove now owns 32 bytes of
+frozen counter values, included by its existing size-based accounting; completed
+entry batches leave no additional state. The fresh 1,000-game Freeform baseline
 produces 571,049 decisions at 385,609.22 decisions/s and 675.26 games/s;
 clone 236.79 ns, restore 104.40 ns. This unpinned local sample includes smoke
 policy/observation construction, excludes model/tensor/JSON work, and proves

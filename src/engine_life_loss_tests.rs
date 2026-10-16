@@ -171,22 +171,55 @@ fn activated_life_payments_commit_history_before_the_ability_and_funding_queries
 }
 
 #[test]
-fn opponent_entry_life_payment_is_visible_to_another_permanent_in_the_same_entry_batch() {
-    for pay in [false, true] {
-        let mut g = scenario();
-        let land = named(&mut g, Player::P1, "Blood Crypt", Zone::Hand);
-        let lizard = named(&mut g, Player::P0, "Frilled Sparkshooter", Zone::Graveyard);
-        let entries = vec![
-            g.entry_move(lizard, Zone::Battlefield, false),
-            g.entry_move(land, Zone::Battlefield, false),
-        ];
-        g.stage_entries(entries, None);
-        assert!(g.advance_entries());
-        assert_eq!(g.actor(), Some(Player::P1));
-        losses(&g, [0, 0]);
-        replay(&mut g, Action::ChooseEntryLife { pay });
-        losses(&g, [0, if pay { 2 } else { 0 }]);
-        assert_eq!(g.object_view(lizard).counters.plus_one, u64::from(pay));
+fn entry_replacements_freeze_before_same_batch_life_payments_but_etb_triggers_see_them() {
+    for prior_loss in [false, true] {
+        for pay in [false, true] {
+            for reverse in [false, true] {
+                let mut g = scenario();
+                if prior_loss {
+                    g.lose_life(Player::P1, 1);
+                }
+                let land = named(&mut g, Player::P1, "Blood Crypt", Zone::Hand);
+                let lizard = named(&mut g, Player::P0, "Frilled Sparkshooter", Zone::Graveyard);
+                let collector = named(&mut g, Player::P0, "Bloodtithe Collector", Zone::Hand);
+                let mut entries = vec![
+                    g.entry_move(lizard, Zone::Battlefield, false),
+                    g.entry_move(land, Zone::Battlefield, false),
+                    g.entry_move(collector, Zone::Battlefield, false),
+                ];
+                if reverse {
+                    entries.reverse();
+                }
+                g.stage_entries(entries, None);
+                assert!(g.advance_entries());
+                assert_eq!(g.actor(), Some(Player::P1));
+                losses(&g, [0, u128::from(prior_loss)]);
+                replay(&mut g, Action::ChooseEntryLife { pay });
+                losses(&g, [0, u128::from(prior_loss) + if pay { 2 } else { 0 }]);
+                // This replacement uses the pre-choice condition, even though
+                // the completed payment may have enabled the ETB trigger.
+                assert_eq!(
+                    g.object_view(lizard).counters.plus_one,
+                    u64::from(prior_loss)
+                );
+                assert_eq!(
+                    g.state
+                        .pending_triggers
+                        .iter()
+                        .chain(&g.state.ordering_triggers)
+                        .chain(&g.state.stack)
+                        .filter(|s| s.card == collector)
+                        .count(),
+                    usize::from(prior_loss || pay)
+                );
+                let later = named(&mut g, Player::P0, "Frilled Sparkshooter", Zone::Hand);
+                g.move_object(later, Zone::Battlefield);
+                assert_eq!(
+                    g.object_view(later).counters.plus_one,
+                    u64::from(prior_loss || pay)
+                );
+            }
+        }
     }
 }
 
