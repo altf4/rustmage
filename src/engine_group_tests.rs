@@ -327,6 +327,7 @@ fn target_focus_survives_private_library_continuation_and_replays() {
         selected_discards: [Vec::new(), Vec::new()],
         milled: Vec::new(),
         library: None,
+        selection: None,
         search: None,
         choice: None,
     });
@@ -422,6 +423,7 @@ fn fighting_itself_is_one_noncombat_event_for_twice_current_power() {
         selected_discards: [Vec::new(), Vec::new()],
         milled: Vec::new(),
         library: None,
+        selection: None,
         search: None,
         choice: None,
     });

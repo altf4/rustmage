@@ -1,0 +1,493 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Accumulate Wisdom",
+      "oracle_text": "Look at the top three cards of your library. Put one of those cards into your hand and the rest on the bottom of your library in any order. Put each of those cards into your hand instead if there are three or more Lesson cards in your graveyard.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AccumulateWisdom.java",
+          "java_sha256": "21ba9aead0afadde1567fdaa38be1179595a4f772882b12ad48112c545d98799"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+          "java_sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+          "java_sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PutCards.java",
+          "java_sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/LessonsInGraveCondition.java",
+          "java_sha256": "919914e0997c75d2cd2113b586c13bc87ea70f949f1e2788aea4ecb74174c0e2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        }
+      ]
+    },
+    {
+      "name": "Beastrider Vanguard",
+      "oracle_text": "{4}{G}: Look at the top three cards of your library. You may reveal a permanent card from among them and put it into your hand. Put the rest on the bottom of your library in any order.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BeastriderVanguard.java",
+          "java_sha256": "091b4463c1e22a95bb1500e20de0f4c21e0af9ef96dcb5b2654574bf395ca402"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+          "java_sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+          "java_sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PutCards.java",
+          "java_sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        }
+      ]
+    },
+    {
+      "name": "Boughside Wanderers",
+      "oracle_text": "When this creature enters, look at the top four cards of your library. You may reveal a permanent card from among them and put it into your hand. Put the rest on the bottom of your library in a random order.\nLandfall — Whenever a land you control enters, this creature gets +2/+2 until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BoughsideWanderers.java",
+          "java_sha256": "18dfeb2ea7e94bc8f0b3266b53c31dff62d32963f645ded64ae1d5c370e9b20e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+          "java_sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+          "java_sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PutCards.java",
+          "java_sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/LandfallAbility.java",
+          "java_sha256": "aeae9b06e1910d69c88eca416249ba9d5629f7cb9d3626c9de9bbd3f7fdd1be1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+          "java_sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/PermanentPredicate.java",
+          "java_sha256": "b3058a67b4c81d73f72d2c64de25d5501a16d7462278416017a7c8e13ee60d80"
+        }
+      ]
+    },
+    {
+      "name": "Commune with Beavers",
+      "oracle_text": "Look at the top three cards of your library. You may reveal an artifact, creature, or land card from among them and put it into your hand. Put the rest on the bottom of your library in any order.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CommuneWithBeavers.java",
+          "java_sha256": "597770ca45a2d59cbfa199f0db0949789ed22f8f11c19322a78a289f9e003c95"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+          "java_sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+          "java_sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PutCards.java",
+          "java_sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterCard.java",
+          "java_sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterPermanentCard.java",
+          "java_sha256": "2af04f95edb47547b39271ca3c5024712fa9ba1728c5e2c7249d63fa8c411033"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+          "java_sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+        }
+      ]
+    },
+    {
+      "name": "Commune with Evil",
+      "oracle_text": "Look at the top four cards of your library. Put one of them into your hand and the rest into your graveyard. You gain 3 life.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CommuneWithEvil.java",
+          "java_sha256": "7dc58a0b7610d768e557f8ad2b4ce8c51ade23af831f6769717591172778f3bf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+          "java_sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+          "java_sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PutCards.java",
+          "java_sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        }
+      ]
+    },
+    {
+      "name": "Commune with Nature",
+      "oracle_text": "Look at the top five cards of your library. You may reveal a creature card from among them and put it into your hand. Put the rest on the bottom of your library in any order.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CommuneWithNature.java",
+          "java_sha256": "c22603d24fc1fefe8e2449bd8e1ef558224fb1001c1ab01804b89b6445504809"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+          "java_sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+          "java_sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PutCards.java",
+          "java_sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        }
+      ]
+    },
+    {
+      "name": "Confounding Riddle",
+      "oracle_text": "Choose one —\n• Look at the top four cards of your library. Put one of them into your hand and the rest into your graveyard.\n• Counter target spell unless its controller pays {4}.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/ConfoundingRiddle.java",
+          "java_sha256": "59786231ec59b77fd96e31aecf11ce776b20798b4ce7b860174a54f461788775"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+          "java_sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+          "java_sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PutCards.java",
+          "java_sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "java_sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+          "java_sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+        }
+      ]
+    },
+    {
+      "name": "Flow State",
+      "oracle_text": "Look at the top three cards of your library. Put one of them into your hand and the rest on the bottom of your library in any order. If there is an instant card and a sorcery card in your graveyard, instead put two of them into your hand and the rest on the bottom of your library in any order.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FlowState.java",
+          "java_sha256": "3c6cf6a78b717af8971c22b425373b490efeb746c720ac1f0842e3ac663d0322"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+          "java_sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+          "java_sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PutCards.java",
+          "java_sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/CompoundCondition.java",
+          "java_sha256": "1577f41ffe084565cd38c201fb8b0ac92bf6eae3b2ee2618966495ee10f3898f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+          "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/CardsInControllerGraveyardCondition.java",
+          "java_sha256": "e166edec7baa8ef4ba55eb826264e0dbaee21891cd2928ffcd8add99d06c5bce"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterCard.java",
+          "java_sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2"
+        }
+      ]
+    },
+    {
+      "name": "Follow the Lumarets",
+      "oracle_text": "Infusion — Look at the top four cards of your library. You may reveal a creature or land card from among them and put it into your hand. If you gained life this turn, you may instead reveal two creature and/or land cards from among them and put them into your hand. Put the rest on the bottom of your library in a random order.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FollowTheLumarets.java",
+          "java_sha256": "d6b6137995d64ebf73bf9ae966d12d7a4cda08a2f701a7cfe99b70343423ff6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+          "java_sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+          "java_sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PutCards.java",
+          "java_sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/YouGainedLifeCondition.java",
+          "java_sha256": "06cb6119ec0f7d00b3abe52e2b8df92be8c337fe2ce31ca0d213e9d04fbb89d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/watchers/common/PlayerGainedLifeWatcher.java",
+          "java_sha256": "675bf357c7d4ac2070d458899c0ff10c5dac7a6301b3ebd9e904b499453cc4b5"
+        }
+      ]
+    },
+    {
+      "name": "Living Phone",
+      "oracle_text": "When this creature dies, look at the top five cards of your library. You may reveal a creature card with power 2 or less from among them and put it into your hand. Put the rest on the bottom of your library in a random order.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LivingPhone.java",
+          "java_sha256": "74f4b2445106ab400dcf11175d9313df887ccc2e55e46da0cc69547ccc522ef0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+          "java_sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+          "java_sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PutCards.java",
+          "java_sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterCard.java",
+          "java_sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreatureCard.java",
+          "java_sha256": "ee796c20588a1c0975306824c57d1c173bfa54b4afaf8c3526aaf32e15d02739"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/PowerPredicate.java",
+          "java_sha256": "909b9038e02c0653920408059e987b6ee3cfad717900e62e78c597285f137dde"
+        }
+      ]
+    },
+    {
+      "name": "Morbius the Living Vampire",
+      "oracle_text": "Flying, vigilance, lifelink\n{U}{B}, Exile this card from your graveyard: Look at the top three cards of your library. Put one of them into your hand and the rest on the bottom of your library in any order.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MorbiusTheLivingVampire.java",
+          "java_sha256": "7a75e136be4917b8f446122743b5a8e19466aaa1e83a058ca50c6b1cb67c69e6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+          "java_sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+          "java_sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PutCards.java",
+          "java_sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+          "java_sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+          "java_sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "java_sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        }
+      ]
+    },
+    {
+      "name": "Rakshasa's Bargain",
+      "oracle_text": "Look at the top four cards of your library. Put two of them into your hand and the rest into your graveyard.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RakshasasBargain.java",
+          "java_sha256": "ea823fc11bef1c7fa90f5f10f597b6b11b3f2fe7a08127c49c61b2f2e723653b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+          "java_sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+          "java_sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PutCards.java",
+          "java_sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253"
+        }
+      ]
+    },
+    {
+      "name": "Resentful Revelation",
+      "oracle_text": "Look at the top three cards of your library. Put one of them into your hand and the rest into your graveyard.\nFlashback {6}{B} (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/ResentfulRevelation.java",
+          "java_sha256": "cad6829d70ac057218431b8629eb8348a72a2dcc51119b83bcc2e368d6cbf8a8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+          "java_sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+          "java_sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PutCards.java",
+          "java_sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlashbackAbility.java",
+          "java_sha256": "6a3cea9f6a49b61f425bf267cc280a991d4d1315322b11059cd0604e0dd76e87"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CastFromGraveyardAbility.java",
+          "java_sha256": "d960ebf54f87db2baf2a23785c181bdfea863a60d493eb66707ba64becc77be9"
+        }
+      ]
+    },
+    {
+      "name": "Squad Rallier",
+      "oracle_text": "{2}{W}: Look at the top four cards of your library. You may reveal a creature card with power 2 or less from among them and put it into your hand. Put the rest on the bottom of your library in a random order.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SquadRallier.java",
+          "java_sha256": "62dfe7e492b72a2b0cd7f36dbd9ff8d6445b8087a5951577e60233cc930b4151"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+          "java_sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+          "java_sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PutCards.java",
+          "java_sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterCard.java",
+          "java_sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreatureCard.java",
+          "java_sha256": "ee796c20588a1c0975306824c57d1c173bfa54b4afaf8c3526aaf32e15d02739"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/PowerPredicate.java",
+          "java_sha256": "909b9038e02c0653920408059e987b6ee3cfad717900e62e78c597285f137dde"
+        }
+      ]
+    },
+    {
+      "name": "Stock Up",
+      "oracle_text": "Look at the top five cards of your library. Put two of them into your hand and the rest on the bottom of your library in any order.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StockUp.java",
+          "java_sha256": "1baa80d4eb7da2689cd017ee5ef0d2d758c64c42a606a04174acfec99636c965"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+          "java_sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+          "java_sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PutCards.java",
+          "java_sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253"
+        }
+      ]
+    }
+  ]
+}

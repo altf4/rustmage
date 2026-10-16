@@ -172,6 +172,35 @@ impl ManaProduction {
     }
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum LibraryRemainder {
+    Graveyard,
+    BottomAny,
+    BottomRandom,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum LibrarySelectionFilter {
+    Any,
+    Kinds(u16),
+    CreaturePowerAtMost(i32),
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum LibrarySelectionCount {
+    Fixed(u16),
+    Lessons,
+    InstantAndSorcery,
+    GainedLife,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct LibrarySelectionSpec {
+    pub look: u16,
+    pub count: LibrarySelectionCount,
+    pub filter: LibrarySelectionFilter,
+    pub optional: bool,
+    pub reveal: bool,
+    pub remainder: LibraryRemainder,
+}
+
 /// Fixed qualities admitted by library-search instructions.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum SearchFilter {
@@ -365,6 +394,7 @@ pub(crate) enum Instruction {
     Scry(u16),
     Surveil(u16),
     Search(SearchSpec),
+    SelectLibrary(LibrarySelectionSpec),
     Damage(i32),
     DamageScaled(AmountValue),
     DamagePlayers(PlayerSet, i32),

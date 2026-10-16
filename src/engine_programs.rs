@@ -15,6 +15,7 @@ pub(super) struct Resolution {
     pub selected_discards: [Vec<CardId>; 2],
     pub milled: Vec<ObjectRef>,
     pub library: Option<LibraryChoice>,
+    pub selection: Option<Box<super::library_selection::LibrarySelection>>,
     pub search: Option<super::search::SearchChoice>,
     pub choice: Option<Box<super::effect_choices::EffectChoice>>,
 }
@@ -756,6 +757,7 @@ impl Game {
             selected_discards: [Vec::new(), Vec::new()],
             milled: Vec::new(),
             library: None,
+            selection: None,
             search: None,
             choice: None,
         });
@@ -1074,6 +1076,11 @@ impl Game {
                         player: item.controller,
                     };
                     return;
+                }
+                Instruction::SelectLibrary(spec) => {
+                    if self.start_library_selection(&item, spec) {
+                        return;
+                    }
                 }
                 Instruction::Scry(amount) | Instruction::Surveil(amount) => {
                     let remaining: Vec<_> = self.state.players[item.controller.index()]

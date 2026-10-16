@@ -81,6 +81,7 @@ fn program(g: &mut Game, code: &'static [Instruction], targets: Vec<BoundTarget>
         selected_discards: [Vec::new(), Vec::new()],
         milled: Vec::new(),
         library: None,
+        selection: None,
         search: None,
         choice: None,
     });

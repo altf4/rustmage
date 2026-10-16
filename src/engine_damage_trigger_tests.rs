@@ -564,6 +564,7 @@ fn departed_hero_damage_uses_frozen_battlefield_facts_for_observers() {
         selected_discards: [Vec::new(), Vec::new()],
         milled: Vec::new(),
         library: None,
+        selection: None,
         search: None,
         choice: None,
     });

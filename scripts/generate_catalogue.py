@@ -1031,6 +1031,29 @@ def battlefield_damage_program(text):
     return ['DamageBattlefield { filters: &['+', '.join(filters)+f'], players: {players}, amount: {amount} }}']
 
 
+def library_selection_program(text):
+    """Complete private look/pick/remainder clauses; no guessed pronouns or tails."""
+    m=re.fullmatch(r'look at the top (three|four|five) cards of your library\. (.+)',text)
+    if m is None:return None
+    look={'three':3,'four':4,'five':5}[m[1]];body=m[2]
+    def emit(count,filter_='Any',optional=False,reveal=False,remainder='BottomAny'):
+        return ['SelectLibrary(LibrarySelectionSpec { look: '+str(look)+', count: LibrarySelectionCount::'+count+', filter: LibrarySelectionFilter::'+filter_+', optional: '+str(optional).lower()+', reveal: '+str(reveal).lower()+', remainder: LibraryRemainder::'+remainder+' })']
+    if body=='Put one of those cards into your hand and the rest on the bottom of your library in any order. Put each of those cards into your hand instead if there are three or more Lesson cards in your graveyard.':
+        return emit('Lessons')
+    if body=='Put one of them into your hand and the rest on the bottom of your library in any order. If there is an instant card and a sorcery card in your graveyard, instead put two of them into your hand and the rest on the bottom of your library in any order.':
+        return emit('InstantAndSorcery')
+    if body=='You may reveal a creature or land card from among them and put it into your hand. If you gained life this turn, you may instead reveal two creature and/or land cards from among them and put them into your hand. Put the rest on the bottom of your library in a random order.':
+        return emit('GainedLife','Kinds(3)',True,True,'BottomRandom')
+    if m:=re.fullmatch(r'Put (one|two) of (?:them|those cards) into your hand and the rest (into your graveyard|on the bottom of your library in any order)\.(?: (You gain [0-9]+ life\.))?',body):
+        tail=statement_program(m[3]) if m[3] else []
+        if tail is None:return None
+        return emit('Fixed('+str({'one':1,'two':2}[m[1]])+')',remainder='Graveyard' if m[2]=='into your graveyard' else 'BottomAny')+tail
+    if m:=re.fullmatch(r'You may reveal (a permanent card|an artifact, creature, or land card|a creature card|a creature card with power 2 or less) from among them and put it into your hand\. Put the rest on the bottom of your library in (any|a random) order\.',body):
+        filter_={'a permanent card':'Kinds(371)','an artifact, creature, or land card':'Kinds(19)','a creature card':'Kinds(1)','a creature card with power 2 or less':'CreaturePowerAtMost(2)'}[m[1]]
+        return emit('Fixed(1)',filter_,True,True,'BottomAny' if m[2]=='any' else 'BottomRandom')
+    return None
+
+
 def statement_program(text):
     """Compile only these complete sentences; residual text never gets ignored."""
     if not isinstance(text, str) or not text:
@@ -1038,6 +1061,7 @@ def statement_program(text):
     text = strip_rule_label(text)
     if not text:return None
     text = normalize_duration(text[0].lower() + text[1:])
+    if selected:=library_selection_program(text):return selected
     if text=='draw two cards. Then discard a card unless you attacked this turn.':
         # On raid, execute the forward skip; otherwise bypass it and discard.
         return ['Draw(PlayerSet::Controller, 2)', 'If { guard: StepGuard::Attacked, skip: 1 }',

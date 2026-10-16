@@ -60,6 +60,28 @@ class CatalogueCompilerTests(unittest.TestCase):
         for name in ['Bushy Bodyguard','Darkstar Augur','Manifold Mouse','Pawpatch Recruit','Thornplate Intimidator','Thundertrap Trainer','Warren Warleader']:self.assertNotIn(name,supported)
         altered=dict(snapshot,cards=[dict(c,oracle_text=c['oracle_text']+'\nDiscover 3.') if c['name'] in names else c for c in snapshot['cards']]);altered['cards_sha256']=hashlib.sha256(json.dumps(altered['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();_,gated=generate.compile_catalogue(altered,target);self.assertTrue(all(not c['implemented'] for c in gated['cards'] if c['name'] in names))
 
+
+    def test_private_library_selection_grammar_is_closed_and_preserves_qualifiers(self):
+        bodies=[('Look at the top three cards of your library. Put one of them into your hand and the rest into your graveyard.','Fixed(1)','Graveyard'),('Look at the top five cards of your library. Put two of them into your hand and the rest on the bottom of your library in any order.','Fixed(2)','BottomAny'),('Look at the top four cards of your library. You may reveal a creature card with power 2 or less from among them and put it into your hand. Put the rest on the bottom of your library in a random order.','CreaturePowerAtMost(2)','BottomRandom')]
+        for body,count,remainder in bodies:
+            result=generate.statement_program(body);self.assertIsNotNone(result);self.assertIn(count,result[0]);self.assertIn(remainder,result[0]);self.assertIsNone(generate.statement_program(body+' Then discover 3.'))
+        for body in ['Look at the top three cards of your library. Put one of them onto the battlefield.','Look at the top four cards of your library. You may reveal a noncreature, nonland card from among them and put it into your hand. Put the rest on the bottom of your library in a random order.','Look at the top three cards of target player\'s library. Put one of them into your hand and the rest into your graveyard.','Look at the top five cards of your library. You may reveal a creature card with toughness 2 or less from among them and put it into your hand. Put the rest on the bottom of your library in a random order.','Look at the top three cards of your library. Put one of them into your hand and the rest on top of your library.']:
+            self.assertIsNone(generate.statement_program(body),body)
+
+    def test_library_selection_conditions_are_one_frozen_resolution_spec_and_complete_bodies(self):
+        import json
+        rows={c['name']:c for c in json.loads((generate.ROOT/'data/standard/cards.json').read_text())['cards']}
+        for name,count in [('Accumulate Wisdom','Lessons'),('Flow State','InstantAndSorcery'),('Follow the Lumarets','GainedLife')]:
+            body=generate.statement_program(rows[name]['oracle_text']);self.assertEqual(len(body),1);self.assertIn('LibrarySelectionCount::'+count,body[0]);self.assertIsNone(generate.statement_program(rows[name]['oracle_text']+' Then discover 3.'))
+        self.assertIn('optional: true',generate.statement_program(rows['Commune with Nature']['oracle_text'])[0]);self.assertIn('reveal: true',generate.statement_program(rows['Commune with Nature']['oracle_text'])[0]);self.assertIn('optional: false',generate.statement_program(rows['Stock Up']['oracle_text'])[0]);self.assertIn('reveal: false',generate.statement_program(rows['Stock Up']['oracle_text'])[0]);self.assertEqual(generate.statement_program(rows['Commune with Evil']['oracle_text'])[1],'GainLife(PlayerSet::Controller, 3)')
+
+    def test_fifteen_library_selection_admissions_reject_every_unknown_residual(self):
+        import json,hashlib
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());manifest=json.loads((generate.ROOT/'docs/library-selection-admissions.json').read_text());self.assertEqual(len(manifest['cards']),15);_,coverage=generate.compile_catalogue(rows,target);supported={c['name'] for c in coverage['cards'] if c['implemented']};names={c['name'] for c in manifest['cards']}
+        for row in manifest['cards']:
+            self.assertIn(row['name'],supported);card=next(c for c in rows['cards'] if c['name']==row['name']);self.assertEqual(card['oracle_text'],row['oracle_text'])
+        changed=dict(rows,cards=[dict(c,oracle_text=c['oracle_text']+'\nWhenever you attack, discover 3.') if c['name'] in names else c for c in rows['cards']]);changed['cards_sha256']=hashlib.sha256(json.dumps(changed['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();_,gated=generate.compile_catalogue(changed,target);self.assertTrue(all(not c['implemented'] for c in gated['cards'] if c['name'] in names))
+
     def test_flashback_fixed_mana_is_exact_and_does_not_swallow_extra_qualifications(self):
         for suffix in ['', ' (You may cast this card from your graveyard for its flashback cost. Then exile it.)', ' (You may cast this card from your graveyard for its flashback cost and any additional costs. Then exile it.)']:
             card=self.card(type_line='Instant',oracle_text='Draw a card.\nFlashback {2}{U}'+suffix)
@@ -75,7 +97,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         rust,cov=generate.compile_catalogue(rows,target);accepted={c['name'] for c in cov['cards'] if c['implemented']};names={c['name'] for c in manifest['cards']}
         self.assertEqual(len(names),9);self.assertTrue(names<=accepted)
         flashback_rows=rust.split('pub(super) fn flashback_cost',1)[1].split('pub const CREATURE_TYPES',1)[0]
-        self.assertEqual(flashback_rows.count('=> Some(ManaCost {'),9)
+        self.assertEqual(flashback_rows.count('=> Some(ManaCost {'),10)
         for c in rows['cards']:
             if c['name'] not in names:continue
             residual,cost=generate.extract_flashback(c);residual,_=generate.extract_additional_cost(residual);self.assertIsNotNone(generate.spell_program_template(residual),c['name'])
@@ -906,7 +928,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         for text in ['This creature gets +2/+0 as long as an opponent gained life this turn.','Creatures you control get +1/+0 as long as you gained life last turn.']:
             self.assertIsNone(generate.static_permanent_template(self.card(oracle_text=text)))
             self.assertEqual(generate.extract_stat_rules(self.card(oracle_text=text))[2],[])
-        for name in ['Lumaret\'s Favor','Enlightened Confidant','Follow the Lumarets','Foolish Fate','Lunar Convocation','Moseo, Vein\'s New Dean','Ragost, Deft Gastronaut','Tragedy Feaster']:
+        for name in ['Lumaret\'s Favor','Enlightened Confidant','Foolish Fate','Lunar Convocation','Moseo, Vein\'s New Dean','Ragost, Deft Gastronaut','Tragedy Feaster']:
             self.assertNotIn(name,supported)
 
     def test_self_target_events_keep_controller_kind_first_event_and_pronouns_exact(self):
@@ -1952,7 +1974,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIsNone(generate.spell_program_template(extra),name)
             self.assertIsNone(generate.permanent_program_template(extra),name)
         for name in ['Dragonclaw Strike','Gurmag Nightwatch','Karn, Gilded Guardian',
-                     'Magmablood Archaic','Monastery Messenger',"Rakshasa's Bargain",'Reigning Victor','Riverwheel Sweep','Wildgrowth Archaic']:
+                     'Magmablood Archaic','Monastery Messenger','Reigning Victor','Riverwheel Sweep','Wildgrowth Archaic']:
             self.assertNotIn(name,supported)
 
     def test_hybrid_spell_admission_never_approximates_other_symbols_or_ability_costs(self):

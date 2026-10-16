@@ -73,6 +73,7 @@ fn program(g: &mut Game, code: &'static [Instruction], targets: Vec<BoundTarget>
         selected_discards: [Vec::new(), Vec::new()],
         milled: Vec::new(),
         library: None,
+        selection: None,
         search: None,
         choice: None,
     });
@@ -494,6 +495,7 @@ fn self_payment_uses_exact_incarnation_and_damage_uses_departure_keywords() {
             selected_discards: [Vec::new(), Vec::new()],
             milled: Vec::new(),
             library: None,
+            selection: None,
             search: None,
             choice: None,
         });

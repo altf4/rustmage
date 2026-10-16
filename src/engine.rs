@@ -9,11 +9,14 @@ use crate::cards::{
     TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
 /// Version of the public observation structure, including owned trigger context.
-pub const OBSERVATION_SCHEMA: u32 = 54;
+pub const OBSERVATION_SCHEMA: u32 = 55;
 
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
 mod additional_costs;
+#[path = "engine_library_selection.rs"]
+mod library_selection;
+pub use library_selection::LibrarySelectionView;
 #[path = "engine_spell_costs.rs"]
 mod spell_costs;
 pub use additional_costs::AdditionalCostView;
@@ -348,6 +351,9 @@ define_actions! {
         card: CardId,
     },
     FinishSearch,
+    SelectLibrary { card: CardId },
+    FinishLibrarySelection,
+    OrderLibraryBottom { card: CardId },
     ArrangeLibrary {
         card: CardId,
         destination: LibraryDestination,
@@ -722,6 +728,9 @@ enum Pending {
     Legend {
         player: Player,
     },
+    EffectLibrarySelection {
+        player: Player,
+    },
     EffectLibrary {
         player: Player,
     },
@@ -1027,6 +1036,7 @@ pub struct Observation {
     pub announcing_cost: Option<ManaCost>,
     pub targeting_group: Option<u16>,
     pub library_choice: Option<LibraryChoiceView>,
+    pub library_selection: Option<LibrarySelectionView>,
     pub recovery_choice: Option<RecoveryChoiceView>,
     pub search_choice: Option<SearchChoiceView>,
     pub effect_choice: Option<EffectChoiceView>,
@@ -1241,6 +1251,7 @@ impl Game {
             | Pending::Legend { player }
             | Pending::RecoverMilled { player, .. }
             | Pending::EffectSearch { player }
+            | Pending::EffectLibrarySelection { player }
             | Pending::EffectLibrary { player }
             | Pending::EffectMana { player, .. }
             | Pending::PayCosts { player }
@@ -1913,6 +1924,29 @@ impl Game {
                     }
                 }
             }
+            Pending::EffectLibrarySelection { .. } => {
+                let f = s.resolving.as_ref().unwrap().selection.as_ref().unwrap();
+                if f.ordering {
+                    for r in &f.remaining {
+                        if emit(Action::OrderLibraryBottom { card: r.card }) {
+                            return true;
+                        }
+                    }
+                } else {
+                    if f.selected.len() >= f.minimum && emit(Action::FinishLibrarySelection) {
+                        return true;
+                    }
+                    if f.selected.len() < f.maximum {
+                        for r in &f.remaining {
+                            if f.eligible.contains(r)
+                                && emit(Action::SelectLibrary { card: r.card })
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
             Pending::EffectLibrary { .. } => {
                 let choice = s.resolving.as_ref().unwrap().library.as_ref().unwrap();
                 for &card in &choice.remaining {
@@ -2262,6 +2296,9 @@ impl Game {
             Action::RecoverMilled { object } => self.recover_milled(object),
             Action::ChooseSearch { card } => self.choose_search(card),
             Action::FinishSearch => self.finish_search(actor),
+            Action::SelectLibrary { card } => self.choose_library_selection(card),
+            Action::FinishLibrarySelection => self.finish_library_selection(actor),
+            Action::OrderLibraryBottom { card } => self.order_library_bottom(actor, card),
             Action::ArrangeLibrary { card, destination } => {
                 self.arrange_library(actor, card, destination);
             }
@@ -3179,6 +3216,7 @@ impl Game {
                 Pending::EffectOptional { .. } => "optional_effect",
                 Pending::EffectMana { .. } => "mana_choice",
                 Pending::EffectLibrary { .. } => "library_choice",
+                Pending::EffectLibrarySelection { .. } => "library_selection",
                 Pending::RecoverMilled { .. } => "recover_milled",
                 Pending::EffectSearch { .. } => "library_search",
                 Pending::EffectDiscard { .. } => "effect_discard",
@@ -3333,6 +3371,7 @@ impl Game {
                 }
                 options
             },
+            library_selection: self.library_selection_view(viewer),
             library_choice: if owns_choice {
                 s.resolving
                     .as_ref()
@@ -3505,6 +3544,7 @@ impl Game {
                                     * std::mem::size_of::<CardId>()
                             })
                             .unwrap_or(0)
+                        + resolution.selection.as_ref().map_or(0, |f| f.bytes())
                         + resolution
                             .selected_discards
                             .iter()
@@ -3880,3 +3920,7 @@ mod flashback_tests;
 #[cfg(test)]
 #[path = "engine_offspring_tests.rs"]
 mod offspring_tests;
+
+#[cfg(test)]
+#[path = "engine_library_selection_tests.rs"]
+mod library_selection_tests;

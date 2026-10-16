@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "d1ae7ad81463066d46af708a9ffe6f1aa8fe38944bea1823af85e7d5632e23ad",
+  "catalogue_version": "684a9b9b9d964a4c5184505ce936cbd8144aaf7066a04927fc209c1d7d3b0644",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1434,
-  "implemented_total": 1440,
+  "implemented_standard_cards": 1449,
+  "implemented_total": 1455,
   "token_definitions": 70,
   "emblem_definitions": 1,
   "cards": [
@@ -292,8 +292,8 @@
     {
       "name": "Accumulate Wisdom",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Aclazotz, Deepest Betrayal // Temple of the Dead",
@@ -2194,8 +2194,8 @@
     {
       "name": "Beastrider Vanguard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Beatrix, Loyal General",
@@ -3088,8 +3088,8 @@
     {
       "name": "Boughside Wanderers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Boulder Dash",
@@ -4900,20 +4900,20 @@
     {
       "name": "Commune with Beavers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Commune with Evil",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Commune with Nature",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Compass Gnome",
@@ -4984,8 +4984,8 @@
     {
       "name": "Confounding Riddle",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Confusticate and Bebother",
@@ -9424,8 +9424,8 @@
     {
       "name": "Flow State",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Flowerfoot Swordmaster",
@@ -9490,8 +9490,8 @@
     {
       "name": "Follow the Lumarets",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Fomori Vault",
@@ -15166,8 +15166,8 @@
     {
       "name": "Living Phone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Lizard, Connors's Curse",
@@ -17110,8 +17110,8 @@
     {
       "name": "Morbius the Living Vampire",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Morcant's Eyes",
@@ -20146,8 +20146,8 @@
     {
       "name": "Rakshasa's Bargain",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Ral Zarek, Guest Lecturer",
@@ -20872,8 +20872,8 @@
     {
       "name": "Resentful Revelation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Resilient Roadrunner",
@@ -24472,8 +24472,8 @@
     {
       "name": "Squad Rallier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Squall, SeeD Mercenary",
@@ -24922,8 +24922,8 @@
     {
       "name": "Stock Up",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Stocking the Pantry",
