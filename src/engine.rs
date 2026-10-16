@@ -2268,15 +2268,20 @@ impl Game {
                         ),
                     "choice-bearing entry must be staged"
                 );
+                let view = self.object_view(id);
+                let counters = self.pre_entry_counters(&view, destination);
                 (
-                    self.object_view(id),
+                    view,
                     destination == Zone::Battlefield && self.enters_tapped(id),
+                    counters,
                 )
             })
             .collect();
         before
             .into_iter()
-            .map(|(before, tapped)| self.transition_object(before, destination, tapped))
+            .map(|(before, tapped, counters)| {
+                self.transition_object_with_counters(before, destination, tapped, counters)
+            })
             .collect()
     }
 

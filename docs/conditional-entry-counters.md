@@ -27,7 +27,9 @@ until the object changes zones or another rule changes them.
 
 A simultaneous entry transaction computes all incoming quantities before moving
 any member. Luxknight Breachers entering together cannot count each other or
-other incoming creatures. A later separate entry does count the previous batch.
+other incoming creatures. The lower-level raw batch helper also freezes counter
+quantities before all moves, even though current gameplay uses staged entries.
+A later separate entry does count the previous batch.
 Artifact creatures and artifact tokens each count once, alongside ordinary
 creatures and noncreature artifacts. Opposing permanents and ordinary lands do
 not qualify. Existing fixed entry counters and starting loyalty share this path.
@@ -43,9 +45,9 @@ unknown counter kinds and general counter-placement replacements stay gated.
 This does not claim general replacement-effect ordering, ability/type/control
 changes, copy effects or the rest of Standard.
 
-Validation includes 778 Rust tests (766 unit, 12 integration), 143 compiler/data
+Validation includes 779 Rust tests (767 unit, 12 integration), 143 compiler/data
 tests, 101 fresh-release Python tests, rustfmt, Clippy with warnings denied,
-catalogue consistency and diff checks. Seven new native regressions cover actual
+catalogue consistency and diff checks. Eight new native regressions cover actual
 casts, owner history, live resolution-time counts, union overlap, both batch
 orders, noncasting entries/reentry, fixed counters/loyalty and suspended life
 choices. Clone/restore/replay checks include stale action revisions. Public

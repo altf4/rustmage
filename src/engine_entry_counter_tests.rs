@@ -217,3 +217,32 @@ fn suspended_life_entry_batch_keeps_all_objects_outside_until_commit_and_replays
     assert_eq!(g.object_view(incoming).zone, Zone::Battlefield);
     assert_eq!(g.object_view(shock).zone, Zone::Battlefield);
 }
+
+#[test]
+fn raw_simultaneous_helper_also_freezes_all_counter_quantities() {
+    for reverse in [false, true] {
+        let mut g = scenario();
+        named(&mut g, Player::P0, "Gold Pan", Zone::Battlefield);
+        let a = named(&mut g, Player::P0, "Luxknight Breacher", Zone::Graveyard);
+        let b = named(&mut g, Player::P0, "Luxknight Breacher", Zone::Hand);
+        let bear = named(&mut g, Player::P0, "Ordinary Bear", Zone::Hand);
+        let mut ids = [a, b, bear];
+        if reverse {
+            ids.reverse();
+        }
+        let saved = g.snapshot();
+        let mut fork = g.clone();
+        let events = g.move_objects_raw(&ids, Zone::Battlefield);
+        g.finish_zone_events(&events, &[]);
+        let other = fork.move_objects_raw(&ids, Zone::Battlefield);
+        fork.finish_zone_events(&other, &[]);
+        let expected = g.snapshot();
+        assert_eq!(expected, fork.snapshot());
+        stats(&g, a, 1, 3, 3);
+        stats(&g, b, 1, 3, 3);
+        g.restore(&saved).unwrap();
+        let events = g.move_objects_raw(&ids, Zone::Battlefield);
+        g.finish_zone_events(&events, &[]);
+        assert_eq!(g.snapshot(), expected);
+    }
+}
