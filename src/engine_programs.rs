@@ -261,7 +261,9 @@ impl Game {
             let yours = source.owner == entered.owner;
             for (index, ability) in source.card.triggers().iter().enumerate() {
                 let matched = match ability.condition.event() {
-                    TriggerCondition::OncePerTurn(_) | TriggerCondition::InterveningIf { .. } => {
+                    TriggerCondition::OncePerTurn(_)
+                    | TriggerCondition::DuringOpponentsTurn(_)
+                    | TriggerCondition::InterveningIf { .. } => {
                         unreachable!("unwrapped event")
                     }
                     TriggerCondition::SelfEnters
@@ -431,6 +433,8 @@ impl Game {
                         CastRelation::Any => true,
                     };
                     if related
+                        && (!ability.condition.requires_opponents_turn()
+                            || self.state.active != source.owner)
                         && filter.matches(card)
                         && wanted.is_none_or(|wanted| wanted == ordinal)
                     {

@@ -48,7 +48,7 @@ impl Game {
         tapped: bool,
     ) -> bool {
         match condition {
-            TriggerCondition::OncePerTurn(event) => {
+            TriggerCondition::OncePerTurn(event) | TriggerCondition::DuringOpponentsTurn(event) => {
                 self.trigger_guards_hold(*event, player, source, tapped)
             }
             TriggerCondition::InterveningIf { guard, event } => {
