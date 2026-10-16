@@ -290,6 +290,23 @@ impl Game {
                                     && subtype.is_none_or(|t| entered.card.has_subtype(t))
                             }
                     }
+                    TriggerCondition::OtherFilteredEntersYou(predicate) => {
+                        yours
+                            && !same
+                            && match predicate {
+                                EntryPredicate::CreaturePowerAtMost(maximum) => {
+                                    entered.card.is_creature()
+                                        && entered.power <= i128::from(maximum)
+                                }
+                                EntryPredicate::SubtypeAny(subtypes) => subtypes
+                                    .iter()
+                                    .any(|subtype| entered.card.has_subtype(subtype)),
+                                EntryPredicate::KindOrSubtype { kinds, subtype } => {
+                                    entered.card.kind_mask() & kinds != 0
+                                        || entered.card.has_subtype(subtype)
+                                }
+                            }
+                    }
                     TriggerCondition::OtherCreatureEntersYou => {
                         yours && !same && entered.card.is_creature()
                     }

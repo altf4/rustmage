@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "1a8bcb368a9208f8d2aa2c9def82b8f33c2e2cd89b308fe0c0339d690a769a85",
+  "catalogue_version": "0ac521c3fa1ebcc2943528fe61a1004c40ddc01d8843444ed0befa7f2e56315b",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1344,
-  "implemented_total": 1350,
+  "implemented_standard_cards": 1353,
+  "implemented_total": 1359,
   "token_definitions": 57,
   "emblem_definitions": 1,
   "cards": [
@@ -11542,8 +11542,8 @@
     {
       "name": "HYDRA Assault Robot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "HYDRA Infiltration",
@@ -12880,8 +12880,8 @@
     {
       "name": "Impact Tremors",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Imperious Inkmage",
@@ -16018,8 +16018,8 @@
     {
       "name": "Marketwatch Phantom",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Marshal of the Lost",
@@ -17506,8 +17506,8 @@
     {
       "name": "Neighborhood Guardian",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Neriv, Heart of the Storm",
@@ -23668,8 +23668,8 @@
     {
       "name": "Snarling Gorehound",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Sneering Shadewriter",
@@ -28996,8 +28996,8 @@
     {
       "name": "Valley Mightcaller",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Valley Questcaller",
@@ -29290,8 +29290,8 @@
     {
       "name": "Vial Smasher, Gleeful Grenadier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Viashino Pyromancer",
@@ -29326,8 +29326,8 @@
     {
       "name": "Vicious Clown",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Vicious Rivalry",
@@ -29890,8 +29890,8 @@
     {
       "name": "Warleader's Call",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Warmaker Gunship",

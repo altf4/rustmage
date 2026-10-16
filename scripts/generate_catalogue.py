@@ -1880,6 +1880,25 @@ def trigger_mode_lines(card, text):
     return body,modal
 
 
+def entry_predicate_prefix(line):
+    """Exact singular events; power is tested at entry, unions count once."""
+    if m:=re.match(r'Whenever another creature you control with power ([0-9]+) or less enters, ',line):
+        if int(m[1]) > 32767:return None
+        return m[0],f'OtherFilteredEntersYou(EntryPredicate::CreaturePowerAtMost({int(m[1])}))'
+    if m:=re.match(r'Whenever another outlaw you control enters, ',line):
+        return m[0],'OtherFilteredEntersYou(EntryPredicate::SubtypeAny(&["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"]))'
+    if m:=re.match(r'Whenever another ([A-Z][a-z]+) and/or artifact you control enters, ',line):
+        if m[1] not in CREATURE_TYPE_NAMES:return None
+        return m[0],f'OtherFilteredEntersYou(EntryPredicate::KindOrSubtype {{ kinds: 16, subtype: {json.dumps(m[1])} }})'
+    if m:=re.match(r'Whenever another ([A-Z][a-z]+(?:, [A-Z][a-z]+)*,? or [A-Z][a-z]+) you control enters, ',line):
+        names=re.split(r', or |, | or ',m[1])
+        canonical=(' or '.join(names) if len(names)==2 else ', '.join(names[:-1])+', or '+names[-1])
+        if (m[1]!=canonical or not 2<=len(names)<=16 or len(names)!=len(set(names))
+                or any(name not in CREATURE_TYPE_NAMES for name in names)):return None
+        return m[0],'OtherFilteredEntersYou(EntryPredicate::SubtypeAny(&['+', '.join(json.dumps(name) for name in names)+']))'
+    return None
+
+
 def trigger_creature_template(card):
     if not isinstance(card.get('oracle_text'), str):
         return None
@@ -1928,6 +1947,7 @@ def trigger_creature_template(card):
         'Whenever an artifact you control enters, ': 'ArtifactEntersYou',
         'Whenever an enchantment you control enters, ': 'EnchantmentEntersYou',
         'Whenever another creature you control enters, ': 'OtherCreatureEntersYou',
+        'Whenever a creature you control enters, ': 'CreatureEntersYou',
         'Whenever another Villain you control enters, ': 'OtherSubtypeEntersYou("Villain")',
         'Whenever this creature or another creature you control enters, ': 'CreatureEntersYou',
         'Landfall — Whenever a land you control enters, ': 'LandEntersYou',
@@ -2013,6 +2033,8 @@ def trigger_creature_template(card):
             if line.startswith(prefix):line='Whenever this creature or another '+line[len(prefix):]
         damage_prefix=player_damage_prefix(line)
         line_prefixes=[damage_prefix] if damage_prefix else []
+        entry_prefix=entry_predicate_prefix(line)
+        if entry_prefix:line_prefixes.append(entry_prefix)
         if m:=re.match(r'Whenever (a|an|another) ([A-Z][a-z]+) you control enters, ',line):
             kind='OtherSubtypeEntersYou' if m[1]=='another' else 'SubtypeEntersYou'
             line_prefixes.append((m[0],kind+'('+json.dumps(m[2])+')'))
@@ -2046,7 +2068,7 @@ def trigger_creature_template(card):
                     if condition.startswith('AtStep {'):
                         condition=condition.replace('StepGuard::Always',guard)
                     elif (condition in ('SelfEnters','SelfAttacks','SelfEntersOrAttacks','OtherCreatureEntersYou','CreatureEntersYou','ArtifactEntersYou','OtherArtifactEntersYou','EnchantmentEntersYou','LandEntersYou')
-                            or condition.startswith(('SpellCast {','LifeGained {','CardDrawn {','PlayerDamaged {','OtherSubtypeEntersYou(','SubtypeEntersYou(','PermanentEntersYou {'))):
+                            or condition.startswith(('SpellCast {','LifeGained {','CardDrawn {','PlayerDamaged {','OtherSubtypeEntersYou(','SubtypeEntersYou(','PermanentEntersYou {','OtherFilteredEntersYou('))):
                         intervening=guard
                     else:return None  # Lookback-event conditions need prior-event state.
                 # Only self-event subjects prove an initial 'it' denotes this source.

@@ -3,10 +3,10 @@ use crate::cards::{
     ActivatedAbility, ActivationCost, ActivationGuard, ActivationOrigin, AdditionalCost,
     AmountValue, BattlefieldFilter, CastRelation, CostTurn, CountFilter, CountZone, CounterKind,
     CounterSubject, Counters, CreatureFilter, DamageQualification, DamageSubject, Effect,
-    EffectChoiceKind, EmblemInfo, EntryCounterAmount, EntryTapped, Instruction, ManaCost,
-    ManaProduction, MillAmount, PlayerSet, RecoveryFilter, SacrificeFilter, SearchSpec, SpellMode,
-    StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetPlan, TargetPredicate,
-    TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
+    EffectChoiceKind, EmblemInfo, EntryCounterAmount, EntryPredicate, EntryTapped, Instruction,
+    ManaCost, ManaProduction, MillAmount, PlayerSet, RecoveryFilter, SacrificeFilter, SearchSpec,
+    SpellMode, StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetPlan,
+    TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
@@ -3729,3 +3729,7 @@ mod fixed_effect_tests;
 #[cfg(test)]
 #[path = "engine_entry_suppression_tests.rs"]
 mod entry_suppression_tests;
+
+#[cfg(test)]
+#[path = "engine_entry_predicate_tests.rs"]
+mod entry_predicate_tests;

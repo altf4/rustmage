@@ -833,6 +833,14 @@ pub(crate) enum DamageSubject {
     },
 }
 
+/// Complete entry-time predicates over the post-event permanent.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum EntryPredicate {
+    CreaturePowerAtMost(i32),
+    SubtypeAny(&'static [&'static str]),
+    KindOrSubtype { kinds: u16, subtype: &'static str },
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
     OncePerTurn(&'static TriggerCondition),
@@ -906,6 +914,7 @@ pub(crate) enum TriggerCondition {
         subtype: Option<&'static str>,
         include_source: bool,
     },
+    OtherFilteredEntersYou(EntryPredicate),
     OtherCreatureEntersYou,
     OtherSubtypeEntersYou(&'static str),
     SubtypeEntersYou(&'static str),
