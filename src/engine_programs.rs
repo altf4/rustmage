@@ -192,7 +192,9 @@ impl Game {
             let yours = source.owner == entered.owner;
             for (index, ability) in source.card.triggers().iter().enumerate() {
                 let matched = match ability.condition.event() {
-                    TriggerCondition::OncePerTurn(_) => unreachable!("unwrapped event"),
+                    TriggerCondition::OncePerTurn(_) | TriggerCondition::InterveningIf { .. } => {
+                        unreachable!("unwrapped event")
+                    }
                     TriggerCondition::SelfEnters
                     | TriggerCondition::SelfEntersOrAttacks
                     | TriggerCondition::SelfEntersOrDies => same,
@@ -235,10 +237,11 @@ impl Game {
     }
 
     pub(super) fn queue_trigger(&mut self, source: &ObjectView, index: usize) -> bool {
-        if matches!(
-            source.card.triggers()[index].condition,
-            TriggerCondition::OncePerTurn(_)
-        ) {
+        let condition = source.card.triggers()[index].condition;
+        if !self.trigger_guards_hold(condition, source.owner, source.reference, source.tapped) {
+            return false;
+        }
+        if condition.once_per_turn() {
             let used = TriggerUse {
                 source: source.reference,
                 ability: u16::try_from(index).expect("ability index"),
@@ -375,11 +378,12 @@ impl Game {
     pub(super) fn resolve_top(&mut self) {
         let mut item = self.state.stack.pop().unwrap();
         if let StackKind::TriggeredAbility { ability } = item.kind
-            && let TriggerCondition::AtStep { guard, .. } = item.source_card.triggers()
-                [ability as usize]
-                .condition
-                .event()
-            && !self.step_guard(guard, item.controller, item.object, item.source_tapped)
+            && !self.trigger_guards_hold(
+                item.source_card.triggers()[ability as usize].condition,
+                item.controller,
+                item.object,
+                item.source_tapped,
+            )
         {
             self.give_priority();
             return;
@@ -547,6 +551,12 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::If { guard, skip } => {
+                    if !self.step_guard(guard, item.controller, item.object, item.source_tapped) {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
+                Instruction::Skip(skip) => self.state.resolving.as_mut().unwrap().pc += skip,
                 Instruction::MoveBattlefield { filters, exile } => {
                     self.move_battlefield_group(&item, filters, exile);
                 }

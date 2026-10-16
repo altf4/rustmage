@@ -1,0 +1,197 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Crypt Feaster",
+      "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)\nThreshold \u2014 Whenever this creature attacks, if there are seven or more cards in your graveyard, this creature gets +2/+0 until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CryptFeaster.java",
+          "java_sha256": "af4c58b78295fb02d8f6e1ce6ed59da297070b06e73986c620566c44ae350e77"
+        }
+      ]
+    },
+    {
+      "name": "Donatello, Turtle Techie",
+      "oracle_text": "When Donatello enters, if you control an artifact, draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DonatelloTurtleTechie.java",
+          "java_sha256": "dfed82f0e8f7ebf19b093db80f10ef22659d9ca3a167d27dbb590445d67d3764"
+        }
+      ]
+    },
+    {
+      "name": "Dwynen's Elite",
+      "oracle_text": "When this creature enters, if you control another Elf, create a 1/1 green Elf Warrior creature token.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DwynensElite.java",
+          "java_sha256": "000b3776e5fd27c210f53ee790256b7ebd9e4b99165df6130d4e41170aa7cb19"
+        }
+      ]
+    },
+    {
+      "name": "Failed Fording",
+      "oracle_text": "Return target nonland permanent to its owner's hand. If you control a Desert, surveil 1. (Look at the top card of your library. You may put it into your graveyard.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FailedFording.java",
+          "java_sha256": "8cf4546541175a6eafae8b80181704ff87f90329ab93c8cf9357e548d204d3d2"
+        }
+      ]
+    },
+    {
+      "name": "Hero in Training",
+      "oracle_text": "When this creature enters, draw a card. If you control another Hero, you gain 2 life.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HeroInTraining.java",
+          "java_sha256": "a8210d8f6815c33cda79c3ef8dc1b35d2576e46a7a16f9a2033e3ddb249f1be1"
+        }
+      ]
+    },
+    {
+      "name": "Malamet Veteran",
+      "oracle_text": "Trample\nDescend 4 \u2014 Whenever this creature attacks, if there are four or more permanent cards in your graveyard, put a +1/+1 counter on target creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MalametVeteran.java",
+          "java_sha256": "3f6f68955de56fff8ca657a77e2d3c6a1cffcb1bf54f275508cfa116abb87da6"
+        }
+      ]
+    },
+    {
+      "name": "Moment of Valor",
+      "oracle_text": "Choose one \u2014\n\u2022 Untap target creature. It gets +1/+0 and gains indestructible until end of turn.\n\u2022 Destroy target creature with power 4 or greater.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MomentOfValor.java",
+          "java_sha256": "b005f00c97ec441ff57e50d2d0d27cf9764ca5f1c6aaa533507b9f343d7aa454"
+        }
+      ]
+    },
+    {
+      "name": "Nasty Little Rabbit",
+      "oracle_text": "Ferocious \u2014 At the beginning of combat on your turn, if you control a creature with power 4 or greater, put a +1/+1 counter on this creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/n/NastyLittleRabbit.java",
+          "java_sha256": "cea58518c3995da858da12a9f75464f082af31adb1c9332d2fbd5a1e199292b7"
+        }
+      ]
+    },
+    {
+      "name": "Nessian Hornbeetle",
+      "oracle_text": "At the beginning of combat on your turn, if you control another creature with power 4 or greater, put a +1/+1 counter on this creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/n/NessianHornbeetle.java",
+          "java_sha256": "62b31b76377a4ff7c21f0fe7774dfaaef05aa85bf66bbc848fb4343838ceb8ab"
+        }
+      ]
+    },
+    {
+      "name": "Rabbit Response",
+      "oracle_text": "Creatures you control get +2/+1 until end of turn. If you control a Rabbit, scry 2. (Look at the top two cards of your library, then put any number of them on the bottom and the rest on top in any order.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RabbitResponse.java",
+          "java_sha256": "100012d5ae30e2ca4dc06819dbe10a662ce3757afba7b44041321c4373b37378"
+        }
+      ]
+    },
+    {
+      "name": "Rosa, Resolute White Mage",
+      "oracle_text": "Reach (This creature can block creatures with flying.)\nAt the beginning of combat on your turn, put a +1/+1 counter on target creature you control. It gains lifelink until end of turn. (Damage dealt by the creature also causes you to gain that much life.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RosaResoluteWhiteMage.java",
+          "java_sha256": "1a082f6afaddcaa235ecc252fe4ca487671e745fdbf94251e820ea2ef5195183"
+        }
+      ]
+    },
+    {
+      "name": "Snakeskin Veil",
+      "oracle_text": "Put a +1/+1 counter on target creature you control. It gains hexproof until end of turn. (It can't be the target of spells or abilities your opponents control.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SnakeskinVeil.java",
+          "java_sha256": "b056ab7e42eae6e43c2f1b4b52fb131e76da6a76fb2ac45304663f22162d9ff7"
+        }
+      ]
+    },
+    {
+      "name": "Spectacular Tactics",
+      "oracle_text": "Choose one \u2014\n\u2022 Put a +1/+1 counter on target creature you control. It gains hexproof until end of turn.\n\u2022 Destroy target creature with power 4 or greater.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SpectacularTactics.java",
+          "java_sha256": "92cbd68281e02c9cb242e4a8a94ea6c0ef13d89f45ef17ae1afe3aefe9bff2e5"
+        }
+      ]
+    },
+    {
+      "name": "Stinging Cave Crawler",
+      "oracle_text": "Deathtouch\nDescend 4 \u2014 Whenever this creature attacks, if there are four or more permanent cards in your graveyard, you draw a card and you lose 1 life.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StingingCaveCrawler.java",
+          "java_sha256": "0fce80cba83b129072320c12fd3859dd497eb9652ab269ec6925927594de2070"
+        }
+      ]
+    },
+    {
+      "name": "Take Out the Trash",
+      "oracle_text": "Take Out the Trash deals 3 damage to target creature or planeswalker. If you control a Raccoon, you may discard a card. If you do, draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TakeOutTheTrash.java",
+          "java_sha256": "6d6ed18eaedb6a717bd45fc3c31a65383269b1a7a9e12e30ab0de851a8993adf"
+        }
+      ]
+    },
+    {
+      "name": "Taken by Nightmares",
+      "oracle_text": "Exile target creature. If you control an enchantment, scry 2.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TakenByNightmares.java",
+          "java_sha256": "e19326790620819cadeca891307cecf1524fc8b5d2ad2c1e20ee8a46cc687276"
+        }
+      ]
+    },
+    {
+      "name": "Violent Urge",
+      "oracle_text": "Target creature gets +1/+0 and gains first strike until end of turn.\nDelirium \u2014 If there are four or more card types among cards in your graveyard, that creature gains double strike until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/ViolentUrge.java",
+          "java_sha256": "5fa794b758bb40f0de223bd8dfe30fdbdfd736f4cdb260a5d2af67cc6541782d"
+        }
+      ]
+    },
+    {
+      "name": "Warg Tactics",
+      "oracle_text": "Choose one \u2014\n\u2022 Destroy target creature with flying.\n\u2022 Put a +1/+1 counter on target creature you control. It gains trample and hexproof until end of turn. (It can't be the target of spells or abilities your opponents control.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WargTactics.java",
+          "java_sha256": "929917bcf06b4d3bb8a03b8db6fdcaf88cb41c15b2f0aa4f41797c8b7d812867"
+        }
+      ]
+    },
+    {
+      "name": "You're Not Alone",
+      "oracle_text": "Target creature gets +2/+2 until end of turn. If you control three or more creatures, it gets +4/+4 until end of turn instead.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/y/YoureNotAlone.java",
+          "java_sha256": "cb50022078cefdbc0f9969c29fc50360ad1c4f14cf9043225a6d85b11a071531"
+        }
+      ]
+    }
+  ]
+}

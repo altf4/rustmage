@@ -12,6 +12,98 @@ class BindingTests(unittest.TestCase):
     def game(self):
         return Game([["Mountain"] * 24 + ["LightningBolt"] * 36] * 2, seed=17, deck_rules="Freeform")
 
+    def test_donatello_intervening_condition_controls_trigger_creation_and_native_replay(self):
+        for artifact in [False,True]:
+            deck=['Island']*24+['Donatello, Turtle Techie']*(24 if artifact else 36)+(['Three Tree Mascot']*12 if artifact else [])
+            with self.subTest(artifact=artifact),Game([deck,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+                for _ in range(4000):
+                    actor=game.observe('P0')['actor'];obs=game.observe(actor);self.assertIsNone(obs['outcome'])
+                    if obs['stack'] and obs['stack'][-1]['source_card']=='Donatello, Turtle Techie' and obs['stack'][-1]['kind']=='Spell':
+                        old=obs['players'][0]['cards_drawn_this_turn'];entered=self.resolve_vital_top(game,'P0')
+                        source=next(o for o in entered['objects'] if o['card']=='Donatello, Turtle Techie' and o['zone']=='Battlefield')
+                        self.assertEqual(entered['players'][0]['cards_drawn_this_turn'],old)
+                        triggers=[a for a in entered['stack'] if a['source_card']=='Donatello, Turtle Techie' and 'TriggeredAbility' in a['kind']]
+                        self.assertEqual(len(triggers),int(artifact))
+                        if artifact:
+                            self.assertEqual(triggers[0]['object'],source['reference']);saved=game.snapshot()
+                            with game.clone() as fork:expected=self.resolve_vital_top(fork,'P0')
+                            after=self.resolve_vital_top(game,'P0');self.assertEqual(after,expected)
+                            self.assertEqual(after['players'][0]['cards_drawn_this_turn'],old+1)
+                            game.restore(saved);again=self.resolve_vital_top(game,'P0');after['revision']=again['revision'];self.assertEqual(again,after);game.drop_snapshot(saved)
+                        break
+                    objects={o['id']:o for o in obs['objects']}
+                    index=max(range(len(obs['actions'])),key=lambda i:90 if obs['actions'][i]['kind']=='Cast' and objects[obs['actions'][i]['card']]['card']=='Three Tree Mascot' else self.professor_score(obs,obs['actions'][i]))
+                    game.step(obs,index)
+                else:self.fail('Donatello entry not reached')
+
+    def test_conditional_rabbit_scry_preserves_one_growth_application_and_private_restore(self):
+        deck=['Plains']*24+['Rabbit Response']*12+['Three Tree Mascot']*12+['Hinterland Sanctifier']*12
+        with Game([deck,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+            for _ in range(4000):
+                actor=game.observe('P0')['actor'];obs=game.observe(actor);self.assertIsNone(obs['outcome']);objects={o['id']:o for o in obs['objects']}
+                rabbit=any(o['zone']=='Battlefield' and o['owner']=='P0' and o['card']=='Three Tree Mascot' for o in obs['objects'])
+                def score(a):
+                    if a['kind']=='Cast' and objects[a['card']]['card']=='Rabbit Response':return 100 if rabbit else -100
+                    return self.professor_score(obs,a)
+                index=max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i]));a=obs['actions'][index]
+                if a['kind']=='Cast' and objects[a['card']]['card']=='Rabbit Response':
+                    creatures=[o for o in obs['objects'] if o['zone']=='Battlefield' and o['owner']=='P0' and o['card'] in ('Three Tree Mascot','Hinterland Sanctifier')]
+                    game.step(obs,index);chosen=self.resolve_vital_top(game,'P0');self.assertEqual(len(chosen['library_choice']['remaining']),2);self.assertIsNone(game.observe('P1')['library_choice'])
+                    for o in creatures:
+                        new=next(n for n in chosen['objects'] if n['reference']==o['reference']);self.assertEqual((new['power'],new['toughness']),(o['power']+2,o['toughness']+1))
+                    choices=[{'kind':'ArrangeLibrary','card':o['id'],'destination':d} for o,d in zip(chosen['library_choice']['remaining'],['Top','Bottom'])]
+                    saved=game.snapshot()
+                    with game.clone() as fork:
+                        for choice in choices:expected=fork.act(fork.observe('P0'),choice)
+                    for choice in choices:after=game.act(game.observe('P0'),choice)
+                    self.assertEqual(after,expected)
+                    for o in creatures:self.assertEqual(next(n['power'] for n in after['objects'] if n['reference']==o['reference']),o['power']+2)
+                    game.restore(saved)
+                    for choice in choices:again=game.act(game.observe('P0'),choice)
+                    after['revision']=again['revision'];self.assertEqual(again,after);game.drop_snapshot(saved);return
+                game.step(obs,index)
+            self.fail('conditional scry not reached')
+
+    def test_replacement_growth_chooses_one_live_branch_in_native_library(self):
+        deck=['Plains']*24+["You're Not Alone"]*12+['Hinterland Sanctifier']*12+["Ajani's Pridemate"]*12
+        for large in [False,True]:
+            with self.subTest(large=large),Game([deck,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+                for _ in range(5000):
+                    actor=game.observe('P0')['actor'];obs=game.observe(actor);self.assertIsNone(obs['outcome']);objects={o['id']:o for o in obs['objects']}
+                    count=sum(o['zone']=='Battlefield' and o['owner']=='P0' and o['card'] in ('Hinterland Sanctifier',"Ajani's Pridemate") for o in obs['objects'])
+                    def score(a):
+                        if a['kind']=='Cast' and objects[a['card']]['card']=="You're Not Alone":return 100 if count>0 and (count>=3)==large else -100
+                        return self.professor_score(obs,a)
+                    index=max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i]));a=obs['actions'][index]
+                    if a['kind']=='Cast' and objects[a['card']]['card']=="You're Not Alone":
+                        old=objects[a['target']['Card']];game.step(obs,index);saved=game.snapshot()
+                        with game.clone() as fork:expected=self.resolve_vital_top(fork,'P0')
+                        after=self.resolve_vital_top(game,'P0');self.assertEqual(after,expected);new=next(o for o in after['objects'] if o['reference']==old['reference']);bonus=4 if large else 2
+                        self.assertEqual((new['power'],new['toughness']),(old['power']+bonus,old['toughness']+bonus))
+                        game.restore(saved);again=self.resolve_vital_top(game,'P0');after['revision']=again['revision'];self.assertEqual(again,after);game.drop_snapshot(saved);break
+                    game.step(obs,index)
+                else:self.fail('replacement growth branch not reached')
+
+    def test_conditional_rummage_restores_paid_choice_without_repeating_prior_damage(self):
+        deck=['Mountain']*24+['Take Out the Trash']*12+['Three Tree Mascot']*12+['Goblin Piker']*12
+        with Game([deck,['Mountain']*24+['Shivan Dragon']*36],seed=7,deck_rules='Freeform') as game:
+            for _ in range(5000):
+                actor=game.observe('P0')['actor'];obs=game.observe(actor);self.assertIsNone(obs['outcome']);objects={o['id']:o for o in obs['objects']}
+                if obs['effect_choice'] is not None and obs['resolving']['source_card']=='Take Out the Trash':
+                    self.assertIsNone(game.observe('P1')['effect_choice']);victim=obs['resolving']['targets'][0]['target']['Card'];self.assertEqual(objects[victim]['damage'],3)
+                    discard=next(a for a in obs['actions'] if a['kind']=='Discard');saved=game.snapshot()
+                    with game.clone() as fork:expected=fork.act(fork.observe('P0'),discard)
+                    after=game.act(obs,discard);self.assertEqual(after,expected);self.assertEqual(next(o['damage'] for o in after['objects'] if o['id']==victim),3)
+                    self.assertEqual(after['players'][0]['library_count'],obs['players'][0]['library_count']-1)
+                    self.assertEqual(after['players'][0]['cards_drawn_this_turn'],obs['players'][0]['cards_drawn_this_turn']+1)
+                    game.restore(saved);again=game.act(game.observe('P0'),discard);after['revision']=again['revision'];self.assertEqual(again,after);game.drop_snapshot(saved);return
+                raccoon=any(o['zone']=='Battlefield' and o['owner']=='P0' and o['card']=='Three Tree Mascot' for o in obs['objects'])
+                def score(a):
+                    if a['kind']=='Cast' and objects[a['card']]['card']=='Take Out the Trash':return 100 if raccoon and obs['players'][0]['hand_count']>=2 and objects[a['target']['Card']]['owner']=='P1' else -100
+                    return self.professor_score(obs,a)
+                index=max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i]));game.step(obs,index)
+            self.fail('conditional private rummage not reached')
+
     def pinned_color_count(self,obs,player):
         rows={c['name']:c for c in json.loads((Path(__file__).resolve().parents[1]/'data/standard/cards.json').read_text())['cards']}
         colors=set()
