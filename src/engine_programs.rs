@@ -443,6 +443,7 @@ impl Game {
         }
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
+            delayed_sacrifice: None,
             x: None,
             attachment_trigger: event,
             cast: None,
@@ -837,7 +838,7 @@ impl Game {
             return;
         }
         let program = match item.kind {
-            StackKind::TriggeredAbility { .. } => {
+            StackKind::TriggeredAbility { .. } | StackKind::DelayedSacrifice => {
                 item.program().expect("selected trigger program").1
             }
             StackKind::ActivatedAbility { ability } => {
@@ -1018,6 +1019,13 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::Mobilize { token, amount } => {
+                    let count = self.amount_value(amount, item.object, item.controller);
+                    if self.start_mobilize(token, count, &item) {
+                        return;
+                    }
+                }
+                Instruction::SacrificeDelayedTokens => self.sacrifice_delayed_tokens(&item),
                 Instruction::BecomeSaddled { .. } => self.resolve_saddle(&item),
                 Instruction::BottomLibrary => {
                     for bound in &item.targets {

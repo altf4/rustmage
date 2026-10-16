@@ -358,6 +358,12 @@ pub(crate) enum Instruction {
         amount: u16,
         token: Card,
     },
+
+    Mobilize {
+        token: Card,
+        amount: AmountValue,
+    },
+    SacrificeDelayedTokens,
     BecomeSaddled {
         minimum: u16,
     },
@@ -607,6 +613,7 @@ pub(crate) struct CountFilter {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum AmountValue {
+    Fixed(u16),
     /// Explicit immutable parameter of the resolving spell or its exact ETB packet.
     ChosenX,
     Stat(StatValue),

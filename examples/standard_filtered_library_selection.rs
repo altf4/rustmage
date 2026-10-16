@@ -625,6 +625,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     continue;
                 }
                 match root.kind {
+                    StackKind::DelayedSacrifice => panic!("no delayed producer in this fixture"),
                     StackKind::Spell => {
                         if index(root.source_card) == Some(11) {
                             let p = root.cast.unwrap().offspring.unwrap();

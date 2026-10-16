@@ -37,7 +37,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
         rust,report=generate.compile_catalogue(snapshot,target)
         supported={c['name'] for c in report['cards'] if c['implemented']}
-        self.assertEqual(report["token_definitions"],80)
+        self.assertEqual(report["token_definitions"],81)
         manifest=json.loads((generate.ROOT/'docs/scalar-x-admissions.json').read_text())
         self.assertEqual([r['name'] for r in manifest['cards']],names)
         self.assertEqual(sum(len(r['sources']) for r in manifest['cards']),75)
@@ -1936,7 +1936,8 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIsNone(generate.permanent_program_template(card),name)
             self.assertIsNone(generate.spell_program_template(card),name)
             self.assertIsNone(generate.modal_spell_template(card),name)
-        for name in ['Smaug, Wicked Worm','Stadium Headliner','Barret Wallace','Razor Rings']:
+        self.assertIn('Stadium Headliner', supported)  # complete Mobilize + activation
+        for name in ['Smaug, Wicked Worm','Barret Wallace','Razor Rings']:
             self.assertNotIn(name,supported)
 
     def test_damage_pronouns_require_self_event_and_exact_source_alias(self):
@@ -2345,8 +2346,9 @@ class CatalogueCompilerTests(unittest.TestCase):
             extra=dict(card,oracle_text=card['oracle_text']+'\nWhenever you cast a spell, discover 3.')
             self.assertIsNone(generate.spell_program_template(extra),name)
             self.assertIsNone(generate.permanent_program_template(extra),name)
+        self.assertIn('Reigning Victor', supported)  # complete Mobilize + hybrid ETB
         for name in ['Dragonclaw Strike','Gurmag Nightwatch','Karn, Gilded Guardian',
-                     'Magmablood Archaic','Monastery Messenger','Reigning Victor','Riverwheel Sweep','Wildgrowth Archaic']:
+                     'Magmablood Archaic','Monastery Messenger','Riverwheel Sweep','Wildgrowth Archaic']:
             self.assertNotIn(name,supported)
 
     def test_hybrid_spell_admission_never_approximates_other_symbols_or_ability_costs(self):

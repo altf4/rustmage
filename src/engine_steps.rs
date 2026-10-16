@@ -3,6 +3,9 @@ use super::*;
 impl Game {
     pub(super) fn begin_step(&mut self, step: Step) {
         self.state.step = step;
+        if step == Step::End {
+            self.queue_delayed_sacrifices();
+        }
         let sources: Vec<_> = self
             .state
             .step_sources

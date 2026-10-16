@@ -1,3 +1,5 @@
+Integration onto frozen Mobilize PR239 executes **1,664 / 5,164 Standard identities**, schema **70**, with **81 immutable token factories**. Catalogue fingerprint: `e1bc2e84bd56971a17d789743c446eb5260b8925df98d0f780bb6da79d243788`. Standalone core evidence below retains its original Convoke baseline.
+
 # Fixed endure checkpoint
 
 Issue [#237](https://github.com/altf4/rustmage/issues/237) implements eight complete fixed-source endure bodies: Anafenza, Unyielding Lineage; Descendant of Storms; Dusyut Earthcarver; Fortress Kin-Guard; Inspirited Vanguard; Kin-Tree Nurturer; Sandskitter Outrider; Sinkhole Surveyor. The integrated branch includes the convoke checkpoint and executes 1,656 pinned Standard identities, schema69, with80 immutable token factories. Catalogue fingerprint: `48c2461a82b19c4ac6759fb0e61c6edba00da5ad4aabda9da8fa15f2ff6bdfd9`.

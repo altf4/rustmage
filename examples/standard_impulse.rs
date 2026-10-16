@@ -61,6 +61,7 @@ fn outlaw(c: Card) -> bool {
 fn granting(s: &SpellView) -> Option<usize> {
     let i = family(s.source_card)?;
     let is = match s.kind {
+        StackKind::DelayedSacrifice => panic!("no delayed producer in this fixture"),
         StackKind::Spell => matches!(i, 1 | 11) || i == 12 && s.mode == Some(0),
         StackKind::TriggeredAbility { ability } => match i {
             0 | 2 | 4 | 8 | 9 | 10 | 13 => ability == 0,
