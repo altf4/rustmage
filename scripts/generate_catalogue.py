@@ -1416,6 +1416,27 @@ def targeted_program(text):
         return None
     text = strip_rule_label(text)
     text = normalize_duration(text[0].lower() + text[1:])
+    # Exact subject/cardinality mapping shared by announcement and resolution.
+    object_subjects={
+        'target creature':'Creature','target creature you control':'CreatureYou',
+        'target creature an opponent controls':'CreatureOpponent',
+        'target creature or Vehicle':'CreatureVehicle',
+        'target creature or Vehicle an opponent controls':'CreatureVehicleOpponent',
+        'target nonland permanent':'Nonland','other target creature':'OtherCreature',
+        'other target permanent you control':'OtherPermanentYou',
+        'other target nonland permanent you control':'OtherNonlandYou',
+        'target tapped creature':'CreatureTapped','target artifact or creature':'ArtifactCreature',
+        'target nonland permanent an opponent controls':'NonlandOpponent','target land':'Land',
+    }
+    if m:=re.fullmatch(r"return (up to one |)(.+) to its owner's hand\.",text):
+        if rule:=object_subjects.get(m[2]):
+            return ((rule,0,1) if m[1] else rule),['ReturnToHand']
+    if m:=re.fullmatch(r'(tap|untap) (up to one |)(.+)\.',text):
+        if rule:=object_subjects.get(m[3]):
+            spec=(rule,0,1) if m[2] else (rule,1,1) if rule=='Creature' else rule
+            return spec,[m[1].capitalize()]
+    if m:=re.fullmatch(r'tap target creature an opponent controls and put (a|one|two|three) stun counters? on it\.',text):
+        return 'CreatureOpponent',['Tap',counter_instruction('Targets',m[1],'stun')]
     if m:=re.fullmatch(r'([^.]+) if you gained life this turn\.',text):
         result=targeted_program(m[1]+'.')
         return (result[0],[f'If {{ guard: StepGuard::GainedLife, skip: {len(result[1])} }}',*result[1]]) if result else None

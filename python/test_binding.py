@@ -9,6 +9,64 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def test_eighteen_targeted_bodies_resolve_exact_effects_with_private_payment_replay(self):
+        names=['Bigfin Bouncer', 'Bounce Off', 'Constrictor Sage', 'Exclusion Mage', 'Exosuit Savior', 'Freeze in Place', 'Grappling Kraken', 'Iceridge Serpent', 'Mental Modulation', 'Mischievous Pup', 'Peerless Ropemaster', "Proctor's Gaze", 'Rimekin Recluse', 'Ring of the Lucii', 'Rowdy Snowballers', 'Spider-Byte, Web Warden', 'Stickytongue Sentinel', 'Tidecaller Mentor']
+        bounce={0,1,3,4,7,9,10,11,12,15,16,17};spells={1,5,8,11}
+        for i,wanted in enumerate(names):
+            lands=sum(([n]*8 for n in ['Island','Plains','Forest','Swamp']),[]);deck=lands+[wanted]*8+['Bear Cub']*8+['Mind Drill Assailant']*8+['Opt']*4
+            with self.subTest(card=wanted),Game([deck,['Forest']*36+['Bear Cub']*24],seed=7,deck_rules='Freeform') as game:
+                expected={};replayed=0;verified=0
+                for _ in range(16000):
+                    obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor']);objects={o['id']:o for o in obs['objects']};own=[o for o in objects.values() if o['owner']=='P0'];sources=[o for o in own if o['zone']=='Battlefield' and o['card']==wanted];grave=[o for o in own if o['zone']=='Graveyard' and not o['token']]
+                    def score(a):
+                        k=a['kind']
+                        if k in ('Cast','AnnounceCast'):
+                            n=objects[a['card']]['card']
+                            if n==wanted:return 250 if not sources and (i!=17 or len(grave)>=7) else -100
+                            if n=='Mind Drill Assailant':return 230 if i==17 and not any(o['card']==n and o['zone']=='Battlefield' for o in own) else -100
+                            if n=='Bear Cub':return 200 if not any(o['card']==n and o['zone']=='Battlefield' and o['owner']==obs['actor'] for o in objects.values()) else -100
+                            return -100
+                        if k=='AnnounceActivate':return 240 if not obs['stack'] and ((i==13 and objects[a['card']]['card']==wanted and a['ability']==1) or (i==17 and objects[a['card']]['card']=='Mind Drill Assailant' and len(grave)<7)) else -100
+                        if k in ('Activate','BeginActivate','ActivateMana','AnnounceMana'):return -100
+                        if k=='TapMana':return 180 if obs['decision']=='pay_costs' else -100
+                        if k in ('ChooseSpellCost','ChooseActivationCost'):return 220
+                        if k=='ChooseTarget' and 'Card' in a['target']:
+                            o=objects[a['target']['Card']];return 290 if o['owner']!=obs['actor'] else 270 if o['card']=='Bear Cub' else 260
+                        if k=='ChooseSearch':return 300
+                        if k=='ArrangeLibrary':return 220 if a['destination']=='Graveyard' else 100
+                        if k=='Attack':return 200 if i==10 and obs['actor']=='P1' else -100
+                        return self.professor_score(obs,a)
+                    choice=max(range(len(obs['actions'])),key=lambda j:score(obs['actions'][j]));a=obs['actions'][choice];private=obs['library_choice'] or obs['search_choice'] or obs['decision']=='effect_discard'
+                    if private:
+                        other=game.observe('P1' if obs['actor']=='P0' else 'P0');self.assertEqual(other['actions'],[]);self.assertIsNone(other['library_choice']);self.assertIsNone(other['search_choice']);self.assertEqual(other['effect_discards'],[])
+                    if obs['announcing'] or obs['resolving'] or obs['stack'] or private:
+                        saved=game.snapshot()
+                        with game.clone() as fork:after=fork.step(fork.observe(obs['actor']),choice)
+                        self.assertEqual(game.step(obs,choice),after);game.restore(saved)
+                        with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,choice)
+                        again=game.step(game.observe(obs['actor']),choice);after['revision']=again['revision'];self.assertEqual(again,after);game.drop_snapshot(saved);replayed+=1
+                    else:after=game.step(obs,choice)
+                    live={r['id'] for r in after['stack']}
+                    if after['resolving']:live.add(after['resolving']['id'])
+                    if obs['stack'] and a['kind']=='Pass':
+                        root=obs['stack'][-1]
+                        if root['source_card']==wanted and root['id'] not in {r['id'] for r in after['stack']} and (root['kind']!='Spell' or i in spells):
+                            checks=[]
+                            for bound in root['targets']:
+                                ref=bound['object'];o=objects.get(ref['card']) if ref else None
+                                if o and o['reference']==ref and o['zone']=='Battlefield' and (i!=10 or o['tapped']):checks.append((ref,o['counters']['stun']))
+                            expected[root['id']]=checks
+                    for root_id in list(expected):
+                        if root_id in live:continue
+                        for ref,stun in expected.pop(root_id):
+                            public=game.observe('P0');o=next(o for o in public['objects'] if o['id']==ref['card'])
+                            if i in bounce:self.assertEqual(o['zone'],'Hand');self.assertEqual(o['reference']['generation'],ref['generation']+1);self.assertIn(o['reference'],public['known_hand'])
+                            else:self.assertEqual(o['reference'],ref);self.assertTrue(o['tapped']);self.assertEqual(o['counters']['stun'],stun+(3 if i==5 else 1 if i in (2,6,14) else 0))
+                            verified+=1
+                    if verified:break
+                else:self.fail('complete targeted body not resolved')
+                self.assertGreater(replayed,0);self.assertEqual(after['schema'],51)
+
     def test_thirteen_source_predicate_bodies_reach_independent_live_conditions_and_replay(self):
         names=['Akawalli, the Seething Tower','Cephalid Inkmage','Druid of the Spade','First-Time Flyer','Foggy Swamp Hunters','Ghitu Lavarunner','June, Bounty Hunter','Kitesail Corsair','Messenger Hawk','Nightwhorl Hermit','Skyward Spider','Stoic Sphinx','Twinblade Paladin']
         bases=[(3,3),(2,2),(2,3),(1,2),(3,4),(1,2),(2,2),(2,1),(1,2),(1,4),(2,2),(5,3),(3,3)];bonuses=[(2,2),(0,0),(2,0),(1,1),(0,0),(1,0),(0,0),(0,0),(2,0),(1,0),(0,0),(0,0),(0,0)];flags=[256,16384,256,0,64|32768,4,16384,1,0,16384,1,4096,1024];intrinsics=[0,0,0,1,0,0,0,0,1,8,0,1|32,0]

@@ -8,6 +8,32 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_targeted_object_actions_keep_exact_subject_and_optional_cardinality(self):
+        subjects={'target creature an opponent controls':'CreatureOpponent','target creature you control':'CreatureYou','other target creature':'OtherCreature','other target permanent you control':'OtherPermanentYou','target tapped creature':'CreatureTapped','target creature or Vehicle':'CreatureVehicle','target nonland permanent':'Nonland','target artifact or creature':'ArtifactCreature','target land':'Land'}
+        for subject,rule in subjects.items():
+            for optional in ['', 'up to one ']:
+                spec=(rule,0,1) if optional else rule
+                self.assertEqual(generate.targeted_program('Return '+optional+subject+" to its owner's hand."),(spec,['ReturnToHand']))
+                for verb in ['Tap','Untap']:self.assertEqual(generate.targeted_program(verb+' '+optional+subject+'.'),(spec,[verb]))
+        for text in ["Return target creature an opponent controls to your hand.","Return up to two target tapped creatures to their owners' hands.",'Tap target untapped creature.','Tap target creature you do not control.','Untap target permanent with mana value 3 or less.']:
+            self.assertIsNone(generate.targeted_program(text),text)
+
+    def test_targeted_stun_programs_preserve_tail_focus_and_unknown_residual_gates(self):
+        for word,amount in [('a',1),('one',1),('two',2),('three',3)]:
+            line='Tap target creature an opponent controls and put '+word+' stun counters on it.';base=['Tap',generate.counter_instruction('Targets',word,'stun')];self.assertEqual(generate.targeted_program(line),('CreatureOpponent',base));self.assertEqual(generate.targeted_program(line+' Scry 2.'),('CreatureOpponent',base+['Scry(2)']))
+        for line in ['Tap target creature an opponent controls and put four stun counters on it.','Tap target creature an opponent controls and put a stun counter on each of them.','Tap target creature an opponent controls. Put a stun counter on it. Then discover 3.',"Return up to one target nonland permanent to its owner's hand. If it was a token, draw a card."]:
+            self.assertIsNone(generate.targeted_program(line),line)
+        self.assertEqual(generate.targeted_program('Tap target artifact or creature. Draw a card.'),('ArtifactCreature',['Tap','Draw(PlayerSet::Controller, 1)']))
+
+    def test_targeted_bounce_tap_admits_eighteen_complete_bodies_and_rejects_unknown_tails(self):
+        import json
+        manifest=json.loads((generate.ROOT/'docs/targeted-bounce-tap-admissions.json').read_text());rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());_,coverage=generate.compile_catalogue(rows,target);supported={c['name'] for c in coverage['cards'] if c['implemented']};self.assertEqual(len(manifest['cards']),18)
+        for row in manifest['cards']:
+            self.assertIn(row['name'],supported);card=next(c for c in rows['cards'] if c['name']==row['name']);self.assertEqual(row['oracle_text'],card['oracle_text']);bad=dict(card,oracle_text=card['oracle_text']+'\nWhenever you attack, discover 3.')
+            for compiler in [generate.permanent_program_template,generate.trigger_creature_template,generate.static_permanent_template]:self.assertIsNone(compiler(bad),row['name'])
+        for name in ['Brackish Blunder','Hotshot Investigators','Mirkwood Nurturer','Nobody','Sunpearl Kirin','Floodpits Drowner','Snaremaster Sprite']:
+            self.assertNotIn(name,supported)
+
     def test_source_public_predicates_are_exact_and_reject_untracked_history(self):
         expected={"it's attacking":'SourceAttacking',"it's modified":'SourceModified',"you haven't cast a spell this turn":'Not(&StatValue::SpellsCastThisTurn)',"you've drawn two or more cards this turn":'CardsDrawnThisTurn','you control a token':'Tokens(',"there's a Lesson card in your graveyard":'subtype: Some("Lesson")','there are two or more instant and/or sorcery cards in your graveyard':'kind: 12','you have 25 or more life':'ControllerLife'}
         for clause,value in expected.items():
@@ -939,7 +965,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIsNone(generate.spell_program_template(proxy),name);self.assertIsNone(generate.permanent_program_template(proxy),name)
             self.assertIsNone(generate.static_permanent_template(proxy),name);self.assertIsNone(generate.modal_spell_template(proxy),name)
         for name in ['Thalia, the Survivor','Out of Air',"Dragon's Prey",'Quicksand Whirlpool','Spectral Denial',
-                     'Eluge, the Shoreless Sea','Inquisitive Glimmer','Mental Modulation','Traxos, Academy Guardian']:
+                     'Eluge, the Shoreless Sea','Inquisitive Glimmer','Traxos, Academy Guardian']:
             self.assertNotIn(name,supported)
 
     def test_restricted_counter_targets_compile_exact_unions_colors_and_mana_ranges(self):

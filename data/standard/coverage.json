@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "a7b6410cbc1c96466a54cf4a61b8056bdd0f24f48fb7620b82a5fb58e8c7bd3e",
+  "catalogue_version": "818532ccea719f9b888ec7cacad11e9c277d2eeb77ed86a7af153e93d163bc2f",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1285,
-  "implemented_total": 1291,
+  "implemented_standard_cards": 1303,
+  "implemented_total": 1309,
   "token_definitions": 56,
   "emblem_definitions": 1,
   "cards": [
@@ -2446,8 +2446,8 @@
     {
       "name": "Bigfin Bouncer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Bilbo Baggins, Burglar // Take a Glance",
@@ -3106,8 +3106,8 @@
     {
       "name": "Bounce Off",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Boundary Lands Ranger",
@@ -5014,8 +5014,8 @@
     {
       "name": "Constrictor Sage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Construct a Cosmic Cube",
@@ -8374,8 +8374,8 @@
     {
       "name": "Exclusion Mage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Exdeath, Void Warlock // Neo Exdeath, Dimension's End",
@@ -8410,8 +8410,8 @@
     {
       "name": "Exosuit Savior",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Expedited Inheritance",
@@ -9724,8 +9724,8 @@
     {
       "name": "Freeze in Place",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Frenzied Baloth",
@@ -11098,8 +11098,8 @@
     {
       "name": "Grappling Kraken",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Grasping Longneck",
@@ -12754,8 +12754,8 @@
     {
       "name": "Iceridge Serpent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Icetill Explorer",
@@ -16324,8 +16324,8 @@
     {
       "name": "Mental Modulation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Mentor of the Meek",
@@ -16738,8 +16738,8 @@
     {
       "name": "Mischievous Pup",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Mischievous Sneakling",
@@ -18742,8 +18742,8 @@
     {
       "name": "Peerless Ropemaster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Pelakka Wurm",
@@ -19492,8 +19492,8 @@
     {
       "name": "Proctor's Gaze",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Professional Wrestler",
@@ -21184,14 +21184,14 @@
     {
       "name": "Rimekin Recluse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Ring of the Lucii",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Ringing Strike Mastery",
@@ -21622,8 +21622,8 @@
     {
       "name": "Rowdy Snowballers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Roxanne, Starfall Savant",
@@ -24136,8 +24136,8 @@
     {
       "name": "Spider-Byte, Web Warden",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Spider-Girl, Legacy Hero",
@@ -24826,8 +24826,8 @@
     {
       "name": "Stickytongue Sentinel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Stillness in Motion",
@@ -27568,8 +27568,8 @@
     {
       "name": "Tidecaller Mentor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Tidings of War",

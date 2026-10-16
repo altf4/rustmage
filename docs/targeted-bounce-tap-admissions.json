@@ -1,0 +1,603 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Bigfin Bouncer",
+      "oracle_text": "When this creature enters, return target creature an opponent controls to its owner's hand.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+          "java_sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+          "java_sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BigfinBouncer.java",
+          "java_sha256": "a16f202b47cd02f9a071223ee915fd01cc402f6aaafc470a7d039c7cb3c3fcd0"
+        }
+      ]
+    },
+    {
+      "name": "Bounce Off",
+      "oracle_text": "Return target creature or Vehicle to its owner's hand.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+          "java_sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BounceOff.java",
+          "java_sha256": "174a4ed4b2bb6226c65c64ca46ab448b90db9d7f40b92ec259fc125ad4cedef6"
+        }
+      ]
+    },
+    {
+      "name": "Constrictor Sage",
+      "oracle_text": "When this creature enters, tap target creature an opponent controls and put a stun counter on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)\nRenew \u2014 {2}{U}, Exile this card from your graveyard: Tap target creature an opponent controls and put a stun counter on it. Activate only as a sorcery.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "java_sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+          "java_sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+          "java_sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+          "java_sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/ConstrictorSage.java",
+          "java_sha256": "8f77c871bc0b39015662b4210361a5c2431c72b2e3feeeebb0e5f98dd4ed764a"
+        }
+      ]
+    },
+    {
+      "name": "Exclusion Mage",
+      "oracle_text": "When this creature enters, return target creature an opponent controls to its owner's hand.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+          "java_sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/ExclusionMage.java",
+          "java_sha256": "df5364cf748e504ee90b929fc89745636be7d4516eca30337ef931b5fc909795"
+        }
+      ]
+    },
+    {
+      "name": "Exosuit Savior",
+      "oracle_text": "Flying\nWhen this creature enters, return up to one other target permanent you control to its owner's hand.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+          "java_sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+          "java_sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+          "java_sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+          "java_sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/ExosuitSavior.java",
+          "java_sha256": "454f3666c4a6a5246a2186979f6293433f42fc66cf383611c2d7ee204d6260e0"
+        }
+      ]
+    },
+    {
+      "name": "Freeze in Place",
+      "oracle_text": "Tap target creature an opponent controls and put three stun counters on it. Scry 2. (If a permanent with a stun counter would become untapped, remove one from it instead.)",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+          "java_sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/ScryEffect.java",
+          "java_sha256": "2b5d4d62bb612633238db872252ec41349e37180816e4a965002ee3b6f8d0b58"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+          "java_sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FreezeInPlace.java",
+          "java_sha256": "386427da995101e1ac8fa95aaea210a3410b0557f96abdb2a81ecbb8e09c6b12"
+        }
+      ]
+    },
+    {
+      "name": "Grappling Kraken",
+      "oracle_text": "Landfall \u2014 Whenever a land you control enters, tap target creature an opponent controls and put a stun counter on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/LandfallAbility.java",
+          "java_sha256": "aeae9b06e1910d69c88eca416249ba9d5629f7cb9d3626c9de9bbd3f7fdd1be1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+          "java_sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+          "java_sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GrapplingKraken.java",
+          "java_sha256": "a7f0cf047c35c925f5046c435fc72167892db861dec97bff70156ae7c9650439"
+        }
+      ]
+    },
+    {
+      "name": "Iceridge Serpent",
+      "oracle_text": "When this creature enters, return target creature an opponent controls to its owner's hand.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+          "java_sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+          "java_sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/i/IceridgeSerpent.java",
+          "java_sha256": "c2fc81e50882bb06f930348b76f5d223cfca2c54768061a3bad165f05767630f"
+        }
+      ]
+    },
+    {
+      "name": "Mental Modulation",
+      "oracle_text": "This spell costs {1} less to cast during your turn.\nTap target artifact or creature.\nDraw a card.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/MyTurnCondition.java",
+          "java_sha256": "a6c7cf96d2fdec34c9c999ad4b486627d257eeac9b7e7de139f104ac1ef45d90"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+          "java_sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionSourceEffect.java",
+          "java_sha256": "c877e6d5d339d0c8a602f1c16190e62f1dd0a5e1c11ba333a698b6dfee367304"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MentalModulation.java",
+          "java_sha256": "c2c7aa370ee5eeb108461b95f5babedc31d39d22607779e3794e7ae09d39593c"
+        }
+      ]
+    },
+    {
+      "name": "Mischievous Pup",
+      "oracle_text": "Flash (You may cast this spell any time you could cast an instant.)\nWhen this creature enters, return up to one other target permanent you control to its owner's hand.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+          "java_sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+          "java_sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+          "java_sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+          "java_sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+          "java_sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MischievousPup.java",
+          "java_sha256": "413b81730428511a4a02471f022bc4f269ec5c82d89a04e295be763b248bbc6e"
+        }
+      ]
+    },
+    {
+      "name": "Peerless Ropemaster",
+      "oracle_text": "When this creature enters, return up to one target tapped creature to its owner's hand.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+          "java_sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/TappedPredicate.java",
+          "java_sha256": "71eabf46dc3838343404e9d40c88835361370549c67e42e8c694082ecd050436"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PeerlessRopemaster.java",
+          "java_sha256": "8abca223bc5449cc67dbf7a465fd8a9f5582112b6b1a4f9b3a02e5c1dfa819d0"
+        }
+      ]
+    },
+    {
+      "name": "Proctor's Gaze",
+      "oracle_text": "Return up to one target nonland permanent to its owner's hand. Search your library for a basic land card, put it onto the battlefield tapped, then shuffle.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+          "java_sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayEffect.java",
+          "java_sha256": "0bb9a67ad4f01956cd50eb190b2086d6d070c993cccbecece569b37726129394"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+          "java_sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetNonlandPermanent.java",
+          "java_sha256": "6e4720e1386bdaa8f84eaf97cc8d6646845307f0be8697190c25cd1285ba598a"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/ProctorsGaze.java",
+          "java_sha256": "d022a6fc88331b79908019a6040e4794f29253f3d78de97b54ba28bef81b60a1"
+        }
+      ]
+    },
+    {
+      "name": "Rimekin Recluse",
+      "oracle_text": "When this creature enters, return up to one other target creature to its owner's hand.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+          "java_sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RimekinRecluse.java",
+          "java_sha256": "a995ad9b3aa70ce103468241cef30d069bbb233c057d49e12494358afb9ec82e"
+        }
+      ]
+    },
+    {
+      "name": "Ring of the Lucii",
+      "oracle_text": "{T}: Add {C}{C}.\n{2}, {T}, Pay 1 life: Tap target nonland permanent.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
+          "java_sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "java_sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "java_sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+          "java_sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/mana/SimpleManaAbility.java",
+          "java_sha256": "ffbd6c3be6ec8684aa67a8fc907e8ac29726751ae3f37cda50a024843e650bba"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetNonlandPermanent.java",
+          "java_sha256": "6e4720e1386bdaa8f84eaf97cc8d6646845307f0be8697190c25cd1285ba598a"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RingOfTheLucii.java",
+          "java_sha256": "c69eeb1f97b34a4eae43d5b3345815e4943c8773a0fff52a97dd4af7243af15d"
+        }
+      ]
+    },
+    {
+      "name": "Rowdy Snowballers",
+      "oracle_text": "When this creature enters, tap target creature an opponent controls and put a stun counter on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+          "java_sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+          "java_sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RowdySnowballers.java",
+          "java_sha256": "59cdf270efdf404d1cb8f366f2f140363948ca94654b1f991c89ad380559894a"
+        }
+      ]
+    },
+    {
+      "name": "Spider-Byte, Web Warden",
+      "oracle_text": "When Spider-Byte enters, return up to one target nonland permanent to its owner's hand.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+          "java_sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetNonlandPermanent.java",
+          "java_sha256": "6e4720e1386bdaa8f84eaf97cc8d6646845307f0be8697190c25cd1285ba598a"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SpiderByteWebWarden.java",
+          "java_sha256": "c22ddaa445b5c92bd0c847ab0bf140ab6489733d01e7d58446a4d01020c1e2a1"
+        }
+      ]
+    },
+    {
+      "name": "Stickytongue Sentinel",
+      "oracle_text": "Reach\nWhen this creature enters, return up to one other target permanent you control to its owner's hand.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+          "java_sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+          "java_sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+          "java_sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+          "java_sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StickytongueSentinel.java",
+          "java_sha256": "9980ce736bcb49ce64e3dc9bfd46304c20d4fca53c7c540d9f65e8b6b03f591b"
+        }
+      ]
+    },
+    {
+      "name": "Tidecaller Mentor",
+      "oracle_text": "Menace\nThreshold \u2014 When this creature enters, if there are seven or more cards in your graveyard, return up to one target nonland permanent to its owner's hand.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/ThresholdCondition.java",
+          "java_sha256": "f7d6ad71cd5857b9d0c127469d9b39afd84148a38001a42a309c5c218694382a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+          "java_sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+          "java_sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetNonlandPermanent.java",
+          "java_sha256": "6e4720e1386bdaa8f84eaf97cc8d6646845307f0be8697190c25cd1285ba598a"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TidecallerMentor.java",
+          "java_sha256": "0ccb4689999d2509ecd55a82d67e23870f48b42faa421b91d92774bb604d7a72"
+        }
+      ]
+    }
+  ]
+}
