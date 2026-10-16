@@ -106,6 +106,7 @@ impl Game {
             }
             let done = counter_payments(ability.cost, object.counters, |counter_payment| {
                 let goal = FundingGoal {
+                    reserve: None,
                     actor,
                     required: ability.cost.colored,
                     generic: ability.cost.generic,

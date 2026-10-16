@@ -1,0 +1,125 @@
+//! Owned mandatory spell costs, chosen after targets and paid before cast completion.
+use super::*;
+
+#[derive(Clone, Debug, Serialize)]
+pub struct AdditionalCostView {
+    pub kind: EffectChoiceKind,
+    pub candidates: Vec<ObjectRef>,
+    pub selected: Option<ObjectRef>,
+    pub paid: bool,
+}
+impl Game {
+    pub(super) fn additional_candidate(
+        &self,
+        spec: AdditionalCost,
+        actor: Player,
+        source: ObjectRef,
+        object: ObjectRef,
+    ) -> bool {
+        let Some(o) = self.state.objects.get(object.card as usize) else {
+            return false;
+        };
+        if o.owner != actor || self.object_ref(object.card) != object || object == source {
+            return false;
+        }
+        Self::additional_object_matches(spec, actor, o, self.keywords(object.card))
+    }
+    pub(super) fn additional_object_matches(
+        spec: AdditionalCost,
+        actor: Player,
+        o: &Object,
+        keywords: Keywords,
+    ) -> bool {
+        let zone = match spec.kind {
+            EffectChoiceKind::Discard => Zone::Hand,
+            EffectChoiceKind::Sacrifice => Zone::Battlefield,
+        };
+        let f = spec.filter;
+        o.owner == actor
+            && o.zone == zone
+            && (f.kinds == 0 || o.card.kind_mask() & u16::from(f.kinds) != 0)
+            && (!f.nonland || !o.card.is_land())
+            && keywords.contains(f.keywords)
+            && f.tokens.is_none_or(|token| o.card.is_token() == token)
+            && f.subtype.is_none_or(|subtype| o.card.has_subtype(subtype))
+    }
+
+    pub(super) fn spell_can_fund(&self, actor: Player, card: CardId, cost: ManaCost) -> bool {
+        let definition = self.state.objects[card as usize].card;
+        let base = FundingGoal {
+            actor,
+            required: cost.colored,
+            generic: cost.generic,
+            source: None,
+            reserve: None,
+        };
+        let Some(spec) = definition.additional_cost() else {
+            return self.can_fund(base);
+        };
+        self.state.objects.iter().enumerate().any(|(id, _)| {
+            let object = self.object_ref(id as CardId);
+            self.additional_candidate(spec, actor, self.object_ref(card), object)
+                && self.can_fund(FundingGoal {
+                    reserve: Some((object, spec)),
+                    ..base
+                })
+        })
+    }
+    pub(super) fn additional_choice_available(&self, object: ObjectRef) -> bool {
+        let a = self.state.announcing.as_ref().unwrap();
+        let Some(spec) = a.item.source_card.additional_cost() else {
+            return false;
+        };
+        if !self.additional_candidate(spec, a.item.controller, a.item.object, object) {
+            return false;
+        }
+        let mut goal = self.funding_goal(a);
+        goal.reserve = Some((object, spec));
+        self.can_fund(goal)
+    }
+    pub(super) fn choose_additional_cost(&mut self, object: ObjectRef) {
+        let a = self.state.announcing.as_mut().unwrap();
+        a.additional = Some(object);
+        self.state.pending = Pending::PayCosts {
+            player: a.item.controller,
+        };
+    }
+    pub(super) fn pay_additional_cost(&mut self, a: &mut Announcement) {
+        let Some(spec) = a.item.source_card.additional_cost() else {
+            return;
+        };
+        let object = a.additional.expect("additional cost selected");
+        assert!(
+            self.additional_candidate(spec, a.item.controller, a.item.object, object),
+            "unpaid additional cost"
+        );
+        a.additional_paid = true;
+        match spec.kind {
+            EffectChoiceKind::Discard => self.discard_batch(&[object.card], None),
+            EffectChoiceKind::Sacrifice => {
+                self.move_object(object.card, Zone::Graveyard);
+            }
+        }
+    }
+    pub(super) fn additional_cost_view(&self, viewer: Player) -> Option<AdditionalCostView> {
+        let a = self.state.announcing.as_ref()?;
+        if a.item.kind != StackKind::Spell || viewer != a.item.controller {
+            return None;
+        }
+        let spec = a.item.source_card.additional_cost()?;
+        let candidates = if matches!(self.state.pending, Pending::AdditionalCost { .. }) {
+            (0..self.state.objects.len())
+                .map(|id| self.object_ref(id as CardId))
+                .filter(|&r| self.additional_choice_available(r))
+                .collect()
+        } else {
+            Vec::new()
+        };
+        Some(AdditionalCostView {
+            kind: spec.kind,
+            candidates,
+            selected: a.additional,
+            paid: a.additional_paid,
+        })
+    }
+}

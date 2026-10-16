@@ -14,6 +14,29 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_mandatory_additional_costs_are_exact_and_complete(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        rust,coverage=generate.compile_catalogue(rows,target)
+        supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for name in ['Corrupted Conviction','Final Vengeance','Thrill of Possibility']:
+            self.assertIn(name,supported)
+        for name in ['Grab the Prize','Laughing Mad','Pumpkin Bombardment','Souls Lost','Fear of Isolation']:
+            self.assertNotIn(name,supported)
+        self.assertEqual(rust.count('=> Some(AdditionalCost {'),3)
+        prefix='As an additional cost to cast this spell, '
+        for cost in ['discard two cards.','you may discard a card.','sacrifice two creatures.',
+                     'discard a card or pay {2}.','sacrifice an artifact or pay {2}.',
+                     'sacrifice this creature.','return a permanent you control to its owner’s hand.']:
+            card=self.card(oracle_text=prefix+cost+'\nDraw two cards.')
+            self.assertEqual(generate.extract_additional_cost(card),(card,None))
+        card=self.card(oracle_text=prefix+'discard a card.\n'+prefix+'discard a card.\nDraw two cards.')
+        self.assertEqual(generate.extract_additional_cost(card),(card,None))
+        card=self.card(type_line='Instant',oracle_text=prefix+'discard a card.\nDraw two cards.\nFlashback {2}{R}')
+        residual,cost=generate.extract_additional_cost(card)
+        self.assertIsNotNone(cost);self.assertIsNone(generate.spell_program_template(residual))
+
     def test_changeling_intrinsic_flags_never_enable_dynamic_grants_or_type_removal(self):
         result=generate.creature_template(self.card(oracle_text='Changeling (This card is every creature type.)\nReach'))
         self.assertEqual(result[1],524288|2)

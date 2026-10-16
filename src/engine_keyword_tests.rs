@@ -180,12 +180,14 @@ fn funding_canonicalization_distinguishes_same_card_with_different_gains() {
     }
     g.state.objects[first as usize].gained_keywords = Keywords::HASTE;
     assert!(g.can_fund(FundingGoal {
+        reserve: None,
         actor: Player::P0,
         required: [0, 0, 0, 0, 1, 0],
         generic: 0,
         source: None
     }));
     assert!(!g.can_fund(FundingGoal {
+        reserve: None,
         actor: Player::P0,
         required: [0, 0, 0, 0, 2, 0],
         generic: 0,
@@ -194,6 +196,7 @@ fn funding_canonicalization_distinguishes_same_card_with_different_gains() {
     let saved = g.snapshot();
     g.state.objects[second as usize].gained_keywords = Keywords::HASTE;
     assert!(g.can_fund(FundingGoal {
+        reserve: None,
         actor: Player::P0,
         required: [0, 0, 0, 0, 2, 0],
         generic: 0,
@@ -201,6 +204,7 @@ fn funding_canonicalization_distinguishes_same_card_with_different_gains() {
     }));
     g.restore(&saved);
     assert!(!g.can_fund(FundingGoal {
+        reserve: None,
         actor: Player::P0,
         required: [0, 0, 0, 0, 2, 0],
         generic: 0,

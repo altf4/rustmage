@@ -8,6 +8,7 @@ pub(super) struct FundingGoal {
     pub actor: Player,
     pub required: Mana,
     pub generic: u32,
+    pub reserve: Option<(ObjectRef, AdditionalCost)>,
     pub source: Option<(ObjectRef, u16, Counters, Card)>,
 }
 #[derive(Clone)]
@@ -35,6 +36,7 @@ struct FundingMove {
 struct ResourceKey {
     definition: usize,
     protected: bool,
+    reserved: bool,
     present: bool,
     tapped: bool,
     sick: bool,
@@ -64,6 +66,14 @@ fn payable(pool: Mana, required: Mana, generic: u32) -> bool {
         .map(|(&pool, need)| u64::from(pool - need))
         .sum::<u64>()
         >= u64::from(generic)
+}
+fn reserve_obligations(goal: FundingGoal, object: Option<&Object>, keywords: Keywords) -> bool {
+    goal.reserve.is_none_or(|(reference, spec)| {
+        object.is_some_and(|o| {
+            o.generation == reference.generation
+                && Game::additional_object_matches(spec, goal.actor, o, keywords)
+        })
+    })
 }
 fn source_obligations(
     goal: FundingGoal,
@@ -129,8 +139,11 @@ impl FundingState {
             .iter()
             .enumerate()
             .filter(|(id, object)| {
-                goal.source
-                    .is_some_and(|(source, _, _, _)| source.card == *id as CardId)
+                goal.reserve
+                    .is_some_and(|(reference, _)| reference.card == *id as CardId)
+                    || goal
+                        .source
+                        .is_some_and(|(source, _, _, _)| source.card == *id as CardId)
                     || object.zone == Zone::Battlefield
                         && (object.card.attachment_bonus().is_some()
                             || !object.card.keyword_grants().is_empty()
@@ -170,7 +183,18 @@ impl FundingState {
             .source
             .and_then(|(source, _, _, _)| self.resources.iter().find(|r| r.id == source.card))
             .map_or(Keywords::NONE, |r| self.keywords(r));
-        source_obligations(goal, object, keywords, self.life)
+        reserve_obligations(
+            goal,
+            goal.reserve.and_then(|(r, _)| {
+                self.resources
+                    .iter()
+                    .find(|o| o.id == r.card)
+                    .map(|r| &r.object)
+            }),
+            goal.reserve
+                .and_then(|(r, _)| self.resources.iter().find(|o| o.id == r.card))
+                .map_or(Keywords::NONE, |r| self.keywords(r)),
+        ) && source_obligations(goal, object, keywords, self.life)
     }
     fn keywords(&self, target: &Resource) -> Keywords {
         let mut keywords = target.object.keywords();
@@ -346,6 +370,9 @@ impl FundingState {
                 protected: goal
                     .source
                     .is_some_and(|(source, _, _, _)| source.card == r.id),
+                reserved: goal
+                    .reserve
+                    .is_some_and(|(reference, _)| reference.card == r.id),
                 present: r.object.zone == Zone::Battlefield,
                 tapped: r.object.tapped,
                 sick: r.object.summoning_sick,
@@ -361,7 +388,7 @@ impl FundingState {
         resources.sort_by_key(|r| {
             (
                 r.definition,
-                r.protected,
+                (r.protected, r.reserved),
                 r.present,
                 r.tapped,
                 r.sick,
@@ -506,7 +533,14 @@ impl Game {
         let keywords = object.map_or(Keywords::NONE, |_| {
             self.keywords(goal.source.unwrap().0.card)
         });
-        if !source_obligations(
+        if !reserve_obligations(
+            goal,
+            goal.reserve
+                .and_then(|(r, _)| self.state.objects.get(r.card as usize)),
+            goal.reserve
+                .filter(|(r, _)| (r.card as usize) < self.state.objects.len())
+                .map_or(Keywords::NONE, |(r, _)| self.keywords(r.card)),
+        ) || !source_obligations(
             goal,
             object,
             keywords,
@@ -534,7 +568,12 @@ impl Game {
         let a = self.state.announcing.as_ref()?;
         // A hybrid equivalent may still be pending during mode selection too.
         // Project a fixed payment only after that cost has been committed.
-        if !a.pay_window || a.needs_spell_cost() {
+        if !a.pay_window
+            || a.needs_spell_cost()
+            || (a.item.kind == StackKind::Spell
+                && a.item.source_card.additional_cost().is_some()
+                && a.additional.is_none())
+        {
             return None;
         }
         let goal = self.funding_goal(a);
@@ -559,6 +598,9 @@ impl Game {
                 let required = cost.colored;
                 let generic = cost.generic;
                 FundingGoal {
+                    reserve: announcement
+                        .additional
+                        .map(|r| (r, announcement.item.source_card.additional_cost().unwrap())),
                     actor: announcement.item.controller,
                     required,
                     generic,
@@ -568,6 +610,7 @@ impl Game {
             StackKind::ActivatedAbility { ability } => {
                 let cost = announcement.item.source_card.activations()[ability as usize].cost;
                 FundingGoal {
+                    reserve: None,
                     actor: announcement.item.controller,
                     required: cost.colored,
                     generic: cost.generic,
@@ -629,6 +672,7 @@ impl Game {
             return true;
         }
         let goal = FundingGoal {
+            reserve: None,
             actor: request.payer,
             required: request.cost.colored,
             generic: request.cost.generic,
@@ -675,6 +719,7 @@ mod equipment_tests {
             Zone::Battlefield,
         );
         let goal = FundingGoal {
+            reserve: None,
             actor: Player::P0,
             required: [1, 0, 0, 0, 0, 0],
             generic: 0,
@@ -697,6 +742,7 @@ mod equipment_tests {
         // Starting restrictions are not rechecked as source-cost obligations
         // after an ability has already legally been announced.
         let declared = FundingGoal {
+            reserve: None,
             actor: Player::P0,
             required: [0; 6],
             generic: 0,
@@ -723,6 +769,7 @@ mod equipment_tests {
             Zone::Battlefield,
         );
         let goal = FundingGoal {
+            reserve: None,
             actor: Player::P0,
             required: [0; 6],
             generic: 0,
@@ -747,6 +794,7 @@ mod equipment_tests {
             Zone::Battlefield,
         );
         let goal = FundingGoal {
+            reserve: None,
             actor: Player::P0,
             required: [0, 0, 0, 0, 1, 0],
             generic: 0,
@@ -801,6 +849,7 @@ mod equipment_tests {
             blocked: false,
         });
         let goal = FundingGoal {
+            reserve: None,
             actor: Player::P0,
             required: [0; 6],
             generic: 0,
@@ -834,6 +883,7 @@ mod equipment_tests {
         );
         assert!(g.attach_equipment(g.object_ref(boots), g.object_ref(elf)));
         let goal = FundingGoal {
+            reserve: None,
             actor: Player::P0,
             required: [0, 0, 0, 0, 1, 0],
             generic: 0,
@@ -871,6 +921,7 @@ mod equipment_tests {
         );
         assert!(g.attach_equipment(g.object_ref(boots), g.object_ref(a)));
         let goal = FundingGoal {
+            reserve: None,
             actor: Player::P0,
             required: [0, 0, 0, 0, 1, 0],
             generic: 0,

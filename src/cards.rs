@@ -197,6 +197,12 @@ pub(crate) struct SacrificeFilter {
     pub subtype: Option<&'static str>,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct AdditionalCost {
+    pub kind: EffectChoiceKind,
+    pub filter: SacrificeFilter,
+}
+
 /// Card qualities for a non-targeted choice from an exact milled batch.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum RecoveryFilter {
@@ -895,6 +901,9 @@ impl Card {
     }
     pub fn is_token(self) -> bool {
         self.token_info().is_some()
+    }
+    pub(crate) fn additional_cost(self) -> Option<AdditionalCost> {
+        generated::additional_cost(self)
     }
     pub(crate) fn dynamic_stats(self) -> Option<DynamicStats> {
         generated::dynamic_stats(self)

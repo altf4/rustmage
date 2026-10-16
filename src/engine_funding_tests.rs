@@ -280,6 +280,7 @@ fn impossible_colored_cost_is_rejected_without_mutation_among_many_identical_sou
     let before = game.snapshot();
     let revision = game.revision;
     assert!(!game.can_fund(FundingGoal {
+        reserve: None,
         actor: Player::P0,
         required: [0, 2, 0, 0, 0, 0],
         generic: 0,
@@ -354,6 +355,7 @@ fn compact_funding_search_matches_native_exhaustive_mana_sequences_on_small_boar
                     let required = [0, blue, 0, red, 0, 0];
                     assert_eq!(
                         game.can_fund(FundingGoal {
+                            reserve: None,
                             actor: Player::P0,
                             required,
                             generic,
@@ -398,6 +400,7 @@ fn compact_funding_search_matches_native_exhaustive_mana_sequences_on_small_boar
                         let required = [0, 0, 0, 0, green, 0];
                         assert_eq!(
                             game.can_fund(FundingGoal {
+                                reserve: None,
                                 actor: Player::P0,
                                 required,
                                 generic,
@@ -433,6 +436,7 @@ fn compact_funding_search_matches_native_exhaustive_mana_sequences_on_small_boar
                     );
                     assert_eq!(
                         game.can_fund(FundingGoal {
+                            reserve: None,
                             actor: Player::P0,
                             required,
                             generic,
