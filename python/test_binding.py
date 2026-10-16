@@ -9,6 +9,70 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def test_thirteen_tap_trigger_bodies_external_tap_private_choices_and_replay(self):
+        names=['Attentive Sunscribe','Mechan Navigator','Pestered Wellguard','Rescue Leopard','Seedship Agrarian','Silvergill Peddler','Spider-Gwen, Free Spirit','Starfighter Pilot','Swarm Culler','Volatile Wanderglyph','Wanderbrine Preacher','Wanderwine Distracter','Wylie Duke, Atiin Hero']
+        colors=[['Plains'],['Island'],['Island'],['Mountain'],['Forest'],['Island'],['Mountain'],['Plains'],['Swamp'],['Mountain'],['Plains'],['Island'],['Plains','Forest']]
+        for i,source in enumerate(names):
+            mana=list(dict.fromkeys(['Island']+colors[i]));lands=sum(([n]*(30//len(mana)) for n in mana),[])
+            with self.subTest(card=source),Game([lands+[source]*12+['Mental Modulation']*10+['Three Tree Mascot']*8,['Forest']*30+['Bear Cub']*30],seed=7,deck_rules='Freeform') as game:
+                pending={};done=False;replayed=0;private=0;taps=0;seen=set()
+                for _ in range(16000):
+                    obs=game.observe('P0');self.assertIsNone(obs['outcome'],source);obs=game.observe(obs['actor']);objects={v['id']:v for v in obs['objects']};live=[v for v in objects.values() if v['owner']=='P0' and v['zone']=='Battlefield' and v['card']==source];mates=[v for v in objects.values() if v['owner']=='P0' and v['zone']=='Battlefield' and v['card']=='Three Tree Mascot']
+                    def score(a):
+                        k=a['kind']
+                        if k in ('Cast','AnnounceCast'):
+                            if obs['actor']!='P0':return 260
+                            n=objects[a['card']]['card'];return 280 if n==source and not live else 270 if n=='Three Tree Mascot' and live and not mates else 260 if n=='Mental Modulation' and live and not live[0]['tapped'] and (i!=8 or mates) else -100
+                        if k=='PayCosts':return 500
+                        if k=='TapMana':return 150 if obs['decision']=='pay_costs' else -100
+                        if k=='PlayLand' and obs['actor']=='P0':return 330 if not any(v['zone']=='Battlefield' and v['owner']=='P0' and v['card']==objects[a['card']]['card'] for v in objects.values()) else 300
+                        if k=='ChooseTarget' and 'Card' in a['target']:
+                            v=objects[a['target']['Card']];return 350 if obs['actor']=='P0' and v['card']==source and not v['tapped'] else 200
+                        if k=='ChooseOptional':return 400 if a['accept'] else -100
+                        if k=='Sacrifice':return 400 if objects[a['object']['card']]['card']=='Three Tree Mascot' else 200
+                        if k=='DeclineEffectPayment':return -100
+                        if k=='ArrangeLibrary':return 400 if a['destination']==('Graveyard' if i==7 else 'Bottom') else -100
+                        if k in ('Attack','Block','Activate','BeginActivate','AnnounceActivate','ActivateMana','AnnounceMana'):return -100
+                        return self.professor_score(obs,a)
+                    choice=max(range(len(obs['actions'])),key=lambda j:score(obs['actions'][j]));action=obs['actions'][choice]
+                    if obs['library_choice'] is not None:
+                        other=game.observe('P1' if obs['actor']=='P0' else 'P0');self.assertIsNone(other['library_choice']);self.assertEqual(other['actions'],[]);self.assertEqual(obs['library_choice']['surveil'],i==7);private+=1
+                    if live or obs['stack'] or obs['announcing'] or obs['resolving']:
+                        saved=game.snapshot()
+                        with game.clone() as fork:expected=fork.step(fork.observe(obs['actor']),choice)
+                        self.assertEqual(game.step(obs,choice),expected);game.restore(saved)
+                        with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,choice)
+                        after=game.step(game.observe(obs['actor']),choice);expected['revision']=after['revision'];self.assertEqual(after,expected);game.drop_snapshot(saved);replayed+=1
+                    else:after=game.step(obs,choice)
+                    for v in after['objects']:
+                        if v['zone']=='Battlefield' and v['card']==source:
+                            old=objects.get(v['id'])
+                            if old and old['reference']==v['reference'] and not old['tapped'] and v['tapped']:taps+=1
+                    items=after['stack']+after['waiting_triggers']+[s for s in [after['announcing'],after['resolving']] if s is not None]
+                    for s in items:
+                        if s['id'] in seen:continue
+                        seen.add(s['id'])
+                        if s['source_card']==source and s['kind']!='Spell' and s['kind']['TriggeredAbility']['ability']==0:self.assertIsNone(s['entering_object']);self.assertGreater(taps,0)
+                    if obs['stack'] and action['kind']=='Pass':
+                        root=obs['stack'][-1]
+                        if root['source_card']==source and root['kind']!='Spell' and root['kind']['TriggeredAbility']['ability']==0 and root['id'] not in {s['id'] for s in after['stack']}:pending[root['id']]=(root,obs)
+                    for stack_id,(root,before) in list(pending.items()):
+                        if any(s['id']==stack_id for s in after['stack']) or after['resolving'] and after['resolving']['id']==stack_id:continue
+                        old={v['id']:v for v in before['objects']};new={v['id']:v for v in after['objects']};draw=int(after['players'][0]['cards_drawn_this_turn'])-int(before['players'][0]['cards_drawn_this_turn']);discard=int(after['players'][0]['cards_discarded_this_turn'])-int(before['players'][0]['cards_discarded_this_turn'])
+                        if i in (0,7):self.assertGreater(private,0);self.assertEqual(before['players'][0]['library_count']-after['players'][0]['library_count'],int(i==7))
+                        elif i in (1,3,5,6,9):self.assertEqual((draw,discard),(1,1))
+                        elif i in (2,4):
+                            fresh=[v for v in new.values() if v['zone']=='Battlefield' and v['token'] is not None and not any(x['reference']==v['reference'] and x['zone']=='Battlefield' for x in old.values())];self.assertEqual(len(fresh),1);self.assertEqual(fresh[0]['token']['subtypes'],'Faerie' if i==2 else 'Lander');self.assertFalse(fresh[0]['tapped'])
+                        elif i==8:
+                            self.assertEqual(draw,1);removed=[v for v in old.values() if v['zone']=='Battlefield' and v['owner']=='P0' and not any(x['reference']==v['reference'] and x['zone']=='Battlefield' for x in new.values())];self.assertEqual(len(removed),1);self.assertEqual(removed[0]['card'],'Three Tree Mascot')
+                        elif i==10:self.assertEqual(int(after['players'][0]['life']),int(before['players'][0]['life'])+2)
+                        elif i==11:
+                            target=root['targets'][0]['target']['Card'];self.assertEqual(int(new[target]['power']),int(old[target]['power'])-3);self.assertEqual(new[target]['toughness'],old[target]['toughness'])
+                        elif i==12:self.assertEqual(draw,1);self.assertEqual(int(after['players'][0]['life']),int(before['players'][0]['life'])+1);self.assertTrue(new[root['card']]['keywords']&8)
+                        done=True;break
+                    if done:break
+                self.assertTrue(done,source);self.assertGreater(replayed,0);self.assertGreater(taps,0)
+
     def test_opponent_entry_tapped_authority_spider_hybrid_and_suppression_replay(self):
         cases=[('Authority of the Consuls','Helpful Hunter',False,0,True),('Authority of the Consuls','Helpful Hunter',True,0,True),('Authority of the Consuls','Mephitic Draught',False,0,False),('Spider-Woman, Stunning Savior','Helpful Hunter',False,0,True),('Spider-Woman, Stunning Savior','Mephitic Draught',False,1,True)]
         for source,wanted,orb,cost,tapped in cases:

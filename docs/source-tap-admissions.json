@@ -1,0 +1,313 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Attentive Sunscribe",
+      "oracle_text": "Whenever this creature becomes tapped, scry 1. (Look at the top card of your library. You may put that card on the bottom.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AttentiveSunscribe.java",
+          "java_sha256": "3a43bd2b3e050685c017c4b0ffa85f293ffc8ddc9c5a43a3b333fe709b18483f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+          "java_sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/ScryEffect.java",
+          "java_sha256": "2b5d4d62bb612633238db872252ec41349e37180816e4a965002ee3b6f8d0b58"
+        }
+      ]
+    },
+    {
+      "name": "Mechan Navigator",
+      "oracle_text": "Whenever this creature becomes tapped, draw a card, then discard a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MechanNavigator.java",
+          "java_sha256": "c845365767e6277263ce85eb6f35de4e6a736d119b752cf4860b17f4ea88ba1c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+          "java_sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+          "java_sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+        }
+      ]
+    },
+    {
+      "name": "Pestered Wellguard",
+      "oracle_text": "Whenever this creature becomes tapped, create a 1/1 blue and black Faerie creature token with flying.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PesteredWellguard.java",
+          "java_sha256": "cbd6a61825ee4b22544bfed903e4e49a5bd54ed9b5a1fbdae1b515c0502cd99c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+          "java_sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/FaerieBlueBlackToken.java",
+          "java_sha256": "0e23f453aedcbd99fb52a924610703ba7116a4f21978d7381d389a556c854ad5"
+        }
+      ]
+    },
+    {
+      "name": "Rescue Leopard",
+      "oracle_text": "Whenever this creature becomes tapped, you may discard a card. If you do, draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RescueLeopard.java",
+          "java_sha256": "f0d019870ab23dafb518e16104563d88053d232e0897f200be4c38ed420a8ee2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+          "java_sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+          "java_sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+          "java_sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        }
+      ]
+    },
+    {
+      "name": "Seedship Agrarian",
+      "oracle_text": "Whenever this creature becomes tapped, create a Lander token. (It's an artifact with \"{2}, {T}, Sacrifice this token: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle.\")\nLandfall \u2014 Whenever a land you control enters, put a +1/+1 counter on this creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SeedshipAgrarian.java",
+          "java_sha256": "97371d2216015181dcd5b924a42662c67b691213ac4d5c6ca85a846b5e0418b4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+          "java_sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/LandfallAbility.java",
+          "java_sha256": "aeae9b06e1910d69c88eca416249ba9d5629f7cb9d3626c9de9bbd3f7fdd1be1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/LanderToken.java",
+          "java_sha256": "5d15f49c7eab3d0b31a7d46668bcea3a14faa50b2688996344c35a5243ba53d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayEffect.java",
+          "java_sha256": "0bb9a67ad4f01956cd50eb190b2086d6d070c993cccbecece569b37726129394"
+        }
+      ]
+    },
+    {
+      "name": "Silvergill Peddler",
+      "oracle_text": "Whenever this creature becomes tapped, draw a card, then discard a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SilvergillPeddler.java",
+          "java_sha256": "5f96a4f46c80c209fa72dd5a5ab483a3f3d496679fbb11bf9beefcbe6f1d36d9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+          "java_sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+          "java_sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+        }
+      ]
+    },
+    {
+      "name": "Spider-Gwen, Free Spirit",
+      "oracle_text": "Reach\nWhenever Spider-Gwen becomes tapped, you may discard a card. If you do, draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SpiderGwenFreeSpirit.java",
+          "java_sha256": "cf97b79bbbe4c8e85d231b28ef9f5145276f566a12ef71113df10dfabad12113"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+          "java_sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+          "java_sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+          "java_sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+          "java_sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+        }
+      ]
+    },
+    {
+      "name": "Starfighter Pilot",
+      "oracle_text": "Whenever this creature becomes tapped, surveil 1. (Look at the top card of your library. You may put it into your graveyard.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StarfighterPilot.java",
+          "java_sha256": "7961abba6c63b44b2b8bcfea73152700810fc607b78035a0eca2d63d16f3e8b8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+          "java_sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+          "java_sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+        }
+      ]
+    },
+    {
+      "name": "Swarm Culler",
+      "oracle_text": "Flying\nWhenever this creature becomes tapped, you may sacrifice another creature or artifact. If you do, draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SwarmCuller.java",
+          "java_sha256": "08db994063476168090cd7b71393f0d1eb1789b819bdca416102fc71e1a04b0b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+          "java_sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+          "java_sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        }
+      ]
+    },
+    {
+      "name": "Volatile Wanderglyph",
+      "oracle_text": "Whenever this creature becomes tapped, you may discard a card. If you do, draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VolatileWanderglyph.java",
+          "java_sha256": "3d884f8f8c0a2736b206911461e43441480a46ff25fc9240ff018b31d6d1b691"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+          "java_sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+          "java_sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+          "java_sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        }
+      ]
+    },
+    {
+      "name": "Wanderbrine Preacher",
+      "oracle_text": "Whenever this creature becomes tapped, you gain 2 life.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WanderbrinePreacher.java",
+          "java_sha256": "099549a8bdcf9e7c4b34a6174d1760cd8a2fb182d31522387604df3ebb78cf25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+          "java_sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        }
+      ]
+    },
+    {
+      "name": "Wanderwine Distracter",
+      "oracle_text": "Whenever this creature becomes tapped, target creature an opponent controls gets -3/-0 until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WanderwineDistracter.java",
+          "java_sha256": "2658882c8ce79e7975eb3c5bcbf38e260b846907555d61b9e2c9df2617913614"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+          "java_sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+          "java_sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+        }
+      ]
+    },
+    {
+      "name": "Wylie Duke, Atiin Hero",
+      "oracle_text": "Vigilance\nWhenever Wylie Duke becomes tapped, you gain 1 life and draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WylieDukeAtiinHero.java",
+          "java_sha256": "02bd2dd96c06d56a25497b58846d8f216d7557354f739ab21e84a7069d7d4926"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+          "java_sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "java_sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        }
+      ]
+    }
+  ]
+}

@@ -1954,6 +1954,7 @@ def trigger_creature_template(card):
         **{f'When this {noun} enters or is put into a graveyard from the battlefield, ': 'SelfEntersOrDies'
            for noun in ('creature','artifact','enchantment','Aura','Equipment')},
         'Whenever this creature attacks, ': 'SelfAttacks',
+        'Whenever this creature becomes tapped, ': 'SelfBecomesTapped',
         'Whenever this creature enters or attacks, ': 'SelfEntersOrAttacks',
         'Whenever another artifact you control enters, ': 'OtherArtifactEntersYou',
         'Whenever an artifact you control enters, ': 'ArtifactEntersYou',
@@ -2002,6 +2003,8 @@ def trigger_creature_template(card):
         for alias in names:
             if line.startswith('Whenever ' + alias + ' becomes the target of '):
                 line='Whenever this creature becomes the target of '+line[len('Whenever ' + alias + ' becomes the target of '):]
+            if line.startswith('Whenever ' + alias + ' becomes tapped, '):
+                line='Whenever this creature becomes tapped, '+line[len('Whenever ' + alias + ' becomes tapped, '):]
             if line.startswith('Whenever ' + alias + ' attacks, '):
                 line = 'Whenever this creature attacks, ' + line[len('Whenever ' + alias + ' attacks, '):]
             # An authenticated plural source name still denotes this object.

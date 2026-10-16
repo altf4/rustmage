@@ -8,6 +8,36 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_self_tapped_header_and_authenticated_aliases_are_closed(self):
+        for name,header in [('Tap Probe','this creature'),('Wylie Duke, Atiin Hero','Wylie Duke'),('Spider-Gwen, Free Spirit','Spider-Gwen'),('Volatile Wanderglyph','Volatile Wanderglyph')]:
+            result=generate.trigger_creature_template(self.card(name=name,type_line='Legendary Creature — Human' if ',' in name else 'Creature — Cat',oracle_text='Whenever '+header+' becomes tapped, you gain 2 life.'))
+            self.assertEqual(result[2],[('SelfBecomesTapped',['GainLife(PlayerSet::Controller, 2)'],'None')])
+        for header in ['Whenever a creature becomes tapped, ','Whenever another creature becomes tapped, ','Whenever target creature becomes tapped, ','Whenever this creature becomes untapped, ','Whenever this creature enters tapped, ','Whenever this creature becomes tapped or attacks, ','Whenever this creature becomes tapped for mana, ','Whenever Unknown becomes tapped, ']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=header+'you gain 2 life.')),header)
+        for tail in ['draw a card. Then discover 3.','put a +1/+1 counter on that creature.','it gets +1/+1 until end of turn.']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='Whenever this creature becomes tapped, '+tail)),tail)
+        limited=generate.trigger_creature_template(self.card(oracle_text='Whenever this creature becomes tapped, draw a card. This ability triggers only once each turn.'))
+        self.assertIn('OncePerTurn',limited[2][0][0]);self.assertIn('SelfBecomesTapped',limited[2][0][0])
+
+    def test_thirteen_self_tap_complete_bodies_and_unknown_residuals(self):
+        import hashlib,json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());manifest=json.loads((generate.ROOT/'docs/source-tap-admissions.json').read_text());self.assertEqual(len(manifest['cards']),13)
+        source,coverage=generate.compile_catalogue(rows,target);supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for row in manifest['cards']:
+            card=next(c for c in rows['cards'] if c['name']==row['name']);self.assertEqual(card['oracle_text'],row['oracle_text']);self.assertIn(card['name'],supported);result=generate.trigger_creature_template(card);self.assertIsNotNone(result);self.assertTrue(any(c=='SelfBecomesTapped' for c,_,_ in result[2]));self.assertIsNone(generate.trigger_creature_template(dict(card,oracle_text=card['oracle_text']+'\nWhenever you attack, discover 3.')))
+        names={c['name'] for c in manifest['cards']};altered=dict(rows,cards=[dict(c,oracle_text=c['oracle_text']+'\nWhenever you attack, discover 3.') if c['name'] in names else c for c in rows['cards']]);altered['cards_sha256']=hashlib.sha256(json.dumps(altered['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+        _,gated=generate.compile_catalogue(altered,target);self.assertTrue(all(not c['implemented'] for c in gated['cards'] if c['name'] in names))
+
+    def test_self_tap_programs_keep_mandatory_loot_optional_rummage_and_extra_landfall(self):
+        import json
+        rows={c['name']:c for c in json.loads((generate.ROOT/'data/standard/cards.json').read_text())['cards']}
+        def programs(name):return generate.trigger_creature_template(rows[name])[2]
+        for name in ['Mechan Navigator','Silvergill Peddler']:
+            body=programs(name)[0][1];self.assertEqual(body,['Draw(PlayerSet::Controller, 1)','Discard(PlayerSet::Controller, 1)'])
+        for name in ['Rescue Leopard','Spider-Gwen, Free Spirit','Volatile Wanderglyph']:
+            body=programs(name)[0][1];self.assertIn('optional_skip: Some(1)',body[0]);self.assertIn('Discard',body[0]);self.assertIn('Draw',body[1])
+        seed=programs('Seedship Agrarian');self.assertEqual(len(seed),2);self.assertEqual(seed[0][0],'SelfBecomesTapped');self.assertEqual(seed[1][0],'LandEntersYou');self.assertIn('PutCounters',seed[1][1][0])
+
     def test_opponent_entry_tapped_extraction_is_exact_and_keeps_unknown_labels_and_residuals(self):
         for subject,mask in [('Creatures',1),('Artifacts',16),('Artifacts and creatures',17)]:
             for battlefield in ['', ' the battlefield']:

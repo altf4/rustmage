@@ -906,6 +906,7 @@ pub(crate) enum TriggerCondition {
     SelfDies,
     SelfEntersOrDies,
     SelfAttacks,
+    SelfBecomesTapped,
     SelfEntersOrAttacks,
     /// Explicit self entry OR another owned permanent satisfying all filters.
     /// The self arm bypasses the other-permanent filters; it is never counted twice.
