@@ -107,6 +107,17 @@ fn funding_payments(pool: [u128; 6], colored: Mana, generic: u32, mut emit: impl
         &mut emit,
     );
 }
+/// Exact equivalents of one mana ability, with duplicate physical allocations removed.
+fn funding_cost_payments(pool: [u128; 6], cost: ActivationCost, mut emit: impl FnMut([u64; 6])) {
+    let mut seen = std::collections::HashSet::new();
+    for equivalent in cost.mana_options() {
+        funding_payments(pool, equivalent.colored, equivalent.generic, |payment| {
+            if cost.alternatives.is_empty() || seen.insert(payment) {
+                emit(payment);
+            }
+        });
+    }
+}
 fn concrete_payment(payment: [u64; 6]) -> Mana {
     payment.map(|n| u32::try_from(n).capacity("mana payment exhausted"))
 }
@@ -338,23 +349,18 @@ impl FundingState {
                     continue;
                 }
                 activations::counter_payments(ability.cost, object.counters, |counters| {
-                    funding_payments(
-                        self.mana,
-                        ability.cost.colored,
-                        ability.cost.generic,
-                        |payment| {
-                            production.visit(|production| {
-                                moves.push(FundingMove {
-                                    resource,
-                                    ability: Some(index as u16),
-                                    payment,
-                                    counters,
-                                    production,
-                                });
-                                false
+                    funding_cost_payments(self.mana, ability.cost, |payment| {
+                        production.visit(|production| {
+                            moves.push(FundingMove {
+                                resource,
+                                ability: Some(index as u16),
+                                payment,
+                                counters,
+                                production,
                             });
-                        },
-                    );
+                            false
+                        });
+                    });
                     false
                 });
             }
@@ -614,7 +620,7 @@ impl Game {
         if viewer != a.item.controller
             || a.additional_paid
             || !a.pay_window
-            || a.needs_spell_cost()
+            || a.needs_mana_cost()
             || (a.item.kind == StackKind::Spell
                 && a.item.source_card.additional_cost().is_some()
                 && a.additional.is_none())
@@ -628,6 +634,24 @@ impl Game {
             counters: a.counter_payment,
             production: a.production,
         })
+    }
+    pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
+        match a.item.kind {
+            StackKind::Spell => self.spell_can_fund(a.item.controller, a.item.card, cost),
+            StackKind::ActivatedAbility { ability } => self.can_fund(FundingGoal {
+                reserve: None,
+                actor: a.item.controller,
+                required: cost.colored,
+                generic: cost.generic,
+                source: Some((
+                    a.item.object,
+                    ability,
+                    a.counter_payment,
+                    a.item.source_card,
+                )),
+            }),
+            StackKind::TriggeredAbility { .. } => false,
+        }
     }
     pub(super) fn funding_goal(&self, announcement: &Announcement) -> FundingGoal {
         match announcement.item.kind {
@@ -656,8 +680,8 @@ impl Game {
                 FundingGoal {
                     reserve: None,
                     actor: announcement.item.controller,
-                    required: cost.colored,
-                    generic: cost.generic,
+                    required: announcement.cost.map_or(cost.colored, |c| c.colored),
+                    generic: announcement.cost.map_or(cost.generic, |c| c.generic),
                     source: Some((
                         announcement.item.object,
                         ability,
@@ -986,5 +1010,37 @@ mod equipment_tests {
             .object
             .attached_to = Some(g.object_ref(b));
         assert!(state.key(goal) != changed.key(goal));
+    }
+}
+
+#[cfg(test)]
+mod hybrid_cost_tests {
+    use super::*;
+    #[test]
+    fn counterfactual_mana_steps_accept_cheaper_two_brid_and_deduplicate_shared_hybrid_allocations()
+    {
+        // Explicit future-cost IR; no partial Standard card is admitted by this fixture.
+        let mut cost = Card::from_name("Cindering Cutthroat")
+            .unwrap()
+            .activations()[0]
+            .cost;
+        cost.colored = [0; 6];
+        cost.generic = 2;
+        cost.alternatives = &[ManaCost {
+            colored: [1, 0, 0, 0, 0, 0],
+            generic: 0,
+        }];
+        let mut found = Vec::new();
+        funding_cost_payments([1, 0, 0, 0, 0, 0], cost, |payment| found.push(payment));
+        assert_eq!(found, vec![[1, 0, 0, 0, 0, 0]]);
+        cost.colored = [0, 0, 1, 0, 0, 0];
+        cost.generic = 1;
+        cost.alternatives = &[ManaCost {
+            colored: [0, 0, 0, 1, 0, 0],
+            generic: 1,
+        }];
+        found.clear();
+        funding_cost_payments([0, 0, 1, 1, 0, 0], cost, |payment| found.push(payment));
+        assert_eq!(found, vec![[0, 0, 1, 1, 0, 0]]);
     }
 }

@@ -19,11 +19,30 @@ pub(super) struct Announcement {
 }
 
 impl Announcement {
-    pub(super) fn needs_spell_cost(&self) -> bool {
+    pub(super) fn cost_options(&self) -> crate::cards::ManaCostOptions {
+        match self.item.kind {
+            StackKind::Spell => self.item.source_card.cost_options(),
+            StackKind::ActivatedAbility { ability } => self.item.source_card.activations()
+                [ability as usize]
+                .cost
+                .mana_options(),
+            StackKind::TriggeredAbility { .. } => {
+                unreachable!("triggered ability has no activation cost")
+            }
+        }
+    }
+    pub(super) fn needs_mana_cost(&self) -> bool {
         self.pay_window
-            && self.item.kind == StackKind::Spell
-            && self.item.source_card.has_hybrid_cost()
             && self.cost.is_none()
+            && match self.item.kind {
+                StackKind::Spell => self.item.source_card.has_hybrid_cost(),
+                StackKind::ActivatedAbility { ability } => !self.item.source_card.activations()
+                    [ability as usize]
+                    .cost
+                    .alternatives
+                    .is_empty(),
+                StackKind::TriggeredAbility { .. } => false,
+            }
     }
 }
 
@@ -66,15 +85,9 @@ impl Game {
         }
     }
 
-    pub(super) fn choose_spell_cost(&mut self, index: u16) {
+    pub(super) fn choose_mana_cost(&mut self, index: u16) {
         let a = self.state.announcing.as_mut().unwrap();
-        a.cost = Some(
-            a.item
-                .source_card
-                .cost_options()
-                .nth(index as usize)
-                .unwrap(),
-        );
+        a.cost = Some(a.cost_options().nth(index as usize).unwrap());
         self.continue_announcement_choices(false);
     }
 
@@ -107,8 +120,12 @@ impl Game {
         // declarations precede targets, mana abilities and payment.
         if needs_mode {
             self.state.pending = Pending::Modes { player };
-        } else if a.needs_spell_cost() {
-            self.state.pending = Pending::SpellCost { player };
+        } else if a.needs_mana_cost() {
+            self.state.pending = if a.item.kind == StackKind::Spell {
+                Pending::SpellCost { player }
+            } else {
+                Pending::ActivationCost { player }
+            };
         } else {
             self.state.pending = Pending::Targets { player };
             self.advance_target_groups();

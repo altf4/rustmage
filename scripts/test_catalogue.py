@@ -37,6 +37,34 @@ class CatalogueCompilerTests(unittest.TestCase):
             proxy,rules=generate.extract_cost_reductions(self.card(oracle_text=text))
             self.assertEqual(proxy['oracle_text'],text);self.assertEqual(rules,[],text)
 
+    def test_activation_hybrid_and_two_brid_costs_preserve_one_ability_identity(self):
+        for cost,n in [('{1}{B/R}',2),('{R/W}{R/W}',3),('{2/W}',2),('{2/W}{2/U}',4)]:
+            parsed=generate.activation_cost(cost+', {T}, Pay 2 life')
+            self.assertIsNotNone(parsed);self.assertEqual(len(parsed['alternatives'])+1,n);self.assertTrue(parsed['tap']);self.assertEqual(parsed['life'],2)
+        row=self.card(oracle_text='{G/W}: This creature gains vigilance until end of turn. Activate only once each turn.')
+        result=generate.permanent_program_template(row);self.assertEqual(len(result[3]),1);self.assertTrue(result[3][0][4]);self.assertEqual(len(result[3][0][0]['alternatives']),1)
+        for text in ['{B/P}','{W/U/P}','{X}{R/W}','{3/W}','{W/U}, {R/W}']:
+            self.assertIsNone(generate.activation_cost(text))
+
+    def test_two_brid_mana_profit_gate_uses_the_cheapest_equivalent(self):
+        # Canonical generic-side cost2 alone must not hide the one-mana side.
+        for text in ['{2/W}: Add {W}{W}.','{2/W}{2/U}: Add {W}{W}{W}.']:
+            self.assertIsNone(generate.permanent_program_template(self.card(oracle_text=text)))
+        self.assertIsNotNone(generate.permanent_program_template(self.card(oracle_text='{2/W}: Add {U}.')))
+        self.assertIsNotNone(generate.permanent_program_template(self.card(oracle_text='{2/W}, {T}: Add {W}{W}.')))
+
+    def test_three_hybrid_activation_bodies_keep_full_residual_gates(self):
+        import json
+        admissions=json.loads((generate.ROOT/'docs/hybrid-activation-admissions.json').read_text())['cards'];self.assertEqual(len(admissions),3)
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,report=generate.compile_catalogue(snapshot,target);supported={c['name'] for c in report['cards'] if c['implemented']}
+        for admitted in admissions:
+            card=next(c for c in snapshot['cards'] if c['name']==admitted['name']);self.assertIn(admitted['name'],supported);self.assertEqual(card['oracle_text'],admitted['oracle_text'])
+            proxy,_=generate.extract_entry_counters(dict(card,oracle_text=card['oracle_text']+'\nWhenever you cast a spell, discover 3.'))
+            self.assertIsNone(generate.creature_template(proxy));self.assertIsNone(generate.trigger_creature_template(proxy));self.assertIsNone(generate.permanent_program_template(proxy));self.assertIsNone(generate.static_permanent_template(proxy))
+        for name in ['Flamecache Gecko','Hired Claw','Gev, Scaled Scorch','Azra Oddsmaker']:
+            self.assertNotIn(name,supported)
+
     def test_opponent_life_loss_predicate_and_vampire_target_scope_are_exact(self):
         self.assertEqual(generate.step_guard('an opponent lost life this turn'),'StepGuard::OpponentLostLife')
         proxy,rules=generate.extract_entry_counters(self.card(oracle_text='This creature enters with a +1/+1 counter on it if an opponent lost life this turn.'))
@@ -56,7 +84,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             card=next(c for c in snapshot['cards'] if c['name']==admitted['name']);self.assertEqual(card['oracle_text'],admitted['oracle_text']);self.assertIn(admitted['name'],supported)
             proxy,_=generate.extract_entry_counters(dict(card,oracle_text=card['oracle_text']+'\nWhenever you cast a spell, discover 3.'))
             self.assertIsNone(generate.creature_template(proxy));self.assertIsNone(generate.trigger_creature_template(proxy));self.assertIsNone(generate.permanent_program_template(proxy));self.assertIsNone(generate.static_permanent_template(proxy))
-        for name in ['Cindering Cutthroat','Flamecache Gecko','Hired Claw','Fireglass Mentor','Gev, Scaled Scorch']:
+        for name in ['Flamecache Gecko','Hired Claw','Fireglass Mentor','Gev, Scaled Scorch']:
             self.assertNotIn(name,supported)
 
     def test_morbid_predicate_is_shared_by_entry_cost_and_intervening_step_rules(self):
@@ -121,7 +149,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             proxy,rules=generate.extract_entry_counters(altered);self.assertTrue(rules)
             self.assertIsNone(generate.creature_template(proxy));self.assertIsNone(generate.trigger_creature_template(proxy))
             self.assertIsNone(generate.permanent_program_template(proxy));self.assertIsNone(generate.static_permanent_template(proxy))
-        for name in ['Cruel Administrator','Blacksnag Buzzard','Patched Plaything','Putrid Pals','Cindering Cutthroat']:
+        for name in ['Cruel Administrator','Blacksnag Buzzard','Patched Plaything','Putrid Pals','Flamecache Gecko']:
             self.assertNotIn(name,supported)
 
     def test_attack_intervening_guards_require_the_complete_tapped_declaration(self):
@@ -856,7 +884,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIsNone(generate.spell_cost_options(cost),cost)
         self.assertIsNone(generate.fixed_cost('{G/W}'))
         self.assertIsNone(generate.mana_cost_spec('{G/W}'))
-        self.assertIsNone(generate.activation_cost('{G/W}'))
+        self.assertEqual(len(generate.activation_cost('{G/W}')['alternatives']),1)
 
     def test_two_brid_choices_vary_generic_cost_without_changing_canonical_mana_value(self):
         self.assertEqual(generate.spell_cost_options('{2/W}'),[([0,0,0,0,0,0],2),([1,0,0,0,0,0],0)])
@@ -869,7 +897,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertTrue(all(sum(c)+n<=printed for c,n in options))
         for cost in ['{W/2}','{2/C}','{2/2}','{3/W}','{2/W/P}','{4294967294}{2/G}']:
             self.assertIsNone(generate.spell_cost_options(cost),cost)
-        for text in ['{2/W}: Draw a card.','Cycling {2/W}','Ward {2/W}']:
+        for text in ['{2/W/P}: Draw a card.','Cycling {2/W}','Ward {2/W}']:
             self.assertIsNone(generate.permanent_program_template(self.card(oracle_text=text)),text)
 
     def test_three_two_brid_admissions_require_complete_bodies(self):
@@ -893,7 +921,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertIsNotNone(generate.creature_template(dict(row,oracle_text='')))
         for cost in ['{3/W}','{G/W/P}','{X}{G/W}','{S}{G/W}']:
             self.assertIsNone(generate.trigger_creature_template(dict(row,mana_cost=cost)))
-        for text in ['{G/W}: Draw a card.','Cycling {G/W}',
+        for text in ['{G/W/P}: Draw a card.','Cycling {G/W}',
                      'Ward {G/W}','When this creature enters, draw a card. Then discover 2.']:
             self.assertIsNone(generate.permanent_program_template(dict(row,oracle_text=text)),text)
         self.assertIsNone(generate.trigger_creature_template(dict(row,layout='adventure')))

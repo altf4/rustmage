@@ -103,20 +103,24 @@ impl Game {
                 continue;
             }
             let done = counter_payments(ability.cost, object.counters, |counter_payment| {
-                let goal = FundingGoal {
-                    reserve: None,
-                    actor,
-                    required: ability.cost.colored,
-                    generic: ability.cost.generic,
-                    source: Some((
-                        self.object_ref(card),
-                        index as u16,
-                        counter_payment,
-                        object.card,
-                    )),
+                let fundable = || {
+                    ability.cost.mana_options().any(|cost| {
+                        self.can_fund(FundingGoal {
+                            reserve: None,
+                            actor,
+                            required: cost.colored,
+                            generic: cost.generic,
+                            source: Some((
+                                self.object_ref(card),
+                                index as u16,
+                                counter_payment,
+                                object.card,
+                            )),
+                        })
+                    })
                 };
                 if self.targets_available(ability.targets, actor, self.object_ref(card))
-                    && self.can_fund(goal)
+                    && fundable()
                 {
                     let done = if let Some(production) = ability.mana_production() {
                         production.visit(|production| {
@@ -139,81 +143,89 @@ impl Game {
                     }
                 }
                 let mut done = false;
-                payments(
-                    self.state.players[actor.index()].mana,
-                    ability.cost.colored,
-                    ability.cost.generic,
-                    |payment| {
-                        if done {
-                            return;
-                        }
-                        if let Some(production) = ability.mana_production() {
-                            done = production.visit(|production| {
-                                emit(Action::ActivateMana {
-                                    card,
-                                    ability: index as u16,
-                                    payment,
-                                    counter_payment,
-                                    production,
-                                })
-                            });
-                            return;
-                        }
-                        let plan = ability.targets;
-                        let Some(spec) = plan.single() else {
-                            if self.targets_available(plan, actor, self.object_ref(card)) {
-                                done = emit(Action::BeginActivate {
-                                    card,
-                                    ability: index as u16,
-                                    payment,
-                                    counter_payment,
+                let mut seen = std::collections::HashSet::new();
+                for cost in ability.cost.mana_options() {
+                    payments(
+                        self.state.players[actor.index()].mana,
+                        cost.colored,
+                        cost.generic,
+                        |payment| {
+                            if done
+                                || (!ability.cost.alternatives.is_empty() && !seen.insert(payment))
+                            {
+                                return;
+                            }
+                            if let Some(production) = ability.mana_production() {
+                                done = production.visit(|production| {
+                                    emit(Action::ActivateMana {
+                                        card,
+                                        ability: index as u16,
+                                        payment,
+                                        counter_payment,
+                                        production,
+                                    })
                                 });
+                                return;
                             }
-                            return;
-                        };
-                        if spec.max > 1 || (spec.max > 0 && ability.cost.remove.is_some()) {
-                            let mut count = 0;
-                            self.visit_targets(spec.rule, actor, self.object_ref(card), |_| {
-                                count += 1;
-                                false
-                            });
-                            if count >= usize::from(spec.min) {
-                                done = emit(Action::BeginActivate {
-                                    card,
-                                    ability: index as u16,
-                                    payment,
-                                    counter_payment,
+                            let plan = ability.targets;
+                            let Some(spec) = plan.single() else {
+                                if self.targets_available(plan, actor, self.object_ref(card)) {
+                                    done = emit(Action::BeginActivate {
+                                        card,
+                                        ability: index as u16,
+                                        payment,
+                                        counter_payment,
+                                    });
+                                }
+                                return;
+                            };
+                            if spec.max > 1 || (spec.max > 0 && ability.cost.remove.is_some()) {
+                                let mut count = 0;
+                                self.visit_targets(spec.rule, actor, self.object_ref(card), |_| {
+                                    count += 1;
+                                    false
                                 });
+                                if count >= usize::from(spec.min) {
+                                    done = emit(Action::BeginActivate {
+                                        card,
+                                        ability: index as u16,
+                                        payment,
+                                        counter_payment,
+                                    });
+                                }
+                            } else {
+                                if spec.min == 0 {
+                                    done = emit(Action::Activate {
+                                        card,
+                                        ability: index as u16,
+                                        target: None,
+                                        payment,
+                                        counter_payment,
+                                    });
+                                }
+                                if !done && spec.max > 0 {
+                                    done = self.visit_targets(
+                                        spec.rule,
+                                        actor,
+                                        self.object_ref(card),
+                                        |target| {
+                                            emit(Action::Activate {
+                                                card,
+                                                ability: index as u16,
+                                                target: Some(target),
+                                                payment,
+                                                counter_payment,
+                                            })
+                                        },
+                                    );
+                                }
                             }
-                        } else {
-                            if spec.min == 0 {
-                                done = emit(Action::Activate {
-                                    card,
-                                    ability: index as u16,
-                                    target: None,
-                                    payment,
-                                    counter_payment,
-                                });
-                            }
-                            if !done && spec.max > 0 {
-                                done = self.visit_targets(
-                                    spec.rule,
-                                    actor,
-                                    self.object_ref(card),
-                                    |target| {
-                                        emit(Action::Activate {
-                                            card,
-                                            ability: index as u16,
-                                            target: Some(target),
-                                            payment,
-                                            counter_payment,
-                                        })
-                                    },
-                                );
-                            }
-                        }
-                    },
-                );
+                        },
+                    );
+                    if done {
+                        break;
+                    }
+                }
                 done
             });
             if done {
