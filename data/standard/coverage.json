@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "4ac5e5f414465d3569689ec39beb9b48ce15ad8216ed6206b763be97c2ceba9a",
+  "catalogue_version": "c945320f4cf738ccb6765f5081fca7c77511dc69369781619e58dd1bd81f0166",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1482,
-  "implemented_total": 1488,
+  "implemented_standard_cards": 1495,
+  "implemented_total": 1501,
   "token_definitions": 72,
   "emblem_definitions": 1,
   "cards": [
@@ -4492,8 +4492,8 @@
     {
       "name": "Chrome Companion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Chrome Dome",
@@ -12514,8 +12514,8 @@
     {
       "name": "Hoverstone Pilgrim",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "How to Start a Riot",
@@ -13528,8 +13528,8 @@
     {
       "name": "Jade-Cast Sentinel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Jaded Analyst",
@@ -15394,8 +15394,8 @@
     {
       "name": "Lost in Space",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Lost in the Maze",
@@ -15874,8 +15874,8 @@
     {
       "name": "Malevolent Chandelier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Malevolent Witchkite",
@@ -16750,8 +16750,8 @@
     {
       "name": "Misleading Motes",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Mistbreath Elder",
@@ -21046,8 +21046,8 @@
     {
       "name": "Return to the Sewers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Revenge of the Rats",
@@ -21334,8 +21334,8 @@
     {
       "name": "Riverwalk Technique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Riverwheel Sweep",
@@ -27028,8 +27028,8 @@
     {
       "name": "The Spot's Portal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "The Spot, Living Portal",
@@ -28108,8 +28108,8 @@
     {
       "name": "Trip Up",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Triple Triad",
@@ -28552,8 +28552,8 @@
     {
       "name": "Uncharted Voyage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Uncle Iroh",
@@ -28750,8 +28750,8 @@
     {
       "name": "Unlucky Drop",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Unnerving Grasp",
@@ -29092,8 +29092,8 @@
     {
       "name": "Vanish from Sight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Vannifar, Evolved Enigma",

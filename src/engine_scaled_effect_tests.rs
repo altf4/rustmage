@@ -360,6 +360,7 @@ fn scaled_amount_ir_rejects_unrepresentable_damage_gain_and_multiplication_atomi
             milled: Vec::new(),
             library: None,
             selection: None,
+            target_library: None,
             search: None,
             choice: None,
         });

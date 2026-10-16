@@ -56,6 +56,7 @@ fn program(g: &mut Game, code: &'static [Instruction]) {
         milled: Vec::new(),
         library: None,
         selection: None,
+        target_library: None,
         search: None,
         choice: None,
     });

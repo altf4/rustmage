@@ -8,6 +8,7 @@ pub(super) struct Resolution {
     pub item: SpellView,
     pub mana_payment: Option<Box<resolution_mana::ResolutionPayment>>,
     pub forage: Option<Box<forage::ForageSelection>>,
+    pub target_library: Option<Box<target_library::TargetLibraryChoice>>,
     pub program: &'static [Instruction],
     pub pc: usize,
     pub target_group: u16,
@@ -763,6 +764,7 @@ impl Game {
             milled: Vec::new(),
             library: None,
             selection: None,
+            target_library: None,
             search: None,
             choice: None,
         });
@@ -872,6 +874,22 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::BottomLibrary => {
+                    for bound in &item.targets {
+                        if self.valid_library_target(&item, *bound) {
+                            self.move_target_to_library(
+                                item.object,
+                                bound.object.unwrap(),
+                                LibraryDestination::Bottom,
+                            );
+                        }
+                    }
+                }
+                Instruction::OwnerLibrary => {
+                    if self.start_target_library(&item) {
+                        return;
+                    }
+                }
                 Instruction::Forage { skip } => {
                     self.start_resolution_forage(skip);
                     return;

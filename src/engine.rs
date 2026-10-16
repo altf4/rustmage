@@ -9,7 +9,7 @@ use crate::cards::{
     TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
 /// Version of the public observation structure, including owned trigger context.
-pub const OBSERVATION_SCHEMA: u32 = 57;
+pub const OBSERVATION_SCHEMA: u32 = 58;
 
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
@@ -20,7 +20,10 @@ pub use library_selection::LibrarySelectionView;
 
 #[path = "engine_forage.rs"]
 mod forage;
+#[path = "engine_target_library.rs"]
+mod target_library;
 pub use forage::{ForageRoute, ForageView};
+pub use target_library::{TargetLibraryMovement, TargetLibraryView};
 #[path = "engine_spell_costs.rs"]
 mod spell_costs;
 pub use additional_costs::AdditionalCostView;
@@ -228,6 +231,7 @@ macro_rules! define_actions {
     }
 }
 define_actions! {
+    ChooseLibraryDestination { object: ObjectRef, destination: LibraryDestination },
     ChooseForageRoute { route: ForageRoute },
     ChooseForage { object: ObjectRef },
     DeclineForage,
@@ -705,6 +709,9 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    TargetLibrary {
+        player: Player,
+    },
     ForageMethod {
         player: Player,
     },
@@ -814,6 +821,7 @@ struct State {
     exile_links: Vec<ExileLink>,
     exile_permissions: Vec<ExilePlayPermission>,
     known_hand: Vec<ObjectRef>,
+    last_target_library_move: Option<Box<TargetLibraryMovement>>,
     players: [PlayerState; 2],
     rng: Rng,
     active: Player,
@@ -1056,6 +1064,8 @@ pub struct Observation {
     pub targeting_group: Option<u16>,
     pub library_choice: Option<LibraryChoiceView>,
     pub library_selection: Option<LibrarySelectionView>,
+    pub target_library: Option<TargetLibraryView>,
+    pub last_target_library_move: Option<TargetLibraryMovement>,
     pub recovery_choice: Option<RecoveryChoiceView>,
     pub search_choice: Option<SearchChoiceView>,
     pub effect_choice: Option<EffectChoiceView>,
@@ -1197,6 +1207,7 @@ impl Game {
                 exile_links: Vec::new(),
                 exile_permissions: Vec::new(),
                 known_hand: Vec::new(),
+                last_target_library_move: None,
                 players,
                 rng,
                 active: config.starting_player,
@@ -1279,6 +1290,7 @@ impl Game {
             | Pending::Modes { player }
             | Pending::Targets { player }
             | Pending::OrderTriggers { player }
+            | Pending::TargetLibrary { player }
             | Pending::ForageMethod { player }
             | Pending::Forage { player }
             | Pending::EffectOptional { player, .. }
@@ -1469,6 +1481,26 @@ impl Game {
         // result. Cache capacity affects work only, never the admitted action set.
         let mut spell_funding_cache: [Option<(Mana, u32, bool)>; 8] = [None; 8];
         match s.pending {
+            Pending::TargetLibrary { .. } => {
+                let object = s
+                    .resolving
+                    .as_ref()
+                    .unwrap()
+                    .target_library
+                    .as_ref()
+                    .unwrap()
+                    .targets[0]
+                    .object
+                    .unwrap();
+                for destination in [LibraryDestination::Top, LibraryDestination::Bottom] {
+                    if emit(Action::ChooseLibraryDestination {
+                        object,
+                        destination,
+                    }) {
+                        return true;
+                    }
+                }
+            }
             Pending::ForageMethod { .. } | Pending::Forage { .. } => {
                 if self.visit_forage_actions(&mut emit) {
                     return true;
@@ -2018,6 +2050,10 @@ impl Game {
 
     fn apply_legal(&mut self, actor: Player, action: Action) {
         match action {
+            Action::ChooseLibraryDestination {
+                object,
+                destination,
+            } => self.choose_library_destination(object, destination),
             Action::ChooseForageRoute { route } => self.choose_forage_route(route),
             Action::ChooseForage { object } => self.choose_forage(object),
             Action::DeclineForage => self.decline_forage(),
@@ -2782,7 +2818,10 @@ impl Game {
         obj.counters = counters;
         obj.used_abilities = 0;
         obj.attached_to = None;
-        if destination == Zone::Library {
+        // This ordered index enumerates library cards, not transient tokens.
+        // Tokens still enter the actual zone and cease only at the next SBA;
+        // CR111.6/111.8 prevent looking at, drawing, or moving them as cards.
+        if destination == Zone::Library && !obj.card.is_token() {
             self.state.players[obj.owner.index()].library.push(id);
         }
         if destination == Zone::Battlefield {
@@ -3264,6 +3303,7 @@ impl Game {
                 Pending::PayCosts { .. } => "pay_costs",
                 Pending::OrderTriggers { .. } => "order_triggers",
                 Pending::EffectOptional { .. } => "optional_effect",
+                Pending::TargetLibrary { .. } => "target_library",
                 Pending::ForageMethod { .. } => "forage_method",
                 Pending::Forage { .. } => "forage",
                 Pending::EffectMana { .. } => "mana_choice",
@@ -3426,6 +3466,8 @@ impl Game {
                 options
             },
             library_selection: self.library_selection_view(viewer),
+            target_library: self.target_library_view(viewer),
+            last_target_library_move: s.last_target_library_move.as_deref().copied(),
             library_choice: if owns_choice {
                 s.resolving
                     .as_ref()
@@ -3550,6 +3592,9 @@ impl Game {
                 .as_ref()
                 .map(|batch| batch.bytes())
                 .unwrap_or(0)
+            + s.last_target_library_move
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<TargetLibraryMovement>())
             + s.known_hand.len() * std::mem::size_of::<ObjectRef>()
             + (s.free_tokens.len()
                 + s.static_sources.len()
@@ -3573,7 +3618,8 @@ impl Game {
             + s.resolving
                 .as_ref()
                 .map(|resolution| {
-                    resolution.forage.as_ref().map_or(0, |f| f.bytes())
+                    resolution.target_library.as_ref().map_or(0, |f| f.bytes())
+                        + resolution.forage.as_ref().map_or(0, |f| f.bytes())
                         + resolution.connive.as_ref().map_or(0, |c| c.bytes())
                         + resolution.mana_payment.as_ref().map_or(0, |_| {
                             std::mem::size_of::<resolution_mana::ResolutionPayment>()
@@ -3996,3 +4042,7 @@ mod filtered_library_selection_tests;
 #[cfg(test)]
 #[path = "engine_exile_play_tests.rs"]
 mod exile_play_tests;
+
+#[cfg(test)]
+#[path = "engine_target_library_tests.rs"]
+mod target_library_tests;

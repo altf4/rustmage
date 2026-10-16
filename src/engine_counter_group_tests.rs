@@ -425,6 +425,7 @@ fn group_counter_instructions_finish_before_state_based_deaths_and_pair_cancella
         milled: Vec::new(),
         library: None,
         selection: None,
+        target_library: None,
         search: None,
         choice: None,
     });

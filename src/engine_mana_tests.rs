@@ -226,6 +226,7 @@ fn resolution_mana_choice_is_private_owned_and_replayable_before_later_instructi
         milled: Vec::new(),
         library: None,
         selection: None,
+        target_library: None,
         search: None,
         choice: None,
     });
