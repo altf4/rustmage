@@ -36,6 +36,14 @@ The current engine has two players with alternating turns and no supported extra
 
 Initial 60-card-per-player logical state is **19,912 bytes**, an actual **16-byte total layout increase** from the measured 19,896-byte parent. The raw empty Vec header is 24 bytes; existing layout padding means the total-State increase differs. Each active permission is 24 initialized bytes; exile also removes one 4-byte library ID. Cloning copies only the small active registry in addition to existing state/COW handles. The public 100-game fixture reaches 21,196 logical bytes. Accounting excludes spare capacity, allocator overhead, immutable definitions, observations, retained snapshots and inference.
 
+## Integration with filtered library selection
+
+On merged main `bc219a65ffbe516cccc5286adf86e75677442e23`, the combined catalogue supports **1,482 / 5,164** Standard cards, with **3,682** gated identities, six regression cards, **72 token factories** and one emblem. Its fingerprint is `4ac5e5f414465d3569689ec39beb9b48ce15ad8216ed6206b763be97c2ceba9a`. Schema remains this feature's **57**; C ABI remains 1 and control protocol 2.
+
+Canonical integration comparison changes exactly the same fifteen previously unsupported definitions and preserves **5,241** other definitions, all **72** prior factories and metadata, **446** prior numeric typed helper arms, **5,256** old color masks and **5,183** ordinary IDs. No immutable helper arm or factory is added. The standalone comparison below includes 459 total match arms, including wildcard/default cases; its corresponding numeric typed-arm count is 442.
+
+Integrated validation passes **1,314 Rust tests** (1,302 unit plus 12 integration), **251 compiler/data tests** (294.327 seconds) and **161 fresh-release Python tests** (85.670 seconds), plus all-target warnings-denied Clippy, formatting, catalogue and whitespace checks. The exile Standard100 run reproduces every standalone vector and **60,677 decisions/replays**; the adjacent filtered-selection and forage workloads retain **71,080** and **65,729** decisions/replays, respectively. Their maximum logical sizes are 20,720 and 21,020 bytes after the registry's layout increase. The combined initialized state is **19,912 bytes**; its 1,000-game smoke run measures about 310,000 decisions/s, 126 ns clone and 128 ns restore under concurrent host load. These timings carry the same limited-catalogue and non-comparison caveats as the standalone measurements.
+
 ## Validation
 
 ```sh
