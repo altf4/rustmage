@@ -940,6 +940,7 @@ impl ActivationGuard {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct ActivatedAbility {
+    pub exhaust: bool,
     pub guard: ActivationGuard,
     pub origin: ActivationOrigin,
     pub cycling: bool,
@@ -1153,6 +1154,9 @@ impl Card {
     }
     pub fn is_emblem(self) -> bool {
         self.emblem_info().is_some()
+    }
+    pub(crate) fn exhaust_mask(self) -> u64 {
+        generated::exhaust_mask(self)
     }
     pub(crate) fn loyalty_mask(self) -> u64 {
         self.activations()

@@ -1,0 +1,159 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Camera Launcher",
+      "oracle_text": "Exhaust \u2014 {3}: Put a +1/+1 counter on this creature. Create a 1/1 colorless Thopter artifact creature token with flying. (Activate each exhaust ability only once.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CameraLauncher.java",
+          "java_sha256": "d38b7d7e0c4602f473c56ac315f7c908ce6dd7278e635206a3ba3785e6b1f083"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ExhaustAbility.java",
+          "java_sha256": "8a3ebcdcf390152bc354a8493189b1d182befe3c3dc0002f1380744a3500d515"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/ThopterColorlessToken.java",
+          "java_sha256": "b33786a4fd2e4da0f01b8c8fe86280aeb5e471737a5e092b18b1853a3c5665fb"
+        }
+      ]
+    },
+    {
+      "name": "Draconautics Engineer",
+      "oracle_text": "Exhaust \u2014 {R}: Other creatures you control gain haste until end of turn. Put a +1/+1 counter on this creature. (Activate each exhaust ability only once.)\nExhaust \u2014 {3}{R}: Create a 4/4 red Dinosaur Dragon creature token with flying.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DraconauticsEngineer.java",
+          "java_sha256": "24b42c5275c20b25cbf46012a2e55f4e34935013d5cdcfe51f917b34f462dc1a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ExhaustAbility.java",
+          "java_sha256": "8a3ebcdcf390152bc354a8493189b1d182befe3c3dc0002f1380744a3500d515"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/DinDragonToken.java",
+          "java_sha256": "31e0b546aa622031936803c71ebd23aa5e8375e5508fc7133862a278daaf754c"
+        }
+      ]
+    },
+    {
+      "name": "Greenbelt Guardian",
+      "oracle_text": "{G}: Target creature gains trample until end of turn.\nExhaust \u2014 {3}{G}: Put three +1/+1 counters on this creature. (Activate each exhaust ability only once.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GreenbeltGuardian.java",
+          "java_sha256": "32ac6bfb81196eca4c3c4a94e3e514c3c51d09922c982c89a253e81c7793ba2a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ExhaustAbility.java",
+          "java_sha256": "8a3ebcdcf390152bc354a8493189b1d182befe3c3dc0002f1380744a3500d515"
+        }
+      ]
+    },
+    {
+      "name": "Hazard of the Dunes",
+      "oracle_text": "Reach, trample\nExhaust \u2014 {6}{G}: Put three +1/+1 counters on this creature. (Activate each exhaust ability only once.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HazardOfTheDunes.java",
+          "java_sha256": "5fc327ac9fb945947748d96b69319764a0ff878c9a71efa710f8339885e702aa"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ExhaustAbility.java",
+          "java_sha256": "8a3ebcdcf390152bc354a8493189b1d182befe3c3dc0002f1380744a3500d515"
+        }
+      ]
+    },
+    {
+      "name": "Keen Buccaneer",
+      "oracle_text": "Vigilance\nExhaust \u2014 {1}{U}: Draw a card, then discard a card. Put a +1/+1 counter on this creature. (Activate each exhaust ability only once.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/k/KeenBuccaneer.java",
+          "java_sha256": "cbe801808999cda8160054279198702c86e47c72a3eecab273ff4bdc55aca238"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ExhaustAbility.java",
+          "java_sha256": "8a3ebcdcf390152bc354a8493189b1d182befe3c3dc0002f1380744a3500d515"
+        }
+      ]
+    },
+    {
+      "name": "Loot, the Pathfinder",
+      "oracle_text": "Double strike, vigilance, haste\nExhaust \u2014 {G}, {T}: Add three mana of any one color. (Activate each exhaust ability only once.)\nExhaust \u2014 {U}, {T}: Draw three cards.\nExhaust \u2014 {R}, {T}: Loot deals 3 damage to any target.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LootThePathfinder.java",
+          "java_sha256": "b8113c794c218b10bc59810b3ed7167b751ae9c8a97e9b1feec966972fca07b7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ExhaustAbility.java",
+          "java_sha256": "8a3ebcdcf390152bc354a8493189b1d182befe3c3dc0002f1380744a3500d515"
+        }
+      ]
+    },
+    {
+      "name": "Pacesetter Paragon",
+      "oracle_text": "Exhaust \u2014 {2}{R}: Put a +1/+1 counter on this creature. It gains double strike until end of turn. (Activate each exhaust ability only once.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PacesetterParagon.java",
+          "java_sha256": "14acd909f36719413087f087c9d100de8d0ac0da2830afd21fa6b8d95054ee30"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ExhaustAbility.java",
+          "java_sha256": "8a3ebcdcf390152bc354a8493189b1d182befe3c3dc0002f1380744a3500d515"
+        }
+      ]
+    },
+    {
+      "name": "Prowcatcher Specialist",
+      "oracle_text": "Haste\nExhaust \u2014 {3}{R}: Put two +1/+1 counters on this creature. (Activate each exhaust ability only once.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/ProwcatcherSpecialist.java",
+          "java_sha256": "9a82debb23b77f28adbc75c9006fac5deeb80c571bf4392deecacea0e4f9f130"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ExhaustAbility.java",
+          "java_sha256": "8a3ebcdcf390152bc354a8493189b1d182befe3c3dc0002f1380744a3500d515"
+        }
+      ]
+    },
+    {
+      "name": "Skystreak Engineer",
+      "oracle_text": "Flying\nExhaust \u2014 {4}{U}: Put two +1/+1 counters on this creature. (Activate each exhaust ability only once.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SkystreakEngineer.java",
+          "java_sha256": "b52056192e2969340912e3ad9fea51870a20b6c28eaeb86f172f2a2e0aac02de"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ExhaustAbility.java",
+          "java_sha256": "8a3ebcdcf390152bc354a8493189b1d182befe3c3dc0002f1380744a3500d515"
+        }
+      ]
+    },
+    {
+      "name": "Stampeding Scurryfoot",
+      "oracle_text": "Exhaust \u2014 {3}{G}: Put a +1/+1 counter on this creature. Create a 3/3 green Elephant creature token. (Activate each exhaust ability only once.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StampedingScurryfoot.java",
+          "java_sha256": "5cfa627f78454bb205ebd2426cc0067052885e0ed5b8d0551c4d59ab425823b4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ExhaustAbility.java",
+          "java_sha256": "8a3ebcdcf390152bc354a8493189b1d182befe3c3dc0002f1380744a3500d515"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/ElephantToken.java",
+          "java_sha256": "9c774663cbc0f8b6399e0bb72a1bf02490a2b394b129ea227bf0938985519aab"
+        }
+      ]
+    }
+  ]
+}

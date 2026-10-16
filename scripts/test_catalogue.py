@@ -14,6 +14,48 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_exhaust_abilities_keep_independent_lifetime_flags_and_exact_source_proofs(self):
+        card=self.card(oracle_text='Exhaust — {G}: Put a +1/+1 counter on this creature.\nExhaust — {2}{G}: Draw a card.\n{G}: Draw a card. Activate only once each turn.')
+        result=generate.permanent_program_template(card);self.assertIsNotNone(result);abilities=result[3]
+        self.assertEqual([a[0]['exhaust'] for a in abilities],[True,True,False]);self.assertEqual([a[4] for a in abilities],[False,False,True])
+        self.assertEqual(generate.rust_activations(abilities).count('exhaust: true'),2)
+        future=generate.permanent_program_template(self.card(oracle_text='Exhaust — {1}: Add two mana of any one color.'))
+        self.assertIsNotNone(future);self.assertTrue(future[3][0][0]['exhaust'])
+        self.assertIsNone(generate.permanent_program_template(self.card(oracle_text='{1}: Add two mana of any one color.')))
+        for text in ['Exhaust — {X}{G}: Draw a card.','Exhaust — {G}: Draw a card. Activate only once during each game.','Exhaust — {G}: Return this card from your graveyard to the battlefield.']:
+            self.assertIsNone(generate.permanent_program_template(self.card(oracle_text=text)),text)
+        loot=self.card(name='Loot, the Pathfinder',type_line='Legendary Creature — Beast Noble',oracle_text='Exhaust — {R}: Loot deals 3 damage to any target.')
+        self.assertIsNotNone(generate.permanent_program_template(loot));self.assertIsNone(generate.permanent_program_template(dict(loot,name='Unrelated')))
+        targeted=generate.permanent_program_template(self.card(oracle_text='Exhaust — {R}: Put a +1/+1 counter on target creature. It gains double strike until end of turn.'))
+        self.assertEqual(targeted[3][0][1],'Creature');self.assertTrue(all('Subject::Targets' in p for p in targeted[3][0][2]))
+        # A complete source-counter sentence proves the subsequent source keyword;
+        # later target/card pronouns and unknown clauses remain unsupported.
+        self.assertIsNotNone(generate.permanent_program_template(self.card(oracle_text='Exhaust — {R}: Put a +1/+1 counter on this creature. It gains double strike until end of turn.')))
+
+    def test_exhaust_loyalty_combinations_remain_gated(self):
+        for cost in ['+1', '0', '−1']:
+            walker=self.card(type_line='Planeswalker — Example',loyalty='5',
+                             oracle_text=f'Exhaust — {cost}: Draw a card.\n0: Draw a card.')
+            self.assertIsNone(generate.permanent_program_template(walker),cost)
+            ordinary=dict(walker,oracle_text=walker['oracle_text'].replace('Exhaust — ',''))
+            self.assertIsNotNone(generate.permanent_program_template(ordinary),cost)
+
+    def test_ten_exhaust_bodies_match_pinned_text_and_gate_reset_exceptions_and_observers(self):
+        import json
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        rust,coverage=generate.compile_catalogue(snapshot,target);supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        admitted=json.loads((generate.ROOT/'docs/exhaust-admissions.json').read_text())['cards'];self.assertEqual(len(admitted),10)
+        for a in admitted:
+            c=next(c for c in snapshot['cards'] if c['name']==a['name']);self.assertEqual(c['oracle_text'],a['oracle_text']);self.assertIn(c['name'],supported)
+            self.assertIsNone(generate.permanent_program_template(dict(c,oracle_text=c['oracle_text']+'\nDiscover 4.')))
+        self.assertIn('pub(super) fn exhaust_mask(card: Card) -> u64',rust)
+        for name in ['Afterburner Expert','Elvish Refueler','Boom Scholar','Greasewrench Goblin','Hog-Monkey','Mai, Jaded Edge','Mindspring Merfolk','Rangers\' Refueler','Skyserpent Seeker','Sita Varma, Masked Racer','Winter, Cursed Rider']:
+            self.assertNotIn(name,supported)
+        for count in [64,65]:
+            c=self.card(oracle_text='\n'.join(['Exhaust — {G}: Draw a card.']*count));got=generate.permanent_program_template(c)
+            if count==64:self.assertEqual(len(got[3]),64)
+            else:self.assertIsNone(got)
+
     def test_life_gain_history_guards_preserve_effect_timing_targets_and_branching(self):
         self.assertEqual(generate.step_guard('you gained life this turn'),'StepGuard::GainedLife')
         self.assertIsNone(generate.step_guard('an opponent gained life this turn'))

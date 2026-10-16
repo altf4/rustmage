@@ -510,11 +510,12 @@ impl FundingState {
                     continue;
                 }
                 let cost = ability.cost;
-                let mut uses = if cost.tap || cost.sacrifice || ability.once_per_turn {
-                    1
-                } else {
-                    u64::MAX
-                };
+                let mut uses =
+                    if cost.tap || cost.sacrifice || ability.once_per_turn || ability.exhaust {
+                        1
+                    } else {
+                        u64::MAX
+                    };
                 if cost.life > 0 {
                     uses = uses.min(
                         u64::try_from(self.life.max(0) / i128::from(cost.life)).unwrap_or(u64::MAX),
@@ -1126,5 +1127,49 @@ mod life_gain_grant_tests {
             assert_eq!(state.keywords(target), g.keywords(elf));
             assert_eq!(state.keywords(target).contains(Keywords::TRAMPLE), gained);
         }
+    }
+}
+
+#[cfg(test)]
+mod exhaust_funding_tests {
+    use super::*;
+    use crate::engine::tests::{act, scenario, spawn};
+    #[test]
+    fn exhausted_mana_cannot_be_reused_by_virtual_search_even_after_untap_or_later_turns() {
+        let mut g = scenario();
+        let loot = spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Loot, the Pathfinder").unwrap(),
+            Zone::Battlefield,
+        );
+        let forest = spawn(&mut g, Player::P0, Card::Forest, Zone::Battlefield);
+        let goal = FundingGoal {
+            actor: Player::P0,
+            required: [0, 3, 0, 0, 0, 0],
+            generic: 0,
+            reserve: None,
+            source: None,
+        };
+        let saved = g.snapshot();
+        assert!(g.can_fund(goal));
+        assert_eq!(g.snapshot(), saved);
+        assert!(!g.can_fund(FundingGoal {
+            required: [0, 4, 0, 0, 0, 0],
+            ..goal
+        }));
+        act(&mut g, Action::TapMana { card: forest });
+        let a=g.legal_actions().into_iter().find(|a|matches!(a,Action::ActivateMana{card,ability:0,production:[0,3,0,0,0,0],..}if *card==loot)).unwrap();
+        act(&mut g, a);
+        assert_eq!(g.object_view(loot).exhausted_abilities, 1);
+        g.finish_cleanup();
+        g.finish_cleanup();
+        g.state.players[0].mana = [0; 6]; // normal step advancement empties pools
+        assert!(!g.object_view(loot).tapped);
+        assert!(!g.can_fund(goal));
+        g.move_object(loot, Zone::Hand);
+        g.move_object(loot, Zone::Battlefield);
+        assert_eq!(g.object_view(loot).exhausted_abilities, 0);
+        assert!(g.can_fund(goal));
     }
 }

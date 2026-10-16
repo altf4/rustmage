@@ -64,7 +64,8 @@ impl Game {
         if object.zone != ability.source_zone()
             || object.owner != actor
             || (ability.sorcery && !sorcery)
-            || (ability.once_per_turn && object.used_abilities & (1u64 << index) != 0)
+            || ((ability.once_per_turn || ability.exhaust)
+                && object.used_abilities & (1u64 << index) != 0)
             || i128::from(ability.cost.life) > life
         {
             return false;

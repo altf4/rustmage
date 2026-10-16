@@ -769,6 +769,8 @@ pub struct ObjectView {
     pub dealt_damage_this_turn: bool,
     pub counters: Counters,
     pub used_abilities: u64,
+    /// Exhaust uses persist across turns for this exact permanent incarnation.
+    pub exhausted_abilities: u64,
     pub attached_to: Option<ObjectRef>,
     pub modified: bool,
     pub attacking: bool,
@@ -2261,6 +2263,7 @@ impl Game {
             dealt_damage_this_turn: obj.dealt_damage_this_turn,
             counters: obj.counters,
             used_abilities: obj.used_abilities,
+            exhausted_abilities: obj.used_abilities & obj.card.exhaust_mask(),
             attached_to: obj.attached_to,
             modified: self.is_modified(id),
             attacking: self.state.attackers.iter().any(|a| a.card == id),
@@ -2576,7 +2579,9 @@ impl Game {
         self.state.blocks.clear();
         self.state.first_strikers.clear();
         for obj in &mut self.state.objects {
-            obj.used_abilities = 0;
+            if obj.used_abilities != 0 {
+                obj.used_abilities &= obj.card.exhaust_mask();
+            }
             obj.damaged_this_turn = false;
             obj.dealt_damage_this_turn = false;
             if obj.owner == self.state.active && obj.zone == Zone::Battlefield {
@@ -2941,7 +2946,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 48,
+            schema: 49,
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
             creatures_died_this_turn: s.creatures_died_this_turn,
             catalogue: crate::CATALOGUE_VERSION,
@@ -3545,3 +3550,7 @@ mod self_target_tests;
 #[cfg(test)]
 #[path = "engine_life_gain_condition_tests.rs"]
 mod life_gain_condition_tests;
+
+#[cfg(test)]
+#[path = "engine_exhaust_tests.rs"]
+mod exhaust_tests;
