@@ -1732,7 +1732,7 @@ impl Game {
                     }
                     if target_cost
                         && !flashback
-                        && !exile
+                        && obj.zone == Zone::Hand
                         && obj.card.offspring_cost().is_none()
                         && obj.card.additional_cost().is_none()
                     {
@@ -4135,3 +4135,7 @@ mod target_library_tests;
 #[cfg(test)]
 #[path = "engine_target_cost_tests.rs"]
 mod target_cost_tests;
+
+#[cfg(test)]
+#[path = "engine_target_cost_exile_tests.rs"]
+mod target_cost_exile_tests;

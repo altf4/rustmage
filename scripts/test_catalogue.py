@@ -96,13 +96,14 @@ class CatalogueCompilerTests(unittest.TestCase):
         for text in ["Target spell or creature's owner puts it on their choice of the top or bottom of their library.","Target creature's controller puts it on their choice of the top or bottom of their library.","Target attacking nontoken creature's owner puts it on their choice of the top or bottom of their library.","Put target card from a graveyard on top of its owner's library.","Target creature's owner may put it on their choice of the top or bottom of their library."]:
             self.assertIsNone(generate.targeted_program(text))
 
-    def test_library_tuck_thirteen_full_bodies_and_three_cost_gates(self):
+    def test_library_tuck_full_bodies_and_completed_historical_cost_gates(self):
         import json,hashlib
         snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());manifest=json.loads((generate.ROOT/'docs/library-tuck-admissions.json').read_text())
         self.assertEqual((len(manifest['cards']),len(manifest['gated'])),(13,3))
         source,coverage=generate.compile_catalogue(snapshot,target);supported={c['name'] for c in coverage['cards'] if c['implemented']};names={c['name'] for c in manifest['cards']};self.assertTrue(names<=supported)
         for c in manifest['cards']+manifest['gated']:self.assertEqual(c['oracle_text'],next(r['oracle_text'] for r in snapshot['cards'] if r['name']==c['name']))
         # The three historical target-cost gates are completed by issue211.
+        self.assertTrue({c['name'] for c in manifest['gated']} <= supported)
         altered=dict(snapshot,cards=[dict(c,oracle_text=c.get('oracle_text','')+'\nDiscover 3.') if c['name'] in names else c for c in snapshot['cards']]);altered['cards_sha256']=hashlib.sha256(json.dumps(altered['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();_,bad=generate.compile_catalogue(altered,target);self.assertFalse(names&{c['name'] for c in bad['cards'] if c['implemented']})
         for name in ['Sudden Setback','Swat Away']:self.assertNotIn(name,supported)
         self.assertIn('Mutagen Token',source)
