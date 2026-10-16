@@ -3563,3 +3563,7 @@ mod tapped_entry_tests;
 #[cfg(test)]
 #[path = "engine_activation_sacrifice_tests.rs"]
 mod activation_sacrifice_tests;
+
+#[cfg(test)]
+#[path = "engine_uncounterable_tests.rs"]
+mod uncounterable_tests;

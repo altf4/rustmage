@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "f461f669d1c4448f7ce038416c33546baf942ac7c0399bf9e8ee170dbb5a718e",
+  "catalogue_version": "5fa8ec107ec2a9b01c64712624110d572dcdd21eadca4528df897d23440174b5",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1181,
-  "implemented_total": 1187,
+  "implemented_standard_cards": 1185,
+  "implemented_total": 1191,
   "token_definitions": 53,
   "emblem_definitions": 1,
   "cards": [
@@ -7654,8 +7654,8 @@
     {
       "name": "Eject",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Elder Auntie",
@@ -10480,8 +10480,8 @@
     {
       "name": "Gigantic Big Bear",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Gigantoad",
@@ -15262,8 +15262,8 @@
     {
       "name": "Long Goodbye",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Long Lake Nuisance",
@@ -18346,8 +18346,8 @@
     {
       "name": "Out Cold",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Out of Air",

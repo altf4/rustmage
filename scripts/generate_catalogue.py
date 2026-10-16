@@ -450,6 +450,20 @@ def stat_value(text):
     return f'StatValue::Count({filt})' if filt else None
 
 
+def extract_uncounterable(card):
+    """Only a standalone self-spell prohibition; retain the whole residual body."""
+    if card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'), str):
+        return card, False
+    body = []; found = False
+    for original in card['oracle_text'].split('\n'):
+        line = re.sub(r'\([^()]*\)', '', original).strip()
+        if line == "This spell can't be countered.":
+            if found: return card, False
+            found = True
+        else: body.append(original)
+    return dict(card, oracle_text='\n'.join(body)), found
+
+
 def extract_creature_entry_tapped(card):
     """One exact self-entry replacement, with its entire residual body retained."""
     if (card.get('layout')!='normal' or 'Creature' not in card.get('type_line','').split(' — ')[0].split()
@@ -1154,6 +1168,7 @@ for _name, _kinds, _relation, _tapped, _minimum, _maximum in [
     ('CreatureMax3', 1, -1, False, 0, 3),
     ('PermanentMin3', 0, -1, False, 3, 4294967295),
     ('CreaturePlaneswalker', 65, -1, False, 0, 4294967295),
+    ('CreaturePlaneswalkerMax3', 65, -1, False, 0, 3),
     ('CreaturePlaneswalkerMin3', 65, -1, False, 3, 4294967295),
     ('CardGraveOpponent', 0, 1, False, 0, 4294967295),
     ('PermanentOpponent', 0, 1, False, 0, 4294967295),
@@ -1204,6 +1219,7 @@ REMOVAL_SUBJECTS = dict(EXILE_SUBJECTS, **{
     'target tapped creature': 'CreatureTapped',
     'target creature with mana value 3 or less': 'CreatureMax3',
     'target permanent with mana value 3 or greater': 'PermanentMin3',
+    'target creature or planeswalker with mana value 3 or less': 'CreaturePlaneswalkerMax3',
     'target creature or planeswalker with mana value 3 or greater': 'CreaturePlaneswalkerMin3',
     'target creature with power 3 or greater': 'CreaturePowerMin3',
     'target creature with power 4 or greater': 'CreaturePowerMin4',
@@ -2272,6 +2288,7 @@ def compile_catalogue(snapshot, target):
     definitions = []
     color_masks = []
     exhaust_rows = []
+    uncounterable_rows = []
     loyalty_rows = []
     supported = []
     coverage = []
@@ -2286,7 +2303,8 @@ def compile_catalogue(snapshot, target):
     equipment_rows = []
     aura_rows = []
     for index, name in enumerate(names):
-        card, cycling = cycling_abilities(cards.get(name, {}))
+        card, uncounterable = extract_uncounterable(cards.get(name, {}))
+        card, cycling = cycling_abilities(card)
         card, additional = extract_additional_cost(card)
         card, reductions = extract_cost_reductions(card)
         card, dynamic, scaling = extract_stat_rules(card)
@@ -2403,6 +2421,7 @@ def compile_catalogue(snapshot, target):
             if dynamic is not None:dynamic_rows.append(f'        {index} => Some({dynamic}),')
             if scaling:scaling_rows.append(f'        {index} => &['+', '.join(scaling)+'],')
         definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(name)}, oracle_id: {oracle_id}, mana_cost: {quote(cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in cards).lower()}, legendary: {str(card.get('type_line', '').startswith('Legendary ')).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, activated: {rust_activations(activations)}, enters: Counters {{ plus_one: {enters[0]}, minus_one: {enters[1]}, stun: {enters[2]}, loyalty: 0 }}, entry: EntryTapped::{entry}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
+        if uncounterable and effect != 'Unsupported': uncounterable_rows.append(str(index))
         exhaust_mask=sum(1<<i for i,a in enumerate(activations) if a[0].get('exhaust',False))
         if exhaust_mask and effect!='Unsupported':exhaust_rows.append(f'        {index} => {exhaust_mask},')
         coverage.append({'name': name, 'standard_legal': name in cards, 'implemented': effect != 'Unsupported',
@@ -2473,6 +2492,8 @@ def compile_catalogue(snapshot, target):
     lines += ['#[rustfmt::skip]', "pub(super) fn entry_counter_rules(card: Card) -> &'static [EntryCounterRule] {", '    match card.0 {', *entry_counter_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn starting_loyalty(card: Card) -> u64 {', '    match card.0 {', *loyalty_rows, '        _ => 0,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn exhaust_mask(card: Card) -> u64 {', '    match card.0 {', *exhaust_rows, '        _ => 0,', '    }', '}', '']
+    protection = 'matches!(card.0, ' + ' | '.join(uncounterable_rows) + ')' if uncounterable_rows else 'false'
+    lines += ['#[rustfmt::skip]', 'pub(super) fn uncounterable(card: Card) -> bool {', '    ' + protection, '}', '']
     return '\n'.join(lines), {'schema': 1, 'catalogue_version': version, 'standard_legal_cards': len(cards),
         'implemented_standard_cards': sum(row['implemented'] and row['standard_legal'] for row in coverage),
         'implemented_total': len(supported), 'token_definitions': len(used_tokens), 'emblem_definitions': len(used_emblems), 'cards': coverage}
