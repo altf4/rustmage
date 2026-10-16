@@ -258,6 +258,104 @@ fn verify(i: usize, s: &SpellView, b: &Observation, a: &Observation, l: &mut Led
 fn live(o: &Observation, id: u64) -> bool {
     o.stack.iter().any(|s| s.id == id) || o.resolving.as_ref().is_some_and(|s| s.id == id)
 }
+struct SurveilWitness {
+    resolution: u64,
+    owner: Player,
+    initial_count: usize,
+    looked: Vec<ObjectRef>,
+    selected: Vec<(ObjectRef, LibraryDestination)>,
+}
+impl SurveilWitness {
+    fn new(before: &Observation, owner: Player) -> Self {
+        let choice = before.library_choice.as_ref().unwrap();
+        assert!(choice.surveil);
+        assert!(choice.top.is_empty() && choice.bottom.is_empty() && choice.graveyard.is_empty());
+        assert_eq!(
+            before.resolving.as_ref().unwrap().source_card.name(),
+            NAMES[12]
+        );
+        Self {
+            resolution: before.resolving.as_ref().unwrap().id,
+            owner,
+            initial_count: before.players[owner.index()].library_count,
+            looked: choice.remaining.iter().map(|v| v.reference).collect(),
+            selected: Vec::new(),
+        }
+    }
+    fn choose(
+        &mut self,
+        card: u32,
+        destination: LibraryDestination,
+        before: &Observation,
+        after: &Observation,
+    ) -> bool {
+        assert_eq!(before.resolving.as_ref().unwrap().id, self.resolution);
+        let choice = before.library_choice.as_ref().unwrap();
+        let reference = choice
+            .remaining
+            .iter()
+            .find(|v| v.id == card)
+            .unwrap()
+            .reference;
+        assert!(self.looked.contains(&reference));
+        assert!(!self.selected.iter().any(|(r, _)| *r == reference));
+        self.selected.push((reference, destination));
+        if let Some(partial) = &after.library_choice {
+            assert!(partial.surveil);
+            assert_eq!(
+                after.players[self.owner.index()].library_count,
+                self.initial_count
+            );
+            assert_eq!(
+                partial.remaining.len() + self.selected.len(),
+                self.looked.len()
+            );
+            for (reference, destination) in &self.selected {
+                let group = match destination {
+                    LibraryDestination::Top => &partial.top,
+                    LibraryDestination::Graveyard => &partial.graveyard,
+                    LibraryDestination::Bottom => panic!("surveil cannot bottom a card"),
+                };
+                let v = group.iter().find(|v| v.reference == *reference).unwrap();
+                assert_eq!(v.zone, Zone::Library);
+                assert!(
+                    !after
+                        .objects
+                        .iter()
+                        .any(|v| v.id == reference.card && v.zone == Zone::Graveyard)
+                );
+            }
+            false
+        } else {
+            assert_eq!(self.selected.len(), self.looked.len());
+            let buried = self
+                .selected
+                .iter()
+                .filter(|(_, d)| *d == LibraryDestination::Graveyard)
+                .count();
+            assert_eq!(
+                after.players[self.owner.index()].library_count + buried,
+                self.initial_count
+            );
+            for (reference, destination) in &self.selected {
+                if *destination == LibraryDestination::Graveyard {
+                    let v = after
+                        .objects
+                        .iter()
+                        .find(|v| v.id == reference.card)
+                        .unwrap();
+                    assert_eq!((v.owner, v.zone), (self.owner, Zone::Graveyard));
+                    assert_eq!(v.reference.generation, reference.generation + 1);
+                } else {
+                    assert_eq!(*destination, LibraryDestination::Top);
+                    assert!(!after.objects.iter().any(|v| v.id == reference.card));
+                }
+            }
+            true
+        }
+    }
+}
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let games: usize = std::env::args()
         .nth(1)
@@ -265,6 +363,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .parse()?;
     let (mut decisions, mut pairs, mut replay, mut private, mut checks, mut max_bytes) =
         (0u64, 0u64, 0u64, 0u64, 0u64, 0usize);
+    let (mut buried, mut partial_burials, mut mixed, mut top_after_bury, mut bury_after_top) =
+        (0u64, 0u64, 0u64, 0u64, 0u64);
+    let mut double_burials = 0u64;
     let (mut casts, mut triggers, mut verified) = ([0u64; 13], [0u64; 13], [0u64; 13]);
     for seed in 0..games {
         let mut g = Game::new(Config {
@@ -280,6 +381,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             BTreeMap::<(ObjectRef, u16), u64>::new(),
             BTreeMap::<u64, (usize, SpellView, Observation)>::new(),
         );
+        let mut surveil_sequence: Option<SurveilWitness> = None;
         for _ in 0..100_000 {
             if g.outcome().is_some() {
                 break;
@@ -292,6 +394,32 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .iter()
                 .enumerate()
                 .max_by_key(|(j, action)| match action {
+                    Action::ArrangeLibrary { destination, .. }
+                        if b.library_choice
+                            .as_ref()
+                            .is_some_and(|choice| choice.surveil) =>
+                    {
+                        let selected = surveil_sequence
+                            .as_ref()
+                            .map_or(0, |sequence| sequence.selected.len());
+                        let bury = match (seed / 2) % 4 {
+                            0 => false,
+                            1 => selected.is_multiple_of(2),
+                            2 => !selected.is_multiple_of(2),
+                            _ => true,
+                        };
+                        if *destination
+                            == if bury {
+                                LibraryDestination::Graveyard
+                            } else {
+                                LibraryDestination::Top
+                            }
+                        {
+                            450
+                        } else {
+                            -100
+                        }
+                    }
                     Action::Concede => -1000,
                     Action::PlayLand { .. } => 300,
                     Action::PayCosts { .. } => 500,
@@ -360,16 +488,24 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .as_ref()
                     .is_some_and(|choice| choice.surveil)
             {
-                let bury = *destination == LibraryDestination::Graveyard;
-                assert_eq!(
-                    b.players[actor.index()].library_count - a.players[actor.index()].library_count,
-                    usize::from(bury)
-                );
-                let v = a.objects.iter().find(|v| v.id == *card);
-                if bury {
-                    assert_eq!(v.unwrap().zone, Zone::Graveyard);
-                } else if a.library_choice.is_none() {
-                    assert!(v.is_none());
+                let sequence =
+                    surveil_sequence.get_or_insert_with(|| SurveilWitness::new(&b, actor));
+                if sequence.choose(*card, *destination, &b, &a) {
+                    let n = sequence
+                        .selected
+                        .iter()
+                        .filter(|(_, d)| *d == LibraryDestination::Graveyard)
+                        .count();
+                    buried += n as u64;
+                    double_burials += u64::from(n == 2);
+                    if n > 0 && n < sequence.selected.len() {
+                        mixed += 1;
+                        top_after_bury += u64::from(*destination == LibraryDestination::Top);
+                        bury_after_top += u64::from(*destination == LibraryDestination::Graveyard);
+                    }
+                    surveil_sequence = None;
+                } else if *destination == LibraryDestination::Graveyard {
+                    partial_burials += 1;
                 }
             }
             // Only completed stack insertion is a cast, never an uncommitted announcement.
@@ -463,10 +599,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         assert!(casts.iter().all(|n| *n > 0), "casts {casts:?}");
         assert!(triggers.iter().all(|n| *n > 0), "triggers {triggers:?}");
         assert!(verified.iter().all(|n| *n > 0), "verified {verified:?}");
-        assert!(private > 0);
+        assert!(
+            private > 0
+                && buried > 0
+                && partial_burials > 0
+                && mixed > 0
+                && top_after_bury > 0
+                && bury_after_top > 0
+                && double_burials > 0
+        );
     }
     println!(
-        "Completed {games} Standard qualified-cast games, {decisions} decisions, casts {casts:?}, triggers {triggers:?}, verified effects {verified:?}, {checks} independent cast-source qualification checks, {pairs} public stat/ability pairs, {private} private choices, {replay} replay boundaries, {max_bytes} maximum initialized logical bytes; catalogue {}",
+        "Completed {games} Standard qualified-cast games, {decisions} decisions, casts {casts:?}, triggers {triggers:?}, verified effects {verified:?}, {checks} independent cast-source qualification checks, {pairs} public stat/ability pairs, {private} private choices, {buried} committed surveil burials, {partial_burials} deferred burial choices, {double_burials} double-burial sequences, {mixed} mixed-destination surveils ({top_after_bury} ending Top, {bury_after_top} ending Graveyard), {replay} replay boundaries, {max_bytes} maximum initialized logical bytes; catalogue {}",
         rustmage::CATALOGUE_VERSION
     );
     Ok(())

@@ -91,14 +91,25 @@ from Opt's separate scry-then-draw continuation. Public stat/keyword witnesses
 cover every battlefield creature in both observations. Every action is cloned,
 restored and replayed; the witness reads no private trigger definitions/programs.
 
-Two release Standard100 runs reproduce:
+Two corrected release Standard100 runs reproduce:
 
-- **57,533 decisions**; casts `[68,101,78,95,70,101,84,86,72,109,104,89,122]`;
-- triggers `[16,11,19,63,74,31,33,29,87,59,8,71,17]`;
-- verified effects `[14,11,19,63,73,31,33,29,87,59,8,71,17]`;
-- **4,164 independent cast/source qualification checks**, **174,230 public
-  stat/ability pairs**, **120 private choices**, **57,533 replay boundaries**;
+- **57,272 decisions**; casts `[68,97,78,95,70,100,84,86,69,109,104,89,123]`;
+- triggers `[16,11,19,63,74,30,33,29,81,59,8,71,18]`;
+- verified effects `[14,11,19,63,73,30,33,29,81,59,8,71,18]`;
+- **4,153 independent cast/source qualification checks**, **173,449 public
+  stat/ability pairs**, **122 private choices**, **57,272 replay boundaries**;
+- **14 committed surveil burials**, **9 deferred burial choices**,
+  **4 double-burial sequences**, and **6 mixed-destination sequences**
+  (five ending Top after burial, one ending Graveyard after keeping a card);
 - **21,664 maximum initialized logical bytes**.
+
+Independent review found that the original witness wrongly expected each private
+surveil selection to move a card immediately. Engine behavior was correct: all
+selections commit together. The corrected witness retains initial references and
+library size, verifies unchanged zones/counts and selected private groups during
+partial choices, then checks the aggregate final graveyard count, exact new
+incarnations and hidden kept cards. Policy exercises all four two-card destination
+combinations. The revised implementation was re-reviewed before merge.
 
 Terminal-producing programs are excluded from verified-effect counts. Native
 full-body tests separately exercise the supplemental activated abilities.
@@ -122,7 +133,7 @@ The final branch incorporates the independently reviewed source-tap stage.
 Combined validation passed **1,211 Rust tests** (1,199 unit and 12 integration),
 **230 compiler/data tests**, **151 fresh release Python tests**, all-target
 Clippy, formatting and catalogue consistency. The qualified-cast Standard100
-reproduced every vector above; the source-tap Standard100 separately reproduced
+reproduced every corrected vector above; the source-tap Standard100 separately reproduced
 70,443 decisions and 57,094 replays with all thirteen tap effects. Provenance
 was reverified against pinned blobs and checkout. Exactly thirteen previously
 unsupported immutable definitions change relative to the source-tap base;
