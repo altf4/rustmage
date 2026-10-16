@@ -8,7 +8,7 @@ pub struct DrawTriggerView {
 impl Game {
     pub(super) fn card_drawn(&mut self, player: Player) {
         let count = &mut self.state.players[player.index()].cards_drawn_this_turn;
-        *count = count.checked_add(1).expect("draw ordinal exhausted");
+        *count = count.checked_add(1).capacity("draw ordinal exhausted");
         let event = DrawTriggerView {
             player,
             ordinal: *count,

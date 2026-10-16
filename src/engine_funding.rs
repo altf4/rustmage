@@ -20,7 +20,7 @@ struct Resource {
 #[derive(Clone)]
 struct FundingState {
     active: Player,
-    mana: Mana,
+    mana: [u128; 6],
     life: i128,
     resources: Vec<Resource>,
 }
@@ -28,7 +28,7 @@ struct FundingState {
 struct FundingMove {
     resource: usize,
     ability: Option<u16>,
-    payment: Mana,
+    payment: [u64; 6],
     counters: Counters,
     production: Mana,
 }
@@ -50,22 +50,65 @@ struct ResourceKey {
 }
 #[derive(Hash, PartialEq, Eq)]
 struct FundingKey {
-    mana: Mana,
+    mana: [u128; 6],
     life: i128,
     // Equivalent sources are interchangeable for feasibility. Protect the
     // enclosing ability's source separately, even if its printed card matches.
     resources: Vec<ResourceKey>,
 }
 
-fn payable(pool: Mana, required: Mana, generic: u32) -> bool {
-    if (0..6).any(|index| pool[index] < required[index]) {
+fn payable<N: Copy + Into<u128>>(pool: [N; 6], required: Mana, generic: u32) -> bool {
+    let pool = pool.map(Into::into);
+    if (0..6).any(|i| pool[i] < u128::from(required[i])) {
         return false;
     }
-    pool.iter()
-        .zip(required)
-        .map(|(&pool, need)| u64::from(pool - need))
-        .sum::<u64>()
-        >= u64::from(generic)
+    let mut left = u128::from(generic);
+    for i in 0..6 {
+        let spare = pool[i] - u128::from(required[i]);
+        if spare >= left {
+            return true;
+        }
+        left -= spare;
+    }
+    left == 0
+}
+// Funding is counterfactual. Its pools can exceed the concrete mana storage
+// bound without overflowing an observation or excluding a mathematically legal plan.
+fn funding_payments(pool: [u128; 6], colored: Mana, generic: u32, mut emit: impl FnMut([u64; 6])) {
+    if (0..6).any(|i| pool[i] < u128::from(colored[i])) {
+        return;
+    }
+    fn visit(
+        i: usize,
+        left: u32,
+        pool: [u128; 6],
+        mut paid: [u64; 6],
+        emit: &mut impl FnMut([u64; 6]),
+    ) {
+        if i == 5 {
+            if pool[i] >= u128::from(left) {
+                paid[i] += u64::from(left);
+                emit(paid);
+            }
+            return;
+        }
+        for n in 0..=pool[i].min(u128::from(left)) as u32 {
+            let old = paid[i];
+            paid[i] = old + u64::from(n);
+            visit(i + 1, left - n, pool, paid, emit);
+            paid[i] = old;
+        }
+    }
+    visit(
+        0,
+        generic,
+        std::array::from_fn(|i| pool[i] - u128::from(colored[i])),
+        colored.map(u64::from),
+        &mut emit,
+    );
+}
+fn concrete_payment(payment: [u64; 6]) -> Mana {
+    payment.map(|n| u32::try_from(n).capacity("mana payment exhausted"))
 }
 fn reserve_obligations(goal: FundingGoal, object: Option<&Object>, keywords: Keywords) -> bool {
     goal.reserve.is_none_or(|(reference, spec)| {
@@ -167,7 +210,7 @@ impl FundingState {
             .collect();
         Self {
             active: game.state.active,
-            mana: game.state.players[goal.actor.index()].mana,
+            mana: game.state.players[goal.actor.index()].mana.map(u128::from),
             life: game.state.players[goal.actor.index()].life,
             resources,
         }
@@ -293,7 +336,7 @@ impl FundingState {
                     continue;
                 }
                 activations::counter_payments(ability.cost, object.counters, |counters| {
-                    payments(
+                    funding_payments(
                         self.mana,
                         ability.cost.colored,
                         ability.cost.generic,
@@ -320,18 +363,18 @@ impl FundingState {
             std::cmp::Reverse(
                 (0..6)
                     .map(|i| {
-                        goal.required[i]
+                        u128::from(goal.required[i])
                             .saturating_sub(self.mana[i])
-                            .min(step.production[i])
+                            .min(u128::from(step.production[i])) as u64
                     })
-                    .sum::<u32>(),
+                    .sum::<u64>(),
             )
         });
         moves
     }
     fn apply(&mut self, step: &FundingMove) {
         for (pool, paid) in self.mana.iter_mut().zip(step.payment) {
-            *pool -= paid;
+            *pool -= u128::from(paid);
         }
         let object = &mut self.resources[step.resource].object;
         if let Some(index) = step.ability {
@@ -352,8 +395,8 @@ impl FundingState {
         }
         for (pool, produced) in self.mana.iter_mut().zip(step.production) {
             *pool = pool
-                .checked_add(produced)
-                .expect("mana representation exhausted");
+                .checked_add(u128::from(produced))
+                .capacity("mana representation exhausted");
         }
     }
     fn key(&self, goal: FundingGoal) -> FundingKey {
@@ -408,7 +451,7 @@ impl FundingState {
         }
     }
     fn optimistic(&self, goal: FundingGoal) -> bool {
-        let mut upper = self.mana.map(u64::from);
+        let mut upper = self.mana;
         for resource in &self.resources {
             let object = &resource.object;
             if object.zone != Zone::Battlefield || object.owner != goal.actor {
@@ -475,21 +518,22 @@ impl FundingState {
                     false
                 });
                 for index in 0..6 {
-                    upper[index] =
-                        upper[index].saturating_add(uses.saturating_mul(u64::from(maximum[index])));
+                    upper[index] = upper[index].saturating_add(
+                        u128::from(uses).saturating_mul(u128::from(maximum[index])),
+                    );
                 }
             }
         }
-        if (0..6).any(|index| upper[index] < u64::from(goal.required[index])) {
+        if (0..6).any(|index| upper[index] < u128::from(goal.required[index])) {
             return false;
         }
         upper
             .iter()
             .zip(goal.required)
-            .fold(0u64, |total, (&bound, required)| {
-                total.saturating_add(bound - u64::from(required))
+            .fold(0u128, |total, (&bound, required)| {
+                total.saturating_add(bound - u128::from(required))
             })
-            >= u64::from(goal.generic)
+            >= u128::from(goal.generic)
     }
     fn reachable(&self, goal: FundingGoal, visited: &mut HashSet<FundingKey>) -> bool {
         if !self.obligations(goal) {
@@ -519,7 +563,7 @@ impl FundingState {
             Some(ability) => Action::ActivateMana {
                 card,
                 ability,
-                payment: step.payment,
+                payment: concrete_payment(step.payment),
                 counter_payment: step.counters,
                 production: step.production,
             },
@@ -635,9 +679,11 @@ impl Game {
         let state = FundingState::from_game(self, goal);
         let mut done = false;
         if state.obligations(goal) {
-            payments(state.mana, goal.required, goal.generic, |payment| {
+            funding_payments(state.mana, goal.required, goal.generic, |payment| {
                 if !done {
-                    done = emit(Action::PayCosts { payment });
+                    done = emit(Action::PayCosts {
+                        payment: concrete_payment(payment),
+                    });
                 }
             });
         }
@@ -684,9 +730,11 @@ impl Game {
         };
         let state = FundingState::from_game(self, goal);
         let mut done = false;
-        payments(state.mana, goal.required, goal.generic, |payment| {
+        funding_payments(state.mana, goal.required, goal.generic, |payment| {
             if !done {
-                done = emit(Action::PayResolutionMana { payment });
+                done = emit(Action::PayResolutionMana {
+                    payment: concrete_payment(payment),
+                });
             }
         });
         if done {

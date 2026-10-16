@@ -56,7 +56,7 @@ fn mana_abilities_resolve_without_stack_and_retain_priority_with_an_existing_spe
     assert!(game.object_view(lotus).tapped);
     assert_eq!(game.state.players[1].life, 20);
     let after = game.snapshot();
-    game.restore(&before);
+    game.restore(&before).unwrap();
     act(&mut game, action);
     assert_eq!(game.snapshot(), after);
     pass_pair(&mut game);
@@ -138,7 +138,7 @@ fn treasure_is_noncreature_sacrifices_for_immediate_mana_and_reclaims_its_slot()
     assert_eq!(game.state.objects[treasure as usize].zone, Zone::Outside);
     assert_eq!(game.state.free_tokens, vec![treasure]);
     let after = game.snapshot();
-    game.restore(&before);
+    game.restore(&before).unwrap();
     act(&mut game, action);
     assert_eq!(game.snapshot(), after);
 }
@@ -245,7 +245,7 @@ fn resolution_mana_choice_is_private_owned_and_replayable_before_later_instructi
     assert_eq!(game.hand_count(Player::P0), 1);
     assert_eq!(game.object_view(source).zone, Zone::Graveyard);
     let after = game.snapshot();
-    game.restore(&before);
+    game.restore(&before).unwrap();
     act(&mut game, chosen);
     assert_eq!(game.snapshot(), after);
 }

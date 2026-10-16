@@ -12,7 +12,7 @@ The first training target is [current Standard, pinned to October 15, 2026](docs
 
 ## Build and use
 
-Requires stable Rust with edition 2024 support. Dependencies are only `serde` and
+Requires stable Rust with edition 2024 support and `panic = "unwind"` (the default). Dependencies are only `serde` and
 `serde_json`; the latter belongs to the optional control interface.
 
 ```sh
@@ -82,7 +82,7 @@ let mut game = Game::new(Config {
 let root = game.snapshot();
 let mut branch = game.clone();
 branch.apply(Player::P0, Action::Keep)?;
-game.restore(&root);
+game.restore(&root)?;
 # Ok::<(), rustmage::Error>(())
 ```
 
@@ -90,6 +90,12 @@ Independent clones can be sent to worker threads. A game has no background
 threads, process globals, wall-clock decisions, or global RNG. All rules state,
 including suspended choices and randomness, is owned and cloneable. Snapshots are
 reusable. Restore advances an external revision so old action indices are rejected.
+
+Numeric capacity errors preserve the entire pre-action state and revision. Rust
+returns `Error::CapacityExceeded`; Python raises `CapacityError` with a `resource`
+field. The handle remains usable for inspection, cloning and restoring an earlier
+checkpoint. Native `restore` now returns `Result<(), Error>`. See the
+[capacity contract and measured checkpoint cost](docs/numeric-capacity.md).
 
 ```python
 from rustmage import Game

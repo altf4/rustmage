@@ -23,7 +23,7 @@ fn replay(g: &mut Game, action: Action) {
     act(g, action.clone());
     assert_eq!(g.snapshot(), fork.snapshot());
     let after = g.snapshot();
-    g.restore(&before);
+    g.restore(&before).unwrap();
     act(g, action);
     assert_eq!(g.snapshot(), after);
 }
@@ -138,7 +138,7 @@ fn each_player_sacrifices_in_public_apnap_order_then_every_selected_object_leave
     }
     assert_eq!(g.snapshot(), fork.snapshot());
     let after = g.snapshot();
-    g.restore(&before);
+    g.restore(&before).unwrap();
     sacrifice(&mut g, c);
     sacrifice(&mut g, source);
     assert_eq!(g.snapshot(), after);
@@ -244,7 +244,7 @@ fn optional_artifact_payment_can_be_declined_and_paid_after_source_departure() {
     replay(&mut g, Action::DeclineEffectPayment);
     assert_eq!(g.object_view(artifact).zone, Zone::Battlefield);
     assert_eq!(g.hand_count(Player::P0), count);
-    g.restore(&before);
+    g.restore(&before).unwrap();
     let object = g.object_ref(artifact);
     replay(&mut g, Action::Sacrifice { object });
     assert_eq!(g.object_view(artifact).zone, Zone::Graveyard);
@@ -270,7 +270,7 @@ fn discard_payment_cannot_discard_a_stack_source_and_is_private_then_public_on_c
     replay(&mut g, Action::DeclineEffectPayment);
     assert_eq!(g.state.players[0].library.len(), library);
     assert_eq!(g.object_view(hand).zone, Zone::Hand);
-    g.restore(&before);
+    g.restore(&before).unwrap();
     replay(&mut g, Action::Discard { card: hand });
     assert_eq!(g.state.players[0].library.len(), library - 1);
     assert_eq!(g.object_view(hand).zone, Zone::Graveyard);
@@ -310,7 +310,7 @@ fn insufficient_optional_discard_never_partially_pays_or_draws_and_partial_selec
     replay(&mut g, Action::DeclineEffectPayment);
     assert_eq!(g.object_view(first).zone, Zone::Hand);
     assert_eq!(g.object_view(second).zone, Zone::Hand);
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     replay(&mut g, Action::Discard { card: second });
     assert_eq!(g.object_view(first).zone, Zone::Graveyard);
     assert_eq!(g.object_view(second).zone, Zone::Graveyard);
@@ -363,11 +363,11 @@ fn springbloom_land_payment_precedes_search_and_can_replay_both_continuations() 
     assert_eq!(g.object_view(card).zone, Zone::Battlefield);
     assert!(g.object_view(card).tapped);
     let expected = g.snapshot();
-    g.restore(&search);
+    g.restore(&search).unwrap();
     act(&mut g, Action::ChooseSearch { card });
     act(&mut g, Action::FinishSearch);
     assert_eq!(g.snapshot(), expected);
-    g.restore(&before);
+    g.restore(&before).unwrap();
     act(&mut g, Action::DeclineEffectPayment);
     assert_eq!(g.object_view(land).zone, Zone::Battlefield);
     assert!(g.state.resolving.is_none());
@@ -386,7 +386,7 @@ fn whole_spell_fizzle_skips_optional_payment_and_success_preserves_target_focus(
     pass_pair(&mut g);
     assert!(g.state.resolving.is_none());
     assert_eq!(g.object_view(hand).zone, Zone::Hand);
-    g.restore(&before);
+    g.restore(&before).unwrap();
     pass_pair(&mut g);
     assert_eq!(g.object_view(enemy).zone, Zone::Battlefield); // SBAs wait for the pending discard cost.
     assert_eq!(g.object_view(enemy).damage, 6);

@@ -20,7 +20,7 @@ impl Game {
                     (id, old.generation)
                 }
                 None => (
-                    CardId::try_from(self.state.objects.len()).expect("object slots exhausted"),
+                    CardId::try_from(self.state.objects.len()).capacity("object slots exhausted"),
                     0,
                 ),
             };
@@ -49,7 +49,7 @@ impl Game {
             object.zone = Zone::Battlefield;
             object.generation = generation
                 .checked_add(1)
-                .expect("object generation exhausted");
+                .capacity("object generation exhausted");
             object.tapped = tapped;
             object.summoning_sick = true;
             self.register_battlefield_sources(id);
@@ -84,7 +84,7 @@ impl Game {
         object.generation = object
             .generation
             .checked_add(1)
-            .expect("object generation exhausted");
+            .capacity("object generation exhausted");
         object.tapped = false;
         object.summoning_sick = false;
         object.damage = 0;

@@ -107,7 +107,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 || before.decision == "optional_effect"
             {
                 let expected = g.snapshot();
-                g.restore(&saved);
+                g.restore(&saved).unwrap();
                 let mut fork = g.clone();
                 g.apply(actor, action.clone())?;
                 fork.apply(actor, action)?;

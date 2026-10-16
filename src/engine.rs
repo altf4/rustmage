@@ -1,3 +1,4 @@
+use crate::capacity::{CapacityExt, CapacitySignal};
 use crate::cards::{
     ActivatedAbility, ActivationCost, ActivationGuard, ActivationOrigin, AdditionalCost,
     CastRelation, CountFilter, CountZone, CounterKind, CounterSubject, Counters, CreatureFilter,
@@ -6,6 +7,7 @@ use crate::cards::{
     StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetPlan, TargetRule, TargetSpec,
     TargetZone, TriggerCondition, TriggerStep, payments,
 };
+use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
 mod additional_costs;
 pub use additional_costs::AdditionalCostView;
@@ -356,6 +358,7 @@ pub enum Outcome {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Error {
+    CapacityExceeded(crate::CapacityExceeded),
     IllegalAction,
     WrongActor,
     GameOver,
@@ -365,7 +368,10 @@ pub enum Error {
 
 impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{self:?}")
+        match self {
+            Self::CapacityExceeded(error) => write!(f, "CapacityExceeded: {}", error.resource),
+            _ => write!(f, "{self:?}"),
+        }
     }
 }
 impl std::error::Error for Error {}
@@ -433,7 +439,7 @@ impl Object {
             Effect::Creature(p, _) => i128::from(p)
                 .checked_add(self.growth.power)
                 .and_then(|v| v.checked_add(self.counter_delta()))
-                .expect("power representation exhausted"),
+                .capacity("power representation exhausted"),
             _ => 0,
         }
     }
@@ -442,7 +448,7 @@ impl Object {
             Effect::Creature(_, t) => i128::from(t)
                 .checked_add(self.growth.toughness)
                 .and_then(|v| v.checked_add(self.counter_delta()))
-                .expect("toughness representation exhausted"),
+                .capacity("toughness representation exhausted"),
             _ => 0,
         }
     }
@@ -456,7 +462,7 @@ struct PlayerState {
     attacked_this_turn: bool,
     life: i128,
     mana: Mana,
-    library: Vec<CardId>, // top is last, bottom is first
+    library: SharedVec<CardId>, // top is last, bottom is first
     mulligans: u8,
     kept: bool,
     attempted_empty_draw: bool,
@@ -650,7 +656,7 @@ enum Pending {
 /// Card definitions are enum/static data, never cloned object graphs or trait objects.
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
-    objects: Vec<Object>,
+    objects: SharedVec<Object>,
     free_tokens: Vec<CardId>,
     static_sources: Vec<CardId>,
     cast_sources: Vec<CardId>,
@@ -962,7 +968,7 @@ impl Game {
             attacked_this_turn: false,
             life: 20,
             mana: [0; 6],
-            library: Vec::new(),
+            library: SharedVec::default(),
             mulligans: 0,
             kept: false,
             attempted_empty_draw: false,
@@ -993,7 +999,7 @@ impl Game {
         let mut game = Self {
             revision: 0,
             state: State {
-                objects,
+                objects: objects.into(),
                 free_tokens: Vec::new(),
                 static_sources: Vec::new(),
                 cast_sources: Vec::new(),
@@ -1056,9 +1062,15 @@ impl Game {
     pub fn snapshot(&self) -> Snapshot {
         Snapshot(self.state.clone())
     }
-    pub fn restore(&mut self, snapshot: &Snapshot) {
+    pub fn restore(&mut self, snapshot: &Snapshot) -> Result<(), Error> {
+        let revision = self.revision.checked_add(1).ok_or(Error::CapacityExceeded(
+            crate::CapacityExceeded {
+                resource: "revision exhausted",
+            },
+        ))?;
         self.state.clone_from(&snapshot.0);
-        self.revision = self.revision.checked_add(1).expect("revision exhausted");
+        self.revision = revision;
+        Ok(())
     }
 
     pub fn actor(&self) -> Option<Player> {
@@ -1144,6 +1156,47 @@ impl Game {
     /// Mutation happens only after complete validation. Rejected actions leave state
     /// and revision unchanged. No user-supplied IDs are used to index before validation.
     pub fn apply(&mut self, actor: Player, action: Action) -> Result<(), Error> {
+        let checkpoint = self.state.clone();
+        let revision = self.revision;
+        let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            self.apply_transaction(actor, action)?;
+            // Suspended programs defer SBAs, but every committed observation must
+            // still have representable derived values. Ordinary resolutions have
+            // already checked battlefield stats in the SBA pass.
+            if (self.state.resolving.is_some()
+                || self.state.announcing.is_some()
+                || self.state.entry_batch.is_some())
+                && (!self.state.objects.ptr_eq(&checkpoint.objects)
+                    || self.state.active != checkpoint.active
+                    || self.state.attackers != checkpoint.attackers
+                    || self.state.static_sources != checkpoint.static_sources)
+            {
+                for (id, object) in self.state.objects.iter().enumerate() {
+                    if object.zone == Zone::Battlefield {
+                        let _ = self.stats(id as CardId);
+                    }
+                }
+            }
+            Ok(())
+        }));
+        match result {
+            Ok(Ok(())) => Ok(()),
+            Ok(Err(error)) => {
+                self.state = checkpoint;
+                self.revision = revision;
+                Err(error)
+            }
+            Err(payload) => {
+                self.state = checkpoint;
+                self.revision = revision;
+                match payload.downcast::<CapacitySignal>() {
+                    Ok(signal) => Err(Error::CapacityExceeded(signal.0)),
+                    Err(payload) => std::panic::resume_unwind(payload),
+                }
+            }
+        }
+    }
+    fn apply_transaction(&mut self, actor: Player, action: Action) -> Result<(), Error> {
         if self.state.outcome.is_some() {
             return Err(Error::GameOver);
         }
@@ -1181,7 +1234,7 @@ impl Game {
                 break;
             }
         }
-        self.revision = self.revision.checked_add(1).expect("revision exhausted");
+        self.revision = self.revision.checked_add(1).capacity("revision exhausted");
         Ok(())
     }
 
@@ -1689,7 +1742,10 @@ impl Game {
             Action::Mulligan => {
                 // Mulligan decisions for both players precede the actual redraw.
                 // Flag the choice using kept=false; next_mulligan executes the round.
-                self.state.players[actor.index()].mulligans += 1;
+                let mulligans = &mut self.state.players[actor.index()].mulligans;
+                *mulligans = mulligans
+                    .checked_add(1)
+                    .capacity("mulligan count exhausted");
                 self.state.mulligan_round[actor.index()] = true;
                 self.next_mulligan(actor);
             }
@@ -1749,7 +1805,11 @@ impl Game {
             Action::TapMana { card } => {
                 let obj = &mut self.state.objects[card as usize];
                 obj.tapped = true;
-                self.state.players[actor.index()].mana[obj.card.mana_color().unwrap()] += 1;
+                let pool =
+                    &mut self.state.players[actor.index()].mana[obj.card.mana_color().unwrap()];
+                *pool = pool
+                    .checked_add(1)
+                    .capacity("mana representation exhausted");
                 self.state.passes = 0;
             }
             Action::AnnounceCast { card } => {
@@ -2223,7 +2283,7 @@ impl Game {
             .reference
             .generation
             .checked_add(1)
-            .expect("object generation exhausted");
+            .capacity("object generation exhausted");
         if before.zone == Zone::Hand {
             self.state
                 .known_hand
@@ -2455,7 +2515,11 @@ impl Game {
             return;
         }
         self.state.active = self.state.active.other();
-        self.state.turn += 1;
+        self.state.turn = self
+            .state
+            .turn
+            .checked_add(1)
+            .capacity("turn count exhausted");
         self.begin_turn();
     }
 
@@ -2496,14 +2560,14 @@ impl Game {
                     let life = &mut self.state.players[p.index()].life;
                     *life = life
                         .checked_sub(event.amount)
-                        .expect("life representation exhausted");
+                        .capacity("life representation exhausted");
                 }
                 Target::Card(id) => {
                     let obj = &mut self.state.objects[id as usize];
                     obj.damage = obj
                         .damage
                         .checked_add(event.amount)
-                        .expect("damage representation exhausted");
+                        .capacity("damage representation exhausted");
                     obj.deathtouch_since_sba |=
                         event.source.keywords.contains(Keywords::DEATHTOUCH);
                 }
@@ -2516,7 +2580,7 @@ impl Game {
                     gains[index].amount = gains[index]
                         .amount
                         .checked_add(event.amount)
-                        .expect("life gain representation exhausted");
+                        .capacity("life gain representation exhausted");
                 } else {
                     gain_indices.insert(event.source, gains.len());
                     gains.push(LifeGainEvent {
@@ -2559,7 +2623,7 @@ impl Game {
             .stats(blocker)
             .toughness
             .checked_sub(obj.damage)
-            .expect("damage assignment representation exhausted")
+            .capacity("damage assignment representation exhausted")
             .max(0);
         if source.keywords.contains(Keywords::DEATHTOUCH) {
             remaining.min(1)
@@ -2940,6 +3004,8 @@ impl Game {
     pub fn state_bytes(&self) -> usize {
         let s = &self.state;
         std::mem::size_of::<State>()
+            + std::mem::size_of::<Vec<Object>>()
+            + 2 * std::mem::size_of::<Vec<CardId>>()
             + s.objects.len() * std::mem::size_of::<Object>()
             + s.exile_links.len() * std::mem::size_of::<ExileLink>()
             + s.triggered_this_turn.len() * std::mem::size_of::<TriggerUse>()
@@ -3152,3 +3218,7 @@ mod additional_cost_tests;
 #[cfg(test)]
 #[path = "engine_counter_group_tests.rs"]
 mod counter_group_tests;
+
+#[cfg(test)]
+#[path = "engine_capacity_tests.rs"]
+mod capacity_tests;

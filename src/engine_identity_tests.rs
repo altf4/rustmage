@@ -54,13 +54,13 @@ fn targeted_spell_cannot_find_returned_permanent_and_replay_is_identical() {
     assert_eq!(game.object_view(bears).power, 2);
     assert_eq!(game.state.objects[growth as usize].zone, Zone::Graveyard);
     let stale_result = game.snapshot();
-    game.restore(&pending);
+    game.restore(&pending).unwrap();
     assert_eq!(game.object_ref(bears), original);
     game.move_object(bears, Zone::Hand);
     game.move_object(bears, Zone::Battlefield);
     pass_pair(&mut game);
     assert_eq!(game.snapshot(), stale_result);
-    game.restore(&pending);
+    game.restore(&pending).unwrap();
     pass_pair(&mut game);
     assert_eq!(game.object_view(bears).power, 5);
 }
@@ -187,7 +187,7 @@ fn unsummon_in_response_invalidates_growth_and_can_replay_through_restore() {
     let pending = game.snapshot();
     for replay in 0..2 {
         if replay == 1 {
-            game.restore(&pending);
+            game.restore(&pending).unwrap();
         }
         pass_pair(&mut game);
         assert_eq!(game.state.objects[bears as usize].zone, Zone::Hand);
@@ -265,7 +265,7 @@ fn removing_last_declared_attacker_preserves_remaining_combat_steps() {
     pass_pair(&mut game);
     assert_eq!(game.state.step, Step::CombatDamage);
     let normal = game.snapshot();
-    game.restore(&removed);
+    game.restore(&removed).unwrap();
     pass_pair(&mut game);
     act(&mut game, Action::FinishBlockers);
     pass_pair(&mut game);
@@ -317,7 +317,7 @@ fn surviving_blocker_still_creates_first_strike_step_after_attacker_leaves() {
     pass_pair(&mut game);
     assert_eq!(game.state.step, Step::CombatDamage);
     let normal = game.snapshot();
-    game.restore(&orphan);
+    game.restore(&orphan).unwrap();
     pass_pair(&mut game);
     pass_pair(&mut game);
     assert_eq!(game.snapshot(), normal);

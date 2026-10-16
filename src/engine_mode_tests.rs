@@ -125,7 +125,7 @@ fn modes_targets_and_payment_have_complete_independent_snapshot_boundaries() {
         act(&mut game, action.clone());
         assert_eq!(game.snapshot(), branch.snapshot());
         let after = game.snapshot();
-        game.restore(&before);
+        game.restore(&before).unwrap();
         act(&mut game, action);
         assert_eq!(game.snapshot(), after);
     }
@@ -136,7 +136,7 @@ fn modes_targets_and_payment_have_complete_independent_snapshot_boundaries() {
     assert_eq!(game.object_view(target).damage, 3);
     assert_eq!(game.object_view(spell).zone, Zone::Graveyard);
     let after = game.snapshot();
-    game.restore(&before);
+    game.restore(&before).unwrap();
     pass_pair(&mut game);
     assert_eq!(game.snapshot(), after);
 }
@@ -164,7 +164,7 @@ fn mode_selection_precedes_targets_and_mana_activation_during_payment() {
     assert_eq!(game.state.stack[0].mode, Some(0));
     assert_eq!(game.state.stack[0].card, spell);
     let after = game.snapshot();
-    game.restore(&partial);
+    game.restore(&partial).unwrap();
     act(&mut game, Action::TapMana { card: mountain });
     pay(&mut game);
     assert_eq!(game.snapshot(), after);
@@ -317,7 +317,7 @@ fn selected_surveil_mode_owns_continuation_and_replays_partial_library_choice() 
     );
     assert_eq!(game.hand_count(Player::P0), hand + 2);
     let after = game.snapshot();
-    game.restore(&partial);
+    game.restore(&partial).unwrap();
     act(
         &mut game,
         Action::ArrangeLibrary {

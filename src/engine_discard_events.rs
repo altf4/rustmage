@@ -34,7 +34,7 @@ impl Game {
             let player = event.before.owner;
             counts[player.index()] = counts[player.index()]
                 .checked_add(1)
-                .expect("discard count exhausted");
+                .capacity("discard count exhausted");
             let cycling = cycled == Some(event.before.reference);
             // Self-discard/cycle triggers use the card in its destination zone.
             let source = self.object_view(event.after.card);

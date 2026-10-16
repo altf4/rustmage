@@ -37,7 +37,7 @@ fn replay(g: &mut Game, a: Action) {
     act(g, a.clone());
     let result = g.snapshot();
     assert_eq!(fork.snapshot(), result);
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     assert_eq!(g.apply_index(actor, rev, 0), Err(Error::StaleRevision));
     act(g, a);
     assert_eq!(g.snapshot(), result);
@@ -101,7 +101,7 @@ fn dual_land_types_qualify_without_being_basic_and_snapshot_reentry_recomputes()
     let saved = g.snapshot();
     g.move_object(shrine, Zone::Hand);
     assert_eq!(productions(&g, verge).len(), 1);
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     assert_eq!(productions(&g, verge).len(), 2);
     let a = g
         .legal_actions()

@@ -5,12 +5,50 @@ from pathlib import Path
 import subprocess
 import sys
 import unittest
-from rustmage import EngineError, Game
+from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
     def game(self):
         return Game([["Mountain"] * 24 + ["LightningBolt"] * 36] * 2, seed=17, deck_rules="Freeform")
+
+    def test_numeric_capacity_error_preserves_native_handle_and_every_checkpoint(self):
+        deck=['Forest']*24+['Island']*24+['Zimone, Paradox Sculptor']*96
+        with Game([deck,['Forest']*144],seed=7,deck_rules='Freeform') as game:
+            obs=game.observe('P0');checkpoint=None
+            for _ in range(25000):
+                self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor'])
+                source=next((o for o in obs['objects'] if o['owner']=='P0' and o['zone']=='Battlefield' and o['card']=='Zimone, Paradox Sculptor'),None)
+                def score(action):
+                    kind=action['kind']
+                    if kind=='ChooseTarget':return 110 if source and action['target']=={'Card':source['id']} else -100
+                    if kind=='AnnounceActivate':return 90 if source and action['card']==source['id'] else -100
+                    if kind=='AnnounceCast':return 90 if source is None else -100
+                    if kind=='Discard':return 70 if any(o['id']==action['card'] and o['card']=='Zimone, Paradox Sculptor' for o in obs['objects']) else 0
+                    if kind in ('TapMana','ActivateMana'):return 80 if obs['decision']=='pay_costs' else -100
+                    return {'Keep':120,'PlayLand':100,'PayCosts':110,'FinishTargets':80,'PutTrigger':90,
+                            'FinishAttackers':100,'FinishBlockers':100,'Pass':20,'Concede':-1000}.get(kind,-100)
+                index=max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i]))
+                if source and 2**55<source['counters']['plus_one']<2**60 and checkpoint is None:
+                    checkpoint=game.snapshot();checkpoint_view=game.observe('P0')
+                try:after=game.step(obs,index)
+                except CapacityError as error:
+                    self.assertEqual(error.resource,'counter representation exhausted');self.assertIsNotNone(checkpoint)
+                    self.assertEqual(game.observe(obs['actor']),obs);self.assertIsNone(game.observe('P0')['outcome'])
+                    saved=game.snapshot()
+                    with game.clone() as fork:
+                        self.assertEqual(fork.observe(obs['actor']),obs)
+                        with self.assertRaises(CapacityError):fork.step(fork.observe(obs['actor']),index)
+                        self.assertEqual(fork.observe(obs['actor']),obs)
+                    with self.assertRaises(CapacityError):game.step(obs,index)
+                    self.assertEqual(game.observe(obs['actor']),obs);game.restore(saved)
+                    with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,index)
+                    game.drop_snapshot(saved);game.restore(checkpoint);restored=game.observe('P0')
+                    checkpoint_view['revision']=restored['revision'];self.assertEqual(restored,checkpoint_view);game.drop_snapshot(checkpoint)
+                    current=game.observe(restored['actor']);result=game.act(current,{'kind':'Concede'})
+                    self.assertIsNotNone(result['outcome']);return
+                obs=after
+            self.fail('checked counter capacity was not reached by public legal play')
 
     def test_repeated_zimone_doubling_survives_i32_and_u32_boundaries_in_public_play(self):
         deck=['Forest']*12+['Island']*12+['Zimone, Paradox Sculptor']*36

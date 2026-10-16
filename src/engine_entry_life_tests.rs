@@ -27,7 +27,7 @@ fn replay(g: &mut Game, action: Action) {
     act(g, action.clone());
     let result = g.snapshot();
     assert_eq!(fork.snapshot(), result);
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     assert_eq!(g.apply_index(actor, revision, 0), Err(Error::StaleRevision));
     act(g, action);
     assert_eq!(g.snapshot(), result);
@@ -305,7 +305,7 @@ fn search_holds_library_and_rng_then_commits_entry_shuffles_and_resumes_at_zero_
     replay(&mut g, Action::ChooseEntryLife { pay: true });
     assert!(g.outcome().is_none());
     assert_eq!(g.state.players[0].life, 3);
-    assert_eq!(g.state.players[0].library, expected);
+    assert_eq!(g.state.players[0].library.as_slice(), expected.as_slice());
     assert_eq!(g.state.rng, expected_rng);
     assert_eq!(g.object_view(drawn).zone, Zone::Hand);
     assert_eq!(g.object_view(id).zone, Zone::Battlefield);

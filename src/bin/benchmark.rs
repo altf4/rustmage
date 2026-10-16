@@ -33,7 +33,7 @@ fn main() {
     let mut branch = root.clone();
     let start = Instant::now();
     for _ in 0..clone_iterations {
-        branch.restore(black_box(&saved));
+        branch.restore(black_box(&saved)).unwrap();
         black_box(&branch);
     }
     let restore_ns = start.elapsed().as_nanos() as f64 / clone_iterations as f64;

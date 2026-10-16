@@ -22,13 +22,18 @@ arena indexed by small integer IDs. Libraries are vectors of IDs with the top at
 the end. The initial slice has no ability object graphs, UUIDs, per-card strings,
 reference cycles, serialization-based copies, or per-game asynchronous tasks.
 
-An owned clone is the first implementation. It copies mutable object fields,
-zone ordering, stack, combat declarations, damage assignments, pending decisions,
-mana, turn bookkeeping, mulligan state, result flags, and a per-game SplitMix64
-state. The RNG's bounded sampling uses rejection to avoid modulo bias.
+Clones and snapshots share the object arena and library buffers through
+`Arc<Vec<T>>`; the first mutation detaches a shared buffer. Other mutable state,
+including zone ordering, stack, combat declarations, damage assignments, pending
+decisions, mana, turn bookkeeping, mulligans, result and local RNG, is copied.
+Branches remain isolated. Cloning is not constant time in all state dimensions.
+The RNG's bounded sampling uses rejection to avoid modulo bias.
 
 `Snapshot` is a typed, reusable state copy. `restore` is rules-state restoration;
-the outward revision continues advancing to reject stale action indices.
+the outward revision continues advancing to reject stale action indices. Restore
+returns a recoverable error without mutation if that revision cannot advance.
+Every action has an atomic checkpoint for checked numeric capacity failures; see
+[numeric-capacity.md](numeric-capacity.md) for the contract and performance cost.
 Native `Game::clone` creates an isolated branch. Python cloning forks the current
 game but deliberately does not copy the session's saved-checkpoint map.
 

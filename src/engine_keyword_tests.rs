@@ -63,12 +63,12 @@ fn hexproof_revalidates_opposing_spell_and_keeps_own_targets_legal() {
     assert_eq!(g.revision(), revision);
     // Continue the original pending removal with the fixture restored.
     g.state.priority = priority;
-    g.restore(&guard);
+    g.restore(&guard).unwrap();
     pass_pair(&mut g);
     assert_eq!(g.state.objects[bear as usize].zone, Zone::Battlefield);
     assert_eq!(g.state.objects[removal as usize].zone, Zone::Graveyard);
     let result = g.state.clone();
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     pass_pair(&mut g);
     pass_pair(&mut g);
     assert_eq!(g.state, result);
@@ -202,7 +202,7 @@ fn funding_canonicalization_distinguishes_same_card_with_different_gains() {
         generic: 0,
         source: None
     }));
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     assert!(!g.can_fund(FundingGoal {
         reserve: None,
         actor: Player::P0,
@@ -338,7 +338,7 @@ fn ability_uses_keywords_gained_after_announcement_before_source_departure() {
     assert_eq!(g.state.players[0].life, 21);
     assert_eq!(g.state.players[1].life, 19);
     let result = g.state.clone();
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     pass_pair(&mut g);
     assert_eq!(g.state, result);
 }
@@ -397,7 +397,7 @@ fn continuous_grants_follow_owner_zone_incarnation_and_snapshot() {
     g.move_object(samut, Zone::Battlefield);
     assert_ne!(g.object_ref(samut), reference);
     assert!(g.keywords(bear).contains(Keywords::HASTE));
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     assert_eq!(g.object_ref(samut), reference);
     assert!(g.keywords(bear).contains(Keywords::HASTE));
 }
@@ -419,7 +419,7 @@ fn own_turn_first_strike_is_derived_and_changeling_stays_intrinsic() {
         g.state.active = Player::P1;
         assert!(!g.keywords(id).contains(Keywords::FIRST_STRIKE));
         assert!(g.keywords(enemy).contains(Keywords::FIRST_STRIKE));
-        g.restore(&saved);
+        g.restore(&saved).unwrap();
         assert!(g.keywords(id).contains(Keywords::FIRST_STRIKE));
         g.move_object(id, Zone::Graveyard);
         assert!(!g.keywords(id).contains(Keywords::FIRST_STRIKE));
@@ -567,7 +567,7 @@ fn continuous_tribal_double_strike_gives_changeling_both_damage_steps() {
     let saved = g.snapshot();
     pass_pair(&mut g);
     assert_eq!(g.state.players[1].life, 20 - 2 * power);
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     g.move_object(source, Zone::Hand);
     pass_pair(&mut g);
     assert_eq!(g.state.players[1].life, 20 - power);
@@ -664,7 +664,7 @@ fn every_admitted_continuous_source_is_registered_and_removed_on_zone_change() {
         let saved = g.snapshot();
         g.move_object(id, Zone::Exile);
         assert!(!g.state.static_sources.contains(&id));
-        g.restore(&saved);
+        g.restore(&saved).unwrap();
         assert_eq!(
             g.state.static_sources.iter().filter(|&&s| s == id).count(),
             1
@@ -702,7 +702,7 @@ fn own_turn_static_source_keeps_its_optional_discard_draw_attack_trigger() {
         };
         act(&mut g, action.clone());
         let expected = g.snapshot();
-        g.restore(&saved);
+        g.restore(&saved).unwrap();
         act(&mut g, action);
         assert_eq!(g.snapshot(), expected);
         assert_eq!(

@@ -12,7 +12,7 @@ fn replay(g: &mut Game, a: Action) {
     act(g, a.clone());
     let after = g.snapshot();
     assert_eq!(after, fork.snapshot());
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     act(g, a);
     assert_eq!(after, g.snapshot());
 }

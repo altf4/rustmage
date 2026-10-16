@@ -89,7 +89,7 @@ fn target_treasure_then_sacrifice_it_to_pay_preserves_the_whole_declaration() {
         (selected, vec![mana.clone(), pay.clone()]),
         (funded, vec![pay.clone()]),
     ] {
-        game.restore(&checkpoint);
+        game.restore(&checkpoint).unwrap();
         for action in actions {
             act(&mut game, action);
         }
@@ -186,7 +186,7 @@ fn unfunded_mana_ability_can_get_mana_from_another_source_without_using_the_stac
     assert_eq!(game.actor(), Some(Player::P0));
     assert!(game.object_view(prism).tapped);
     let after = game.snapshot();
-    game.restore(&before);
+    game.restore(&before).unwrap();
     act(&mut game, Action::TapMana { card: land });
     act(
         &mut game,
@@ -521,7 +521,7 @@ fn mana_and_life_only_costs_remain_payable_after_the_source_leaves() {
     pass_pair(&mut game);
     assert_eq!(game.hand_count(Player::P0), 2);
     let after = game.snapshot();
-    game.restore(&before);
+    game.restore(&before).unwrap();
     for land in lands {
         act(&mut game, Action::TapMana { card: land });
     }

@@ -64,7 +64,7 @@ fn menace_needs_two_and_rejects_stranding_or_premature_finish_atomically() {
     assert_eq!(g.state.blocks.len(), 2);
     assert!(g.state.attackers[0].blocked);
     let result = g.state.clone();
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     act(
         &mut g,
         Action::Block {

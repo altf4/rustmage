@@ -156,7 +156,7 @@ fn seed_is_local_and_clone_restores_future_randomness() {
     act(&mut b, Action::Mulligan);
     assert_eq!(a.snapshot(), b.snapshot());
     let expected = a.snapshot();
-    a.restore(&checkpoint);
+    a.restore(&checkpoint).unwrap();
     act(&mut a, Action::Mulligan);
     act(&mut a, Action::Mulligan);
     assert_eq!(a.snapshot(), expected);
@@ -279,7 +279,7 @@ fn rejected_actions_are_atomic_and_restore_invalidates_indices() {
     );
     assert_eq!(game.snapshot(), before);
     assert_eq!(game.revision(), rev);
-    game.restore(&before);
+    game.restore(&before).unwrap();
     assert_eq!(
         game.apply_index(Player::P0, rev, 0),
         Err(Error::StaleRevision)
@@ -469,7 +469,7 @@ fn combat_damage_is_simultaneous_and_multiblock_damage_is_a_real_choice() {
     assert_eq!(game.state.objects[attacker as usize].zone, Zone::Graveyard);
     assert_eq!(game.state.objects[b1 as usize].zone, Zone::Graveyard);
     assert_eq!(game.state.objects[b2 as usize].zone, Zone::Graveyard);
-    game.restore(&checkpoint);
+    game.restore(&checkpoint).unwrap();
     act(
         &mut game,
         Action::AssignDamage {
@@ -609,7 +609,7 @@ fn random_legal_play_preserves_invariants_and_every_replay_checkpoint() {
             assert_eq!(game.snapshot(), branch.snapshot());
             if step % 13 == 0 {
                 let after = game.snapshot();
-                game.restore(&before);
+                game.restore(&before).unwrap();
                 game.apply(actor, action).unwrap();
                 assert_eq!(game.snapshot(), after);
             }

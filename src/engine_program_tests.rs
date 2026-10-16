@@ -119,7 +119,7 @@ fn multiple_death_triggers_are_captured_simultaneously_and_ordered_apnap() {
         vec![Player::P1, Player::P1, Player::P0, Player::P0]
     );
     let ordered = game.snapshot();
-    game.restore(&ordering);
+    game.restore(&ordering).unwrap();
     act(&mut game, choices[1].clone());
     let choice = game_action_for_first_trigger(&game);
     act(&mut game, choice);
@@ -220,7 +220,7 @@ fn draw_discard_trigger_suspends_atomically_and_keeps_hands_private() {
     let after = game.snapshot();
     assert!(game.state.resolving.is_none());
     assert_eq!(game.hand_count(Player::P0), 0);
-    game.restore(&before);
+    game.restore(&before).unwrap();
     act(&mut game, discard);
     assert_eq!(game.snapshot(), after);
 }
@@ -256,7 +256,7 @@ fn optional_loot_can_be_declined_or_accepted_and_replayed() {
     act(&mut game, Action::ChooseOptional { accept: false });
     assert_eq!(game.hand_count(Player::P0), 0);
     assert_eq!(game.state.pending, Pending::Priority);
-    game.restore(&optional);
+    game.restore(&optional).unwrap();
     act(&mut game, Action::ChooseOptional { accept: true });
     assert_eq!(game.hand_count(Player::P0), 1);
     assert!(matches!(
@@ -271,7 +271,7 @@ fn optional_loot_can_be_declined_or_accepted_and_replayed() {
     let saved = game.snapshot();
     act(&mut game, discard.clone());
     let after = game.snapshot();
-    game.restore(&saved);
+    game.restore(&saved).unwrap();
     act(&mut game, discard);
     assert_eq!(game.snapshot(), after);
 }
@@ -345,7 +345,7 @@ fn all_program_instructions_finish_before_loss_sba_even_across_discard() {
     assert_eq!(game.outcome(), None);
     assert_eq!(game.state.objects[hunter as usize].zone, Zone::Battlefield);
     let after = game.snapshot();
-    game.restore(&snapshot);
+    game.restore(&snapshot).unwrap();
     act(&mut game, discard);
     assert_eq!(game.snapshot(), after);
 }
@@ -384,7 +384,7 @@ fn pelakka_wurm_entry_and_death_programs_use_distinct_ability_indices() {
     assert_eq!(game.hand_count(Player::P0), 1);
     assert_eq!(game.state.players[0].life, 27);
     let after = game.snapshot();
-    game.restore(&dead);
+    game.restore(&dead).unwrap();
     pass_pair(&mut game);
     assert_eq!(game.snapshot(), after);
 }
@@ -528,7 +528,7 @@ fn simultaneous_discards_keep_all_selections_private_until_committed() {
             .all(|&id| game.state.objects[id as usize].zone == Zone::Graveyard)
     );
     let after = game.snapshot();
-    game.restore(&pending);
+    game.restore(&pending).unwrap();
     for &card in &hands[0] {
         act(&mut game, Action::Discard { card });
     }

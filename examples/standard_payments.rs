@@ -83,13 +83,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 || matches!(action, Action::ChooseSearch { .. } | Action::FinishSearch)
             {
                 let expected = g.snapshot();
-                g.restore(&saved);
+                g.restore(&saved).unwrap();
                 let mut fork = g.clone();
                 fork.apply(actor, action.clone())?;
                 g.apply(actor, action.clone())?;
                 assert_eq!(g.snapshot(), fork.snapshot());
                 assert_eq!(g.snapshot(), expected);
-                g.restore(&saved);
+                g.restore(&saved).unwrap();
                 g.apply(actor, action)?;
                 assert_eq!(g.snapshot(), expected);
                 replays += 1;

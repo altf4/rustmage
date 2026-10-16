@@ -102,7 +102,7 @@ fn apnap_choices_are_public_frozen_and_replayable_in_any_own_group_order() {
     }
     assert_eq!(g.snapshot(), fork.snapshot());
     let result = g.snapshot();
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     keep(&mut g, b);
     keep(&mut g, f);
     assert_eq!(g.snapshot(), result);
@@ -208,7 +208,7 @@ fn linked_returns_create_another_legend_batch_before_priority_or_triggers() {
     let saved = g.snapshot();
     keep(&mut g, held);
     let expected = g.snapshot();
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     keep(&mut g, held);
     assert_eq!(g.snapshot(), expected);
     assert_eq!(g.object_view(old).zone, Zone::Graveyard);
@@ -263,7 +263,7 @@ fn queued_landfall_triggers_survive_departing_legend_and_wait_until_choices_end(
     assert_eq!(g.state.players[0].life, 22);
     assert_eq!(g.state.players[0].library.len(), library - 2);
     let expected = g.snapshot();
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     keep(&mut g, a);
     while let Some(action) = g
         .legal_actions()

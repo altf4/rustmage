@@ -21,7 +21,7 @@ fn replay(g: &mut Game, a: Action) {
     act(&mut fork, a.clone());
     let after = g.snapshot();
     assert_eq!(after, fork.snapshot());
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     assert_eq!(g.apply_index(actor, revision, 0), Err(Error::StaleRevision));
     act(g, a);
     assert_eq!(g.snapshot(), after);
@@ -429,7 +429,7 @@ fn group_counter_instructions_finish_before_state_based_deaths_and_pair_cancella
     fork.state_based_actions();
     assert_eq!(g.snapshot(), fork.snapshot());
     let expected = g.snapshot();
-    g.restore(&before);
+    g.restore(&before).unwrap();
     g.run_program();
     g.state_based_actions();
     assert_eq!(g.snapshot(), expected);
@@ -539,7 +539,7 @@ fn huge_counter_stats_damage_lifelink_trigger_amounts_and_json_remain_exact() {
     assert_eq!(g.state.players[0].cards_drawn_this_turn, 20);
     assert!(g.state.players[0].attempted_empty_draw);
     let expected = g.snapshot();
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     pass_pair(&mut g);
     assert_eq!(g.snapshot(), expected);
 }

@@ -112,13 +112,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 )
             {
                 let expected = game.snapshot();
-                game.restore(&saved);
+                game.restore(&saved).unwrap();
                 let mut fork = game.clone();
                 fork.apply(actor, action.clone())?;
                 game.apply(actor, action.clone())?;
                 assert_eq!(game.snapshot(), fork.snapshot());
                 assert_eq!(game.snapshot(), expected);
-                game.restore(&saved);
+                game.restore(&saved).unwrap();
                 game.apply(actor, action)?;
                 assert_eq!(game.snapshot(), expected);
                 replays += 1;

@@ -46,7 +46,7 @@ fn targeted_entry_waits_for_announcement_before_stack_and_resolves_after_source_
     assert_eq!(game.state.players[1].life, 19);
     assert_ne!(game.object_ref(archer), old_source);
     let after = game.snapshot();
-    game.restore(&pending);
+    game.restore(&pending).unwrap();
     pass_pair(&mut game);
     assert_eq!(game.snapshot(), after);
 }
@@ -77,7 +77,7 @@ fn required_target_is_not_optional_even_when_effect_is_may() {
     let optional = game.snapshot();
     act(&mut game, Action::ChooseOptional { accept: false });
     assert_eq!(game.state.objects[giant as usize].zone, Zone::Battlefield);
-    game.restore(&optional);
+    game.restore(&optional).unwrap();
     act(&mut game, Action::ChooseOptional { accept: true });
     assert_eq!(game.state.objects[giant as usize].zone, Zone::Graveyard);
 }
@@ -145,7 +145,7 @@ fn illegal_announcement_choices_are_atomic_and_private_until_committed() {
     assert_eq!(game.state.stack[0].card, spell);
     assert_eq!(game.observe(Player::P1).stack[0].targets.len(), 2);
     let after = game.snapshot();
-    game.restore(&pending);
+    game.restore(&pending).unwrap();
     act(
         &mut game,
         Action::ChooseTarget {
@@ -182,7 +182,7 @@ fn partially_invalid_multitarget_spell_affects_only_surviving_incarnations() {
     assert_eq!(game.object_view(a).power, 2);
     assert_eq!(game.object_view(b).power, 4);
     assert!(!game.object_view(b).tapped);
-    game.restore(&chosen);
+    game.restore(&chosen).unwrap();
     game.move_object(a, Zone::Hand);
     game.move_object(b, Zone::Hand);
     pass_pair(&mut game);
@@ -263,7 +263,7 @@ fn optional_zero_targets_differs_from_all_chosen_targets_becoming_illegal() {
     act(&mut game, Action::FinishTargets);
     pass_pair(&mut game);
     assert_eq!(game.state.players[0].life, 22); // Zero selected targets: gain still happens.
-    game.restore(&pending);
+    game.restore(&pending).unwrap();
     act(
         &mut game,
         Action::ChooseTarget {
@@ -331,7 +331,7 @@ fn reanimation_binds_graveyard_incarnation_and_dispatches_new_entry_triggers() {
     pass_pair(&mut game);
     assert_eq!(game.hand_count(Player::P0), 1);
     let after = game.snapshot();
-    game.restore(&pending);
+    game.restore(&pending).unwrap();
     pass_pair(&mut game);
     pass_pair(&mut game);
     assert_eq!(game.snapshot(), after);
@@ -418,7 +418,7 @@ fn target_announcements_interleave_with_apnap_order_without_granting_priority() 
     assert_eq!(game.state.pending, Pending::Priority);
     assert_eq!(game.actor(), Some(Player::P0));
     let after = game.snapshot();
-    game.restore(&pending);
+    game.restore(&pending).unwrap();
     act(
         &mut game,
         Action::ChooseTarget {
