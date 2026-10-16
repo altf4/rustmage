@@ -573,6 +573,28 @@ impl Game {
                     }
                 }
                 Instruction::Skip(skip) => self.state.resolving.as_mut().unwrap().pc += skip,
+                Instruction::MayPayOpponentLife { amount, skip } => {
+                    let player = item.controller.other();
+                    let skip_to = resolution.pc.checked_add(skip).expect("program offset");
+                    assert!(skip_to <= resolution.program.len());
+                    if amount != 0 && self.state.players[player.index()].life < i128::from(amount) {
+                        self.state.resolving.as_mut().unwrap().pc = skip_to;
+                    } else {
+                        self.state.pending = Pending::EffectOptional { player, skip_to };
+                        return;
+                    }
+                }
+                Instruction::CounterRelated => {
+                    let link = item.related_stack.expect("ward stack association");
+                    if let Some(index) = self.state.stack.iter().position(|s| s.id == link.id) {
+                        let victim = &self.state.stack[index];
+                        if victim.kind == StackKind::Spell {
+                            self.move_object(victim.card, Zone::Graveyard);
+                        } else {
+                            self.state.stack.remove(index);
+                        }
+                    }
+                }
                 Instruction::MoveBattlefield { filters, exile } => {
                     self.move_battlefield_group(&item, filters, exile);
                 }

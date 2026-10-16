@@ -5,12 +5,13 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,153 have executable rules so far.
+knows all 5,164 pinned Standard identities; 1,157 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
-The latest [exhaust activation limits](docs/exhaust-activations.md) add ten complete
-bodies with per-incarnation use masks under schema 49, without growing mutable game state. Full Standard rules remain in progress.
+The latest [nonmana Ward payments](docs/nonmana-ward.md) add four complete
+bodies with private discard, sacrifice and life costs, using existing owned
+continuations under schema 49. Full Standard rules remain in progress.
 
 ## Build and use
 
@@ -75,6 +76,7 @@ cargo run --release --example standard_activation_discard -- 100
 cargo run --release --example standard_discard_history -- 100
 cargo run --release --example standard_own_turn -- 100
 cargo run --release --example standard_exhaust -- 100
+cargo run --release --example standard_nonmana_ward -- 100
 cargo run --release --example standard_life_gain_conditions -- 100
 cargo run --release --example standard_self_target -- 100
 cargo run --release --example standard_power_blocking -- 100

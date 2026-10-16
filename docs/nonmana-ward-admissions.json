@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Spectral Snatcher",
+      "oracle_text": "Ward\u2014Discard a card. (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player discards a card.)\nSwampcycling {2} ({2}, Discard this card: Search your library for a Swamp card, reveal it, put it into your hand, then shuffle.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SpectralSnatcher.java",
+          "java_sha256": "c4f83611c3f08e24c409936f13cbe3100cb1163c858b41b4187f6da537f504a2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+          "java_sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+          "java_sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/SwampcyclingAbility.java",
+          "java_sha256": "e9cbd5aa653b2ed284341f55b2d23a5b901b57cf30a8f127bc4f66187f3c948a"
+        }
+      ]
+    },
+    {
+      "name": "Sunset Saboteur",
+      "oracle_text": "Menace\nWard\u2014Discard a card.\nWhenever this creature attacks, put a +1/+1 counter on target creature an opponent controls.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SunsetSaboteur.java",
+          "java_sha256": "24a52a6ac1ceb95a10e710c2bbd7893bfaef309bdf3d3b1bd0be4cf0b9454adb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+          "java_sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+          "java_sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+        }
+      ]
+    },
+    {
+      "name": "Vein Ripper",
+      "oracle_text": "Flying\nWard\u2014Sacrifice a creature.\nWhenever a creature dies, target opponent loses 2 life and you gain 2 life.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VeinRipper.java",
+          "java_sha256": "4ff5306502fab0d6618f11deb8f1fb8136b55a9d921cb9fe90fc74981a2ea907"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+          "java_sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        }
+      ]
+    },
+    {
+      "name": "Sire of Seven Deaths",
+      "oracle_text": "Reach, first strike\nVigilance, menace\nTrample, lifelink\nWard\u2014Pay 7 life.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SireOfSevenDeaths.java",
+          "java_sha256": "d480189ecca3dc7c57dc3babece0d019fe0c48853840acd679cb231259a8a280"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+          "java_sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
+          "java_sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4"
+        }
+      ]
+    }
+  ]
+}

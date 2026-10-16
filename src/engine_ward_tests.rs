@@ -521,3 +521,341 @@ fn resolution_payment_memory_and_context_are_owned_by_snapshots() {
     assert_eq!(g.snapshot(), original);
     replay(&mut g, Action::DeclineResolutionMana);
 }
+
+fn nonmana_ward_spell(g: &mut Game, payer: Player, name: &str) -> (CardId, CardId) {
+    g.state.active = payer;
+    g.state.priority = payer;
+    let target = named(g, payer.other(), name, Zone::Battlefield);
+    let spell = named(g, payer, "Shock", Zone::Hand);
+    g.state.players[payer.index()].mana = [10; 6];
+    cast(g, spell, Some(Target::Card(target)));
+    assert_eq!(g.state.stack.len(), 2);
+    g.state.players[payer.index()].mana = [0; 6];
+    (spell, target)
+}
+
+#[test]
+fn nonmana_ward_costs_are_owned_full_payments_with_private_discard_and_replay() {
+    for payer in [Player::P0, Player::P1] {
+        for name in ["Spectral Snatcher", "Sunset Saboteur", "Vein Ripper"] {
+            for pay in [false, true] {
+                let mut g = scenario();
+                let resource = named(
+                    &mut g,
+                    payer,
+                    "Grizzly Bears",
+                    if name == "Vein Ripper" {
+                        Zone::Battlefield
+                    } else {
+                        Zone::Hand
+                    },
+                );
+                let wrong = named(&mut g, payer.other(), "Grizzly Bears", Zone::Hand);
+                let (spell, target) = nonmana_ward_spell(&mut g, payer, name);
+                pass_pair(&mut g);
+                assert_eq!(g.actor(), Some(payer));
+                assert!(matches!(g.state.pending, Pending::EffectChoice { .. }));
+                assert!(g.observe(payer.other()).actions.is_empty());
+                if name != "Vein Ripper" {
+                    assert!(g.observe(payer.other()).effect_choice.is_none());
+                    reject(&mut g, Action::Discard { card: wrong });
+                    let object = g.object_ref(resource);
+                    reject(&mut g, Action::Sacrifice { object });
+                } else {
+                    reject(&mut g, Action::Discard { card: wrong });
+                }
+                reject(&mut g, Action::Pass);
+                if pay {
+                    let action = if name == "Vein Ripper" {
+                        Action::Sacrifice {
+                            object: g.object_ref(resource),
+                        }
+                    } else {
+                        Action::Discard { card: resource }
+                    };
+                    replay(&mut g, action);
+                    assert_eq!(g.object_view(resource).zone, Zone::Graveyard);
+                    assert_eq!(g.object_view(spell).zone, Zone::Stack);
+                    assert_eq!(g.object_view(target).damage, 0);
+                    if name == "Vein Ripper" {
+                        // Payment deaths queue the complete printed drain trigger.
+                        assert!(
+                            !g.state.pending_triggers.is_empty()
+                                || !g.state.ordering_triggers.is_empty()
+                                || g.state.stack.len() > 1
+                                || g.state.announcing.is_some()
+                        );
+                    } else {
+                        pass_pair(&mut g);
+                        assert_eq!(
+                            g.object_view(target).damage,
+                            if name == "Sunset Saboteur" { 0 } else { 2 }
+                        );
+                    }
+                } else {
+                    replay(&mut g, Action::DeclineEffectPayment);
+                    assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+                    assert_eq!(
+                        g.object_view(resource).zone,
+                        if name == "Vein Ripper" {
+                            Zone::Battlefield
+                        } else {
+                            Zone::Hand
+                        }
+                    );
+                    assert_eq!(g.object_view(target).damage, 0);
+                }
+            }
+        }
+    }
+}
+
+#[test]
+fn nonmana_ward_without_resources_counters_without_offering_partial_payment() {
+    for payer in [Player::P0, Player::P1] {
+        for name in ["Spectral Snatcher", "Sunset Saboteur", "Vein Ripper"] {
+            let mut g = scenario();
+            named(&mut g, payer, "Forest", Zone::Battlefield);
+            let (spell, target) = nonmana_ward_spell(&mut g, payer, name);
+            pass_pair(&mut g);
+            assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+            assert_eq!(g.object_view(target).damage, 0);
+            assert!(g.state.resolving.is_none());
+        }
+    }
+}
+
+#[test]
+fn life_ward_requires_affordability_and_choice_charges_exact_payer_with_replay() {
+    for payer in [Player::P0, Player::P1] {
+        for life in [6, 7, 20] {
+            for pay in [false, true] {
+                let mut g = scenario();
+                g.state.players[payer.index()].life = life;
+                let (spell, target) = nonmana_ward_spell(&mut g, payer, "Sire of Seven Deaths");
+                pass_pair(&mut g);
+                if life < 7 {
+                    assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+                    assert_eq!(g.state.players[payer.index()].life, life);
+                    continue;
+                }
+                assert_eq!(g.actor(), Some(payer));
+                assert!(g.observe(payer.other()).actions.is_empty());
+                assert_eq!(g.state.players[payer.index()].life, life);
+                reject(&mut g, Action::DeclineResolutionMana);
+                replay(&mut g, Action::ChooseOptional { accept: pay });
+                assert_eq!(
+                    g.state.players[payer.index()].life,
+                    life - if pay { 7 } else { 0 }
+                );
+                assert_eq!(g.state.players[payer.other().index()].life, 20);
+                assert_eq!(
+                    g.state.players[payer.index()].life_lost_this_turn,
+                    if pay { 7 } else { 0 }
+                );
+                assert_eq!(
+                    g.object_view(spell).zone,
+                    if pay { Zone::Stack } else { Zone::Graveyard }
+                );
+                assert_eq!(g.object_view(target).damage, 0);
+                if pay && life == 7 {
+                    assert!(g.outcome().is_some());
+                }
+            }
+        }
+    }
+}
+
+#[test]
+fn nonmana_ward_counters_exact_ability_after_source_departure_or_reentry() {
+    for name in ["Spectral Snatcher", "Sire of Seven Deaths", "Vein Ripper"] {
+        let mut g = scenario();
+        let target = named(&mut g, Player::P1, name, Zone::Battlefield);
+        let source = named(&mut g, Player::P0, "Greenbelt Guardian", Zone::Battlefield);
+        g.state.players[0].mana = [10; 6];
+        named(&mut g, Player::P0, "Grizzly Bears", Zone::Hand);
+        named(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+        let action=g.legal_actions().into_iter().find(|a|matches!(a,Action::Activate {card,target:Some(Target::Card(t)),..} if *card==source && *t==target)).unwrap();
+        replay(&mut g, action);
+        g.move_object(source, Zone::Exile);
+        let victim = g.state.stack[0].id;
+        let original = g.object_ref(target);
+        g.move_object(target, Zone::Exile);
+        g.move_object(target, Zone::Battlefield);
+        assert_ne!(original, g.object_ref(target));
+        assert_eq!(g.state.stack[1].related_stack.unwrap().id, victim);
+        pass_pair(&mut g);
+        let decline = if name == "Sire of Seven Deaths" {
+            Action::ChooseOptional { accept: false }
+        } else {
+            Action::DeclineEffectPayment
+        };
+        replay(&mut g, decline);
+        assert!(g.state.stack.is_empty());
+        assert_eq!(g.object_view(source).zone, Zone::Exile);
+        assert_eq!(g.object_view(target).damage, 0);
+    }
+}
+
+#[test]
+fn vein_ripper_observes_its_own_simultaneous_death_and_each_other_creature() {
+    let mut g = scenario();
+    let ripper = named(&mut g, Player::P0, "Vein Ripper", Zone::Battlefield);
+    let bear = named(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    let enemy = named(&mut g, Player::P1, "Grizzly Bears", Zone::Battlefield);
+    let sources = g.death_trigger_sources();
+    let events = g.move_objects_raw(&[ripper, bear, enemy], Zone::Graveyard);
+    g.finish_zone_events(&events, &sources);
+    assert_eq!(
+        g.state
+            .pending_triggers
+            .iter()
+            .filter(|t| t.card == ripper)
+            .count(),
+        3
+    );
+    for _ in 0..40 {
+        g.prepare_triggers();
+        if g.state.stack.is_empty()
+            && g.state.pending_triggers.is_empty()
+            && g.state.ordering_triggers.is_empty()
+            && g.state.announcing.is_none()
+        {
+            break;
+        }
+        let a = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| {
+                matches!(
+                    a,
+                    Action::PutTrigger { .. }
+                        | Action::ChooseTarget {
+                            target: Target::Player(Player::P1)
+                        }
+                        | Action::FinishTargets
+                        | Action::Pass
+                )
+            })
+            .unwrap();
+        replay(&mut g, a);
+    }
+    assert!(g.state.stack.is_empty());
+    assert_eq!(g.state.players[0].life, 26);
+    assert_eq!(g.state.players[1].life, 14);
+}
+
+#[test]
+fn spectral_snatcher_swampcycling_is_an_independent_hand_ability() {
+    let mut g = scenario();
+    let card = named(&mut g, Player::P0, "Spectral Snatcher", Zone::Hand);
+    let swamp = named(&mut g, Player::P0, "Swamp", Zone::Library);
+    let island = named(&mut g, Player::P0, "Island", Zone::Library);
+    g.state.players[0].mana = [2, 0, 0, 0, 0, 0];
+    let action = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a,Action::Activate{card:c,..}if *c==card))
+        .unwrap();
+    replay(&mut g, action);
+    assert_eq!(g.object_view(card).zone, Zone::Graveyard);
+    assert_eq!(g.state.stack.len(), 1);
+    pass_pair(&mut g);
+    assert_eq!(
+        g.observe(Player::P0).search_choice.unwrap().filter,
+        crate::SearchFilter::Subtype("Swamp")
+    );
+    reject(&mut g, Action::ChooseSearch { card: island });
+    replay(&mut g, Action::ChooseSearch { card: swamp });
+    replay(&mut g, Action::FinishSearch);
+    assert_eq!(g.object_view(swamp).zone, Zone::Hand);
+}
+
+#[test]
+fn nonmana_counter_association_cannot_alias_recast_card_and_life_capacity_is_atomic() {
+    for name in ["Spectral Snatcher", "Sire of Seven Deaths"] {
+        let mut g = scenario();
+        named(&mut g, Player::P0, "Grizzly Bears", Zone::Hand);
+        let (spell, _) = nonmana_ward_spell(&mut g, Player::P0, name);
+        pass_pair(&mut g);
+        let old = g
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .item
+            .related_stack
+            .unwrap()
+            .id;
+        // Synthetic intervening movement isolates stack identity from the reused slot.
+        g.move_object(spell, Zone::Graveyard);
+        g.move_object(spell, Zone::Hand);
+        let item = g.cast_item(Player::P0, spell, [0; 6]);
+        assert_ne!(item.id, old);
+        g.state.stack.push(item);
+        let decline = if name == "Sire of Seven Deaths" {
+            Action::ChooseOptional { accept: false }
+        } else {
+            Action::DeclineEffectPayment
+        };
+        replay(&mut g, decline);
+        assert_eq!(g.object_view(spell).zone, Zone::Stack);
+        assert_eq!(g.state.stack.len(), 1);
+    }
+    let mut g = scenario();
+    nonmana_ward_spell(&mut g, Player::P0, "Sire of Seven Deaths");
+    pass_pair(&mut g);
+    g.state.players[0].life_lost_this_turn = u128::MAX;
+    let saved = g.snapshot();
+    let revision = g.revision();
+    for _ in 0..2 {
+        assert!(matches!(
+            g.apply(Player::P0, Action::ChooseOptional { accept: true }),
+            Err(Error::CapacityExceeded(_))
+        ));
+        assert_eq!(g.snapshot(), saved);
+        assert_eq!(g.revision(), revision);
+    }
+    let mut fork = g.clone();
+    assert!(matches!(
+        fork.apply(Player::P0, Action::ChooseOptional { accept: true }),
+        Err(Error::CapacityExceeded(_))
+    ));
+    assert_eq!(fork.snapshot(), saved);
+    g.restore(&saved).unwrap();
+    replay(&mut g, Action::ChooseOptional { accept: false });
+}
+
+#[test]
+fn sunset_attack_counter_requires_an_opposing_creature_and_is_mandatory() {
+    for opponent in [false, true] {
+        let mut g = scenario();
+        let source = named(&mut g, Player::P0, "Sunset Saboteur", Zone::Battlefield);
+        let own = named(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+        let enemy = opponent.then(|| named(&mut g, Player::P1, "Grizzly Bears", Zone::Battlefield));
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        replay(&mut g, Action::Attack { card: source });
+        replay(&mut g, Action::FinishAttackers);
+        if let Some(enemy) = enemy {
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(own),
+                },
+            );
+            reject(&mut g, Action::FinishTargets);
+            replay(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(enemy),
+                },
+            );
+            pass_pair(&mut g);
+            assert_eq!(g.object_view(enemy).counters.plus_one, 1);
+        } else {
+            assert!(g.state.stack.is_empty());
+            assert_eq!(g.object_view(own).counters.plus_one, 0);
+        }
+    }
+}

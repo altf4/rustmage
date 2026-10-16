@@ -1287,6 +1287,22 @@ def ward_word(word):
     return mana_cost_spec(word[len('ward '):].upper())
 
 
+def nonmana_ward_program(line):
+    # Whole standalone clauses only; mixed costs and residual text stay gated.
+    text=line.casefold()
+    if text=='ward—discard a card.':
+        cost=object_choice('Discard','Opponent',sacrifice_spec('a permanent'),skip=1)
+    elif text=='ward—sacrifice a creature.':
+        cost=object_choice('Sacrifice','Opponent',sacrifice_spec('a creature'),skip=1)
+    elif m:=re.fullmatch(r'ward—pay ([0-9]+) life\.',text):
+        amount=int(m[1])
+        if amount > 65535:return None
+        return [f'MayPayOpponentLife {{ amount: {amount}, skip: 2 }}',
+                f'LoseLife(PlayerSet::Opponent, {amount})','Skip(1)','CounterRelated']
+    else:return None
+    return [cost,'Skip(1)','CounterRelated']
+
+
 def targeted_program(text):
     """Complete target occurrences with independent predicates and effect focus."""
     if not isinstance(text, str) or not text.endswith('.'):
@@ -1376,9 +1392,10 @@ def targeted_program(text):
             return spec, [f'May {{ skip: {len(program)} }}', *program]
     if m := re.fullmatch(r'put (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on target Vampire you control\.', text):
         return 'VampireYou', [counter_instruction('Targets', m[1], m[2])]
-    if m := re.fullmatch(r'put (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on (target creature|target creature you control|another target creature you control|up to one target creature|up to one target creature you control)\.', text):
+    if m := re.fullmatch(r'put (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on (target creature|target creature you control|another target creature you control|target creature an opponent controls|up to one target creature|up to one target creature you control)\.', text):
         rules = {'target creature': 'Creature', 'target creature you control': 'CreatureYou',
                  'another target creature you control': 'OtherCreatureYou',
+                 'target creature an opponent controls': 'CreatureOpponent',
                  'up to one target creature': ('Creature', 0, 1),
                  'up to one target creature you control': ('CreatureYou', 0, 1)}
         return rules[m[3]], [counter_instruction('Targets', m[1], m[2])]
@@ -1437,6 +1454,10 @@ def targeted_program(text):
     if m := re.fullmatch(r'target (player|opponent) (gains|loses) ([0-9]+) life\.', text):
         if int(m[3]) > 65535: return None
         return ('Player' if m[1] == 'player' else 'Opponent'), [f'{"GainLife" if m[2] == "gains" else "LoseLife"}(PlayerSet::Targeted, {int(m[3])})']
+    if m:=re.fullmatch(r'target opponent loses ([0-9]+) life and you gain ([0-9]+) life\.',text):
+        loss,gain=map(int,m.groups())
+        if max(loss,gain)>65535:return None
+        return 'Opponent',[f'LoseLife(PlayerSet::Targeted, {loss})',f'GainLife(PlayerSet::Controller, {gain})']
     if m := re.fullmatch(r'this (?:creature|artifact|enchantment|permanent|spell) deals ([0-9]+) damage to (any target|target creature or planeswalker|target creature|target opponent|target player)\.', text):
         if int(m[1]) > 32767: return None
         return {'any target': 'Any', 'target creature': 'Creature', 'target creature or planeswalker': 'CreaturePlaneswalker', 'target opponent': 'Opponent', 'target player': 'Player'}[m[2]], [f'Damage({int(m[1])})']
@@ -1755,6 +1776,10 @@ def trigger_creature_template(card):
         if line.casefold() in TEXT_FLAGS:
             if limited: return None
             keywords |= TEXT_FLAGS[line.casefold()]; continue
+        if ward:=nonmana_ward_program(line):
+            if limited:return None
+            abilities.append(('Ward',ward,'None'))
+            continue
         words = [word.strip().casefold() for word in line.split(',') if word.strip()]
         if words and all(word in INTRINSIC_KEYWORDS or word == 'prowess' or ward_word(word) is not None for word in words):
             if limited: return None

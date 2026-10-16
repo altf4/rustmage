@@ -9,6 +9,47 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def reach_nonmana_ward(self,game,wanted):
+        for _ in range(10000):
+            obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor'])
+            root=obs['resolving']
+            if root and root['source_card']==wanted and root['related_stack'] is not None and obs['decision'] in ('effect_choice','optional_effect'):
+                return obs
+            objects={o['id']:o for o in obs['objects']};targets=[o for o in objects.values() if o['card']==wanted and o['owner']=='P0' and o['zone']=='Battlefield']
+            def score(a):
+                k=a['kind']
+                if k in ('Activate','AnnounceActivate','BeginActivate','AnnounceMana'):return -100
+                if k=='Cast':
+                    name=objects[a['card']]['card']
+                    if name==wanted:return 160 if not targets else -100
+                    if name=='Shock':
+                        resource=(any(o['owner']=='P1' and o['zone']=='Battlefield' and o['card']=='Grizzly Bears' for o in objects.values()) if wanted=='Vein Ripper' else any(o['owner']=='P1' and o['zone']=='Hand' and o['id']!=a['card'] for o in objects.values()))
+                        return 200 if resource and targets and a['target'].get('Card')==targets[0]['id'] else -100
+                return self.professor_score(obs,a)
+            game.step(obs,max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i])))
+        self.fail('nonmana Ward choice not reached')
+
+    def test_nonmana_ward_costs_are_private_legal_and_replay_through_native_binding(self):
+        for wanted in ['Spectral Snatcher','Sunset Saboteur','Vein Ripper','Sire of Seven Deaths']:
+            for pay in [False,True]:
+                with self.subTest(card=wanted,pay=pay),Game([['Swamp']*24+[wanted]*36,['Forest']*12+['Mountain']*12+['Grizzly Bears']*12+['Shock']*24],seed=7,deck_rules='Freeform') as game:
+                    obs=self.reach_nonmana_ward(game,wanted);self.assertEqual(obs['actor'],'P1');self.assertEqual(game.observe('P0')['actions'],[])
+                    if wanted in ('Spectral Snatcher','Sunset Saboteur'):self.assertIsNone(game.observe('P0')['effect_choice'])
+                    root=obs['resolving'];victim=root['related_stack']['id'];kind=('ChooseOptional' if wanted=='Sire of Seven Deaths' else ('Sacrifice' if wanted=='Vein Ripper' else 'Discard')) if pay else ('ChooseOptional' if wanted=='Sire of Seven Deaths' else 'DeclineEffectPayment')
+                    action=next(a for a in obs['actions'] if a['kind']==kind and (kind!='ChooseOptional' or a['accept']==pay))
+                    before=game.observe('P1');saved=game.snapshot()
+                    with self.assertRaises(EngineError):game.act(obs,{'kind':'Pass'})
+                    self.assertEqual(before,game.observe('P1'))
+                    with game.clone() as fork:expected=fork.act(fork.observe('P1'),action)
+                    after=game.act(obs,action);self.assertEqual(after,expected)
+                    self.assertEqual(any(s['id']==victim for s in after['stack']),pay)
+                    if pay and wanted=='Sire of Seven Deaths':self.assertEqual(after['players'][1]['life'],obs['players'][1]['life']-7)
+                    if pay and kind in ('Discard','Sacrifice'):
+                        card=action['card'] if kind=='Discard' else action['object']['card'];self.assertEqual(next(o for o in after['objects'] if o['id']==card)['zone'],'Graveyard')
+                    game.restore(saved)
+                    with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,0)
+                    again=game.act(game.observe('P1'),action);after['revision']=again['revision'];self.assertEqual(after,again);game.drop_snapshot(saved)
+
     def exhaust_index(self,obs,wanted,index,bounce=False,prefer_card=None):
         objects={o['id']:o for o in obs['objects']};source=next((o for o in objects.values() if o['card']==wanted and o['owner']=='P0' and o['zone']=='Battlefield'),None)
         def score(a):
