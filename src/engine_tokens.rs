@@ -86,6 +86,7 @@ impl Game {
                 offspring_paid: false,
                 kicked: false,
                 bargained: false,
+                x: 0,
             });
         }
         // Every newcomer exists before any entry event inspects the battlefield.

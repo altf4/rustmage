@@ -5,13 +5,15 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,587 have executable rules so far.
+knows all 5,164 pinned Standard identities; 1,599 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
 [Explore and Map](docs/explore.md) add fifteen complete bodies with public exploration,
 exact source incarnations, completed-event observers and the full paid Map activation.
 [Bargain](docs/bargain.md) adds ten complete bodies with exact optional sacrifice costs, joint mana reservations and historical entry qualification.
+[Scalar X casting](docs/scalar-x.md) adds twelve complete bodies with actor-private complete
+interval domains, contextual stack mana values and exact entry amounts.
 [Fixed kicker](docs/fixed-kicker.md) adds ten complete bodies with typed additional costs,
 exact paid-entry qualification and Gnarlid Colony's live counter-qualified trample.
 [Exact live subject conditions](docs/subject-conditions.md) add nine complete
@@ -50,7 +52,7 @@ pre-event replacement timing, token entry and opponent-entry life triggers.
 [Owned entering-object context](docs/entering-object-context.md) adds
 Good-Fortune Unicorn, Serra Redeemer and Wartime Protestors with exact
 non-targeted references and snapshot-safe counters/haste. Observations use schema
-63 (`rustmage::OBSERVATION_SCHEMA`); earlier milestone pages retain their original
+64 (`rustmage::OBSERVATION_SCHEMA`); earlier milestone pages retain their original
 schema and measurements. [Entry predicates](docs/entry-predicates.md) add nine complete bodies
 with entry-time power thresholds, subtype unions, outlaw and kind-or-subtype
 conditions, including Impact Tremors and Warleader's Call.
@@ -180,10 +182,11 @@ cargo run --bin coverage
 ```
 
 For a complete action space, use `Game::legal_action_space()`: it combines concrete
-choices with an inclusive numeric damage range. `legal_actions()` and observation
-`actions` are bounded indexed conveniences for large damage ranges. Submit any
-legal interior amount with native `apply` or Python `Game.act`; `step` selects an
-indexed choice. Full bounds are available in observation `damage_assignment`.
+choices with inclusive numeric damage bounds and complete scalar-X intervals.
+`legal_actions()` and observation `actions` provide bounded representatives for
+large numeric domains. Submit any legal interior amount with native `apply` or
+Python `Game.act`; `step` selects an indexed choice. Full bounds are available in
+observation `damage_assignment` and actor-private `x_choice`.
 
 Use the Rust API from another crate with a path or Git dependency:
 
@@ -278,7 +281,7 @@ no fallback that treats unsupported cards as vanilla.
 Missing: most other triggered/static abilities, multiple target groups, broader costs/modes,
 replacement/prevention effects,
 continuous-effect layers and dependencies, most keywords, general token abilities/copies, wider counter operations,
-planeswalkers, battles, control changes, blink, alternate costs/modes/X, sideboarding, formats and multiplayer.
+planeswalkers, battles, control changes, blink, broader alternate costs/modes/X combinations, sideboarding, formats and multiplayer.
 Those cards are known by the catalogue when Standard legal, but cannot enter a
 game until implemented. There is no claim of complete
 rules conformance, XMage parity, or a ready-to-train general Magic environment.

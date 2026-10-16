@@ -681,6 +681,7 @@ impl Game {
         if viewer != a.item.controller
             || a.additional_paid
             || !a.pay_window
+            || (a.item.source_card.x_symbols() > 0 && a.item.x.is_none())
             || a.needs_offspring()
             || a.needs_kicker()
             || a.needs_bargain()
@@ -703,6 +704,14 @@ impl Game {
         })
     }
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
+        if a.item.kind == StackKind::Spell && a.item.source_card.x_symbols() > 0 {
+            return a.item.x.is_some_and(|x| {
+                self.scalar_x_total(a.item.controller, a.item.card, cost, x)
+                    .is_some_and(|total| {
+                        self.spell_can_fund_total(a.item.controller, a.item.card, total, None)
+                    })
+            });
+        }
         if a.item.source_card.target_cost_reduction().is_some() && a.item.kind == StackKind::Spell {
             return self.announcement_target_fundable(a, None, Some(cost), None, None, false);
         }
@@ -745,6 +754,16 @@ impl Game {
         match announcement.item.kind {
             StackKind::Spell => {
                 let cost = announcement.total_cost.unwrap_or_else(|| {
+                    if announcement.item.source_card.x_symbols() > 0 {
+                        return self
+                            .scalar_x_total(
+                                announcement.item.controller,
+                                announcement.item.card,
+                                Self::announcement_base_cost(announcement),
+                                announcement.item.x.unwrap_or(0),
+                            )
+                            .expect("validated scalar cost");
+                    }
                     self.provisional_target_cost(
                         announcement,
                         Self::announcement_base_cost(announcement),

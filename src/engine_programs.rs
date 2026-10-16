@@ -387,6 +387,9 @@ impl Game {
                     }
                 };
                 if matched && self.queue_trigger(source, index) {
+                    if same && source.card.x_symbols() > 0 {
+                        self.state.pending_triggers.last_mut().unwrap().x = Some(event.x);
+                    }
                     self.state
                         .pending_triggers
                         .last_mut()
@@ -429,6 +432,7 @@ impl Game {
         }
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
+            x: None,
             attachment_trigger: event,
             cast: None,
             id,
@@ -470,6 +474,7 @@ impl Game {
     }
 
     /// CR115.9b: inspect the current expected zone/incarnation; never use target LKI.
+    #[cfg(test)]
     pub(super) fn cast_filter_matches(
         &self,
         filter: CastFilter,
@@ -477,20 +482,30 @@ impl Game {
         source: &ObjectView,
         targets: &[BoundTarget],
     ) -> bool {
+        self.cast_filter_matches_value(filter, card, card.fixed_mana_value(), source, targets)
+    }
+    fn cast_filter_matches_value(
+        &self,
+        filter: CastFilter,
+        card: Card,
+        mana_value: u64,
+        source: &ObjectView,
+        targets: &[BoundTarget],
+    ) -> bool {
         match filter {
             CastFilter::AnyOf(filters) => filters
                 .iter()
-                .any(|f| self.cast_filter_matches(*f, card, source, targets)),
+                .any(|f| self.cast_filter_matches_value(*f, card, mana_value, source, targets)),
             CastFilter::ManaValueMaximum { filter, maximum } => {
-                card.fixed_mana_value() <= maximum
-                    && self.cast_filter_matches(*filter, card, source, targets)
+                mana_value <= maximum
+                    && self.cast_filter_matches_value(*filter, card, mana_value, source, targets)
             }
             CastFilter::ManaValueMinimum { filter, minimum } => {
-                card.fixed_mana_value() >= minimum
-                    && self.cast_filter_matches(*filter, card, source, targets)
+                mana_value >= minimum
+                    && self.cast_filter_matches_value(*filter, card, mana_value, source, targets)
             }
             CastFilter::Targeted { filter, target } => {
-                self.cast_filter_matches(*filter, card, source, targets)
+                self.cast_filter_matches_value(*filter, card, mana_value, source, targets)
                     && targets.iter().any(|bound| {
                         if let Target::Player(player) = bound.target {
                             return target == CastTarget::OpponentOrCreature
@@ -553,9 +568,12 @@ impl Game {
                     if related
                         && (!ability.condition.requires_opponents_turn()
                             || self.state.active != source.owner)
-                        && self.cast_filter_matches(
+                        && self.cast_filter_matches_value(
                             filter,
                             card,
+                            stack
+                                .map(|i| self.state.stack[i].mana_value())
+                                .unwrap_or_else(|| card.fixed_mana_value()),
                             &source,
                             stack
                                 .map(|i| self.state.stack[i].targets.as_slice())
@@ -829,7 +847,8 @@ impl Game {
                         c.offspring == Some(true)
                             || c.kicker == Some(true)
                             || c.bargain == Some(true)
-                    }) {
+                    }) || item.x.is_some()
+                    {
                         let mut movement = self.entry_move(
                             item.card,
                             Zone::Battlefield,
@@ -839,6 +858,7 @@ impl Game {
                             item.cast.is_some_and(|c| c.offspring == Some(true));
                         movement.kicked = item.cast.is_some_and(|c| c.kicker == Some(true));
                         movement.bargained = item.cast.is_some_and(|c| c.bargain == Some(true));
+                        movement.x = item.x.unwrap_or(0);
                         self.stage_entries(vec![movement], None);
                     } else {
                         self.move_object(item.card, Zone::Battlefield);
@@ -1061,7 +1081,7 @@ impl Game {
                     self.add_combat_red(item.controller, u128::from(amount))
                 }
                 Instruction::AddCombatRedScaled(value) => {
-                    let amount = self.amount_value(value, item.object, item.controller);
+                    let amount = self.item_amount(value, &item);
                     self.add_combat_red(item.controller, amount);
                 }
                 Instruction::AddPoison(set, amount) => {
@@ -1145,6 +1165,22 @@ impl Game {
                 }
                 Instruction::Connive { subject, amount } => {
                     self.start_connive(&item, subject, amount)
+                }
+                Instruction::CounterUnlessPayScaled { amount, exile } => {
+                    let generic = u32::try_from(self.item_amount(amount, &item))
+                        .capacity("counter payment exhausted");
+                    if self.start_resolution_payment(
+                        &item,
+                        ManaCost {
+                            colored: [0; 6],
+                            generic,
+                        },
+                        CounterSubject::Targets,
+                        exile,
+                        0,
+                    ) {
+                        return;
+                    }
                 }
                 Instruction::CounterUnlessPay {
                     cost,
@@ -1295,7 +1331,7 @@ impl Game {
                     amount,
                     tapped,
                 } => {
-                    let amount = self.amount_value(amount, item.object, item.controller);
+                    let amount = self.item_amount(amount, &item);
                     self.create_tokens(item.controller, token, amount, tapped);
                 }
                 Instruction::CreateTokens {
@@ -1333,9 +1369,7 @@ impl Game {
                 Instruction::Draw(set, _) | Instruction::DrawScaled(set, _) => {
                     let amount = match instruction {
                         Instruction::Draw(_, amount) => u128::from(amount),
-                        Instruction::DrawScaled(_, value) => {
-                            self.amount_value(value, item.object, item.controller)
-                        }
+                        Instruction::DrawScaled(_, value) => self.item_amount(value, &item),
                         _ => unreachable!(),
                     };
                     for player in self.program_players(set, &item) {
@@ -1343,9 +1377,8 @@ impl Game {
                     }
                 }
                 Instruction::DrainLifeScaled(value) => {
-                    let amount =
-                        i128::try_from(self.amount_value(value, item.object, item.controller))
-                            .capacity("life drain amount representation exhausted");
+                    let amount = i128::try_from(self.item_amount(value, &item))
+                        .capacity("life drain amount representation exhausted");
                     self.lose_life(item.controller.other(), amount);
                     self.gain_life(item.controller, amount);
                 }
@@ -1369,7 +1402,7 @@ impl Game {
                     let amount = match instruction {
                         Instruction::GainLife(_, amount) => i128::from(amount),
                         Instruction::GainLifeScaled(_, value) => {
-                            i128::try_from(self.amount_value(value, item.object, item.controller))
+                            i128::try_from(self.item_amount(value, &item))
                                 .capacity("life gain amount representation exhausted")
                         }
                         _ => unreachable!(),
@@ -1426,7 +1459,7 @@ impl Game {
                             i128::from(amount)
                         }
                         Instruction::DamageScaled(value) => {
-                            i128::try_from(self.amount_value(value, item.object, item.controller))
+                            i128::try_from(self.item_amount(value, &item))
                                 .capacity("damage amount representation exhausted")
                         }
                         Instruction::DamageDiscardAmount(_) => i128::from(
@@ -1472,7 +1505,7 @@ impl Game {
                     ..
                 } => {
                     let amount = if let Instruction::GrowScaled { amount, .. } = instruction {
-                        i128::try_from(self.amount_value(amount, item.object, item.controller))
+                        i128::try_from(self.item_amount(amount, &item))
                             .capacity("growth amount representation exhausted")
                     } else {
                         1
@@ -1631,46 +1664,56 @@ impl Game {
                         }
                     }
                 }
-                Instruction::PutCounters {
-                    subject,
-                    kind,
-                    amount,
-                } => match subject {
-                    Subject::Entering => {
-                        if let Some(id) = self.entering_subject(&item) {
-                            self.state.objects[id as usize]
-                                .counters
-                                .add(kind, u64::from(amount));
+                Instruction::PutCounters { .. } | Instruction::PutCountersScaled { .. } => {
+                    let (subject, kind, amount) = match instruction {
+                        Instruction::PutCounters {
+                            subject,
+                            kind,
+                            amount,
+                        } => (subject, kind, u64::from(amount)),
+                        Instruction::PutCountersScaled {
+                            subject,
+                            kind,
+                            amount,
+                        } => (
+                            subject,
+                            kind,
+                            u64::try_from(self.item_amount(amount, &item))
+                                .capacity("counter amount exhausted"),
+                        ),
+                        _ => unreachable!(),
+                    };
+                    match subject {
+                        Subject::Entering => {
+                            if let Some(id) = self.entering_subject(&item) {
+                                self.state.objects[id as usize].counters.add(kind, amount);
+                            }
                         }
-                    }
-                    Subject::Attached => {
-                        if let Some(id) = self.attached_subject(&item) {
-                            self.state.objects[id as usize]
-                                .counters
-                                .add(kind, u64::from(amount));
+                        Subject::Attached => {
+                            if let Some(id) = self.attached_subject(&item) {
+                                self.state.objects[id as usize].counters.add(kind, amount);
+                            }
                         }
-                    }
-                    Subject::Source => {
-                        if self.on_battlefield(item.card)
-                            && self.object_ref(item.card) == item.object
-                        {
-                            self.state.objects[item.card as usize]
-                                .counters
-                                .add(kind, u64::from(amount));
-                        }
-                    }
-                    Subject::Targets => {
-                        for bound in &item.targets {
-                            if self.same_target_object(*bound)
-                                && let Target::Card(id) = bound.target
+                        Subject::Source => {
+                            if self.on_battlefield(item.card)
+                                && self.object_ref(item.card) == item.object
                             {
-                                self.state.objects[id as usize]
+                                self.state.objects[item.card as usize]
                                     .counters
-                                    .add(kind, u64::from(amount));
+                                    .add(kind, amount);
+                            }
+                        }
+                        Subject::Targets => {
+                            for bound in &item.targets {
+                                if self.same_target_object(*bound)
+                                    && let Target::Card(id) = bound.target
+                                {
+                                    self.state.objects[id as usize].counters.add(kind, amount);
+                                }
                             }
                         }
                     }
-                },
+                }
                 Instruction::Tap | Instruction::Untap => {
                     if instruction == Instruction::Untap {
                         for bound in &item.targets {

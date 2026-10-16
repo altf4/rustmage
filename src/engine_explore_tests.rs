@@ -208,7 +208,7 @@ fn all_fifteen_full_bodies_cast_with_printed_characteristics_in_both_seats() {
                     Some(Zone::Hand)
                 );
             }
-            assert_eq!(g.observe(p).schema, 63);
+            assert_eq!(g.observe(p).schema, OBSERVATION_SCHEMA);
         }
     }
 }

@@ -150,6 +150,7 @@ def extract_cost_reductions(card):
                 quantity=candidate;amount=1;source_only=True;filt='CastFilter::Any'
         elif m:=re.fullmatch(r'(?:Vivid — )?This spell costs \{([0-9]+)\} less to cast for each (.+)\.',line):
             quantity=reduction_quantity(m[2]);amount=int(m[1]);source_only=True;filt='CastFilter::Any'
+            if '{X}' in card.get('mana_cost','') and amount==1 and m[2]=='creature you control with power 4 or greater':derived='SpellReductionAmount::CreaturePowerCount { minimum: 4 }'
             if m[2]=='creature that attacked this turn':derived=f'SpellReductionAmount::Attackers {{ factor: {amount} }}'
         elif m:=re.fullmatch(r'This spell costs \{X\} less to cast, where X is (?:the number of )?(.+)\.',line):
             quantity=reduction_quantity(m[1].removeprefix('the '));amount=1;source_only=True;filt='CastFilter::Any'
@@ -955,6 +956,56 @@ def extract_kicker(card):
     colored,generic=choices[0]
     if any(generic+n>4294967295 or any(a+b>4294967295 for a,b in zip(colored,mana)) for mana,n in base):return card,None
     return dict(card,oracle_text='\n'.join(line for line in lines if line!=found[0])),f'ManaCost {{ colored: {colored}, generic: {generic} }}'
+
+
+def scalar_x_body(card):
+    """Complete fixed-target, single-X bodies. Other X/card-cost systems stay closed."""
+    cost=card.get('mana_cost','')
+    if card.get('layout')!='normal' or cost.count('{X}')!=1 or fixed_cost(cost.replace('{X}','') or '{0}') is None:return None
+    if not isinstance(card.get('oracle_text'),str):return None
+    creature='Creature' in card.get('type_line','').split(' — ')[0].split()
+    if creature and any(not isinstance(card.get(k),str) or re.fullmatch(r'-?[0-9]+',card[k]) is None or abs(int(card[k]))>32767 for k in ('power','toughness')):return None
+    text=re.sub(r'\([^()]*\)','',card['oracle_text'])
+    text='\n'.join(line.strip() for line in text.splitlines() if line.strip())
+    names=[card.get('name',''),card.get('name','').split(',')[0]]
+    for name in names:
+        if name:text=text.replace(name,'this creature' if creature else 'this spell')
+    text=text.lower()
+    if not creature and card.get('type_line') not in ('Instant','Sorcery'):return None
+    if creature and not text.startswith(('lifelink\n','flying\n')):return None
+    x='AmountValue::ChosenX'
+    def scaled_token(body):
+        program=statement_program(body)
+        if program is None or len(program)!=1:return None
+        return program[0].replace('CreateTokens {','CreateTokensScaled {').replace('amount: 1,','amount: '+x+',')
+    choco='Create a 2/2 green Bird creature token with "Whenever a land you control enters, this token gets +1/+0 until end of turn."'
+    bodies={
+        'draw x cards.':('None',['DrawScaled(PlayerSet::Controller, '+x+')']),
+        'target creature gets +x/+0 and gains first strike until end of turn.':('Creature',['GrowScaled { subject: Subject::Targets, amount: '+x+', power: 1, toughness: 0 }','GrantKeywords { subject: Subject::Targets, keywords: Keywords(512) }']),
+        'target creature gets -x/-x until end of turn.':('Creature',['GrowScaled { subject: Subject::Targets, amount: '+x+', power: -1, toughness: -1 }']),
+        'tap target creature. put twice x stun counters on it.':('Creature',['Tap','PutCountersScaled { subject: Subject::Targets, kind: CounterKind::Stun, amount: AmountValue::Multiple { value: &'+x+', factor: 2 } }']),
+        'counter target spell unless its controller pays {x}.':('Spell',['CounterUnlessPayScaled { amount: '+x+', exile: false }']),
+        "counter target spell unless its controller pays {x}. if that spell is countered this way, exile it instead of putting it into its owner's graveyard.":('Spell',['CounterUnlessPayScaled { amount: '+x+', exile: true }']),
+        'this spell deals x damage to any target. draw two cards, then discard a card.':('Any',['DamageScaled('+x+')','Draw(PlayerSet::Controller, 2)','Discard(PlayerSet::Controller, 1)']),
+    }
+    if text in bodies:
+        target,program=bodies[text];return 'Spell',0,[],(target,program),False
+    if text=='this spell deals x damage to any target.\n'+choco.lower():
+        tokens=statement_program(choco)
+        if tokens:return 'Spell',0,[],('Any',['DamageScaled('+x+')',*tokens]),False
+    if text=='create x 1/1 black rat creature tokens with "this token can\'t block." creatures you control gain haste until end of turn.':
+        token=scaled_token('Create a 1/1 black Rat creature token with "This token can\'t block."')
+        tail=statement_program('Creatures you control gain haste until end of turn.')
+        if token and tail:return 'Spell',0,[],('None',[token,*tail]),False
+    if text=='create x 1/1 white ally creature tokens, then put a +1/+1 counter on each creature you control.':
+        token=scaled_token('Create a 1/1 white Ally creature token.')
+        tail=statement_program('Put a +1/+1 counter on each creature you control.')
+        if token and tail:return 'Spell',0,[],('None',[token,*tail]),False
+    if creature and text=='lifelink\nthis creature enters with x +1/+1 counters on him.\nwhen this creature enters, he deals x damage to target opponent.':
+        return 'Creature('+str(int(card['power']))+', '+str(int(card['toughness']))+')',64,[('SelfEnters',['DamageScaled('+x+')'],'Opponent')],None,True
+    if creature and text=='flying\nthis creature enters with x +1/+1 counters on it.\nwhen this creature enters, you gain 2 life.':
+        return 'Creature('+str(int(card['power']))+', '+str(int(card['toughness']))+')',1,[('SelfEnters',['GainLife(PlayerSet::Controller, 2)'],'None')],None,True
+    return None
 
 
 def fixed_kicker_body(card):
@@ -3051,6 +3102,8 @@ def compile_catalogue(snapshot, target):
     scaling_rows = []
     additional_rows = []
     flashback_rows = []
+    x_rows = []
+    x_entry_rows = []
     kicker_rows = []
     bargain_rows = []
     kicked_entry_rows = []
@@ -3127,6 +3180,13 @@ def compile_catalogue(snapshot, target):
                 effect, keywords, abilities, activations, enters, modifiers, grants = static
                 if modifiers: static_rows.append(f'        {index} => &[{", ".join(modifiers)}],')
                 if grants: grant_rows.append(f'        {index} => &[{", ".join(grants)}],')
+        scalar=scalar_x_body(card) if not bargain and all(v is None for v in (flashback,offspring,kicker,additional,target_reduction)) and (not reductions or len(reductions)==1 and 'SpellReductionAmount::CreaturePowerCount { minimum: 4 }' in reductions[0]) else None
+        if '{X}' in cost:
+            if scalar is None: effect='Unsupported'
+            else:
+                effect,keywords,abilities,spell,x_entry=scalar
+                activations=[];enters=[0,0,0]
+                cost=cost.replace('{X}','') or '{0}'
         # Offspring copies do not yet clone kicker/counter-grant recipes. Such a
         # combined body must stay gated rather than admit an incomplete copy.
         kicker_body=fixed_kicker_body(card) if kicker is not None and offspring is None else None
@@ -3180,6 +3240,9 @@ def compile_catalogue(snapshot, target):
         if effect != 'Unsupported':
             supported.append(index)
             if bargain: bargain_rows.append(f'        {index} => Some({bargain_reduction}),')
+            if scalar is not None:
+                x_rows.append(f'        {index} => 1,')
+                if x_entry:x_entry_rows.append(str(index))
             if kicker is not None:
                 kicker_rows.append(f'        {index} => Some({kicker}),')
                 if kicked_counters:kicked_entry_rows.append(f'        {index} => {kicked_counters},')
@@ -3223,7 +3286,7 @@ def compile_catalogue(snapshot, target):
         if effect != 'Unsupported':
             if dynamic is not None:dynamic_rows.append(f'        {index} => Some({dynamic}),')
             if scaling:scaling_rows.append(f'        {index} => &['+', '.join(scaling)+'],')
-        definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(name)}, oracle_id: {oracle_id}, mana_cost: {quote(cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in cards).lower()}, legendary: {str(card.get('type_line', '').startswith('Legendary ')).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, activated: {rust_activations(activations)}, enters: Counters {{ plus_one: {enters[0]}, minus_one: {enters[1]}, stun: {enters[2]}, loyalty: 0 }}, entry: EntryTapped::{entry}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
+        definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(name)}, oracle_id: {oracle_id}, mana_cost: {quote(card.get("mana_cost",cost) if scalar is not None else cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in cards).lower()}, legendary: {str(card.get('type_line', '').startswith('Legendary ')).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, activated: {rust_activations(activations)}, enters: Counters {{ plus_one: {enters[0]}, minus_one: {enters[1]}, stun: {enters[2]}, loyalty: 0 }}, entry: EntryTapped::{entry}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
         if offspring_key is not None:
             offspring_factories[offspring_key]=(index,definitions[-1],color_mask,card.get('type_line','').split(' — ')[-1])
         if uncounterable and effect != 'Unsupported': uncounterable_rows.append(str(index))
@@ -3322,6 +3385,8 @@ def compile_catalogue(snapshot, target):
     lines += ['#[rustfmt::skip]', "pub(super) fn keyword_grants(card: Card) -> &'static [KeywordGrant] {", '    match card.0 {', *grant_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn additional_cost(card: Card) -> Option<AdditionalCost> {', '    match card.0 {', *additional_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn bargain_reduction(card: Card) -> Option<u32> {', '    match card.0 {', *bargain_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn x_symbols(card: Card) -> u8 {', '    match card.0 {', *x_rows, '        _ => 0,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn x_entry_counters(card: Card) -> bool {', '    '+('matches!(card.0, '+' | '.join(x_entry_rows)+')' if x_entry_rows else 'false'), '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn kicker_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *kicker_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn kicked_entry_counters(card: Card) -> u16 {', '    match card.0 {', *kicked_entry_rows, '        _ => 0,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn counter_keyword_grants(card: Card) -> &'static [(CounterKind, Keywords)] {", '    match card.0 {', *counter_grant_rows, '        _ => &[],', '    }', '}', '']

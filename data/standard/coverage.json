@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "8adc126ecaca5eab9b92e2248811b4e2ca4db6f70df03647cd217bd25a2a53e7",
+  "catalogue_version": "35307f2a78dc7988754a4d54ae6702e0bd0834108502c97de94ea0d3c227fc8e",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1587,
-  "implemented_total": 1593,
+  "implemented_standard_cards": 1599,
+  "implemented_total": 1605,
   "token_definitions": 74,
   "emblem_definitions": 1,
   "cards": [
@@ -4456,8 +4456,8 @@
     {
       "name": "Choco-Comet",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Chocobo Kick",
@@ -16594,8 +16594,8 @@
     {
       "name": "Mind Spring",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Mind Transfer Protocol",
@@ -17128,7 +17128,7 @@
     {
       "name": "Morlun, Devourer of Spiders",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -18724,8 +18724,8 @@
     {
       "name": "Pedal to the Metal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Peer Past the Veil",
@@ -19480,8 +19480,8 @@
     {
       "name": "Procrastinate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Proctor of Potential",
@@ -19630,7 +19630,7 @@
     {
       "name": "Pterafractyl",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -23530,8 +23530,8 @@
     {
       "name": "Slice from the Shadows",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Slick Imitator",
@@ -23806,8 +23806,8 @@
     {
       "name": "Song of Totentanz",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Songcrafter Mage",
@@ -24004,8 +24004,8 @@
     {
       "name": "Spectral Denial",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Spectral Interference",
@@ -25834,8 +25834,8 @@
     {
       "name": "Syncopate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Synthesizer Labship",
@@ -27988,8 +27988,8 @@
     {
       "name": "Traumatic Critique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Travel the Overworld",
@@ -28726,8 +28726,8 @@
     {
       "name": "United Front",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "University Campus",

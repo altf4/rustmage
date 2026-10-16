@@ -9,7 +9,7 @@ use crate::cards::{
     TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
 /// Version of the public observation structure, including owned trigger context.
-pub const OBSERVATION_SCHEMA: u32 = 63;
+pub const OBSERVATION_SCHEMA: u32 = 64;
 
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
@@ -26,6 +26,8 @@ mod forage;
 mod target_library;
 pub use forage::{ForageRoute, ForageView};
 pub use target_library::{TargetLibraryMovement, TargetLibraryView};
+#[path = "engine_scalar_x.rs"]
+mod scalar_x;
 #[path = "engine_spell_costs.rs"]
 mod spell_costs;
 #[path = "engine_target_costs.rs"]
@@ -249,6 +251,7 @@ define_actions! {
     ChooseBargain {
         sacrifice: Option<ObjectRef>,
     },
+    ChooseX { value: u32 },
     ChooseKicker {
         pay: bool,
     },
@@ -567,6 +570,8 @@ pub struct AttachmentTriggerView {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
+    /// Chosen X, retained independently by a spell and its own entry-trigger packets.
+    pub x: Option<u32>,
     pub attachment_trigger: Option<Box<AttachmentTriggerView>>,
     pub cast: Option<CastInfo>,
     /// The exact event object; this is a non-targeted reference, never rebound.
@@ -591,6 +596,15 @@ pub struct SpellView {
 }
 
 impl SpellView {
+    /// Characteristics of this stack spell, independent of actual mana paid.
+    pub fn mana_value(&self) -> u64 {
+        self.source_card.fixed_mana_value()
+            + if self.kind == StackKind::Spell {
+                u64::from(self.source_card.x_symbols()) * u64::from(self.x.unwrap_or(0))
+            } else {
+                0
+            }
+    }
     pub(crate) fn trigger_definition(&self) -> Card {
         self.attachment_trigger
             .as_ref()
@@ -781,6 +795,9 @@ enum Pending {
         player: Player,
     },
     Bargain {
+        player: Player,
+    },
+    X {
         player: Player,
     },
     Kicker {
@@ -974,6 +991,7 @@ pub struct ZoneChange {
     /// Paid qualification belongs only to this exact entry event.
     pub kicked: bool,
     pub bargained: bool,
+    pub x: u32,
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -1096,15 +1114,37 @@ pub struct DamageAssignmentRange {
     pub minimum: i128,
     pub maximum: i128,
 }
-/// Complete action space: concrete choices plus every value of the numeric range.
+/// Every integer in this inclusive interval is legal; intervals are sorted and disjoint.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct XInterval {
+    pub minimum: u32,
+    pub maximum: u32,
+}
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct XChoiceView {
+    pub card: ObjectRef,
+    pub intervals: Vec<XInterval>,
+}
+impl XChoiceView {
+    pub fn contains(&self, value: u32) -> bool {
+        self.intervals
+            .iter()
+            .any(|r| value >= r.minimum && value <= r.maximum)
+    }
+}
+
+/// Complete action space: concrete choices, damage bounds and scalar intervals.
 #[derive(Clone, Debug, Serialize)]
 pub struct LegalActionSpace {
     pub choices: Vec<Action>,
+    pub x_choice: Option<XChoiceView>,
     pub damage_assignment: Option<DamageAssignmentRange>,
 }
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    /// Complete scalar domain, visible only to its choosing actor.
+    pub x_choice: Option<XChoiceView>,
     pub schema: u32,
     /// Number of distinct declared attacker objects this turn, including departures.
     pub creatures_attacked_this_turn: usize,
@@ -1349,6 +1389,7 @@ impl Game {
             Pending::Priority => Some(self.state.priority),
             Pending::Explore { player }
             | Pending::Bargain { player }
+            | Pending::X { player }
             | Pending::Kicker { player }
             | Pending::Offspring { player }
             | Pending::SpellCost { player }
@@ -1380,10 +1421,11 @@ impl Game {
         }
     }
 
-    /// Complete legal space, including all numeric damage assignments.
+    /// Complete legal space, including damage assignments and scalar-X intervals.
     pub fn legal_action_space(&self) -> LegalActionSpace {
         LegalActionSpace {
             choices: self.legal_actions(),
+            x_choice: self.x_choice(),
             damage_assignment: self.damage_assignment_range(),
         }
     }
@@ -1410,9 +1452,9 @@ impl Game {
             maximum: choice.remaining,
         })
     }
-    /// Reuse a caller-owned buffer of concrete indexed choices. Numeric damage
-    /// ranges up to 64 wide are exhaustive; larger ranges provide min/lethal/max
-    /// conveniences. Use legal_action_space for the complete parametric space.
+    /// Reuse a caller-owned buffer of concrete indexed choices. Numeric ranges
+    /// up to 64 wide are exhaustive; larger damage/X domains provide bounded
+    /// representatives. Use legal_action_space for the complete parametric space.
     pub fn legal_actions_into(&self, out: &mut Vec<Action>) {
         out.clear();
         if self.actor().is_none() {
@@ -1496,7 +1538,10 @@ impl Game {
             if self.actor() != Some(actor) {
                 return Err(Error::WrongActor);
             }
-            let legal = if let Action::AssignDamage { target, amount } = &action {
+            let legal = if let Action::ChooseX { value } = &action {
+                self.x_choice()
+                    .is_some_and(|domain| domain.contains(*value))
+            } else if let Action::AssignDamage { target, amount } = &action {
                 self.damage_assignment_range().is_some_and(|range| {
                     *target == range.target && *amount >= range.minimum && *amount <= range.maximum
                 })
@@ -1743,6 +1788,19 @@ impl Game {
                         }
                         _ => true,
                     };
+                    if obj.card.x_symbols() > 0 {
+                        if completable
+                            && !self.scalar_x_intervals(actor, card).is_empty()
+                            && emit(if exile {
+                                Action::AnnounceExile { card }
+                            } else {
+                                Action::AnnounceCast { card }
+                            })
+                        {
+                            return true;
+                        }
+                        continue;
+                    }
                     let target_cost = obj.card.target_cost_reduction().is_some();
                     let has_generic = if flashback {
                         obj.card.flashback_cost().unwrap().generic > 0
@@ -2047,6 +2105,29 @@ impl Game {
                         && emit(Action::ChooseBargain { sacrifice })
                     {
                         return true;
+                    }
+                }
+            }
+            Pending::X { .. } => {
+                if let Some(domain) = self.x_choice() {
+                    for range in domain.intervals {
+                        if range.maximum - range.minimum <= 64 {
+                            for value in range.minimum..=range.maximum {
+                                if emit(Action::ChooseX { value }) {
+                                    return true;
+                                }
+                            }
+                        } else {
+                            for value in [
+                                range.minimum,
+                                range.minimum + (range.maximum - range.minimum) / 2,
+                                range.maximum,
+                            ] {
+                                if emit(Action::ChooseX { value }) {
+                                    return true;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -2451,6 +2532,10 @@ impl Game {
                 let a = self.state.announcing.as_mut().unwrap();
                 a.item.cast.as_mut().unwrap().bargain = Some(sacrifice.is_some());
                 a.additional = sacrifice;
+                self.continue_announcement_choices(false);
+            }
+            Action::ChooseX { value } => {
+                self.state.announcing.as_mut().unwrap().item.x = Some(value);
                 self.continue_announcement_choices(false);
             }
             Action::ChooseKicker { pay } => {
@@ -2922,6 +3007,7 @@ impl Game {
                 offspring_paid: false,
                 kicked: false,
                 bargained: false,
+                x: 0,
             };
         }
         assert_ne!(
@@ -3066,6 +3152,7 @@ impl Game {
             offspring_paid: false,
             kicked: false,
             bargained: false,
+            x: 0,
         }
     }
 
@@ -3509,6 +3596,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
+            x_choice: if owns_choice { self.x_choice() } else { None },
             schema: OBSERVATION_SCHEMA,
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
             creatures_died_this_turn: s.creatures_died_this_turn,
@@ -3531,6 +3619,7 @@ impl Game {
                 Pending::Bargain { .. } => "bargain",
                 Pending::Kicker { .. } => "kicker",
                 Pending::Explore { .. } => "explore",
+                Pending::X { .. } => "x",
                 Pending::SpellCost { .. } => "spell_cost",
                 Pending::ActivationCost { .. } => "activation_cost",
                 Pending::Modes { .. } => "spell_mode",
@@ -4347,3 +4436,7 @@ mod explore_tests;
 #[cfg(test)]
 #[path = "engine_bargain_tests.rs"]
 mod bargain_tests;
+
+#[cfg(test)]
+#[path = "engine_scalar_x_tests.rs"]
+mod scalar_x_tests;
