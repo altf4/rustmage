@@ -51,12 +51,21 @@ impl Game {
         ));
         let owner = self.state.objects[object.card as usize].owner;
         let card = self.state.objects[object.card as usize].card;
+        let prior_top = self.public_library_top(owner);
         let event = self.move_object(object.card, Zone::Library);
         if event.moved && event.destination == Zone::Library {
             let library = &mut self.state.players[owner.index()].library;
             if !card.is_token() && destination == LibraryDestination::Bottom {
                 assert_eq!(library.pop(), Some(object.card));
                 library.insert(0, object.card);
+            }
+            if destination == LibraryDestination::Top && !card.is_token() {
+                self.remember_library_top(owner, event.after);
+            } else if let Some(prior) = prior_top
+                && self.state.players[owner.index()].library.last() == Some(&prior.card)
+                && self.object_ref(prior.card) == prior
+            {
+                self.remember_library_top(owner, prior);
             }
             // Publish only this targeted public movement. This is a historical
             // record; later private looks, rearrangements and draws leave it alone.

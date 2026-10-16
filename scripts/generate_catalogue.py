@@ -370,11 +370,12 @@ PREDEFINED = {
     'Clue': '{2}, Sacrifice this artifact: Draw a card.',
     'Mutagen': '{1}, {T}, Sacrifice this artifact: Put a +1/+1 counter on target creature. Activate only as a sorcery.',
     'Heartwood': '{T}: Add {R} or {G}.',
+    'Map': '{1}, {T}, Sacrifice this artifact: Target creature you control explores. Activate only as a sorcery.',
     'Lander': '{2}, {T}, Sacrifice this artifact: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle.',
 }
 
 def predefined_program(text):
-    m = re.fullmatch(r'create (a|an|one|two|three|four|five|six|seven|eight) (tapped )?(Treasure|Gold|Food|Clue|Mutagen|Heartwood|Lander) tokens?\.', text)
+    m = re.fullmatch(r'create (a|an|one|two|three|four|five|six|seven|eight) (tapped )?(Treasure|Gold|Food|Clue|Mutagen|Heartwood|Lander|Map) tokens?\.', text)
     if not m: return None
     count, tapped, kind = m.groups()
     factory = {'name': kind + ' Token', 'subtypes': kind, 'colors': 24 if kind == 'Heartwood' else 0,
@@ -1312,6 +1313,8 @@ def statement_program(text):
         return predefined_program('create a Mutagen token.')
     if text=='you lose 2 life unless you control a Villain.':
         return ['If { guard: StepGuard::Expression { value: '+stat_value('Villains you control')+', minimum: None, maximum: Some(0) }, skip: 1 }','LoseLife(PlayerSet::Controller, 2)']
+    if text=='this creature explores.':return ['Explore(Subject::Source)']
+    if text=="this creature gets +1/+0 until end of turn and can't be blocked this turn.":return [grow_instruction('Source',1,0),'GrantKeywords { subject: Subject::Source, keywords: Keywords(16384) }']
     # A complete quoted token ability can end the final sentence without an
     # extra period outside the quote. Split only at an unquoted sentence edge.
     if not text.endswith('.') and '"' in text:
@@ -1476,6 +1479,7 @@ for _name, _kinds, _relation, _tapped, _minimum, _maximum in [
     TARGET_RULES[_name] = (f'TargetRule::Object {{ zone: TargetZone::{_zone}, kinds: {_kinds}, '
                           f'relation: {_relation}, other: false, nonland: false, '
                           f'tapped: {str(_tapped).lower()}, min_mana: {_minimum}, max_mana: {_maximum} }}')
+TARGET_RULES['CreatureEnchantmentPlaneswalker']='TargetRule::Object { zone: TargetZone::Battlefield, kinds: 97, relation: -1, other: false, nonland: false, tapped: false, min_mana: 0, max_mana: u32::MAX }'
 TARGET_RULES['DefendingCreature'] = 'TargetRule::DefendingCreature'
 TARGET_RULES['PirateYou'] = filtered_target('CreatureYou','Subtype("Pirate")')
 TARGET_RULES['CaveGraveYou'] = 'TargetRule::Filtered { base: &TargetRule::Object { zone: TargetZone::Graveyard, kinds: 0, relation: 0, other: false, nonland: false, tapped: false, min_mana: 0, max_mana: u32::MAX }, predicate: &TargetPredicate::Subtype("Cave") }'
@@ -1812,6 +1816,12 @@ def targeted_program(text):
             clause = m[2][:-len(" and can't be blocked this turn.")] + '.'
             if program := keyword_effect(clause, 'Targets'):
                 return rule, program + ['GrantKeywords { subject: Subject::Targets, keywords: Keywords(16384) }']
+    if text=='target creature you control explores.':return 'CreatureYou',['Explore(Subject::Targets)']
+    if text=='target creature you control explores, then it explores again.':return 'CreatureYou',['Explore(Subject::Targets)','Explore(Subject::Targets)']
+    if text=='destroy target creature, enchantment, or planeswalker. Its controller creates two Map tokens.':
+        token=predefined_program('create two Map tokens.')[0]
+        key=re.search(r'token: (__TOKEN_[0-9a-f]+__)',token)[1]
+        return 'CreatureEnchantmentPlaneswalker',[f'DestroyAndCreateForController {{ token: {key}, amount: 2 }}']
     if text == "exile target player's graveyard.": return 'Player', ['ExileGraveyard(PlayerSet::Targeted)']
     if m := re.fullmatch(r'(destroy|exile) (.+?)\.', text):
         rule = REMOVAL_SUBJECTS.get(m[2])
@@ -2295,6 +2305,7 @@ def trigger_creature_template(card):
         'Whenever an enchantment you control enters, ': 'EnchantmentEntersYou',
         'Whenever another creature you control enters, ': 'OtherCreatureEntersYou',
         'Whenever a creature you control enters, ': 'CreatureEntersYou',
+        'Whenever a creature you control explores, ': 'CreatureExploresYou',
         'Whenever a creature an opponent controls enters, ': 'CreatureEnters { relation: CastRelation::Opponent, other: false }',
         'Whenever another Villain you control enters, ': 'OtherSubtypeEntersYou("Villain")',
         'Whenever this creature or another creature you control enters, ': 'CreatureEntersYou',
@@ -2426,6 +2437,7 @@ def trigger_creature_template(card):
                 # Other-creature events and later targeted clauses have other antecedents.
                 if condition in ('SelfEnters', 'SelfDies', 'SelfEntersOrDies', 'SelfAttacks', 'SelfEntersOrAttacks', 'SelfDiscarded', 'SelfCycled'):
                     effect_text = re.sub(r'^(?:[Ii]t|[Hh]e|[Ss]he) deals ', 'this creature deals ', effect_text)
+                    if effect_text=='it explores.':effect_text='this creature explores.'
                     if m:=re.fullmatch(r'(?:it|he|she) connives(?: ([0-9]+))?\.',effect_text):
                         effect_text='this creature connives'+(' '+m[1] if m[1] else '')+'.'
                 if condition in ('SelfEnters','SelfAttacks','SelfEntersOrAttacks') and re.fullmatch(r'[Pp]ut (?:a|one|two|three|four|five|six) (?:\+1/\+1|-1/-1|stun) counters? on it if you gained life this turn\.',effect_text):

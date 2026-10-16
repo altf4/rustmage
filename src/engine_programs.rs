@@ -5,6 +5,7 @@ use crate::cards::{CastFilter, CastTarget};
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Resolution {
     pub connive: Option<Box<super::connive::ConniveSequence>>,
+    pub explore: Option<Box<ExploreChoiceView>>,
     pub item: SpellView,
     pub mana_payment: Option<Box<resolution_mana::ResolutionPayment>>,
     pub forage: Option<Box<forage::ForageSelection>>,
@@ -96,6 +97,7 @@ impl Game {
             .library
             .take()
             .unwrap();
+        self.forget_library_top(player);
         // No zone changes or observable partial rearrangement occur while choosing.
         // Remove the looked-at suffix once, then preserve the untouched middle.
         for &card in &choice.graveyard {
@@ -299,7 +301,8 @@ impl Game {
                     TriggerCondition::SelfEnters
                     | TriggerCondition::SelfEntersOrAttacks
                     | TriggerCondition::SelfEntersOrDies => same,
-                    TriggerCondition::Foraged
+                    TriggerCondition::CreatureExploresYou
+                    | TriggerCondition::Foraged
                     | TriggerCondition::FoodsSacrificed
                     | TriggerCondition::Reflexive
                     | TriggerCondition::Ward
@@ -850,6 +853,7 @@ impl Game {
         };
         assert!(self.state.resolving.is_none());
         self.state.resolving = Some(Resolution {
+            explore: None,
             connive: None,
             item,
             program,
@@ -1002,6 +1006,28 @@ impl Game {
                     self.state.pending_triggers.push(reflexive);
                 }
                 Instruction::Modal(_) => unreachable!("unselected modal trigger executed"),
+                Instruction::Explore(subject) => {
+                    if self.start_explore(&item, subject) {
+                        return;
+                    }
+                }
+                Instruction::DestroyAndCreateForController { token, amount } => {
+                    let targets = item
+                        .targets
+                        .iter()
+                        .copied()
+                        .filter(|b| self.same_target_object(*b))
+                        .collect::<Vec<_>>();
+                    for bound in targets {
+                        if let Target::Card(id) = bound.target {
+                            let controller = self.state.objects[id as usize].owner;
+                            if !self.keywords(id).contains(Keywords::INDESTRUCTIBLE) {
+                                self.move_target_batch(&[bound], Zone::Graveyard);
+                            }
+                            self.create_tokens(controller, token, u128::from(amount), false);
+                        }
+                    }
+                }
                 Instruction::IfKicked { skip } => {
                     if !item.cast.is_some_and(|c| c.kicker == Some(true)) {
                         self.state.resolving.as_mut().unwrap().pc += skip;

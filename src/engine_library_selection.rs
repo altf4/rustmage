@@ -189,6 +189,7 @@ impl Game {
         }
     }
     fn commit_library_selection(&mut self, owner: Player) {
+        self.forget_library_top(owner);
         let mut f = self
             .state
             .resolving

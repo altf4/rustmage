@@ -1,0 +1,498 @@
+{
+  "shared_sources": [
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/ExploreSourceEffect.java",
+      "java_sha256": "bea53262d78910213aa3abece1783af6344516a7840fc5623ea5f06033feafc4"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/ExploreTargetEffect.java",
+      "java_sha256": "341217e7c17ad4a5921695f9ec242245be91395b6e49e6bc4494521f59beb9ba"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/MapToken.java",
+      "java_sha256": "9deeb19a6a34a9e64fc3347b19b81058c30889e48b84d4243d2bcf8c947534dd"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/events/ExploreEvent.java",
+      "java_sha256": "bf4f46df9f1e533eb7b012da0af840a2baaad19a09b90e13e790278aef2134e5"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/events/ExploredEvent.java",
+      "java_sha256": "106ad9097abdf286e5d003fe64d38eca5b879d9a6f0eff903cb3b4a2a6ad5751"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreatureExploresTriggeredAbility.java",
+      "java_sha256": "dc13f851ef57f9701e08901712c85c3f02f28b7fa369058d0c66cd02227667c6"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenControllerTargetEffect.java",
+      "java_sha256": "ee33348ac4782cb614e73ec2dfab077cbf80dd86c9d71f5fdb7cd45c6c0c7139"
+    }
+  ],
+  "schema": 1,
+  "as_of": "2026-10-16",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "rules": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+  "cards": [
+    {
+      "name": "Cartographer's Companion",
+      "oracle_text": "When this creature enters, create a Map token. (It's an artifact with \"{1}, {T}, Sacrifice this token: Target creature you control explores. Activate only as a sorcery.\")",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CartographersCompanion.java",
+          "java_sha256": "21b01b2038a6543188d19b5d38f8b89c8ac9d04e307ea41236869f539b4379c5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/MapToken.java",
+          "java_sha256": "9deeb19a6a34a9e64fc3347b19b81058c30889e48b84d4243d2bcf8c947534dd"
+        }
+      ]
+    },
+    {
+      "name": "Cenote Scout",
+      "oracle_text": "When this creature enters, it explores. (Reveal the top card of your library. Put that card into your hand if it's a land. Otherwise, put a +1/+1 counter on this creature, then put the card back or put it into your graveyard.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CenoteScout.java",
+          "java_sha256": "8139ce1c419d6332aa1b672d94c3584d17f011139ce568da33b92c1210cf546f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/ExploreSourceEffect.java",
+          "java_sha256": "bea53262d78910213aa3abece1783af6344516a7840fc5623ea5f06033feafc4"
+        }
+      ]
+    },
+    {
+      "name": "Fanatical Offering",
+      "oracle_text": "As an additional cost to cast this spell, sacrifice an artifact or creature.\nDraw two cards and create a Map token. (It's an artifact with \"{1}, {T}, Sacrifice this token: Target creature you control explores. Activate only as a sorcery.\")",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FanaticalOffering.java",
+          "java_sha256": "433a77685b7a62e08e6c5d64e6b3b901380caccdf2485087319b74741f967118"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/MapToken.java",
+          "java_sha256": "9deeb19a6a34a9e64fc3347b19b81058c30889e48b84d4243d2bcf8c947534dd"
+        }
+      ]
+    },
+    {
+      "name": "Get Lost",
+      "oracle_text": "Destroy target creature, enchantment, or planeswalker. Its controller creates two Map tokens. (They're artifacts with \"{1}, {T}, Sacrifice this token: Target creature you control explores. Activate only as a sorcery.\")",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GetLost.java",
+          "java_sha256": "63bf12e6a78cf5e7cd4c9196201c76406ea78fedb1efc1956fad9cd85d2a863d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenControllerTargetEffect.java",
+          "java_sha256": "ee33348ac4782cb614e73ec2dfab077cbf80dd86c9d71f5fdb7cd45c6c0c7139"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+          "java_sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+          "java_sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/MapToken.java",
+          "java_sha256": "9deeb19a6a34a9e64fc3347b19b81058c30889e48b84d4243d2bcf8c947534dd"
+        }
+      ]
+    },
+    {
+      "name": "Kinjalli's Dawnrunner",
+      "oracle_text": "Double strike\nWhen this creature enters, it explores. (Reveal the top card of your library. Put that card into your hand if it's a land. Otherwise, put a +1/+1 counter on this creature, then put the card back or put it into your graveyard.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/k/KinjallisDawnrunner.java",
+          "java_sha256": "376c2375d50e8325dab520de6acf7c30669abe69cf44979ae176d5b45cf42f69"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/ExploreSourceEffect.java",
+          "java_sha256": "bea53262d78910213aa3abece1783af6344516a7840fc5623ea5f06033feafc4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/DoubleStrikeAbility.java",
+          "java_sha256": "dabf9a6900a6fb32bb83f222d00b3dfb0b11705fe9029838c50f8500a23afd27"
+        }
+      ]
+    },
+    {
+      "name": "Miner's Guidewing",
+      "oracle_text": "Flying, vigilance\nWhen this creature dies, target creature you control explores. (Reveal the top card of your library. Put that card into your hand if it's a land. Otherwise, put a +1/+1 counter on that creature, then put the card back or put it into your graveyard.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MinersGuidewing.java",
+          "java_sha256": "65476063202279c9f306127118415562a4a4806fb89d1c9d18ddeb7a083b6c40"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+          "java_sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/ExploreTargetEffect.java",
+          "java_sha256": "341217e7c17ad4a5921695f9ec242245be91395b6e49e6bc4494521f59beb9ba"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "java_sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        }
+      ]
+    },
+    {
+      "name": "Over the Edge",
+      "oracle_text": "Choose one —\n• Destroy target artifact or enchantment.\n• Target creature you control explores, then it explores again. (Reveal the top card of your library. Put that card into your hand if it's a land. Otherwise, put a +1/+1 counter on that creature, then put the card back or put it into your graveyard. Then repeat this process.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/o/OverTheEdge.java",
+          "java_sha256": "b3a47934d606df9c76fdfeb324be55f18d1831478dc6bd096be1361e060bbfd6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+          "java_sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/ExploreTargetEffect.java",
+          "java_sha256": "341217e7c17ad4a5921695f9ec242245be91395b6e49e6bc4494521f59beb9ba"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        }
+      ]
+    },
+    {
+      "name": "Pathfinding Axejaw",
+      "oracle_text": "When this creature enters, it explores. (Reveal the top card of your library. Put that card into your hand if it's a land. Otherwise, put a +1/+1 counter on this creature, then put the card back or put it into your graveyard.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PathfindingAxejaw.java",
+          "java_sha256": "b58c65dd4e0ad90f6679f8a25788076593b9c654bba49c2537c46069d14ae4c7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/ExploreSourceEffect.java",
+          "java_sha256": "bea53262d78910213aa3abece1783af6344516a7840fc5623ea5f06033feafc4"
+        }
+      ]
+    },
+    {
+      "name": "River Herald Guide",
+      "oracle_text": "Vigilance\nWhen this creature enters, it explores. (Reveal the top card of your library. Put that card into your hand if it's a land. Otherwise, put a +1/+1 counter on this creature, then put the card back or put it into your graveyard.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RiverHeraldGuide.java",
+          "java_sha256": "a1298813af543a3bf7f292f6cd46c873a8d65d1848a73e6be0953aba40994c66"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/ExploreSourceEffect.java",
+          "java_sha256": "bea53262d78910213aa3abece1783af6344516a7840fc5623ea5f06033feafc4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "java_sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        }
+      ]
+    },
+    {
+      "name": "River Herald Scout",
+      "oracle_text": "When this creature enters, it explores. (Reveal the top card of your library. Put that card into your hand if it's a land. Otherwise, put a +1/+1 counter on this creature, then put the card back or put it into your graveyard.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RiverHeraldScout.java",
+          "java_sha256": "d5f2a762216002985ec2ae685f86fd56e5319ba0631240254e9e64ed7103f384"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/ExploreSourceEffect.java",
+          "java_sha256": "bea53262d78910213aa3abece1783af6344516a7840fc5623ea5f06033feafc4"
+        }
+      ]
+    },
+    {
+      "name": "Seeker of Sunlight",
+      "oracle_text": "{2}{G}: This creature explores. Activate only as a sorcery. (Reveal the top card of your library. Put that card into your hand if it's a land. Otherwise, put a +1/+1 counter on this creature, then put the card back or put it into your graveyard.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SeekerOfSunlight.java",
+          "java_sha256": "dee5bf04206ac52806cb142d06acfe437b6480b4ae80241327eec87be9dcf99a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "java_sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/ExploreSourceEffect.java",
+          "java_sha256": "bea53262d78910213aa3abece1783af6344516a7840fc5623ea5f06033feafc4"
+        }
+      ]
+    },
+    {
+      "name": "Sentinel of the Nameless City",
+      "oracle_text": "Vigilance\nWhenever this creature enters or attacks, create a Map token. (It's an artifact with \"{1}, {T}, Sacrifice this token: Target creature you control explores. Activate only as a sorcery.\")",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SentinelOfTheNamelessCity.java",
+          "java_sha256": "1063a5e31c3c28b78ef97f896cb611376a2e904b7f231a3b1ec3f25eed2741af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOrAttacksSourceTriggeredAbility.java",
+          "java_sha256": "b5c87d096aa0a689c9915ee2c8c8f8b6eb0fcd2acd4ad8c0c8696c6204f27224"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "java_sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/MapToken.java",
+          "java_sha256": "9deeb19a6a34a9e64fc3347b19b81058c30889e48b84d4243d2bcf8c947534dd"
+        }
+      ]
+    },
+    {
+      "name": "Spyglass Siren",
+      "oracle_text": "Flying\nWhen this creature enters, create a Map token. (It's an artifact with \"{1}, {T}, Sacrifice this token: Target creature you control explores. Activate only as a sorcery.\")",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SpyglassSiren.java",
+          "java_sha256": "78bd52eb54262ef0a00ac4d3ac6515b8405d815ece66726ca772175f04173866"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/MapToken.java",
+          "java_sha256": "9deeb19a6a34a9e64fc3347b19b81058c30889e48b84d4243d2bcf8c947534dd"
+        }
+      ]
+    },
+    {
+      "name": "Waterwind Scout",
+      "oracle_text": "Flying\nWhen this creature enters, create a Map token. (It's an artifact with \"{1}, {T}, Sacrifice this token: Target creature you control explores. Activate only as a sorcery.\")",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WaterwindScout.java",
+          "java_sha256": "879ec6667668f67330e135ab82c439d0f28838be4f1b54bb46b41b3e10082ab0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/MapToken.java",
+          "java_sha256": "9deeb19a6a34a9e64fc3347b19b81058c30889e48b84d4243d2bcf8c947534dd"
+        }
+      ]
+    },
+    {
+      "name": "Merfolk Cave-Diver",
+      "oracle_text": "Whenever a creature you control explores, this creature gets +1/+0 until end of turn and can't be blocked this turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MerfolkCaveDiver.java",
+          "java_sha256": "2ce3206a89438ae048938bcaed92d02166db1b2ebfcc57b3743c4c9aab1fc2e7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreatureExploresTriggeredAbility.java",
+          "java_sha256": "dc13f851ef57f9701e08901712c85c3f02f28b7fa369058d0c66cd02227667c6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedSourceEffect.java",
+          "java_sha256": "546b73507803da1667ee058a20486c5f3387357e38d1419a82f952b94ebb93d7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+          "java_sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+        }
+      ]
+    }
+  ],
+  "gated": [
+    {
+      "name": "Amalia Benavides Aguirre",
+      "oracle_text": "Ward—Pay 3 life.\nWhenever you gain life, Amalia Benavides Aguirre explores. Then destroy all other creatures if its power is exactly 20. (To have this creature explore, reveal the top card of your library. Put that card into your hand if it's a land. Otherwise, put a +1/+1 counter on this creature, then put the card back or put it into your graveyard.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AmaliaBenavidesAguirre.java",
+          "java_sha256": "c22c3a78b0d6136034d50dc38cc43c4fe2867f277d0e49e44e80dd6138146e0f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/GainLifeControllerTriggeredAbility.java",
+          "java_sha256": "368075cdc13fc2b881bea0dfadfa1135166c6c412c0602260aa8f0597a927d58"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+          "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
+          "java_sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DestroyAllEffect.java",
+          "java_sha256": "ff52578966339bd976dc24cb1505f5862e3ee9b7b1abf41d2d8fac78cb43b48d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/ExploreSourceEffect.java",
+          "java_sha256": "bea53262d78910213aa3abece1783af6344516a7840fc5623ea5f06033feafc4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+          "java_sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+        }
+      ],
+      "reason": "Exact source-power/LKI conditional destruction is not implemented."
+    },
+    {
+      "name": "Nicanzil, Current Conductor",
+      "oracle_text": "Whenever a creature you control explores a land card, you may put a land card from your hand onto the battlefield tapped.\nWhenever a creature you control explores a nonland card, put a +1/+1 counter on Nicanzil.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/n/NicanzilCurrentConductor.java",
+          "java_sha256": "0050eb1823529b8d44cbaa35d8081ae58ed997e5c122ba7c5a4a981faee73a73"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/Effect.java",
+          "java_sha256": "92f49363848fa1b18215e3a0d516923e10d917638a38e5bbad73f274f6a1e917"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutCardFromHandOntoBattlefieldEffect.java",
+          "java_sha256": "60ead6e7cba07c849019361189b61b541490b8f4ec1bdda1e91b3315a673788a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        }
+      ],
+      "reason": "Land/nonland-qualified explore observers and optional Hand-land entry are not implemented."
+    },
+    {
+      "name": "Defossilize",
+      "oracle_text": "Return target creature card from your graveyard to the battlefield. That creature explores, then it explores again. (Reveal the top card of your library. Put that card into your hand if it's a land. Otherwise, put a +1/+1 counter on that creature, then put the card back or put it into your graveyard. Then repeat this process.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/Defossilize.java",
+          "java_sha256": "68a50cc5a90e8e87deebbfb251cc15b5d56a13269ce1decff4e2f9a78a2cae24"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/ExploreSourceEffect.java",
+          "java_sha256": "bea53262d78910213aa3abece1783af6344516a7840fc5623ea5f06033feafc4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+          "java_sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+        }
+      ],
+      "reason": "The moved graveyard target must bind its new battlefield incarnation for the following explores; that continuation is not implemented."
+    },
+    {
+      "name": "Brackish Blunder",
+      "oracle_text": "Return target creature to its owner's hand. If it was tapped, create a Map token. (It's an artifact with \"{1}, {T}, Sacrifice this token: Target creature you control explores. Activate only as a sorcery.\")",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BrackishBlunder.java",
+          "java_sha256": "765035236f7e6e114461bfdd97afaf89e98dc0d9056711ce0bbb3abee1dadd35"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/MapToken.java",
+          "java_sha256": "9deeb19a6a34a9e64fc3347b19b81058c30889e48b84d4243d2bcf8c947534dd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ],
+      "reason": "Tapped-before-bounce lookback qualification is not implemented."
+    }
+  ]
+}

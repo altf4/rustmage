@@ -174,7 +174,7 @@ fn all_nineteen_complete_bodies_cast_in_both_seats() {
                 },
                 "{n}"
             );
-            assert_eq!(g.observe(p).schema, 61);
+            assert_eq!(g.observe(p).schema, 62);
         }
     }
 }

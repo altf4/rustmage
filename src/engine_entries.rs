@@ -244,6 +244,9 @@ impl Game {
         }
         self.finish_zone_events(&events, &[]);
         if let Some(player) = batch.shuffle_after {
+            if self.state.players[player.index()].library.len() > 1 {
+                self.forget_library_top(player);
+            }
             self.state
                 .rng
                 .shuffle(&mut self.state.players[player.index()].library);

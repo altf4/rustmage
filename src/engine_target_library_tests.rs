@@ -778,7 +778,12 @@ fn public_move_is_historical_through_private_reorder_draw_and_later_replacement(
             g.draw(Player::P0);
             assert_eq!(g.object_view(victim).zone, Zone::Hand);
             assert_ne!(g.object_ref(victim), event.target_after);
-            assert!(!g.observe(Player::P1).objects.iter().any(|v| v.id == victim));
+            // Its publicly known top identity is retained through the observed draw.
+            assert!(
+                g.observe(Player::P1)
+                    .known_hand
+                    .contains(&g.object_ref(victim))
+            );
         }
         for viewer in [Player::P0, Player::P1] {
             assert_eq!(g.observe(viewer).last_target_library_move, Some(event));

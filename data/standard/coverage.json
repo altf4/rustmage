@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "7a5567666120686d16e87ebd525f0bbe72deb91095b58cd7e8ddce46674b934c",
+  "catalogue_version": "e6e347ae7e1520091f4a62d0b80f004413cf1ab2741b266f4ddf8bbde6ffe879",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1562,
-  "implemented_total": 1568,
-  "token_definitions": 73,
+  "implemented_standard_cards": 1577,
+  "implemented_total": 1583,
+  "token_definitions": 74,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -3964,8 +3964,8 @@
     {
       "name": "Cartographer's Companion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Case File Auditor",
@@ -4198,8 +4198,8 @@
     {
       "name": "Cenote Scout",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Central Elevator // Promising Stairs",
@@ -8644,8 +8644,8 @@
     {
       "name": "Fanatical Offering",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Fanatical Strength",
@@ -10318,8 +10318,8 @@
     {
       "name": "Get Lost",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Get Out",
@@ -14188,8 +14188,8 @@
     {
       "name": "Kinjalli's Dawnrunner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Kinsbaile Aspirant",
@@ -16354,8 +16354,8 @@
     {
       "name": "Merfolk Cave-Diver",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Merfolk Coralsmith",
@@ -16654,8 +16654,8 @@
     {
       "name": "Miner's Guidewing",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Mineshaft Spider",
@@ -18400,8 +18400,8 @@
     {
       "name": "Over the Edge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Overgrown Farmland",
@@ -18676,8 +18676,8 @@
     {
       "name": "Pathfinding Axejaw",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Patient Instructor",
@@ -21298,14 +21298,14 @@
     {
       "name": "River Herald Guide",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "River Herald Scout",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "River's Rebuke",
@@ -22618,8 +22618,8 @@
     {
       "name": "Seeker of Sunlight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Seeker's Folly",
@@ -22738,8 +22738,8 @@
     {
       "name": "Sentinel of the Nameless City",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Sephiroth's Intervention",
@@ -24466,8 +24466,8 @@
     {
       "name": "Spyglass Siren",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Squad Rallier",
@@ -30022,8 +30022,8 @@
     {
       "name": "Waterwind Scout",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Watery Grasp",
