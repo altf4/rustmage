@@ -1,0 +1,694 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "rules": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+  "cards": [
+    {
+      "name": "Alania's Pathmaker",
+      "oracle_text": "When this creature enters, exile the top card of your library. Until the end of your next turn, you may play that card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AlaniasPathmaker.java",
+          "java_sha256": "4e9e4301642607da9f9ec80387ef8b5b73bf2595e279eb396f788fe40c92b96c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageObjectReference.java",
+          "java_sha256": "41270277c5a846dce3442714757e4f0e3963e42ef4eea798d3667cdccb5afabc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+          "java_sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+          "java_sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+          "java_sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+        }
+      ]
+    },
+    {
+      "name": "Blazing Crescendo",
+      "oracle_text": "Target creature gets +3/+1 until end of turn.\nExile the top card of your library. Until the end of your next turn, you may play that card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BlazingCrescendo.java",
+          "java_sha256": "19a2021a71538f0151aafdf03aaee4ed475fa12578b22fac8afd5c652f056d11"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageObjectReference.java",
+          "java_sha256": "41270277c5a846dce3442714757e4f0e3963e42ef4eea798d3667cdccb5afabc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+          "java_sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+          "java_sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+          "java_sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+        }
+      ]
+    },
+    {
+      "name": "Clockwork Percussionist",
+      "oracle_text": "Haste\nWhen this creature dies, exile the top card of your library. You may play it until the end of your next turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/ClockworkPercussionist.java",
+          "java_sha256": "48635c8b053b76828e3b1bf2c9ba8db8a54a0640a2992a03c96fb1fa4600256c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageObjectReference.java",
+          "java_sha256": "41270277c5a846dce3442714757e4f0e3963e42ef4eea798d3667cdccb5afabc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+          "java_sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+          "java_sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+          "java_sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+          "java_sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+          "java_sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+        }
+      ]
+    },
+    {
+      "name": "Cori Mountain Monastery",
+      "oracle_text": "This land enters tapped unless you control a Plains or an Island.\n{T}: Add {R}.\n{3}{R}, {T}: Exile the top card of your library. Until the end of your next turn, you may play that card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CoriMountainMonastery.java",
+          "java_sha256": "79d162a2c2abc7828b0409d9d63877c73c21bb0e018f972433108e09efb5d1f4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageObjectReference.java",
+          "java_sha256": "41270277c5a846dce3442714757e4f0e3963e42ef4eea798d3667cdccb5afabc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedUnlessAbility.java",
+          "java_sha256": "389f076d5e9c21e7e868cef5ed4d35d7a346a8a33bccaf9516e09843c1fad1f6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/YouControlPermanentCondition.java",
+          "java_sha256": "850fb219ff3e25ef2abbb7d0672a728d77699fbbd358ced81cbb17e6b553372a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "java_sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+          "java_sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+          "java_sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/mana/RedManaAbility.java",
+          "java_sha256": "1648a5c546271d42dd7cb1e3b988d6be224431812867755b96dd633593a5b8ee"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+          "java_sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+          "java_sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+        }
+      ]
+    },
+    {
+      "name": "Count on Luck",
+      "oracle_text": "At the beginning of your upkeep, exile the top card of your library. You may play that card this turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CountOnLuck.java",
+          "java_sha256": "490fbf201af0635ef069ebb2ac0b95788f88e7f75594f2ceff0f6020b6692f55"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageObjectReference.java",
+          "java_sha256": "41270277c5a846dce3442714757e4f0e3963e42ef4eea798d3667cdccb5afabc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+          "java_sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+          "java_sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+          "java_sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+        }
+      ]
+    },
+    {
+      "name": "Crimson Operative",
+      "oracle_text": "Prowess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)\nWhen this creature enters, exile the top card of your library. Until the end of your next turn, you may play that card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CrimsonOperative.java",
+          "java_sha256": "bd4a8f16157981895084ed3f16a21476f94a248fbddaa0582ac79d71a9bbe3a2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageObjectReference.java",
+          "java_sha256": "41270277c5a846dce3442714757e4f0e3963e42ef4eea798d3667cdccb5afabc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+          "java_sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+          "java_sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ProwessAbility.java",
+          "java_sha256": "4841a6c5a32b09d6a63e326d29c8ce04f2fdad3575e1897f202cae110718c8a4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+          "java_sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+        }
+      ]
+    },
+    {
+      "name": "Diversion Specialist",
+      "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)\n{1}, Sacrifice another creature or enchantment: Exile the top card of your library. You may play it this turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DiversionSpecialist.java",
+          "java_sha256": "a9054066d62e26f8e15c5dfcda35bacf158cc230a4b4f88ee05f139e7dc2c90d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageObjectReference.java",
+          "java_sha256": "41270277c5a846dce3442714757e4f0e3963e42ef4eea798d3667cdccb5afabc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "java_sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+          "java_sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+          "java_sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+          "java_sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+          "java_sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+        }
+      ]
+    },
+    {
+      "name": "Emberheart Challenger",
+      "oracle_text": "Haste\nProwess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)\nValiant — Whenever this creature becomes the target of a spell or ability you control for the first time each turn, exile the top card of your library. Until end of turn, you may play that card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/EmberheartChallenger.java",
+          "java_sha256": "74a9768cc31efb5c605c6aa66cd63e092bbebab426e28c411379a2c41183f847"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageObjectReference.java",
+          "java_sha256": "41270277c5a846dce3442714757e4f0e3963e42ef4eea798d3667cdccb5afabc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTargetSourceFirstTimeTriggeredAbility.java",
+          "java_sha256": "d162312d7bf5814ea188e5d6a29dc95e8d0560aa520002e4e2d101eb8f6ddf56"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ValiantTriggeredAbility.java",
+          "java_sha256": "5ec6124fd1d8ae17a88cdf8cad28666f5982db52a210c2cc7b8bc5c80ddf6d8a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+          "java_sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+          "java_sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+          "java_sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ProwessAbility.java",
+          "java_sha256": "4841a6c5a32b09d6a63e326d29c8ce04f2fdad3575e1897f202cae110718c8a4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+          "java_sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+        }
+      ]
+    },
+    {
+      "name": "Equilibrium Adept",
+      "oracle_text": "When this creature enters, exile the top card of your library. Until the end of your next turn, you may play that card.\nFlurry — Whenever you cast your second spell each turn, this creature gains double strike until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/EquilibriumAdept.java",
+          "java_sha256": "3fd9cd9dd8e54fd53b14544b62b81a194d1faa891196fb8afd35cdbfb58a07a3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageObjectReference.java",
+          "java_sha256": "41270277c5a846dce3442714757e4f0e3963e42ef4eea798d3667cdccb5afabc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/CastSecondSpellTriggeredAbility.java",
+          "java_sha256": "a4e91db65304a2f0a017d34eb680d683186071207b0002b036e94fcdc773ddce"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/FlurryAbility.java",
+          "java_sha256": "c7fd2820826fec5fb71dc63ebaa7ebace3423c724629c164aa818c36781704cb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+          "java_sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+          "java_sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+          "java_sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/DoubleStrikeAbility.java",
+          "java_sha256": "dabf9a6900a6fb32bb83f222d00b3dfb0b11705fe9029838c50f8500a23afd27"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+          "java_sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+        }
+      ]
+    },
+    {
+      "name": "Gundabad Opportunist",
+      "oracle_text": "When this creature enters, exile the top card of your library. Until the end of your next turn, you may play that card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GundabadOpportunist.java",
+          "java_sha256": "dab5bb5d2a9f427abe67ec62b754c34983b70b27c53128dddb43695278d2ced3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageObjectReference.java",
+          "java_sha256": "41270277c5a846dce3442714757e4f0e3963e42ef4eea798d3667cdccb5afabc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+          "java_sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+          "java_sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+          "java_sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+        }
+      ]
+    },
+    {
+      "name": "Kulrath Zealot",
+      "oracle_text": "When this creature enters, exile the top card of your library. Until the end of your next turn, you may play that card.\nBasic landcycling {1}{R} ({1}{R}, Discard this card: Search your library for a basic land card, reveal it, put it into your hand, then shuffle.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/k/KulrathZealot.java",
+          "java_sha256": "9cbad027cdb6d23e4f5f4ad9f12185729bdcc854d17779502b1c861967af58f3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageObjectReference.java",
+          "java_sha256": "41270277c5a846dce3442714757e4f0e3963e42ef4eea798d3667cdccb5afabc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+          "java_sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+          "java_sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/BasicLandcyclingAbility.java",
+          "java_sha256": "cdead6dec40f9d3f99eaaf7f84279bc1f8140885c5ec48dae0c092aa18f622aa"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+          "java_sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+          "java_sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+        }
+      ]
+    },
+    {
+      "name": "Outlaws' Fury",
+      "oracle_text": "Creatures you control get +2/+0 until end of turn. If you control an outlaw, exile the top card of your library. Until the end of your next turn, you may play that card. (Assassins, Mercenaries, Pirates, Rogues, and Warlocks are outlaws.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/o/OutlawsFury.java",
+          "java_sha256": "9f56689dcef7d033259250c494d8f84fa1885b3cc37099d40576b62e494a1374"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageObjectReference.java",
+          "java_sha256": "41270277c5a846dce3442714757e4f0e3963e42ef4eea798d3667cdccb5afabc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+          "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+          "java_sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+          "java_sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+          "java_sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+          "java_sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/OutlawPredicate.java",
+          "java_sha256": "b0d6ad50aae1964b735807a9f9730c273e55833889cadf894a8396a6795964ac"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+          "java_sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+        }
+      ]
+    },
+    {
+      "name": "Seize Opportunity",
+      "oracle_text": "Choose one —\n• Exile the top two cards of your library. Until the end of your next turn, you may play those cards.\n• Up to two target creatures each get +2/+1 until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SeizeOpportunity.java",
+          "java_sha256": "59ae456d4b939dab248eff8cdc6b5c9f667ca5d472d01e771abfec7d1d210079"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageObjectReference.java",
+          "java_sha256": "41270277c5a846dce3442714757e4f0e3963e42ef4eea798d3667cdccb5afabc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+          "java_sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+          "java_sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+          "java_sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+        }
+      ]
+    },
+    {
+      "name": "Sizzling Changeling",
+      "oracle_text": "Changeling (This card is every creature type.)\nWhen this creature dies, exile the top card of your library. Until the end of your next turn, you may play that card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SizzlingChangeling.java",
+          "java_sha256": "52a79abf2646b812b284037f05060955249285845d8b9c1b7f559db5f25570e3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageObjectReference.java",
+          "java_sha256": "41270277c5a846dce3442714757e4f0e3963e42ef4eea798d3667cdccb5afabc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+          "java_sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+          "java_sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+          "java_sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ChangelingAbility.java",
+          "java_sha256": "2a5c6f3233f1edbd054fad23cc7103334aa5bff6702da1f1e42ceb3a0cb8c177"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+          "java_sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+        }
+      ]
+    },
+    {
+      "name": "Zuko, Exiled Prince",
+      "oracle_text": "Firebending 3 (Whenever this creature attacks, add {R}{R}{R}. This mana lasts until end of combat.)\n{3}: Exile the top card of your library. You may play that card this turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/z/ZukoExiledPrince.java",
+          "java_sha256": "2644a713373468ceddc41ffd5d441fa372a26f42ffefcab0e9b2fe1264a890b6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageObjectReference.java",
+          "java_sha256": "41270277c5a846dce3442714757e4f0e3963e42ef4eea798d3667cdccb5afabc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "java_sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+          "java_sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+          "java_sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FirebendingAbility.java",
+          "java_sha256": "886553199042c3caee285871191096e9e938f2ef1ffa96cb289bac8518502566"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+          "java_sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+        }
+      ]
+    }
+  ]
+}

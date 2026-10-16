@@ -325,6 +325,10 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    ExileTopPlay {
+        amount: u16,
+        next_turn: bool,
+    },
     Forage {
         skip: usize,
     },
@@ -851,6 +855,7 @@ pub(crate) enum StepValue {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StepGuard {
+    Outlaw,
     Always,
     Attacked,
     CreatureDied,
@@ -1194,6 +1199,7 @@ pub struct EmblemInfo {
 /// Self replacement evaluated against the battlefield immediately before entry.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum EntryTapped {
+    UnlessPlainsOrIsland,
     Never,
     Always,
     OpponentsTurn,

@@ -1094,6 +1094,9 @@ impl Game {
                     };
                     return;
                 }
+                Instruction::ExileTopPlay { amount, next_turn } => {
+                    self.exile_top_play(item.controller, amount, next_turn);
+                }
                 Instruction::SelectLibrary(spec) => {
                     if self.start_library_selection(&item, spec) {
                         return;

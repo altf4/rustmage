@@ -32,6 +32,41 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertIn('Effect::Creature(1, 1)',trainer[1]);self.assertIn('standard_legal: false',trainer[1])
         altered=dict(snapshot,cards=[dict(c,oracle_text=c.get('oracle_text','')+'\nDiscover 3.') if c['name'] in names else c for c in snapshot['cards']]);altered['cards_sha256']=hashlib.sha256(json.dumps(altered['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();_,bad=generate.compile_catalogue(altered,target);self.assertFalse(names&{c['name'] for c in bad['cards'] if c['implemented']})
 
+    def test_impulse_closed_grammar_preserves_duration_batch_and_ordinary_payment(self):
+        for clause,count,next_turn in [
+            ('Exile the top card of your library. You may play that card this turn.',1,False),
+            ('Exile the top card of your library. Until end of turn, you may play that card.',1,False),
+            ('Exile the top card of your library. You may play it until the end of your next turn.',1,True),
+            ('Exile the top two cards of your library. Until the end of your next turn, you may play those cards.',2,True)]:
+            result=generate.statement_program(clause);self.assertEqual(result,['ExileTopPlay { amount: '+str(count)+', next_turn: '+str(next_turn).lower()+' }'])
+        for clause in [
+            'Exile the top two cards of your library. Choose one of them. Until the end of your next turn, you may play that card.',
+            'Exile the top card of your library. Until your next end step, you may play that card.',
+            "Exile the top card of target opponent's library. You may play that card this turn.",
+            'Exile the top card of your library face down. You may play that card this turn.',
+            'Exile the top card of your library. You may cast that card without paying its mana cost this turn.',
+            'Exile the top two cards of your library. Until the end of your next turn, you may play that card.',
+            'Exile the top card of your library. You may play it for as long as it remains exiled.',
+            'Exile the top card of your library. You may play that card this turn. Discover 3.']:
+            self.assertIsNone(generate.statement_program(clause),clause)
+        combined=generate.statement_program('Creatures you control get +2/+0 until end of turn. If you control an outlaw, exile the top card of your library. Until the end of your next turn, you may play that card.')
+        self.assertIn('If { guard: StepGuard::Outlaw, skip: 1 }',combined);self.assertEqual(len(combined),3)
+
+    def test_fifteen_complete_impulse_bodies_and_unimplemented_residuals_stay_gated(self):
+        import json,hashlib
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());manifest=json.loads((generate.ROOT/'docs/exile-play-admissions.json').read_text());self.assertEqual(len(manifest['cards']),15)
+        source,coverage=generate.compile_catalogue(snapshot,target);names={c['name'] for c in manifest['cards']};supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for c in manifest['cards']:
+            self.assertIn(c['name'],supported);self.assertEqual(next(r for r in snapshot['cards'] if r['name']==c['name'])['oracle_text'],c['oracle_text'])
+        for n in ["Heroes' Hangout",'Riverwheel Sweep','Strongbox Raider']:self.assertNotIn(n,supported)
+        altered=dict(snapshot,cards=[dict(c,oracle_text=c['oracle_text']+'\nDiscover 3.') if c['name'] in names else c for c in snapshot['cards']]);altered['cards_sha256']=hashlib.sha256(json.dumps(altered['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();_,cov=generate.compile_catalogue(altered,target);self.assertTrue(all(not c['implemented'] for c in cov['cards'] if c['name'] in names))
+
+    def test_impulse_duration_is_part_of_the_catalogue_fingerprint(self):
+        import json,hashlib
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());_,original=generate.compile_catalogue(snapshot,target)
+        changed=dict(snapshot,cards=[dict(c,oracle_text=c['oracle_text'].replace('Until the end of your next turn','Until end of turn')) if c['name']=="Alania's Pathmaker" else c for c in snapshot['cards']]);changed['cards_sha256']=hashlib.sha256(json.dumps(changed['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();_,altered=generate.compile_catalogue(changed,target)
+        self.assertNotEqual(original['catalogue_version'],altered['catalogue_version']);self.assertTrue(next(c['implemented'] for c in altered['cards'] if c['name']=="Alania's Pathmaker"))
+
     def test_contextual_cast_headers_keep_complete_target_and_spell_qualifications(self):
         headers={
             'Whenever you cast a spell that targets a creature you control, ':'CastTarget::Creature(CastRelation::You)',
@@ -583,7 +618,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         for name in ['Azula, On the Hunt','Fire Sages','Namazu Trader','Rough Rhino Cavalry','Sun Warriors','Uncle Iroh','Vindictive Warden','Zhao, Ruthless Admiral']:
             self.assertIn(name,supported);c=next(c for c in rows['cards'] if c['name']==name);bad=dict(c,oracle_text=c['oracle_text']+'\nWhenever you cast a spell, discover 3.')
             for compiler in [generate.permanent_program_template,generate.trigger_creature_template]:self.assertIsNone(compiler(bad),name)
-        for name in ['Firebending Student','Fire Lord Azula','Fire Lord Zuko','Iroh, Grand Lotus','Zuko, Exiled Prince','Tundra Tank','Jeong Jeong, the Deserter']:
+        for name in ['Firebending Student','Fire Lord Azula','Fire Lord Zuko','Iroh, Grand Lotus','Tundra Tank','Jeong Jeong, the Deserter']:
             self.assertNotIn(name,supported)
 
     def test_poison_effects_bind_only_explicit_target_or_damage_recipient(self):
@@ -823,7 +858,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             c=next(c for c in snapshot['cards'] if c['name']==a['name']);self.assertEqual(c['oracle_text'],a['oracle_text']);self.assertIn(c['name'],supported)
             c=dict(c,oracle_text=c['oracle_text']+'\nDiscover 4.')
             self.assertIsNone(generate.permanent_program_template(c));self.assertIsNone(generate.land_template(c))
-        for name in ['Ice Cream Kitty','Agency Coroner','Intruding Soulrager',"Bolg's Company",'Technodrome','Memorial Vault','Quina, Qu Gourmet','Diversion Specialist','Sidisi, Regent of the Mire','Metalhead','Alquist Proft, Master Sleuth','Boneyard Desecrator','Rune-Brand Juggler']:
+        for name in ['Ice Cream Kitty','Agency Coroner','Intruding Soulrager',"Bolg's Company",'Technodrome','Memorial Vault','Quina, Qu Gourmet','Sidisi, Regent of the Mire','Metalhead','Alquist Proft, Master Sleuth','Boneyard Desecrator','Rune-Brand Juggler']:
             self.assertNotIn(name,supported)
 
     def test_creature_tapped_entry_extraction_is_exact_and_retains_counter_clause(self):
@@ -1004,7 +1039,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIsNone(generate.permanent_program_template(changed));self.assertIsNone(generate.trigger_creature_template(changed));self.assertIsNone(generate.creature_template(changed))
         cactus=next(c for c in snapshot['cards'] if c['name']=='Cactarantula');_,rules=generate.extract_cost_reductions(cactus)
         self.assertEqual(len(rules),1);self.assertIn('subtype: Some("Desert")',rules[0]);self.assertIn('source_only: true',rules[0])
-        for name in ['Altanak, the Thrice-Called','Pawpatch Recruit','Surrak, Elusive Hunter','Emberheart Challenger','Whiskervale Forerunner']:
+        for name in ['Altanak, the Thrice-Called','Pawpatch Recruit','Surrak, Elusive Hunter','Whiskervale Forerunner']:
             self.assertNotIn(name,supported)
 
     def test_power_blocking_flags_and_temporary_grants_keep_skulk_distinct(self):
@@ -1970,7 +2005,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Mischievous Sneakling','Prideful Feastling','Rooftop Percher','Three Tree Mascot']:
             self.assertIn(name,supported)
         for name in ['Nameless Inversion','Barkform Harvester','Taurean Mauler','Firdoch Core',
-                     'Crib Swap','Sizzling Changeling','Mutable Explorer','Omni-Changeling']:
+                     'Crib Swap','Mutable Explorer','Omni-Changeling']:
             self.assertNotIn(name,supported)
 
     def test_hybrid_spell_costs_enumerate_unique_nonhybrid_equivalents(self):
