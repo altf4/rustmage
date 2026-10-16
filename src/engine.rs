@@ -3583,3 +3583,7 @@ mod public_hand_tests;
 #[cfg(test)]
 #[path = "engine_temporary_blocking_tests.rs"]
 mod temporary_blocking_tests;
+
+#[cfg(test)]
+#[path = "engine_permanent_graveyard_tests.rs"]
+mod permanent_graveyard_tests;

@@ -1,0 +1,231 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Ashiok's Reaper",
+      "oracle_text": "Whenever an enchantment you control is put into a graveyard from the battlefield, draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AshioksReaper.java",
+          "java_sha256": "99f57c75d80d67dd5c2d5c1f4fe38ea2f11c6361fc2ab5cd57129c12640acf60"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/PutIntoGraveFromBattlefieldAllTriggeredAbility.java",
+          "java_sha256": "627dd80120b299b046c28267ddd1a1d5ac2cf8fba1b9546cb6508452e303bbc8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        }
+      ]
+    },
+    {
+      "name": "Hopeful Vigil",
+      "oracle_text": "When this enchantment enters, create a 2/2 white Knight creature token with vigilance.\nWhen this enchantment is put into a graveyard from the battlefield, scry 2.\n{2}{W}: Sacrifice this enchantment.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HopefulVigil.java",
+          "java_sha256": "b5b520c6219c84777d4e88c19d2205f26f51a7807246db8c341ec0ab98b973f9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/PutIntoGraveFromBattlefieldSourceTriggeredAbility.java",
+          "java_sha256": "d68a84aa9f0e48cb7d0847b1bcd5fe447d39b876eef5f1b972a2b448db04ce37"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/KnightToken.java",
+          "java_sha256": "eabedaf281de48b7cf2444ff3d93ef89085ed74a6dd2f4f269834a6f97502062"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/SacrificeSourceEffect.java",
+          "java_sha256": "67db08baf9a6cc6c7fad953388bdd2adb74e4c9af4c5e2f5483c8cc546bbb098"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/ScryEffect.java",
+          "java_sha256": "2b5d4d62bb612633238db872252ec41349e37180816e4a965002ee3b6f8d0b58"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        }
+      ]
+    },
+    {
+      "name": "Knight of Doves",
+      "oracle_text": "Whenever an enchantment you control is put into a graveyard from the battlefield, create a 1/1 white Bird creature token with flying.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/k/KnightOfDoves.java",
+          "java_sha256": "9de38f12c267d274777741fe76b51647f78b7f852a20f25be0afd778ddfe9573"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/PutIntoGraveFromBattlefieldAllTriggeredAbility.java",
+          "java_sha256": "627dd80120b299b046c28267ddd1a1d5ac2cf8fba1b9546cb6508452e303bbc8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/BirdToken.java",
+          "java_sha256": "4164e87b73f38a228ea027058ba1d4591183a1b09d4420ce944e140346b873c1"
+        }
+      ]
+    },
+    {
+      "name": "Long Feng, Grand Secretariat",
+      "oracle_text": "Whenever another creature you control or a land you control is put into a graveyard from the battlefield, put a +1/+1 counter on target creature you control.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LongFengGrandSecretariat.java",
+          "java_sha256": "81bef5157513938c61f54dab0474422191e412e5a1d327e671b07b3ebafd998c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/PutIntoGraveFromBattlefieldAllTriggeredAbility.java",
+          "java_sha256": "627dd80120b299b046c28267ddd1a1d5ac2cf8fba1b9546cb6508452e303bbc8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        }
+      ]
+    },
+    {
+      "name": "Mephitic Draught",
+      "oracle_text": "When this artifact enters or is put into a graveyard from the battlefield, you draw a card and you lose 1 life.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MephiticDraught.java",
+          "java_sha256": "db65711e528fc5700691551b9661771239dc731bb3e4e7d45bd0850243bc22e2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOrDiesSourceTriggeredAbility.java",
+          "java_sha256": "cc63649c52975b7de190b2f45fda8f94e462716367c82fa8064cd51314ce08c0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+          "java_sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+        }
+      ]
+    },
+    {
+      "name": "Nutrient Block",
+      "oracle_text": "Indestructible (Effects that say \"destroy\" don't destroy this artifact.)\n{2}, {T}, Sacrifice this artifact: You gain 3 life.\nWhen this artifact is put into a graveyard from the battlefield, draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/n/NutrientBlock.java",
+          "java_sha256": "974aead4c6f03f1a1707f922c4dfe55184522494294443052ffcec75f8697d3a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/PutIntoGraveFromBattlefieldSourceTriggeredAbility.java",
+          "java_sha256": "d68a84aa9f0e48cb7d0847b1bcd5fe447d39b876eef5f1b972a2b448db04ce37"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/token/FoodAbility.java",
+          "java_sha256": "79d6d33dd5aa5cf0a53784c96639953598780ecb010fcb3adc5f3db677ee22b4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+          "java_sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+        }
+      ]
+    },
+    {
+      "name": "Reach for the Sky",
+      "oracle_text": "Flash\nEnchant creature\nEnchanted creature gets +3/+2 and has reach.\nWhen this Aura is put into a graveyard from the battlefield, draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/ReachForTheSky.java",
+          "java_sha256": "940b802bbf20e47081324fc70eb0b9ce9c881460a2ddef40176db583da00bc25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/PutIntoGraveFromBattlefieldSourceTriggeredAbility.java",
+          "java_sha256": "d68a84aa9f0e48cb7d0847b1bcd5fe447d39b876eef5f1b972a2b448db04ce37"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEnchantedEffect.java",
+          "java_sha256": "c390aae1354b298fc7d8b379f73583e2bbee3bdd13d88a082553dce6c75e1303"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+          "java_sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+          "java_sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+        }
+      ]
+    },
+    {
+      "name": "Savior of the Sleeping",
+      "oracle_text": "Vigilance\nWhenever an enchantment you control is put into a graveyard from the battlefield, put a +1/+1 counter on this creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SaviorOfTheSleeping.java",
+          "java_sha256": "7c370f0b6a7658f34585d48aede1f9d5c67db80ff9b8b13c0277b1718acb64c0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/PutIntoGraveFromBattlefieldAllTriggeredAbility.java",
+          "java_sha256": "627dd80120b299b046c28267ddd1a1d5ac2cf8fba1b9546cb6508452e303bbc8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "java_sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        }
+      ]
+    },
+    {
+      "name": "Warehouse Tabby",
+      "oracle_text": "Whenever an enchantment you control is put into a graveyard from the battlefield, create a 1/1 black Rat creature token with \"This token can't block.\"\n{1}{B}: This creature gains deathtouch until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WarehouseTabby.java",
+          "java_sha256": "d674c2c760ed9843d74e4bff672fada6c9ee0fbf58fe1b132fd4237d32d2bbf9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/PutIntoGraveFromBattlefieldAllTriggeredAbility.java",
+          "java_sha256": "627dd80120b299b046c28267ddd1a1d5ac2cf8fba1b9546cb6508452e303bbc8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/RatCantBlockToken.java",
+          "java_sha256": "aab83bf3ec8d02a815343fe29084d4c4476a37f088e7a16f47209e1d8ef2e65b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockSourceEffect.java",
+          "java_sha256": "8e20a86a1c2b5442b9281b9eb4910a3f341c30e5007204a29f1a68be3bdced20"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+          "java_sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+          "java_sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+        }
+      ]
+    },
+    {
+      "name": "Wicked Visitor",
+      "oracle_text": "Whenever an enchantment you control is put into a graveyard from the battlefield, each opponent loses 1 life.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WickedVisitor.java",
+          "java_sha256": "42c271b7837ed336074d23e8d90bc5852b18fcc3ac2e3d6e676c090022911300"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/PutIntoGraveFromBattlefieldAllTriggeredAbility.java",
+          "java_sha256": "627dd80120b299b046c28267ddd1a1d5ac2cf8fba1b9546cb6508452e303bbc8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsEffect.java",
+          "java_sha256": "0efbab18123aec32ac502d57e9a8d9571965d09f3f4e09c448a4ed4cf10aa0e1"
+        }
+      ]
+    }
+  ]
+}

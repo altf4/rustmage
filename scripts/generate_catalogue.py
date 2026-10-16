@@ -1638,6 +1638,19 @@ for _subtype in ('Goblin','Rat','Insect','Elf','Zombie','Vampire','Human','Ally'
     for _quantifier,_other in [('a',False),('another',True)]:
         VITAL_PREFIXES[f'Whenever {_quantifier} {_subtype} you control dies, '] = death_condition(other=_other,subtype=_subtype)
 
+# Exact public battlefield departures, independently of whether they were
+# sacrificed, destroyed, or put into a graveyard by a state-based action.
+for _phrase, _kinds, _relation, _exclude_source_kinds in [
+    ('an enchantment you control',32,'You',0),
+    ('an artifact you control',16,'You',0),
+    ('an artifact',16,'Any',0),
+    ('another artifact you control',16,'You',16),
+    ('another artifact or creature',17,'Any',17),
+    ('another creature you control or a land you control',3,'You',1),
+]:
+    VITAL_PREFIXES[f'Whenever {_phrase} is put into a graveyard from the battlefield, '] = (
+        f'PermanentToGraveyard {{ kinds: {_kinds}, relation: CastRelation::{_relation}, exclude_source_kinds: {_exclude_source_kinds} }}')
+
 
 
 def player_damage_prefix(line):
@@ -1759,6 +1772,10 @@ def trigger_creature_template(card):
         'When this creature enters, ': 'SelfEnters',
         'When this creature dies, ': 'SelfDies',
         'When this creature enters or dies, ': 'SelfEntersOrDies',
+        **{f'When this {noun} is put into a graveyard from the battlefield, ': 'SelfDies'
+           for noun in ('creature','artifact','enchantment','Aura','Equipment')},
+        **{f'When this {noun} enters or is put into a graveyard from the battlefield, ': 'SelfEntersOrDies'
+           for noun in ('creature','artifact','enchantment','Aura','Equipment')},
         'Whenever this creature attacks, ': 'SelfAttacks',
         'Whenever this creature enters or attacks, ': 'SelfEntersOrAttacks',
         'Whenever another artifact you control enters, ': 'OtherArtifactEntersYou',
