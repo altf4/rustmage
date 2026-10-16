@@ -3725,3 +3725,7 @@ mod filtered_entry_tests;
 #[cfg(test)]
 #[path = "engine_fixed_effect_tests.rs"]
 mod fixed_effect_tests;
+
+#[cfg(test)]
+#[path = "engine_entry_suppression_tests.rs"]
+mod entry_suppression_tests;

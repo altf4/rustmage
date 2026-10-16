@@ -153,6 +153,7 @@ impl Game {
         event: &ZoneChange,
         death_sources: &[ObjectView],
         sources: &[ObjectView],
+        entry_suppression: u16,
     ) {
         if !event.moved {
             return;
@@ -242,6 +243,11 @@ impl Game {
             return;
         }
         let entered = self.object_view(event.after.card);
+        // This prohibition concerns the event, irrespective of which permanent
+        // would observe it. Death/attack/step events take their separate paths.
+        if entered.card.kind_mask() & entry_suppression != 0 {
+            return;
+        }
         for source in sources {
             let same = source.reference == event.after;
             let yours = source.owner == entered.owner;

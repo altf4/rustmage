@@ -54,6 +54,17 @@ impl Game {
         } else {
             Vec::new()
         };
+        // Static sources are already registered for every member of the batch.
+        // No moves occur during dispatch, so compute this union just once.
+        let entry_suppression = if sources.is_empty() {
+            0
+        } else {
+            self.state.static_sources.iter().fold(0, |mask, &id| {
+                mask | self.state.objects[id as usize]
+                    .card
+                    .entry_trigger_suppression()
+            })
+        };
         for event in events {
             // These zones are public in the supported rules subset (all exile
             // is face up). Preserve the exact new hand incarnation for both
@@ -72,7 +83,7 @@ impl Game {
             {
                 self.state.known_hand.push(event.after);
             }
-            self.zone_triggers(event, death_sources, &sources);
+            self.zone_triggers(event, death_sources, &sources, entry_suppression);
         }
         if self.state.exile_links.is_empty()
             || !events

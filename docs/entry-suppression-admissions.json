@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Torpor Orb",
+      "oracle_text": "Creatures entering don't cause abilities to trigger.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TorporOrb.java",
+          "java_sha256": "a6711b01e959916ec8095b308f1af1476a6f5b4222a2e4d9c8aafc0a0792a36a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousRuleModifyingEffectImpl.java",
+          "java_sha256": "0f9822b6683144489e62ea1fa0e99c8e1e928479c90f8941e3794d57044e5948"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/DontCauseTriggerEffect.java",
+          "java_sha256": "9ff9fdb134f5884e806e3506aeff01948441d721ee84e208b32b3ace6577419e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        }
+      ]
+    },
+    {
+      "name": "Doorkeeper Thrull",
+      "oracle_text": "Flash\nFlying\nArtifacts and creatures entering don't cause abilities to trigger.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DoorkeeperThrull.java",
+          "java_sha256": "791ba4cdb7e4d4827ff598f139ddeb7d09281b672c8b4ff149537dedfcc32326"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousRuleModifyingEffectImpl.java",
+          "java_sha256": "0f9822b6683144489e62ea1fa0e99c8e1e928479c90f8941e3794d57044e5948"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/DontCauseTriggerEffect.java",
+          "java_sha256": "9ff9fdb134f5884e806e3506aeff01948441d721ee84e208b32b3ace6577419e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+          "java_sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        }
+      ]
+    },
+    {
+      "name": "Karn, Argent Defender",
+      "oracle_text": "Artifacts and creatures entering the battlefield don't cause abilities to trigger.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/k/KarnArgentDefender.java",
+          "java_sha256": "0fa5c237db11678e759324ce617bba808c1717924ec19daa8abe68aff9d5ea20"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousRuleModifyingEffectImpl.java",
+          "java_sha256": "0f9822b6683144489e62ea1fa0e99c8e1e928479c90f8941e3794d57044e5948"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/DontCauseTriggerEffect.java",
+          "java_sha256": "9ff9fdb134f5884e806e3506aeff01948441d721ee84e208b32b3ace6577419e"
+        }
+      ]
+    }
+  ]
+}
