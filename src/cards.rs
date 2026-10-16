@@ -493,6 +493,11 @@ pub(crate) enum AmountValue {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StatValue {
+    Not(&'static StatValue),
+    CardsDrawnThisTurn,
+    SourceAttacking,
+    SourceModified,
+    Tokens(CountFilter),
     AtLeast {
         value: &'static StatValue,
         minimum: u16,

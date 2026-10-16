@@ -292,6 +292,7 @@ impl<'g> FundingState<'g> {
             } else {
                 self.game.state.players[source.object.owner.index()].life
             },
+            self.game.state.attack_declared && source.attacking,
         )
     }
     fn keywords(&self, target: &Resource) -> Keywords {
@@ -1385,5 +1386,115 @@ mod conditional_keyword_tests {
         let r = state.resources.iter().find(|r| r.id == source).unwrap();
         assert_eq!(state.stat_value(StatValue::ControllerLife, r), 7);
         assert_eq!(g.snapshot(), s);
+    }
+
+    #[test]
+    fn source_predicate_overlay_tracks_virtual_counters_attachments_life_history_and_attack_commit()
+    {
+        for p in [Player::P0, Player::P1] {
+            let mut g = scenario();
+            g.state.active = p;
+            g.state.priority = p;
+            let spider = named(&mut g, p, "Skyward Spider", Zone::Battlefield);
+            let paladin = named(&mut g, p, "Twinblade Paladin", Zone::Battlefield);
+            let kite = named(&mut g, p, "Kitesail Corsair", Zone::Battlefield);
+            let pick = named(&mut g, p.other(), "Goldvein Pick", Zone::Battlefield);
+            g.state.objects[pick as usize].attached_to = Some(g.object_ref(spider));
+            g.state.objects[spider as usize].counters.plus_one = 1;
+            g.state.players[p.index()].life = 25;
+            g.state.players[p.index()].cards_drawn_this_turn = 2;
+            g.state.attackers.push(AttackDeclaration {
+                card: kite,
+                defender: Some(CombatDefender::Player(p.other())),
+                blocked: false,
+            });
+            let mut state = FundingState::from_game(&g, goal(p));
+            for id in [spider, paladin, kite] {
+                let r = state.resources.iter().find(|r| r.id == id).unwrap();
+                for value in [
+                    StatValue::SourceModified,
+                    StatValue::SourceAttacking,
+                    StatValue::CardsDrawnThisTurn,
+                    StatValue::Not(&StatValue::SpellsCastThisTurn),
+                ] {
+                    assert_eq!(
+                        state.stat_value(value, r),
+                        g.stat_value(value, g.object_ref(id), p)
+                    );
+                }
+            }
+            let spider_r = state.resources.iter().position(|r| r.id == spider).unwrap();
+            state.resources[spider_r].object.counters.plus_one = 0;
+            assert!(
+                state
+                    .keywords(&state.resources[spider_r])
+                    .contains(Keywords::FLYING)
+            );
+            state
+                .resources
+                .iter_mut()
+                .find(|r| r.id == pick)
+                .unwrap()
+                .object
+                .zone = Zone::Graveyard;
+            assert!(
+                !state
+                    .keywords(&state.resources[spider_r])
+                    .contains(Keywords::FLYING)
+            );
+            let mut actual = g.clone();
+            actual.state.objects[spider as usize].counters.plus_one = 0;
+            actual.move_object(pick, Zone::Graveyard);
+            assert_eq!(
+                state.keywords(&state.resources[spider_r]),
+                actual.keywords(spider)
+            );
+            state.life = 24;
+            let r = state.resources.iter().find(|r| r.id == paladin).unwrap();
+            assert!(!state.keywords(r).contains(Keywords::DOUBLE_STRIKE));
+            assert!(g.keywords(paladin).contains(Keywords::DOUBLE_STRIKE));
+            assert!(
+                !state
+                    .keywords(state.resources.iter().find(|r| r.id == kite).unwrap())
+                    .contains(Keywords::FLYING)
+            );
+            drop(state);
+            g.state.attack_declared = true;
+            let state = FundingState::from_game(&g, goal(p));
+            assert!(
+                state
+                    .keywords(state.resources.iter().find(|r| r.id == kite).unwrap())
+                    .contains(Keywords::FLYING)
+            );
+        }
+    }
+    #[test]
+    fn actual_and_virtual_treasure_sacrifice_disable_druid_token_bonus_without_mutating_original() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = scenario();
+            g.state.active = p;
+            g.state.priority = p;
+            let druid = named(&mut g, p, "Druid of the Spade", Zone::Battlefield);
+            let token = Card::catalogue()
+                .find(|c| c.token_info().is_some_and(|t| t.subtypes == "Treasure"))
+                .unwrap();
+            let treasure = spawn(&mut g, p, token, Zone::Battlefield);
+            let saved = g.snapshot();
+            let mut state = FundingState::from_game(&g, goal(p));
+            let step = state
+                .moves(goal(p))
+                .into_iter()
+                .find(|m| state.resources[m.resource].id == treasure)
+                .unwrap();
+            let action = state.action(&step);
+            state.apply(&step);
+            let mut actual = g.clone();
+            act(&mut actual, action);
+            let r = state.resources.iter().find(|r| r.id == druid).unwrap();
+            assert_eq!(state.keywords(r), actual.keywords(druid));
+            assert!(!state.keywords(r).contains(Keywords::TRAMPLE));
+            assert!(g.keywords(druid).contains(Keywords::TRAMPLE));
+            assert_eq!(g.snapshot(), saved);
+        }
     }
 }

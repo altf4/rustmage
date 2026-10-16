@@ -409,7 +409,7 @@ def stat_count_filter(text):
     else:return None
     kinds={'creature':1,'creatures':1,'land':2,'lands':2,'artifact':16,'artifacts':16,
            'enchantment':32,'enchantments':32,'permanent':1|2|16|32|64|256,'permanents':1|2|16|32|64|256,
-           'instant and sorcery':4|8,'creature and planeswalker':1|64,'artifact and/or creature':16|1}
+           'instant and sorcery':4|8,'instant and/or sorcery':4|8,'creature and planeswalker':1|64,'artifact and/or creature':16|1}
     kind,exclude,basic,subtype=0,0,False,None
     if cards:
         if noun.endswith(' cards'):noun=noun[:-6]
@@ -424,7 +424,7 @@ def stat_count_filter(text):
     elif noun in kinds:kind=kinds[noun]
     else:
         if noun.startswith('basic '):basic=True;noun=noun[6:]
-        singular={word.casefold():word for word in [*CREATURE_TYPE_NAMES,'Plains','Island','Swamp','Mountain','Forest','Equipment','Desert','Gate','Cave','Town','Treasure']}
+        singular={word.casefold():word for word in [*CREATURE_TYPE_NAMES,'Plains','Island','Swamp','Mountain','Forest','Equipment','Desert','Gate','Cave','Town','Treasure','Lesson']}
         plurals={word.casefold()+'s':word for word in ['Island','Swamp','Mountain','Forest','Desert','Gate','Cave','Town','Treasure']}
         subtype=SUBTYPE_PLURALS.get(noun,plurals.get(noun,singular.get(noun)))
         if subtype is None:return None
@@ -433,6 +433,8 @@ def stat_count_filter(text):
 
 
 def stat_value(text):
+    if text=='tokens you control':
+        return 'StatValue::Tokens('+stat_count_filter('permanents you control')+')'
     if text=='your life total':return 'StatValue::ControllerLife'
     if text=='card types among cards in all graveyards':return 'StatValue::GraveyardCardTypes'
     if text.startswith('differently named '):
@@ -511,7 +513,14 @@ def extract_entry_counters(card):
 
 def stat_threshold_condition(text):
     """Boolean source-stat predicates over earlier-layer counts or owned history."""
-    if text=="you've cast two or more spells this turn":value,minimum='StatValue::SpellsCastThisTurn',2
+    if text=="it's attacking":return 'StatValue::SourceAttacking'
+    if text=="it's modified":return 'StatValue::SourceModified'
+    if text=="you haven't cast a spell this turn":return 'StatValue::Not(&StatValue::SpellsCastThisTurn)'
+    if text=="you've drawn two or more cards this turn":value,minimum='StatValue::CardsDrawnThisTurn',2
+    elif text=="there's a Lesson card in your graveyard":value,minimum=stat_value('Lesson cards in your graveyard'),1
+    elif text=='you control a token':value,minimum=stat_value('tokens you control'),1
+    elif m:=re.fullmatch(r'you have ([0-9]+) or more life',text):value,minimum='StatValue::ControllerLife',int(m[1])
+    elif text=="you've cast two or more spells this turn":value,minimum='StatValue::SpellsCastThisTurn',2
     elif m:=re.fullmatch(r'you control (?:a|an|another) (.+)',text):
         value=stat_value(('other ' if text.startswith('you control another ') else '')+m[1]+' you control');minimum=1
     elif m:=re.fullmatch(r'(?:you control|there are) (two|three|four|five|six|seven|eight|[0-9]+) or more (.+)',text):
@@ -520,6 +529,20 @@ def stat_threshold_condition(text):
     else:return None
     if value is None or minimum>65535:return None
     return f'StatValue::AtLeast {{ value: &{value}, minimum: {minimum} }}'
+
+
+def source_rule_line(line, names):
+    """Normalize only exact source subjects, including a leading condition."""
+    line=strip_rule_label(line)
+    for alias in names:
+        for verb in ('gets ', 'has ', "can't be blocked"):
+            line=re.sub(r'(^|, )'+re.escape(alias)+r' '+re.escape(verb),lambda m:m[1]+('This creature ' if not m[1] else 'this creature ')+verb,line)
+    return line
+
+
+def source_grant_mask(words):
+    restrictions={"can't be blocked":16384,"can't be blocked by more than one creature":65536}
+    return restrictions.get(words,keyword_list(words.casefold()))
 
 
 def extract_stat_rules(card):
@@ -560,20 +583,22 @@ def extract_stat_rules(card):
             expr=lambda add:f'Some(StatExpr {{ value: {parsed}, multiplier: {multiplier}, offset: {add} }})'
             base=f'DynamicStats {{ power: {expr(0)}, toughness: {expr(offset) if axes!="power is" else "None"} }}'
             continue
-        conditional=strip_rule_label(line)
+        conditional=source_rule_line(line,names)
         if m:=re.fullmatch(r'This creature gets ([+-][0-9]+)/([+-][0-9]+) as long as you gained life this turn\.',conditional):
             if 'Creature' not in types or max(abs(int(m[1])),abs(int(m[2])))>32767:body.append(original);continue
             scales.append(f'ScalingModifier {{ subject: Subject::Source, value: StatValue::LifeGainOccurredThisTurn, stats: Stats {{ power: {int(m[1])}, toughness: {int(m[2])} }} }}')
             continue
-        prefix=re.fullmatch(r'As long as (.+), this creature gets ([+-][0-9]+)/([+-][0-9]+)(?: and has (.+))?\.',conditional)
-        suffix=re.fullmatch(r'This creature gets ([+-][0-9]+)/([+-][0-9]+)(?: and has (.+?))? as long as (.+)\.',conditional)
+        prefix=re.fullmatch(r'As long as (.+), this creature gets (?:an additional )?([+-][0-9]+)/([+-][0-9]+)(?: and (?:has )?(.+))?\.',conditional)
+        suffix=re.fullmatch(r'This creature gets (?:an additional )?([+-][0-9]+)/([+-][0-9]+)(?: and (?:has )?(.+?))? as long as (.+)\.',conditional)
         if prefix or suffix:
             condition,power,toughness,keywords=prefix.groups() if prefix else (suffix[4],suffix[1],suffix[2],suffix[3])
             value=stat_threshold_condition(condition)
             if ('Creature' in types and value is not None and max(abs(int(power)),abs(int(toughness)))<=32767
-                    and (keywords is None or (keyword_list(keywords.casefold()) is not None and not keyword_list(keywords.casefold()) & KEYWORDS['flash']))):
+                    and (keywords is None or (source_grant_mask(keywords) is not None and not source_grant_mask(keywords) & KEYWORDS['flash']))):
                 scales.append(f'ScalingModifier {{ subject: Subject::Source, value: {value}, stats: Stats {{ power: {int(power)}, toughness: {int(toughness)} }} }}')
-                if keywords:body.append(f'This creature has {keywords} as long as {condition}.')
+                if keywords:
+                    verb='' if keywords.startswith("can't ") else 'has '
+                    body.append(f'This creature {verb}{keywords} as long as {condition}.')
                 continue
         m=re.fullmatch(r'(This creature|Enchanted creature|Equipped creature) gets ([+-][0-9]+)/([+-][0-9]+) for each (.+?)(?: and has (.+))?\.',line)
         if m:
@@ -606,7 +631,7 @@ def static_permanent_template(card):
         source_only=subject.casefold()=='this creature'
         if source_only and 'Creature' not in card.get('type_line','').split(' — ')[0].split(): return None
         filt=creature_filter('creatures you control' if source_only else subject)
-        keywords=keyword_list(words.casefold())
+        keywords=source_grant_mask(words) if source_only else keyword_list(words.casefold())
         # Positive grants commute only when recipient selection does not depend
         # on another layer-6 ability. Dependency/removal machinery stays gated.
         if filt is None or keywords is None or 'keyword: Keywords(0)' not in filt: return None
@@ -615,17 +640,18 @@ def static_permanent_template(card):
         return f'KeywordGrant {{ condition: {condition}, requires_life_gain: {str(requires_life_gain).lower()}, filter: {filt}, source_only: {str(source_only).lower()}, own_turn: {str(own_turn).lower()}, keywords: Keywords({keywords}) }}'
     for original in re.sub(r'\([^()]*\)', '', card['oracle_text']).strip().split('\n'):
         line=original.strip()
-        line=strip_rule_label(line)
+        line=source_rule_line(line,names)
         requires_life_gain=line.endswith(' as long as you gained life this turn.')
         if requires_life_gain:line=line[:-len(' as long as you gained life this turn.')]+'.'
         own_turn=line.startswith('During your turn, ')
         if own_turn: line=line[len('During your turn, '):]
         for alias in names:
             if line.startswith(alias+' has '): line='this creature has '+line[len(alias+' has '):]
-        prefix=re.fullmatch(r'As long as (.+), this creature has (.+)\.',line)
-        suffix=re.fullmatch(r'[Tt]his creature has (.+?) as long as (.+)\.',line)
+        prefix=re.fullmatch(r"As long as (.+), this creature (has .+|can't be blocked(?: by more than one creature)?)\.",line)
+        suffix=re.fullmatch(r"[Tt]his creature (has .+?|can't be blocked(?: by more than one creature)?) as long as (.+)\.",line)
         if prefix or suffix:
             condition,words=prefix.groups() if prefix else (suffix[2],suffix[1])
+            words=words.removeprefix('has ')
             value=stat_threshold_condition(condition)
             if value is None:return None
             extra=grant('this creature',words,own_turn,requires_life_gain,value)

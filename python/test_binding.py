@@ -9,6 +9,55 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def test_thirteen_source_predicate_bodies_reach_independent_live_conditions_and_replay(self):
+        names=['Akawalli, the Seething Tower','Cephalid Inkmage','Druid of the Spade','First-Time Flyer','Foggy Swamp Hunters','Ghitu Lavarunner','June, Bounty Hunter','Kitesail Corsair','Messenger Hawk','Nightwhorl Hermit','Skyward Spider','Stoic Sphinx','Twinblade Paladin']
+        bases=[(3,3),(2,2),(2,3),(1,2),(3,4),(1,2),(2,2),(2,1),(1,2),(1,4),(2,2),(5,3),(3,3)];bonuses=[(2,2),(0,0),(2,0),(1,1),(0,0),(1,0),(0,0),(0,0),(2,0),(1,0),(0,0),(0,0),(0,0)];flags=[256,16384,256,0,64|32768,4,16384,1,0,16384,1,4096,1024];intrinsics=[0,0,0,1,0,0,0,0,1,8,0,1|32,0]
+        definitions={c['name']:c for c in json.loads((Path(__file__).resolve().parents[1]/'data/standard/cards.json').read_text())['cards']}
+        def types(n):return set(definitions[n]['type_line'].split(' — ')[0].split())
+        def subtype(n,t):return t in definitions[n]['type_line'].split(' — ')[-1].split() if ' — ' in definitions[n]['type_line'] else False
+        for i,wanted in enumerate(names):
+            enabler='Mind Drill Assailant' if i in (0,1,9) else 'Messenger Hawk' if i==2 else 'Abandon Attachments' if i==3 else 'Goldvein Pick' if i==10 else 'Opt'
+            lands=sum(([n]*8 for n in ['Tranquil Cove','Blossoming Sands','Scoured Barrens','Dismal Backwater','Mountain']),[])
+            with self.subTest(card=wanted),Game([lands+[wanted]*12+[enabler]*8,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+                replayed=0
+                for _ in range(22000):
+                    obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor']);objects={o['id']:o for o in obs['objects']};own=[o for o in objects.values() if o['owner']=='P0'];board=[o for o in own if o['zone']=='Battlefield'];sources=[o for o in board if o['card']==wanted];helpers=[o for o in board if o['card']==enabler];grave=[o for o in own if o['zone']=='Graveyard' and not o['token']];permanents=sum(bool(types(o['card'])&{'Artifact','Creature','Enchantment','Land','Planeswalker','Battle'}) for o in grave);player=obs['players'][0]
+                    on=False
+                    for source in sources:
+                        attached=[o for o in objects.values() if o['zone']=='Battlefield' and o['attached_to']==source['reference']];c=source['counters'];modified=any(c.values()) or any(subtype(o['card'],'Equipment') or (subtype(o['card'],'Aura') and o['owner']==source['owner']) for o in attached)
+                        on=(permanents>=4 if i==0 else len(grave)>=7 if i in (1,9) else any(o['token'] for o in board) if i==2 else any(subtype(o['card'],'Lesson') for o in grave) if i==3 else player['cards_drawn_this_turn']>=2 if i in (4,6,8) else sum(bool(types(o['card'])&{'Instant','Sorcery'}) for o in grave)>=2 if i==5 else source['attacking'] and obs['decision']!='attackers' if i==7 else modified if i==10 else player['spells_cast_this_turn']==0 if i==11 else player['life']>=25)
+                        extra=2 if i==0 and permanents>=8 else 0;equipment=sum(o['card']=='Goldvein Pick' for o in attached);counter=c['plus_one']-c['minus_one'];base=bases[i];bonus=bonuses[i];expected=(base[0]+(bonus[0] if on else 0)+extra+equipment+counter,base[1]+(bonus[1] if on else 0)+extra+equipment+counter,intrinsics[i]|(flags[i] if on else 0)|(65536 if extra else 0))
+                        self.assertEqual((source['power'],source['toughness'],source['keywords']),expected);self.assertEqual(source['modified'],modified)
+                    if sources and on:break
+                    def score(a):
+                        k=a['kind']
+                        if k in ('Cast','AnnounceCast'):
+                            n=objects[a['card']]['card']
+                            if n==wanted:return 250 if not sources else -100
+                            if n==enabler and sources:return 230 if enabler in ('Opt','Abandon Attachments') or not helpers else -100
+                            return -100
+                        if k=='AnnounceActivate':return 240 if sources and objects[a['card']]['card'] in ('Mind Drill Assailant','Goldvein Pick') and not obs['stack'] and obs['active']=='P0' and obs['step'] in ('Main1','Main2') else -100
+                        if k in ('Activate','BeginActivate','ActivateMana','AnnounceMana'):return -100
+                        if k in ('ChooseSpellCost','ChooseActivationCost'):return 220
+                        if k=='TapMana':return 180 if obs['decision']=='pay_costs' else -100
+                        if k=='ArrangeLibrary':return 210 if a['destination']=='Graveyard' else -100
+                        if k=='ChooseOptional':return 220 if a['accept'] else -100
+                        if k=='ChooseTarget' and 'Card' in a['target']:return 240 if objects[a['target']['Card']]['card']==wanted else 100
+                        if k=='Attack':return 200 if i==7 else -100
+                        return self.professor_score(obs,a)
+                    choice=max(range(len(obs['actions'])),key=lambda j:score(obs['actions'][j]));private=obs['library_choice'] or obs['search_choice'] or obs['decision']=='effect_discard'
+                    if private:
+                        other=game.observe('P1' if obs['actor']=='P0' else 'P0');self.assertIsNone(other['library_choice']);self.assertIsNone(other['search_choice']);self.assertEqual(other['effect_discards'],[]);self.assertEqual(other['actions'],[])
+                    if obs['announcing'] or obs['resolving'] or private:
+                        saved=game.snapshot()
+                        with game.clone() as fork:expected=fork.step(fork.observe(obs['actor']),choice)
+                        after=game.step(obs,choice);self.assertEqual(after,expected);game.restore(saved)
+                        with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,choice)
+                        again=game.step(game.observe(obs['actor']),choice);after['revision']=again['revision'];self.assertEqual(after,again);game.drop_snapshot(saved);replayed+=1
+                    else:game.step(obs,choice)
+                else:self.fail('source predicate not reached')
+                self.assertGreater(replayed,0);self.assertEqual(obs['schema'],51)
+
     def test_nine_conditional_keyword_bodies_reach_exact_live_keywords_stats_and_private_replay(self):
         rows=[('Barrow Naughty',(1,3),(0,0),1,64),('Didact Echo',(3,2),(0,0),0,1),('Dreadwing Scavenger',(2,2),(1,1),1,128),('Echo of Dusk',(2,2),(1,1),0,64),('Goblin Tomb Raider',(1,2),(1,0),0,4),('Gravblade Heavy',(3,4),(1,0),0,128),('Kargan Dragonrider',(2,2),(0,0),0,1),('Spineseeker Centipede',(2,1),(1,2),0,8),('Wildfire Wickerfolk',(3,2),(1,1),4,256)]
         definitions={c['name']:c for c in json.loads((Path(__file__).resolve().parents[1]/'data/standard/cards.json').read_text())['cards']};types={n:set(c['type_line'].split(' — ')[0].split()) for n,c in definitions.items()}

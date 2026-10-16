@@ -8,6 +8,36 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_source_public_predicates_are_exact_and_reject_untracked_history(self):
+        expected={"it's attacking":'SourceAttacking',"it's modified":'SourceModified',"you haven't cast a spell this turn":'Not(&StatValue::SpellsCastThisTurn)',"you've drawn two or more cards this turn":'CardsDrawnThisTurn','you control a token':'Tokens(',"there's a Lesson card in your graveyard":'subtype: Some("Lesson")','there are two or more instant and/or sorcery cards in your graveyard':'kind: 12','you have 25 or more life':'ControllerLife'}
+        for clause,value in expected.items():
+            self.assertIn(value,generate.stat_threshold_condition(clause),clause)
+            result=generate.static_permanent_template(self.card(oracle_text='This creature has flying as long as '+clause+'.'));self.assertIsNotNone(result,clause)
+        for clause in ["it's attacking a player","it's been modified","you've drawn two cards this game","you haven't cast a noncreature spell this turn",'you have 65536 or more life',"there's a Lesson in any graveyard",'you control a noncreature token',"it hasn't dealt damage","you committed a crime this turn"]:
+            self.assertIsNone(generate.stat_threshold_condition(clause),clause)
+        for clause in expected:
+            self.assertIsNone(generate.static_permanent_template(self.card(oracle_text='This creature has flash as long as '+clause+'.')))
+
+    def test_conditional_source_block_flags_and_additional_bonus_preserve_exact_alias_scope(self):
+        for restriction,mask in [("can't be blocked",16384),("can't be blocked by more than one creature",65536)]:
+            line='As long as there are eight or more permanent cards in your graveyard, Test gets an additional +2/+2 and '+restriction+'.'
+            card=self.card(name='Test, Legend',type_line='Legendary Creature — Fungus',oracle_text=line)
+            proxy,_,scales=generate.extract_stat_rules(card);self.assertEqual(len(scales),1);self.assertIn('power: 2, toughness: 2',scales[0]);result=generate.static_permanent_template(proxy);self.assertIsNotNone(result);self.assertIn('keywords: Keywords('+str(mask)+')',result[6][0])
+            for prefix in ['', 'During your turn, ']:
+                card=self.card(oracle_text=prefix+'This creature '+restriction+' as long as you control an artifact as long as you gained life this turn.');result=generate.static_permanent_template(card);self.assertIsNotNone(result);self.assertIn('requires_life_gain: true',result[6][0]);self.assertIn('own_turn: '+str(bool(prefix)).lower(),result[6][0])
+        for line in ["This creature can't be blocked by more than two creatures as long as you control an artifact.","Creatures you control can't be blocked as long as you control an artifact.","This creature can't be blocked as long as you control an artifact. Then discover 3.","As long as you control an artifact, this creature gets +1/+1 and can't be blocked by creatures with flying."]:
+            proxy,_,_=generate.extract_stat_rules(self.card(oracle_text=line));self.assertIsNone(generate.static_permanent_template(proxy),line)
+
+    def test_source_predicates_admit_thirteen_entire_bodies_and_keep_all_unknown_residuals_gated(self):
+        import json
+        manifest=json.loads((generate.ROOT/'docs/source-state-predicate-admissions.json').read_text());rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());_,coverage=generate.compile_catalogue(rows,target);supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        self.assertEqual(len(manifest['cards']),13)
+        for row in manifest['cards']:
+            self.assertIn(row['name'],supported);card=next(c for c in rows['cards'] if c['name']==row['name']);self.assertEqual(row['oracle_text'],card['oracle_text']);proxy,_,_=generate.extract_stat_rules(dict(card,oracle_text=card['oracle_text']+'\nWhenever you attack, discover 3.'))
+            for compiler in [generate.static_permanent_template,generate.trigger_creature_template,generate.permanent_program_template]:self.assertIsNone(compiler(proxy),row['name'])
+        for name in ['Ruric Thar, Magecrusher','Karakyk Guardian','Colossal Rattlewurm','Undercover Skrull']:
+            self.assertNotIn(name,supported)
+
     def test_conditional_source_count_composition_preserves_life_gain_and_own_turn_requirements(self):
         for prefix,own_turn in [('',False),('During your turn, ',True)]:
             for line in ['As long as you control an artifact, this creature has flying as long as you gained life this turn.','This creature has flying as long as you control an artifact as long as you gained life this turn.']:
@@ -32,13 +62,13 @@ class CatalogueCompilerTests(unittest.TestCase):
         rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());_,coverage=generate.compile_catalogue(rows,target);supported={c['name'] for c in coverage['cards'] if c['implemented']}
         for name in ['Barrow Naughty','Didact Echo','Dreadwing Scavenger','Echo of Dusk','Goblin Tomb Raider','Gravblade Heavy','Kargan Dragonrider','Spineseeker Centipede','Wildfire Wickerfolk']:
             self.assertIn(name,supported);c=next(c for c in rows['cards'] if c['name']==name);proxy,_,_=generate.extract_stat_rules(dict(c,oracle_text=c['oracle_text']+'\nWhenever you attack, discover 3.'));self.assertIsNone(generate.static_permanent_template(proxy));self.assertIsNone(generate.trigger_creature_template(proxy));self.assertIsNone(generate.permanent_program_template(proxy))
-        for name in ["Bolg's Company",'Colossal Rattlewurm','Druid of the Spade','Ghitu Lavarunner','Kitesail Corsair','Nightwhorl Hermit','Stoic Sphinx','Undercover Skrull']:
+        for name in ["Bolg's Company",'Colossal Rattlewurm','Undercover Skrull']:
             self.assertNotIn(name,supported)
 
     def test_source_stat_threshold_counts_have_exact_boolean_bounds_and_scopes(self):
         for condition,minimum in [('you control an artifact',1),('you control another creature',1),('you control seven or more lands',7),('there are four or more permanent cards in your graveyard',4),('there are seven or more cards in your graveyard',7),("you've cast two or more spells this turn",2),('you control 65535 or more lands',65535)]:
             value=generate.stat_threshold_condition(condition);self.assertIn('StatValue::AtLeast',value);self.assertIn('minimum: '+str(minimum),value)
-        for condition in ['you control 65536 or more lands','you control a creature with power 4 or greater',"you control artifacts and it's your turn",'you control a token',"there are seven or more cards in an opponent's graveyard",'you control one or fewer cards',"you've cast two spells this game"]:
+        for condition in ['you control 65536 or more lands','you control a creature with power 4 or greater',"you control artifacts and it's your turn",'you control a noncreature token',"there are seven or more cards in an opponent's graveyard",'you control one or fewer cards',"you've cast two spells this game"]:
             self.assertIsNone(generate.stat_threshold_condition(condition),condition)
 
     def test_source_stat_threshold_extraction_retains_entire_residual_and_bounded_signed_bonus(self):
@@ -55,7 +85,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         names=['Basking Capybara','Billowing Shriekmass','Brightspear Zealot','Cloudsculpt Technician','Frilled Cave-Wurm','Gaelicat','Gigantoad','Mind Drill Assailant','Scorpion Sentinel']
         for name in names:
             self.assertIn(name,supported);c=next(c for c in rows['cards'] if c['name']==name);proxy,_,_=generate.extract_stat_rules(dict(c,oracle_text=c['oracle_text']+'\nWhenever you attack, discover 3.'));self.assertIsNone(generate.permanent_program_template(proxy));self.assertIsNone(generate.trigger_creature_template(proxy))
-        for name in ['Druid of the Spade','Kitesail Corsair','Armory Mice','First-Time Flyer','Colossal Rattlewurm']:
+        for name in ['Armory Mice','Colossal Rattlewurm']:
             self.assertNotIn(name,supported)
 
     def test_firebending_exact_triggers_preserve_multiplicity_and_scaled_count(self):

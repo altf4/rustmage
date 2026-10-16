@@ -3666,3 +3666,7 @@ mod count_threshold_tests;
 #[cfg(test)]
 #[path = "engine_conditional_source_keyword_tests.rs"]
 mod conditional_source_keyword_tests;
+
+#[cfg(test)]
+#[path = "engine_source_predicate_tests.rs"]
+mod source_predicate_tests;
