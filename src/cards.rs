@@ -917,6 +917,10 @@ pub(crate) enum TriggerCondition {
     },
     OtherFilteredEntersYou(EntryPredicate),
     OtherCreatureEntersYou,
+    CreatureEnters {
+        relation: CastRelation,
+        other: bool,
+    },
     OtherSubtypeEntersYou(&'static str),
     SubtypeEntersYou(&'static str),
     ArtifactEntersYou,
@@ -1252,6 +1256,10 @@ impl Card {
     /// Immutable entering-kind mask; valid while this source is on the battlefield.
     pub(crate) fn entry_trigger_suppression(self) -> u16 {
         generated::entry_trigger_suppression(self)
+    }
+    /// Opposing entering-kind mask while this source is on the battlefield.
+    pub(crate) fn opponent_entry_tapped(self) -> u16 {
+        generated::opponent_entry_tapped(self)
     }
 
     pub(crate) fn static_modifiers(self) -> &'static [StaticModifier] {

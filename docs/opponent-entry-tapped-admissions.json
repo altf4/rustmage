@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Authority of the Consuls",
+      "oracle_text": "Creatures your opponents control enter tapped.\nWhenever a creature an opponent controls enters, you gain 1 life.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AuthorityOfTheConsuls.java",
+          "java_sha256": "7cfcda814517f701a265b60816a9cf03603d7e23ef9fe3dfc682fa3ab9a46f86"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PermanentsEnterBattlefieldTappedEffect.java",
+          "java_sha256": "dbf33d531fbe994f60b47e5cb8060588643ba9d9830b7706b9a052892d42ac8f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ReplacementEffectImpl.java",
+          "java_sha256": "d575331184e31fd4a909956ff2822c038832dc6a6febff6e4502bcac82b836e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TargetController.java",
+          "java_sha256": "bd1591f2b4d3613a47bd6e509f92d688fea7c10d31a19ce7601ccba62cbba7f6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterOpponentsCreaturePermanent.java",
+          "java_sha256": "9e64645fa99f5e9c77a41dd9490e629a050201ee2fb8cb973bebdef3a3914942"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOpponentTriggeredAbility.java",
+          "java_sha256": "011b67d09ad7f8a214e42f69577dd35ce046defc59fb969aa03b52a015105e30"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+          "java_sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        }
+      ]
+    },
+    {
+      "name": "Spider-Woman, Stunning Savior",
+      "oracle_text": "Flying\nVenom Blast \u2014 Artifacts and creatures your opponents control enter tapped.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SpiderWomanStunningSavior.java",
+          "java_sha256": "d8c8651d877d0bca1823b3179b43739d01c3b2003c9184ce24ebb6716c780e72"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PermanentsEnterBattlefieldTappedEffect.java",
+          "java_sha256": "dbf33d531fbe994f60b47e5cb8060588643ba9d9830b7706b9a052892d42ac8f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ReplacementEffectImpl.java",
+          "java_sha256": "d575331184e31fd4a909956ff2822c038832dc6a6febff6e4502bcac82b836e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TargetController.java",
+          "java_sha256": "bd1591f2b4d3613a47bd6e509f92d688fea7c10d31a19ce7601ccba62cbba7f6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        }
+      ]
+    }
+  ]
+}

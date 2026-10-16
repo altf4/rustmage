@@ -1883,7 +1883,7 @@ def trigger_mode_lines(card, text):
 def entering_object_program(text, condition):
     """Bind only the whole explicit event-object counter clause; never a target."""
     events=('SelfEnters','OtherCreatureEntersYou','CreatureEntersYou','ArtifactEntersYou','OtherArtifactEntersYou','EnchantmentEntersYou','LandEntersYou')
-    if condition not in events and not condition.startswith(('OtherSubtypeEntersYou(','SubtypeEntersYou(','PermanentEntersYou {','OtherFilteredEntersYou(')):
+    if condition not in events and not condition.startswith(('OtherSubtypeEntersYou(','SubtypeEntersYou(','PermanentEntersYou {','OtherFilteredEntersYou(','CreatureEnters {')):
         return None
     m=re.fullmatch(r'[Pp]ut (a|one|two|three|four|five|six) \+1/\+1 counters? on that creature(?: and it gains haste until end of turn)?\.',text)
     if m is None:return None
@@ -1960,6 +1960,7 @@ def trigger_creature_template(card):
         'Whenever an enchantment you control enters, ': 'EnchantmentEntersYou',
         'Whenever another creature you control enters, ': 'OtherCreatureEntersYou',
         'Whenever a creature you control enters, ': 'CreatureEntersYou',
+        'Whenever a creature an opponent controls enters, ': 'CreatureEnters { relation: CastRelation::Opponent, other: false }',
         'Whenever another Villain you control enters, ': 'OtherSubtypeEntersYou("Villain")',
         'Whenever this creature or another creature you control enters, ': 'CreatureEntersYou',
         'Landfall — Whenever a land you control enters, ': 'LandEntersYou',
@@ -2080,7 +2081,7 @@ def trigger_creature_template(card):
                     if condition.startswith('AtStep {'):
                         condition=condition.replace('StepGuard::Always',guard)
                     elif (condition in ('SelfEnters','SelfAttacks','SelfEntersOrAttacks','OtherCreatureEntersYou','CreatureEntersYou','ArtifactEntersYou','OtherArtifactEntersYou','EnchantmentEntersYou','LandEntersYou')
-                            or condition.startswith(('SpellCast {','LifeGained {','CardDrawn {','PlayerDamaged {','OtherSubtypeEntersYou(','SubtypeEntersYou(','PermanentEntersYou {','OtherFilteredEntersYou('))):
+                            or condition.startswith(('SpellCast {','LifeGained {','CardDrawn {','PlayerDamaged {','OtherSubtypeEntersYou(','SubtypeEntersYou(','PermanentEntersYou {','OtherFilteredEntersYou(','CreatureEnters {'))):
                         intervening=guard
                     else:return None  # Lookback-event conditions need prior-event state.
                 # Only self-event subjects prove an initial 'it' denotes this source.
@@ -2502,6 +2503,27 @@ def land_template(card):
     return 'Land', keywords, triggers, activations, enters, entry
 
 
+def extract_opponent_entry_tapped(card):
+    """Exact opposing-permanent entry replacements; retain every residual rule."""
+    if (card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'), str)
+            or permanent_type(card) not in ('Creature', 'Artifact Creature', 'Enchantment Creature', 'Artifact', 'Enchantment', 'Planeswalker')):
+        return card, 0
+    clauses = {
+        subject + ' your opponents control enter' + battlefield + ' tapped.': mask
+        for subject, mask in [('Creatures', 1), ('Artifacts', 16), ('Artifacts and creatures', 17)]
+        for battlefield in ['', ' the battlefield']
+    }
+    body, mask = [], 0
+    for line in card['oracle_text'].split('\n'):
+        clean = line.strip()
+        # A cosmetic label is removed only together with this whole exact rule.
+        if clean.startswith('Venom Blast — '): clean = clean[len('Venom Blast — '):]
+        value = clauses.get(clean)
+        if value is None: body.append(line)
+        else: mask |= value
+    return dict(card, oracle_text='\n'.join(body)), mask
+
+
 def extract_entry_trigger_suppression(card):
     """Closed entry-event prohibitions; admit only with the entire residual body."""
     if (card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'), str)
@@ -2584,6 +2606,7 @@ def compile_catalogue(snapshot, target):
     exhaust_rows = []
     uncounterable_rows = []
     entry_suppression_rows = []
+    opponent_entry_tapped_rows = []
     loyalty_rows = []
     supported = []
     coverage = []
@@ -2600,6 +2623,7 @@ def compile_catalogue(snapshot, target):
     for index, name in enumerate(names):
         card, uncounterable = extract_uncounterable(cards.get(name, {}))
         card, entry_suppression = extract_entry_trigger_suppression(card)
+        card, opponent_entry_tapped = extract_opponent_entry_tapped(card)
         card, cycling = cycling_abilities(card)
         card, additional = extract_additional_cost(card)
         card, reductions = extract_cost_reductions(card)
@@ -2685,6 +2709,7 @@ def compile_catalogue(snapshot, target):
         if effect != 'Unsupported':
             supported.append(index)
             if entry_suppression: entry_suppression_rows.append(f'        {index} => {entry_suppression},')
+            if opponent_entry_tapped: opponent_entry_tapped_rows.append(f'        {index} => {opponent_entry_tapped},')
             if entry_counters: entry_counter_rows.append(f'        {index} => &[{", ".join(entry_counters)}],')
             if reductions: reduction_rows.append(f'        {index} => &[{", ".join(reductions)}],')
             if additional is not None: additional_rows.append(f'        {index} => Some({additional}),')
@@ -2782,6 +2807,7 @@ def compile_catalogue(snapshot, target):
     lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn equipment(card: Card) -> Option<EquipmentSpec> {', '    match card.0 {', *equipment_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn aura(card: Card) -> Option<AuraSpec> {', '    match card.0 {', *aura_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn dynamic_stats(card: Card) -> Option<DynamicStats> {', '    match card.0 {', *dynamic_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', "pub(super) fn scaling_modifiers(card: Card) -> &'static [ScalingModifier] {", '    match card.0 {', *scaling_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn entry_trigger_suppression(card: Card) -> u16 {', '    match card.0 {', *entry_suppression_rows, '        _ => 0,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn opponent_entry_tapped(card: Card) -> u16 {', '    match card.0 {', *opponent_entry_tapped_rows, '        _ => 0,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn keyword_grants(card: Card) -> &'static [KeywordGrant] {", '    match card.0 {', *grant_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn additional_cost(card: Card) -> Option<AdditionalCost> {', '    match card.0 {', *additional_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub const CREATURE_TYPES: &[&str] = &[', *('    '+json.dumps(name)+',' for name in creature_types), '];', '']
