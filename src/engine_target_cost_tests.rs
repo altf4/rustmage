@@ -438,7 +438,7 @@ fn partial_multi_target_completion_requires_one_qualifier_before_finish_and_no_m
     );
 }
 #[test]
-fn brush_off_colored_discount_and_stack_kinds_are_not_generic_credit() {
+fn brush_off_colored_discount_and_stack_kinds_follow_typed_reduction_rules() {
     let mut g = setup(Player::P0);
     let creature = qualifier(&mut g, Player::P0, 10);
     let instant = qualifier(&mut g, Player::P0, 1);
@@ -467,6 +467,23 @@ fn brush_off_colored_discount_and_stack_kinds_are_not_generic_credit() {
     );
     finish(&mut g);
     let bound = g.bind_target(Target::Spell(instant));
+    // Synthetic selected cost isolates CR 118.7b: the absent blue component
+    // transfers its reduction to generic, while the red component remains due.
+    assert_eq!(
+        g.target_spell_cost(
+            Player::P0,
+            spell,
+            ManaCost {
+                colored: [0, 0, 0, 1, 0, 0],
+                generic: 4
+            },
+            &[bound]
+        ),
+        ManaCost {
+            colored: [0, 0, 0, 1, 0, 0],
+            generic: 2
+        }
+    );
     assert_eq!(
         g.target_spell_cost(
             Player::P0,
@@ -510,4 +527,232 @@ fn static_and_target_reductions_stack_at_zero_without_erasing_printed_values() {
     assert_eq!(s.source_card.fixed_mana_value(), 5);
     assert_eq!(s.source_card.colors(), 1);
     resolve(&mut g);
+}
+#[test]
+fn no_initial_proposal_with_only_nonqualifying_targets_or_wrong_stack_kind() {
+    for (i, name) in NAMES.iter().enumerate() {
+        let mut g = setup(Player::P0);
+        let spell = named(&mut g, Player::P0, name, Zone::Hand);
+        let c = g.state.objects[spell as usize].card;
+        let (mut pool, generic) = c.cost();
+        let discount = c.target_cost_reduction().unwrap().discount;
+        for (n, d) in pool.iter_mut().zip(discount.colored) {
+            *n = n.saturating_sub(d);
+        }
+        pool[5] += generic.saturating_sub(discount.generic);
+        g.state.players[0].mana = pool;
+        if i == 1 || i == 10 {
+            qualifier(&mut g, Player::P0, if i == 1 { 10 } else { 1 });
+        } else {
+            named(&mut g, Player::P1, "Bear Cub", Zone::Battlefield);
+            if i == 15 {
+                named(&mut g, Player::P0, "Bear Cub", Zone::Battlefield);
+            }
+        }
+        let before = g.snapshot();
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceCast { card: spell }),
+            "{name}"
+        );
+        assert_eq!(g.snapshot(), before);
+        reject(&mut g, Action::AnnounceCast { card: spell });
+    }
+}
+#[test]
+fn exact_incarnations_capacity_and_wrong_actor_cannot_commit_target_cost_stages() {
+    let mut g = setup(Player::P0);
+    let target = qualifier(&mut g, Player::P0, 0);
+    let spell = named(&mut g, Player::P0, "Ajani's Response", Zone::Hand);
+    g.state.players[0].mana = [1, 0, 0, 0, 0, 1];
+    g.state.next_stack_id = u64::MAX;
+    let old = g.snapshot();
+    let rev = g.revision();
+    assert!(matches!(
+        g.apply(Player::P0, Action::AnnounceCast { card: spell }),
+        Err(Error::CapacityExceeded(_))
+    ));
+    assert_eq!(g.snapshot(), old);
+    assert_eq!(g.revision(), rev);
+    g.state.next_stack_id = 0;
+    replay(&mut g, Action::AnnounceCast { card: spell });
+    let old = g.snapshot();
+    assert_eq!(
+        g.apply(
+            Player::P1,
+            Action::ChooseTarget {
+                target: Target::Card(target)
+            }
+        ),
+        Err(Error::WrongActor)
+    );
+    assert_eq!(g.snapshot(), old);
+    replay(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(target),
+        },
+    );
+    let reference = g.object_ref(target);
+    let cost = g.state.announcing.as_ref().unwrap().total_cost;
+    g.move_object(target, Zone::Graveyard);
+    g.move_object(target, Zone::Battlefield);
+    assert_ne!(g.object_ref(target), reference);
+    assert_eq!(g.state.announcing.as_ref().unwrap().total_cost, cost);
+    finish(&mut g);
+    resolve(&mut g);
+    assert_eq!(g.state.objects[target as usize].zone, Zone::Battlefield);
+    let mut g = setup(Player::P0);
+    let target = qualifier(&mut g, Player::P0, 0);
+    g.state.objects[target as usize].generation = u64::MAX;
+    let spell = named(&mut g, Player::P0, "Ajani's Response", Zone::Hand);
+    g.state.players[0].mana = [1, 0, 0, 0, 0, 1];
+    replay(&mut g, Action::AnnounceCast { card: spell });
+    finish(&mut g);
+    replay(&mut g, Action::Pass);
+    let old = g.snapshot();
+    let rev = g.revision();
+    assert!(matches!(
+        g.apply(Player::P1, Action::Pass),
+        Err(Error::CapacityExceeded(_))
+    ));
+    assert_eq!(g.snapshot(), old);
+    assert_eq!(g.revision(), rev);
+}
+#[test]
+fn candidate_completions_follow_owned_group_predicates_and_selected_base_alternatives() {
+    let mut g = setup(Player::P0);
+    let mount = qualifier(&mut g, Player::P0, 15);
+    let plain = named(&mut g, Player::P0, "Bear Cub", Zone::Battlefield);
+    let spell = named(&mut g, Player::P0, "Run Over", Zone::Hand);
+    g.state.players[0].mana = [0, 0, 0, 0, 1, 0];
+    replay(&mut g, Action::AnnounceCast { card: spell });
+    reject(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(plain),
+        },
+    );
+    replay(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(mount),
+        },
+    );
+    assert!(
+        g.legal_actions()
+            .iter()
+            .any(|a| matches!(a, Action::ChooseTarget { .. }))
+    );
+    finish(&mut g);
+    resolve(&mut g);
+    let mut g = setup(Player::P0);
+    let target = qualifier(&mut g, Player::P0, 0);
+    let spell = named(&mut g, Player::P0, "Ajani's Response", Zone::Hand);
+    let bound = g.bind_target(Target::Card(target));
+    assert_eq!(
+        g.target_spell_cost(
+            Player::P0,
+            spell,
+            ManaCost {
+                colored: [0, 0, 0, 0, 0, 0],
+                generic: 6
+            },
+            &[bound]
+        )
+        .generic,
+        3
+    );
+    assert_eq!(
+        g.target_spell_cost(
+            Player::P0,
+            spell,
+            ManaCost {
+                colored: [0, 0, 0, 0, 0, 0],
+                generic: 1
+            },
+            &[bound]
+        )
+        .generic,
+        0
+    );
+}
+#[test]
+fn full_price_choices_and_direct_casts_charge_each_actual_target_exactly() {
+    let mut g = setup(Player::P0);
+    let tapped = qualifier(&mut g, Player::P0, 0);
+    let plain = named(&mut g, Player::P1, "Bear Cub", Zone::Battlefield);
+    let spell = named(&mut g, Player::P0, "Ajani's Response", Zone::Hand);
+    g.state.players[0].mana = [1, 0, 0, 0, 0, 4];
+    assert!(g.legal_actions().contains(&Action::Cast {
+        card: spell,
+        target: Some(Target::Card(plain)),
+        payment: [1, 0, 0, 0, 0, 4]
+    }));
+    reject(
+        &mut g,
+        Action::Cast {
+            card: spell,
+            target: Some(Target::Card(tapped)),
+            payment: [1, 0, 0, 0, 0, 4],
+        },
+    );
+    replay(
+        &mut g,
+        Action::Cast {
+            card: spell,
+            target: Some(Target::Card(tapped)),
+            payment: [1, 0, 0, 0, 0, 1],
+        },
+    );
+    assert_eq!(g.state.players[0].mana, [0, 0, 0, 0, 0, 3]);
+    resolve(&mut g);
+    assert_eq!(g.state.objects[tapped as usize].zone, Zone::Graveyard);
+    let mut g = setup(Player::P0);
+    let target = qualifier(&mut g, Player::P0, 17);
+    let spell = named(&mut g, Player::P0, "Swampsnare Trap", Zone::Hand);
+    g.state.players[0].mana = [0, 0, 1, 0, 0, 1];
+    replay(
+        &mut g,
+        Action::Cast {
+            card: spell,
+            target: Some(Target::Card(target)),
+            payment: [0, 0, 1, 0, 0, 1],
+        },
+    );
+    resolve(&mut g);
+    assert_eq!(
+        g.state.objects[spell as usize].attached_to,
+        Some(g.object_ref(target))
+    );
+    assert_eq!(
+        g.stats(target),
+        Stats {
+            power: -1,
+            toughness: 1
+        }
+    );
+}
+#[test]
+fn direct_cost_payment_and_stack_incarnation_capacity_failure_restore_both() {
+    let mut g = setup(Player::P0);
+    let target = qualifier(&mut g, Player::P0, 0);
+    let spell = named(&mut g, Player::P0, "Ajani's Response", Zone::Hand);
+    g.state.objects[spell as usize].generation = u64::MAX;
+    g.state.players[0].mana = [1, 0, 0, 0, 0, 1];
+    let old = g.snapshot();
+    let rev = g.revision();
+    assert!(matches!(
+        g.apply(
+            Player::P0,
+            Action::Cast {
+                card: spell,
+                target: Some(Target::Card(target)),
+                payment: [1, 0, 0, 0, 0, 1]
+            }
+        ),
+        Err(Error::CapacityExceeded(_))
+    ));
+    assert_eq!(g.snapshot(), old);
+    assert_eq!(g.revision(), rev);
 }

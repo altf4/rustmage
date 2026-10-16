@@ -28,7 +28,8 @@ impl Game {
             if count > usize::from(spec.max) {
                 return None;
             }
-            let closed = group < c.group || group == c.group && c.finished;
+            let closed =
+                group < c.group || group == c.group && c.finished || count == usize::from(spec.max);
             if closed {
                 if count < usize::from(spec.min) {
                     return None;
@@ -64,6 +65,8 @@ impl Game {
         {
             cost.generic = cost.generic.saturating_sub(rule.discount.generic);
             for (n, discount) in cost.colored.iter_mut().zip(rule.discount.colored) {
+                // CR 118.7b-d: excess typed reduction reduces generic mana.
+                cost.generic = cost.generic.saturating_sub(discount.saturating_sub(*n));
                 *n = n.saturating_sub(discount);
             }
         }

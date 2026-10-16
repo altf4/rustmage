@@ -1731,7 +1731,6 @@ impl Game {
                         }
                     }
                     if target_cost
-                        && !flashback
                         && obj.zone == Zone::Hand
                         && obj.card.offspring_cost().is_none()
                         && obj.card.additional_cost().is_none()

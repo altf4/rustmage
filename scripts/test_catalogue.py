@@ -1907,7 +1907,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         for name in admitted:self.assertIn(name,supported)
         for name in ['Unwanted Remake',
                      'Consuming Ashes','Bovine Intervention','Get Lost',
-                     'Ride\'s End','Protective Response','Dragon\'s Prey']:
+                     'Protective Response','Dragon\'s Prey']:
             self.assertNotIn(name,supported,name)
         import re
         colors=json.loads(re.search(r'static COLORS: \[u8; [0-9]+\] = (\[[^;]+\]);',rust)[1])
