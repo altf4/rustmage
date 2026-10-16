@@ -4297,3 +4297,7 @@ mod exact_search_tests;
 #[cfg(test)]
 #[path = "engine_kicker_tests.rs"]
 mod kicker_tests;
+
+#[cfg(test)]
+#[path = "engine_explore_tests.rs"]
+mod explore_tests;

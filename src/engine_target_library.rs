@@ -61,12 +61,11 @@ impl Game {
             }
             if destination == LibraryDestination::Top && !card.is_token() {
                 self.remember_library_top(owner, event.after);
-            } else if let Some(prior) = prior_top {
-                if self.state.players[owner.index()].library.last() == Some(&prior.card)
-                    && self.object_ref(prior.card) == prior
-                {
-                    self.remember_library_top(owner, prior);
-                }
+            } else if let Some(prior) = prior_top
+                && self.state.players[owner.index()].library.last() == Some(&prior.card)
+                && self.object_ref(prior.card) == prior
+            {
+                self.remember_library_top(owner, prior);
             }
             // Publish only this targeted public movement. This is a historical
             // record; later private looks, rearrangements and draws leave it alone.

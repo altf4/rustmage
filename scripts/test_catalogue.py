@@ -780,9 +780,9 @@ class CatalogueCompilerTests(unittest.TestCase):
 
     def test_lesson_reduction_and_life_predefined_token_composition_are_exact(self):
         self.assertEqual(generate.reduction_filter('Lesson'),'CastFilter::Subtype("Lesson")')
-        for token in ['Clue','Treasure']:
+        for token in ['Clue','Treasure','Map']:
             self.assertEqual(generate.statement_program('You lose 1 life and create a '+token+' token.'),['LoseLife(PlayerSet::Controller, 1)',*generate.predefined_program('create a '+token+' token.')])
-        for text in ['You lose 1 life and create a Map token.','You lose 1 life and create a Treasure token. Then discover 3.','You lose 1 life and create a token copy of target creature.']:
+        for text in ['You lose 1 life and create a Treasure token. Then discover 3.','You lose 1 life and create a token copy of target creature.']:
             self.assertIsNone(generate.statement_program(text))
         self.assertIsNone(generate.reduction_filter('non-Lesson'))
 
@@ -824,9 +824,10 @@ class CatalogueCompilerTests(unittest.TestCase):
         for word,n in [('a card',1),('two cards',2),('three cards',3),('four cards',4)]:
             result=generate.statement_program('Draw '+word+' and create a Treasure token.')
             self.assertEqual(result,[f'Draw(PlayerSet::Controller, {n})',*generate.predefined_program('create a Treasure token.')])
+        self.assertEqual(generate.statement_program('Draw a card and create a Map token.'),['Draw(PlayerSet::Controller, 1)',*generate.predefined_program('create a Map token.')])
         robot='create a 2/2 colorless Robot artifact creature token.'
         self.assertEqual(generate.statement_program('Draw two cards and '+robot),['Draw(PlayerSet::Controller, 2)',*generate.token_program(robot)])
-        for text in ['Draw a card and create a Map token.', 'Draw a card and create a Treasure token. It becomes a creature.', 'Draw a card and create a Treasure token unless an opponent pays {1}.', 'Draw a card and create a token copy of target creature.', 'Draw a card or create a Treasure token.', 'Draw five cards and create a Treasure token.']:
+        for text in ['Draw a card and create a Treasure token. It becomes a creature.', 'Draw a card and create a Treasure token unless an opponent pays {1}.', 'Draw a card and create a token copy of target creature.', 'Draw a card or create a Treasure token.', 'Draw five cards and create a Treasure token.']:
             self.assertIsNone(generate.statement_program(text),text)
         optional=generate.optional_payment_program('you may sacrifice another creature or artifact. If you do, draw a card and create a Treasure token.',False)
         self.assertIn('optional_skip: Some(2)',optional[0]);self.assertEqual(optional[1:],[*generate.statement_program('Draw a card and create a Treasure token.')])
@@ -850,7 +851,8 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIn(name,supported)
             c=next(c for c in rows['cards'] if c['name']==name);bad=dict(c,oracle_text=c['oracle_text']+'\nWhenever you cast a spell, discover 3.')
             for compiler in [generate.permanent_program_template,generate.trigger_creature_template,generate.spell_program_template]:self.assertIsNone(compiler(bad),name)
-        for name in ['Fanatical Offering','Dyadrine, Synthesis Amalgam','Esoteric Duplicator']:
+        self.assertIn('Fanatical Offering',supported)
+        for name in ['Dyadrine, Synthesis Amalgam','Esoteric Duplicator']:
             self.assertNotIn(name,supported)
 
     def test_sacrifice_triggers_compile_exact_filters_and_triggered_mana(self):
@@ -2032,7 +2034,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertEqual(len(admitted),45)
         for name in admitted:self.assertIn(name,supported)
         for name in ['Unwanted Remake',
-                     'Consuming Ashes','Bovine Intervention','Get Lost',
+                     'Consuming Ashes','Bovine Intervention',
                      'Protective Response','Dragon\'s Prey']:
             self.assertNotIn(name,supported,name)
         import re
@@ -2109,7 +2111,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIn(name,supported)
         for name in ['Grab the Prize','Pumpkin Bombardment','Souls Lost','Fear of Isolation']:
             self.assertNotIn(name,supported)
-        self.assertEqual(rust.count('=> Some(AdditionalCost {'),9)
+        self.assertEqual(rust.count('=> Some(AdditionalCost {'),10)
         prefix='As an additional cost to cast this spell, '
         for cost in ['discard two cards.','you may discard a card.','sacrifice two creatures.',
                      'discard a card or pay {2}.','sacrifice an artifact or pay {2}.',
@@ -3366,7 +3368,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIsNotNone(result, kind)
             self.assertEqual(result[0], 'Permanent')
             self.assertEqual(len(result[3]),1)
-        for kind in ['Powerstone','Blood','Junk','Map','Shard']:
+        for kind in ['Powerstone','Blood','Junk','Shard']:
             self.assertIsNone(generate.statement_program(f'Create a {kind} token.'))
         self.assertIsNotNone(generate.statement_program('Investigate.'))
 

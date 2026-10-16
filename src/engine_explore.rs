@@ -33,7 +33,7 @@ pub(super) struct ExploreState {
     pub sources: Vec<CardId>,
     pub known_top: [Option<ObjectRef>; 2],
     pub last: Option<ExploreEventView>,
-    sequence: u64,
+    pub(super) sequence: u64,
 }
 impl ExploreState {
     pub fn bytes(&self) -> usize {
