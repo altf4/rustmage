@@ -1400,6 +1400,7 @@ TARGET_RULES['VampireYou'] = ('TargetRule::Filtered { base: &TargetRule::Object 
 
 for _name, _base, _predicate in [
     ('CreatureAttacking', 'Creature', 'Attacking'),
+    ('OtherCreatureAttackingYou', 'OtherCreatureYou', 'Attacking'),
     ('CreatureAttackingBlocking', 'Creature', 'AttackingOrBlocking'),
     ('CreatureDamagedOpponent', 'CreatureOpponent', 'Damaged'),
     ('CreatureDealtDamageOpponent', 'CreatureOpponent', 'DealtDamage'),
@@ -1576,13 +1577,57 @@ def nonmana_ward_program(line):
     return [cost,'Skip(1)','CounterRelated']
 
 
+def subject_guard(subject, skip, *, relation=-1, subtype=None, tokens=None, other=False):
+    """Immutable predicate over one exact live creature; no event/LKI inference."""
+    filter_=(f'CreatureFilter {{ relation: {relation}, other: {str(other).lower()}, '
+             f'subtype: '+('Some('+json.dumps(subtype)+')' if subtype else 'None')+
+             ', keyword: Keywords(0), attacking: false, tokens: '+
+             ('None' if tokens is None else 'Some('+str(tokens).lower()+')')+', artifact: false }')
+    return f'IfSubject {{ subject: Subject::{subject}, filter: {filter_}, skip: {skip} }}'
+
+
+def target_subject_conditional(text):
+    """Closed complete antecedent/tail clauses; all targets belong to one creature."""
+    if '. If ' not in text:return None
+    first, tail=text.split('. If ',1)
+    clauses={
+        'you control that creature, draw two cards.': ({'relation':0}, ['Draw(PlayerSet::Controller, 2)']),
+        'an opponent controls that creature, put a stun counter on it.': ({'relation':1}, [counter_instruction('Targets','a','stun')]),
+        'that creature is a token, it also gains deathtouch until end of turn.': ({'tokens':True}, [f'GrantKeywords {{ subject: Subject::Targets, keywords: Keywords({KEYWORDS["deathtouch"]}) }}']),
+        'that creature is a Cat, it gains first strike until end of turn.': ({'subtype':'Cat'}, [f'GrantKeywords {{ subject: Subject::Targets, keywords: Keywords({KEYWORDS["first strike"]}) }}']),
+        'that creature is a Bear, put a +1/+1 counter on it.': ({'subtype':'Bear'}, [counter_instruction('Targets','a','+1/+1')]),
+        "it's a Spider, you gain 2 life.": ({'subtype':'Spider'}, ['GainLife(PlayerSet::Controller, 2)']),
+        'that creature is an Ally, it also gains flying until end of turn.': ({'subtype':'Ally'}, [f'GrantKeywords {{ subject: Subject::Targets, keywords: Keywords({KEYWORDS["flying"]}) }}']),
+    }
+    replacement='that creature is another Hero, put two +1/+1 counters on it instead.'
+    if tail not in clauses and tail!=replacement:return None
+    result=targeted_program(first+'.')
+    if not result:return None
+    spec,program=result
+    if isinstance(spec,list):return None
+    rule=spec[0] if isinstance(spec,tuple) else spec
+    maximum=spec[2] if isinstance(spec,tuple) else 1
+    if maximum!=1 or rule not in ('Creature','CreatureYou','CreatureOpponent','OtherCreatureYou','OtherCreature','OtherCreatureAttackingYou'):return None
+    if any(not (p in ('Tap','Untap') or p.startswith(('Grow { subject: Subject::Targets,','GrantKeywords { subject: Subject::Targets,','PutCounters { subject: Subject::Targets,'))) for p in program):return None
+    if tail==replacement:
+        if program!=[counter_instruction('Targets','a','+1/+1')]:return None
+        alternative=[counter_instruction('Targets','two','+1/+1')]
+        return spec,[subject_guard('Targets',len(alternative)+1,subtype='Hero',other=True),*alternative,f'Skip({len(program)})',*program]
+    kwargs,body=clauses[tail]
+    return spec,[*program,subject_guard('Targets',len(body),**kwargs),*body]
+
+
 def targeted_program(text):
     """Complete target occurrences with independent predicates and effect focus."""
     if not isinstance(text, str) or not text.endswith('.'):
         return None
     text = strip_rule_label(text)
     text = normalize_duration(text[0].lower() + text[1:])
-    for subject,rule in [('target attacking creature','CreatureAttacking'),('target attacking Goblin you control','GoblinAttackingYou')]:
+    if 'another target attacking creature you control' in text:
+        result=targeted_program(text.replace('another target attacking creature you control','another target creature you control',1))
+        return ('OtherCreatureAttackingYou',result[1]) if result and result[0]=='OtherCreatureYou' else None
+    if result:=target_subject_conditional(text):return result
+    for subject,rule in [('another target attacking creature you control','OtherCreatureAttackingYou'),('target attacking creature','CreatureAttacking'),('target attacking Goblin you control','GoblinAttackingYou')]:
         if text.startswith(subject+' '):
             result=targeted_program('target creature '+text[len(subject)+1:])
             return (rule,result[1]) if result and result[0]=='Creature' else None
@@ -1595,6 +1640,7 @@ def targeted_program(text):
     # Exact subject/cardinality mapping shared by announcement and resolution.
     object_subjects={
         'target creature':'Creature','target creature you control':'CreatureYou',
+        'another target creature you control':'OtherCreatureYou',
         'target creature an opponent controls':'CreatureOpponent',
         'target creature or Vehicle':'CreatureVehicle',
         'target creature or Vehicle an opponent controls':'CreatureVehicleOpponent',
@@ -2078,6 +2124,8 @@ def entering_object_program(text, condition):
     events=('SelfEnters','OtherCreatureEntersYou','CreatureEntersYou','ArtifactEntersYou','OtherArtifactEntersYou','EnchantmentEntersYou','LandEntersYou')
     if condition not in events and not condition.startswith(('OtherSubtypeEntersYou(','SubtypeEntersYou(','PermanentEntersYou {','OtherFilteredEntersYou(','CreatureEnters {')):
         return None
+    if text=="you gain 1 life. If it's a Spider, put a +1/+1 counter on it.":
+        return 'None',['GainLife(PlayerSet::Controller, 1)',subject_guard('Entering',1,subtype='Spider'),counter_instruction('Entering','a','+1/+1')]
     m=re.fullmatch(r'[Pp]ut (a|one|two|three|four|five|six) \+1/\+1 counters? on that creature(?: and it gains haste until end of turn)?\.',text)
     if m is None:return None
     program=[f'PutCounters {{ subject: Subject::Entering, kind: CounterKind::PlusOne, amount: {COUNT_WORDS[m[1]]} }}']

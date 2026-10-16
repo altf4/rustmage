@@ -40,6 +40,30 @@ impl Game {
             .map(|object| object.card)
     }
 
+    fn subject_condition(
+        &self,
+        item: &SpellView,
+        subject: Subject,
+        filter: crate::cards::CreatureFilter,
+    ) -> bool {
+        let id = match subject {
+            Subject::Entering => self.entering_subject(item),
+            Subject::Source => self
+                .on_battlefield(item.card)
+                .then_some(item.card)
+                .filter(|&id| self.object_ref(id) == item.object),
+            Subject::Attached => self.attached_subject(item),
+            Subject::Targets => match item.targets.as_slice() {
+                [bound] if self.same_target_object(*bound) => match bound.target {
+                    Target::Card(id) => Some(id),
+                    _ => None,
+                },
+                _ => None,
+            },
+        };
+        id.is_some_and(|id| self.creature_matches(filter, item.controller, item.object, id))
+    }
+
     pub(super) fn arrange_library(
         &mut self,
         player: Player,
@@ -903,6 +927,15 @@ impl Game {
                     self.state.pending_triggers.push(reflexive);
                 }
                 Instruction::Modal(_) => unreachable!("unselected modal trigger executed"),
+                Instruction::IfSubject {
+                    subject,
+                    filter,
+                    skip,
+                } => {
+                    if !self.subject_condition(&item, subject, filter) {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
                 Instruction::If { guard, skip } => {
                     if !self.step_guard(guard, item.controller, item.object, item.source_tapped) {
                         self.state.resolving.as_mut().unwrap().pc += skip;

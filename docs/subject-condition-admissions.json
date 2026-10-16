@@ -1,0 +1,240 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-16",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Aunt May",
+      "oracle_text": "Whenever another creature you control enters, you gain 1 life. If it's a Spider, put a +1/+1 counter on it.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AuntMay.java",
+          "java_sha256": "f39ce0363ba55135c2d7a5ee7e34cff6eb23c4de44426b472a9e61f737c6b22d"
+        }
+      ]
+    },
+    {
+      "name": "Dreamdew Entrancer",
+      "oracle_text": "Reach\nWhen this creature enters, tap up to one target creature and put three stun counters on it. If you control that creature, draw two cards.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DreamdewEntrancer.java",
+          "java_sha256": "90406aec3c895028389113c83b755d80d9018cc3eea35431e5bc766ddcbaa689"
+        }
+      ]
+    },
+    {
+      "name": "Fear of Immobility",
+      "oracle_text": "When this creature enters, tap up to one target creature. If an opponent controls that creature, put a stun counter on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FearOfImmobility.java",
+          "java_sha256": "67ecb7e720938e0c0e54d940add41413a4d90f3cb0946e7c9bd0942d40ed3ab8"
+        }
+      ]
+    },
+    {
+      "name": "Hazardroot Herbalist",
+      "oracle_text": "Whenever you attack, target creature you control gets +1/+0 until end of turn. If that creature is a token, it also gains deathtouch until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HazardrootHerbalist.java",
+          "java_sha256": "7e8e6908a69a6147962886799213b343fedbf059f55f09817caba29986186b48"
+        }
+      ]
+    },
+    {
+      "name": "Ingenious Leonin",
+      "oracle_text": "{3}{W}: Put a +1/+1 counter on another target attacking creature you control. If that creature is a Cat, it gains first strike until end of turn. (It deals combat damage before creatures without first strike.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/i/IngeniousLeonin.java",
+          "java_sha256": "8d20f36a617d16e478b9a7263ef7cd38cc4833d08f4f196172f812bd07badf33"
+        }
+      ]
+    },
+    {
+      "name": "Little Bear",
+      "oracle_text": "Flash\nWhen this creature enters, untap another target creature you control. If that creature is a Bear, put a +1/+1 counter on it.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LittleBear.java",
+          "java_sha256": "8fecb5f46471959f1cea74ed4d1ed988e597d4439b910937532b3cdde1412088"
+        }
+      ]
+    },
+    {
+      "name": "Thwip!",
+      "oracle_text": "Target creature gets +2/+2 and gains flying until end of turn. If it's a Spider, you gain 2 life.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/Thwip.java",
+          "java_sha256": "557700907f94614c030d71f69c0182f78d0990ca1bc8b4a3c4e2f32cecdb5b80"
+        }
+      ]
+    },
+    {
+      "name": "Wakandan Royal Guard",
+      "oracle_text": "Vigilance\nWhen this creature enters, put a +1/+1 counter on target creature. If that creature is another Hero, put two +1/+1 counters on it instead.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WakandanRoyalGuard.java",
+          "java_sha256": "9848f81eea288122f74813b7e43f08705f4edc5ae2aae8218f8cf61fec66c9a0"
+        }
+      ]
+    },
+    {
+      "name": "Yip Yip!",
+      "oracle_text": "Target creature you control gets +2/+2 until end of turn. If that creature is an Ally, it also gains flying until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/y/YipYip.java",
+          "java_sha256": "fc4f00bb32917ffdc179afc0c099fbbe57d473cb39e8b146ebf330364836ed2a"
+        }
+      ]
+    }
+  ],
+  "gated": [
+    {
+      "name": "Cemetery Recruitment",
+      "oracle_text": "Return target creature card from your graveyard to your hand. If it's a Zombie card, draw a card.",
+      "reason": "Zone-moving or LKI subject condition is outside the exact live battlefield-subject primitive.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CemeteryRecruitment.java",
+          "java_sha256": "ae2951769d59983f34a1764772905cb721f8d9081e6d735e014ae0b545ac8d38"
+        }
+      ]
+    },
+    {
+      "name": "Budding Insurgent",
+      "oracle_text": "Vigilance\nSacrifice this creature: Destroy target artifact or enchantment. If that permanent was a legendary enchantment, draw a card. Activate only as a sorcery.",
+      "reason": "Zone-moving or LKI subject condition is outside the exact live battlefield-subject primitive.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BuddingInsurgent.java",
+          "java_sha256": "8aab90a174e11d7c6b987d1d051dcaa99159b0607b8d19f20bb6ea20ba633346"
+        }
+      ]
+    }
+  ],
+  "notes": "Full constructors and these shared predicate, event binding, effect, target, keyword and cost helpers were inspected. Exact current objects are required; no new zone-moving/LKI semantics are claimed.",
+  "shared_runtime_sources": [
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/condition/common/TargetObjectMatchesFilterCondition.java",
+      "java_sha256": "bbfaec573e5f78824a822d44921d247b507a74dec19452689f86c7ae5ad44816"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/condition/common/TargetHasSubtypeCondition.java",
+      "java_sha256": "8f2b5c35b36e949dde467dd40cc88ac8858056cc3df5bb1e8ade08e0ef0d0d25"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+      "java_sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+      "java_sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+      "java_sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/AttackingPredicate.java",
+      "java_sha256": "31b80ba46b462c287c4c5d4a4867f7271dccaf8eedc555fb5cbbfe9fea156617"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+      "java_sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+      "java_sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+      "java_sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/UntapTargetEffect.java",
+      "java_sha256": "69bec57593db2620ef750768e381badf6843aefaf7584c796037dcdf87f1b973"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/TokenPredicate.java",
+      "java_sha256": "3213600d28e7e1f76d66cee4f781fb3eb01627759fa9306e22c42a6f6fb880da"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+      "java_sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "java_sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "java_sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "java_sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/FirstStrikeAbility.java",
+      "java_sha256": "997831ae93b8f148ce96ac211e3e2a86e2df46403677fe1106d7c20554678235"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "java_sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    }
+  ]
+}

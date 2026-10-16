@@ -350,6 +350,12 @@ pub(crate) enum Instruction {
         guard: StepGuard,
         skip: usize,
     },
+    /// Live predicate on an exact resolving object, never on a reincarnation.
+    IfSubject {
+        subject: Subject,
+        filter: CreatureFilter,
+        skip: usize,
+    },
     Skip(usize),
     MoveBattlefield {
         filters: &'static [BattlefieldFilter],

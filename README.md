@@ -5,11 +5,13 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,514 have executable rules so far.
+knows all 5,164 pinned Standard identities; 1,523 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
-The latest [target-dependent costs](docs/target-costs.md) add nineteen complete
+The latest [exact live subject conditions](docs/subject-conditions.md) add nine complete
+bodies with immutable target/entering checks and complete conditional effects.
+[Target-dependent costs](docs/target-costs.md) add nineteen complete
 spell bodies with fundable target choices and costs locked before payment.
 [Target-owner library destinations](docs/library-tuck.md) add thirteen complete
 bodies with owned top/bottom choices and public movement history.

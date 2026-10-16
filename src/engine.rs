@@ -4138,3 +4138,7 @@ mod target_cost_tests;
 #[cfg(test)]
 #[path = "engine_target_cost_exile_tests.rs"]
 mod target_cost_exile_tests;
+
+#[cfg(test)]
+#[path = "engine_subject_condition_tests.rs"]
+mod subject_condition_tests;
