@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "ba36de456d1d9624059f74891bbb081e123507cab9e1086aaa5345e366799062",
+  "catalogue_version": "7779f7dd1fecbef9656df3fb99b758be7aa60bc67fd524536be791ab3c2ad225",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1321,
-  "implemented_total": 1327,
+  "implemented_standard_cards": 1329,
+  "implemented_total": 1335,
   "token_definitions": 57,
   "emblem_definitions": 1,
   "cards": [
@@ -1198,8 +1198,8 @@
     {
       "name": "Arahbo, the First Fang",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Arashin Sunshield",
@@ -1384,8 +1384,8 @@
     {
       "name": "Arni, Humble Scribe",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Arni, Renowned Champion",
@@ -2596,8 +2596,8 @@
     {
       "name": "Black Panther, Vanguard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Black Waltz No. 3",
@@ -10270,8 +10270,8 @@
     {
       "name": "Genghis Frog",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Genji Glove",
@@ -14338,8 +14338,8 @@
     {
       "name": "Knightfisher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Knockout Maneuver",
@@ -14728,8 +14728,8 @@
     {
       "name": "Lathliss, Dragon Queen",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Lathril, Blade of the Elves",
@@ -18532,8 +18532,8 @@
     {
       "name": "Pactdoll Terror",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Page, Loose Leaf",
@@ -27322,8 +27322,8 @@
     {
       "name": "Thoughtweft Lieutenant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Thousand Moons Crackshot",

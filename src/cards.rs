@@ -898,6 +898,14 @@ pub(crate) enum TriggerCondition {
     SelfEntersOrDies,
     SelfAttacks,
     SelfEntersOrAttacks,
+    /// Explicit self entry OR another owned permanent satisfying all filters.
+    /// The self arm bypasses the other-permanent filters; it is never counted twice.
+    PermanentEntersYou {
+        kinds: u16,
+        nontoken: bool,
+        subtype: Option<&'static str>,
+        include_source: bool,
+    },
     OtherCreatureEntersYou,
     OtherSubtypeEntersYou(&'static str),
     SubtypeEntersYou(&'static str),
