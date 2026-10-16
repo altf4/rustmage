@@ -14,6 +14,31 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_power_blocking_flags_and_temporary_grants_keep_skulk_distinct(self):
+        self.assertEqual(generate.KEYWORDS['skulk'],1048576)
+        self.assertEqual(generate.creature_template(self.card(oracle_text='Skulk')),('Creature(2, 1)',1048576))
+        self.assertEqual(generate.TEXT_FLAGS["this creature can't be blocked by creatures with greater power."],8388608)
+        for text,mask in [("This creature can't be blocked by creatures with power 2 or less this turn.",2097152),("This creature can't be blocked by creatures with power 3 or greater this turn.",4194304),("This creature can't be blocked by creatures with greater power this turn.",8388608)]:
+            self.assertEqual(generate.statement_program(text),[f'GrantKeywords {{ subject: Subject::Source, keywords: Keywords({mask}) }}'])
+        for text in ["This creature can't be blocked by creatures with power 4 or greater this turn.","This creature can't be blocked by creatures with power 2 or less until your next turn.","This creature can't be blocked by creatures with greater toughness this turn."]:
+            self.assertIsNone(generate.statement_program(text),text)
+        self.assertEqual(generate.targeted_program("Return another target creature you control to its owner's hand."),('OtherCreatureYou',['ReturnToHand']))
+
+    def test_four_power_blocking_bodies_reject_unsupported_residuals_and_names(self):
+        import json
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,coverage=generate.compile_catalogue(snapshot,target);supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        admitted=json.loads((generate.ROOT/'docs/power-blocking-admissions.json').read_text())['cards'];self.assertEqual(len(admitted),4)
+        for a in admitted:
+            c=next(c for c in snapshot['cards'] if c['name']==a['name']);self.assertEqual(c['oracle_text'],a['oracle_text']);self.assertIn(c['name'],supported)
+            changed=dict(c,oracle_text=c['oracle_text']+'\nDiscover 4.')
+            self.assertIsNone(generate.permanent_program_template(changed));self.assertIsNone(generate.trigger_creature_template(changed));self.assertIsNone(generate.creature_template(changed))
+        april=next(c for c in snapshot['cards'] if c['name']=="April O'Neil, Kunoichi Trainee")
+        self.assertIsNone(generate.trigger_creature_template(dict(april,name='Unrelated',type_line='Legendary Creature — Human Ninja')))
+        self.assertIsNone(generate.trigger_creature_template(self.card(name='Unrelated',type_line='Legendary Creature — Human Ninja',oracle_text="When this creature enters, scry 2.\nApril O'Neil can't be blocked by creatures with power 3 or greater.")))
+        for name in ['Ingenious Prodigy','Old Fat Spider','Gate Colossus','Azure Beastbinder','Delney, Streetwise Lookout','Bristlebane Outrider','Foggy Swamp Vinebender','Rust-Shield Rampager','Sandman, Shifting Scoundrel']:
+            self.assertNotIn(name,supported)
+
     def test_own_turn_guard_and_authenticated_sacrifice_cost_names(self):
         for alias in ['Professor Zei','Professor Zei, Anthropologist']:
             card=self.card(name='Professor Zei, Anthropologist',type_line='Legendary Creature — Human Advisor Ally',oracle_text='{1}, {T}, Sacrifice '+alias+': Draw a card. Activate only during your turn.')
@@ -39,7 +64,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             c=next(c for c in snapshot['cards'] if c['name']==a['name']);self.assertEqual(c['oracle_text'],a['oracle_text']);self.assertIn(c['name'],supported)
             self.assertIsNone(generate.permanent_program_template(dict(c,oracle_text=c['oracle_text']+'\nDiscover 4.')))
             self.assertIsNone(generate.trigger_creature_template(dict(c,oracle_text=c['oracle_text']+'\nDiscover 4.')))
-        for name in ['Prehistoric Pet','Wishclaw Talisman','Path to Redemption','M.O.D.O.K.','Scour for Scrap','Oltec Archaeologists']:
+        for name in ['Wishclaw Talisman','Path to Redemption','M.O.D.O.K.','Scour for Scrap','Oltec Archaeologists']:
             self.assertNotIn(name,supported)
 
     def test_discard_history_amount_and_two_complete_bodies(self):
@@ -1873,7 +1898,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertIsNotNone(generate.targeted_program("Target creature can't be blocked this turn."))
         self.assertIsNotNone(generate.targeted_program("Target creature gains vigilance until end of turn and can't be blocked this turn."))
         for text in ("This creature can't block unless you control a Hero.",
-                     "This creature can't be blocked by creatures with power 2 or less.",
+                     "This creature can't be blocked by creatures with power 4 or less.",
                      'This creature must be blocked if able.'):
             self.assertIsNone(generate.creature_template(self.card(oracle_text=text)))
         self.assertIsNone(generate.statement_program("Creatures you control can't be blocked this turn."))

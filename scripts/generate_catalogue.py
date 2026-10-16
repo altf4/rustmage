@@ -25,9 +25,14 @@ LEGACY = [
     ('Counterspell', 'Counter', '{U}{U}', None),
 ]
 KEYWORDS = {'flying': 1, 'reach': 2, 'haste': 4, 'vigilance': 8, 'defender': 16, 'flash': 32,
-            'lifelink': 64, 'deathtouch': 128, 'trample': 256, 'first strike': 512, 'double strike': 1024, 'hexproof': 4096, 'indestructible': 8192, 'menace': 32768}
+            'lifelink': 64, 'deathtouch': 128, 'trample': 256, 'first strike': 512, 'double strike': 1024, 'hexproof': 4096, 'indestructible': 8192, 'menace': 32768, 'skulk': 1048576}
 INTRINSIC_KEYWORDS = dict(KEYWORDS, changeling=524288)
-TEXT_FLAGS = {"this creature can't block.": 2048, "this creature can't be blocked.": 16384,
+POWER_BLOCKING_TEXT_FLAGS = {
+    "this creature can't be blocked by creatures with power 2 or less.": 2097152,
+    "this creature can't be blocked by creatures with power 3 or greater.": 4194304,
+    "this creature can't be blocked by creatures with greater power.": 8388608,
+}
+TEXT_FLAGS = {**POWER_BLOCKING_TEXT_FLAGS, "this creature can't block.": 2048, "this creature can't be blocked.": 16384,
               "this creature can't be blocked by more than one creature.": 65536,
               "this creature can't be blocked except by three or more creatures.": 131072,
               "this creature can't be blocked by tokens.": 262144}
@@ -909,6 +914,8 @@ def statement_program(text):
         value=amount_value(m[1])
         return [f'DrainLifeScaled({value})'] if value else None
     if text=="draw a card for each card you've discarded this turn.":return ['DrawScaled(PlayerSet::Controller, AmountValue::CardsDiscardedThisTurn)']
+    for phrase,mask in POWER_BLOCKING_TEXT_FLAGS.items():
+        if text==phrase[:-1]+' this turn.':return [f'GrantKeywords {{ subject: Subject::Source, keywords: Keywords({mask}) }}']
     if text=='discard a card.':return ['Discard(PlayerSet::Controller, 1)']
     if text=='discard your hand.':return ['DiscardHand(PlayerSet::Controller)']
     if program:=scaled_life_program(text):return program
@@ -1367,6 +1374,7 @@ def targeted_program(text):
         "return target creature card from your graveyard to your hand.": ('CreatureGraveYou', ['ReturnToHand']),
         "return target instant or sorcery card from your graveyard to your hand.": ('InstantSorceryGraveYou', ['ReturnToHand']),
         "return another target permanent you control to its owner's hand.": ('OtherPermanentYou', ['ReturnToHand']),
+        "return another target creature you control to its owner's hand.": ('OtherCreatureYou', ['ReturnToHand']),
         "return target creature card from a graveyard to its owner's hand.": ('CreatureGrave', ['ReturnToHand']),
         'destroy target creature.': ('Creature', ['Destroy']),
         'destroy target artifact.': ('Artifact', ['Destroy']),
@@ -1700,6 +1708,10 @@ def trigger_creature_template(card):
         for alias in names:
             line=re.sub(r'^Whenever '+re.escape(alias)+r' deals? ((?:combat )?damage to )',r'Whenever this creature deals \1',line)
             line=line.replace('Whenever '+alias+' enters or attacks, ','Whenever this creature enters or attacks, ')
+        for alias in names:
+            if line.startswith(alias+' '):
+                candidate='This creature'+line[len(alias):]
+                if candidate.casefold() in POWER_BLOCKING_TEXT_FLAGS:line=candidate
         if line.casefold() in TEXT_FLAGS:
             if limited: return None
             keywords |= TEXT_FLAGS[line.casefold()]; continue

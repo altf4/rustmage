@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "April O'Neil, Kunoichi Trainee",
+      "oracle_text": "When April O'Neil enters, scry 2. (Look at the top two cards of your library, then put any number of them on the bottom and the rest on top in any order.)\nApril O'Neil can't be blocked by creatures with power 3 or greater.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AprilONeilKunoichiTrainee.java",
+          "java_sha256": "398ddf63508648b1f539aecece99c4c0def5be0237a1057642bc27d28554ba3b"
+        }
+      ]
+    },
+    {
+      "name": "Cavern Stomper",
+      "oracle_text": "When this creature enters, scry 2. (Look at the top two cards of your library, then put any number of them on the bottom and the rest on top in any order.)\n{3}{G}: This creature can't be blocked by creatures with power 2 or less this turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CavernStomper.java",
+          "java_sha256": "b9420366cd18bb8325b74190d6a6882fe33cc5d1978bc54a4abc38a11ecf6854"
+        }
+      ]
+    },
+    {
+      "name": "Prehistoric Pet",
+      "oracle_text": "This creature can't be blocked by creatures with greater power.\n{1}{W}, {T}: Return another target creature you control to its owner's hand. Activate only during your turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PrehistoricPet.java",
+          "java_sha256": "bdd9a143130e9958b977800e1f8efec8cba8159a921f32e076ee4f817a3989ac"
+        }
+      ]
+    },
+    {
+      "name": "Verdant Outrider",
+      "oracle_text": "{1}{G}: This creature can't be blocked by creatures with power 2 or less this turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VerdantOutrider.java",
+          "java_sha256": "54791e4ebaeaab4c43e334338ef583625643ac4ec12792dcd9b9433a41d2ef05"
+        }
+      ]
+    }
+  ]
+}

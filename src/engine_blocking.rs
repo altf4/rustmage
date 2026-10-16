@@ -19,18 +19,38 @@ impl Game {
         let Some(a) = self.state.objects.get(attacker as usize) else {
             return false;
         };
-        self.can_be_blocker(blocker)
-            && a.zone == Zone::Battlefield
-            && a.owner == self.state.active
-            && a.card.is_creature()
-            && !self.keywords(attacker).contains(Keywords::CANT_BE_BLOCKED)
-            && (!self
-                .keywords(attacker)
-                .contains(Keywords::NO_TOKEN_BLOCKERS)
-                || !b.card.is_token())
-            && (!self.keywords(attacker).contains(Keywords::FLYING)
-                || self.keywords(blocker).contains(Keywords::FLYING)
-                || self.keywords(blocker).contains(Keywords::REACH))
+        if !self.can_be_blocker(blocker)
+            || a.zone != Zone::Battlefield
+            || a.owner != self.state.active
+            || !a.card.is_creature()
+        {
+            return false;
+        }
+        let keywords = self.keywords(attacker);
+        if keywords.contains(Keywords::CANT_BE_BLOCKED)
+            || keywords.contains(Keywords::NO_TOKEN_BLOCKERS) && b.card.is_token()
+            || keywords.contains(Keywords::FLYING)
+                && !self
+                    .keywords(blocker)
+                    .intersects(Keywords::FLYING.union(Keywords::REACH))
+        {
+            return false;
+        }
+        let power_rules = Keywords::SKULK
+            .union(Keywords::NO_GREATER_POWER_BLOCKERS)
+            .union(Keywords::NO_POWER_LE_TWO_BLOCKERS)
+            .union(Keywords::NO_POWER_GE_THREE_BLOCKERS);
+        if keywords.intersects(power_rules) {
+            let power = self.stats(blocker).power;
+            if keywords.intersects(Keywords::SKULK.union(Keywords::NO_GREATER_POWER_BLOCKERS))
+                && power > self.stats(attacker).power
+                || keywords.contains(Keywords::NO_POWER_LE_TWO_BLOCKERS) && power <= 2
+                || keywords.contains(Keywords::NO_POWER_GE_THREE_BLOCKERS) && power >= 3
+            {
+                return false;
+            }
+        }
+        true
     }
 
     fn minimum_blockers(&self, attacker: CardId) -> usize {
