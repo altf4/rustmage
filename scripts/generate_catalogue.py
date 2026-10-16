@@ -3126,7 +3126,9 @@ def mobilize_body(card):
     The complete residual still must compile; no contributor/copy/restriction gates
     are bypassed and unknown dynamic amounts never become a fixed approximation.
     """
-    if not isinstance(card.get('oracle_text'),str):return None
+    if (not isinstance(card.get('oracle_text'), str) or card.get('layout') != 'normal'
+            or spell_cost_options(card.get('mana_cost', '')) is None):
+        return None
     lines=[line.strip() for line in re.sub(r'\([^()]*\)','',card['oracle_text']).strip().split('\n')]
     declarations=[line for line in lines if line.startswith('Mobilize ')]
     if len(declarations)!=1:return None
