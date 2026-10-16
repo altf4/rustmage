@@ -1,6 +1,6 @@
 # Flashback casting
 
-Issue [#197](https://github.com/altf4/rustmage/issues/197) adds nine complete Standard bodies on base `70439f52b87fea0dcda24e894b10d387e62c4226`. This branch implements 1,407 of the 5,164 pinned legal cards, with six additional regression cards; 3,757 Standard bodies remain unsupported. Its catalogue fingerprint is `453a317d38d171228793eafca13e9a0b91dc76cf6a67f8d3837f29bf63e1af01`.
+Issue [#197](https://github.com/altf4/rustmage/issues/197) adds nine complete Standard bodies, integrated on `45021004761b6d927619d45247dcddcb1cca7859` after contextual cast qualifications. This branch implements 1,424 of the 5,164 pinned legal cards, with six additional regression cards; 3,740 Standard bodies remain unsupported. Its catalogue fingerprint is `0049f32655b778863e81899073df110ffd9d586b64fcc2384a2a3b748bcacc30`. The standalone implementation on `70439f52b87fea0dcda24e894b10d387e62c4226` supported 1,407 Standard bodies; workload and benchmark measurements below were first collected there.
 
 | Card | Printed cost | Flashback cost | Entire effect |
 | --- | --- | --- | --- |
@@ -44,12 +44,12 @@ cargo run --release --example standard_flashback -- 100
 cargo run --release --bin benchmark -- 1000
 ```
 
-The complete checks pass 1,232 Rust tests (1,220 unit and 12 integration), 235 compiler tests and 153 fresh-release Python tests. Formatting, all-target Clippy with warnings denied, generated-catalogue verification and whitespace checks also pass.
+The standalone complete checks passed 1,232 Rust tests (1,220 unit and 12 integration), 235 compiler tests and 153 fresh-release Python tests. Integrated on the current main, the complete Rust and fresh-release Python suites pass 1,244 (1,232 unit and 12 integration) and 154 tests, respectively. Formatting, all-target Clippy with warnings denied, generated-catalogue verification and whitespace checks also pass.
 
 Native boundaries exercise both origins for all nine complete effects, private surveil, mandatory discard and mana funding, ownership, sorcery and response timing, illegal direct-cast bypasses, all-targets-illegal and partial resolution, an actual Counterspell, every requested stack destination with its packet removed, marker reset on same-ID reentry, printed mana values and reductions, self-target preflight, capacity failures, clone/restore and stale action indices. Python directly loads the release library and independently checks each complete effect from both origins, including private decisions and replay.
 
 The 100-game workload uses only public APIs and Standard-legal 60-card/four-copy decks. Its independent witnesses compute counters, temporary combat boosts, keywords, token characteristics/counts, life changes, draws, paid discards and actual spell destinations. It checks both origins separately and exercises private suspended resolution and stale-index rejection. It completes naturally; its fixture nontermination guard does not limit the engine's action space.
 
-Two runs produce 47,896 decisions, normal/flashback casts `[[7,2],[20,17],[15,13],[31,29],[28,28],[12,9],[5,2],[26,24],[22,19]]`, and verified effects `[[7,2],[20,17],[15,13],[31,29],[28,28],[12,9],[5,2],[26,24],[21,19]]`. The missing final normal Tome Blast ends its game before an effect witness is collected. There are 330 independently checked effect units, 56 paid discards, 220 private decisions and 7,988 replay boundaries; maximum initialized logical state is 20,900 bytes.
+Two standalone runs and the integrated replay produce 47,896 decisions, normal/flashback casts `[[7,2],[20,17],[15,13],[31,29],[28,28],[12,9],[5,2],[26,24],[22,19]]`, and verified effects `[[7,2],[20,17],[15,13],[31,29],[28,28],[12,9],[5,2],[26,24],[21,19]]`. The missing final normal Tome Blast ends its game before an effect witness is collected. There are 330 independently checked effect units, 56 paid discards, 220 private decisions and 7,988 replay boundaries; maximum initialized logical state is 20,900 bytes.
 
 A native 1,000-game smoke run executes 571,049 decisions at roughly 410,000 decisions/second, with 128.77 ns clone and 124.71 ns restore. These host-dependent measurements include the existing smoke policy/observation construction, exclude neural inference and JSON, and do not claim XMage parity or a Java speed comparison.
