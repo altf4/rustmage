@@ -1,6 +1,6 @@
 # Exact library searches and hand discard activations
 
-Issue [#217](https://github.com/altf4/rustmage/issues/217) adds **nineteen complete Standard bodies**, extending the initial ten after auditing natural additional bodies made executable by the same primitives. This stage is based on `2b67f9a221f5d077f4942ecbc5f6b5c8aefbd514`: **1,533 → 1,552 / 5,164** supported Standard identities, six regression cards, **72 → 73** complete token factories, and one emblem. Unsupported complete bodies remain rejected; a recognized search or cost never authorizes dropping the rest of a card.
+Issue [#217](https://github.com/altf4/rustmage/issues/217) adds **nineteen complete Standard bodies**, extending the initial ten after auditing natural additional bodies made executable by the same primitives. Historical standalone core measurements below use `2b67f9a221f5d077f4942ecbc5f6b5c8aefbd514`; the integrated release builds on main `85587e2121a36cc5fe35350e4ab35aa38b7d2e3a` and its evidence follows at the end. Support advances: **1,533 → 1,552 / 5,164** supported Standard identities, six regression cards, **72 → 73** complete token factories, and one emblem. Unsupported complete bodies remain rejected; a recognized search or cost never authorizes dropping the rest of a card.
 
 | Card | Complete body |
 | --- | --- |
@@ -62,3 +62,15 @@ cargo fmt --check
 python3 scripts/generate_catalogue.py --check
 cargo run --release --bin benchmark -- 1000
 ```
+
+## Integrated release evidence
+
+Combined support is **1,552 / 5,164 Standard cards**, with **3,612 gated**, six regression bodies, **73 token factories**, one emblem and **5,257 immutable identities**. The exact nineteen-definition delta, 5,237 preserved rows, canonical recipe/ordinary-ID/color preservation, 476 retained helper arms plus five additions, and all-section 148 hash records across 67 Java files are independently rechecked against main. Fingerprint remains `04ead6ed7234c31bb805d57b3726cd5810053daefca6166f5aedc0a047f93c07`.
+
+The integrated release passes **1,393 Rust tests** (1,381 unit and twelve integration), **266 compiler/data tests** (436.659 seconds), and **174 fresh-release Python tests** (234.879 seconds), including all six new methods/88 controlled scenarios and main's attachment acceptance. All-target Clippy, formatting, generated-catalogue and whitespace checks pass. No runtime changes follow acceptance checkpoint `33eaad8`; subsequent changes document the combined evidence.
+
+The root legal Standard100 reproduces **105,176 exact decisions/replays**, matching both author runs. Every one of nineteen cards has positive paid-cast and effect witnesses under both controllers; all eight activation bodies, fourteen search bodies and three flashback bodies are separately witnessed under both controllers. In table order, paid cast pairs are `[[8,13],[19,14],[11,8],[6,7],[15,10],[27,17],[11,8],[13,6],[1,1],[43,44],[6,10],[35,35],[1,1],[9,9],[9,9],[5,8],[10,6],[2,1],[2,3]]`; the full activation/effect/search/flashback matrices are enforced by `examples/standard_exact_search.rs` and retained in its validation log.
+
+Additional Standard witnesses include **270 deferred selections, 131 public revealed-hand references, 718 zero searches, 68 actual Hand discards, 20 post-search life-three tails, 87 post-search Chocobos, 21 death draws, one tapped Cave return, Glimpse mode counts 18/1, optional-accept counts 17/27 and 3,663 illegal-action rejections**. Controlled acceptance additionally covers both Cave-return seats, optional declines and exact old/new-token landfall ordering. The adjacent attachment Standard100 retains all 74,702 decisions/replays and its entire prior vector.
+
+Initial logical state remains **19,944 bytes**, and Standard100 reaches **27,544 bytes**. The selected-ID/fixed-filter memory fixture remains unchanged. A combined 1,000-game smoke run retains 571,049 decisions at approximately 226,000 decisions/s with 190/193 ns clone/restore under concurrent host load. These measurements retain the exclusions above and are not an XMage performance comparison.
