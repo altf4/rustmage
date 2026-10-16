@@ -1081,6 +1081,18 @@ def library_selection_program(text):
     return None
 
 
+def exile_play_program(text):
+    # Only entire owned face-up fixed top-N clauses. No theft, free costs or
+    # source-linked durations are inferred from fragments.
+    m=re.fullmatch(r'exile the top (card|two cards) of your library\. (Until (?:the )?end of (?:your next turn|turn), you may play (?:that card|those cards|it)|You may play (?:that card|those cards|it) (?:this turn|until the end of your next turn))\.',text)
+    if not m:return None
+    amount=1 if m[1]=='card' else 2
+    # A singular grant cannot accidentally extend to a plural batch.
+    if amount==2 and 'those cards' not in m[2]:return None
+    if amount==1 and 'those cards' in m[2]:return None
+    return ['ExileTopPlay { amount: '+str(amount)+', next_turn: '+str('your next turn' in m[2]).lower()+' }']
+
+
 def statement_program(text):
     """Compile only these complete sentences; residual text never gets ignored."""
     if not isinstance(text, str) or not text:
@@ -1089,6 +1101,16 @@ def statement_program(text):
     if not text:return None
     text = normalize_duration(text[0].lower() + text[1:])
     if selected:=library_selection_program(text):return selected
+    if impulse:=exile_play_program(text):return impulse
+    prefix='if you control an outlaw, '
+    if text.startswith(prefix):
+        if impulse:=exile_play_program(text[len(prefix):]):return ['If { guard: StepGuard::Outlaw, skip: 1 }',*impulse]
+    first,rest=split_sentence(text)
+    if rest:
+        lower=rest[0].lower()+rest[1:]
+        if exile_play_program(lower) or (lower.startswith(prefix) and exile_play_program(lower[len(prefix):])):
+            head=statement_program(first);tail=statement_program(rest)
+            if head and tail:return head+tail
 
     if text=='you may forage.': return ['Forage { skip: 0 }']
     if m:=re.fullmatch(r'you may forage\. If you do, ([^.]+)\.',text):
@@ -1717,6 +1739,8 @@ def targeted_program(text):
         if max(abs(int(m[2])), abs(int(m[3]))) > 32767: return None
         rule = {'target creature': 'Creature', 'target creature you control': 'CreatureYou', 'another target creature you control': 'OtherCreatureYou', 'target creature an opponent controls':'CreatureOpponent'}[m[1]]
         return rule, [grow_instruction('Targets', int(m[2]), int(m[3]))]
+    if m:=re.fullmatch(r'up to two target creatures each get ([+-][0-9]+)/([+-][0-9]+) until end of turn\.',text):
+        if max(abs(int(m[1])),abs(int(m[2])))<=32767:return ('Creature',0,2),[grow_instruction('Targets',int(m[1]),int(m[2]))]
     # A targeted clause followed by wholly non-targeted instructions is supported.
     if '. ' in text:
         first, rest = text.split('. ', 1)
@@ -1794,6 +1818,7 @@ def cast_condition(relation='You', filter_='Any', ordinal=None):
 
 
 def step_guard(text):
+    if text == 'you control an outlaw': return 'StepGuard::Outlaw'
     if text == 'you gained life this turn': return 'StepGuard::GainedLife'
     if text == 'you attacked this turn': return 'StepGuard::Attacked'
     if text == 'a creature died this turn': return 'StepGuard::CreatureDied'
@@ -2610,6 +2635,7 @@ def permanent_program_template(card):
 
 # These are replacements evaluated before entry, not triggered abilities.
 LAND_ENTRY = {
+    'This land enters tapped unless you control a Plains or an Island.': 'UnlessPlainsOrIsland',
     'This land enters tapped.': 'Always',
     'This land enters tapped unless you control a basic land.': 'UnlessBasic',
     'This land enters tapped unless you control two or fewer other lands.': 'UnlessAtMostTwo',

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "5186eeda9090b172445c8aa4b4716bd19949922e5e23258dba74db4b5490bf2e",
+  "catalogue_version": "4ac5e5f414465d3569689ec39beb9b48ce15ad8216ed6206b763be97c2ceba9a",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1467,
-  "implemented_total": 1473,
+  "implemented_standard_cards": 1482,
+  "implemented_total": 1488,
   "token_definitions": 72,
   "emblem_definitions": 1,
   "cards": [
@@ -754,8 +754,8 @@
     {
       "name": "Alania's Pathmaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Alania, Divergent Storm",
@@ -2662,8 +2662,8 @@
     {
       "name": "Blazing Crescendo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Blazing Firesinger // Seething Song",
@@ -4654,8 +4654,8 @@
     {
       "name": "Clockwork Percussionist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Close Encounter",
@@ -5092,8 +5092,8 @@
     {
       "name": "Cori Mountain Monastery",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Cori Mountain Stalwart",
@@ -5218,8 +5218,8 @@
     {
       "name": "Count on Luck",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Countersculpt",
@@ -5356,8 +5356,8 @@
     {
       "name": "Crimson Operative",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Crossbones, Malicious Mercenary",
@@ -6646,8 +6646,8 @@
     {
       "name": "Diversion Specialist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Diversion Unit",
@@ -7846,8 +7846,8 @@
     {
       "name": "Emberheart Challenger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Embermouth Sentinel",
@@ -8134,8 +8134,8 @@
     {
       "name": "Equilibrium Adept",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Eriette of the Charmed Apple",
@@ -11464,8 +11464,8 @@
     {
       "name": "Gundabad Opportunist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Gurmag Nightwatch",
@@ -14542,8 +14542,8 @@
     {
       "name": "Kulrath Zealot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Kutzil's Flanker",
@@ -18382,8 +18382,8 @@
     {
       "name": "Outlaws' Fury",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Outpace Oblivion",
@@ -22654,8 +22654,8 @@
     {
       "name": "Seize Opportunity",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Seize the Secrets",
@@ -23338,8 +23338,8 @@
     {
       "name": "Sizzling Changeling",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Skateboard",
@@ -31078,8 +31078,8 @@
     {
       "name": "Zuko, Exiled Prince",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Zul Ashur, Lich Lord",

@@ -1,6 +1,67 @@
 //! Face-up exile and the paired one-shot returns of CR610.3.
 use super::*;
+/// Independent paid play permission for one exact face-up exile incarnation.
+/// The deadline is inclusive through priority in that turn, and expires during
+/// cleanup alongside other until-end-of-turn effects (CR514.2).
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct ExilePlayPermission {
+    pub object: ObjectRef,
+    pub player: Player,
+    pub expires_turn: u32,
+}
 impl Game {
+    pub(super) fn can_play_exiled(&self, player: Player, card: CardId) -> bool {
+        self.state
+            .exile_permissions
+            .binary_search_by_key(&card, |p| p.object.card)
+            .ok()
+            .is_some_and(|i| {
+                let p = self.state.exile_permissions[i];
+                p.player == player
+                    && p.object == self.object_ref(card)
+                    && p.expires_turn >= self.state.turn
+            })
+    }
+    pub(super) fn exile_top_play(&mut self, player: Player, amount: u16, next_turn: bool) {
+        let ids: Vec<_> = self.state.players[player.index()]
+            .library
+            .iter()
+            .rev()
+            .take(usize::from(amount))
+            .copied()
+            .collect();
+        if ids.is_empty() {
+            return;
+        }
+        let expires_turn = self
+            .state
+            .turn
+            .checked_add(if next_turn {
+                if self.state.active == player { 2 } else { 1 }
+            } else {
+                0
+            })
+            .capacity("exile permission deadline exhausted");
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        for event in &events {
+            if event.moved && event.destination == Zone::Exile {
+                let at = self
+                    .state
+                    .exile_permissions
+                    .partition_point(|p| p.object.card < event.after.card);
+                self.state.exile_permissions.insert(
+                    at,
+                    ExilePlayPermission {
+                        object: event.after,
+                        player,
+                        expires_turn,
+                    },
+                );
+            }
+        }
+        self.finish_zone_events(&events, &[]);
+    }
+
     pub(super) fn exile_until_source_leaves(&mut self, item: &SpellView) {
         if !self.on_battlefield(item.object.card)
             || self.object_ref(item.object.card) != item.object

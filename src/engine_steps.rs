@@ -72,6 +72,15 @@ impl Game {
         let p = &self.state.players[player.index()];
         let (value, minimum, maximum) = match guard {
             StepGuard::Always => return true,
+            StepGuard::Outlaw => {
+                return self.state.objects.iter().any(|o| {
+                    o.owner == player
+                        && o.zone == Zone::Battlefield
+                        && ["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"]
+                            .iter()
+                            .any(|s| o.card.has_subtype(s))
+                });
+            }
             StepGuard::Expression {
                 value,
                 minimum,

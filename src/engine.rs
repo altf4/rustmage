@@ -9,7 +9,7 @@ use crate::cards::{
     TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
 /// Version of the public observation structure, including owned trigger context.
-pub const OBSERVATION_SCHEMA: u32 = 56;
+pub const OBSERVATION_SCHEMA: u32 = 57;
 
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
@@ -47,6 +47,7 @@ mod blocking;
 mod effect_choices;
 #[path = "engine_exile.rs"]
 mod exile;
+pub use exile::ExilePlayPermission;
 #[path = "engine_fight.rs"]
 mod fight;
 #[path = "engine_milling.rs"]
@@ -271,6 +272,9 @@ define_actions! {
         card: CardId,
     },
     AnnounceCast {
+        card: CardId,
+    },
+    AnnounceExile {
         card: CardId,
     },
     AnnounceFlashback {
@@ -808,6 +812,7 @@ struct State {
     death_sources: Vec<CardId>,
     attachment_sources: Vec<CardId>,
     exile_links: Vec<ExileLink>,
+    exile_permissions: Vec<ExilePlayPermission>,
     known_hand: Vec<ObjectRef>,
     players: [PlayerState; 2],
     rng: Rng,
@@ -1036,6 +1041,7 @@ pub struct Observation {
     pub players: [PlayerView; 2],
     pub objects: Vec<ObjectView>,
     pub exile_links: Vec<ExileLink>,
+    pub exile_permissions: Vec<ExilePlayPermission>,
     pub triggered_this_turn: Vec<TriggerUse>,
     pub legend_choices: Vec<LegendGroupView>,
     pub stack: Vec<SpellView>,
@@ -1189,6 +1195,7 @@ impl Game {
                 death_sources: Vec::new(),
                 attachment_sources: Vec::new(),
                 exile_links: Vec::new(),
+                exile_permissions: Vec::new(),
                 known_hand: Vec::new(),
                 players,
                 rng,
@@ -1600,7 +1607,8 @@ impl Game {
                     }
                     let flashback =
                         obj.zone == Zone::Graveyard && obj.card.flashback_cost().is_some();
-                    if (obj.zone != Zone::Hand && !flashback) || obj.card.is_token() {
+                    let exile = obj.zone == Zone::Exile && self.can_play_exiled(actor, card);
+                    if (obj.zone != Zone::Hand && !flashback && !exile) || obj.card.is_token() {
                         continue;
                     }
                     if obj.card.is_land() {
@@ -1675,6 +1683,8 @@ impl Game {
                         if can_fund
                             && emit(if flashback {
                                 Action::AnnounceFlashback { card }
+                            } else if exile {
+                                Action::AnnounceExile { card }
                             } else {
                                 Action::AnnounceCast { card }
                             })
@@ -1683,6 +1693,7 @@ impl Game {
                         }
                     }
                     if flashback
+                        || exile
                         || obj.card.offspring_cost().is_some()
                         || obj.card.additional_cost().is_some()
                         || matches!(obj.card.effect(), Effect::Modal(_))
@@ -2074,7 +2085,9 @@ impl Game {
                 ) {
                     // A land play is public even while its pre-entry choice is pending.
                     let reference = self.object_ref(card);
-                    if !self.state.known_hand.contains(&reference) {
+                    if self.state.objects[card as usize].zone == Zone::Hand
+                        && !self.state.known_hand.contains(&reference)
+                    {
                         self.state.known_hand.push(reference);
                     }
                     let movement =
@@ -2095,7 +2108,7 @@ impl Game {
                     .capacity("mana representation exhausted");
                 self.state.passes = 0;
             }
-            Action::AnnounceCast { card } => {
+            Action::AnnounceCast { card } | Action::AnnounceExile { card } => {
                 let item = self.cast_item(actor, card, [0; 6]);
                 self.open_payment_announcement(item, Counters::default(), None);
             }
@@ -2563,6 +2576,11 @@ impl Game {
         }
         match object.card.entry_tapped() {
             EntryTapped::Never | EntryTapped::PayLife(_) => false,
+            EntryTapped::UnlessPlainsOrIsland => !self.state.objects.iter().any(|o| {
+                o.zone == Zone::Battlefield
+                    && o.owner == object.owner
+                    && (o.card.has_subtype("Plains") || o.card.has_subtype("Island"))
+            }),
             EntryTapped::UnlessPlaneswalker => !self.state.objects.iter().any(|o| {
                 o.zone == Zone::Battlefield
                     && o.owner == object.owner
@@ -2686,6 +2704,9 @@ impl Game {
             library.remove(position);
         }
         if before.zone == Zone::Exile {
+            self.state
+                .exile_permissions
+                .retain(|p| p.object != before.reference);
             self.state
                 .exile_links
                 .retain(|link| link.exiled != before.reference);
@@ -2947,6 +2968,9 @@ impl Game {
     }
 
     fn finish_cleanup(&mut self) {
+        self.state
+            .exile_permissions
+            .retain(|p| p.expires_turn > self.state.turn);
         // Damage removal and expiration of until-end-of-turn effects are simultaneous.
         for obj in &mut self.state.objects {
             obj.damage = 0;
@@ -3296,6 +3320,7 @@ impl Game {
             forage: self.forage_view(viewer),
             objects,
             exile_links: s.exile_links.clone(),
+            exile_permissions: s.exile_permissions.clone(),
             triggered_this_turn: s.triggered_this_turn.clone(),
             legend_choices: s
                 .sba_batch
@@ -3518,6 +3543,7 @@ impl Game {
             + 2 * std::mem::size_of::<Vec<CardId>>()
             + s.objects.len() * std::mem::size_of::<Object>()
             + s.exile_links.len() * std::mem::size_of::<ExileLink>()
+            + s.exile_permissions.len() * std::mem::size_of::<ExilePlayPermission>()
             + s.triggered_this_turn.len() * std::mem::size_of::<TriggerUse>()
             + s.sba_batch.as_ref().map(|batch| batch.bytes()).unwrap_or(0)
             + s.entry_batch
@@ -3966,3 +3992,7 @@ mod forage_tests;
 #[cfg(test)]
 #[path = "engine_filtered_library_selection_tests.rs"]
 mod filtered_library_selection_tests;
+
+#[cfg(test)]
+#[path = "engine_exile_play_tests.rs"]
+mod exile_play_tests;
