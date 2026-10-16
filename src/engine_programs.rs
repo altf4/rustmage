@@ -584,6 +584,36 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::ReturnSourceToHand(origin) => {
+                    let zone = match origin {
+                        TargetZone::Battlefield => Zone::Battlefield,
+                        TargetZone::Graveyard => Zone::Graveyard,
+                    };
+                    if self.object_ref(item.card) == item.object
+                        && self.state.objects[item.card as usize].zone == zone
+                    {
+                        let event = self.move_object(item.card, Zone::Hand);
+                        // The exact public source remains known in its new hand incarnation.
+                        if event.moved
+                            && !event.before.card.is_token()
+                            && !self.state.known_hand.contains(&event.after)
+                        {
+                            self.state.known_hand.push(event.after);
+                        }
+                    }
+                }
+                Instruction::ReturnSourceToBattlefield { tapped } => {
+                    if self.object_ref(item.card) == item.object
+                        && self.state.objects[item.card as usize].zone == Zone::Graveyard
+                    {
+                        let movement = self.entry_move(
+                            item.card,
+                            Zone::Battlefield,
+                            tapped || self.enters_tapped(item.card),
+                        );
+                        self.stage_entries(vec![movement], None);
+                    }
+                }
                 Instruction::CounterRelated => {
                     let link = item.related_stack.expect("ward stack association");
                     self.counter_stack_item(link.id, false);

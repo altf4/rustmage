@@ -3571,3 +3571,7 @@ mod uncounterable_tests;
 #[cfg(test)]
 #[path = "engine_graveyard_activation_tests.rs"]
 mod graveyard_activation_tests;
+
+#[cfg(test)]
+#[path = "engine_source_return_tests.rs"]
+mod source_return_tests;

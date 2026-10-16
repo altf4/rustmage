@@ -8,6 +8,35 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_source_returns_compile_only_exact_activated_zone_bindings(self):
+        cases=[('Return this card from your graveyard to your hand.','Graveyard','ReturnSourceToHand(TargetZone::Graveyard)'),
+               ('Return this card from your graveyard to the battlefield tapped.','Graveyard','ReturnSourceToBattlefield { tapped: true }'),
+               ("Return this creature to its owner's hand.",'Battlefield','ReturnSourceToHand(TargetZone::Battlefield)')]
+        for text,origin,instruction in cases:
+            self.assertEqual(generate.source_return_program(text),(origin,[instruction]))
+            compiled=generate.permanent_program_template(self.card(oracle_text='{2}: '+text));self.assertEqual(compiled[3][0][0]['origin'],origin);self.assertEqual(compiled[3][0][2],[instruction])
+            self.assertIsNone(generate.statement_program(text));self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='When this creature dies, '+text[0].lower()+text[1:])))
+        named=self.card(name='Arcanis the Omnipotent',type_line='Legendary Creature — Wizard',oracle_text="{2}{U}{U}: Return Arcanis to its owner's hand.")
+        self.assertIsNotNone(generate.permanent_program_template(named));self.assertIsNone(generate.permanent_program_template(dict(named,name='Unrelated')))
+        self.assertIsNone(generate.source_return_program("Return it to its owner's hand."))
+        for text in ['Return this card from exile to your hand.','Return another card from your graveyard to your hand.',
+                     'Return this card from your graveyard to the battlefield tapped with a finality counter on it.',
+                     'Return this card from your graveyard to your hand. Draw a card.',
+                     'Return this card from your graveyard to the battlefield under your control.']:
+            self.assertIsNone(generate.source_return_program(text),text)
+        for text in ['{T}: Return this card from your graveyard to your hand.',
+                     'Sacrifice this creature: Return this card from your graveyard to your hand.',
+                     'Remove a +1/+1 counter from this creature: Return this card from your graveyard to your hand.']:
+            self.assertIsNone(generate.permanent_program_template(self.card(oracle_text=text)),text)
+
+    def test_eleven_source_return_bodies_keep_finality_and_trigger_residuals_gated(self):
+        import json
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());_,coverage=generate.compile_catalogue(snapshot,target);supported={c['name'] for c in coverage['cards'] if c['implemented']};rows=json.loads((generate.ROOT/'docs/source-return-admissions.json').read_text())['cards'];self.assertEqual(len(rows),11)
+        for row in rows:
+            c=next(c for c in snapshot['cards'] if c['name']==row['name']);self.assertEqual(c['oracle_text'],row['oracle_text']);self.assertIn(c['name'],supported);changed=dict(c,oracle_text=c['oracle_text']+'\nDiscover 4.');self.assertIsNone(generate.permanent_program_template(changed));self.assertIsNone(generate.aura_template(changed))
+        for name in ['Balustrade Wurm','Resurrected Cultist','Uchbenbak, the Great Mistake','Grim Repriser','Proctor of Potential','Dutiful Griffin','Eagle\'s Rescue','Gallia, Tragic Host','Postmortem Professor','Angelic Destiny']:
+            self.assertNotIn(name,supported)
+
     def test_graveyard_self_exile_costs_origins_and_renew_are_exact_and_mixed_costs_gated(self):
         for mana in ['{G}','{3}{U}','{1}{B/G}']:
             cost=generate.activation_cost(mana+', Exile this card from your graveyard');self.assertTrue(cost['exile_self']);self.assertEqual(cost['origin'],'Graveyard');self.assertFalse(cost['sacrifice'])
@@ -1309,7 +1338,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Moonrise Cleric','Noggle Robber','Pond Prophet','Pretending Poxbearers','Punk Frogs',
                      'Slithering Cryptid','Tempest Angler','Wandering Musicians']:
             self.assertIn(name,supported)
-        for name in ['Blessed Ghoul','Mouser Mark III',
+        for name in ['Mouser Mark III',
                      'Sokka, Lateral Strategist','Spider-Woman, Stunning Savior','Nori, Teller of Tales']:
             self.assertNotIn(name,supported)
 
@@ -1716,7 +1745,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIsNotNone(generate.aura_template(cards[name]),name)
         self.assertIsNotNone(generate.equipment_template(cards['Adventuring Gear']))
         for name in ['Charmed Sleep','Coerced to Kill','Ethereal Armor','Fungal Fortitude',
-                     'Pacifism',"Shardmage's Rescue",'Wingspan Stride']:
+                     'Pacifism',"Shardmage's Rescue"]:
             self.assertIsNone(generate.aura_template(cards[name]),name)
 
     def test_equipment_fixed_bonuses_and_equip_costs_compile_completely(self):
