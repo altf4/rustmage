@@ -9,6 +9,89 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def test_twelve_fixed_effect_bodies_modes_private_discard_and_clue_replay(self):
+        names=['Callous Inspector', 'Cosmium Blast', 'Deadly Riposte', 'Defibrillating Current', 'Fear of Lost Teeth', 'Joust Through', 'Keep Out', 'Lightning Helix', 'Ravenous Giant', 'Risky Shortcut', 'Romantic Rendezvous', 'Viashino Pyromancer'];lands=sum(([n]*6 for n in ['Plains','Island','Swamp','Mountain','Forest']),[])
+        for i,mode in [(j,0) for j in range(12)]+[(6,1)]:
+            wanted=names[i]
+            pairs=([('Swamp',12),('Mountain',18)] if i in (0,4,9) else [('Mountain',30)] if i in (8,10,11) else [('Plains',15),('Mountain',15)] if i==7 else [('Plains',10),('Mountain',10),('Swamp',10)] if i==3 else [('Plains',20),('Mountain',10)])
+            lands=sum(([n]*amount for n,amount in pairs),[])
+            with self.subTest(card=wanted,mode=mode),Game([lands+[wanted]*12+['Shock']*8+['Helpful Hunter']*10,['Mountain']*12+['Swamp']*12+['Ravenous Giant']*18+['Fear of Lost Teeth']*18],seed=7,deck_rules='Freeform') as game:
+                casted=False;done=False;clue_done=False;replayed=0;private=0;pending={}
+                for _ in range(18000):
+                    obs=game.observe('P0');self.assertIsNone(obs['outcome'],(i,casted,done,clue_done));obs=game.observe(obs['actor']);objects={o['id']:o for o in obs['objects']};sources=[o for o in objects.values() if o['owner']=='P0' and o['zone']=='Battlefield' and o['card']==wanted]
+                    def score(a):
+                        k=a['kind']
+                        if k=='PlayLand' and obs['actor']=='P0':
+                            required=({'Swamp':1,'Mountain':1} if i in (0,4) else {'Plains':1,'Mountain':1,'Swamp':1} if i==3 else {'Plains':1,'Mountain':1} if i==7 else {'Mountain':2} if i==8 else {'Swamp':1} if i==9 else {'Mountain':1} if i in (10,11) else {'Plains':1})
+                            n=objects[a['card']]['card'];count=sum(v['owner']=='P0' and v['zone']=='Battlefield' and v['card']==n for v in objects.values());return 220 if count<required.get(n,0) else 200
+                        if k in ('Cast','AnnounceCast'):
+                            n=objects[a['card']]['card']
+                            if obs['actor']=='P1':return 230
+                            if n==wanted:
+                                if k=='Cast' and i in (7,11) and a['target']!={'Player':'P1'}:return -100
+                                return 260 if not casted else -100
+                            if n=='Shock':
+                                if i not in (0,4) or not sources:return -100
+                                if k=='Cast' and a['target']!={'Card':sources[0]['id']}:return -100
+                                return 250
+                            return -100
+                        if k=='AnnounceActivate':return 280 if i==0 and not clue_done and objects[a['card']]['token'] is not None and objects[a['card']]['token']['subtypes']=='Clue' else -100
+                        if k=='ChooseMode':return 320 if a['mode']==mode else -100
+                        if k=='ChooseSpellCost':
+                            c=next(c['cost'] for c in obs['cost_choices'] if c['index']==a['cost']);return 230-c['generic']-sum(c['colored'])
+                        if k=='ChooseTarget':
+                            announcing=obs['announcing'];target=a['target']
+                            if obs['actor']=='P0' and announcing and announcing['source_card']=='Shock' and i in (0,4):return 300 if 'Card' in target and objects[target['Card']]['card']==wanted and objects[target['Card']]['owner']=='P0' else -100
+                            if obs['actor']=='P0' and i in (4,7,11) and target.get('Player')=='P1':return 310
+                            if 'Card' in target:return 290 if objects[target['Card']]['owner']!=obs['actor'] else 100
+                            return 250 if target.get('Player')!=obs['actor'] else 50
+                        if k=='Attack':return 240 if obs['actor']=='P1' else -100
+                        if k=='TapMana':return 180 if obs['decision']=='pay_costs' else -100
+                        if k in ('Activate','BeginActivate','ActivateMana','AnnounceMana'):return -100
+                        return self.professor_score(obs,a)
+                    choice=max(range(len(obs['actions'])),key=lambda j:score(obs['actions'][j]));action=obs['actions'][choice]
+                    if obs['actor']=='P0' and action['kind'] in ('Cast','AnnounceCast') and objects[action['card']]['card']==wanted:casted=True
+                    if obs['decision']=='effect_discard':
+                        other=game.observe('P1' if obs['actor']=='P0' else 'P0');self.assertEqual(other['effect_discards'],[]);self.assertEqual(other['actions'],[]);private+=1
+                    if obs['announcing'] or obs['resolving'] or obs['stack']:
+                        saved=game.snapshot()
+                        with game.clone() as fork:after=fork.step(fork.observe(obs['actor']),choice)
+                        self.assertEqual(game.step(obs,choice),after);game.restore(saved)
+                        with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,choice)
+                        again=game.step(game.observe(obs['actor']),choice);after['revision']=again['revision'];self.assertEqual(after,again);game.drop_snapshot(saved);replayed+=1
+                    else:after=game.step(obs,choice)
+                    if obs['stack'] and action['kind']=='Pass':
+                        root=obs['stack'][-1];is_clue=i==0 and root['source_card'].startswith('@token/') and root['kind']=={'ActivatedAbility':{'ability':0}}
+                        if root['controller']=='P0' and (root['source_card']==wanted or is_clue) and root['id'] not in {v['id'] for v in after['stack']} and (is_clue or i not in (0,4,8,11) or root['kind']!='Spell'):pending[root['id']]=(root,obs,is_clue)
+                    for root_id in list(pending):
+                        if any(v['id']==root_id for v in after['stack']) or after['resolving'] and after['resolving']['id']==root_id:continue
+                        root,b,is_clue=pending.pop(root_id);old_objects={v['id']:v for v in b['objects']};new_objects={v['id']:v for v in after['objects']}
+                        if is_clue:
+                            self.assertEqual(after['players'][0]['library_count'],b['players'][0]['library_count']-1);self.assertEqual(after['players'][0]['hand_count'],b['players'][0]['hand_count']+1);clue_done=True;continue
+                        if i in (0,8):
+                            self.assertEqual(after['players'][0]['life'],b['players'][0]['life']-1)
+                            if i==0:self.assertEqual(sum(v['owner']=='P0' and v['zone']=='Battlefield' and v['token'] is not None and v['token']['subtypes']=='Clue' for v in after['objects']),1)
+                        elif i in (9,10):
+                            self.assertEqual(after['players'][0]['library_count'],b['players'][0]['library_count']-2)
+                            if i==9:
+                                self.assertEqual(after['players'][0]['life'],b['players'][0]['life']-2);self.assertEqual(after['players'][1]['life'],b['players'][1]['life']-2)
+                            else:self.assertEqual(after['players'][0]['hand_count'],b['players'][0]['hand_count']-int(b['players'][0]['hand_count']>0)+2)
+                        elif i==6 and mode==1:
+                            ref=root['targets'][0]['object'];self.assertEqual(new_objects[ref['card']]['zone'],'Graveyard')
+                        else:
+                            damage={1:4,2:3,3:4,4:1,5:3,6:4,7:3,11:2}[i];gain={2:2,3:2,4:1,5:1,7:3}.get(i,0);bound=root['targets'][0]
+                            if bound['object']:
+                                ref=bound['object'];old=old_objects[ref['card']];new=new_objects[ref['card']]
+                                if old['damage']+damage>=old['toughness']:self.assertEqual(new['zone'],'Graveyard')
+                                else:self.assertEqual(new['damage'],old['damage']+damage)
+                            else:self.assertEqual(after['players'][1]['life'],b['players'][1]['life']-damage)
+                            self.assertEqual(after['players'][0]['life'],b['players'][0]['life']+gain)
+                        done=True
+                    if done and (i!=0 or clue_done):break
+                else:self.fail('fixed-effect body did not finish')
+                self.assertTrue(casted);self.assertGreater(replayed,0);self.assertEqual(after['schema'],51)
+                if i==10:self.assertGreater(private,0)
+
     def test_eight_filtered_entry_bodies_modes_activations_and_private_replay(self):
         names=['Arahbo, the First Fang', 'Arni, Humble Scribe', 'Black Panther, Vanguard', 'Genghis Frog', 'Knightfisher', 'Lathliss, Dragon Queen', 'Pactdoll Terror', 'Thoughtweft Lieutenant'];helpers=['Helpful Hunter','Bear Cub','Agent of Atlas','Mutant Town Musicians',"Healer's Hawk",'Shivan Dragon','Goldvein Pick','Goldmeadow Nomad']
         for i,mode in [(j,0) for j in range(8)]+[(2,1)]:

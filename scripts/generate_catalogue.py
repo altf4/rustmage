@@ -1127,8 +1127,12 @@ def statement_program(text):
         return [f'GainLife(PlayerSet::Controller, {int(m[1])})'] if int(m[1]) <= 65535 else None
     if m := re.fullmatch(r'each opponent loses ([0-9]+) life\.', text):
         return [f'LoseLife(PlayerSet::Opponent, {int(m[1])})'] if int(m[1]) <= 65535 else None
-    if m := re.fullmatch(r'this creature deals ([0-9]+) damage to you and you draw (a card|two cards|three cards|four cards)\.', text):
-        return [f'DamagePlayers(PlayerSet::Controller, {int(m[1])})',f'Draw(PlayerSet::Controller, {DRAW_COUNTS[m[2]]})'] if int(m[1]) <= 32767 else None
+    if m := re.fullmatch(r'this creature deals ([0-9]+) damage to you(?: and you draw (a card|two cards|three cards|four cards))?\.', text):
+        return [f'DamagePlayers(PlayerSet::Controller, {int(m[1])})']+([f'Draw(PlayerSet::Controller, {DRAW_COUNTS[m[2]]})'] if m[2] else []) if int(m[1])<=32767 else None
+    if m:=re.fullmatch(r'each player loses ([0-9]+) life\.',text):
+        return [f'LoseLife(PlayerSet::Each, {int(m[1])})'] if int(m[1])<=65535 else None
+    if m:=re.fullmatch(r'discard '+draw+r', then draw '+draw+r'\.',text):
+        return [f'Discard(PlayerSet::Controller, {DRAW_COUNTS[m[1]]})',f'Draw(PlayerSet::Controller, {DRAW_COUNTS[m[2]]})']
     if m := re.fullmatch(r'you lose ([0-9]+) life\.', text):
         return [f'LoseLife(PlayerSet::Controller, {int(m[1])})'] if int(m[1]) <= 65535 else None
     if text == 'you may draw a card. If you do, discard a card.':
@@ -1236,6 +1240,7 @@ for _name, _kinds, _relation, _tapped, _minimum, _maximum in [
     ('CreatureMax3', 1, -1, False, 0, 3),
     ('PermanentMin3', 0, -1, False, 3, 4294967295),
     ('CreaturePlaneswalker', 65, -1, False, 0, 4294967295),
+    ('Planeswalker', 64, -1, False, 0, 4294967295),
     ('CreaturePlaneswalkerMax3', 65, -1, False, 0, 3),
     ('CreaturePlaneswalkerMin3', 65, -1, False, 3, 4294967295),
     ('CardGraveOpponent', 0, 1, False, 0, 4294967295),
@@ -1272,9 +1277,21 @@ for _name, _members in [
     ('ArtifactEnchantmentCreaturePowerMin4', ['ArtifactEnchantment', 'CreaturePowerMin4']),
     ('ArtifactCreatureTapped', ['Artifact', 'CreatureTapped']),
     ('CreatureSpacecraft', ['Creature', 'Spacecraft']),
+    ('PlayerPlaneswalker', ['Player', 'Planeswalker']),
     ('CreatureVehicleNonbasicLand', ['CreatureVehicle', 'NonbasicLand']),
 ]:
     TARGET_RULES[_name] = 'TargetRule::Union(&[' + ', '.join(TARGET_RULES[member] for member in _members) + '])'
+
+FIXED_DAMAGE_SUBJECTS = {
+    'any target':'Any',
+    'target creature':'Creature',
+    'target creature or planeswalker':'CreaturePlaneswalker',
+    'target opponent':'Opponent',
+    'target player':'Player',
+    'target player or planeswalker':'PlayerPlaneswalker',
+    'target tapped creature':'CreatureTapped',
+    'target attacking or blocking creature':'CreatureAttackingBlocking',
+}
 
 REMOVAL_SUBJECTS = dict(EXILE_SUBJECTS, **{
     'target permanent': 'Permanent',
@@ -1594,9 +1611,10 @@ def targeted_program(text):
         loss,gain=map(int,m.groups())
         if max(loss,gain)>65535:return None
         return 'Opponent',[f'LoseLife(PlayerSet::Targeted, {loss})',f'GainLife(PlayerSet::Controller, {gain})']
-    if m := re.fullmatch(r'this (?:creature|artifact|enchantment|permanent|spell) deals ([0-9]+) damage to (any target|target creature or planeswalker|target creature|target opponent|target player)\.', text):
-        if int(m[1]) > 32767: return None
-        return {'any target': 'Any', 'target creature': 'Creature', 'target creature or planeswalker': 'CreaturePlaneswalker', 'target opponent': 'Opponent', 'target player': 'Player'}[m[2]], [f'Damage({int(m[1])})']
+    if m := re.fullmatch(r'this (?:creature|artifact|enchantment|permanent|spell) deals ([0-9]+) damage to ('+'|'.join(map(re.escape,FIXED_DAMAGE_SUBJECTS))+r')(?: and you gain ([0-9]+) life)?\.', text):
+        rule=FIXED_DAMAGE_SUBJECTS[m[2]]
+        if int(m[1])>32767 or (m[3] and int(m[3])>65535):return None
+        return rule,[f'Damage({int(m[1])})']+([f'GainLife(PlayerSet::Controller, {int(m[3])})'] if m[3] else [])
     if m := re.fullmatch(r'(target creature|target creature you control|another target creature you control|target creature an opponent controls) gets ([+-][0-9]+)/([+-][0-9]+) until end of turn\.', text):
         if max(abs(int(m[2])), abs(int(m[3]))) > 32767: return None
         rule = {'target creature': 'Creature', 'target creature you control': 'CreatureYou', 'another target creature you control': 'OtherCreatureYou', 'target creature an opponent controls':'CreatureOpponent'}[m[1]]
