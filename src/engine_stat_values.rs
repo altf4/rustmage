@@ -67,6 +67,9 @@ impl Game {
             StatValue::Not(value) => i128::from(
                 self.stat_value_with(*value, source, owner, objects, life, attacking) == 0,
             ),
+            StatValue::ControllerHandSize => objects()
+                .filter(|(_, o)| o.owner == owner && o.zone == Zone::Hand)
+                .count() as i128,
             StatValue::NonlandEntriesThisTurn => {
                 i128::from(self.state.players[owner.index()].nonland_permanents_entered_this_turn)
             }

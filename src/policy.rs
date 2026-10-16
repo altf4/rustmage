@@ -165,11 +165,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::Sacrifice { .. } => 50,
             Action::DeclineEffectPayment => -1,
             Action::AnnounceCast { .. }
+            | Action::AnnouncePlotted { .. }
             | Action::AnnounceExile { .. }
             | Action::AnnounceFlashback { .. } => 79,
+            Action::AnnouncePlot { .. } => 40,
             Action::AnnounceActivate { .. } => 34,
             Action::AnnounceMana { .. } => -2,
-            Action::PayCosts { .. } => 100,
+            Action::PayCosts { .. } | Action::PayPlot { .. } => 100,
             Action::ChooseSpellCost { .. } | Action::ChooseActivationCost { .. } => 50,
             Action::ChooseMode { .. } => 50,
             Action::ChooseSearch { .. } => 60,

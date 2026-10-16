@@ -136,7 +136,7 @@ class FixedKickerTests(unittest.TestCase):
                     if packet['source_card'] == name:
                         root, baseline = packet, obs
                 after = self.replay(game, obs, j)
-                self.assertEqual(after['schema'], 69)
+                self.assertEqual(after['schema'], 70)
                 if root and not any(p['id'] == root['id'] for p in after['stack']) and not (after['resolving'] and after['resolving']['id'] == root['id']):
                     if root['kind'] != 'Spell':
                         self.assertTrue(pay)

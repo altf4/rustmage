@@ -51,6 +51,13 @@ impl Announcement {
                 std::iter::once(self.item.source_card.flashback_cost().unwrap())
                     .chain([].iter().copied())
             }
+            StackKind::Spell if self.item.cast.is_some_and(|c| c.method == CastMethod::Plot) => {
+                std::iter::once(ManaCost {
+                    colored: [0; 6],
+                    generic: 0,
+                })
+                .chain([].iter().copied())
+            }
             StackKind::Spell => self.item.source_card.cost_options(),
             StackKind::ActivatedAbility { ability } => self.item.source_card.activations()
                 [ability as usize]
@@ -90,10 +97,9 @@ impl Announcement {
             && self.cost.is_none()
             && match self.item.kind {
                 StackKind::Spell => {
-                    self.item
-                        .cast
-                        .is_none_or(|cast| cast.method != CastMethod::Flashback)
-                        && self.item.source_card.has_hybrid_cost()
+                    self.item.cast.is_none_or(|cast| {
+                        !matches!(cast.method, CastMethod::Flashback | CastMethod::Plot)
+                    }) && self.item.source_card.has_hybrid_cost()
                 }
                 StackKind::ActivatedAbility { ability } => !self.item.source_card.activations()
                     [ability as usize]
