@@ -1,6 +1,6 @@
 # Exact live subject conditions
 
-Issue [#213](https://github.com/altf4/rustmage/issues/213) implements nine complete Standard bodies on validated library-destination checkpoint `990475788f7beb37a34ebfede0313caad5e4c290`.
+Issue [#213](https://github.com/altf4/rustmage/issues/213) implements nine complete Standard bodies. The integrated release builds on main `cbe9d3d7af0d2b5c5532e8faae159fed3b583c0b`, including target-dependent costs. Historical standalone measurements below use library-destination checkpoint `990475788f7beb37a34ebfede0313caad5e4c290`; combined evidence follows them.
 
 | Card | Complete body and condition |
 | --- | --- |
@@ -26,7 +26,7 @@ Wakandan's program branches **before** placing counters: a true other-Hero guard
 
 The compiler accepts closed whole conditional clauses and single creature antecedents whose earlier instructions retain that exact battlefield subject. Moving-target antecedents, ambiguous pronouns, multi-target singular antecedents, unknown conditional tails and unimplemented residual text reject the complete body. [Cemetery Recruitment and Budding Insurgent](subject-condition-admissions.json) remain gated: their moving-object/LKI conditions are outside this primitive. Blink, control changes, dynamic types, ability removal, keyword counters and unrelated residual mechanics are not added.
 
-## Provenance and preservation
+## Standalone provenance and preservation
 
 The [manifest](subject-condition-admissions.json) records complete Oracle text for nine admissions and two explicit gates, with **40 SHA-256 entries across 40 Java files**: eleven constructors and twenty-nine inspected shared helpers. Every byte hash is verified against both the local XMage checkout and pinned revision `492369c7844b8d76479f0393ff9eb6b0b0cf30d7`.
 
@@ -34,7 +34,7 @@ Support becomes **1,504 / 5,164** Standard cards; **3,660** remain gated. There 
 
 Canonical comparison against the parent changes exactly the nine previously unsupported bodies and preserves **5,247** other definitions, all **5,256 identity/ID mappings and color masks**, **5,183 ordinary IDs**, all **72 existing factories/metadata**, the emblem and **446 prior numeric helper arms across eighteen functions**. No factory or helper arm is added. Apart from those nine definitions, the fingerprint and their required additions to the supported-card `ALL` list, generated Rust remains byte-identical.
 
-## Validation
+## Standalone validation
 
 Sixteen native tests cover full casts in both seats, both live branches, optional zero/one target cardinality, subtype/Changeling/token/relation/other predicates, source/target departure and reincarnation, independent life gain, simultaneous captured entry references, suppression, attack membership, Ward payment/decline, wrong actors, full fizzles/hexproof, stun replacement, temporary expiration, permanent counter/life persistence, divergent owned choices and late capacity rollback. Every replay helper checks clones, snapshots, full state equality and stale action revisions.
 
@@ -54,3 +54,11 @@ cargo clippy --all-targets -- -D warnings
 python3 scripts/generate_catalogue.py --check
 cargo run --release --example standard_subject_conditions -- 100
 ```
+
+## Integrated release evidence
+
+Combined support advances from 1,514 to **1,523 / 5,164 Standard cards**, with 3,641 gated and six additional regression bodies. The catalogue retains 5,256 identities, 72 token factories and one emblem. Exactly nine definitions change; all 5,247 others, prior IDs/color masks/factory metadata and **466 existing numeric helper arms** remain unchanged. All-section provenance verifies forty SHA-256 entries across forty pinned Java files. Fingerprint: `6887dacf503b5b12795192b85c8f7009221784be16d217f34c8f04300f46d3db`.
+
+The integrated release passes **1,363 Rust tests** (1,351 unit and twelve integration), **260 compiler/data tests** (430.128 seconds) and **166 fresh-release Python tests** (201.192 seconds), plus warnings-denied all-target Clippy, formatting, generated-catalogue and whitespace checks. The subject-condition Standard100 reproduces all **62,864 decisions/replays** and the standalone vectors above. Adjacent target-cost Standard100 retains all 60,950 decisions/replays and every payment/effect/private/locked-cost witness.
+
+Observation schema remains **58**; initialized logical state remains **19,944 bytes**, with 22,180 bytes maximum in the subject-condition workload. The combined 1,000-game native smoke benchmark retains 571,049 decisions, approximately 205,000 decisions/s and 229/239 ns clone/restore under concurrent host load. These workload measurements carry the exclusions above and are not a Java performance comparison.
