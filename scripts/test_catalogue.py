@@ -8,6 +8,34 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_uncounterable_extraction_is_exact_and_preserves_whole_residuals(self):
+        for reminder in ['', ' (This includes by the ward ability.)']:
+            c=self.card(oracle_text="This spell can't be countered."+reminder+'\nFlying')
+            rest,flag=generate.extract_uncounterable(c);self.assertTrue(flag);self.assertEqual(rest['oracle_text'],'Flying')
+        for text in ["Creature spells you control can't be countered.","This spell can't be countered if you control a Bear.",
+                     "This spell can't be countered. Draw a card.","This spell can't be countered.\nThis spell can't be countered."]:
+            c=self.card(oracle_text=text);self.assertEqual(generate.extract_uncounterable(c),(c,False))
+        c=self.card(oracle_text="This spell can't be countered.\nDiscover 4.");rest,flag=generate.extract_uncounterable(c)
+        self.assertTrue(flag);self.assertIsNone(generate.creature_template(rest));self.assertIsNone(generate.permanent_program_template(rest))
+        self.assertIn('max_mana: 3',generate.TARGET_RULES['CreaturePlaneswalkerMax3']);self.assertIn('kinds: 65',generate.TARGET_RULES['CreaturePlaneswalkerMax3'])
+
+    def test_four_uncounterable_admissions_keep_unsupported_residual_bodies_gated(self):
+        import copy,hashlib,json
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        rust,coverage=generate.compile_catalogue(snapshot,target);supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        rows=json.loads((generate.ROOT/'docs/uncounterable-admissions.json').read_text())['cards'];self.assertEqual(len(rows),4)
+        for row in rows:
+            c=next(c for c in snapshot['cards'] if c['name']==row['name']);self.assertEqual(c['oracle_text'],row['oracle_text']);self.assertIn(c['name'],supported)
+        for name in ['Inevitable Defeat','Slice from the Shadows','Koma, World-Eater','Frenzied Baloth','Hexing Squelcher']:
+            self.assertNotIn(name,supported)
+        changed=copy.deepcopy(snapshot)
+        for c in changed['cards']:
+            if c['name'] in {r['name'] for r in rows}:c['oracle_text']+='\nDiscover 4.'
+        changed['cards_sha256']=hashlib.sha256(json.dumps(changed['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+        rust,bad=generate.compile_catalogue(changed,target)
+        self.assertFalse(any(c['implemented'] for c in bad['cards'] if c['name'] in {r['name'] for r in rows}))
+        self.assertEqual(rust.split('fn uncounterable(card: Card) -> bool {')[1].strip(), 'false\n}')
+
     def test_external_sacrifice_activation_cost_filters_are_exact_and_mana_remains_gated(self):
         for subject,kind,other,token in [('a creature',1,False,'None'),('another creature or artifact',17,True,'None'),
                                        ('an artifact or land',18,False,'None'),('another artifact or land',18,True,'None'),
@@ -1034,7 +1062,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         for name in admitted:self.assertIn(name,supported)
         for name in ['Unwanted Remake',
                      'Consuming Ashes','Bovine Intervention','Get Lost',
-                     'Long Goodbye','Ride\'s End','Protective Response','Dragon\'s Prey']:
+                     'Ride\'s End','Protective Response','Dragon\'s Prey']:
             self.assertNotIn(name,supported,name)
         import re
         colors=json.loads(re.search(r'static COLORS: \[u8; [0-9]+\] = (\[[^;]+\]);',rust)[1])

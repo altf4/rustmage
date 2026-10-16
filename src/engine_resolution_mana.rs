@@ -16,6 +16,26 @@ pub struct ResolutionPaymentView {
     pub exile: bool,
 }
 impl Game {
+    /// Explicit counters share one check. Abilities are independent of their source spell.
+    pub(super) fn counter_stack_item(&mut self, id: u64, exile: bool) -> bool {
+        let Some(index) = self.state.stack.iter().position(|s| s.id == id) else {
+            return false;
+        };
+        let victim = &self.state.stack[index];
+        if victim.kind == StackKind::Spell {
+            if victim.source_card.cannot_be_countered() {
+                return false;
+            }
+            self.move_object(
+                victim.card,
+                if exile { Zone::Exile } else { Zone::Graveyard },
+            );
+        } else {
+            self.state.stack.remove(index);
+        }
+        true
+    }
+
     pub(super) fn target_becomes_bound(&mut self, item: &SpellView, bound: BoundTarget) {
         let Target::Card(id) = bound.target else {
             return;
@@ -126,21 +146,7 @@ impl Game {
             }
         } else {
             self.state.resolving.as_mut().unwrap().pc = request.unpaid_pc;
-            if let Some(index) = self.state.stack.iter().position(|s| s.id == request.victim) {
-                let victim = &self.state.stack[index];
-                if victim.kind == StackKind::Spell {
-                    self.move_object(
-                        victim.card,
-                        if request.exile {
-                            Zone::Exile
-                        } else {
-                            Zone::Graveyard
-                        },
-                    );
-                } else {
-                    self.state.stack.remove(index);
-                }
-            }
+            self.counter_stack_item(request.victim, request.exile);
         }
         self.run_program();
     }

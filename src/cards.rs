@@ -1161,6 +1161,11 @@ impl Card {
     pub fn is_emblem(self) -> bool {
         self.emblem_info().is_some()
     }
+    /// Executable prohibition for this card's own spell while on the stack.
+    /// Unsupported bodies do not emit this metadata.
+    pub fn cannot_be_countered(self) -> bool {
+        generated::uncounterable(self)
+    }
     pub(crate) fn exhaust_mask(self) -> u64 {
         generated::exhaust_mask(self)
     }

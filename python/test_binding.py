@@ -9,6 +9,53 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def test_uncounterable_eject_preserves_native_stack_through_ward_and_replay(self):
+        for ward in ['Spectral Snatcher','Sunset Saboteur','Vein Ripper','Sire of Seven Deaths']:
+            with self.subTest(ward=ward),Game([['Swamp']*24+[ward]*36,['Forest']*12+['Island']*12+['Grizzly Bears']*12+['Eject']*24],seed=7,deck_rules='Freeform') as game:
+                obs=self.reach_nonmana_ward(game,ward,spell='Eject');victim=obs['resolving']['related_stack']['id'];root=next(s for s in obs['stack'] if s['id']==victim)
+                action=next(a for a in obs['actions'] if a['kind']==('ChooseOptional' if ward=='Sire of Seven Deaths' else 'DeclineEffectPayment') and (a['kind']!='ChooseOptional' or not a['accept']))
+                saved=game.snapshot()
+                def finish(handle):
+                    after=handle.act(handle.observe('P1'),action);self.assertTrue(any(s['id']==victim for s in after['stack']))
+                    result=self.finish_self_target(handle,'P1',victim)
+                    target=root['targets'][0]['target']['Card'];self.assertEqual(next(o for o in handle.observe('P0')['objects'] if o['id']==target)['zone'],'Hand')
+                    return result
+                with game.clone() as fork:expected=finish(fork)
+                after=finish(game);self.assertEqual(after,expected);self.assertEqual(next(o for o in after['objects'] if o['id']==root['card'])['zone'],'Graveyard')
+                game.restore(saved)
+                with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,0)
+                again=finish(game);after['revision']=again['revision'];self.assertEqual(after,again);game.drop_snapshot(saved)
+
+    def test_four_uncounterable_bodies_survive_native_counter_and_replay(self):
+        for wanted in ['Eject','Gigantic Big Bear','Out Cold','Long Goodbye']:
+            with self.subTest(card=wanted),Game([['Island']*12+['Swamp']*6+['Forest']*6+[wanted]*36,['Island']*12+['Forest']*12+['Grizzly Bears']*12+['Counterspell']*24],seed=7,deck_rules='Freeform') as game:
+                for _ in range(20000):
+                    obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor']);objects={o['id']:o for o in obs['objects']};victims=[s for s in obs['stack'] if s['source_card']==wanted]
+                    if victims and obs['stack'][-1]['source_card']=='Counterspell':break
+                    bears=[o for o in objects.values() if o['owner']=='P1' and o['zone']=='Battlefield' and o['card']=='Grizzly Bears']
+                    def score(a):
+                        k=a['kind']
+                        if k in ('Cast','AnnounceCast'):
+                            name=objects[a['card']]['card']
+                            if name==wanted:return 200 if wanted=='Gigantic Big Bear' or bears else -100
+                            if name=='Grizzly Bears':return 180 if not bears else -100
+                            if name=='Counterspell':return 240 if victims and (k=='AnnounceCast' or a['target'].get('Spell')==victims[0]['card']) else -100
+                        if k in ('Activate','BeginActivate','AnnounceActivate','AnnounceMana','Attack'):return -100
+                        if k=='ChooseTarget':return 240 if (victims and a['target'].get('Spell')==victims[0]['card']) or (bears and a['target'].get('Card')==bears[0]['id']) else -100
+                        if k=='TapMana':return 140 if obs['decision']=='pay_costs' else -100
+                        return self.professor_score(obs,a)
+                    game.step(obs,max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i])))
+                else:self.fail('protected spell and opposing counter not reached')
+                root=victims[0];counter=obs['stack'][-1];saved=game.snapshot()
+                def finish(handle):
+                    after=self.finish_self_target(handle,'P0',counter['id']);self.assertTrue(any(s['id']==root['id'] for s in after['stack']))
+                    return self.finish_self_target(handle,'P0',root['id'])
+                with game.clone() as fork:expected=finish(fork)
+                after=finish(game);self.assertEqual(after,expected);self.assertEqual(next(o for o in after['objects'] if o['id']==root['card'])['zone'],'Battlefield' if wanted=='Gigantic Big Bear' else 'Graveyard')
+                game.restore(saved)
+                with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,0)
+                again=finish(game);after['revision']=again['revision'];self.assertEqual(after,again);game.drop_snapshot(saved)
+
     def reach_activation_sacrifice_payment(self,game,wanted):
         for _ in range(15000):
             obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor']);root=obs['announcing']
@@ -88,7 +135,7 @@ class BindingTests(unittest.TestCase):
                 with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,0)
                 again=finish(game);after['revision']=again['revision'];self.assertEqual(after,again);game.drop_snapshot(saved)
 
-    def reach_nonmana_ward(self,game,wanted):
+    def reach_nonmana_ward(self,game,wanted,spell="Shock"):
         for _ in range(10000):
             obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor'])
             root=obs['resolving']
@@ -101,7 +148,7 @@ class BindingTests(unittest.TestCase):
                 if k=='Cast':
                     name=objects[a['card']]['card']
                     if name==wanted:return 160 if not targets else -100
-                    if name=='Shock':
+                    if name==spell:
                         resource=(any(o['owner']=='P1' and o['zone']=='Battlefield' and o['card']=='Grizzly Bears' for o in objects.values()) if wanted=='Vein Ripper' else any(o['owner']=='P1' and o['zone']=='Hand' and o['id']!=a['card'] for o in objects.values()))
                         return 200 if resource and targets and a['target'].get('Card')==targets[0]['id'] else -100
                 return self.professor_score(obs,a)

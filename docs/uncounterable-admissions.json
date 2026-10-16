@@ -1,0 +1,123 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Eject",
+      "oracle_text": "This spell can't be countered.\nReturn target nonland permanent to its owner's hand.\nDraw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/Eject.java",
+          "java_sha256": "50fcfec0e3131b9ed7dbe34266d36bd5170760a8cc2311fbe4a3c1a8d5d12a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/CantBeCounteredSourceAbility.java",
+          "java_sha256": "ab592d3d97f245e6b3ca9971e1c559a7063c8717a4a5963b64564a13abd768de"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CantBeCounteredSourceEffect.java",
+          "java_sha256": "f682272dc5b296650d7dfffd0792fcf6508ee366cc67bf1f583d31017a94e9a2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterTargetEffect.java",
+          "java_sha256": "49282767e8f8d631bb38ae1d35bc91a29ab2ae8173030e3a89d3da495c1cf233"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        }
+      ]
+    },
+    {
+      "name": "Gigantic Big Bear",
+      "oracle_text": "This spell can't be countered.\nHexproof, haste",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GiganticBigBear.java",
+          "java_sha256": "ea60e84e83652231e02fd610674e53804086057b20702a2b103c516f940146a8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/CantBeCounteredSourceAbility.java",
+          "java_sha256": "ab592d3d97f245e6b3ca9971e1c559a7063c8717a4a5963b64564a13abd768de"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CantBeCounteredSourceEffect.java",
+          "java_sha256": "f682272dc5b296650d7dfffd0792fcf6508ee366cc67bf1f583d31017a94e9a2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterTargetEffect.java",
+          "java_sha256": "49282767e8f8d631bb38ae1d35bc91a29ab2ae8173030e3a89d3da495c1cf233"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        }
+      ]
+    },
+    {
+      "name": "Out Cold",
+      "oracle_text": "This spell can't be countered. (This includes by the ward ability.)\nTap up to two target creatures and put a stun counter on each of them. Investigate. (If a permanent with a stun counter would become untapped, remove one from it instead.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/o/OutCold.java",
+          "java_sha256": "042e63a14090ae1d0853d4e84c943e81457ab001f7663661236228f38e79b53c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/CantBeCounteredSourceAbility.java",
+          "java_sha256": "ab592d3d97f245e6b3ca9971e1c559a7063c8717a4a5963b64564a13abd768de"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CantBeCounteredSourceEffect.java",
+          "java_sha256": "f682272dc5b296650d7dfffd0792fcf6508ee366cc67bf1f583d31017a94e9a2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterTargetEffect.java",
+          "java_sha256": "49282767e8f8d631bb38ae1d35bc91a29ab2ae8173030e3a89d3da495c1cf233"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/InvestigateEffect.java",
+          "java_sha256": "db04263634b8969dee966be525deac8165e358e3a0774b3e11de300f024ac3ed"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/ClueArtifactToken.java",
+          "java_sha256": "711939b0212d808576d149e8c95b0007df2e003c29095ddb26c4cdce94a3ddd8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/token/ClueAbility.java",
+          "java_sha256": "ade27801ef45e9379e70fa7a5a8528f847e9df65d86410f562818e94b1e908b6"
+        }
+      ]
+    },
+    {
+      "name": "Long Goodbye",
+      "oracle_text": "This spell can't be countered. (This includes by the ward ability.)\nDestroy target creature or planeswalker with mana value 3 or less.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LongGoodbye.java",
+          "java_sha256": "9ecbedd68fd300112542a88d6b330ce93a234b7b17a03fe49b00b5500e724068"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/CantBeCounteredSourceAbility.java",
+          "java_sha256": "ab592d3d97f245e6b3ca9971e1c559a7063c8717a4a5963b64564a13abd768de"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CantBeCounteredSourceEffect.java",
+          "java_sha256": "f682272dc5b296650d7dfffd0792fcf6508ee366cc67bf1f583d31017a94e9a2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterTargetEffect.java",
+          "java_sha256": "49282767e8f8d631bb38ae1d35bc91a29ab2ae8173030e3a89d3da495c1cf233"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        }
+      ]
+    }
+  ]
+}

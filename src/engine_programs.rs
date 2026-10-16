@@ -586,14 +586,7 @@ impl Game {
                 }
                 Instruction::CounterRelated => {
                     let link = item.related_stack.expect("ward stack association");
-                    if let Some(index) = self.state.stack.iter().position(|s| s.id == link.id) {
-                        let victim = &self.state.stack[index];
-                        if victim.kind == StackKind::Spell {
-                            self.move_object(victim.card, Zone::Graveyard);
-                        } else {
-                            self.state.stack.remove(index);
-                        }
-                    }
+                    self.counter_stack_item(link.id, false);
                 }
                 Instruction::MoveBattlefield { filters, exile } => {
                     self.move_battlefield_group(&item, filters, exile);
@@ -1135,8 +1128,26 @@ impl Game {
                         }
                     }
                 }
-                Instruction::Counter
-                | Instruction::Exile
+                Instruction::Counter => {
+                    for bound in &item.targets {
+                        if let Target::Spell(card) = bound.target {
+                            let victim = self
+                                .state
+                                .stack
+                                .iter()
+                                .find(|s| {
+                                    s.kind == StackKind::Spell
+                                        && s.card == card
+                                        && Some(s.object) == bound.object
+                                })
+                                .map(|s| s.id);
+                            if let Some(id) = victim {
+                                self.counter_stack_item(id, false);
+                            }
+                        }
+                    }
+                }
+                Instruction::Exile
                 | Instruction::Destroy
                 | Instruction::ReturnToHand
                 | Instruction::ReturnToBattlefield => {
