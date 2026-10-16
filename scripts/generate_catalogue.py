@@ -1126,6 +1126,7 @@ for _name, _zone, _kinds, _relation, _other, _nonland in [
     ('Enchantment', 'Battlefield', 32, -1, False, False),
     ('ArtifactEnchantment', 'Battlefield', 48, -1, False, False),
     ('CreatureGraveYou', 'Graveyard', 1, 0, False, False),
+    ('OtherCreatureGraveYou', 'Graveyard', 1, 0, True, False),
     ('InstantSorceryGraveYou', 'Graveyard', 12, 0, False, False),
     ('CreatureGrave', 'Graveyard', 1, -1, False, False),
 ]:
@@ -1449,6 +1450,7 @@ def targeted_program(text):
         'untap target nonland permanent.': ('Nonland', ['Untap']),
         'untap one or two target creatures. They each get +2/+2 until end of turn.': (('Creature', 1, 2), ['Untap', grow_instruction('Targets', 2, 2)]),
         "return target creature card from your graveyard to the battlefield.": ('CreatureGraveYou', ['ReturnToBattlefield']),
+        "return another target creature card from your graveyard to your hand.": ('OtherCreatureGraveYou', ['ReturnToHand']),
         "return target creature card from your graveyard to your hand.": ('CreatureGraveYou', ['ReturnToHand']),
         "return target instant or sorcery card from your graveyard to your hand.": ('InstantSorceryGraveYou', ['ReturnToHand']),
         "return another target permanent you control to its owner's hand.": ('OtherPermanentYou', ['ReturnToHand']),
@@ -1962,7 +1964,7 @@ def modal_spell_template(card):
 
 
 def activation_cost(text):
-    cost = dict(colored=[0] * 6, generic=0, alternatives=[], additional=None, mana_component=False, tap=False, sacrifice=False, life=0, remove=None, loyalty=None, guard="Always")
+    cost = dict(colored=[0] * 6, generic=0, alternatives=[], additional=None, mana_component=False, tap=False, sacrifice=False, exile_self=False, life=0, remove=None, loyalty=None, guard="Always")
     seen = set()
     external_sacrifice=False
     for component in text.split(', '):
@@ -1982,6 +1984,9 @@ def activation_cost(text):
         elif component in ('Sacrifice this creature', 'Sacrifice this artifact', 'Sacrifice this enchantment', 'Sacrifice this permanent'):
             if cost['sacrifice']: return None
             cost['sacrifice'] = True
+        elif component == 'Exile this card from your graveyard':
+            if cost['exile_self']: return None
+            cost.update(exile_self=True, origin='Graveyard')
         elif component.startswith('Sacrifice ') and (spec:=sacrifice_spec(component[len('Sacrifice '):])) is not None:
             if cost['additional'] is not None or spec[0]!=1:return None
             cost['additional']='AdditionalCost { kind: EffectChoiceKind::Sacrifice, filter: '+spec[1]+' }'
@@ -1997,6 +2002,7 @@ def activation_cost(text):
     # Wider composite costs need payment-order choices before admission.
     if cost['additional'] is not None and (cost['life'] or cost['remove'] or cost['loyalty'] is not None): return None
     if external_sacrifice and cost['sacrifice']:return None
+    if cost['exile_self'] and (cost['tap'] or cost['sacrifice'] or cost['life'] or cost['remove'] or cost['additional'] is not None or cost['loyalty'] is not None): return None
     return cost
 
 
@@ -2092,6 +2098,8 @@ def permanent_program_template(card):
         if ': ' not in line:
             body.append(line)
             continue
+        renew=line.startswith('Renew — ')
+        if renew: line=line[len('Renew — '):].strip()
         exhaust=line.startswith('Exhaust — ')
         if exhaust:line=line[len('Exhaust — '):].strip()
         cost_text, effect_text = line.split(': ', 1)
@@ -2133,6 +2141,7 @@ def permanent_program_template(card):
         once = combined or effect_text.endswith(' Activate only once each turn.')
         if sorcery and not combined: effect_text = effect_text[:-len(' Activate only as a sorcery.')]
         if once and not combined: effect_text = effect_text[:-len(' Activate only once each turn.')]
+        if renew and (not cost['exile_self'] or not sorcery): return None
         for alias in aliases:
             if effect_text.startswith(alias+' deals '):
                 effect_text='this permanent deals '+effect_text[len(alias+' deals '):]
@@ -2152,7 +2161,7 @@ def permanent_program_template(card):
         if any(instruction.startswith('AddMana') for instruction in program) and (len(program) != 1 or targets != 'None'):
             return None
         # Counterfactual mana search does not consume hand-card resources yet.
-        if program[0].startswith('AddMana') and cost['additional'] is not None: return None
+        if program[0].startswith('AddMana') and (cost['additional'] is not None or cost['exile_self']): return None
         if program[0].startswith('AddMana') and cost['loyalty'] is None and not (cost['tap'] or cost['sacrifice'] or cost['life'] or cost['remove'] or once or exhaust):
             # Unbounded positive production needs an infinite-resource solver.
             # Resource-free conversions that do not increase total mana are finite.
@@ -2255,7 +2264,7 @@ def rust_activations(abilities):
     for cost, targets, program, sorcery, once in abilities:
         remove = 'None' if cost['remove'] is None else f"Some(({'None' if cost['remove'][0] is None else 'Some(CounterKind::' + cost['remove'][0] + ')'}, {cost['remove'][1]}))"
         alternatives = '&[' + ', '.join(f'ManaCost {{ colored: {mana}, generic: {generic} }}' for mana,generic in cost.get('alternatives', [])) + ']'
-        rows.append(f"ActivatedAbility {{ exhaust: {str(cost.get('exhaust',False)).lower()}, guard: ActivationGuard::{cost.get('guard','Always')}, cycling: {str(cost.get('cycling',False)).lower()}, origin: ActivationOrigin::{cost.get('origin','Battlefield')}, cost: ActivationCost {{ colored: {cost['colored']}, generic: {cost['generic']}, alternatives: {alternatives}, additional: {'None' if cost.get('additional') is None else 'Some('+cost['additional']+')'}, mana_component: {str(cost['mana_component']).lower()}, tap: {str(cost['tap']).lower()}, sacrifice: {str(cost['sacrifice']).lower()}, discard: {str(cost.get('discard',False)).lower()}, life: {cost['life']}, remove: {remove}, loyalty: {'None' if cost.get('loyalty') is None else 'Some('+str(cost['loyalty'])+')'} }}, targets: {rust_targets(targets)}, program: {rust_program(program)}, sorcery: {str(sorcery).lower()}, once_per_turn: {str(once).lower()} }}")
+        rows.append(f"ActivatedAbility {{ exhaust: {str(cost.get('exhaust',False)).lower()}, guard: ActivationGuard::{cost.get('guard','Always')}, cycling: {str(cost.get('cycling',False)).lower()}, origin: ActivationOrigin::{cost.get('origin','Battlefield')}, cost: ActivationCost {{ colored: {cost['colored']}, generic: {cost['generic']}, alternatives: {alternatives}, additional: {'None' if cost.get('additional') is None else 'Some('+cost['additional']+')'}, mana_component: {str(cost['mana_component']).lower()}, tap: {str(cost['tap']).lower()}, sacrifice: {str(cost['sacrifice']).lower()}, exile_self: {str(cost['exile_self']).lower()}, discard: {str(cost.get('discard',False)).lower()}, life: {cost['life']}, remove: {remove}, loyalty: {'None' if cost.get('loyalty') is None else 'Some('+str(cost['loyalty'])+')'} }}, targets: {rust_targets(targets)}, program: {rust_program(program)}, sorcery: {str(sorcery).lower()}, once_per_turn: {str(once).lower()} }}")
     return '&[' + ', '.join(rows) + ']'
 
 

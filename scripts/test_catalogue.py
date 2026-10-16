@@ -8,6 +8,32 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_graveyard_self_exile_costs_origins_and_renew_are_exact_and_mixed_costs_gated(self):
+        for mana in ['{G}','{3}{U}','{1}{B/G}']:
+            cost=generate.activation_cost(mana+', Exile this card from your graveyard');self.assertTrue(cost['exile_self']);self.assertEqual(cost['origin'],'Graveyard');self.assertFalse(cost['sacrifice'])
+        for cost in ['Exile another card from your graveyard','Exile this card from a graveyard','Exile this card from your hand',
+                     '{T}, Exile this card from your graveyard','Pay 1 life, Exile this card from your graveyard',
+                     'Exile this card from your graveyard, Sacrifice a creature','Exile this card from your graveyard, Discard a card',
+                     'Exile this card from your graveyard, Exile this card from your graveyard']:
+            self.assertIsNone(generate.activation_cost(cost),cost)
+        body='Renew — {G}, Exile this card from your graveyard: Put a +1/+1 counter on target creature. Activate only as a sorcery.'
+        result=generate.permanent_program_template(self.card(oracle_text=body));self.assertIsNotNone(result);self.assertTrue(result[3][0][0]['exile_self']);self.assertTrue(result[3][0][3])
+        for text in [body.replace('Exile this card from your graveyard','Discard a card'),body.replace(' Activate only as a sorcery.',''),body+'\nDiscover 4.',
+                     '{1}, Exile this card from your graveyard: Add {G}.']:
+            self.assertIsNone(generate.permanent_program_template(self.card(oracle_text=text)),text)
+        self.assertIn('other: true',generate.TARGET_RULES['OtherCreatureGraveYou']);self.assertIn('relation: 0',generate.TARGET_RULES['OtherCreatureGraveYou'])
+
+    def test_sixteen_complete_graveyard_bodies_preserve_unknown_residual_and_keyword_counters_gates(self):
+        import json
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        rust,coverage=generate.compile_catalogue(snapshot,target);supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        rows=json.loads((generate.ROOT/'docs/graveyard-activation-admissions.json').read_text())['cards'];self.assertEqual(len(rows),16)
+        for row in rows:
+            c=next(c for c in snapshot['cards'] if c['name']==row['name']);self.assertEqual(c['oracle_text'],row['oracle_text']);self.assertIn(c['name'],supported)
+            self.assertIsNone(generate.permanent_program_template(dict(c,oracle_text=c['oracle_text']+'\nDiscover 4.')))
+        for name in ["Alchemist's Assistant",'Champion of Dusan','Kheru Goldkeeper','Qarsi Revenant','Sagu Pummeler','Naga Fleshcrafter','Rot-Curse Rakshasa','Buried Treasure','Glitch Ghost Surveyor','Seasoned Cryomancer','Symbiote Spider-Man','Campus Crier']:
+            self.assertNotIn(name,supported)
+
     def test_uncounterable_extraction_is_exact_and_preserves_whole_residuals(self):
         for reminder in ['', ' (This includes by the ward ability.)']:
             c=self.card(oracle_text="This spell can't be countered."+reminder+'\nFlying')

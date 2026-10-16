@@ -5,13 +5,13 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,185 have executable rules so far.
+knows all 5,164 pinned Standard identities; 1,201 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
-The latest [self-spell counter protection](docs/uncounterable-spells.md) adds four
-complete bodies and enforces the prohibition across ordinary counters and Ward,
-without growing mutable state. Full Standard rules remain in progress.
+The latest [graveyard self-exile activations](docs/graveyard-activations.md) add
+sixteen complete bodies with owned cost choices, exact source identity and
+independent stack abilities. Full Standard rules remain in progress.
 
 ## Build and use
 
@@ -80,6 +80,7 @@ cargo run --release --example standard_nonmana_ward -- 100
 cargo run --release --example standard_tapped_entry -- 100
 cargo run --release --example standard_activation_sacrifice -- 100
 cargo run --release --example standard_uncounterable -- 100
+cargo run --release --example standard_graveyard_activations -- 100
 cargo run --release --example standard_life_gain_conditions -- 100
 cargo run --release --example standard_self_target -- 100
 cargo run --release --example standard_power_blocking -- 100

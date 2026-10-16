@@ -6,6 +6,7 @@ impl ActivatedAbility {
         match self.origin {
             ActivationOrigin::Battlefield => Zone::Battlefield,
             ActivationOrigin::Hand => Zone::Hand,
+            ActivationOrigin::Graveyard => Zone::Graveyard,
         }
     }
 }
@@ -299,6 +300,7 @@ impl Game {
                 !cost.tap
                     && !cost.sacrifice
                     && !cost.discard
+                    && !cost.exile_self
                     && cost.remove.is_none()
                     && cost.loyalty.is_none(),
                 "unpaid source cost"
@@ -320,7 +322,9 @@ impl Game {
                 object.counters.add(CounterKind::Loyalty, change as u64);
             }
         }
-        if cost.discard {
+        if cost.exile_self {
+            self.move_object(item.card, Zone::Exile);
+        } else if cost.discard {
             self.discard_batch(&[item.card], definition.cycling.then_some(item.object));
         } else if cost.sacrifice {
             self.move_object(item.card, Zone::Graveyard);

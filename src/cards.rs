@@ -904,6 +904,7 @@ pub(crate) struct ActivationCost {
     pub mana_component: bool,
     pub tap: bool,
     pub sacrifice: bool,
+    pub exile_self: bool,
     pub discard: bool,
     pub life: u16,
     pub remove: Option<(Option<CounterKind>, u32)>,
@@ -922,6 +923,7 @@ impl ActivationCost {
 pub(crate) enum ActivationOrigin {
     Battlefield,
     Hand,
+    Graveyard,
 }
 /// Starting restrictions, not costs that must still hold during payment.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

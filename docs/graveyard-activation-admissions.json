@@ -1,0 +1,303 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Adorned Crocodile",
+      "oracle_text": "When this creature dies, create a 2/2 black Zombie Druid creature token.\nRenew \u2014 {B}, Exile this card from your graveyard: Put a +1/+1 counter on target creature. Activate only as a sorcery.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AdornedCrocodile.java",
+          "java_sha256": "5e67f9d28f69dc8fd01eda6dbb995af3a47df329bae485433b2fa939236597b2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+          "java_sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "java_sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/RenewAbility.java",
+          "java_sha256": "32a1436eacfca7d3397a9bed3a949b686061d5e54d2627219e393fbe9947a02b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/ZombieDruidToken.java",
+          "java_sha256": "d0f1b3d7f23a9391f94f052843e2eeba17cbf0cbbf98bfb590621d6bc13ad918"
+        }
+      ]
+    },
+    {
+      "name": "Agent of Kotis",
+      "oracle_text": "Renew \u2014 {3}{U}, Exile this card from your graveyard: Put two +1/+1 counters on target creature. Activate only as a sorcery.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AgentOfKotis.java",
+          "java_sha256": "2f74816aaf84939228c64eff1cbcdf6c5c418041eabeadc2c7e3f0ed83725c8a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+          "java_sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "java_sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/RenewAbility.java",
+          "java_sha256": "32a1436eacfca7d3397a9bed3a949b686061d5e54d2627219e393fbe9947a02b"
+        }
+      ]
+    },
+    {
+      "name": "Beetle, Legacy Criminal",
+      "oracle_text": "Flying\n{1}{U}, Exile this card from your graveyard: Put a +1/+1 counter on target creature. It gains flying until end of turn. Activate only as a sorcery.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BeetleLegacyCriminal.java",
+          "java_sha256": "ac5dce94080ab9517101a83dfe4f88be959f59ab7825fc503ed0bfa615f96086"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+          "java_sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "java_sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        }
+      ]
+    },
+    {
+      "name": "Bonebind Orator",
+      "oracle_text": "{3}{B}, Exile this card from your graveyard: Return another target creature card from your graveyard to your hand.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BonebindOrator.java",
+          "java_sha256": "90384f3636efcde6ba6e399134555333a4c0df9ed04136327351386778ea92c3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+          "java_sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+        }
+      ]
+    },
+    {
+      "name": "Cryotheory Adept",
+      "oracle_text": "Prowess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)\n{3}{U}, Exile this card from your graveyard: Tap target creature and put a stun counter on it. Activate only as a sorcery. (If a permanent with a stun counter would become untapped, remove one from it instead.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CryotheoryAdept.java",
+          "java_sha256": "71e5708f59f28de1f354dc0f5168a1af1c3eb6faa3927c77243bf2e331f2cbd9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+          "java_sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "java_sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        }
+      ]
+    },
+    {
+      "name": "Eternal Student",
+      "oracle_text": "{1}{B}, Exile this card from your graveyard: Create two 1/1 white and black Inkling creature tokens with flying.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/EternalStudent.java",
+          "java_sha256": "1400eac726e7128f24aeae3726bb6603b28ca75ac863697f09e1d92821ca26fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+          "java_sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/Inkling11Token.java",
+          "java_sha256": "1bb1e98c95fca11b87c834af87d214aaf9e6a4aae864e45844b348dbffeab3b6"
+        }
+      ]
+    },
+    {
+      "name": "Faerie Dreamthief",
+      "oracle_text": "Flying\nWhen this creature enters, surveil 1. (Look at the top card of your library. You may put it into your graveyard.)\n{2}{B}, Exile this card from your graveyard: You draw a card and you lose 1 life.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FaerieDreamthief.java",
+          "java_sha256": "90af8a7648ca2f9e034f6941ed3217f6b9980edbd5cc27535c4615f32ce63c53"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+          "java_sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+        }
+      ]
+    },
+    {
+      "name": "Goldmeadow Nomad",
+      "oracle_text": "{W}, Exile this card from your graveyard: Create a 1/1 green and white Kithkin creature token. Activate only as a sorcery.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GoldmeadowNomad.java",
+          "java_sha256": "6aebbf084bda436d22496c842292cc58208d85b42799404a927bca087826600e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+          "java_sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "java_sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/KithkinGreenWhiteToken.java",
+          "java_sha256": "6c62a8c176b9def6a5ad2c9d6359b35ccb2703273f5db2ab2c7c191fd147d28e"
+        }
+      ]
+    },
+    {
+      "name": "Gravestone Strider",
+      "oracle_text": "{1}: Add one mana of any color. Activate only once each turn.\n{2}, Exile this card from your graveyard: Exile target card from a graveyard.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GravestoneStrider.java",
+          "java_sha256": "a0f16527e819adbc2ada66bac6778e04e7b4d99ad1bab3218337ff164e6fb619"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+          "java_sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+        }
+      ]
+    },
+    {
+      "name": "Leering Onlooker",
+      "oracle_text": "Flying\n{2}{B}{B}, Exile this card from your graveyard: Create two tapped 1/1 black Bat creature tokens with flying.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LeeringOnlooker.java",
+          "java_sha256": "be63a8a0eb33d64a187f1ad14e3dbbbdb01a522201039963c6ac0c668fb45ce0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+          "java_sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/BatToken.java",
+          "java_sha256": "3e82042630a3e0a06988bee6e5364322e4b251ba9b029767e7e34eeed6201864"
+        }
+      ]
+    },
+    {
+      "name": "Rubblebelt Maverick",
+      "oracle_text": "When this creature enters, surveil 2. (Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)\n{G}, Exile this card from your graveyard: Put a +1/+1 counter on target creature. Activate only as a sorcery.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RubblebeltMaverick.java",
+          "java_sha256": "668bdb969178827f3a3391b3db0ccf12a96946bb439f30fc6126d28e550f319d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+          "java_sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "java_sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        }
+      ]
+    },
+    {
+      "name": "Stoic Grove-Guide",
+      "oracle_text": "{1}{B/G}, Exile this card from your graveyard: Create a 2/2 black and green Elf creature token. Activate only as a sorcery.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StoicGroveGuide.java",
+          "java_sha256": "c3ee44864e3260d2eb0244ce2aab0eac2faa6744c19e975fe0a5d33e13bc27d4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+          "java_sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "java_sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/BlackGreenElfToken.java",
+          "java_sha256": "5ee3aff2723c9da62fddabeafe4bf269d1918070e5b9d47bfe05505d5f83d604"
+        }
+      ]
+    },
+    {
+      "name": "Stone Docent",
+      "oracle_text": "{W}, Exile this card from your graveyard: You gain 2 life. Surveil 1. Activate only as a sorcery. (Look at the top card of your library. You may put it into your graveyard.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StoneDocent.java",
+          "java_sha256": "70fe468648fc7727d0e7930914304b6de6c730fc5006d3b7ce1b6f0b39b94281"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+          "java_sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "java_sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        }
+      ]
+    },
+    {
+      "name": "Suspicious Shambler",
+      "oracle_text": "{4}{B}{B}, Exile this card from your graveyard: Create two 2/2 black Zombie creature tokens. Activate only as a sorcery.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SuspiciousShambler.java",
+          "java_sha256": "0476d53fdb874954e8a20774dc6cc7be7bbf21eb31fcbf66bb726cfa9de2c59d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+          "java_sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "java_sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/ZombieToken.java",
+          "java_sha256": "5f597b5065b0c9b6edcef5cac9ca6a7a3018a1a7588ef4b983e700bc6a473e4d"
+        }
+      ]
+    },
+    {
+      "name": "Theoretical Necromancer",
+      "oracle_text": "{3}{B}, Exile this card from your graveyard: Return another target creature card from your graveyard to your hand.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TheoreticalNecromancer.java",
+          "java_sha256": "97607ae1b75fbf4ae61d5d2c42ef859048c1b4ea0e817d543d8e035902824a77"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+          "java_sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+        }
+      ]
+    },
+    {
+      "name": "Venom, Evil Unleashed",
+      "oracle_text": "Deathtouch\n{2}{B}, Exile this card from your graveyard: Put two +1/+1 counters on target creature. It gains deathtouch until end of turn. Activate only as a sorcery.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VenomEvilUnleashed.java",
+          "java_sha256": "72d8fb28cc07f86a37f082a63b013512c68707507e1b61fb56ab8b28c350e107"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+          "java_sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "java_sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        }
+      ]
+    }
+  ]
+}
