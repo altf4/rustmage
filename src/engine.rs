@@ -1,9 +1,9 @@
 use crate::cards::{
-    ActivatedAbility, ActivationCost, ActivationOrigin, CastRelation, CounterKind, CounterSubject,
-    Counters, CreatureFilter, DamageQualification, DamageSubject, Effect, EffectChoiceKind,
-    EntryTapped, Instruction, ManaCost, ManaProduction, MillAmount, PlayerSet, RecoveryFilter,
-    SacrificeFilter, SearchSpec, Stats, StepGuard, StepValue, Subject, TargetPlan, TargetRule,
-    TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
+    ActivatedAbility, ActivationCost, ActivationGuard, ActivationOrigin, CastRelation, CounterKind,
+    CounterSubject, Counters, CreatureFilter, DamageQualification, DamageSubject, Effect,
+    EffectChoiceKind, EntryTapped, Instruction, ManaCost, ManaProduction, MillAmount, PlayerSet,
+    RecoveryFilter, SacrificeFilter, SearchSpec, Stats, StepGuard, StepValue, Subject, TargetPlan,
+    TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
 #[path = "engine_activations.rs"]
 mod activations;
@@ -74,6 +74,9 @@ impl Player {
     }
 }
 
+#[cfg(test)]
+#[path = "engine_activation_guard_tests.rs"]
+mod activation_guard_tests;
 #[cfg(test)]
 #[path = "engine_damage_tests.rs"]
 mod damage_tests;

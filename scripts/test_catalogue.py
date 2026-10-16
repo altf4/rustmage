@@ -1186,7 +1186,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertEqual(generate.activation_cost('{T}, Pay 2 life')['life'], 2)
         for line in ['{X}: Draw a card.', '{1}, Discard a card: Draw a card.',
                      '{1}, Sacrifice another creature: Draw a card.',
-                     '{1}: Draw a card. Activate only if you control a Hero.',
+                     '{1}: Draw a card. Activate only if you control a Hero with power 4 or greater.',
                      'Power-up — {1}: Draw a card.', '{1}: Add {U}. Draw a card.',
                      '{1}: Draw a card. Unknown instruction.',
                      '{1}: Draw a card. Activate only once.',
@@ -1314,8 +1314,40 @@ class CatalogueCompilerTests(unittest.TestCase):
         annexes=['Dedicated Commons','Fatehold Annex','Formidable Commons','Innovative Commons','Konstrari Annex',
                  'Meticulous Commons','Stingerquill Annex','Theorix Annex','Transformative Commons','Vigorbloom Annex']
         for name in shocks+annexes:self.assertIn(name,implemented)
-        for name in ['Uncharted Haven','Radiant Summit','Prismatic Vista','Blazemire Verge','Willowrush Verge']:
+        for name in ['Uncharted Haven','Radiant Summit','Prismatic Vista']:
             self.assertNotIn(name,implemented)
+
+    def test_controlled_subtype_activation_guards_are_exact_and_complete(self):
+        for phrase,expected in [('a Dragon','["Dragon"]'),('a Hero','["Hero"]'),('an Elf','["Elf"]'),
+                                ('a Plains or an Island','["Island", "Plains"]'),
+                                ('a Swamp or a Mountain','["Mountain", "Swamp"]')]:
+            row=self.card(type_line='Artifact',oracle_text='{T}: Add {G}. Activate only if you control '+phrase+'.')
+            result=generate.permanent_program_template(row)
+            self.assertIsNotNone(result)
+            self.assertEqual(result[3][0][0]['guard'],'ControlSubtypeAny(&'+expected+')')
+        for text in ['{T}: Add {G}. Activate only if an opponent controls a Dragon.',
+                     '{T}: Add {G}. Activate only if you control a Dragon and an Elf.',
+                     '{T}: Add {G}. Activate only if you control two Dragons.',
+                     '{T}: Add {G}. Activate only if you control a tapped Dragon.',
+                     '{T}: Add {G}. Activate only if you control a creature with toughness 4 or greater.',
+                     '{T}: Add {G}. Activate only if you control a Dragon. Draw a card.',
+                     '{T}: Add {G}. Activate only if you control a Dragon. Activate only during combat.',
+                     '{T}: Add {G}. Activate only if you control a Nonsense.',
+                     '{T}: Add {G}. Activate only if you control a Dragon.\nWhenever you tap this artifact, proliferate.']:
+            self.assertIsNone(generate.permanent_program_template(self.card(type_line='Artifact',oracle_text=text)),text)
+        self.assertIsNone(generate.permanent_program_template(self.card(type_line='Artifact',oracle_text='{0}: Add {G}. Activate only if you control a Dragon.')))
+
+    def test_all_verges_and_jasper_admit_full_bodies_and_wider_conditions_stay_gated(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,coverage=generate.compile_catalogue(rows,target)
+        supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for name in ['Blazemire Verge','Bleachbone Verge','Floodfarm Verge','Gloomlake Verge','Hushwood Verge',
+                     'Riverpyre Verge','Sunbillow Verge','Thornspire Verge','Wastewood Verge','Willowrush Verge','Mox Jasper']:
+            self.assertIn(name,supported)
+        for name in ['Baxter Building','Bloom Tender','Springleaf Drum','Supportive Parents','Uncharted Haven']:
+            self.assertNotIn(name,supported)
 
 
 if __name__ == '__main__':

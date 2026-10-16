@@ -12,6 +12,48 @@ class BindingTests(unittest.TestCase):
     def game(self):
         return Game([["Mountain"] * 24 + ["LightningBolt"] * 36] * 2, seed=17, deck_rules="Freeform")
 
+    def test_verge_secondary_color_requires_a_live_owned_land_type(self):
+        deck=['Blazemire Verge']*16+['Swamp']*8+['Shock']*36
+        with Game([deck,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+            obs=game.observe('P0');seen=set()
+            for _ in range(1500):
+                self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor'])
+                if obs['actor']=='P0' and obs['decision']=='priority':
+                    verges=[o for o in obs['objects'] if o['zone']=='Battlefield' and o['owner']=='P0' and o['card']=='Blazemire Verge' and not o['tapped']]
+                    enabled=any(o['zone']=='Battlefield' and o['owner']=='P0' and o['card']=='Swamp' for o in obs['objects'])
+                    for verge in verges:
+                        secondary=[i for i,a in enumerate(obs['actions']) if a['kind']=='ActivateMana' and a['card']==verge['id'] and a['ability']==1]
+                        self.assertEqual(bool(secondary),enabled);seen.add(enabled)
+                        if enabled and len(seen)==2:
+                            index=secondary[0];saved=game.snapshot();actor=obs['actor']
+                            with game.clone() as fork:expected=fork.step(fork.observe(actor),index)
+                            actual=game.step(obs,index);self.assertEqual(actual,expected)
+                            self.assertGreaterEqual(actual['players'][0]['mana'][3],1)
+                            game.restore(saved)
+                            with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,index)
+                            game.drop_snapshot(saved);return
+                obs=game.step(obs,self.discard_index(obs))
+            self.fail('both disabled and enabled Verge states not reached')
+
+    def test_jasper_native_actions_enable_after_changeling_entry(self):
+        deck=['Forest']*24+['Mox Jasper']*18+['Three Tree Mascot']*18
+        with Game([deck,['Forest']*60],seed=10,deck_rules='Freeform') as game:
+            obs=game.observe('P0');disabled=False
+            for _ in range(1500):
+                self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor'])
+                if obs['actor']=='P0' and obs['decision']=='priority':
+                    moxes=[o for o in obs['objects'] if o['zone']=='Battlefield' and o['owner']=='P0' and o['card']=='Mox Jasper' and not o['tapped']]
+                    dragon=any(o['zone']=='Battlefield' and o['owner']=='P0' and o['card']=='Three Tree Mascot' for o in obs['objects'])
+                    for mox in moxes:
+                        actions=[a for a in obs['actions'] if a['kind']=='ActivateMana' and a['card']==mox['id']]
+                        self.assertEqual(len(actions),5 if dragon else 0)
+                        if not dragon:disabled=True
+                        elif disabled:
+                            self.assertEqual({tuple(a['production']) for a in actions},{tuple(1 if j==i else 0 for j in range(6)) for i in range(5)})
+                            return
+                obs=game.step(obs,self.discard_index(obs))
+            self.fail('Jasper guard transition not reached')
+
     def test_shock_land_pre_entry_branches_are_native_owned_and_public(self):
         deck=['Hallowed Fountain']*24+['Opt']*36
         with Game([deck,['Forest']*60],seed=4,deck_rules='Freeform') as game:

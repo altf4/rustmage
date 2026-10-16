@@ -23,6 +23,12 @@ impl Game {
         }
     }
 
+    pub(super) fn activation_guard_available(&self, guard: ActivationGuard, actor: Player) -> bool {
+        guard == ActivationGuard::Always
+            || self.state.objects.iter().any(|o| {
+                o.zone == Zone::Battlefield && o.owner == actor && guard.matches_card(o.card)
+            })
+    }
     pub(super) fn activation_cost_available(
         &self,
         card: CardId,
@@ -31,15 +37,16 @@ impl Game {
         actor: Player,
         sorcery: bool,
     ) -> bool {
-        Self::object_activation_available(
-            &self.state.objects[card as usize],
-            self.keywords(card),
-            self.state.players[actor.index()].life,
-            ability,
-            index,
-            actor,
-            sorcery,
-        )
+        self.activation_guard_available(ability.guard, actor)
+            && Self::object_activation_available(
+                &self.state.objects[card as usize],
+                self.keywords(card),
+                self.state.players[actor.index()].life,
+                ability,
+                index,
+                actor,
+                sorcery,
+            )
     }
 
     pub(super) fn object_activation_available(
