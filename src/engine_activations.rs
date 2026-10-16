@@ -75,16 +75,7 @@ impl Game {
             return false;
         }
         if let Some((kind, amount)) = ability.cost.remove {
-            let count = match kind {
-                Some(CounterKind::PlusOne) => u128::from(object.counters.plus_one),
-                Some(CounterKind::MinusOne) => u128::from(object.counters.minus_one),
-                Some(CounterKind::Stun) => u128::from(object.counters.stun),
-                None => {
-                    u128::from(object.counters.plus_one)
-                        + u128::from(object.counters.minus_one)
-                        + u128::from(object.counters.stun)
-                }
-            };
+            let count = object.counters.available(kind);
             if count < u128::from(amount) {
                 return false;
             }
@@ -286,6 +277,7 @@ impl Game {
         object.counters.plus_one -= counter_payment.plus_one;
         object.counters.minus_one -= counter_payment.minus_one;
         object.counters.stun -= counter_payment.stun;
+        object.counters.loyalty -= counter_payment.loyalty;
         if cost.discard {
             self.discard_batch(&[item.card], definition.cycling.then_some(item.object));
         } else if cost.sacrifice {
@@ -304,26 +296,38 @@ pub(super) fn counter_payments(
         return emit(Counters::default());
     };
     let amount = u64::from(amount);
-    for plus in 0..=amount.min(available.plus_one) {
-        if kind.is_some_and(|kind| kind != CounterKind::PlusOne) && plus != 0 {
-            continue;
+    if let Some(kind) = kind {
+        if available.get(kind) < amount {
+            return false;
         }
-        for minus in 0..=(amount - plus).min(available.minus_one) {
-            let stun = amount - plus - minus;
-            if stun > available.stun
-                || (kind.is_some_and(|kind| kind != CounterKind::MinusOne) && minus != 0)
-                || (kind.is_some_and(|kind| kind != CounterKind::Stun) && stun != 0)
-            {
-                continue;
+        let mut paid = Counters::default();
+        paid.add(kind, amount);
+        return emit(paid);
+    }
+    fn visit(
+        index: usize,
+        left: u64,
+        available: Counters,
+        paid: Counters,
+        emit: &mut impl FnMut(Counters) -> bool,
+    ) -> bool {
+        let kind = CounterKind::ALL[index];
+        if index + 1 == CounterKind::ALL.len() {
+            if left > available.get(kind) {
+                return false;
             }
-            if emit(Counters {
-                plus_one: plus,
-                minus_one: minus,
-                stun,
-            }) {
+            let mut paid = paid;
+            paid.add(kind, left);
+            return emit(paid);
+        }
+        for count in 0..=left.min(available.get(kind)) {
+            let mut paid = paid;
+            paid.add(kind, count);
+            if visit(index + 1, left - count, available, paid, emit) {
                 return true;
             }
         }
+        false
     }
-    false
+    visit(0, amount, available, Counters::default(), &mut emit)
 }

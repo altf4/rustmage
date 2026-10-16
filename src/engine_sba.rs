@@ -54,6 +54,9 @@ impl Game {
             if object.zone != Zone::Battlefield {
                 continue;
             }
+            if object.card.is_planeswalker() && object.counters.loyalty == 0 {
+                batch.deaths.push(id);
+            }
             if object.card.aura().is_some() {
                 if !object
                     .attached_to

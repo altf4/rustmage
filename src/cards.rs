@@ -548,6 +548,10 @@ pub enum CounterKind {
     PlusOne,
     MinusOne,
     Stun,
+    Loyalty,
+}
+impl CounterKind {
+    pub const ALL: [Self; 4] = [Self::PlusOne, Self::MinusOne, Self::Stun, Self::Loyalty];
 }
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -555,13 +559,36 @@ pub struct Counters {
     pub plus_one: u64,
     pub minus_one: u64,
     pub stun: u64,
+    #[serde(default, skip_serializing_if = "is_zero_counter")]
+    pub loyalty: u64,
+}
+fn is_zero_counter(value: &u64) -> bool {
+    *value == 0
 }
 impl Counters {
+    pub fn get(self, kind: CounterKind) -> u64 {
+        match kind {
+            CounterKind::PlusOne => self.plus_one,
+            CounterKind::MinusOne => self.minus_one,
+            CounterKind::Stun => self.stun,
+            CounterKind::Loyalty => self.loyalty,
+        }
+    }
+    pub fn total(self) -> u128 {
+        CounterKind::ALL
+            .into_iter()
+            .map(|kind| u128::from(self.get(kind)))
+            .sum()
+    }
+    pub(crate) fn available(self, kind: Option<CounterKind>) -> u128 {
+        kind.map_or_else(|| self.total(), |kind| u128::from(self.get(kind)))
+    }
     pub(crate) fn add(&mut self, kind: CounterKind, amount: u64) {
         let counter = match kind {
             CounterKind::PlusOne => &mut self.plus_one,
             CounterKind::MinusOne => &mut self.minus_one,
             CounterKind::Stun => &mut self.stun,
+            CounterKind::Loyalty => &mut self.loyalty,
         };
         *counter = counter
             .checked_add(amount)
@@ -1034,7 +1061,16 @@ impl Card {
         generated::DEFINITIONS[self.0 as usize].entry
     }
     pub(crate) fn enters_counters(self) -> Counters {
-        generated::DEFINITIONS[self.0 as usize].enters
+        let mut counters = generated::DEFINITIONS[self.0 as usize].enters;
+        counters.loyalty = self.starting_loyalty();
+        counters
+    }
+    pub fn is_planeswalker(self) -> bool {
+        self.kind_mask() & 64 != 0
+    }
+    /// Printed starting loyalty of the represented face; zero for non-walkers.
+    pub fn starting_loyalty(self) -> u64 {
+        generated::starting_loyalty(self)
     }
     pub(crate) fn mana_color(self) -> Option<usize> {
         generated::DEFINITIONS[self.0 as usize].mana_color

@@ -268,6 +268,7 @@ fn targeted_counter_cost_is_deferred_until_announcement_completes_and_replays() 
         Some(PendingPaymentView {
             mana: [2, 0, 1, 0, 0, 0],
             counters: Counters {
+                loyalty: 0,
                 plus_one: 0,
                 minus_one: 2,
                 stun: 0
@@ -351,6 +352,7 @@ fn mixed_counter_payments_are_complete_unique_and_forgery_is_atomic() {
                 ability: 0,
                 payment: [2, 0, 1, 0, 0, 0],
                 counter_payment: Counters {
+                    loyalty: 0,
                     plus_one: 1,
                     minus_one: 1,
                     stun: 0
@@ -372,6 +374,7 @@ fn mixed_counter_payments_are_complete_unique_and_forgery_is_atomic() {
     assert_eq!(
         game.object_view(elm).counters,
         Counters {
+            loyalty: 0,
             plus_one: 0,
             minus_one: 1,
             stun: 1

@@ -105,7 +105,7 @@ fn equip_is_a_paid_targeted_stack_ability_and_attachment_is_public_owned_state()
     );
     for player in [Player::P0, Player::P1] {
         let view = g.observe(player);
-        assert_eq!(view.schema, 37);
+        assert_eq!(view.schema, 38);
         assert_eq!(
             view.objects
                 .iter()

@@ -966,6 +966,10 @@ impl Game {
                                 .stun
                                 .checked_mul(2)
                                 .capacity("counter representation exhausted");
+                            counters.loyalty = counters
+                                .loyalty
+                                .checked_mul(2)
+                                .capacity("counter representation exhausted");
                         }
                     }
                 }

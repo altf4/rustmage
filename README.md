@@ -5,13 +5,13 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 981 have executable rules so far.
+knows all 5,164 pinned Standard identities; 986 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
-The latest [battlefield-group stage](docs/battlefield-groups.md) adds 14 complete
-definitions and simultaneous group removal/damage. Observation schema 37 includes
-the public count of moved objects during a suspended group resolution.
+The latest [loyalty-damage foundation](docs/loyalty-damage.md) adds five complete
+damage bodies. Observation schema 38 represents loyalty counters; whole walker
+bodies and legal loyalty activations/combat remain incomplete.
 
 ## Build and use
 
@@ -56,6 +56,7 @@ cargo run --release --example standard_additional_costs -- 100
 cargo run --release --example standard_counter_groups -- 100
 cargo run --release --example standard_removal_targets -- 100
 cargo run --release --example standard_battlefield_groups -- 100
+cargo run --release --example standard_loyalty_damage -- 100
 cargo run --release --example standard_tokens -- 100
 cargo run --release --example standard_activations -- 100
 cargo run --release --example standard_mana -- 100

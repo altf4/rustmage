@@ -150,6 +150,7 @@ fn source_obligations(
         ) && object.counters.plus_one >= counters.plus_one
             && object.counters.minus_one >= counters.minus_one
             && object.counters.stun >= counters.stun
+            && object.counters.loyalty >= counters.loyalty
     } else {
         // The activated ability already exists independently of its source.
         // Only unpaid costs that use that incarnation require it to remain.
@@ -387,6 +388,7 @@ impl FundingState {
             object.counters.plus_one -= step.counters.plus_one;
             object.counters.minus_one -= step.counters.minus_one;
             object.counters.stun -= step.counters.stun;
+            object.counters.loyalty -= step.counters.loyalty;
             if cost.sacrifice {
                 object.zone = Zone::Graveyard;
             }
@@ -435,9 +437,12 @@ impl FundingState {
                 r.present,
                 r.tapped,
                 r.sick,
-                r.counters.plus_one,
-                r.counters.minus_one,
-                r.counters.stun,
+                (
+                    r.counters.plus_one,
+                    r.counters.minus_one,
+                    r.counters.stun,
+                    r.counters.loyalty,
+                ),
                 r.used,
                 r.gained,
                 r.attacking,
@@ -498,16 +503,7 @@ impl FundingState {
                     );
                 }
                 if let Some((kind, amount)) = cost.remove {
-                    let count = match kind {
-                        Some(CounterKind::PlusOne) => u128::from(object.counters.plus_one),
-                        Some(CounterKind::MinusOne) => u128::from(object.counters.minus_one),
-                        Some(CounterKind::Stun) => u128::from(object.counters.stun),
-                        None => {
-                            u128::from(object.counters.plus_one)
-                                + u128::from(object.counters.minus_one)
-                                + u128::from(object.counters.stun)
-                        }
-                    };
+                    let count = object.counters.available(kind);
                     uses = uses.min(u64::try_from(count / u128::from(amount)).unwrap_or(u64::MAX));
                 }
                 let mut maximum = [0u32; 6];

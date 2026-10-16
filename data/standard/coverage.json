@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "7d3dcd8199a6f49078cdd887edc43c6270bbc6bc269fd82f0ad255c05ad6e04e",
+  "catalogue_version": "63cadb93a77d7ddb6ec4c44524508f76ec2335f681254b4171ea6677f1c3e70b",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 981,
-  "implemented_total": 987,
+  "implemented_standard_cards": 986,
+  "implemented_total": 992,
   "token_definitions": 43,
   "cards": [
     {
@@ -3399,8 +3399,8 @@
     {
       "name": "Broadside Barrage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Broken Wings",
@@ -6951,8 +6951,8 @@
     {
       "name": "Dragonback Assault",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Dragonback Lancer",
@@ -9891,8 +9891,8 @@
     {
       "name": "Fulminous Forte",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Fumigate",
@@ -22491,8 +22491,8 @@
     {
       "name": "Sear",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Searslicer Goblin",
@@ -24387,8 +24387,8 @@
     {
       "name": "Splatter Technique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Splinter's Technique",
