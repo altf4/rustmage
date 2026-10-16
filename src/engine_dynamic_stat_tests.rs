@@ -337,7 +337,10 @@ fn all_scaling_sources_are_indexed_and_round_trip_source_removal() {
     let cards: Vec<_> = Card::catalogue()
         .filter(|c| !c.scaling_modifiers().is_empty())
         .collect();
-    assert_eq!(cards.len(), 31);
+    assert_eq!(cards.len(), 33);
+    for name in ["Magitek Infantry", "Outcaster Greenblade"] {
+        assert!(cards.contains(&Card::from_name(name).unwrap()), "{name}");
+    }
     for card in cards {
         let id = spawn(&mut g, Player::P0, card, Zone::Hand);
         assert!(!g.state.static_sources.contains(&id));

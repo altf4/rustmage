@@ -196,7 +196,7 @@ fn all_nine_full_bodies_cast_and_execute_in_both_seats() {
                 }
                 _ => unreachable!(),
             }
-            assert_eq!(g.observe(p).schema, 59);
+            assert_eq!(g.observe(p).schema, 60);
         }
     }
 }

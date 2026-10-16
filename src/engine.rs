@@ -9,7 +9,7 @@ use crate::cards::{
     TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
 /// Version of the public observation structure, including owned trigger context.
-pub const OBSERVATION_SCHEMA: u32 = 59;
+pub const OBSERVATION_SCHEMA: u32 = 60;
 
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
