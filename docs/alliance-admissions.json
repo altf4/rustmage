@@ -1,0 +1,239 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "EPF Point Squad",
+      "oracle_text": "Alliance \u2014 Whenever another creature you control enters, put a +1/+1 counter on this creature.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AllianceAbility.java",
+          "java_sha256": "59143d4e17e5b1b32947adb117ded8a8aaf467364194a5a623992c9963eae1cb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+          "java_sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+          "java_sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/EPFPointSquad.java",
+          "java_sha256": "5620f8ade31a8b15c8d74e5f8f64d2fa11fbd611a8364d0cc93ef866a659a17d"
+        }
+      ]
+    },
+    {
+      "name": "East Wind Avatar",
+      "oracle_text": "Flying, vigilance\nAlliance \u2014 Whenever another creature you control enters, this creature gets +1/+0 until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AllianceAbility.java",
+          "java_sha256": "59143d4e17e5b1b32947adb117ded8a8aaf467364194a5a623992c9963eae1cb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+          "java_sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+          "java_sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+          "java_sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "java_sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/EastWindAvatar.java",
+          "java_sha256": "530bede479dc87ae10a9cb634ee73f89e332042c02facaaaf9b02056218b6edb"
+        }
+      ]
+    },
+    {
+      "name": "Mighty Mutanimals",
+      "oracle_text": "When this creature enters, create a 2/2 red Mutant creature token.\nAlliance \u2014 Whenever another creature you control enters, put a +1/+1 counter on target creature you control.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AllianceAbility.java",
+          "java_sha256": "59143d4e17e5b1b32947adb117ded8a8aaf467364194a5a623992c9963eae1cb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+          "java_sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+          "java_sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/RedMutantToken.java",
+          "java_sha256": "ab1a9b03b1f024ff3e9aea35a1767e2d37bc51cf979dc07726c0631944ab0d41"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MightyMutanimals.java",
+          "java_sha256": "10216cf749f4e7dd252b9d91c19d17d062e41ba4644d6f26bd0b2820e08a73da"
+        }
+      ]
+    },
+    {
+      "name": "Mutant Town Musicians",
+      "oracle_text": "Trample\nAlliance \u2014 Whenever another creature you control enters, this creature gets +1/+0 until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AllianceAbility.java",
+          "java_sha256": "59143d4e17e5b1b32947adb117ded8a8aaf467364194a5a623992c9963eae1cb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+          "java_sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+          "java_sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+          "java_sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+          "java_sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MutantTownMusicians.java",
+          "java_sha256": "3b6a8c4e9f271e1ec9b39c76532101327d429b170661e36d7ee0cccbedad781a"
+        }
+      ]
+    },
+    {
+      "name": "Raphael, Tough Turtle",
+      "oracle_text": "Alliance \u2014 Whenever another creature you control enters, Raphael deals 1 damage to target opponent.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AllianceAbility.java",
+          "java_sha256": "59143d4e17e5b1b32947adb117ded8a8aaf467364194a5a623992c9963eae1cb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+          "java_sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+          "java_sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+          "java_sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RaphaelToughTurtle.java",
+          "java_sha256": "83a928a068e743cdb0efd4546457e41e17e7cf10d9762bd7f715b04f5e9c1bb5"
+        }
+      ]
+    },
+    {
+      "name": "Slash, Reptile Rampager",
+      "oracle_text": "Alliance \u2014 Whenever another creature you control enters, Slash deals 2 damage to each opponent.\nWhenever Slash attacks, create a 2/2 red Mutant creature token.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AllianceAbility.java",
+          "java_sha256": "59143d4e17e5b1b32947adb117ded8a8aaf467364194a5a623992c9963eae1cb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+          "java_sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+          "java_sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+          "java_sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+          "java_sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/RedMutantToken.java",
+          "java_sha256": "ab1a9b03b1f024ff3e9aea35a1767e2d37bc51cf979dc07726c0631944ab0d41"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SlashReptileRampager.java",
+          "java_sha256": "dad461ed5c798df2201358e510cbb5aee2fbec17e68075bd2ab9cfae80c37f34"
+        }
+      ]
+    }
+  ]
+}

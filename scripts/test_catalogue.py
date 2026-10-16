@@ -8,6 +8,30 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_alliance_is_cosmetic_and_preserves_exact_full_event_and_program(self):
+        text='Whenever another creature you control enters, put a +1/+1 counter on this creature.'
+        expected=generate.trigger_creature_template(self.card(oracle_text=text))
+        self.assertEqual(generate.trigger_creature_template(self.card(oracle_text='Alliance — '+text)),expected)
+        self.assertEqual(expected[2][0][0],'OtherCreatureEntersYou')
+        for prefix in ['Alliance - ','Alliance: ','Alliances — ','Unknown — ']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=prefix+text)))
+        for body in ['Whenever another creature an opponent controls enters, draw a card.','Whenever another creature you control enters, discover 3.','Whenever one or more other creatures you control enter, draw a card.','Whenever another creature you control enters, put a +1/+1 counter on it.']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='Alliance — '+body)),body)
+        # Cosmetic labels cannot rescue unsupported event subjects or effects.
+        self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='Alliance — Whenever you unlock a Room, draw a card.')))
+
+    def test_alliance_admissions_are_six_complete_bodies_with_no_unknown_residual(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());manifest=json.loads((generate.ROOT/'docs/alliance-admissions.json').read_text());_,coverage=generate.compile_catalogue(rows,target);supported={c['name'] for c in coverage['cards'] if c['implemented']};self.assertEqual(len(manifest['cards']),6)
+        for row in manifest['cards']:
+            self.assertIn(row['name'],supported);card=next(c for c in rows['cards'] if c['name']==row['name']);self.assertEqual(card['oracle_text'],row['oracle_text'])
+            plain=dict(card,oracle_text=card['oracle_text'].replace('Alliance — ',''))
+            self.assertEqual(generate.trigger_creature_template(card),generate.trigger_creature_template(plain))
+            bad=dict(card,oracle_text=card['oracle_text']+'\nWhenever you attack, discover 3.')
+            for compiler in [generate.permanent_program_template,generate.trigger_creature_template,generate.static_permanent_template]:self.assertIsNone(compiler(bad),row['name'])
+        for name in ['Wartime Protestors','Knightfisher','Arahbo, the First Fang','Harvestrite Host']:
+            self.assertNotIn(name,supported)
+
     def test_modal_trigger_metadata_preserves_every_mode_event_and_target_plan(self):
         card=self.card(oracle_text='Flying\nWhen this creature enters, choose one —\n• Tap target creature an opponent controls.\n• Draw a card.')
         result=generate.trigger_creature_template(card);self.assertIsNotNone(result);self.assertEqual(result[1],1);condition,program,target=result[2][0];self.assertEqual((condition,target),('SelfEnters','None'));self.assertEqual(len(program),1);self.assertTrue(program[0].startswith('Modal(&['));self.assertIn('TargetRule::Object',program[0]);self.assertIn('relation: 1',program[0]);self.assertIn('Instruction::Draw(PlayerSet::Controller, 1)',program[0])
