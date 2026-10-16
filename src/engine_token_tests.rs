@@ -230,6 +230,7 @@ fn named_and_multicolor_factories_preserve_characteristics_and_block_restriction
     let rat_id = *tokens(&game).last().unwrap();
     let attacker = spawn(&mut game, Player::P0, Card::HillGiant, Zone::Battlefield);
     game.state.attackers = vec![Attacker {
+        defender: Some(CombatDefender::Player(Player::P1)),
         card: attacker,
         blocked: false,
     }];

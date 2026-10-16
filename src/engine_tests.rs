@@ -411,6 +411,7 @@ fn summoning_sickness_blocks_attacks_and_elf_mana_but_not_blocking() {
     game.state.active = Player::P1;
     let attacker = spawn(&mut game, Player::P1, Card::GrizzlyBears, Zone::Battlefield);
     game.state.attackers.push(Attacker {
+        defender: Some(CombatDefender::Player(Player::P1)),
         card: attacker,
         blocked: false,
     });
@@ -490,6 +491,7 @@ fn killing_a_blocker_does_not_unblock_attacker() {
     let attacker = spawn(&mut game, Player::P0, Card::HillGiant, Zone::Battlefield);
     let blocker = spawn(&mut game, Player::P1, Card::GoblinPiker, Zone::Battlefield);
     game.state.attackers.push(Attacker {
+        defender: Some(CombatDefender::Player(Player::P1)),
         card: attacker,
         blocked: true,
     });

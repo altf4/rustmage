@@ -133,6 +133,7 @@ fn combat_filters_track_blocking_after_attacker_leaves_and_reject_tapped_bystand
         assert!(!matches(&g, "Sudden Strike", id));
     }
     g.state.attackers.push(Attacker {
+        defender: Some(CombatDefender::Player(Player::P1)),
         card: attacker,
         blocked: true,
     });
@@ -221,6 +222,7 @@ fn printed_simple_removals_resolve_with_exact_tail_and_branch_replay() {
         g.state.objects[target as usize].tapped = true;
         if combat {
             g.state.attackers.push(Attacker {
+                defender: Some(CombatDefender::Player(Player::P1)),
                 card: target,
                 blocked: false,
             });

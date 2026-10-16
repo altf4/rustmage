@@ -160,6 +160,7 @@ fn double_strike_lifelink_dispatches_and_resolves_between_damage_steps() {
     let reaver = permanent(&mut g, "Drogskol Reaver");
     let cat = permanent(&mut g, "Ajani's Pridemate");
     g.state.attackers.push(Attacker {
+        defender: Some(CombatDefender::Player(Player::P1)),
         card: reaver,
         blocked: false,
     });

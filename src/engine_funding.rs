@@ -893,6 +893,7 @@ mod equipment_tests {
             .unwrap();
         let id = spawn(&mut g, Player::P0, token, Zone::Battlefield);
         g.state.attackers.push(Attacker {
+            defender: Some(CombatDefender::Player(Player::P1)),
             card: id,
             blocked: false,
         });

@@ -95,6 +95,7 @@ fn leaving_combat_removes_membership_but_surviving_attacker_stays_blocked() {
     let attacker = spawn(&mut game, Player::P0, Card::HillGiant, Zone::Battlefield);
     let blocker = spawn(&mut game, Player::P1, Card::GoblinPiker, Zone::Battlefield);
     game.state.attackers.push(Attacker {
+        defender: Some(CombatDefender::Player(Player::P1)),
         card: attacker,
         blocked: true,
     });

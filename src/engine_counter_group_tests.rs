@@ -601,6 +601,7 @@ fn huge_combat_ranges_preserve_interior_assignments_with_bounded_observation_and
         let b = named(&mut g, Player::P1, "Bear Cub", Zone::Battlefield);
         g.state.objects[a as usize].gained_keywords = Keywords::INDESTRUCTIBLE;
         g.state.attackers.push(Attacker {
+            defender: Some(CombatDefender::Player(Player::P1)),
             card: z,
             blocked: true,
         });

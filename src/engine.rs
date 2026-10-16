@@ -306,6 +306,11 @@ define_actions! {
     Attack {
         card: CardId,
     },
+    // Declare an attack on an exact opposing planeswalker incarnation.
+    AttackPlaneswalker {
+        card: CardId,
+        defender: ObjectRef,
+    },
     FinishAttackers,
     Block {
         blocker: CardId,
@@ -516,15 +521,27 @@ pub enum StackKind {
     ActivatedAbility { ability: u16 },
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
-struct Attacker {
-    card: CardId,
-    blocked: bool,
+/// The object being attacked; this is not a spell/ability target.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub enum CombatDefender {
+    Player(Player),
+    Planeswalker(ObjectRef),
 }
+
+/// A selected or committed attack. A departed defender becomes `None` while
+/// the creature stays attacking and may still exchange damage with blockers.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct AttackDeclaration {
+    pub card: CardId,
+    pub defender: Option<CombatDefender>,
+    pub blocked: bool,
+}
+type Attacker = AttackDeclaration;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct DamageChoice {
     source: DamageSource,
+    defender: Option<CombatDefender>,
     blockers: Vec<CardId>,
     remaining: i128,
     trample: bool,
@@ -548,9 +565,7 @@ impl DamageFacts {
         Self {
             card: view.card,
             battlefield: view.zone == Zone::Battlefield,
-            counter: view.counters.plus_one > 0
-                || view.counters.minus_one > 0
-                || view.counters.stun > 0,
+            counter: view.counters.total() > 0,
             plus_one: view.counters.plus_one > 0,
             modified: view.modified,
             attacking: view.attacking,
@@ -698,7 +713,7 @@ struct State {
     attackers: Vec<Attacker>,
     blocking: Vec<CardId>, // Remains blocking even after its attacker leaves combat.
     blocks: Vec<(CardId, CardId)>, // blocker, attacker
-    selected_attackers: Vec<CardId>,
+    selected_attackers: Vec<Attacker>,
     selected_blocks: Vec<(CardId, CardId)>,
     hits: Vec<DamageEvent>,
     damage_choices: Vec<DamageChoice>,
@@ -912,6 +927,7 @@ pub struct Observation {
     pub waiting_triggers: Vec<SpellView>,
     pub effect_discards: Vec<CardId>,
     pub attackers: Vec<CardId>,
+    pub attack_declarations: Vec<AttackDeclaration>,
     pub blocking: Vec<CardId>,
     pub blocks: Vec<(CardId, CardId)>,
     pub damage_assigned: Vec<DamageEvent>,
@@ -1532,18 +1548,38 @@ impl Game {
                 if emit(Action::FinishAttackers) {
                     return true;
                 }
+                // Freeze the small defending set once, not one arena scan per
+                // candidate attacker. No allocation occurs when there are none.
+                let walkers: Vec<_> = s
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, o)| {
+                        o.owner == actor.other()
+                            && o.zone == Zone::Battlefield
+                            && o.card.is_planeswalker()
+                    })
+                    .map(|(i, _)| self.object_ref(i as CardId))
+                    .collect();
                 for (i, obj) in s.objects.iter().enumerate() {
                     let card = i as CardId;
-                    if obj.owner == actor
-                        && obj.zone == Zone::Battlefield
-                        && obj.card.is_creature()
-                        && !obj.tapped
-                        && (!obj.summoning_sick || self.keywords(card).contains(Keywords::HASTE))
-                        && !self.keywords(card).contains(Keywords::DEFENDER)
-                        && !s.selected_attackers.contains(&card)
-                        && emit(Action::Attack { card })
+                    if obj.owner != actor
+                        || obj.zone != Zone::Battlefield
+                        || !obj.card.is_creature()
+                        || obj.tapped
+                        || (obj.summoning_sick && !self.keywords(card).contains(Keywords::HASTE))
+                        || self.keywords(card).contains(Keywords::DEFENDER)
+                        || s.selected_attackers.iter().any(|a| a.card == card)
                     {
+                        continue;
+                    }
+                    if emit(Action::Attack { card }) {
                         return true;
+                    }
+                    for &defender in &walkers {
+                        if emit(Action::AttackPlaneswalker { card, defender }) {
+                            return true;
+                        }
                     }
                 }
             }
@@ -1945,19 +1981,28 @@ impl Game {
                 }
             }
             Action::FinishTargets => self.finish_target_group(),
-            Action::Attack { card } => self.state.selected_attackers.push(card),
+            Action::Attack { card } => self.state.selected_attackers.push(Attacker {
+                card,
+                defender: Some(CombatDefender::Player(actor.other())),
+                blocked: false,
+            }),
+            Action::AttackPlaneswalker { card, defender } => {
+                self.state.selected_attackers.push(Attacker {
+                    card,
+                    defender: Some(CombatDefender::Planeswalker(defender)),
+                    blocked: false,
+                })
+            }
             Action::FinishAttackers => {
                 self.state.attack_declared = !self.state.selected_attackers.is_empty();
                 self.state.players[actor.index()].attacked_this_turn |= self.state.attack_declared;
                 let declared = std::mem::take(&mut self.state.selected_attackers);
-                for card in declared {
+                for attack in declared {
+                    let card = attack.card;
                     if !self.keywords(card).contains(Keywords::VIGILANCE) {
                         self.state.objects[card as usize].tapped = true;
                     }
-                    self.state.attackers.push(Attacker {
-                        card,
-                        blocked: false,
-                    });
+                    self.state.attackers.push(attack);
                     self.attack_triggers(&self.object_view(card));
                 }
                 self.give_priority();
@@ -1988,12 +2033,9 @@ impl Game {
                 choice.prior_blockers_lethal &= lethal;
                 if choice.blockers.is_empty() {
                     let choice = self.state.damage_choices.pop().unwrap();
-                    self.queue_hit(
-                        source,
-                        Target::Player(self.state.active.other()),
-                        choice.remaining,
-                        true,
-                    );
+                    if let Some(target) = self.combat_defender_target(choice.defender) {
+                        self.queue_hit(source, target, choice.remaining, true);
+                    }
                 }
                 self.advance_damage_choices();
             }
@@ -2351,7 +2393,17 @@ impl Game {
             self.state
                 .blocks
                 .retain(|&(blocker, attacker)| blocker != id && attacker != id);
-            self.state.selected_attackers.retain(|&card| card != id);
+            self.state.selected_attackers.retain(|a| a.card != id);
+            for attack in self
+                .state
+                .attackers
+                .iter_mut()
+                .chain(&mut self.state.selected_attackers)
+            {
+                if attack.defender == Some(CombatDefender::Planeswalker(before.reference)) {
+                    attack.defender = None;
+                }
+            }
             self.state
                 .selected_blocks
                 .retain(|&(blocker, attacker)| blocker != id && attacker != id);
@@ -2667,6 +2719,22 @@ impl Game {
         }
     }
 
+    fn combat_defender_target(&self, defender: Option<CombatDefender>) -> Option<Target> {
+        match defender? {
+            CombatDefender::Player(player) => Some(Target::Player(player)),
+            CombatDefender::Planeswalker(reference) => self
+                .state
+                .objects
+                .get(reference.card as usize)
+                .filter(|o| {
+                    o.zone == Zone::Battlefield
+                        && o.generation == reference.generation
+                        && o.card.is_planeswalker()
+                })
+                .map(|_| Target::Card(reference.card)),
+        }
+    }
+
     fn prepare_damage(&mut self) {
         self.state.hits.clear();
         self.state.damage_choices.clear();
@@ -2694,17 +2762,16 @@ impl Game {
             }
             let source = self.damage_source(attacker.card);
             let power = self.stats(attacker.card).power.max(0);
-            let trample = source.keywords.contains(Keywords::TRAMPLE);
+            let defender = self.combat_defender_target(attacker.defender);
+            let trample = source.keywords.contains(Keywords::TRAMPLE) && defender.is_some();
             if !attacker.blocked || (trample && blockers.is_empty()) {
-                self.queue_hit(
-                    source,
-                    Target::Player(self.state.active.other()),
-                    power,
-                    true,
-                );
+                if let Some(target) = defender {
+                    self.queue_hit(source, target, power, true);
+                }
             } else if !blockers.is_empty() && power > 0 {
                 self.state.damage_choices.push(DamageChoice {
                     source,
+                    defender: attacker.defender,
                     blockers,
                     remaining: power,
                     trample,
@@ -2764,7 +2831,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 38,
+            schema: 39,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -3000,9 +3067,14 @@ impl Game {
                 .map(|resolution| resolution.selected_discards[viewer.index()].clone())
                 .unwrap_or_default(),
             attackers: if owns_choice && s.pending == Pending::Attackers {
-                s.selected_attackers.clone()
+                s.selected_attackers.iter().map(|a| a.card).collect()
             } else {
                 s.attackers.iter().map(|a| a.card).collect()
+            },
+            attack_declarations: if owns_choice && s.pending == Pending::Attackers {
+                s.selected_attackers.clone()
+            } else {
+                s.attackers.clone()
             },
             blocking: if owns_choice && s.pending == Pending::Blockers {
                 s.selected_blocks.iter().map(|&(b, _)| b).collect()
@@ -3120,7 +3192,7 @@ impl Game {
             + s.attackers.len() * std::mem::size_of::<Attacker>()
             + s.blocking.len() * std::mem::size_of::<CardId>()
             + s.blocks.len() * std::mem::size_of::<(CardId, CardId)>()
-            + s.selected_attackers.len() * std::mem::size_of::<CardId>()
+            + s.selected_attackers.len() * std::mem::size_of::<Attacker>()
             + s.selected_blocks.len() * std::mem::size_of::<(CardId, CardId)>()
             + s.hits.len() * std::mem::size_of::<DamageEvent>()
             + s.first_strikers.len() * std::mem::size_of::<CardId>()
@@ -3273,3 +3345,7 @@ mod battlefield_group_tests;
 #[cfg(test)]
 #[path = "engine_loyalty_tests.rs"]
 mod loyalty_tests;
+
+#[cfg(test)]
+#[path = "engine_planeswalker_combat_tests.rs"]
+mod planeswalker_combat_tests;

@@ -105,7 +105,7 @@ fn equip_is_a_paid_targeted_stack_ability_and_attachment_is_public_owned_state()
     );
     for player in [Player::P0, Player::P1] {
         let view = g.observe(player);
-        assert_eq!(view.schema, 38);
+        assert_eq!(view.schema, 39);
         assert_eq!(
             view.objects
                 .iter()
@@ -408,6 +408,7 @@ fn losing_double_strike_between_damage_steps_prevents_second_assignment() {
     let weapon = permanent(&mut g, "Fireshrieker");
     attach(&mut g, weapon, bear);
     g.state.attackers.push(Attacker {
+        defender: Some(CombatDefender::Player(Player::P1)),
         card: bear,
         blocked: false,
     });
