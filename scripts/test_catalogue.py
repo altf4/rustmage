@@ -8,6 +8,32 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_creature_tapped_entry_extraction_is_exact_and_retains_counter_clause(self):
+        cases=[('This creature enters tapped.','Always',''),("This creature enters tapped if it's not your turn.",'OpponentsTurn',''),
+               ('This creature enters tapped with three stun counters on it. (Reminder.)','Always','This creature enters with three stun counters on it.')]
+        for text,rule,remaining in cases:
+            c,got=generate.extract_creature_entry_tapped(self.card(oracle_text=text));self.assertEqual(got,rule);self.assertEqual(c['oracle_text'],remaining)
+        for text in ['This creature enters tapped unless you control an Island.','This creature enters tapped with X stun counters on it.',
+                     'Target creature enters tapped.','This creature enters tapped. Draw a card.',
+                     'This creature enters tapped.\nThis creature enters tapped.',
+                     "This creature enters tapped.\nThis creature enters tapped if it's not your turn."]:
+            c=self.card(oracle_text=text);self.assertEqual(generate.extract_creature_entry_tapped(c),(c,'Never'),text)
+        for changes in [dict(type_line='Sorcery'),dict(layout='transform'),dict(type_line='Artifact')]:
+            c=self.card(oracle_text='This creature enters tapped.',**changes);self.assertEqual(generate.extract_creature_entry_tapped(c),(c,'Never'))
+
+    def test_five_tapped_entry_bodies_match_pinned_text_and_reject_residuals(self):
+        import json
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        rust,coverage=generate.compile_catalogue(snapshot,target);supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        rows=json.loads((generate.ROOT/'docs/tapped-entry-admissions.json').read_text())['cards'];self.assertEqual(len(rows),5)
+        for a in rows:
+            c=next(c for c in snapshot['cards'] if c['name']==a['name']);self.assertEqual(c['oracle_text'],a['oracle_text']);self.assertIn(c['name'],supported)
+            c,_=generate.extract_creature_entry_tapped(dict(c,oracle_text=c['oracle_text']+'\nDiscover 4.'))
+            self.assertIsNone(generate.creature_template(c));self.assertIsNone(generate.trigger_creature_template(c));self.assertIsNone(generate.permanent_program_template(c))
+        self.assertIn('entry: EntryTapped::OpponentsTurn',rust)
+        for name in ['Alley Assailant','Gas Guzzler',"Shambling Cie'th",'Tonberry','Arc Reactor','Elixir','White Lotus Tile']:
+            self.assertNotIn(name,supported)
+
     def test_nonmana_ward_costs_use_exact_optional_cost_branches(self):
         for clause,kind in [('Discard a card','Discard'),('Sacrifice a creature','Sacrifice')]:
             program=generate.nonmana_ward_program('Ward—'+clause+'.')
@@ -526,7 +552,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertTrue(rules,name)
             self.assertIsNone(generate.spell_program_template(proxy),name);self.assertIsNone(generate.permanent_program_template(proxy),name)
             self.assertIsNone(generate.static_permanent_template(proxy),name);self.assertIsNone(generate.modal_spell_template(proxy),name)
-        for name in ['Eddymurk Crab','Cruel Administrator','Don & Raph, Hard Science','Spectral Denial',
+        for name in ['Cruel Administrator','Don & Raph, Hard Science','Spectral Denial',
                      'The Dawning Archaic','Tomik, Wielder of Law','Rottenmouth Viper','Sunderflock','Sapling Nursery']:
             self.assertNotIn(name,supported)
 
@@ -1483,7 +1509,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Hulking Raptor',"It'll Quench Ya!",'Negate','No More Lies','Spell Pierce','Spider-Rex, Daring Dino',
                      'Theorix Charm','Toadstool Admirer','Unflinching Hortimancer','Wrecking Gecko','Vein Ripper','Sire of Seven Deaths']:
             self.assertIn(name,supported)
-        for name in ['Dazzling Denial','Spell Stutter','Eddymurk Crab',"Falcon's Wing Harness"]:
+        for name in ['Dazzling Denial','Spell Stutter',"Falcon's Wing Harness"]:
             self.assertNotIn(name,supported)
 
     def test_player_damage_filters_and_event_amount_scope(self):

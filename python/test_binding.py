@@ -9,6 +9,41 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def reach_tapped_creature_payment(self,game,wanted,opposing=False):
+        for _ in range(12000):
+            obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor'])
+            root=obs['announcing']
+            if obs['decision']=='pay_costs' and root['source_card']==wanted and any(a['kind']=='PayCosts' for a in obs['actions']):return obs
+            objects={o['id']:o for o in obs['objects']}
+            def score(a):
+                k=a['kind']
+                if k in ('Cast','AnnounceCast'):
+                    name=objects[a['card']]['card']
+                    if name==wanted:return 170 if (obs['actor']!=obs['active'])==opposing else -100
+                    return self.professor_score(obs,a) if obs['actor']=='P1' else -100
+                if k=='TapMana':return 140 if obs['decision']=='pay_costs' else -100
+                return self.professor_score(obs,a)
+            game.step(obs,max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i])))
+        self.fail('tapped creature payment not reached')
+
+    def test_tapped_creature_entries_and_flash_conditions_clone_restore_native_payment(self):
+        cases=[('Diregraf Ghoul',False),('Piranha Fly',False),('Daring Thunder-Thief',False),('Sleep-Cursed Faerie',False),('Eddymurk Crab',False),('Eddymurk Crab',True)]
+        for wanted,opposing in cases:
+            with self.subTest(card=wanted,opposing=opposing),Game([['Island']*12+['Swamp']*12+[wanted]*36,['Forest']*24+['Grizzly Bears']*36],seed=7,deck_rules='Freeform') as game:
+                obs=self.reach_tapped_creature_payment(game,wanted,opposing);root=obs['announcing'];card=root['card'];source=next(o for o in obs['objects'] if o['id']==card)
+                self.assertEqual(source['zone'],'Stack');self.assertFalse(source['tapped']);self.assertEqual(source['counters']['stun'],0)
+                action=next(a for a in obs['actions'] if a['kind']=='PayCosts');saved=game.snapshot()
+                def finish(handle):
+                    handle.act(handle.observe('P0'),action)
+                    return self.resolve_vital_top(handle,'P0')
+                with game.clone() as fork:expected=finish(fork)
+                after=finish(game);self.assertEqual(after,expected);body=next(o for o in after['objects'] if o['id']==card)
+                self.assertEqual(body['zone'],'Battlefield');self.assertEqual(body['tapped'],wanted!='Eddymurk Crab' or opposing);self.assertEqual(body['counters']['stun'],3 if wanted=='Sleep-Cursed Faerie' else 0)
+                if wanted=='Eddymurk Crab':self.assertEqual(after['decision'],'targets')
+                game.restore(saved)
+                with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,0)
+                again=finish(game);after['revision']=again['revision'];self.assertEqual(after,again);game.drop_snapshot(saved)
+
     def reach_nonmana_ward(self,game,wanted):
         for _ in range(10000):
             obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor'])

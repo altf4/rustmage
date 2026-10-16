@@ -2331,6 +2331,7 @@ impl Game {
                     && o.card.kind_mask() & 64 != 0
             }),
             EntryTapped::Always => true,
+            EntryTapped::OpponentsTurn => object.owner != self.state.active,
             EntryTapped::UnlessLowLife => self.state.players.iter().all(|p| p.life > 13),
             EntryTapped::UnlessBasic => !self.state.objects.iter().any(|o| {
                 o.zone == Zone::Battlefield && o.owner == object.owner && o.card.is_basic_land()
@@ -3554,3 +3555,7 @@ mod life_gain_condition_tests;
 #[cfg(test)]
 #[path = "engine_exhaust_tests.rs"]
 mod exhaust_tests;
+
+#[cfg(test)]
+#[path = "engine_tapped_entry_tests.rs"]
+mod tapped_entry_tests;

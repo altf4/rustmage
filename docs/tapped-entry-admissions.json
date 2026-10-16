@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Daring Thunder-Thief",
+      "oracle_text": "Flash\nThis creature enters tapped.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DaringThunderThief.java",
+          "java_sha256": "90cd46e9fbca1fc54bec42f953ea1f72b9ea76874e3a7a64458da545a8a35f43"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAbility.java",
+          "java_sha256": "147582b81a6ea9f26c8835600282fe7311c08dcb1ff983b26587e455c2c4514a"
+        }
+      ]
+    },
+    {
+      "name": "Diregraf Ghoul",
+      "oracle_text": "This creature enters tapped.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DiregrafGhoul.java",
+          "java_sha256": "967d35ec4a834ec2b89ecea4960156f2c407b6ad57feb620404a9cb7b1b15915"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAbility.java",
+          "java_sha256": "147582b81a6ea9f26c8835600282fe7311c08dcb1ff983b26587e455c2c4514a"
+        }
+      ]
+    },
+    {
+      "name": "Piranha Fly",
+      "oracle_text": "Flying\nThis creature enters tapped.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PiranhaFly.java",
+          "java_sha256": "5d9f258688a7ff3ca89f470a58034b039b608a195d0ca4f9ded5a2950e7e9a33"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAbility.java",
+          "java_sha256": "147582b81a6ea9f26c8835600282fe7311c08dcb1ff983b26587e455c2c4514a"
+        }
+      ]
+    },
+    {
+      "name": "Eddymurk Crab",
+      "oracle_text": "Flash\nThis spell costs {1} less to cast for each instant and sorcery card in your graveyard.\nThis creature enters tapped if it's not your turn.\nWhen this creature enters, tap up to two target creatures.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/EddymurkCrab.java",
+          "java_sha256": "192945125069b6861ac4ec19ead75973ea44200840a4e775d4ad156cf0920719"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/NotMyTurnCondition.java",
+          "java_sha256": "db899ec29be5298f5f3d4e36f0df6975f3f23ef347fa7753aa14cc9c1580e9df"
+        }
+      ]
+    },
+    {
+      "name": "Sleep-Cursed Faerie",
+      "oracle_text": "Flying, ward {2}\nThis creature enters tapped with three stun counters on it. (If it would become untapped, remove a stun counter from it instead.)\n{1}{U}: Untap this creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SleepCursedFaerie.java",
+          "java_sha256": "1a2e9d2dcc43cbd98f9b7979d1f93680a363f016e19244fe2b0963dedd7723e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/UntapSourceEffect.java",
+          "java_sha256": "8c7620af194cc7b4085783cc6bc7d8644e670a0c96931c087ecb4a3b7bd6ac71"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        }
+      ]
+    }
+  ]
+}

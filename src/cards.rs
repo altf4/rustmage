@@ -1044,6 +1044,7 @@ pub struct EmblemInfo {
 pub(crate) enum EntryTapped {
     Never,
     Always,
+    OpponentsTurn,
     UnlessBasic,
     UnlessAtMostTwo,
     UnlessAtLeastTwo,

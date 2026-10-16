@@ -450,6 +450,26 @@ def stat_value(text):
     return f'StatValue::Count({filt})' if filt else None
 
 
+def extract_creature_entry_tapped(card):
+    """One exact self-entry replacement, with its entire residual body retained."""
+    if (card.get('layout')!='normal' or 'Creature' not in card.get('type_line','').split(' — ')[0].split()
+            or not isinstance(card.get('oracle_text'),str)):
+        return card,'Never'
+    body=[];entry='Never'
+    for original in card['oracle_text'].split('\n'):
+        line=re.sub(r'\([^()]*\)','',original).strip()
+        if line=='This creature enters tapped.':rule='Always';replacement=None
+        elif line=="This creature enters tapped if it's not your turn.":rule='OpponentsTurn';replacement=None
+        elif m:=re.fullmatch(r'This creature enters tapped with (a|one|two|three|four|five|six) stun counters? on it\.',line):
+            rule='Always';replacement=line.replace('enters tapped with','enters with',1)
+        else:body.append(original);continue
+        # Multiple replacement clauses require explicit composition support.
+        if entry!='Never':return card,'Never'
+        entry=rule
+        if replacement:body.append(replacement)
+    return dict(card,oracle_text='\n'.join(body)),entry
+
+
 def extract_entry_counters(card):
     """Exact pre-entry replacements; only emitted after the residual body compiles."""
     if (card.get('layout') != 'normal' or 'Creature' not in card.get('type_line', '').split(' — ')[0].split()
@@ -2263,6 +2283,7 @@ def compile_catalogue(snapshot, target):
         card, additional = extract_additional_cost(card)
         card, reductions = extract_cost_reductions(card)
         card, dynamic, scaling = extract_stat_rules(card)
+        card, creature_entry = extract_creature_entry_tapped(card)
         card, entry_counters = extract_entry_counters(card)
         cost = card.get('mana_cost', '')
         keywords = sum(INTRINSIC_KEYWORDS[word] for word in {keyword.casefold() for keyword in card.get('keywords', [])} & INTRINSIC_KEYWORDS.keys())
@@ -2313,6 +2334,7 @@ def compile_catalogue(snapshot, target):
                 if modifiers: static_rows.append(f'        {index} => &[{", ".join(modifiers)}],')
                 if grants: grant_rows.append(f'        {index} => &[{", ".join(grants)}],')
         if effect != 'Unsupported':
+            if creature_entry != 'Never':entry=creature_entry
             activations = [*activations, *cycling]
             if len(activations) > 64: effect = 'Unsupported'; activations = []
         programs = {
