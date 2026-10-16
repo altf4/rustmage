@@ -10,6 +10,7 @@ pub(super) struct EntryMove {
     pub skipped: bool,
     pub reveal_hand: bool,
     pub life_paid: Option<bool>,
+    pub offspring_paid: bool,
     /// Frozen before replacement choices; payments in this event cannot enable it.
     pub counters: Counters,
 }
@@ -128,6 +129,7 @@ impl Game {
             skipped: false,
             reveal_hand: false,
             life_paid: None,
+            offspring_paid: false,
             counters: Counters::default(),
         }
     }
@@ -210,12 +212,13 @@ impl Game {
         let mut events = Vec::new();
         let mut attachments = Vec::new();
         for (movement, counters) in moves {
-            let event = self.transition_object_with_counters(
+            let mut event = self.transition_object_with_counters(
                 movement.before,
                 movement.destination,
                 movement.tapped,
                 counters,
             );
+            event.offspring_paid = movement.offspring_paid;
             if event.moved {
                 if let Some(target) = movement.attachment {
                     attachments.push((event.after, target));

@@ -52,6 +52,12 @@ impl Announcement {
             }
         }
     }
+    pub(super) fn needs_offspring(&self) -> bool {
+        self.pay_window
+            && self.item.kind == StackKind::Spell
+            && self.item.source_card.offspring_cost().is_some()
+            && self.item.cast.is_some_and(|c| c.offspring.is_none())
+    }
     pub(super) fn needs_mana_cost(&self) -> bool {
         self.pay_window
             && self.cost.is_none()
@@ -162,6 +168,8 @@ impl Game {
         // declarations precede targets, mana abilities and payment.
         if needs_mode {
             self.state.pending = Pending::Modes { player };
+        } else if a.needs_offspring() {
+            self.state.pending = Pending::Offspring { player };
         } else if a.needs_mana_cost() {
             self.state.pending = if a.item.kind == StackKind::Spell {
                 Pending::SpellCost { player }
@@ -397,6 +405,7 @@ impl Game {
             cast: Some(CastInfo {
                 origin,
                 method: CastMethod::Normal,
+                offspring: None,
             }),
             id,
             kind: StackKind::Spell,

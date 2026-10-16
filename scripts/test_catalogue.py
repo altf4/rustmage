@@ -42,6 +42,24 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertNotIn('Storyteller Pixie',supported)
         changed=dict(rows,cards=[dict(c,oracle_text=c['oracle_text']+'\nWhenever you cast a spell, discover 3.') if c['name'] in names else c for c in rows['cards']]);changed['cards_sha256']=hashlib.sha256(json.dumps(changed['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();_,cov=generate.compile_catalogue(changed,target);self.assertTrue(all(not c['implemented'] for c in cov['cards'] if c['name'] in names))
 
+
+    def test_offspring_exact_keyword_and_reminder_costs_stay_closed(self):
+        for cost in ['{2}','{1}{U}','{2}{B}']:
+            c=self.card(oracle_text='Offspring '+cost+' (You may pay an additional '+cost+' as you cast this spell. If you do, when this creature enters, create a 1/1 token copy of it.)\nFlying')
+            residual,mana=generate.extract_offspring(c);self.assertIsNotNone(mana);self.assertEqual(residual['oracle_text'],'Flying')
+        for text in ['Offspring {X}','Offspring {W/U}','Offspring {2}.','Offspring {2} (You may pay an additional {3} as you cast this spell. If you do, when this creature enters, create a 1/1 token copy of it.)','Offspring {2}\nOffspring {2}']:
+            c=self.card(oracle_text=text);self.assertEqual(generate.extract_offspring(c),(c,None))
+
+    def test_offspring_ten_full_bodies_copies_and_seven_residual_gates(self):
+        import json,re,hashlib
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());manifest=json.loads((generate.ROOT/'docs/offspring-admissions.json').read_text());self.assertEqual(len(manifest['cards']),10)
+        source,coverage=generate.compile_catalogue(snapshot,target);supported={c['name'] for c in coverage['cards'] if c['implemented']};names={c['name'] for c in manifest['cards']}
+        for c in manifest['cards']:
+            self.assertIn(c['name'],supported);self.assertEqual(next(r for r in snapshot['cards'] if r['name']==c['name'])['oracle_text'],c['oracle_text'])
+            definitions=[row for row in source.splitlines() if row.startswith('    Definition {') and 'name: '+json.dumps(c['name'])+',' in row];self.assertEqual(len(definitions),2,c['name']);self.assertIn('Effect::Creature(1, 1)',definitions[1]);self.assertIn('SelfOffspring',definitions[1]);self.assertIn('standard_legal: false',definitions[1])
+        for name in ['Bushy Bodyguard','Darkstar Augur','Manifold Mouse','Pawpatch Recruit','Thornplate Intimidator','Thundertrap Trainer','Warren Warleader']:self.assertNotIn(name,supported)
+        altered=dict(snapshot,cards=[dict(c,oracle_text=c['oracle_text']+'\nDiscover 3.') if c['name'] in names else c for c in snapshot['cards']]);altered['cards_sha256']=hashlib.sha256(json.dumps(altered['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();_,gated=generate.compile_catalogue(altered,target);self.assertTrue(all(not c['implemented'] for c in gated['cards'] if c['name'] in names))
+
     def test_flashback_fixed_mana_is_exact_and_does_not_swallow_extra_qualifications(self):
         for suffix in ['', ' (You may cast this card from your graveyard for its flashback cost. Then exile it.)', ' (You may cast this card from your graveyard for its flashback cost and any additional costs. Then exile it.)']:
             card=self.card(type_line='Instant',oracle_text='Draw a card.\nFlashback {2}{U}'+suffix)
@@ -922,7 +940,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIsNone(generate.permanent_program_template(changed));self.assertIsNone(generate.trigger_creature_template(changed));self.assertIsNone(generate.creature_template(changed))
         cactus=next(c for c in snapshot['cards'] if c['name']=='Cactarantula');_,rules=generate.extract_cost_reductions(cactus)
         self.assertEqual(len(rules),1);self.assertIn('subtype: Some("Desert")',rules[0]);self.assertIn('source_only: true',rules[0])
-        for name in ['Altanak, the Thrice-Called','Pawpatch Recruit','Surrak, Elusive Hunter','Emberheart Challenger','Flowerfoot Swordmaster','Whiskervale Forerunner']:
+        for name in ['Altanak, the Thrice-Called','Pawpatch Recruit','Surrak, Elusive Hunter','Emberheart Challenger','Whiskervale Forerunner']:
             self.assertNotIn(name,supported)
 
     def test_power_blocking_flags_and_temporary_grants_keep_skulk_distinct(self):
@@ -947,7 +965,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         april=next(c for c in snapshot['cards'] if c['name']=="April O'Neil, Kunoichi Trainee")
         self.assertIsNone(generate.trigger_creature_template(dict(april,name='Unrelated',type_line='Legendary Creature — Human Ninja')))
         self.assertIsNone(generate.trigger_creature_template(self.card(name='Unrelated',type_line='Legendary Creature — Human Ninja',oracle_text="When this creature enters, scry 2.\nApril O'Neil can't be blocked by creatures with power 3 or greater.")))
-        for name in ['Ingenious Prodigy','Gate Colossus','Azure Beastbinder','Delney, Streetwise Lookout','Bristlebane Outrider','Foggy Swamp Vinebender','Rust-Shield Rampager','Sandman, Shifting Scoundrel']:
+        for name in ['Ingenious Prodigy','Gate Colossus','Azure Beastbinder','Delney, Streetwise Lookout','Bristlebane Outrider','Foggy Swamp Vinebender','Sandman, Shifting Scoundrel']:
             self.assertNotIn(name,supported)
 
     def test_own_turn_guard_and_authenticated_sacrifice_cost_names(self):

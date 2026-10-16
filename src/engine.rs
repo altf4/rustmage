@@ -9,7 +9,7 @@ use crate::cards::{
     TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
 /// Version of the public observation structure, including owned trigger context.
-pub const OBSERVATION_SCHEMA: u32 = 53;
+pub const OBSERVATION_SCHEMA: u32 = 54;
 
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
@@ -222,6 +222,9 @@ macro_rules! define_actions {
 define_actions! {
     ChooseAdditionalCost {
         object: ObjectRef,
+    },
+    ChooseOffspring {
+        pay: bool,
     },
     ChooseSpellCost {
         cost: u16,
@@ -508,6 +511,8 @@ pub enum CastMethod {
 pub struct CastInfo {
     pub origin: Zone,
     pub method: CastMethod,
+    /// Explicit optional additional cost, declared before targets; None until chosen.
+    pub offspring: Option<bool>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -683,6 +688,9 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    Offspring {
+        player: Player,
+    },
     SpellCost {
         player: Player,
     },
@@ -857,6 +865,8 @@ pub struct ZoneChange {
     pub moved: bool,
     /// Explicit cause for an actual sacrifice; never inferred from the destination.
     pub sacrificed_by: Option<Player>,
+    /// Historical casting qualification, frozen for this single entry incarnation.
+    pub offspring_paid: bool,
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -1219,7 +1229,8 @@ impl Game {
         match self.state.pending {
             Pending::Mulligan(p) | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
-            Pending::SpellCost { player }
+            Pending::Offspring { player }
+            | Pending::SpellCost { player }
             | Pending::ActivationCost { player }
             | Pending::ConniveOrder { player }
             | Pending::ResolutionMana { player }
@@ -1639,6 +1650,7 @@ impl Game {
                         }
                     }
                     if flashback
+                        || obj.card.offspring_cost().is_some()
                         || obj.card.additional_cost().is_some()
                         || matches!(obj.card.effect(), Effect::Modal(_))
                     {
@@ -1790,6 +1802,16 @@ impl Game {
                             return true;
                         }
                         prior = Some(amount);
+                    }
+                }
+            }
+            Pending::Offspring { player: _ } => {
+                let a = s.announcing.as_ref().unwrap();
+                for pay in [false, true] {
+                    if self.offspring_choice_fundable(a, pay)
+                        && emit(Action::ChooseOffspring { pay })
+                    {
+                        return true;
                     }
                 }
             }
@@ -2121,6 +2143,18 @@ impl Game {
                 }
             }
             Action::KeepLegend { object } => self.keep_legend(object),
+            Action::ChooseOffspring { pay } => {
+                self.state
+                    .announcing
+                    .as_mut()
+                    .unwrap()
+                    .item
+                    .cast
+                    .as_mut()
+                    .unwrap()
+                    .offspring = Some(pay);
+                self.continue_announcement_choices(false);
+            }
             Action::ChooseSpellCost { cost } | Action::ChooseActivationCost { cost } => {
                 self.choose_mana_cost(cost)
             }
@@ -2553,6 +2587,7 @@ impl Game {
                 before,
                 moved: false,
                 sacrificed_by: None,
+                offspring_paid: false,
             };
         }
         assert_ne!(
@@ -2675,6 +2710,7 @@ impl Game {
             destination,
             moved: true,
             sacrificed_by: None,
+            offspring_paid: false,
         }
     }
 
@@ -3133,6 +3169,7 @@ impl Game {
                 Pending::Priority => "priority",
                 Pending::Legend { .. } => "legend_rule",
                 Pending::Targets { .. } => "targets",
+                Pending::Offspring { .. } => "offspring",
                 Pending::SpellCost { .. } => "spell_cost",
                 Pending::ActivationCost { .. } => "activation_cost",
                 Pending::Modes { .. } => "spell_mode",
@@ -3839,3 +3876,7 @@ mod contextual_cast_tests;
 #[cfg(test)]
 #[path = "engine_flashback_tests.rs"]
 mod flashback_tests;
+
+#[cfg(test)]
+#[path = "engine_offspring_tests.rs"]
+mod offspring_tests;

@@ -2,7 +2,7 @@
 use super::*;
 impl Game {
     pub(super) fn announcement_base_cost(a: &Announcement) -> ManaCost {
-        a.cost.unwrap_or_else(|| {
+        let base = a.cost.unwrap_or_else(|| {
             if a.item
                 .cast
                 .is_some_and(|cast| cast.method == CastMethod::Flashback)
@@ -15,6 +15,35 @@ impl Game {
             );
             let (colored, generic) = a.item.source_card.cost();
             ManaCost { colored, generic }
+        });
+        Self::with_offspring_cost(
+            base,
+            a.item.source_card,
+            a.item.cast.is_some_and(|c| c.offspring == Some(true)),
+        )
+    }
+    pub(super) fn with_offspring_cost(mut base: ManaCost, card: Card, pay: bool) -> ManaCost {
+        if pay {
+            let extra = card.offspring_cost().expect("offspring recipe");
+            base.generic = base
+                .generic
+                .checked_add(extra.generic)
+                .capacity("offspring mana cost exhausted");
+            for (amount, extra) in base.colored.iter_mut().zip(extra.colored) {
+                *amount = amount
+                    .checked_add(extra)
+                    .capacity("offspring mana cost exhausted");
+            }
+        }
+        base
+    }
+    pub(super) fn offspring_choice_fundable(&self, a: &Announcement, pay: bool) -> bool {
+        a.cost_options().any(|cost| {
+            self.spell_can_fund(
+                a.item.controller,
+                a.item.card,
+                Self::with_offspring_cost(cost, a.item.source_card, pay),
+            )
         })
     }
     pub(super) fn spell_reduction(&self, actor: Player, id: CardId) -> u32 {

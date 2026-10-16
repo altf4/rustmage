@@ -308,6 +308,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     assert_eq!(
                         info,
                         CastInfo {
+                            offspring: None,
                             origin: if info.method == CastMethod::Flashback {
                                 Zone::Graveyard
                             } else {

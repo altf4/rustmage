@@ -673,6 +673,7 @@ impl Game {
         if viewer != a.item.controller
             || a.additional_paid
             || !a.pay_window
+            || a.needs_offspring()
             || a.needs_mana_cost()
             || (a.additional_cost().is_some() && a.additional.is_none())
         {
@@ -688,7 +689,15 @@ impl Game {
     }
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
         match a.item.kind {
-            StackKind::Spell => self.spell_can_fund(a.item.controller, a.item.card, cost),
+            StackKind::Spell => self.spell_can_fund(
+                a.item.controller,
+                a.item.card,
+                Self::with_offspring_cost(
+                    cost,
+                    a.item.source_card,
+                    a.item.cast.is_some_and(|c| c.offspring == Some(true)),
+                ),
+            ),
             StackKind::ActivatedAbility { ability } => self.activation_can_fund(
                 FundingGoal {
                     reserve: None,

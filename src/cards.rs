@@ -927,6 +927,7 @@ pub(crate) enum TriggerCondition {
         ordinal: Option<u64>,
     },
     SelfEnters,
+    SelfOffspring,
     SelfDies,
     SelfEntersOrDies,
     SelfAttacks,
@@ -1131,6 +1132,8 @@ pub struct CardInfo {
 /// Immutable characteristics of a fixed creature token. Colors use W/U/B/R/G bits.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct TokenInfo {
+    /// Catalogue-scoped factory lookup identity, distinct from the copied name.
+    pub factory_identity: &'static str,
     pub name: &'static str,
     pub subtypes: &'static str,
     pub colors: u8,
@@ -1238,6 +1241,11 @@ impl Card {
     }
     pub fn info(self) -> &'static CardInfo {
         &generated::DEFINITIONS[self.0 as usize].info
+    }
+    /// Stable catalogue lookup/serialization identity, distinct from a token copy's printed name.
+    pub fn identity(self) -> &'static str {
+        self.token_info()
+            .map_or(self.name(), |token| token.factory_identity)
     }
     pub fn name(self) -> &'static str {
         self.info().name
@@ -1401,6 +1409,14 @@ impl Card {
     pub(crate) fn has_hybrid_cost(self) -> bool {
         !generated::cost_alternatives(self).is_empty()
     }
+    /// Optional additional mana cost for the immutable offspring recipe.
+    pub fn offspring_cost(self) -> Option<ManaCost> {
+        generated::offspring_cost(self)
+    }
+    /// Immutable factory with the source copiable values and a 1/1 base.
+    pub fn offspring_copy(self) -> Option<Card> {
+        generated::offspring_copy(self)
+    }
     /// The fixed alternative mana cost for casting this complete card from its graveyard.
     pub fn flashback_cost(self) -> Option<ManaCost> {
         generated::flashback_cost(self)
@@ -1458,7 +1474,7 @@ impl Card {
 
 impl Serialize for Card {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-        serializer.serialize_str(self.name())
+        serializer.serialize_str(self.identity())
     }
 }
 impl<'de> Deserialize<'de> for Card {
