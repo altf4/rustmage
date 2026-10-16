@@ -1,6 +1,6 @@
 # Bargain: exact optional sacrifice costs
 
-Issue [#223](https://github.com/altf4/rustmage/issues/223) adds ten complete Standard bodies to the in-process library. This branch implements **1,572 / 5,164 Standard identities**, with 3,592 gated identities, 73 immutable token factories and one emblem. The catalogue fingerprint is `0af2baad65f108092f326231399813b001baa95ad51aaf72c8b7510db9100233`.
+Issue [#223](https://github.com/altf4/rustmage/issues/223) adds ten complete Standard bodies to the in-process library. The integrated branch implements **1,587 / 5,164 Standard identities**, with 3,577 gated identities, 74 immutable token factories and one emblem. The catalogue fingerprint is `8adc126ecaca5eab9b92e2248811b4e2ca4db6f70df03647cd217bd25a2a53e7`.
 
 | Card | Complete behavior |
 | --- | --- |
@@ -19,7 +19,7 @@ The [provenance manifest](bargain-admissions.json) contains complete snapshot Or
 
 ## Public cast declaration and real payment
 
-Observation schema **62** adds `Action::ChooseBargain { sacrifice: Option<ObjectRef> }`, decision `bargain`, and `CastInfo.bargain: Option<bool>`. `None` on the action declines; `Some(reference)` selects one exact controlled artifact, enchantment **or** token. The action is offered only to the actor and precedes targets, mana abilities and payment. A nonartifact creature token qualifies. An ordinary creature or land does not qualify solely by being a permanent. Existing owner/controller boundaries remain enforced.
+Observation schema **63** includes `Action::ChooseBargain { sacrifice: Option<ObjectRef> }`, decision `bargain`, and `CastInfo.bargain: Option<bool>`. `None` on the action declines; `Some(reference)` selects one exact controlled artifact, enchantment **or** token. The action is offered only to the actor and precedes targets, mana abilities and payment. A nonartifact creature token qualifies. An ordinary creature or land does not qualify solely by being a permanent. Existing owner/controller boundaries remain enforced.
 
 `CastInfo.bargain == None` means there is no bargain declaration or it is not yet chosen. `Some(false)` and `Some(true)` record the declared branch, separately from origin, casting method, offspring and kicker. The same declaration path is used for a real authorized exile cast; direct casting shortcuts cannot bypass it. None of the ten bodies has its own flashback ability. Composite bargain plus another additional cost/forage, offspring, kicker, flashback or target-dependent reduction remains gated until the whole combined recipe is implemented.
 
@@ -35,7 +35,9 @@ The three conditional generic reductions use the declared branch before the tota
 
 Agatha's Champion remains gated because it requires a real untargeted source operand for fighting an optional enemy target. The manifest lists the other bargain residuals that remain gated: new-zone target replacement, free casting, type/base changes and Roles, top/grave arrangements, arbitrary mana allocation, larger reveal-to-battlefield operations, death-exile replacements and X. They are excluded from the ten-card count.
 
-## Validation and memory
+## Standalone validation and memory
+
+The following measurements describe the original ten-card branch before integration with explore and Map tokens.
 
 Fourteen native groups cover all 40 card/branch/controller combinations, typed costs and discounts, pure funding, actual Treasure reservation, token/enchantment OR filtering, live target predicates and reincarnation, paid exile, short-library private selection, cleanup, source departure/reentry, suppression and late rollback. The complete native suite passes **1,423 tests** (1,411 unit and 12 integration). The compiler suite passes **274 tests**. The canonical comparison preserves all 5,257 indexed identities, with exactly ten complete definitions changed and 5,247 preserved after normalizing the new explicit false filter default. All 493 prior typed helper arms, color masks and complete token/emblem definitions remain unchanged; ten bargain metadata arms are new.
 
