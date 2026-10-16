@@ -3527,3 +3527,7 @@ mod own_turn_tests;
 #[cfg(test)]
 #[path = "engine_power_blocking_tests.rs"]
 mod power_blocking_tests;
+
+#[cfg(test)]
+#[path = "engine_self_target_tests.rs"]
+mod self_target_tests;

@@ -1678,6 +1678,12 @@ def trigger_creature_template(card):
         'Whenever another Villain you control enters, ': 'OtherSubtypeEntersYou("Villain")',
         'Whenever this creature or another creature you control enters, ': 'CreatureEntersYou',
         'Landfall — Whenever a land you control enters, ': 'LandEntersYou',
+        **{
+            f'Whenever this creature becomes the target of {kind}{who}, ':
+                f'SelfTargeted {{ relation: CastRelation::{relation}, spells_only: {str(spells_only).lower()} }}'
+            for kind,spells_only in [('a spell or ability',False),('a spell',True)]
+            for who,relation in [(' you control','You'),(' an opponent controls','Opponent'),('','Any')]
+        },
         **STEP_PREFIXES,
         **VITAL_PREFIXES,
     }
@@ -1686,16 +1692,25 @@ def trigger_creature_template(card):
     for line in text.split('\n'):
         line = line.strip()
         line = strip_rule_label(line)
-        for label in ('Do You Like Squirrels? — ', 'I LOVE Squirrels! — ', 'Vivid — '):
+        for label in ('Do You Like Squirrels? — ', 'I LOVE Squirrels! — ', 'Vivid — ', 'Valiant — '):
             if line.startswith(label):line=line[len(label):]
         limited = line.endswith(' This ability triggers only once each turn.')
         if limited: line = line[:-len(' This ability triggers only once each turn.')]
+        first_target = 'Whenever this creature becomes the target of a spell or ability you control for the first time each turn, '
+        if line.startswith(first_target):
+            # With immutable abilities and no control changes, every qualifying
+            # first target is observed; per-object trigger use records this event.
+            if limited:return None
+            limited=True
+            line='Whenever this creature becomes the target of a spell or ability you control, '+line[len(first_target):]
         name = card.get('name', '')
         names = [name] if name else []
         if name and card.get('type_line', '').startswith('Legendary '):
             names.append(name.split(',')[0])
             if ' the ' in name:names.append(name.split(' the ')[0])
         for alias in names:
+            if line.startswith('Whenever ' + alias + ' becomes the target of '):
+                line='Whenever this creature becomes the target of '+line[len('Whenever ' + alias + ' becomes the target of '):]
             if line.startswith('Whenever ' + alias + ' attacks, '):
                 line = 'Whenever this creature attacks, ' + line[len('Whenever ' + alias + ' attacks, '):]
             if line.startswith('When ' + alias + ' enters, '):
@@ -1758,6 +1773,12 @@ def trigger_creature_template(card):
                     effect_text = re.sub(r'^(?:[Ii]t|[Hh]e|[Ss]he) deals ', 'this creature deals ', effect_text)
                     if m:=re.fullmatch(r'(?:it|he|she) connives(?: ([0-9]+))?\.',effect_text):
                         effect_text='this creature connives'+(' '+m[1] if m[1] else '')+'.'
+                if condition.startswith('SelfTargeted {'):
+                    # Initial growth and a whole counter sentence have this
+                    # self-event as their sole antecedent. Do not bind later it.
+                    effect_text=re.sub(r'^[Ii]t gets ', 'this creature gets ', effect_text)
+                    if re.fullmatch(r'[Pp]ut (?:a|one|two|three|four|five|six) (?:\+1/\+1|-1/-1|stun) counters? on it\.',effect_text):
+                        effect_text=effect_text.replace(' on it.',' on this creature.')
                 for alias in names:
                     if effect_text.startswith(alias + ' deals '):
                         effect_text = 'this creature deals ' + effect_text[len(alias) + len(' deals '):]

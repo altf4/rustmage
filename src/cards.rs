@@ -818,6 +818,10 @@ pub(crate) enum TriggerCondition {
         one_or_more: bool,
     },
     Ward,
+    SelfTargeted {
+        relation: CastRelation,
+        spells_only: bool,
+    },
     PlayerDamaged {
         subject: DamageSubject,
         combat_only: bool,

@@ -1,0 +1,179 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Cactarantula",
+      "oracle_text": "This spell costs {1} less to cast if you control a Desert.\nReach\nWhenever this creature becomes the target of a spell or ability an opponent controls, you may draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/Cactarantula.java",
+          "java_sha256": "10a69c1ad152d79d89f344dee99972ba6200ea198f55bce9a8a392fc8e6a5e38"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTargetSourceTriggeredAbility.java",
+          "java_sha256": "a02a6e1d236c20da057b2ca37087d096bc1c989bdb1ea6ff0c4d16d917e7c7e7"
+        }
+      ]
+    },
+    {
+      "name": "Mouse Trapper",
+      "oracle_text": "Flash\nValiant \u2014 Whenever this creature becomes the target of a spell or ability you control for the first time each turn, tap target creature an opponent controls.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MouseTrapper.java",
+          "java_sha256": "7dab4dd760bad899702fbe731840917816099cbabf60466d79d88bfc3d114cf5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTargetSourceTriggeredAbility.java",
+          "java_sha256": "a02a6e1d236c20da057b2ca37087d096bc1c989bdb1ea6ff0c4d16d917e7c7e7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ValiantTriggeredAbility.java",
+          "java_sha256": "5ec6124fd1d8ae17a88cdf8cad28666f5982db52a210c2cc7b8bc5c80ddf6d8a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTargetSourceFirstTimeTriggeredAbility.java",
+          "java_sha256": "d162312d7bf5814ea188e5d6a29dc95e8d0560aa520002e4e2d101eb8f6ddf56"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/watchers/common/NumberOfTimesPermanentTargetedATurnWatcher.java",
+          "java_sha256": "e9541fb8102d75daa17228bfe1040eae2087cb1528c2b504c01eecf01e04725a"
+        }
+      ]
+    },
+    {
+      "name": "Nettle Guard",
+      "oracle_text": "Valiant \u2014 Whenever this creature becomes the target of a spell or ability you control for the first time each turn, it gets +0/+2 until end of turn.\n{1}, Sacrifice this creature: Destroy target artifact or enchantment.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/n/NettleGuard.java",
+          "java_sha256": "e882f849cb288b849510ec223fd5d1aefcd06e27bd99e08f4966b7e87c8173a1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTargetSourceTriggeredAbility.java",
+          "java_sha256": "a02a6e1d236c20da057b2ca37087d096bc1c989bdb1ea6ff0c4d16d917e7c7e7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ValiantTriggeredAbility.java",
+          "java_sha256": "5ec6124fd1d8ae17a88cdf8cad28666f5982db52a210c2cc7b8bc5c80ddf6d8a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTargetSourceFirstTimeTriggeredAbility.java",
+          "java_sha256": "d162312d7bf5814ea188e5d6a29dc95e8d0560aa520002e4e2d101eb8f6ddf56"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/watchers/common/NumberOfTimesPermanentTargetedATurnWatcher.java",
+          "java_sha256": "e9541fb8102d75daa17228bfe1040eae2087cb1528c2b504c01eecf01e04725a"
+        }
+      ]
+    },
+    {
+      "name": "Old Fat Spider",
+      "oracle_text": "Reach\nThis creature can't be blocked by creatures with power 2 or less.\nWhenever this creature becomes the target of a spell or ability an opponent controls, draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/o/OldFatSpider.java",
+          "java_sha256": "3474e4426786d18849e757f76e637ae520790c7caa861f0cc824fcb13ff6fda1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTargetSourceTriggeredAbility.java",
+          "java_sha256": "a02a6e1d236c20da057b2ca37087d096bc1c989bdb1ea6ff0c4d16d917e7c7e7"
+        }
+      ]
+    },
+    {
+      "name": "Ruric Thar, Biomagus",
+      "oracle_text": "Flying\nProwess, prowess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn twice.)\nWhenever Ruric Thar becomes the target of a spell or ability an opponent controls, draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RuricTharBiomagus.java",
+          "java_sha256": "99361acc31aefca60ec631e996434e47e291883ae3bd6d42f1988a4456c25ca2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTargetSourceTriggeredAbility.java",
+          "java_sha256": "a02a6e1d236c20da057b2ca37087d096bc1c989bdb1ea6ff0c4d16d917e7c7e7"
+        }
+      ]
+    },
+    {
+      "name": "Seedglaive Mentor",
+      "oracle_text": "Vigilance, haste\nValiant \u2014 Whenever this creature becomes the target of a spell or ability you control for the first time each turn, put a +1/+1 counter on it.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SeedglaiveMentor.java",
+          "java_sha256": "4a53c19a1e8748f8cea039b0e2e4d01808fcf4dcd8782450b61f498477a62a17"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTargetSourceTriggeredAbility.java",
+          "java_sha256": "a02a6e1d236c20da057b2ca37087d096bc1c989bdb1ea6ff0c4d16d917e7c7e7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ValiantTriggeredAbility.java",
+          "java_sha256": "5ec6124fd1d8ae17a88cdf8cad28666f5982db52a210c2cc7b8bc5c80ddf6d8a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTargetSourceFirstTimeTriggeredAbility.java",
+          "java_sha256": "d162312d7bf5814ea188e5d6a29dc95e8d0560aa520002e4e2d101eb8f6ddf56"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/watchers/common/NumberOfTimesPermanentTargetedATurnWatcher.java",
+          "java_sha256": "e9541fb8102d75daa17228bfe1040eae2087cb1528c2b504c01eecf01e04725a"
+        }
+      ]
+    },
+    {
+      "name": "Veteran Guardmouse",
+      "oracle_text": "Valiant \u2014 Whenever this creature becomes the target of a spell or ability you control for the first time each turn, it gets +1/+0 and gains first strike until end of turn. Scry 1. (Look at the top card of your library. You may put that card on the bottom.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VeteranGuardmouse.java",
+          "java_sha256": "f94b8a1ab8abbe03a4fe731d2d36979fe83c7f7792e79b9eda337fcd255e331a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTargetSourceTriggeredAbility.java",
+          "java_sha256": "a02a6e1d236c20da057b2ca37087d096bc1c989bdb1ea6ff0c4d16d917e7c7e7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ValiantTriggeredAbility.java",
+          "java_sha256": "5ec6124fd1d8ae17a88cdf8cad28666f5982db52a210c2cc7b8bc5c80ddf6d8a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTargetSourceFirstTimeTriggeredAbility.java",
+          "java_sha256": "d162312d7bf5814ea188e5d6a29dc95e8d0560aa520002e4e2d101eb8f6ddf56"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/watchers/common/NumberOfTimesPermanentTargetedATurnWatcher.java",
+          "java_sha256": "e9541fb8102d75daa17228bfe1040eae2087cb1528c2b504c01eecf01e04725a"
+        }
+      ]
+    },
+    {
+      "name": "Whiskerquill Scribe",
+      "oracle_text": "Valiant \u2014 Whenever this creature becomes the target of a spell or ability you control for the first time each turn, you may discard a card. If you do, draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WhiskerquillScribe.java",
+          "java_sha256": "e8e4d892407fc2c09328351a2d2bb5fd5c0d6d15f4929a960e330f2a6709a820"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTargetSourceTriggeredAbility.java",
+          "java_sha256": "a02a6e1d236c20da057b2ca37087d096bc1c989bdb1ea6ff0c4d16d917e7c7e7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ValiantTriggeredAbility.java",
+          "java_sha256": "5ec6124fd1d8ae17a88cdf8cad28666f5982db52a210c2cc7b8bc5c80ddf6d8a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesTargetSourceFirstTimeTriggeredAbility.java",
+          "java_sha256": "d162312d7bf5814ea188e5d6a29dc95e8d0560aa520002e4e2d101eb8f6ddf56"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/watchers/common/NumberOfTimesPermanentTargetedATurnWatcher.java",
+          "java_sha256": "e9541fb8102d75daa17228bfe1040eae2087cb1528c2b504c01eecf01e04725a"
+        }
+      ]
+    }
+  ]
+}

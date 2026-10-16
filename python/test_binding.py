@@ -9,6 +9,71 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def self_target_index(self,obs,wanted):
+        objects={o['id']:o for o in obs['objects']};valiant=wanted not in ('Cactarantula','Old Fat Spider','Ruric Thar, Biomagus');owner='P0' if valiant else 'P1'
+        source=next((o for o in objects.values() if o['card']==wanted and o['zone']=='Battlefield'),None)
+        def score(a):
+            k=a['kind']
+            if k in ('Cast','AnnounceCast'):
+                name=objects[a['card']]['card']
+                if name==wanted:return 200 if source is None else -100
+                if name=='Giant Growth':return 190 if source else -100
+                return 170
+            if k in ('Activate','AnnounceActivate','BeginActivate','AnnounceMana','ActivateMana'):return -100
+            if k=='ChooseTarget':
+                b=objects.get(a['target'].get('Card'));root=obs['announcing']
+                if root['source_card']=='Giant Growth':return 250 if b and source and b['reference']==source['reference'] else -100
+                return 240 if b and b['owner']!=root['controller'] else -100
+            if k=='TapMana':return 130 if obs['decision']=='pay_costs' else -100
+            return self.professor_score(obs,a)
+        return max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i]))
+
+    def finish_self_target(self,game,viewer,root):
+        for _ in range(100):
+            obs=game.observe(viewer)
+            live=obs['stack']+obs['waiting_triggers']+[x for x in (obs['announcing'],obs['resolving']) if x]
+            if all(s['id']!=root for s in live):return obs
+            obs=game.observe(obs['actor'])
+            if obs['decision'] in ('library_choice','effect_discard'):
+                other=game.observe('P1' if obs['actor']=='P0' else 'P0');self.assertEqual(other['actions'],[]);self.assertIsNone(other['library_choice']);self.assertEqual(other['effect_discards'],[])
+            def score(a):
+                k=a['kind']
+                if k in ('Pass','PutTrigger','Discard','ArrangeLibrary'):return 100
+                if k=='ChooseOptional':return 110 if a['accept'] else -100
+                if k=='ChooseTarget':return 90
+                return -100
+            game.step(obs,max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i])))
+        self.fail('self-target trigger did not complete')
+
+    def test_eight_complete_self_target_triggers_use_native_library_and_replay(self):
+        for wanted in ('Cactarantula','Old Fat Spider','Ruric Thar, Biomagus','Mouse Trapper','Nettle Guard','Seedglaive Mentor','Veteran Guardmouse','Whiskerquill Scribe'):
+            valiant=wanted not in ('Cactarantula','Old Fat Spider','Ruric Thar, Biomagus');owner='P0' if valiant else 'P1';p=0 if valiant else 1
+            lands=['Plains']*10+['Island']*10+['Mountain']*10+['Forest']*10
+            decks=[lands+[wanted]*12+['Giant Growth']*8,['Forest']*48+['Bear Cub']*12] if valiant else [['Forest']*48+['Giant Growth']*12,lands+['Forest']*8+[wanted]*12]
+            with self.subTest(card=wanted),Game(decks,seed=7,deck_rules='Freeform') as game:
+                for _ in range(15000):
+                    obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor'])
+                    if obs['decision']=='priority' and obs['stack'] and obs['stack'][-1]['source_card']==wanted and isinstance(obs['stack'][-1]['kind'],dict) and 'TriggeredAbility' in obs['stack'][-1]['kind']:break
+                    game.step(obs,self.self_target_index(obs,wanted))
+                else:self.fail('self-target trigger not reached')
+                root=obs['stack'][-1];self.assertEqual(root['controller'],owner);self.assertIsNone(root['related_stack']);self.assertEqual(obs['stack'][0]['source_card'],'Giant Growth');self.assertEqual(obs['schema'],48)
+                source=next(o for o in obs['objects'] if o['reference']==root['object']);drawn=obs['players'][p]['cards_drawn_this_turn'];saved=game.snapshot()
+                with game.clone() as fork:expected=self.finish_self_target(fork,owner,root['id'])
+                after=self.finish_self_target(game,owner,root['id']);self.assertEqual(after,expected)
+                b=next(o for o in after['objects'] if o['reference']==source['reference'])
+                if not valiant:self.assertEqual(after['players'][p]['cards_drawn_this_turn'],drawn+1)
+                else:
+                    self.assertTrue(any(t['source']==root['object'] for t in after['triggered_this_turn']))
+                    if wanted=='Nettle Guard':self.assertEqual(b['toughness'],source['toughness']+2)
+                    if wanted=='Seedglaive Mentor':self.assertEqual(b['counters']['plus_one'],source['counters']['plus_one']+1)
+                    if wanted=='Veteran Guardmouse':self.assertEqual(b['power'],source['power']+1);self.assertTrue(b['keywords']&512)
+                    if wanted=='Whiskerquill Scribe':self.assertEqual(after['players'][0]['cards_drawn_this_turn'],drawn+1);self.assertGreater(after['players'][0]['cards_discarded_this_turn'],obs['players'][0]['cards_discarded_this_turn'])
+                    if wanted=='Mouse Trapper':self.assertTrue(next(o for o in after['objects'] if o['id']==root['targets'][0]['object']['card'])['tapped'])
+                game.restore(saved)
+                with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,0)
+                again=self.finish_self_target(game,owner,root['id']);after['revision']=again['revision'];self.assertEqual(after,again);game.drop_snapshot(saved)
+
+
     def game(self):
         return Game([["Mountain"] * 24 + ["LightningBolt"] * 36] * 2, seed=17, deck_rules="Freeform")
 
