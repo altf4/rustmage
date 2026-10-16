@@ -37,6 +37,12 @@ class CatalogueCompilerTests(unittest.TestCase):
             proxy,rules=generate.extract_cost_reductions(self.card(oracle_text=text))
             self.assertEqual(proxy['oracle_text'],text);self.assertEqual(rules,[],text)
 
+    def test_attack_intervening_guards_require_the_complete_tapped_declaration(self):
+        result=generate.trigger_creature_template(self.card(oracle_text='Whenever this creature attacks, if you control two or more tapped creatures, draw a card.'))
+        self.assertIsNotNone(result)
+        self.assertIn('InterveningIf',result[2][0][0]);self.assertIn('TappedCreatures',result[2][0][0]);self.assertIn('minimum: Some(2)',result[2][0][0]);self.assertIn('SelfAttacks',result[2][0][0])
+        self.assertEqual(result[2][0][1],['Draw(PlayerSet::Controller, 1)'])
+
     def test_attack_history_costs_and_raid_entry_guards_are_exact(self):
         text='This spell costs {1} less to cast for each creature that attacked this turn.'
         proxy,rules=generate.extract_cost_reductions(self.card(oracle_text=text+'\nFlying'))

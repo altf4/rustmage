@@ -2027,25 +2027,9 @@ impl Game {
                 })
             }
             Action::FinishAttackers => {
-                self.state.attack_declared = !self.state.selected_attackers.is_empty();
-                self.state.players[actor.index()].attacked_this_turn |= self.state.attack_declared;
-                let declared = std::mem::take(&mut self.state.selected_attackers);
-                // Only declared attackers count. Register the complete batch
-                // before any attack-trigger predicate observes turn history.
-                for attack in &declared {
-                    let reference = self.object_ref(attack.card);
-                    if !self.state.attacked_this_turn.contains(&reference) {
-                        self.state.attacked_this_turn.push(reference);
-                    }
-                }
-                for attack in declared {
-                    let card = attack.card;
-                    if !self.keywords(card).contains(Keywords::VIGILANCE) {
-                        self.state.objects[card as usize].tapped = true;
-                    }
-                    self.state.attackers.push(attack);
-                    self.attack_triggers(&self.object_view(card));
-                }
+                self.commit_attackers_with(actor, |game, card| {
+                    game.attack_triggers(&game.object_view(card));
+                });
                 self.give_priority();
             }
             Action::Block { blocker, attacker } => {
@@ -2481,6 +2465,33 @@ impl Game {
             after: self.object_ref(id),
             destination,
             moved: true,
+        }
+    }
+
+    /// Complete the turn-based declaration before dispatching attack events.
+    /// Keeping this boundary explicit also permits testing live trigger guards.
+    fn commit_attackers_with(&mut self, actor: Player, mut event: impl FnMut(&mut Self, CardId)) {
+        self.state.attack_declared = !self.state.selected_attackers.is_empty();
+        self.state.players[actor.index()].attacked_this_turn |= self.state.attack_declared;
+        let declared = std::mem::take(&mut self.state.selected_attackers);
+        // Determine vigilance before any simultaneous tap changes characteristics.
+        let to_tap: Vec<_> = declared
+            .iter()
+            .filter(|a| !self.keywords(a.card).contains(Keywords::VIGILANCE))
+            .map(|a| a.card)
+            .collect();
+        for attack in &declared {
+            let reference = self.object_ref(attack.card);
+            if !self.state.attacked_this_turn.contains(&reference) {
+                self.state.attacked_this_turn.push(reference);
+            }
+        }
+        for card in to_tap {
+            self.state.objects[card as usize].tapped = true;
+        }
+        self.state.attackers.extend(declared.iter().cloned());
+        for attack in declared {
+            event(self, attack.card);
         }
     }
 

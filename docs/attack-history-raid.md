@@ -24,7 +24,11 @@ prior declaration, and another declaration by the same object cannot inflate it.
 
 The engine retains a COW vector of distinct ObjectRefs for this turn. Selecting an
 attacker leaves history unchanged; finishing declaration records the complete
-batch before processing any attack triggers. History survives combat ending,
+batch before processing any attack triggers. Vigilance is determined before
+simultaneous taps, and all attackers are tapped/committed before dispatching
+any attack event. A regression evaluates the compiler-supported two-tapped-
+creature intervening guard at that dispatch boundary in both selection orders
+and with vigilance. History survives combat ending,
 death/exile and token cessation. Object generations distinguish reentries and
 reused token slots; repeated declaration of one incarnation counts once. A new
 turn clears history. The two discounts count all declared attackers, including
@@ -59,12 +63,12 @@ per-object or per-player field is added; clone/restore owns the complete history
 Logical bytes exclude capacity, allocator/COW metadata, immutable definitions,
 observations and externally retained snapshots.
 
-Validation passes 770 Rust tests (758 unit and twelve integration), 140
+Validation passes 771 Rust tests (759 unit and twelve integration), 141
 compiler/data tests, 100 release Python tests, consistency, rustfmt and Clippy with
-warnings denied. Nine new native tests cover commit timing, empty/illegal attacks,
+warnings denied. Ten new native tests cover commit timing, empty/illegal attacks,
 departure/combat persistence, turn reset, deduplication/reentry/token-slot reuse,
 COW branch isolation, both spell controllers, exact/color-preserving staged and
-prefunded payments, all entry bodies and private Chart replay. Two compiler tests
+prefunded payments, all entry bodies and private Chart replay. Three compiler tests
 check precise history scope, raid guards, branch instructions, complete provenance
 and residual-text gates. Two new Python methods cover both discounted spells and
 both Chart branches, public counts and private discard rollback. Their policies
@@ -84,7 +88,7 @@ insufficient libraries. This workload is not a complete rules proof or
 competitive training acceptance.
 
 A fresh release baseline over 1,000 Freeform games reports 571,049 decisions,
-409,689.42 decisions/second, 717.43 games/second, 103.30 ns clone and 111.81 ns
+377,204.54 decisions/second, 660.55 games/second, 128.80 ns clone and 121.66 ns
 restore. It includes the existing native smoke policy and observation
 construction, excluding neural inference, tensor encoding and JSON. Timings are
 unpinned and are not an attributed improvement or a Java parity comparison.

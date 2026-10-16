@@ -339,3 +339,57 @@ fn chart_a_course_draws_once_then_requires_private_discard_only_without_raid() {
         }
     }
 }
+
+#[test]
+fn every_attack_event_sees_the_complete_tapped_declared_batch_in_either_order() {
+    for reverse in [false, true] {
+        for vigilant in [false, true] {
+            let mut g = scenario();
+            let first = named(&mut g, Player::P0, "Bear Cub", Zone::Battlefield);
+            let second = named(
+                &mut g,
+                Player::P0,
+                if vigilant { "Serra Angel" } else { "Bear Cub" },
+                Zone::Battlefield,
+            );
+            g.state.step = Step::Attackers;
+            g.state.pending = Pending::Attackers;
+            let cards = if reverse {
+                [second, first]
+            } else {
+                [first, second]
+            };
+            for card in cards {
+                replay(&mut g, Action::Attack { card });
+            }
+            let condition = TriggerCondition::InterveningIf {
+                guard: StepGuard::Threshold {
+                    value: StepValue::TappedCreatures,
+                    minimum: Some(2),
+                    maximum: None,
+                },
+                event: &TriggerCondition::SelfAttacks,
+            };
+            let mut events = Vec::new();
+            g.commit_attackers_with(Player::P0, |game, id| {
+                let source = game.object_view(id);
+                assert!(source.attacking);
+                assert_eq!(game.state.attackers.len(), 2);
+                assert_eq!(game.state.attacked_this_turn.len(), 2);
+                assert_eq!(
+                    game.trigger_guards_hold(
+                        condition,
+                        Player::P0,
+                        source.reference,
+                        source.tapped
+                    ),
+                    !vigilant
+                );
+                assert!(game.object_view(first).tapped);
+                assert_eq!(game.object_view(second).tapped, !vigilant);
+                events.push(id);
+            });
+            assert_eq!(events, cards);
+        }
+    }
+}
