@@ -83,3 +83,6 @@ near 111/108 ns, so these samples do not establish snapshot performance stabilit
 or an attributable change. The initial state payload is unchanged; fuller profiling
 remains required. These limited smoke timings include policy/observations and
 exclude model inference, encoding, JSON and a comparable Java workload.
+The independent library reviewer later measured 396,011 decisions/second, clone
+89.25 ns and restore 86.44 ns in the same benchmark. The slower snapshot sample did
+not reproduce; no stable regression or speedup is established by these samples.
