@@ -9,11 +9,13 @@ use crate::cards::{
     TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
 /// Version of the public observation structure, including owned trigger context.
-pub const OBSERVATION_SCHEMA: u32 = 62;
+pub const OBSERVATION_SCHEMA: u32 = 63;
 
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
 mod additional_costs;
+#[path = "engine_bargain.rs"]
+mod bargain;
 #[path = "engine_library_selection.rs"]
 mod library_selection;
 pub use library_selection::LibrarySelectionView;
@@ -244,6 +246,9 @@ define_actions! {
         object: ObjectRef,
     },
     ChooseExplore { object: ObjectRef, graveyard: bool },
+    ChooseBargain {
+        sacrifice: Option<ObjectRef>,
+    },
     ChooseKicker {
         pay: bool,
     },
@@ -545,6 +550,8 @@ pub struct CastInfo {
     pub offspring: Option<bool>,
     /// One fixed optional surcharge, independent of casting method and offspring.
     pub kicker: Option<bool>,
+    /// Exact cast declaration; its reserved sacrifice is held by the announcement.
+    pub bargain: Option<bool>,
 }
 
 /// Frozen attack and immutable program provenance, independent of later attachments.
@@ -773,6 +780,9 @@ enum Pending {
     Forage {
         player: Player,
     },
+    Bargain {
+        player: Player,
+    },
     Kicker {
         player: Player,
     },
@@ -963,6 +973,7 @@ pub struct ZoneChange {
     pub offspring_paid: bool,
     /// Paid qualification belongs only to this exact entry event.
     pub kicked: bool,
+    pub bargained: bool,
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -1337,6 +1348,7 @@ impl Game {
             Pending::Mulligan(p) | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
             Pending::Explore { player }
+            | Pending::Bargain { player }
             | Pending::Kicker { player }
             | Pending::Offspring { player }
             | Pending::SpellCost { player }
@@ -1753,6 +1765,9 @@ impl Game {
                             if target_cost {
                                 return self.initial_target_cost_fundable(actor, card, cost);
                             }
+                            if obj.card.has_bargain() {
+                                return self.initial_bargain_fundable(actor, card, cost);
+                            }
                             if obj.card.additional_cost().is_some() {
                                 return self.spell_can_fund(actor, card, cost);
                             }
@@ -1799,6 +1814,7 @@ impl Game {
                         && obj.zone == Zone::Hand
                         && obj.card.offspring_cost().is_none()
                         && obj.card.kicker_cost().is_none()
+                        && !obj.card.has_bargain()
                         && obj.card.additional_cost().is_none()
                     {
                         let plan = match obj.card.effect() {
@@ -1852,6 +1868,7 @@ impl Game {
                         || target_cost
                         || obj.card.offspring_cost().is_some()
                         || obj.card.kicker_cost().is_some()
+                        || obj.card.has_bargain()
                         || obj.card.additional_cost().is_some()
                         || matches!(obj.card.effect(), Effect::Modal(_))
                     {
@@ -2013,6 +2030,22 @@ impl Game {
                         object: choice.revealed.object,
                         graveyard,
                     }) {
+                        return true;
+                    }
+                }
+            }
+            Pending::Bargain { .. } => {
+                let a = s.announcing.as_ref().unwrap();
+                if self.bargain_choice_fundable(a, None)
+                    && emit(Action::ChooseBargain { sacrifice: None })
+                {
+                    return true;
+                }
+                for id in 0..s.objects.len() {
+                    let sacrifice = Some(self.object_ref(id as CardId));
+                    if self.bargain_choice_fundable(a, sacrifice)
+                        && emit(Action::ChooseBargain { sacrifice })
+                    {
                         return true;
                     }
                 }
@@ -2414,6 +2447,12 @@ impl Game {
             }
             Action::KeepLegend { object } => self.keep_legend(object),
             Action::ChooseExplore { graveyard, .. } => self.finish_explore(graveyard),
+            Action::ChooseBargain { sacrifice } => {
+                let a = self.state.announcing.as_mut().unwrap();
+                a.item.cast.as_mut().unwrap().bargain = Some(sacrifice.is_some());
+                a.additional = sacrifice;
+                self.continue_announcement_choices(false);
+            }
             Action::ChooseKicker { pay } => {
                 self.state
                     .announcing
@@ -2882,6 +2921,7 @@ impl Game {
                 sacrificed_by: None,
                 offspring_paid: false,
                 kicked: false,
+                bargained: false,
             };
         }
         assert_ne!(
@@ -3025,6 +3065,7 @@ impl Game {
             sacrificed_by: None,
             offspring_paid: false,
             kicked: false,
+            bargained: false,
         }
     }
 
@@ -3487,6 +3528,7 @@ impl Game {
                 Pending::Legend { .. } => "legend_rule",
                 Pending::Targets { .. } => "targets",
                 Pending::Offspring { .. } => "offspring",
+                Pending::Bargain { .. } => "bargain",
                 Pending::Kicker { .. } => "kicker",
                 Pending::Explore { .. } => "explore",
                 Pending::SpellCost { .. } => "spell_cost",
@@ -4301,3 +4343,7 @@ mod kicker_tests;
 #[cfg(test)]
 #[path = "engine_explore_tests.rs"]
 mod explore_tests;
+
+#[cfg(test)]
+#[path = "engine_bargain_tests.rs"]
+mod bargain_tests;

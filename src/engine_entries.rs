@@ -12,6 +12,7 @@ pub(super) struct EntryMove {
     pub life_paid: Option<bool>,
     pub offspring_paid: bool,
     pub kicked: bool,
+    pub bargained: bool,
     /// Frozen before replacement choices; payments in this event cannot enable it.
     pub counters: Counters,
 }
@@ -132,6 +133,7 @@ impl Game {
             life_paid: None,
             offspring_paid: false,
             kicked: false,
+            bargained: false,
             counters: Counters::default(),
         }
     }
@@ -228,6 +230,7 @@ impl Game {
             );
             event.offspring_paid = movement.offspring_paid;
             event.kicked = movement.kicked;
+            event.bargained = movement.bargained;
             if event.moved {
                 if let Some(target) = movement.attachment {
                     attachments.push((event.after, target));

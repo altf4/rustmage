@@ -298,6 +298,7 @@ impl Game {
                     }
                     TriggerCondition::SelfOffspring => same && event.offspring_paid,
                     TriggerCondition::SelfKicked => same && event.kicked,
+                    TriggerCondition::SelfBargained => same && event.bargained,
                     TriggerCondition::SelfEnters
                     | TriggerCondition::SelfEntersOrAttacks
                     | TriggerCondition::SelfEntersOrDies => same,
@@ -824,10 +825,11 @@ impl Game {
                     return;
                 }
                 Effect::Creature(..) | Effect::Permanent => {
-                    if item
-                        .cast
-                        .is_some_and(|c| c.offspring == Some(true) || c.kicker == Some(true))
-                    {
+                    if item.cast.is_some_and(|c| {
+                        c.offspring == Some(true)
+                            || c.kicker == Some(true)
+                            || c.bargain == Some(true)
+                    }) {
                         let mut movement = self.entry_move(
                             item.card,
                             Zone::Battlefield,
@@ -836,6 +838,7 @@ impl Game {
                         movement.offspring_paid =
                             item.cast.is_some_and(|c| c.offspring == Some(true));
                         movement.kicked = item.cast.is_some_and(|c| c.kicker == Some(true));
+                        movement.bargained = item.cast.is_some_and(|c| c.bargain == Some(true));
                         self.stage_entries(vec![movement], None);
                     } else {
                         self.move_object(item.card, Zone::Battlefield);
@@ -1026,6 +1029,11 @@ impl Game {
                             }
                             self.create_tokens(controller, token, u128::from(amount), false);
                         }
+                    }
+                }
+                Instruction::IfBargained { skip } => {
+                    if !item.cast.is_some_and(|c| c.bargain == Some(true)) {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
                 Instruction::IfKicked { skip } => {

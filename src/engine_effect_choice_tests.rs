@@ -48,6 +48,7 @@ fn fund(g: &mut Game, id: CardId) {
     g.state.players[0].mana = mana;
 }
 const ANY: SacrificeFilter = SacrificeFilter {
+    artifact_enchantment_or_token: false,
     keywords: Keywords::NONE,
     source_only: false,
     kinds: 0,
@@ -405,7 +406,11 @@ fn targeted_player_sacrifice_choices_belong_to_that_player_not_the_caster() {
         Instruction::ChooseObjects {
             kind: EffectChoiceKind::Sacrifice,
             players: PlayerSet::Targeted,
-            filter: SacrificeFilter { kinds: 1, ..ANY },
+            filter: SacrificeFilter {
+                artifact_enchantment_or_token: false,
+                kinds: 1,
+                ..ANY
+            },
             amount: 1,
             optional_skip: None,
         },
@@ -472,6 +477,7 @@ fn self_payment_uses_exact_incarnation_and_damage_uses_departure_keywords() {
             kind: EffectChoiceKind::Sacrifice,
             players: PlayerSet::Controller,
             filter: SacrificeFilter {
+                artifact_enchantment_or_token: false,
                 source_only: true,
                 ..ANY
             },

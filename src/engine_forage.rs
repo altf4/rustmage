@@ -45,6 +45,7 @@ pub(super) fn food_cost() -> AdditionalCost {
     AdditionalCost {
         kind: EffectChoiceKind::Sacrifice,
         filter: SacrificeFilter {
+            artifact_enchantment_or_token: false,
             keywords: Keywords::NONE,
             source_only: false,
             kinds: 0,

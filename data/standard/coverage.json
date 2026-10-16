@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "e6e347ae7e1520091f4a62d0b80f004413cf1ab2741b266f4ddf8bbde6ffe879",
+  "catalogue_version": "8adc126ecaca5eab9b92e2248811b4e2ca4db6f70df03647cd217bd25a2a53e7",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1577,
-  "implemented_total": 1583,
+  "implemented_standard_cards": 1587,
+  "implemented_total": 1593,
   "token_definitions": 74,
   "emblem_definitions": 1,
   "cards": [
@@ -1306,8 +1306,8 @@
     {
       "name": "Archon's Glory",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "bargain_template"
     },
     {
       "name": "Archway Angel",
@@ -3802,8 +3802,8 @@
     {
       "name": "Candy Grapple",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "bargain_template"
     },
     {
       "name": "Candy Trail",
@@ -8692,8 +8692,8 @@
     {
       "name": "Farsight Ritual",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "bargain_template"
     },
     {
       "name": "Fatal Fissure",
@@ -11620,8 +11620,8 @@
     {
       "name": "Hamlet Glutton",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "bargain_template"
     },
     {
       "name": "Hand That Feeds",
@@ -12220,8 +12220,8 @@
     {
       "name": "High Fae Negotiator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "bargain_template"
     },
     {
       "name": "High Fae Trickster",
@@ -12742,8 +12742,8 @@
     {
       "name": "Ice Out",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "bargain_template"
     },
     {
       "name": "Icecave Crasher",
@@ -13702,8 +13702,8 @@
     {
       "name": "Johann's Stopgap",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "bargain_template"
     },
     {
       "name": "Johann, Apprentice Sorcerer",
@@ -14038,8 +14038,8 @@
     {
       "name": "Kellan's Lightblades",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "bargain_template"
     },
     {
       "name": "Kellan, Daring Traveler // Journey On",
@@ -26278,8 +26278,8 @@
     {
       "name": "Tenacious Tomeseeker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "bargain_template"
     },
     {
       "name": "Tend the Sprigs",
@@ -28144,8 +28144,8 @@
     {
       "name": "Troublemaker Ouphe",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "bargain_template"
     },
     {
       "name": "Troyan, Gutsy Explorer",

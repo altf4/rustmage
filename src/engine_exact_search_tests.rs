@@ -174,7 +174,7 @@ fn all_nineteen_complete_bodies_cast_in_both_seats() {
                 },
                 "{n}"
             );
-            assert_eq!(g.observe(p).schema, 62);
+            assert_eq!(g.observe(p).schema, OBSERVATION_SCHEMA);
         }
     }
 }
@@ -601,6 +601,7 @@ fn all_three_new_flashback_bodies_use_real_graveyard_costs_and_exile_on_completi
                     method: CastMethod::Flashback,
                     offspring: None,
                     kicker: None,
+                    bargain: None,
                 })
             );
             settle(&mut g, None);

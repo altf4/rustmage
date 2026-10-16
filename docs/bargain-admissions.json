@@ -1,0 +1,445 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-16",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "rules": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+  "cards": [
+    {
+      "name": "Archon's Glory",
+      "oracle_text": "Bargain (You may sacrifice an artifact, enchantment, or token as you cast this spell.)\nTarget creature gets +2/+2 until end of turn. If this spell was bargained, that creature also gains flying and lifelink until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/ArchonsGlory.java",
+          "java_sha256": "2c47d7aba3a174c10e9db70f69924b01f2b06ceb16d8f18ba3f4e43d340d8c28"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/BargainedCondition.java",
+          "java_sha256": "b6403f9b4c3929fb0d5180aa27ec0b5a4301353143fb16cbc360cfee1a026bc5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AddContinuousEffectToGame.java",
+          "java_sha256": "3647d2fb3d84fed968d2b45c43d33d706a712ec4dc4f9ba7aa39d39cc3efa31e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/BargainAbility.java",
+          "java_sha256": "e889139d24bea8b8d7a5eff4212bb7935c8d5133b9b88e70c21386dabf09413f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+          "java_sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "name": "Candy Grapple",
+      "oracle_text": "Bargain (You may sacrifice an artifact, enchantment, or token as you cast this spell.)\nTarget creature gets -3/-3 until end of turn. If this spell was bargained, that creature gets -5/-5 until end of turn instead.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CandyGrapple.java",
+          "java_sha256": "d1a51b331cf0dd14d6f93508204d2d22f017651b3cce17fcc5a1290343bbd559"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/BargainedCondition.java",
+          "java_sha256": "b6403f9b4c3929fb0d5180aa27ec0b5a4301353143fb16cbc360cfee1a026bc5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AddContinuousEffectToGame.java",
+          "java_sha256": "3647d2fb3d84fed968d2b45c43d33d706a712ec4dc4f9ba7aa39d39cc3efa31e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/BargainAbility.java",
+          "java_sha256": "e889139d24bea8b8d7a5eff4212bb7935c8d5133b9b88e70c21386dabf09413f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "name": "Farsight Ritual",
+      "oracle_text": "Bargain (You may sacrifice an artifact, enchantment, or token as you cast this spell.)\nLook at the top four cards of your library. If this spell was bargained, look at the top eight cards of your library instead. Put two of them into your hand and the rest on the bottom of your library in a random order.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FarsightRitual.java",
+          "java_sha256": "12a557244d950ed20b458d206c8fca5fc8a54cca7004f9d91e3cbb1e9678e931"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/BargainedCondition.java",
+          "java_sha256": "b6403f9b4c3929fb0d5180aa27ec0b5a4301353143fb16cbc360cfee1a026bc5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+          "java_sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/BargainAbility.java",
+          "java_sha256": "e889139d24bea8b8d7a5eff4212bb7935c8d5133b9b88e70c21386dabf09413f"
+        }
+      ]
+    },
+    {
+      "name": "Hamlet Glutton",
+      "oracle_text": "Bargain (You may sacrifice an artifact, enchantment, or token as you cast this spell.)\nThis spell costs {2} less to cast if it's bargained.\nTrample\nWhen this creature enters, you gain 3 life.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HamletGlutton.java",
+          "java_sha256": "3d190fa07eb4a4f9a8f60e18644767efcbd9c7a295f47b3728c49aac6944048f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/BargainedCondition.java",
+          "java_sha256": "b6403f9b4c3929fb0d5180aa27ec0b5a4301353143fb16cbc360cfee1a026bc5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/CostAdjuster.java",
+          "java_sha256": "277da78431453809a3c0f3af150ceca2043854ccb3963675297f8ccd1a17e29a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/OptionalAdditionalCost.java",
+          "java_sha256": "4c45d44803baae9371bc2a7ebddff02444ad4051511cf4721e59a2588da5a8c1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/InfoEffect.java",
+          "java_sha256": "48bac57c3707da691071b0fb266461819de4fbfef0608a0e1767de405a2eca4b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/BargainAbility.java",
+          "java_sha256": "e889139d24bea8b8d7a5eff4212bb7935c8d5133b9b88e70c21386dabf09413f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+          "java_sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+        }
+      ]
+    },
+    {
+      "name": "High Fae Negotiator",
+      "oracle_text": "Bargain (You may sacrifice an artifact, enchantment, or token as you cast this spell.)\nFlying\nWhen this creature enters, if it was bargained, each opponent loses 3 life and you gain 3 life.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HighFaeNegotiator.java",
+          "java_sha256": "1d45acb509b994ccfe79272d90ed1c9f9c8b32f12b73515a476d8c62e1e59278"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/BargainedCondition.java",
+          "java_sha256": "b6403f9b4c3929fb0d5180aa27ec0b5a4301353143fb16cbc360cfee1a026bc5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsEffect.java",
+          "java_sha256": "0efbab18123aec32ac502d57e9a8d9571965d09f3f4e09c448a4ed4cf10aa0e1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/BargainAbility.java",
+          "java_sha256": "e889139d24bea8b8d7a5eff4212bb7935c8d5133b9b88e70c21386dabf09413f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        }
+      ]
+    },
+    {
+      "name": "Ice Out",
+      "oracle_text": "Bargain (You may sacrifice an artifact, enchantment, or token as you cast this spell.)\nThis spell costs {1} less to cast if it's bargained.\nCounter target spell.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/i/IceOut.java",
+          "java_sha256": "ca6bd05f6da77f197ddbbfb2122dd162a1254a1246db5c33c20a31173ab926ac"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/BargainedCondition.java",
+          "java_sha256": "b6403f9b4c3929fb0d5180aa27ec0b5a4301353143fb16cbc360cfee1a026bc5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/CostAdjuster.java",
+          "java_sha256": "277da78431453809a3c0f3af150ceca2043854ccb3963675297f8ccd1a17e29a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/OptionalAdditionalCost.java",
+          "java_sha256": "4c45d44803baae9371bc2a7ebddff02444ad4051511cf4721e59a2588da5a8c1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterTargetEffect.java",
+          "java_sha256": "49282767e8f8d631bb38ae1d35bc91a29ab2ae8173030e3a89d3da495c1cf233"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/InfoEffect.java",
+          "java_sha256": "48bac57c3707da691071b0fb266461819de4fbfef0608a0e1767de405a2eca4b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/BargainAbility.java",
+          "java_sha256": "e889139d24bea8b8d7a5eff4212bb7935c8d5133b9b88e70c21386dabf09413f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetSpell.java",
+          "java_sha256": "349d67f29235bc2e3ad846c3b177f18dc1097e87e80327a77c852667289f94cc"
+        }
+      ]
+    },
+    {
+      "name": "Johann's Stopgap",
+      "oracle_text": "Bargain (You may sacrifice an artifact, enchantment, or token as you cast this spell.)\nThis spell costs {2} less to cast if it's bargained.\nReturn target nonland permanent to its owner's hand. Draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/j/JohannsStopgap.java",
+          "java_sha256": "219fed92c7d174fd24081b026703e44be388be9b6b4404c2d787a5489cbdf881"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/BargainedCondition.java",
+          "java_sha256": "b6403f9b4c3929fb0d5180aa27ec0b5a4301353143fb16cbc360cfee1a026bc5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/CostAdjuster.java",
+          "java_sha256": "277da78431453809a3c0f3af150ceca2043854ccb3963675297f8ccd1a17e29a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/OptionalAdditionalCost.java",
+          "java_sha256": "4c45d44803baae9371bc2a7ebddff02444ad4051511cf4721e59a2588da5a8c1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/InfoEffect.java",
+          "java_sha256": "48bac57c3707da691071b0fb266461819de4fbfef0608a0e1767de405a2eca4b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+          "java_sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/BargainAbility.java",
+          "java_sha256": "e889139d24bea8b8d7a5eff4212bb7935c8d5133b9b88e70c21386dabf09413f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetNonlandPermanent.java",
+          "java_sha256": "6e4720e1386bdaa8f84eaf97cc8d6646845307f0be8697190c25cd1285ba598a"
+        }
+      ]
+    },
+    {
+      "name": "Kellan's Lightblades",
+      "oracle_text": "Bargain (You may sacrifice an artifact, enchantment, or token as you cast this spell.)\nKellan's Lightblades deals 3 damage to target attacking or blocking creature. If this spell was bargained, destroy that creature instead.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/k/KellansLightblades.java",
+          "java_sha256": "9ab2aa0bfcd2f351d53c1259508c5effe80bb4deccde8de4a654fdebba2c824b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/BargainedCondition.java",
+          "java_sha256": "b6403f9b4c3929fb0d5180aa27ec0b5a4301353143fb16cbc360cfee1a026bc5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+          "java_sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/BargainAbility.java",
+          "java_sha256": "e889139d24bea8b8d7a5eff4212bb7935c8d5133b9b88e70c21386dabf09413f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetAttackingOrBlockingCreature.java",
+          "java_sha256": "9189ffcb3f50a8a262aa70b884d39333a1b1681897b0957724c77eb0bb163f09"
+        }
+      ]
+    },
+    {
+      "name": "Tenacious Tomeseeker",
+      "oracle_text": "Bargain (You may sacrifice an artifact, enchantment, or token as you cast this spell.)\nWhen this creature enters, if it was bargained, return target instant or sorcery card from your graveyard to your hand.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TenaciousTomeseeker.java",
+          "java_sha256": "5cbc9ea3fc13410fadad24a5e01de8c330627c679ad544742cf7a6b717718d04"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/BargainedCondition.java",
+          "java_sha256": "b6403f9b4c3929fb0d5180aa27ec0b5a4301353143fb16cbc360cfee1a026bc5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+          "java_sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/BargainAbility.java",
+          "java_sha256": "e889139d24bea8b8d7a5eff4212bb7935c8d5133b9b88e70c21386dabf09413f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+          "java_sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+        }
+      ]
+    },
+    {
+      "name": "Troublemaker Ouphe",
+      "oracle_text": "Bargain (You may sacrifice an artifact, enchantment, or token as you cast this spell.)\nWhen this creature enters, if it was bargained, exile target artifact or enchantment an opponent controls.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TroublemakerOuphe.java",
+          "java_sha256": "2dbc5c2ffff29c1800c4ef07555bfa8ba9018e7f6aa0ed897303ddc8bfb3cecd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/BargainedCondition.java",
+          "java_sha256": "b6403f9b4c3929fb0d5180aa27ec0b5a4301353143fb16cbc360cfee1a026bc5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+          "java_sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/BargainAbility.java",
+          "java_sha256": "e889139d24bea8b8d7a5eff4212bb7935c8d5133b9b88e70c21386dabf09413f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+          "java_sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        }
+      ]
+    }
+  ],
+  "gated_cards": [
+    {
+      "name": "Agatha's Champion",
+      "reason": "Needs exact untargeted live source fight with optional enemy target."
+    },
+    {
+      "name": "Back for Seconds",
+      "reason": "Needs selected-target new-zone battlefield branch."
+    },
+    {
+      "name": "Beseech the Mirror",
+      "reason": "Needs face-down exile and free casting."
+    },
+    {
+      "name": "Brave the Wilds",
+      "reason": "Needs type/base transformation."
+    },
+    {
+      "name": "Diminisher Witch",
+      "reason": "Needs Role token/base setting."
+    },
+    {
+      "name": "Rowan's Grim Search",
+      "reason": "Needs top/grave arrangement."
+    },
+    {
+      "name": "Realm-Scorcher Hellkite",
+      "reason": "Needs explicit arbitrary mana allocation."
+    },
+    {
+      "name": "Thunderous Debut",
+      "reason": "Needs large reveal/reveal-to-battlefield transaction."
+    },
+    {
+      "name": "Torch the Tower",
+      "reason": "Needs death-exile replacement."
+    },
+    {
+      "name": "Stonesplitter Bolt",
+      "reason": "Needs X casting."
+    }
+  ],
+  "shared_sources": [
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/BargainAbility.java",
+      "java_sha256": "e889139d24bea8b8d7a5eff4212bb7935c8d5133b9b88e70c21386dabf09413f"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/condition/common/BargainedCondition.java",
+      "java_sha256": "b6403f9b4c3929fb0d5180aa27ec0b5a4301353143fb16cbc360cfee1a026bc5"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/costs/OptionalAdditionalCostImpl.java",
+      "java_sha256": "bd50759d4d5da374410b6fffea8a63b239021fa382fb0e392e114e0a81c6a031"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/SpellAbility.java",
+      "java_sha256": "4e4176a30f97131904087a7dd383dcc0751afc17514457761eb2ceeaa7e71354"
+    }
+  ],
+  "notes": [
+    "CR702.166a-d: optional artifact OR enchantment OR token sacrifice is declared before targets and before total cost locking.",
+    "Exact selected sacrifice is reserved jointly with mana funding. Virtual queries do not pay costs.",
+    "One exact cast and entry event own bargain history; no per-object flag. Composite additional costs, offspring and kicker remain gated."
+  ]
+}

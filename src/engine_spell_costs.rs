@@ -24,6 +24,11 @@ impl Game {
                 .checked_add(1)
                 .capacity("forage alternative mana cost exhausted");
         }
+        if a.item.cast.is_some_and(|c| c.bargain == Some(true)) {
+            base.generic = base
+                .generic
+                .saturating_sub(a.item.source_card.bargain_reduction());
+        }
         Self::with_kicker_cost(
             Self::with_offspring_cost(
                 base,

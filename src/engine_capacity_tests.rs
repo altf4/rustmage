@@ -197,6 +197,7 @@ fn observations_of_failed_funding_do_not_overflow_counterfactual_mana() {
     let spec = AdditionalCost {
         kind: EffectChoiceKind::Sacrifice,
         filter: SacrificeFilter {
+            artifact_enchantment_or_token: false,
             keywords: Keywords::NONE,
             source_only: false,
             kinds: 16,

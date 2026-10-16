@@ -456,7 +456,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             decisions += 1;
             replay += 1;
             let after = g.observe(actor);
-            assert_eq!(after.schema, 62);
+            assert_eq!(after.schema, rustmage::OBSERVATION_SCHEMA);
             max_bytes = max_bytes.max(g.state_bytes());
             if let (Some(ann), Action::PayCosts { .. }) = (&before.announcing, &a)
                 && let Some(k) = index(ann.source_card)
