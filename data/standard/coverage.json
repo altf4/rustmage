@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "45d09eb7d0449ae2ae14082517c4c2d79b842ce81c8c4ac94a8e23b4b972346b",
+  "catalogue_version": "40603409de0aad203758a31f5946f55d8e3ae8703a9e14ce439e1f35d7523233",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 998,
-  "implemented_total": 1004,
+  "implemented_standard_cards": 1006,
+  "implemented_total": 1012,
   "token_definitions": 48,
   "emblem_definitions": 1,
   "cards": [
@@ -1312,8 +1312,8 @@
     {
       "name": "Archway Angel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Ardyn, the Usurper",
@@ -4078,8 +4078,8 @@
     {
       "name": "Cat-Gator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Cat-Owl",
@@ -5080,8 +5080,8 @@
     {
       "name": "Coordinated Maneuver",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Coral Sword",
@@ -13666,8 +13666,8 @@
     {
       "name": "Jet, Freedom Fighter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Jiang Yanggu, Alone",
@@ -21706,8 +21706,8 @@
     {
       "name": "Rumbling Rockslide",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Run Away Together",
@@ -23488,8 +23488,8 @@
     {
       "name": "Slash of Light",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Slash, Reptile Rampager",
@@ -23608,8 +23608,8 @@
     {
       "name": "Smaug the Magnificent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Smaug's Fury",
@@ -29614,8 +29614,8 @@
     {
       "name": "Volley Veteran",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Voracious Greatshark",

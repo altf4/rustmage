@@ -12,6 +12,43 @@ class BindingTests(unittest.TestCase):
     def game(self):
         return Game([["Mountain"] * 24 + ["LightningBolt"] * 36] * 2, seed=17, deck_rules="Freeform")
 
+    def test_cat_gator_native_scaled_damage_and_lifelink_replay(self):
+        deck=['Swamp']*24+['Cat-Gator']*36
+        with Game([deck,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+            for _ in range(4000):
+                actor=game.observe('P0')['actor'];obs=game.observe(actor);self.assertIsNone(obs['outcome'])
+                if obs['stack'] and obs['stack'][-1]['source_card']=='Cat-Gator' and obs['stack'][-1]['kind']=={'TriggeredAbility':{'ability':0}}:
+                    self.assertEqual(obs['stack'][-1]['targets'][0]['target'],{'Player':'P1'})
+                    amount=sum(o['zone']=='Battlefield' and o['owner']=='P0' and o['card']=='Swamp' for o in obs['objects']);self.assertGreater(amount,0)
+                    saved=game.snapshot()
+                    with game.clone() as fork:expected=self.resolve_vital_top(fork,actor)
+                    after=self.resolve_vital_top(game,actor);self.assertEqual(after,expected)
+                    self.assertEqual(after['players'][1]['life'],obs['players'][1]['life']-amount)
+                    self.assertEqual(after['players'][0]['life'],obs['players'][0]['life']+amount)
+                    self.assertEqual(after['players'][0]['life_gained_this_turn'],obs['players'][0]['life_gained_this_turn']+amount)
+                    game.restore(saved);again=self.resolve_vital_top(game,actor);after['revision']=again['revision'];self.assertEqual(again,after);game.drop_snapshot(saved);return
+                index=max(range(len(obs['actions'])),key=lambda i:self.professor_score(obs,obs['actions'][i]))
+                game.step(obs,index)
+            self.fail('scaled Cat-Gator trigger not reached')
+
+    def test_archway_angel_native_gain_quantity_and_event_totals_replay(self):
+        deck=['Plains']*24+['Azorius Guildgate']*12+['Archway Angel']*24
+        with Game([deck,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+            for _ in range(4000):
+                actor=game.observe('P0')['actor'];obs=game.observe(actor);self.assertIsNone(obs['outcome'])
+                amount=2*sum(o['zone']=='Battlefield' and o['owner']=='P0' and o['card']=='Azorius Guildgate' for o in obs['objects'])
+                if amount and obs['stack'] and obs['stack'][-1]['source_card']=='Archway Angel' and obs['stack'][-1]['kind']=={'TriggeredAbility':{'ability':0}}:
+                    saved=game.snapshot()
+                    with game.clone() as fork:expected=self.resolve_vital_top(fork,actor)
+                    after=self.resolve_vital_top(game,actor);self.assertEqual(after,expected)
+                    self.assertEqual(after['players'][0]['life'],obs['players'][0]['life']+amount)
+                    self.assertEqual(after['players'][0]['life_gained_this_turn'],obs['players'][0]['life_gained_this_turn']+amount)
+                    self.assertEqual(after['players'][0]['life_gain_events_this_turn'],obs['players'][0]['life_gain_events_this_turn']+1)
+                    game.restore(saved);again=self.resolve_vital_top(game,actor);after['revision']=again['revision'];self.assertEqual(again,after);game.drop_snapshot(saved);return
+                index=max(range(len(obs['actions'])),key=lambda i:self.professor_score(obs,obs['actions'][i]))
+                game.step(obs,index)
+            self.fail('scaled Archway Angel trigger not reached')
+
     def test_germinate_uses_exact_life_gained_total_through_native_batch_and_replay(self):
         deck=['Plains']*12+['Swamp']*6+['Forest']*6+['Germinate Recruits']*12+['Professor Dellian Fel']*12+['Hinterland Sanctifier']*12
         with Game([deck,['Forest']*60],seed=7,deck_rules='Freeform') as game:

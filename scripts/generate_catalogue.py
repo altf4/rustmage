@@ -120,9 +120,43 @@ TOKEN_COUNTS = dict(COUNT_WORDS, an=1, seven=7, eight=8)
 
 def amount_value(text):
     if text == 'the amount of life you gained this turn': return 'AmountValue::LifeGainedThisTurn'
+    if ' plus the number of ' in text:
+        parts=text.split(' plus the number of ')
+        values=[stat_value(part.removeprefix('the number of ')) for part in parts]
+        return 'AmountValue::Stat(StatValue::Sum(&['+', '.join(values)+']))' if all(values) else None
     if text.startswith('the number of '):text=text[len('the number of '):]
     value=stat_value(text)
     return f'AmountValue::Stat({value})' if value else None
+
+
+def scaled_damage_program(text):
+    targets={'any target':'Any','target creature':'Creature',
+             'target creature an opponent controls':'CreatureOpponent',
+             'target creature or planeswalker':'CreaturePlaneswalker',
+             'target opponent':'Opponent','target player':'Player'}
+    source=r'this (?:creature|artifact|enchantment|permanent|spell) deals '
+    amount,target=None,None
+    if m:=re.fullmatch(source+r'damage equal to (.+) to (.+)\.',text):
+        amount,target=m.groups()
+    elif m:=re.fullmatch(source+r'damage to (.+) equal to (.+)\.',text):
+        target,amount=m.groups()
+    elif m:=re.fullmatch(source+r'X damage to (.+), where X is (.+)\.',text):
+        target,amount=m.groups()
+    value=amount_value(amount) if amount else None
+    return (targets[target],[f'DamageScaled({value})']) if target in targets and value else None
+
+
+def scaled_life_program(text):
+    if m:=re.fullmatch(r'you gain life equal to (.+)\.',text):
+        value=amount_value(m[1])
+    elif m:=re.fullmatch(r'you gain X life, where X is (.+)\.',text):
+        value=amount_value(m[1])
+    elif m:=re.fullmatch(r'you gain ([0-9]+) life for each (.+)\.',text):
+        value=amount_value(m[2]);factor=int(m[1])
+        if not 1<=factor<=65535:return None
+        if value and factor!=1:value=f'AmountValue::Multiple {{ value: &{value}, factor: {factor} }}'
+    else:return None
+    return [f'GainLifeScaled(PlayerSet::Controller, {value})'] if value else None
 
 
 def scaled_token_program(text):
@@ -296,7 +330,8 @@ def stat_count_filter(text):
     else:
         if noun.startswith('basic '):basic=True;noun=noun[6:]
         singular={word.casefold():word for word in [*SUBTYPE_PLURALS.values(),'Plains','Island','Swamp','Mountain','Forest','Equipment','Desert','Gate','Treasure']}
-        subtype=SUBTYPE_PLURALS.get(noun,singular.get(noun))
+        plurals={word.casefold()+'s':word for word in ['Island','Swamp','Mountain','Forest','Desert','Gate','Treasure']}
+        subtype=SUBTYPE_PLURALS.get(noun,plurals.get(noun,singular.get(noun)))
         if subtype is None:return None
         if basic and subtype not in ('Plains','Island','Swamp','Mountain','Forest'):return None
     return f'CountFilter {{ zone: CountZone::{zone}, relation: 0, kind: {kind}, exclude: {exclude}, subtype: {"None" if subtype is None else "Some("+json.dumps(subtype)+")"}, basic: {str(basic).lower()}, other: {str(other).lower()}, cards_only: {str(cards).lower()} }}'
@@ -480,7 +515,7 @@ def sacrifice_spec(text):
         amount=dict(COUNT_WORDS,a=1,an=1,another=1,thirteen=13)[m[1]]
         other,subject=m[1]=='another',m[2]
     if subject.endswith(' you control'): subject=subject[:-12]
-    plurals={word+'s':word for word in ('creature','artifact','enchantment','land','permanent','planeswalker','token','food','clue','treasure','lander')}
+    plurals={word.casefold()+'s':word for word in ('creature','artifact','enchantment','land','permanent','planeswalker','token','food','clue','treasure','lander')}
     subject=' '.join(plurals.get(word,word) for word in subject.split())
     kinds={'creature':1,'artifact':16,'enchantment':32,'land':2,'permanent':0,
            'creature or planeswalker':65,'artifact or creature':17,'creature or artifact':17,
@@ -664,6 +699,7 @@ def statement_program(text):
     if not isinstance(text, str) or not text:
         return None
     text = normalize_duration(text[0].lower() + text[1:])
+    if program:=scaled_life_program(text):return program
     if text == 'you get an emblem with "Whenever you gain life, target opponent loses that much life."':
         body='Whenever you gain life, target opponent loses that much life.'
         key=hashlib.sha256(body.encode()).hexdigest()[:24]
@@ -1004,6 +1040,7 @@ def targeted_program(text):
     if not isinstance(text, str) or not text.endswith('.'):
         return None
     text = normalize_duration(text[0].lower() + text[1:])
+    if program:=scaled_damage_program(text):return program
     if m:=re.fullmatch(r'put (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on each of (up to two|up to three|one or two|two) target creatures( you control)?\.',text):
         spec=('CreatureYou' if m[4] else 'Creature',0 if m[3].startswith('up to') else 1 if m[3]=='one or two' else 2,3 if m[3]=='up to three' else 2)
         return spec,[counter_instruction('Targets',m[1],m[2])]
@@ -1386,11 +1423,14 @@ def trigger_creature_template(card):
         names = [name] if name else []
         if name and card.get('type_line', '').startswith('Legendary '):
             names.append(name.split(',')[0])
+            if ' the ' in name:names.append(name.split(' the ')[0])
         for alias in names:
             if line.startswith('Whenever ' + alias + ' attacks, '):
                 line = 'Whenever this creature attacks, ' + line[len('Whenever ' + alias + ' attacks, '):]
             if line.startswith('When ' + alias + ' enters, '):
                 line = 'When this creature enters, ' + line[len('When ' + alias + ' enters, '):]
+            if line.startswith('When ' + alias + ' dies, '):
+                line = 'When this creature dies, ' + line[len('When ' + alias + ' dies, '):]
         for label in ('Raid — ', 'Formidable — ', 'Survival — '):
             if line.startswith(label + 'At the beginning of '): line = line[len(label):]
         for alias in names:
@@ -1433,7 +1473,7 @@ def trigger_creature_template(card):
                 # Only self-event subjects prove an initial 'it' denotes this source.
                 # Other-creature events and later targeted clauses have other antecedents.
                 if condition in ('SelfEnters', 'SelfDies', 'SelfEntersOrDies', 'SelfAttacks', 'SelfEntersOrAttacks', 'SelfDiscarded', 'SelfCycled'):
-                    effect_text = re.sub(r'^[Ii]t deals ', 'this creature deals ', effect_text)
+                    effect_text = re.sub(r'^(?:[Ii]t|[Hh]e|[Ss]he) deals ', 'this creature deals ', effect_text)
                     if m:=re.fullmatch(r'(?:it|he|she) connives(?: ([0-9]+))?\.',effect_text):
                         effect_text='this creature connives'+(' '+m[1] if m[1] else '')+'.'
                 for alias in names:

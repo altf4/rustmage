@@ -72,6 +72,10 @@ impl Game {
             AmountValue::LifeGainedThisTurn => {
                 self.state.players[owner.index()].life_gained_this_turn
             }
+            AmountValue::Multiple { value, factor } => self
+                .amount_value(*value, source, owner)
+                .checked_mul(u128::from(factor))
+                .capacity("effect amount representation exhausted"),
         }
     }
     pub(super) fn stat_expression(&self, expr: StatExpr, source: ObjectRef, owner: Player) -> i128 {

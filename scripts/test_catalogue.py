@@ -14,6 +14,62 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_scaled_damage_exact_amounts_targets_and_word_orders(self):
+        for text,target,value in [
+            ('this spell deals damage to target creature equal to the number of lands you control.','Creature','kind: 2'),
+            ('this creature deals damage equal to the number of Swamps you control to any target.','Any','Some("Swamp")'),
+            ('this creature deals damage to target creature an opponent controls equal to the number of Goblins you control.','CreatureOpponent','Some("Goblin")'),
+            ('this spell deals damage equal to the number of creatures you control plus the number of Equipment you control to target creature.','Creature','StatValue::Sum'),
+            ('this spell deals X damage to target player, where X is your life total.','Player','ControllerLife'),
+        ]:
+            result=generate.targeted_program(text);self.assertIsNotNone(result,text)
+            self.assertEqual(result[0],target);self.assertEqual(len(result[1]),1)
+            self.assertIn('DamageScaled',result[1][0]);self.assertIn(value,result[1][0])
+        for noun,subtype in [('Gates','Gate'),('Treasures','Treasure'),('Islands','Island'),('Swamps','Swamp'),('Mountains','Mountain'),('Forests','Forest')]:
+            self.assertIn('Some("'+subtype+'")',generate.amount_value(noun+' you control'))
+
+    def test_scaled_life_and_unknown_amounts_are_not_inferred(self):
+        p=generate.statement_program('you gain 2 life for each Gate you control.')
+        self.assertIn('GainLifeScaled',p[0]);self.assertIn('factor: 2',p[0]);self.assertIn('Some("Gate")',p[0])
+        self.assertIn('ControllerLife',generate.statement_program('you gain X life, where X is your life total.')[0])
+        for text in [
+            'this creature deals damage equal to its power to any target.',
+            'this creature deals damage equal to the number of lands you control to each opponent.',
+            'this creature deals X damage to any target.',
+            'this creature deals damage equal to the number of Goblins that died this turn to any target.',
+            'this spell deals damage equal to the number of creatures you control plus the damage dealt this turn to target creature.',
+            'this creature deals damage equal to the number of Swamps you control to any other target.',
+            'this spell deals damage to target creature equal to the number of lands you control. Exile it if it dies this turn.',
+            'you gain life equal to the sacrificed creature\'s toughness.',
+            'you gain 65536 life for each Gate you control.',
+            'you gain 0 life for each Gate you control.',
+        ]:
+            self.assertIsNone(generate.targeted_program(text),text)
+            self.assertIsNone(generate.statement_program(text),text)
+
+    def test_scaled_effects_admit_all_eight_whole_bodies_and_reject_added_dependencies(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,report=generate.compile_catalogue(rows,target)
+        supported={r['name'] for r in report['cards'] if r['implemented']}
+        for name in ['Archway Angel','Cat-Gator','Coordinated Maneuver','Jet, Freedom Fighter','Rumbling Rockslide','Slash of Light','Smaug the Magnificent','Volley Veteran']:
+            self.assertIn(name,supported)
+            card=next(c for c in rows['cards'] if c['name']==name)
+            card=dict(card,oracle_text=card['oracle_text']+'\nWhenever you cast a spell, discover 3.')
+            self.assertIsNone(generate.permanent_program_template(card),name)
+            self.assertIsNone(generate.spell_program_template(card),name)
+            self.assertIsNone(generate.modal_spell_template(card),name)
+        for name in ['Smaug, Wicked Worm','Stadium Headliner','Luminollusk','Barret Wallace','Razor Rings']:
+            self.assertNotIn(name,supported)
+
+    def test_damage_pronouns_require_self_event_and_exact_source_alias(self):
+        card=self.card(name='Example the Great',type_line='Legendary Creature — Human',oracle_text='Whenever Example attacks, he deals damage equal to the number of lands you control to any target.')
+        self.assertIsNotNone(generate.trigger_creature_template(card))
+        for text in ['Whenever another creature you control enters, he deals damage equal to the number of lands you control to any target.',
+                     'Whenever Someone Else attacks, he deals damage equal to the number of lands you control to any target.']:
+            self.assertIsNone(generate.trigger_creature_template(dict(card,oracle_text=text)))
+
     def test_scaled_token_quantities_use_exact_shared_count_filters(self):
         cases={
             'create X 2/2 white Cat creature tokens, where X is your life total.':'StatValue::ControllerLife',

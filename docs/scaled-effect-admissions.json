@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "as_of": "2026-10-15",
+  "cards": [
+    {
+      "name": "Archway Angel",
+      "oracle_text": "Flying\nWhen this creature enters, you gain 2 life for each Gate you control.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/ArchwayAngel.java",
+          "java_sha256": "a8199d9bf87b28c77f1e2072381a135e30689927e509874befbf31b2acea4c1f"
+        }
+      ]
+    },
+    {
+      "name": "Cat-Gator",
+      "oracle_text": "Lifelink\nWhen this creature enters, it deals damage equal to the number of Swamps you control to any target.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CatGator.java",
+          "java_sha256": "ae82c3a01c48a3cd40446131002a410635fbf8bbafc40e02856dd3890e92a7f5"
+        }
+      ]
+    },
+    {
+      "name": "Coordinated Maneuver",
+      "oracle_text": "Choose one \u2014\n\u2022 Coordinated Maneuver deals damage equal to the number of creatures you control to target creature or planeswalker.\n\u2022 Destroy target enchantment.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CoordinatedManeuver.java",
+          "java_sha256": "50f6fd1322c00fc36be246a2b205306ebfcad2d4eef911a85a00ab2722fc9255"
+        }
+      ]
+    },
+    {
+      "name": "Jet, Freedom Fighter",
+      "oracle_text": "When Jet enters, he deals damage equal to the number of creatures you control to target creature an opponent controls.\nWhen Jet dies, put a +1/+1 counter on each of up to two target creatures.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/j/JetFreedomFighter.java",
+          "java_sha256": "b962a76ade980a1572eb9889f61c2720365b7fee16761ec48aad5485f30d2aee"
+        }
+      ]
+    },
+    {
+      "name": "Rumbling Rockslide",
+      "oracle_text": "Rumbling Rockslide deals damage to target creature equal to the number of lands you control.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RumblingRockslide.java",
+          "java_sha256": "a0470d49f825e75cc522332eed37d765657de616f7e3d2e2afb39df6d23c47c2"
+        }
+      ]
+    },
+    {
+      "name": "Slash of Light",
+      "oracle_text": "Slash of Light deals damage equal to the number of creatures you control plus the number of Equipment you control to target creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SlashOfLight.java",
+          "java_sha256": "5986e588af95ab367679a35b16c68e18865c95b133b3aebed203187db7608772"
+        }
+      ]
+    },
+    {
+      "name": "Smaug the Magnificent",
+      "oracle_text": "Flying, haste\nWhenever Smaug attacks, he deals damage equal to the number of Treasures you control to any target.\nAt the beginning of your upkeep, create a Treasure token.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SmaugTheMagnificent.java",
+          "java_sha256": "7aead9aab502f999c9c20586ea9967d83053ce0b5c9142531949399a4806a30f"
+        }
+      ]
+    },
+    {
+      "name": "Volley Veteran",
+      "oracle_text": "When this creature enters, it deals damage to target creature an opponent controls equal to the number of Goblins you control.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VolleyVeteran.java",
+          "java_sha256": "1885d44b18f22d95658a5aa101e33acdbb5622f039a31fd0955921fd48baeb0e"
+        }
+      ]
+    }
+  ]
+}

@@ -774,10 +774,18 @@ impl Game {
                             .capacity("life representation exhausted");
                     }
                 }
-                Instruction::GainLife(set, amount) => {
+                Instruction::GainLife(set, _) | Instruction::GainLifeScaled(set, _) => {
+                    let amount = match instruction {
+                        Instruction::GainLife(_, amount) => i128::from(amount),
+                        Instruction::GainLifeScaled(_, value) => {
+                            i128::try_from(self.amount_value(value, item.object, item.controller))
+                                .capacity("life gain amount representation exhausted")
+                        }
+                        _ => unreachable!(),
+                    };
                     let players: Vec<_> = self.program_players(set, &item).collect();
                     for player in players {
-                        self.gain_life(player, i128::from(amount));
+                        self.gain_life(player, amount);
                     }
                 }
                 Instruction::LoseLife(set, amount) => {
@@ -822,11 +830,16 @@ impl Game {
                     }
                 }
                 Instruction::Damage(_)
+                | Instruction::DamageScaled(_)
                 | Instruction::DamagePlayers(_, _)
                 | Instruction::DamageDiscardAmount(_) => {
                     let amount = match instruction {
                         Instruction::Damage(amount) | Instruction::DamagePlayers(_, amount) => {
                             i128::from(amount)
+                        }
+                        Instruction::DamageScaled(value) => {
+                            i128::try_from(self.amount_value(value, item.object, item.controller))
+                                .capacity("damage amount representation exhausted")
                         }
                         Instruction::DamageDiscardAmount(_) => i128::from(
                             item.discard_event
