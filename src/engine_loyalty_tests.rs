@@ -240,7 +240,7 @@ fn targeted_damage_and_discard_choices_defer_zero_loyalty_sbas_until_resolution_
     assert_eq!(g.object_view(w).zone, Zone::Battlefield);
     assert_eq!(g.object_view(w).counters.loyalty, 0);
     let json = serde_json::to_value(g.observe(Player::P0)).unwrap();
-    assert_eq!(json["schema"], 49);
+    assert_eq!(json["schema"], 50);
     settle(&mut g);
     assert_eq!(g.object_view(w).zone, Zone::Graveyard);
     assert_eq!(g.state.players[0].cards_drawn_this_turn, 1);

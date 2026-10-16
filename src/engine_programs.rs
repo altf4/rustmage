@@ -201,6 +201,16 @@ impl Game {
                                 && f.subtype
                                     .is_none_or(|subtype| event.before.card.has_subtype(subtype))
                         }
+                        TriggerCondition::CreatureDiesFiltered { filter } => {
+                            event.before.card.is_creature()
+                                && filter.matches_intrinsic(
+                                    event.before.card,
+                                    event.before.owner == source.owner,
+                                    event.before.reference == source.reference,
+                                    event.before.attacking,
+                                )
+                                && event.before.keywords.contains(filter.keyword)
+                        }
                         TriggerCondition::PermanentToGraveyard {
                             kinds,
                             relation,
@@ -253,6 +263,7 @@ impl Game {
                     | TriggerCondition::SelfDies
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::PermanentToGraveyard { .. }
+                    | TriggerCondition::CreatureDiesFiltered { .. }
                     | TriggerCondition::Sacrificed { .. }
                     | TriggerCondition::LifeGained { .. }
                     | TriggerCondition::SelfAttacks
@@ -511,6 +522,14 @@ impl Game {
     ) -> impl Iterator<Item = Player> + use<> {
         let controller = item.controller;
         let players = match set {
+            PlayerSet::DamagedPlayer => [
+                Some(
+                    item.damage_event
+                        .expect("damaged player requires a damage event")
+                        .player,
+                ),
+                None,
+            ],
             PlayerSet::DrawingPlayer => [
                 Some(
                     item.draw_event
@@ -605,6 +624,23 @@ impl Game {
                     }
                 }
                 Instruction::Skip(skip) => self.state.resolving.as_mut().unwrap().pc += skip,
+                Instruction::AddPoison(set, amount) => {
+                    for player in self.program_players(set, &item) {
+                        let counters = &mut self.state.players[player.index()].poison_counters;
+                        *counters = counters
+                            .checked_add(u64::from(amount))
+                            .capacity("player poison counters exhausted");
+                    }
+                }
+                Instruction::MayOpponent { skip } => {
+                    let skip_to = resolution.pc.checked_add(skip).expect("program offset");
+                    assert!(skip_to <= resolution.program.len());
+                    self.state.pending = Pending::EffectOptional {
+                        player: item.controller.other(),
+                        skip_to,
+                    };
+                    return;
+                }
                 Instruction::MayPayOpponentLife { amount, skip } => {
                     let player = item.controller.other();
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");

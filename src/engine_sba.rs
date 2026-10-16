@@ -42,7 +42,7 @@ impl Game {
                 .state
                 .players
                 .each_ref()
-                .map(|p| p.life <= 0 || p.attempted_empty_draw),
+                .map(|p| p.life <= 0 || p.poison_counters >= 10 || p.attempted_empty_draw),
         };
         let mut legends: [std::collections::BTreeMap<&'static str, Vec<ObjectRef>>; 2] =
             std::array::from_fn(|_| std::collections::BTreeMap::new());

@@ -116,7 +116,7 @@ fn activation_cost_equivalent_is_committed_before_payment_and_choices_are_contro
         assert_eq!(g.snapshot(), saved);
         assert_eq!(g.revision(), revision);
         let o = g.observe(Player::P0);
-        assert_eq!(o.schema, 49);
+        assert_eq!(o.schema, 50);
         assert_eq!(o.decision, "activation_cost");
         assert_eq!(o.cost_choices.len(), 2);
         assert!(o.payment_request.is_none());

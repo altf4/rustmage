@@ -8,6 +8,31 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_poison_effects_bind_only_explicit_target_or_damage_recipient(self):
+        self.assertEqual(generate.targeted_program('Target opponent gets two poison counters.'),('Opponent',['AddPoison(PlayerSet::Targeted, 2)']))
+        self.assertEqual(generate.damage_event_program('that player gets two poison counters.'),('None',['AddPoison(PlayerSet::DamagedPlayer, 2)']))
+        for text in ['That player gets two poison counters.','Target player gets two poison counters.','Target opponent gets three poison counters.','Target opponent gets two poison counters unless they pay {1}.','Target opponent gets two poison counters. Then discover 3.']:
+            self.assertIsNone(generate.targeted_program(text),text)
+        self.assertIsNone(generate.statement_program('That player gets two poison counters.'))
+        self.assertEqual(generate.nonmana_ward_program('Ward—Get five poison counters.'),['MayOpponent { skip: 2 }','AddPoison(PlayerSet::Opponent, 5)','Skip(1)','CounterRelated'])
+        for text in ['Ward—Get five poison counters and pay {1}.','Ward—Get four poison counters.','Ward—Get five poison counters. Draw a card.']:
+            self.assertIsNone(generate.nonmana_ward_program(text))
+
+    def test_poison_damage_and_death_filters_are_exact_and_not_aggregated(self):
+        line='Whenever a nontoken artifact creature you control deals combat damage to a player, that player gets two poison counters.'
+        result=generate.trigger_creature_template(self.card(oracle_text=line));self.assertIsNotNone(result);condition=result[2][0][0];self.assertIn('tokens: Some(false)',condition);self.assertIn('artifact: true',condition);self.assertIn('combat_only: true',condition);self.assertIn('one_or_more: false',condition)
+        death=generate.trigger_creature_template(self.card(oracle_text='Whenever another creature you control with deathtouch dies, each opponent sacrifices a nontoken creature of their choice.'))
+        self.assertIsNotNone(death);self.assertTrue(death[2][0][0].startswith('CreatureDiesFiltered {'));self.assertIn('keyword: Keywords(128)',death[2][0][0]);self.assertIn('other: true',death[2][0][0])
+        for text in ['Whenever one or more nontoken artifact creatures you control deal combat damage to a player, that player gets three poison counters.', 'Whenever another creature you control with toxic dies, draw a card.', 'Whenever a nontoken artifact creature you control deals damage to a player, that player gets two poison counters and you draw a card.']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=text)))
+
+    def test_poison_admits_all_four_whole_bodies_with_residual_gates(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());_,coverage=generate.compile_catalogue(rows,target);supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for name in ['Fynn, the Fangbearer','Persuasive Interrogators','The Serpent Society','Virulent Silencer']:
+            self.assertIn(name,supported);c=next(c for c in rows['cards'] if c['name']==name);bad=dict(c,oracle_text=c['oracle_text']+'\nWhenever you cast a spell, discover 3.')
+            for compiler in [generate.permanent_program_template,generate.trigger_creature_template]:self.assertIsNone(compiler(bad),name)
+
     def test_draw_and_token_composition_keeps_entire_sentence_and_order(self):
         for word,n in [('a card',1),('two cards',2),('three cards',3),('four cards',4)]:
             result=generate.statement_program('Draw '+word+' and create a Treasure token.')
@@ -60,7 +85,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIn(name,supported)
             c=next(c for c in rows['cards'] if c['name']==name);bad=dict(c,oracle_text=c['oracle_text']+'\nWhenever you cast a spell, discover 3.')
             for compiler in [generate.permanent_program_template,generate.trigger_creature_template]:self.assertIsNone(compiler(bad),name)
-        for name in ['Curious Cadaver','Esoteric Duplicator','Magnetic Snuffler','Persuasive Interrogators','Zhao, Ruthless Admiral','Camellia, the Seedmiser']:
+        for name in ['Curious Cadaver','Esoteric Duplicator','Magnetic Snuffler','Zhao, Ruthless Admiral','Camellia, the Seedmiser']:
             self.assertNotIn(name,supported)
 
     def test_permanent_departures_compile_exact_sources_and_kind_scoped_exclusions(self):

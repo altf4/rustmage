@@ -480,6 +480,7 @@ struct PlayerState {
     life_lost_this_turn: u128,
     attacked_this_turn: bool,
     life: i128,
+    poison_counters: u64,
     mana: Mana,
     library: SharedVec<CardId>, // top is last, bottom is first
     mulligans: u8,
@@ -803,6 +804,7 @@ pub struct PlayerView {
     pub life_lost_this_turn: u128,
     pub attacked_this_turn: bool,
     pub life: i128,
+    pub poison_counters: u64,
     pub mana: Mana,
     pub library_count: usize,
     pub hand_count: usize,
@@ -1033,6 +1035,7 @@ impl Game {
             life_lost_this_turn: 0,
             attacked_this_turn: false,
             life: 20,
+            poison_counters: 0,
             mana: [0; 6],
             library: SharedVec::default(),
             mulligans: 0,
@@ -2984,7 +2987,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 49,
+            schema: 50,
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
             creatures_died_this_turn: s.creatures_died_this_turn,
             catalogue: crate::CATALOGUE_VERSION,
@@ -3032,6 +3035,7 @@ impl Game {
                 life_lost_this_turn: s.players[i].life_lost_this_turn,
                 attacked_this_turn: s.players[i].attacked_this_turn,
                 life: s.players[i].life,
+                poison_counters: s.players[i].poison_counters,
                 mana: s.players[i].mana,
                 library_count: s.players[i].library.len(),
                 hand_count: self.hand_count(if i == 0 { Player::P0 } else { Player::P1 }),
@@ -3631,3 +3635,7 @@ mod sacrifice_trigger_tests;
 #[cfg(test)]
 #[path = "engine_draw_token_body_tests.rs"]
 mod draw_token_body_tests;
+
+#[cfg(test)]
+#[path = "engine_poison_tests.rs"]
+mod poison_tests;

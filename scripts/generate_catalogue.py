@@ -385,6 +385,7 @@ def creature_filter(text):
     elif text == 'creature tokens': tokens = 'Some(true)'
     elif text == 'nontoken creatures': tokens = 'Some(false)'
     elif text == 'artifact creatures': artifact = True
+    elif text == 'nontoken artifact creatures': artifact,tokens=True,'Some(false)'
     elif text in SUBTYPE_PLURALS: subtype = 'Some(' + json.dumps(SUBTYPE_PLURALS[text]) + ')'
     else: return None
     return (f'CreatureFilter {{ relation: {relation}, other: {str(other).lower()}, subtype: {subtype}, '
@@ -1333,6 +1334,8 @@ def ward_word(word):
 def nonmana_ward_program(line):
     # Whole standalone clauses only; mixed costs and residual text stay gated.
     text=line.casefold()
+    if text=='ward—get five poison counters.':
+        return ['MayOpponent { skip: 2 }','AddPoison(PlayerSet::Opponent, 5)','Skip(1)','CounterRelated']
     if text=='ward—discard a card.':
         cost=object_choice('Discard','Opponent',sacrifice_spec('a permanent'),skip=1)
     elif text=='ward—sacrifice a creature.':
@@ -1500,6 +1503,8 @@ def targeted_program(text):
         return 'Player', program
     if m := re.fullmatch(r'target (player|opponent) discards ' + draw + r'\.', text):
         return ('Player' if m[1] == 'player' else 'Opponent'), [f'Discard(PlayerSet::Targeted, {DRAW_COUNTS[m[2]]})']
+    if text=='target opponent gets two poison counters.':
+        return 'Opponent',['AddPoison(PlayerSet::Targeted, 2)']
     if m := re.fullmatch(r'target (player|opponent) (gains|loses) ([0-9]+) life\.', text):
         if int(m[3]) > 65535: return None
         return ('Player' if m[1] == 'player' else 'Opponent'), [f'{"GainLife" if m[2] == "gains" else "LoseLife"}(PlayerSet::Targeted, {int(m[3])})']
@@ -1659,10 +1664,13 @@ for _phrase, _kinds, _relation, _exclude_source_kinds in [
 
 # Single sacrifice events only. Event quantities and sacrificed-object pronouns
 # are not bound to an unrelated ability-cost context.
-for _phrase in ('an artifact','a Food','another creature or artifact','another permanent','a permanent','a token','a permanent during your turn'):
+for _phrase in ('an artifact','a Food','a Clue','another creature or artifact','another permanent','a permanent','a token','a permanent during your turn'):
     _spec=sacrifice_spec(_phrase.replace(' during your turn',''))
     VITAL_PREFIXES['Whenever you sacrifice '+_phrase+', ']=(
         'Sacrificed { filter: '+_spec[1]+', own_turn: '+str(' during your turn' in _phrase).lower()+' }')
+
+VITAL_PREFIXES['Whenever another creature you control with deathtouch dies, ']=(
+    'CreatureDiesFiltered { filter: '+creature_filter('other creatures you control with deathtouch')+' }')
 
 
 
@@ -1681,6 +1689,7 @@ def player_damage_prefix(line):
             descriptor=descriptor[2:]
             if descriptor.startswith('modified creature '):
                 descriptor=descriptor.replace('modified creature ','modified creatures ',1)
+            elif descriptor.startswith('nontoken artifact creature '): descriptor=descriptor.replace('artifact creature ','artifact creatures ',1)
             elif descriptor.startswith('creature '): descriptor=descriptor.replace('creature ','creatures ',1)
             else: return None
         elif not one: return None
@@ -1705,6 +1714,8 @@ def damage_event_program(text):
     # A damage-sized quantity binds only inside a player-damage trigger. Ordinary
     # spell/step/entry parsing cannot infer an event from 'that many'.
     normalized=text[0].lower()+text[1:] if text else ''
+    if normalized=='that player gets two poison counters.':
+        return 'None',['AddPoison(PlayerSet::DamagedPlayer, 2)']
     if m:=re.fullmatch(r'(?:you )?draw that many cards(, then discard a card)?\.',normalized):
         return 'None',['DrawDamageAmount']+(['Discard(PlayerSet::Controller, 1)'] if m[1] else [])
     targeted=targeted_program(text)
