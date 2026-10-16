@@ -523,7 +523,7 @@ fn public_draw_context_contains_no_drawn_card_identity_and_owned_replay_preserve
     g.draw_many(Player::P0, 2);
     place(&mut g);
     let public = g.observe(Player::P1);
-    assert_eq!(public.schema, 50);
+    assert_eq!(public.schema, 51);
     assert_eq!(public.players[0].cards_drawn_this_turn, 2);
     assert!(public.objects.iter().all(|o| o.id != top));
     let event = serde_json::to_value(events(&g, card)[0]).unwrap();

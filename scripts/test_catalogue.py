@@ -8,6 +8,34 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_firebending_exact_triggers_preserve_multiplicity_and_scaled_count(self):
+        for n in [0,1,2,65535]:
+            result=generate.trigger_creature_template(self.card(oracle_text='Firebending '+str(n)))
+            self.assertEqual(result[2],[('SelfAttacks',[f'AddCombatRed({n})'],'None')])
+        result=generate.trigger_creature_template(self.card(oracle_text='Firebending 1\nFirebending 2'))
+        self.assertEqual(len(result[2]),2)
+        scaled=generate.trigger_creature_template(self.card(oracle_text='Firebending X, where X is the number of creatures you control.'))
+        self.assertEqual(scaled[2][0][1],['AddCombatRedScaled('+generate.amount_value('the number of creatures you control')+')'])
+        for text in ['Firebending 65536','Firebending -1',"Firebending X, where X is this creature's power.",'Firebending 2. Draw a card.','Firebending 2 This ability triggers only once each turn.','Firebending X, where X is the number of creatures an opponent controls.']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=text)),text)
+
+    def test_lesson_reduction_and_life_predefined_token_composition_are_exact(self):
+        self.assertEqual(generate.reduction_filter('Lesson'),'CastFilter::Subtype("Lesson")')
+        for token in ['Clue','Treasure']:
+            self.assertEqual(generate.statement_program('You lose 1 life and create a '+token+' token.'),['LoseLife(PlayerSet::Controller, 1)',*generate.predefined_program('create a '+token+' token.')])
+        for text in ['You lose 1 life and create a Map token.','You lose 1 life and create a Treasure token. Then discover 3.','You lose 1 life and create a token copy of target creature.']:
+            self.assertIsNone(generate.statement_program(text))
+        self.assertIsNone(generate.reduction_filter('non-Lesson'))
+
+    def test_firebending_migration_admits_eight_complete_bodies_and_gates_power_copy_flashback(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());_,coverage=generate.compile_catalogue(rows,target);supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for name in ['Azula, On the Hunt','Fire Sages','Namazu Trader','Rough Rhino Cavalry','Sun Warriors','Uncle Iroh','Vindictive Warden','Zhao, Ruthless Admiral']:
+            self.assertIn(name,supported);c=next(c for c in rows['cards'] if c['name']==name);bad=dict(c,oracle_text=c['oracle_text']+'\nWhenever you cast a spell, discover 3.')
+            for compiler in [generate.permanent_program_template,generate.trigger_creature_template]:self.assertIsNone(compiler(bad),name)
+        for name in ['Firebending Student','Fire Lord Azula','Fire Lord Zuko','Iroh, Grand Lotus','Zuko, Exiled Prince','Tundra Tank','Jeong Jeong, the Deserter']:
+            self.assertNotIn(name,supported)
+
     def test_poison_effects_bind_only_explicit_target_or_damage_recipient(self):
         self.assertEqual(generate.targeted_program('Target opponent gets two poison counters.'),('Opponent',['AddPoison(PlayerSet::Targeted, 2)']))
         self.assertEqual(generate.damage_event_program('that player gets two poison counters.'),('None',['AddPoison(PlayerSet::DamagedPlayer, 2)']))
@@ -85,7 +113,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIn(name,supported)
             c=next(c for c in rows['cards'] if c['name']==name);bad=dict(c,oracle_text=c['oracle_text']+'\nWhenever you cast a spell, discover 3.')
             for compiler in [generate.permanent_program_template,generate.trigger_creature_template]:self.assertIsNone(compiler(bad),name)
-        for name in ['Curious Cadaver','Esoteric Duplicator','Magnetic Snuffler','Zhao, Ruthless Admiral','Camellia, the Seedmiser']:
+        for name in ['Curious Cadaver','Esoteric Duplicator','Magnetic Snuffler','Camellia, the Seedmiser']:
             self.assertNotIn(name,supported)
 
     def test_permanent_departures_compile_exact_sources_and_kind_scoped_exclusions(self):

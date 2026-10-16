@@ -253,7 +253,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     "private hand leaked"
                 );
             }
-            assert_eq!(after.schema, 50);
+            assert_eq!(after.schema, 51);
             poison_checks += 1;
             if before.turn == after.turn {
                 // This deck has no exile/bounce or zero-toughness incoming

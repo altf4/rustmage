@@ -1,0 +1,375 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Azula, On the Hunt",
+      "oracle_text": "Firebending 2 (Whenever this creature attacks, add {R}{R}. This mana lasts until end of combat.)\nWhenever Azula attacks, you lose 1 life and create a Clue token. (It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AzulaOnTheHunt.java",
+          "java_sha256": "d69a84bb2c9ddda406269914e977549ca0eae2ecc171eb3924daea9696da971b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FirebendingAbility.java",
+          "java_sha256": "886553199042c3caee285871191096e9e938f2ef1ffa96cb289bac8518502566"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+          "java_sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/ManaPool.java",
+          "java_sha256": "7a4fe599d203edd8bcd673fad994303fa055ae37c2f9a1986b8cbf9fcbb7d1f4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/ManaPoolItem.java",
+          "java_sha256": "08854ce466abd7ddbbfb5efec3e25ee06f86f7b48e0bb229655218d9f9c6d8bc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+          "java_sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/ClueArtifactToken.java",
+          "java_sha256": "711939b0212d808576d149e8c95b0007df2e003c29095ddb26c4cdce94a3ddd8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/token/ClueAbility.java",
+          "java_sha256": "ade27801ef45e9379e70fa7a5a8528f847e9df65d86410f562818e94b1e908b6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+          "java_sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        }
+      ]
+    },
+    {
+      "name": "Fire Sages",
+      "oracle_text": "Firebending 1 (Whenever this creature attacks, add {R}. This mana lasts until end of combat.)\n{1}{R}{R}: Put a +1/+1 counter on this creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FireSages.java",
+          "java_sha256": "f62bd0f3423a82ff847737a168f6e9d0c6a869563e847406715214ee91851736"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FirebendingAbility.java",
+          "java_sha256": "886553199042c3caee285871191096e9e938f2ef1ffa96cb289bac8518502566"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+          "java_sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/ManaPool.java",
+          "java_sha256": "7a4fe599d203edd8bcd673fad994303fa055ae37c2f9a1986b8cbf9fcbb7d1f4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/ManaPoolItem.java",
+          "java_sha256": "08854ce466abd7ddbbfb5efec3e25ee06f86f7b48e0bb229655218d9f9c6d8bc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        }
+      ]
+    },
+    {
+      "name": "Namazu Trader",
+      "oracle_text": "When this creature enters, you lose 1 life and create a Treasure token.\nWhenever this creature attacks, you may sacrifice another creature or artifact. If you do, surveil 2. (Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/n/NamazuTrader.java",
+          "java_sha256": "5498f0f2da6e2c915289c60b712d651486099ebdb567ac10ca1578d3875d5057"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+          "java_sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+          "java_sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+          "java_sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+          "java_sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+          "java_sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/token/TreasureAbility.java",
+          "java_sha256": "d0b4701fc40514cb0d6efe11255d4644b28e4d6b9f5d5acf3c92093c571b5bae"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+          "java_sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "java_sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/mana/AddManaOfAnyColorEffect.java",
+          "java_sha256": "1ab49b0ed403a80a0daed4883b432e65e47e38a72d5e4ebca87894284c4fa085"
+        }
+      ]
+    },
+    {
+      "name": "Rough Rhino Cavalry",
+      "oracle_text": "Firebending 2 (Whenever this creature attacks, add {R}{R}. This mana lasts until end of combat.)\nExhaust — {8}: Put two +1/+1 counters on this creature. It gains trample until end of turn. (Activate each exhaust ability only once.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RoughRhinoCavalry.java",
+          "java_sha256": "b9fd119fdaf0976aeff9a4e0f097a298ecb2871de82dbf5f35fa490a6a0bc8a5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FirebendingAbility.java",
+          "java_sha256": "886553199042c3caee285871191096e9e938f2ef1ffa96cb289bac8518502566"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+          "java_sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/ManaPool.java",
+          "java_sha256": "7a4fe599d203edd8bcd673fad994303fa055ae37c2f9a1986b8cbf9fcbb7d1f4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/ManaPoolItem.java",
+          "java_sha256": "08854ce466abd7ddbbfb5efec3e25ee06f86f7b48e0bb229655218d9f9c6d8bc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "java_sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+          "java_sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ExhaustAbility.java",
+          "java_sha256": "8a3ebcdcf390152bc354a8493189b1d182befe3c3dc0002f1380744a3500d515"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+          "java_sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/ActivatedAbilityImpl.java",
+          "java_sha256": "abda1cc51790a3a40291e5ce3867cc12a0b98019813ac42ac8e7c822d8d4128b"
+        }
+      ]
+    },
+    {
+      "name": "Sun Warriors",
+      "oracle_text": "Firebending X, where X is the number of creatures you control. (Whenever this creature attacks, add X {R}. This mana lasts until end of combat.)\n{5}: Create a 1/1 white Ally creature token.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SunWarriors.java",
+          "java_sha256": "49230e2b12475418061a3b6cce5661f4ab9699ee8e4115dceb9c93ba2ded3ed9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FirebendingAbility.java",
+          "java_sha256": "886553199042c3caee285871191096e9e938f2ef1ffa96cb289bac8518502566"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+          "java_sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/ManaPool.java",
+          "java_sha256": "7a4fe599d203edd8bcd673fad994303fa055ae37c2f9a1986b8cbf9fcbb7d1f4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/ManaPoolItem.java",
+          "java_sha256": "08854ce466abd7ddbbfb5efec3e25ee06f86f7b48e0bb229655218d9f9c6d8bc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "java_sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CreaturesYouControlCount.java",
+          "java_sha256": "17e5433bd06fd2d48cf22a5c5d105fb9081c3678b21ddad78dc78bac60281acd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/AllyToken.java",
+          "java_sha256": "f923612258b7cffbdcb17f3d99f23d7519c956c0a499542f060ffef00ef99b1c"
+        }
+      ]
+    },
+    {
+      "name": "Uncle Iroh",
+      "oracle_text": "Firebending 1 (Whenever this creature attacks, add {R}. This mana lasts until end of combat.)\nLesson spells you cast cost {1} less to cast.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/u/UncleIroh.java",
+          "java_sha256": "16e0bbf680db5d1459424de3bb2a23363553ab3a18444626aff042ba023f6b64"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FirebendingAbility.java",
+          "java_sha256": "886553199042c3caee285871191096e9e938f2ef1ffa96cb289bac8518502566"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+          "java_sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/ManaPool.java",
+          "java_sha256": "7a4fe599d203edd8bcd673fad994303fa055ae37c2f9a1986b8cbf9fcbb7d1f4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/ManaPoolItem.java",
+          "java_sha256": "08854ce466abd7ddbbfb5efec3e25ee06f86f7b48e0bb229655218d9f9c6d8bc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellsCostReductionControllerEffect.java",
+          "java_sha256": "47783fefecfbb22810317538f30e9e92302add21ebff508bc21f43683a85ad06"
+        }
+      ]
+    },
+    {
+      "name": "Vindictive Warden",
+      "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)\nFirebending 1 (Whenever this creature attacks, add {R}. This mana lasts until end of combat.)\n{3}: This creature deals 1 damage to each opponent.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VindictiveWarden.java",
+          "java_sha256": "ac3b836bd347890c98c4324607935015bea976d9b6f2295ee8aed3bad3d60439"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FirebendingAbility.java",
+          "java_sha256": "886553199042c3caee285871191096e9e938f2ef1ffa96cb289bac8518502566"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+          "java_sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/ManaPool.java",
+          "java_sha256": "7a4fe599d203edd8bcd673fad994303fa055ae37c2f9a1986b8cbf9fcbb7d1f4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/ManaPoolItem.java",
+          "java_sha256": "08854ce466abd7ddbbfb5efec3e25ee06f86f7b48e0bb229655218d9f9c6d8bc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "java_sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+          "java_sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+          "java_sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+        }
+      ]
+    },
+    {
+      "name": "Zhao, Ruthless Admiral",
+      "oracle_text": "Firebending 2 (Whenever this creature attacks, add {R}{R}. This mana lasts until end of combat.)\nWhenever you sacrifice another permanent, creatures you control get +1/+0 until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/z/ZhaoRuthlessAdmiral.java",
+          "java_sha256": "e799d01efb9094a53b322bf6b4868f2ad82984c614f63ef3b48e99c539a416e8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FirebendingAbility.java",
+          "java_sha256": "886553199042c3caee285871191096e9e938f2ef1ffa96cb289bac8518502566"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+          "java_sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/ManaPool.java",
+          "java_sha256": "7a4fe599d203edd8bcd673fad994303fa055ae37c2f9a1986b8cbf9fcbb7d1f4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/ManaPoolItem.java",
+          "java_sha256": "08854ce466abd7ddbbfb5efec3e25ee06f86f7b48e0bb229655218d9f9c6d8bc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SacrificePermanentTriggeredAbility.java",
+          "java_sha256": "fa6f6ae71009e45d59ba6080503c75b1c96b730ea7e0b5a075d5dc26a230efe8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+          "java_sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+        }
+      ]
+    }
+  ]
+}

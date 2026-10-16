@@ -358,13 +358,7 @@ impl Game {
     }
 
     pub(super) fn cast_item(&mut self, actor: Player, card: CardId, payment: Mana) -> SpellView {
-        for (pool, cost) in self.state.players[actor.index()]
-            .mana
-            .iter_mut()
-            .zip(payment)
-        {
-            *pool -= cost;
-        }
+        self.spend_mana(actor, payment);
         self.state.passes = 0;
         let object = self.move_object(card, Zone::Stack).after;
         let id = self.next_stack_id();
@@ -516,13 +510,7 @@ impl Game {
             if matches!(announcement.item.kind, StackKind::ActivatedAbility { .. }) {
                 self.pay_activation(&announcement.item, payment, announcement.counter_payment);
             } else {
-                for (pool, cost) in self.state.players[announcement.item.controller.index()]
-                    .mana
-                    .iter_mut()
-                    .zip(payment)
-                {
-                    *pool -= cost;
-                }
+                self.spend_mana(announcement.item.controller, payment);
             }
         }
         // Costs may synchronously return exiled Auras/lands. Finish their entry

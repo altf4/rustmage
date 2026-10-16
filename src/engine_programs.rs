@@ -624,6 +624,13 @@ impl Game {
                     }
                 }
                 Instruction::Skip(skip) => self.state.resolving.as_mut().unwrap().pc += skip,
+                Instruction::AddCombatRed(amount) => {
+                    self.add_combat_red(item.controller, u128::from(amount))
+                }
+                Instruction::AddCombatRedScaled(value) => {
+                    let amount = self.amount_value(value, item.object, item.controller);
+                    self.add_combat_red(item.controller, amount);
+                }
                 Instruction::AddPoison(set, amount) => {
                     for player in self.program_players(set, &item) {
                         let counters = &mut self.state.players[player.index()].poison_counters;
