@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "6840f15c6694c6db3ccaf801325d870bdf678517b5bedf4eb55b3ca93fe84c78",
+  "catalogue_version": "45d09eb7d0449ae2ae14082517c4c2d79b842ce81c8c4ac94a8e23b4b972346b",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 987,
-  "implemented_total": 993,
-  "token_definitions": 43,
+  "implemented_standard_cards": 998,
+  "implemented_total": 1004,
+  "token_definitions": 48,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -160,8 +160,8 @@
     {
       "name": "Aatchik, Emerald Radian",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Abandon Attachments",
@@ -706,8 +706,8 @@
     {
       "name": "Ajani, Caller of the Pride",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Ajani, Outland Chaperone",
@@ -3172,8 +3172,8 @@
     {
       "name": "Brass's Bounty",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Brass's Tunnel-Grinder // Tecutlan, the Searing Rift",
@@ -4552,8 +4552,8 @@
     {
       "name": "Clachan Festival",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Claim Jumper",
@@ -10192,8 +10192,8 @@
     {
       "name": "Gather the White Lotus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Gathering Place",
@@ -10300,8 +10300,8 @@
     {
       "name": "Germinate Recruits",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Germinating Wurm",
@@ -14506,8 +14506,8 @@
     {
       "name": "Krenko, Mob Boss",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Krotiq Nestguard",
@@ -17044,8 +17044,8 @@
     {
       "name": "Moogles' Valor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Moon Girl and Devil Dinosaur",
@@ -17116,8 +17116,8 @@
     {
       "name": "Morcant's Eyes",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Morcant's Loyalist",
@@ -21952,8 +21952,8 @@
     {
       "name": "Sally Pride, Lioness Leader",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Salt Road Packbeast",
@@ -27082,8 +27082,8 @@
     {
       "name": "The Unbeatable Squirrel Girl",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "The Vision",

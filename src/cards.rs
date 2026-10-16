@@ -373,6 +373,11 @@ pub(crate) enum Instruction {
         kind: CounterKind,
         amount: u32,
     },
+    CreateTokensScaled {
+        token: Card,
+        amount: AmountValue,
+        tapped: bool,
+    },
     CreateTokens {
         token: Card,
         amount: u16,
@@ -433,7 +438,13 @@ pub(crate) struct CountFilter {
     pub cards_only: bool,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum AmountValue {
+    Stat(StatValue),
+    LifeGainedThisTurn,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StatValue {
+    ControllerLife,
     Count(CountFilter),
     GreatestManaValue(CountFilter),
     GraveyardCardTypes,

@@ -1,0 +1,134 @@
+{
+  "schema": 1,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "as_of": "2026-10-15",
+  "cards": [
+    {
+      "name": "Aatchik, Emerald Radian",
+      "oracle_text": "When Aatchik enters, create a 1/1 green Insect creature token for each artifact and/or creature card in your graveyard.\nWhenever another Insect you control dies, put a +1/+1 counter on Aatchik. Each opponent loses 1 life.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AatchikEmeraldRadian.java",
+          "java_sha256": "1190b2929818c38c17ebf58b1b2e916a3ac66cffc83c76dda9ce52b829ac20e4"
+        }
+      ]
+    },
+    {
+      "name": "Ajani, Caller of the Pride",
+      "oracle_text": "+1: Put a +1/+1 counter on up to one target creature.\n\u22123: Target creature gains flying and double strike until end of turn.\n\u22128: Create X 2/2 white Cat creature tokens, where X is your life total.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AjaniCallerOfThePride.java",
+          "java_sha256": "4e70f2e19396507a10c9da31885e93ef6ac3044d4f40c7f2641202fff90b38e4"
+        }
+      ]
+    },
+    {
+      "name": "Brass's Bounty",
+      "oracle_text": "For each land you control, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BrasssBounty.java",
+          "java_sha256": "012572d69ab077d7c6442fb2b5e6c13cf72d39a4c1ce961faa45e108a33bbecd"
+        }
+      ]
+    },
+    {
+      "name": "Clachan Festival",
+      "oracle_text": "When this enchantment enters, create two 1/1 green and white Kithkin creature tokens.\n{4}{W}: Create a 1/1 green and white Kithkin creature token.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/ClachanFestival.java",
+          "java_sha256": "3874ecba13002a7b9f758685dac9123c3db68e3c594c9a99f64c4a7888f0f47b"
+        }
+      ]
+    },
+    {
+      "name": "Gather the White Lotus",
+      "oracle_text": "Create a 1/1 white Ally creature token for each Plains you control. Scry 2. (Look at the top two cards of your library, then put any number of them on the bottom and the rest on top in any order.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GatherTheWhiteLotus.java",
+          "java_sha256": "d79ec371f25ce441a9b4a857d57aa90e000bb3ab61cc1c940f802b0d9d9817c0"
+        }
+      ]
+    },
+    {
+      "name": "Germinate Recruits",
+      "oracle_text": "Create X 2/2 colorless Wizard Soldier creature tokens named Cadet, where X is the amount of life you gained this turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GerminateRecruits.java",
+          "java_sha256": "aecd0edc48f485e13300ba2ab5c0015f67aafd32a934a52ce2b020240574ed8c"
+        }
+      ]
+    },
+    {
+      "name": "Krenko, Mob Boss",
+      "oracle_text": "{T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/k/KrenkoMobBoss.java",
+          "java_sha256": "821b8d533834f1f4a251f70caeb4e5662c0421de7c233a2b6e53215ffc36674b"
+        }
+      ]
+    },
+    {
+      "name": "Moogles' Valor",
+      "oracle_text": "For each creature you control, create a 1/2 white Moogle creature token with lifelink. Then creatures you control gain indestructible until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MooglesValor.java",
+          "java_sha256": "62d0a644cee1e74e4f681a8d9c4ada257216194505c0f7e4f8f1685c87154706"
+        }
+      ]
+    },
+    {
+      "name": "Morcant's Eyes",
+      "oracle_text": "At the beginning of your upkeep, surveil 1. (Look at the top card of your library. You may put it into your graveyard.)\n{4}{G}{G}, Sacrifice this enchantment: Create X 2/2 black and green Elf creature tokens, where X is the number of Elf cards in your graveyard. Activate only as a sorcery.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MorcantsEyes.java",
+          "java_sha256": "045d0947cc8769f101ed42c3574c511e157c5d06c4eab668d42ba08be85d8ef9"
+        }
+      ]
+    },
+    {
+      "name": "Sally Pride, Lioness Leader",
+      "oracle_text": "When Sally Pride enters, create X 2/2 red Mutant creature tokens, where X is the number of nontoken creatures you control.\nWhenever Sally Pride attacks, put a +1/+1 counter on each creature you control.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SallyPrideLionessLeader.java",
+          "java_sha256": "8030bd1a34df3b873b1eebad64bc24063cfef01c2ab3677290a52e62372fd43b"
+        }
+      ]
+    },
+    {
+      "name": "The Unbeatable Squirrel Girl",
+      "oracle_text": "Do You Like Squirrels? \u2014 Whenever The Unbeatable Squirrel Girl enters or attacks, create a 1/1 green Squirrel creature token.\nI LOVE Squirrels! \u2014 {1}{G}{G}{G}: Create X 1/1 green Squirrel creature tokens, where X is the number of Squirrels you control.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TheUnbeatableSquirrelGirl.java",
+          "java_sha256": "0a0dd223ede6a6f8bfc5dc5d067085dc4cb3d189e258be647c8a2e16ab7dc581"
+        }
+      ]
+    }
+  ],
+  "regression_subtype_repairs": [
+    {
+      "name": "Grizzly Bears",
+      "java_source": "Mage.Sets/src/mage/cards/g/GrizzlyBears.java",
+      "java_sha256": "fe99fc39c9c3d74e71e7f7d34c4697f8eb68f15f1278b36597d1dafc135c9d4a"
+    },
+    {
+      "name": "Goblin Piker",
+      "java_source": "Mage.Sets/src/mage/cards/g/GoblinPiker.java",
+      "java_sha256": "8792a312f9b24b9782c34288d535098c78bf02c5b3c449c52483fc6b29fefcdd"
+    },
+    {
+      "name": "Hill Giant",
+      "java_source": "Mage.Sets/src/mage/cards/h/HillGiant.java",
+      "java_sha256": "b965e1100883f199c6a028bf4885a9b39f2f78751e1f9c3720861dfbb5a0de05"
+    }
+  ]
+}

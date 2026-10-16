@@ -14,6 +14,53 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_scaled_token_quantities_use_exact_shared_count_filters(self):
+        cases={
+            'create X 2/2 white Cat creature tokens, where X is your life total.':'StatValue::ControllerLife',
+            'create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.':'subtype: Some("Goblin")',
+            'create X 2/2 colorless Wizard Soldier creature tokens named Cadet, where X is the amount of life you gained this turn.':'AmountValue::LifeGainedThisTurn',
+            'for each land you control, create a Treasure token.':'kind: 2',
+            'create a 1/1 green Insect creature token for each artifact and/or creature card in your graveyard.':'kind: 17',
+            'create X 2/2 red Mutant creature tokens, where X is the number of nontoken creatures you control.':'cards_only: true',
+            'create a 1/1 white Ally creature token for each Plains you control.':'subtype: Some("Plains")',
+        }
+        for text,expected in cases.items():
+            program=generate.scaled_token_program(text);self.assertIsNotNone(program,text)
+            self.assertEqual(len(program),1);self.assertIn('CreateTokensScaled',program[0]);self.assertIn(expected,program[0])
+        self.assertIn('kind: 1',generate.stat_count_filter('nontoken creatures you control'))
+        self.assertIn('cards_only: true',generate.stat_count_filter('nontoken creatures you control'))
+
+    def test_scaled_token_unsupported_quantities_and_extra_factory_clauses_fail_closed(self):
+        for text in [
+            'create X 2/2 white Cat creature tokens.',
+            'create X 2/2 white Cat creature tokens, where X is the amount of damage dealt this turn.',
+            'create X 1/1 red Goblin creature tokens, where X is the number of Goblins that entered this turn.',
+            'for each land you control, create two Treasure tokens.',
+            'create a 1/1 red Goblin creature token with ward {2} for each land you control.',
+            'create a 1/1 red Goblin creature token for each land your opponents control.',
+            'create X tokens that are copies of target creature, where X is your life total.',
+            'create X tapped and attacking 1/1 red Goblin creature tokens, where X is your life total.',
+        ]:self.assertIsNone(generate.scaled_token_program(text),text)
+
+    def test_scaled_token_whole_bodies_and_kindred_metadata_are_admitted_exactly(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        rust,report=generate.compile_catalogue(rows,target);supported={r['name'] for r in report['cards'] if r['implemented']}
+        for name in ['Aatchik, Emerald Radian','Ajani, Caller of the Pride',"Brass's Bounty",'Clachan Festival','Gather the White Lotus','Germinate Recruits','Krenko, Mob Boss',"Moogles' Valor", "Morcant's Eyes",'Sally Pride, Lioness Leader','The Unbeatable Squirrel Girl']:self.assertIn(name,supported,name)
+        for name in ['Anim Pakal, Thousandth Moon','Rise of the Varmints','Revenge of the Rats','Smaug, Wicked Worm','Twitching Doll','Kithkeeper']:self.assertNotIn(name,supported,name)
+        self.assertEqual(generate.permanent_type(self.card(type_line='Kindred Enchantment — Elf')),'Enchantment')
+        line=next(line for line in rust.splitlines() if 'name: "Morcant' in line)
+        self.assertIn('type_line: "Kindred Enchantment — Elf"',line);self.assertIn('kind: 160',line)
+
+    def test_scaled_token_factories_do_not_admit_partial_new_bodies(self):
+        import json
+        card=next(c for c in json.loads((generate.ROOT/'data/standard/cards.json').read_text())['cards'] if c['name']=='Krenko, Mob Boss')
+        self.assertIsNotNone(generate.permanent_program_template(card))
+        self.assertIsNone(generate.permanent_program_template(dict(card,oracle_text=card['oracle_text']+'\nWhenever this creature attacks, discover 3.')))
+        squirrel=next(c for c in json.loads((generate.ROOT/'data/standard/cards.json').read_text())['cards'] if c['name']=='The Unbeatable Squirrel Girl')
+        self.assertIsNotNone(generate.permanent_program_template(squirrel))
+        self.assertIsNone(generate.permanent_program_template(dict(squirrel,oracle_text=squirrel['oracle_text']+'\nCreatures you control have protection from red.')))
+
     def test_loyalty_symbols_are_costs_with_inherent_sorcery_timing(self):
         for cost,change in [('+2',2),('0',0),('−3',-3)]:
             card=self.card(type_line='Legendary Planeswalker — Example',loyalty='5',oracle_text=cost+': You gain 3 life.')
@@ -1396,7 +1443,7 @@ class CatalogueCompilerTests(unittest.TestCase):
     def test_token_compilation_rejects_missing_dependencies_and_residual_clauses(self):
         for text in ['Create a Powerstone token.', 'Create a Blood token.', 'Create a Junk token.',
                      'Create X 1/1 white Rabbit creature tokens.',
-                     'Create a 1/1 white Rabbit creature token for each creature you control.',
+                     'Create a 1/1 white Rabbit creature token for each creature exiled this turn.',
                      'Create a 1/1 white Rabbit creature token with ward {2}.',
                      'Create a 1/1 white Rabbit creature token with vigilance. It gains haste.',
                      'Create a 1/1 white Rabbit creature token that is tapped and attacking.',

@@ -128,7 +128,7 @@ fn source_connive_draws_then_privately_discards_and_only_nonlands_add_counters()
         assert_eq!(g.state.players[0].cards_drawn_this_turn, 1);
         assert_eq!(g.object_view(source).counters.plus_one, 0);
         let public = g.observe(Player::P1);
-        assert_eq!(public.schema, 40);
+        assert_eq!(public.schema, 41);
         assert_eq!(
             public
                 .connive_choice

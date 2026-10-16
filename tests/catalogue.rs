@@ -227,3 +227,17 @@ fn emblem_factories_are_noncard_objects_and_rejected_in_every_deck_mode() {
         }
     }
 }
+
+#[test]
+fn regression_creatures_keep_printed_subtypes_when_outside_the_standard_snapshot() {
+    for (card, types) in [
+        (Card::GrizzlyBears, vec!["Bear"]),
+        (Card::GoblinPiker, vec!["Goblin", "Warrior"]),
+        (Card::HillGiant, vec!["Giant"]),
+    ] {
+        assert!(!card.is_standard_legal());
+        for subtype in types {
+            assert!(card.has_subtype(subtype), "{} {subtype}", card.name());
+        }
+    }
+}

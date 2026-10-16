@@ -5,14 +5,13 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 987 have executable rules so far.
+knows all 5,164 pinned Standard identities; 998 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
-The latest [loyalty activation and emblem support](docs/loyalty-activations.md)
-admits Professor Dellian Fel's complete body, including its persistent emblem.
-Observation schema 40 captures life-gain events and command-zone emblem metadata.
-Other walker bodies and broader Standard mechanics remain incomplete.
+The latest [scaled token batches](docs/scaled-tokens.md) add eleven complete bodies,
+including Krenko, another Ajani and two Kindred enchantments. Observation schema 41
+tracks exact life gained this turn. Full Standard rules remain in progress.
 
 ## Build and use
 
@@ -59,6 +58,7 @@ cargo run --release --example standard_removal_targets -- 100
 cargo run --release --example standard_battlefield_groups -- 100
 cargo run --release --example standard_loyalty_damage -- 100
 cargo run --release --example standard_planeswalkers -- 100
+cargo run --release --example standard_scaled_tokens -- 100
 cargo run --release --example standard_tokens -- 100
 cargo run --release --example standard_activations -- 100
 cargo run --release --example standard_mana -- 100
