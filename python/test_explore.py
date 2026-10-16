@@ -92,7 +92,9 @@ class ExploreTests(unittest.TestCase):
                     k = a['kind']
                     if k in ('AnnounceCast', 'Cast'):
                         n = objects[a['card']]['card']
-                        if actor != seat: return -1000
+                        if actor != seat:
+                            foe_bears = [v for v in objects.values() if v['owner'] == other and v['zone'] == 'Battlefield' and v['card'] == 'Bear Cub']
+                            return 1050 if name == 'Merfolk Cave-Diver' and n == 'Bear Cub' and not foe_bears else -1000
                         if n == name:
                             ready = name not in ("Miner's Guidewing", 'Over the Edge') or friends
                             if source_left:
@@ -118,7 +120,7 @@ class ExploreTests(unittest.TestCase):
                         return 1500 if target['card'] == target_name and target['owner'] == seat else -1000
                     if k == 'ChooseExplore': return 1500 if a['graveyard'] == graveyard else -1000
                     if k == 'Discard': return 900 if objects[a['card']]['card'] in BASICS else 800
-                    return {'Keep': 2000, 'PayCosts': 1500, 'PutTrigger': 1400, 'FinishTargets': 1100, 'FinishAttackers': 500, 'FinishBlockers': 500, 'Pass': 0}.get(k, -1000)
+                    return {'Concede': -10000, 'Mulligan': -10000, 'Keep': 2000, 'PayCosts': 1500, 'PutTrigger': 1400, 'FinishTargets': 1100, 'FinishAttackers': 500, 'FinishBlockers': 500, 'Pass': 0}.get(k, -1000)
                 j = max(range(len(obs['actions'])), key=lambda j: score(obs['actions'][j]))
                 action = obs['actions'][j]
                 if source_left and action['kind'] == 'ChooseTarget' and obs['announcing'] and obs['announcing']['source_card'] == 'Shock':
@@ -160,11 +162,44 @@ class ExploreTests(unittest.TestCase):
                     else:
                         self.assertEqual(event['result'], r['object'])
                         self.assertEqual(after['known_library_top'][int(seat[1])], r)
+                    if name == 'Merfolk Cave-Diver':
+                        self.follow_unblockable(game, seat)
                     if follow_draw:
                         self.assertEqual(destination, 'Library')
                         self.follow_known_draw(game, event, seat)
                     return destination
             self.fail('No complete paid enter/explore continuation for ' + name)
+
+    def follow_unblockable(self, game, seat):
+        other = 'P1' if seat == 'P0' else 'P0'
+        attacked = checked = False
+        for _ in range(1000):
+            obs = game.observe('P0')
+            self.assertIsNone(obs['outcome'])
+            obs = game.observe(obs['actor'])
+            diver = next(v for v in obs['objects'] if v['owner'] == seat and v['zone'] == 'Battlefield' and v['card'] == 'Merfolk Cave-Diver')
+            if checked and diver['power'] == 2:
+                return
+            if obs['decision'] == 'blockers' and diver['attacking']:
+                bears = [v for v in obs['objects'] if v['owner'] == other and v['zone'] == 'Battlefield' and v['card'] == 'Bear Cub' and not v['tapped']]
+                self.assertTrue(bears)
+                self.assertEqual(obs['actor'], other)
+                self.assertFalse(any(a['kind'] == 'Block' and a['attacker'] == diver['id'] for a in obs['actions']))
+                before = game.observe(other)
+                with self.assertRaises(EngineError):
+                    game.act(obs, {'kind': 'Block', 'blocker': bears[0]['id'], 'attacker': diver['id']})
+                self.assertEqual(game.observe(other), before)
+                checked = True
+            def score(a):
+                if a['kind'] == 'Attack': return 1500 if a['card'] == diver['id'] and not attacked else -1000
+                return {'FinishAttackers': 500, 'FinishBlockers': 500, 'Pass': 100, 'Discard': 600, 'Concede': -10000}.get(a['kind'], -1000)
+            j = max(range(len(obs['actions'])), key=lambda j: score(obs['actions'][j]))
+            if obs['actions'][j]['kind'] == 'Attack':
+                self.assertFalse(diver['summoning_sick'])
+                self.assertEqual(diver['power'], 3)
+                attacked = True
+            self.replay(game, obs, j)
+        self.fail('Cave-Diver unblockable/cleanup witness did not complete')
 
     def follow_known_draw(self, game, event, seat):
         reference = event['revealed']['object']
@@ -211,7 +246,7 @@ class ExploreTests(unittest.TestCase):
                             k = a['kind']
                             if k in ('Cast', 'AnnounceCast'): return 1200
                             if k == 'TapMana': return 800 if obs['decision'] == 'pay_costs' else -1000
-                            return {'Keep': 2000, 'PlayLand': 1300, 'PayCosts': 1500, 'PutTrigger': 1400, 'FinishTargets': 1100, 'FinishAttackers': 500, 'FinishBlockers': 500, 'Pass': 0}.get(k, -1000)
+                            return {'Concede': -10000, 'Mulligan': -10000, 'Keep': 2000, 'PlayLand': 1300, 'PayCosts': 1500, 'PutTrigger': 1400, 'FinishTargets': 1100, 'FinishAttackers': 500, 'FinishBlockers': 500, 'Pass': 0}.get(k, -1000)
                         j = max(range(len(obs['actions'])), key=lambda j: score(obs['actions'][j]))
                         after = self.replay(game, obs, j)
                         event = after['last_explore']
@@ -246,12 +281,80 @@ class ExploreTests(unittest.TestCase):
                     with self.subTest(card=name, seat=seat, graveyard=graveyard):
                         self.enter_scenario(name, seat, graveyard)
 
+    def test_over_the_edge_actual_destroy_mode_both_seats(self):
+        for seat in ('P0', 'P1'):
+            with self.subTest(seat=seat):
+                deck = ['Forest'] * 15 + ['Island'] * 15 + ['Candlestick'] * 16 + ['Over the Edge'] * 16
+                foe = ['Forest'] * 40
+                target = root = None
+                paid = False
+                with Game([deck, foe] if seat == 'P0' else [foe, deck], seed=43, starting_player=seat, deck_rules='Freeform') as game:
+                    for _ in range(10000):
+                        obs = game.observe('P0')
+                        self.assertIsNone(obs['outcome'])
+                        obs = game.observe(obs['actor'])
+                        objects = {v['id']: v for v in obs['objects']}
+                        candle = next((v for v in objects.values() if v['owner'] == seat and v['zone'] == 'Battlefield' and v['card'] == 'Candlestick'), None)
+                        def score(a):
+                            k = a['kind']
+                            if k in ('Cast', 'AnnounceCast'):
+                                n = objects[a['card']]['card']
+                                if n == 'Over the Edge': return 1100 if candle and not paid else -1000
+                                return 1000 if n == 'Candlestick' and not candle and not paid else -1000
+                            if k == 'ChooseMode': return 1600 if a['mode'] == 0 else -1000
+                            if k == 'ChooseTarget': return 1500 if a['target'] == {'Card': candle['id']} else -1000
+                            if k == 'TapMana': return 800 if obs['decision'] == 'pay_costs' else -1000
+                            return {'Concede': -10000, 'Mulligan': -10000, 'Keep': 2000, 'PlayLand': 1300, 'PayCosts': 1500, 'PutTrigger': 1400, 'ArrangeLibrary': 1000, 'FinishTargets': 1100, 'FinishAttackers': 500, 'FinishBlockers': 500, 'Pass': 0, 'Discard': 600}.get(k, -1000)
+                        j = max(range(len(obs['actions'])), key=lambda j: score(obs['actions'][j]))
+                        a = obs['actions'][j]
+                        if a['kind'] == 'ChooseTarget': target = candle['reference']
+                        if a['kind'] == 'PayCosts' and obs['announcing'] and obs['announcing']['source_card'] == 'Over the Edge': paid = True
+                        if a['kind'] == 'Pass' and obs['stack'] and obs['stack'][-1]['source_card'] == 'Over the Edge': root = obs['stack'][-1]
+                        after = self.replay(game, obs, j)
+                        if root and not any(v['id'] == root['id'] for v in after['stack']):
+                            self.assertTrue(paid)
+                            self.assertIsNotNone(target)
+                            moved = next(v for v in after['objects'] if v['id'] == target['card'])
+                            self.assertEqual(moved['zone'], 'Graveyard')
+                            self.assertGreater(moved['reference']['generation'], target['generation'])
+                            self.assertIsNone(after['last_explore'])
+                            self.assertIsNone(after['explore_choice'])
+                            break
+                    else: self.fail('Over the Edge destroy mode did not resolve')
+
     def test_complete_map_providers_and_real_token_activation_both_seats(self):
         names = ["Cartographer's Companion", 'Fanatical Offering', 'Get Lost', 'Sentinel of the Nameless City', 'Spyglass Siren', 'Waterwind Scout']
         for name in names:
             for seat in ('P0', 'P1'):
                 with self.subTest(card=name, seat=seat):
                     self.map_scenario(name, seat)
+
+    def follow_sentinel_attack(self, game, card, seat):
+        attacked = False
+        old = {v['reference']['card']: v['reference'] for v in game.observe(seat)['objects'] if v['zone'] == 'Battlefield' and v['token'] and v['token']['subtypes'] == 'Map'}
+        for _ in range(1000):
+            obs = game.observe('P0')
+            self.assertIsNone(obs['outcome'])
+            obs = game.observe(obs['actor'])
+            sentinel = next(v for v in obs['objects'] if v['id'] == card)
+            def score(a):
+                if a['kind'] == 'Attack': return 1500 if a['card'] == card and not attacked else -1000
+                return {'FinishAttackers': 500, 'FinishBlockers': 500, 'Pass': 100, 'PutTrigger': 1400, 'Discard': 600, 'Concede': -10000}.get(a['kind'], -1000)
+            j = max(range(len(obs['actions'])), key=lambda j: score(obs['actions'][j]))
+            if obs['actions'][j]['kind'] == 'Attack':
+                self.assertFalse(sentinel['summoning_sick'])
+                self.assertFalse(sentinel['tapped'])
+                attacked = True
+            after = self.replay(game, obs, j)
+            maps = [v for v in after['objects'] if v['owner'] == seat and v['zone'] == 'Battlefield' and v['token'] and v['token']['subtypes'] == 'Map' and old.get(v['id']) != v['reference']]
+            if maps:
+                self.assertTrue(attacked)
+                self.assertEqual(len(maps), 1)
+                live = next(v for v in after['objects'] if v['id'] == card)
+                self.assertFalse(live['tapped'])
+                self.assertTrue(live['attacking'])
+                return
+        self.fail('Actual vigilance attack did not create Sentinel Map')
 
     def map_scenario(self, name, seat):
         other = 'P1' if seat == 'P0' else 'P0'
@@ -330,7 +433,7 @@ class ExploreTests(unittest.TestCase):
                         return 1600 if v['owner'] == target_owner and v['card'] == 'Bear Cub' else -1000
                     if k == 'ChooseExplore': return 1500 if a['graveyard'] else 1000
                     if k == 'Discard': return 900 if objects[a['card']]['card'] in BASICS else 800
-                    return {'Keep': 2000, 'PayCosts': 1500, 'PutTrigger': 1400, 'FinishTargets': 1100, 'FinishAttackers': 500, 'FinishBlockers': 500, 'Pass': 0}.get(k, -1000)
+                    return {'Concede': -10000, 'Mulligan': -10000, 'Keep': 2000, 'PayCosts': 1500, 'PutTrigger': 1400, 'FinishTargets': 1100, 'FinishAttackers': 500, 'FinishBlockers': 500, 'Pass': 0}.get(k, -1000)
                 j = max(range(len(obs['actions'])), key=lambda j: score(obs['actions'][j]))
                 a = obs['actions'][j]
                 if activated and a['kind'] == 'PayCosts' and ann and ann['object'] == activated:
@@ -359,6 +462,8 @@ class ExploreTests(unittest.TestCase):
                     self.assertIsNotNone(source)
                     self.assertEqual(event['explorer']['card'], 'Bear Cub')
                     self.assertFalse(any(v['reference'] == activated and v['zone'] == 'Battlefield' for v in after['objects']))
+                    if name == 'Sentinel of the Nameless City':
+                        self.follow_sentinel_attack(game, source['card'], seat)
                     return
             self.fail('No complete provider and real Map activation for ' + name)
 
