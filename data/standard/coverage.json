@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "deda95097088fd61e88d9fe7720b7da18d54fdcb5f0e0c47444e6eaf81eda9f6",
+  "catalogue_version": "67869794cc9a2221fe60246a8836b8ba03423f94e13d4f8dfc95dbf088d9a1b8",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1356,
-  "implemented_total": 1362,
+  "implemented_standard_cards": 1358,
+  "implemented_total": 1364,
   "token_definitions": 57,
   "emblem_definitions": 1,
   "cards": [
@@ -1648,8 +1648,8 @@
     {
       "name": "Authority of the Consuls",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Auxiliary Boosters",
@@ -24262,8 +24262,8 @@
     {
       "name": "Spider-Woman, Stunning Savior",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Spiders-Man, Heroic Horde",

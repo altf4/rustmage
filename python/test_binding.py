@@ -9,6 +9,51 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def test_opponent_entry_tapped_authority_spider_hybrid_and_suppression_replay(self):
+        cases=[('Authority of the Consuls','Helpful Hunter',False,0,True),('Authority of the Consuls','Helpful Hunter',True,0,True),('Authority of the Consuls','Mephitic Draught',False,0,False),('Spider-Woman, Stunning Savior','Helpful Hunter',False,0,True),('Spider-Woman, Stunning Savior','Mephitic Draught',False,1,True)]
+        for source,wanted,orb,cost,tapped in cases:
+            lands=['Island']*30 if cost else ['Plains']*30
+            deck=lands+[source]*12+(['Torpor Orb']*18 if orb else ['Bear Cub']*18)
+            opponent=['Plains']*30+['Helpful Hunter']*30 if wanted=='Helpful Hunter' else ['Swamp']*30+['Mephitic Draught']*30
+            with self.subTest(source=source,entrant=wanted,orb=orb,cost=cost),Game([deck,opponent],seed=7,deck_rules='Freeform') as game:
+                done=False;entered=None;replayed=0;chosen_cost=False;life_before=None;trigger_ids=set()
+                for _ in range(18000):
+                    obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor']);objects={v['id']:v for v in obs['objects']}
+                    live=any(v['zone']=='Battlefield' and v['owner']=='P0' and v['card']==source for v in objects.values());orb_live=any(v['zone']=='Battlefield' and v['card']=='Torpor Orb' for v in objects.values());ready=live and (not orb or orb_live)
+                    def score(a):
+                        k=a['kind']
+                        if k in ('Cast','AnnounceCast'):
+                            n=objects[a['card']]['card']
+                            if obs['actor']=='P0':return 280 if n==source and not live else 270 if n=='Torpor Orb' and live and not orb_live else -100
+                            return 260 if ready and entered is None else -100
+                        if k=='ChooseSpellCost':return 400 if next(c['cost']['colored'][cost] for c in obs['cost_choices'] if c['index']==a['cost'])==1 else -100
+                        if k=='PayCosts':return 500
+                        if k=='TapMana':return 150 if obs['decision']=='pay_costs' else -100
+                        if k in ('Attack','Block','Activate','BeginActivate','AnnounceActivate','ActivateMana','AnnounceMana'):return -100
+                        return self.professor_score(obs,a)
+                    index=max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i]));action=obs['actions'][index]
+                    if action['kind']=='ChooseSpellCost' and obs['actor']=='P0':self.assertEqual(next(c['cost']['colored'][cost] for c in obs['cost_choices'] if c['index']==action['cost']),1);chosen_cost=True
+                    if obs['announcing'] or obs['stack'] or live:
+                        saved=game.snapshot()
+                        with game.clone() as fork:expected=fork.step(fork.observe(obs['actor']),index)
+                        self.assertEqual(game.step(obs,index),expected);game.restore(saved)
+                        with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,index)
+                        after=game.step(game.observe(obs['actor']),index);expected['revision']=after['revision'];self.assertEqual(after,expected);game.drop_snapshot(saved);replayed+=1
+                    else:after=game.step(obs,index)
+                    items=after['stack']+after['waiting_triggers']+[v for v in [after['announcing'],after['resolving']] if v is not None]
+                    new=[v for v in after['objects'] if v['zone']=='Battlefield' and v['owner']=='P1' and v['card']==wanted and not any(old['zone']=='Battlefield' and old['reference']==v['reference'] for old in obs['objects'])]
+                    if new:
+                        self.assertTrue(ready);self.assertEqual(len(new),1);entered=new[0]['reference'];self.assertEqual(new[0]['tapped'],tapped);life_before=int(obs['players'][0]['life'])
+                        if source.startswith('Spider-Woman'):self.assertTrue(next(v for v in after['objects'] if v['zone']=='Battlefield' and v['card']==source)['keywords']&1)
+                    if entered is not None:
+                        for item in items:
+                            if item['source_card']==source and item['kind']!='Spell':self.assertEqual(item['entering_object'],entered);self.assertEqual(item['targets'],[]);trigger_ids.add(item['id'])
+                        if not after['stack'] and not after['waiting_triggers'] and after['announcing'] is None and after['resolving'] is None and after['decision']=='priority':
+                            gain=source=='Authority of the Consuls' and wanted=='Helpful Hunter' and not orb
+                            self.assertEqual(len(trigger_ids),int(gain));self.assertEqual(int(after['players'][0]['life']),life_before+int(gain));self.assertEqual(after['schema'],52);done=True;break
+                self.assertTrue(done,(source,wanted,orb,cost));self.assertGreater(replayed,0)
+                if source.startswith('Spider-Woman'):self.assertTrue(chosen_cost)
+
     def test_three_entering_object_bodies_capture_non_target_refs_and_replay(self):
         for i,source in enumerate(['Good-Fortune Unicorn','Serra Redeemer','Wartime Protestors']):
             mate='First-Time Flyer' if i==2 else 'Bear Cub';colors=['Island','Mountain'] if i==2 else ['Plains','Forest'];lands=sum(([n]*15 for n in colors),[])

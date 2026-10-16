@@ -8,6 +8,47 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_opponent_entry_tapped_extraction_is_exact_and_keeps_unknown_labels_and_residuals(self):
+        for subject,mask in [('Creatures',1),('Artifacts',16),('Artifacts and creatures',17)]:
+            for battlefield in ['', ' the battlefield']:
+                for label in ['', 'Venom Blast — ']:
+                    clause=label+subject+' your opponents control enter'+battlefield+' tapped.'
+                    card=self.card(oracle_text='Flying\n'+clause+'\nWhen this creature enters, draw a card.')
+                    residual,value=generate.extract_opponent_entry_tapped(card)
+                    self.assertEqual(value,mask);self.assertEqual(residual['oracle_text'],'Flying\nWhen this creature enters, draw a card.');self.assertIsNotNone(generate.trigger_creature_template(residual))
+        for clause in ['Creatures you control enter tapped.','Creatures enter tapped.','Creatures an opponent controls enter tapped.','Creature tokens your opponents control enter tapped.','Creatures your opponents control enter tapped unless you control an artifact.','Creatures your opponents control enter tapped. Draw a card.','Creatures your opponents control enter tapped this turn.','Unknown — Creatures your opponents control enter tapped.','Venom Blast - Creatures your opponents control enter tapped.','Venom Blast — Whenever you attack, discover 3.']:
+            card=self.card(oracle_text=clause);self.assertEqual(generate.extract_opponent_entry_tapped(card),(card,0),clause)
+        for changes in [dict(layout='transform'),dict(type_line='Instant'),dict(type_line='Sorcery'),dict(type_line='Land')]:
+            card=self.card(oracle_text='Creatures your opponents control enter tapped.',**changes);self.assertEqual(generate.extract_opponent_entry_tapped(card),(card,0))
+        card=self.card(oracle_text='Creatures your opponents control enter tapped.\nVenom Blast — Draw a card.')
+        residual,mask=generate.extract_opponent_entry_tapped(card);self.assertEqual(mask,1);self.assertEqual(residual['oracle_text'],'Venom Blast — Draw a card.');self.assertIsNone(generate.creature_template(residual));self.assertIsNone(generate.trigger_creature_template(residual))
+
+    def test_opponent_creature_entry_prefix_preserves_relation_guards_limits_and_owned_context(self):
+        condition='CreatureEnters { relation: CastRelation::Opponent, other: false }'
+        result=generate.trigger_creature_template(self.card(oracle_text='Whenever a creature an opponent controls enters, you gain 1 life.'))
+        self.assertEqual(result[2],[ (condition,['GainLife(PlayerSet::Controller, 1)'],'None') ])
+        wrapped=generate.trigger_creature_template(self.card(oracle_text='Whenever a creature an opponent controls enters, if you gained life this turn, put a +1/+1 counter on that creature. This ability triggers only once each turn.'))
+        self.assertIn('InterveningIf',wrapped[2][0][0]);self.assertIn('OncePerTurn',wrapped[2][0][0]);self.assertIn(condition,wrapped[2][0][0]);self.assertIn('Subject::Entering',wrapped[2][0][1][0]);self.assertEqual(wrapped[2][0][2],'None')
+        for prefix in ['Whenever a creature enters, ','Whenever another creature an opponent controls enters, ','Whenever one or more creatures an opponent controls enter, ','Whenever a creature your opponents control enters, ']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=prefix+'you gain 1 life.')),prefix)
+        for tail in ['put a +1/+1 counter on it.','it gets +1/+1 until end of turn.','you gain 1 life. Then discover 3.']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='Whenever a creature an opponent controls enters, '+tail)),tail)
+
+    def test_opponent_entry_tapped_two_complete_admissions_emit_only_fully_supported_masks(self):
+        import hashlib,json,re
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());manifest=json.loads((generate.ROOT/'docs/opponent-entry-tapped-admissions.json').read_text())
+        source,coverage=generate.compile_catalogue(rows,target);supported={c['name'] for c in coverage['cards'] if c['implemented']};self.assertEqual(len(manifest['cards']),2)
+        for row in manifest['cards']:
+            self.assertIn(row['name'],supported);card=next(c for c in rows['cards'] if c['name']==row['name']);self.assertEqual(card['oracle_text'],row['oracle_text']);residual,mask=generate.extract_opponent_entry_tapped(card);self.assertEqual(mask,1 if row['name']=='Authority of the Consuls' else 17)
+            self.assertTrue(generate.trigger_creature_template(residual) or generate.creature_template(residual) or generate.permanent_program_template(residual))
+        helper=source.split('fn opponent_entry_tapped(card: Card) -> u16 {',1)[1].split('\n}',1)[0]
+        for name,mask in [('Authority of the Consuls',1),('Spider-Woman, Stunning Savior',17)]:
+            index=re.search(r'\('+re.escape(json.dumps(name))+r', ([0-9]+)\)',source)[1];self.assertIn(index+' => '+str(mask)+',',helper)
+        dismantler=next(c for c in rows['cards'] if c['name']=='Dauntless Dismantler');residual,mask=generate.extract_opponent_entry_tapped(dismantler);self.assertEqual(mask,16);self.assertIn('{X}{X}{W}',residual['oracle_text']);self.assertNotIn('Dauntless Dismantler',supported)
+        index=re.search(r'\("Dauntless Dismantler", ([0-9]+)\)',source)[1];self.assertNotIn(index+' => ',helper)
+        names={row['name'] for row in manifest['cards']};altered=dict(rows,cards=[dict(c,oracle_text=c['oracle_text']+'\nWhenever you attack, discover 3.') if c['name'] in names else c for c in rows['cards']]);altered['cards_sha256']=hashlib.sha256(json.dumps(altered['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+        gated_source,gated=generate.compile_catalogue(altered,target);self.assertTrue(all(not c['implemented'] for c in gated['cards'] if c['name'] in names));gated_helper=gated_source.split('fn opponent_entry_tapped(card: Card) -> u16 {',1)[1].split('\n}',1)[0];self.assertNotRegex(gated_helper,r'\n        [0-9]+ => ')
+
     def test_entering_object_effects_bind_only_complete_explicit_entry_clauses(self):
         for count,n in [('a',1),('two',2),('six',6)]:
             for haste in [False,True]:
@@ -37,7 +78,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         wrapped=generate.trigger_creature_template(self.card(oracle_text='Whenever another creature you control with power 2 or less enters, if you gained life this turn, draw a card. This ability triggers only once each turn.'));self.assertIsNotNone(wrapped);self.assertIn('OncePerTurn',wrapped[2][0][0]);self.assertIn('InterveningIf',wrapped[2][0][0])
 
     def test_entry_predicate_unknown_relations_multiplicity_bounds_and_antecedents_stay_gated(self):
-        for subject in ['another creature you control with power 32768 or less','another creature you control with power -1 or less','another creature you control with toughness 2 or less','another Frog, Rabbit or Squirrel you control','another Frog or Unknown you control','another Frog or Frog you control','another Villain or artifact you control','one or more outlaws you control','a creature an opponent controls','another outlaw with flying you control']:
+        for subject in ['another creature you control with power 32768 or less','another creature you control with power -1 or less','another creature you control with toughness 2 or less','another Frog, Rabbit or Squirrel you control','another Frog or Unknown you control','another Frog or Frog you control','another Villain or artifact you control','one or more outlaws you control','a creature an opponent controls with flying','another outlaw with flying you control']:
             self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='Whenever '+subject+' enters, draw a card.')),subject)
         for effect in ['put a +1/+1 counter on that creature. Then discover 3.','it gets +1/+1 until end of turn.','draw a card. Then discover 3.']:
             self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='Whenever another creature you control with power 2 or less enters, '+effect)))
@@ -48,7 +89,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         for row in manifest['cards']:
             self.assertIn(row['name'],supported);card=next(c for c in rows['cards'] if c['name']==row['name']);self.assertEqual(row['oracle_text'],card['oracle_text']);bad=dict(card,oracle_text=card['oracle_text']+'\nWhenever you attack, discover 3.')
             for compiler in [generate.creature_template,generate.trigger_creature_template,generate.permanent_program_template,generate.static_permanent_template]:self.assertIsNone(compiler(bad),row['name'])
-        for name in ['Authority of the Consuls','Terror of the Peaks']:self.assertNotIn(name,supported)
+        for name in ['Terror of the Peaks']:self.assertNotIn(name,supported)
 
     def test_entry_suppression_extraction_is_closed_and_preserves_residual_rules(self):
         for subject,mask in [('Creatures',1),('Artifacts and creatures',17)]:
@@ -1784,7 +1825,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Slithering Cryptid','Tempest Angler','Wandering Musicians']:
             self.assertIn(name,supported)
         for name in ['Mouser Mark III',
-                     'Sokka, Lateral Strategist','Spider-Woman, Stunning Savior','Nori, Teller of Tales']:
+                     'Sokka, Lateral Strategist','Nori, Teller of Tales']:
             self.assertNotIn(name,supported)
 
     def test_once_per_turn_wraps_complete_events_and_rejects_other_limit_meanings(self):

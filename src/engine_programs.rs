@@ -318,6 +318,15 @@ impl Game {
                     TriggerCondition::OtherCreatureEntersYou => {
                         yours && !same && entered.card.is_creature()
                     }
+                    TriggerCondition::CreatureEnters { relation, other } => {
+                        entered.card.is_creature()
+                            && (!other || !same)
+                            && match relation {
+                                CastRelation::You => yours,
+                                CastRelation::Opponent => !yours,
+                                CastRelation::Any => true,
+                            }
+                    }
                     TriggerCondition::OtherSubtypeEntersYou(subtype) => {
                         yours && !same && entered.card.has_subtype(subtype)
                     }

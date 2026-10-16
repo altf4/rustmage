@@ -99,6 +99,7 @@ impl Game {
                 .card
                 .entry_trigger_suppression()
                 != 0
+            || self.state.objects[id as usize].card.opponent_entry_tapped() != 0
         {
             self.state.static_sources.push(id);
         }

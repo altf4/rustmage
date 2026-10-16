@@ -2399,8 +2399,21 @@ impl Game {
             .collect()
     }
 
+    pub(super) fn opponent_entry_requires_tapped(&self, card: Card, controller: Player) -> bool {
+        let kinds = card.kind_mask();
+        self.state.static_sources.iter().any(|&id| {
+            let source = &self.state.objects[id as usize];
+            source.zone == Zone::Battlefield
+                && source.owner != controller
+                && source.card.opponent_entry_tapped() & kinds != 0
+        })
+    }
+
     fn enters_tapped(&self, id: CardId) -> bool {
         let object = &self.state.objects[id as usize];
+        if self.opponent_entry_requires_tapped(object.card, object.owner) {
+            return true;
+        }
         match object.card.entry_tapped() {
             EntryTapped::Never | EntryTapped::PayLife(_) => false,
             EntryTapped::UnlessPlaneswalker => !self.state.objects.iter().any(|o| {
@@ -3742,3 +3755,7 @@ mod entry_predicate_tests;
 #[cfg(test)]
 #[path = "engine_entering_object_tests.rs"]
 mod entering_object_tests;
+
+#[cfg(test)]
+#[path = "engine_opponent_entry_tapped_tests.rs"]
+mod opponent_entry_tapped_tests;

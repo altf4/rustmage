@@ -21,6 +21,9 @@ impl Game {
         if amount == 0 {
             return;
         }
+        // Replacement effects inspect the pre-event battlefield once, before
+        // any token in this simultaneous batch is installed as a new source.
+        let tapped = tapped || self.opponent_entry_requires_tapped(token, controller);
         let mut events = Vec::new();
         events
             .try_reserve_exact(amount)
