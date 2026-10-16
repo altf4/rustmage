@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "00ce0b10d18ef8617c28423f5f2504294d126e22937ab8b71bf0eb25240fda2f",
+  "catalogue_version": "7d3dcd8199a6f49078cdd887edc43c6270bbc6bc269fd82f0ad255c05ad6e04e",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 967,
-  "implemented_total": 973,
+  "implemented_standard_cards": 981,
+  "implemented_total": 987,
   "token_definitions": 43,
   "cards": [
     {
@@ -2421,8 +2421,8 @@
     {
       "name": "Beyond the Quiet",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Beza, the Bounding Spring",
@@ -4059,8 +4059,8 @@
     {
       "name": "Cast Away Doubt",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Castle Doom",
@@ -5931,8 +5931,8 @@
     {
       "name": "Day of Judgment",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Daydream",
@@ -6021,8 +6021,8 @@
     {
       "name": "Death Begets Life",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Death in the Family",
@@ -8481,8 +8481,8 @@
     {
       "name": "Extended Absence",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Extinguisher Battleship",
@@ -9855,8 +9855,8 @@
     {
       "name": "Fuel the Flames",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Fugitive Codebreaker",
@@ -9897,8 +9897,8 @@
     {
       "name": "Fumigate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Funeral Room // Awakening Hall",
@@ -18825,8 +18825,8 @@
     {
       "name": "Pest Control",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Pest Mascot",
@@ -19773,8 +19773,8 @@
     {
       "name": "Pyroclasm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Pyromancer's Goggles",
@@ -21687,8 +21687,8 @@
     {
       "name": "Ruinous Rampage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Ruinous Waterbending",
@@ -22641,8 +22641,8 @@
     {
       "name": "Seismic Rupture",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Seismic Sense",
@@ -23481,8 +23481,8 @@
     {
       "name": "Slagstorm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Slash of Light",
@@ -24411,8 +24411,8 @@
     {
       "name": "Split Up",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Splitskin Doll",
@@ -26133,8 +26133,8 @@
     {
       "name": "Tectonic Hazard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Teeming Dragonstorm",

@@ -14,6 +14,60 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_battlefield_groups_are_whole_non_targeted_batches_with_frozen_results(self):
+        cases={
+            'Destroy all creatures.':'kinds: 1',
+            'Destroy all tapped creatures.':'tapped: Some(true)',
+            'Destroy all untapped creatures.':'tapped: Some(false)',
+            'Exile all creatures and Spacecraft.':'Some("Spacecraft")',
+            'Destroy all nonland permanents with mana value 1 or less.':'max_mana: 1',
+            'Exile all artifacts with mana value 3 or less.':'kinds: 16',
+        }
+        for text,predicate in cases.items():
+            program=generate.statement_program(text);self.assertEqual(len(program),1)
+            self.assertIn('MoveBattlefield',program[0]);self.assertIn(predicate,program[0])
+        self.assertEqual(generate.statement_program('Destroy all creatures. You gain 1 life for each creature destroyed this way.')[-1],'GainLifeMoved')
+        self.assertEqual(generate.statement_program('Destroy all creatures and enchantments. Draw a card for each permanent destroyed this way.')[-1],'DrawMoved')
+        for text in ['Destroy all creatures. You gain 1 life for each permanent destroyed this way.',
+                     'Destroy all creatures and enchantments. Draw a card for each creature destroyed this way.',
+                     'Destroy all creatures except Dragons.','Destroy all creatures with power 4 or less.',
+                     'Destroy all creatures, then choose a creature type.',
+                     'Destroy all creatures and Vehicles. They lose indestructible.']:
+            self.assertIsNone(generate.statement_program(text),text)
+
+    def test_group_damage_is_one_source_batch_and_planeswalker_damage_stays_gated(self):
+        for text,expected in [
+            ('this spell deals 2 damage to each creature.','kinds: 1'),
+            ('this spell deals 2 damage to each creature without flying.','without: Keywords(1)'),
+            ('this spell deals 1 damage to each opponent and each creature they control.','players: Some(PlayerSet::Opponent)'),
+            ('this spell deals 3 damage to each creature your opponents control.','relation: 1')]:
+            program=generate.statement_program(text);self.assertEqual(len(program),1);self.assertIn('DamageBattlefield',program[0]);self.assertIn(expected,program[0])
+        self.assertEqual(generate.statement_program('this spell deals 3 damage to each player.'),['DamagePlayers(PlayerSet::Each, 3)'])
+        for text in ['this spell deals 2 damage to each creature and planeswalker.',
+                     'this spell deals 2 damage to each creature and each planeswalker.',
+                     'this spell deals X damage to each creature.',
+                     'this spell deals 32768 damage to each creature.',
+                     'this spell deals 2 damage to each creature with flying.',
+                     'this spell deals 2 damage to each non-Dragon creature.']:
+            self.assertIsNone(generate.statement_program(text),text)
+        body='Draw two cards. Sample Spell deals 2 damage to each player.'
+        compiled=generate.spell_program_template(self.card(name='Sample Spell',type_line='Sorcery',oracle_text=body))
+        self.assertEqual(compiled,('None',['Draw(PlayerSet::Controller, 2)','DamagePlayers(PlayerSet::Each, 2)']))
+        self.assertIsNone(generate.spell_program_template(self.card(name='Other Spell',type_line='Sorcery',oracle_text=body)))
+
+    def test_complete_battlefield_group_admissions_do_not_discard_missing_mechanics(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,coverage=generate.compile_catalogue(rows,target);supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for name in ['Beyond the Quiet','Cast Away Doubt','Day of Judgment','Death Begets Life','Extended Absence',
+                     'Fuel the Flames','Fumigate','Pest Control','Pyroclasm','Ruinous Rampage',
+                     'Seismic Rupture','Slagstorm','Split Up','Tectonic Hazard']:
+            self.assertIn(name,supported,name)
+        for name in ['Dragonback Assault','Splatter Technique','Fulminous Forte','No Witnesses','Withering Curse',
+                     'Kindred Judgment','Villainous Wrath','Expel the Interlopers','Settle the Wreckage',
+                     'Spectacular Pileup','Singularity Rupture','Desolation of Smaug']:
+            self.assertNotIn(name,supported,name)
+
     def test_removal_target_predicates_are_exact_and_unions_keep_qualifiers(self):
         cases={
             'Destroy target attacking or blocking creature.':'CreatureAttackingBlocking',
@@ -482,7 +536,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Shepherding Spirits','Skycrash','Slavering Branchsnapper','Soaring Sandwing','Stockman, Mad Fly-entist',
                      'Stratosoarer','Topiary Panther','Undulating Witness','Vinelasher Adept']:
             self.assertIn(name,supported)
-        for name in ["Basri, Tomorrow's Champion",'Webstrike Elite',"Valor's Flagship",'Night Market','Clamorous Ironclad','Pest Control']:
+        for name in ["Basri, Tomorrow's Champion",'Webstrike Elite',"Valor's Flagship",'Night Market','Clamorous Ironclad']:
             self.assertNotIn(name,supported)
 
     def test_cycling_combines_with_battlefield_abilities_without_overflowing_slots(self):

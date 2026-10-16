@@ -9,6 +9,7 @@ pub(super) struct Resolution {
     pub program: &'static [Instruction],
     pub pc: usize,
     pub target_group: u16,
+    pub moved_count: Option<u64>,
     pub discards: [usize; 2],
     pub selected_discards: [Vec<CardId>; 2],
     pub milled: Vec<ObjectRef>,
@@ -430,6 +431,7 @@ impl Game {
             program,
             pc: 0,
             target_group: 0,
+            moved_count: None,
             discards: [0; 2],
             mana_payment: None,
             selected_discards: [Vec::new(), Vec::new()],
@@ -536,6 +538,30 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::MoveBattlefield { filters, exile } => {
+                    self.move_battlefield_group(&item, filters, exile);
+                }
+                Instruction::DamageBattlefield {
+                    filters,
+                    players,
+                    amount,
+                } => {
+                    self.damage_battlefield_group(&item, filters, players, amount);
+                }
+                Instruction::DrawMoved | Instruction::GainLifeMoved => {
+                    let count = self
+                        .state
+                        .resolving
+                        .as_ref()
+                        .unwrap()
+                        .moved_count
+                        .expect("result instruction requires a preceding group move");
+                    if instruction == Instruction::DrawMoved {
+                        self.draw_many(item.controller, u128::from(count));
+                    } else {
+                        self.gain_life(item.controller, i128::from(count));
+                    }
+                }
                 Instruction::Connive { subject, amount } => {
                     self.start_connive(&item, subject, amount)
                 }
@@ -779,17 +805,7 @@ impl Game {
                         ),
                         _ => unreachable!(),
                     };
-                    let source = if self.object_ref(item.card) == item.object {
-                        self.damage_source(item.card)
-                    } else {
-                        DamageSource {
-                            facts: item.source_facts,
-                            object: item.card,
-                            reference: item.object,
-                            controller: item.controller,
-                            keywords: item.source_keywords,
-                        }
-                    };
+                    let source = self.program_damage_source(&item);
                     let event = |target| DamageEvent {
                         source,
                         target,

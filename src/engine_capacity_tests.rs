@@ -269,6 +269,7 @@ fn unrepresentable_derived_stats_cannot_escape_at_an_optional_resolution_boundar
         ],
         pc: 0,
         target_group: 0,
+        moved_count: None,
         connive: None,
         mana_payment: None,
         discards: [0; 2],

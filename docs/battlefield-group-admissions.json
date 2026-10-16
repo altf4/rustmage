@@ -1,0 +1,91 @@
+{
+  "schema": 1,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "as_of": "2026-10-15",
+  "cards": [
+    {
+      "name": "Beyond the Quiet",
+      "oracle_text": "Exile all creatures and Spacecraft.",
+      "java_source": "Mage.Sets/src/mage/cards/b/BeyondTheQuiet.java",
+      "java_sha256": "25372de65b3fa4b23f5ff10f1ab802ef13e5cb009727774bc06560d9dcb793e8"
+    },
+    {
+      "name": "Cast Away Doubt",
+      "oracle_text": "Draw two cards. Cast Away Doubt deals 2 damage to each player.",
+      "java_source": "Mage.Sets/src/mage/cards/c/CastAwayDoubt.java",
+      "java_sha256": "25eebe4f39b267f74e30a1c11c277913b99a72dce954f3a6e1b83108be2fada3"
+    },
+    {
+      "name": "Day of Judgment",
+      "oracle_text": "Destroy all creatures.",
+      "java_source": "Mage.Sets/src/mage/cards/d/DayOfJudgment.java",
+      "java_sha256": "3deda187055b531ec3aabd8254dedde74e948c28564d304037ffe543f5091949"
+    },
+    {
+      "name": "Death Begets Life",
+      "oracle_text": "Destroy all creatures and enchantments. Draw a card for each permanent destroyed this way.",
+      "java_source": "Mage.Sets/src/mage/cards/d/DeathBegetsLife.java",
+      "java_sha256": "e0ff90a80a96e1e63896c911ad5bb78f353b8ef8f12cc47066bea1a4fb36bca0"
+    },
+    {
+      "name": "Extended Absence",
+      "oracle_text": "Exile target creature or planeswalker. Extended Absence deals 1 damage to each opponent and you gain 1 life.",
+      "java_source": "Mage.Sets/src/mage/cards/e/ExtendedAbsence.java",
+      "java_sha256": "1f025bee1522c451e87e1166edf40201b288e54dd4a687d8d524ee29128ba4a7"
+    },
+    {
+      "name": "Fuel the Flames",
+      "oracle_text": "Fuel the Flames deals 2 damage to each creature.\nCycling {2} ({2}, Discard this card: Draw a card.)",
+      "java_source": "Mage.Sets/src/mage/cards/f/FuelTheFlames.java",
+      "java_sha256": "e5d81250a19adb1cdf945946a2930235308c73ed28bb708c0650c49f6b1f3c1d"
+    },
+    {
+      "name": "Fumigate",
+      "oracle_text": "Destroy all creatures. You gain 1 life for each creature destroyed this way.",
+      "java_source": "Mage.Sets/src/mage/cards/f/Fumigate.java",
+      "java_sha256": "11af796f7810b6743a59aebfa55920e2a2267c0b95d87795f0264a8a646283eb"
+    },
+    {
+      "name": "Pest Control",
+      "oracle_text": "Destroy all nonland permanents with mana value 1 or less.\nCycling {2} ({2}, Discard this card: Draw a card.)",
+      "java_source": "Mage.Sets/src/mage/cards/p/PestControl.java",
+      "java_sha256": "fc9e7a6944a10540b5fad47851fb03bfc98f7b94e9be6c2a6c1db31627030e97"
+    },
+    {
+      "name": "Pyroclasm",
+      "oracle_text": "Pyroclasm deals 2 damage to each creature.",
+      "java_source": "Mage.Sets/src/mage/cards/p/Pyroclasm.java",
+      "java_sha256": "bfecd366a98d3119776fc25c94609538f29bd6e1440099dc99c8e8aed8560fd7"
+    },
+    {
+      "name": "Ruinous Rampage",
+      "oracle_text": "Choose one —\n• Ruinous Rampage deals 3 damage to each opponent.\n• Exile all artifacts with mana value 3 or less.",
+      "java_source": "Mage.Sets/src/mage/cards/r/RuinousRampage.java",
+      "java_sha256": "e5f4fb59e0dac550d818a9c6c43018285354fec76724be373c0a6f010d4a08f3"
+    },
+    {
+      "name": "Seismic Rupture",
+      "oracle_text": "Seismic Rupture deals 2 damage to each creature without flying.",
+      "java_source": "Mage.Sets/src/mage/cards/s/SeismicRupture.java",
+      "java_sha256": "f486c31d5bb486bddc548c34c9223e5e093b37c3baf4aed82c3cb9eed3f156f6"
+    },
+    {
+      "name": "Slagstorm",
+      "oracle_text": "Choose one —\n• Slagstorm deals 3 damage to each creature.\n• Slagstorm deals 3 damage to each player.",
+      "java_source": "Mage.Sets/src/mage/cards/s/Slagstorm.java",
+      "java_sha256": "0da7e31cfd454a31fe1eb4c9f5203e418f1c210d6e382fd3b98eeb89ac4b9b2c"
+    },
+    {
+      "name": "Split Up",
+      "oracle_text": "Choose one —\n• Destroy all tapped creatures.\n• Destroy all untapped creatures.",
+      "java_source": "Mage.Sets/src/mage/cards/s/SplitUp.java",
+      "java_sha256": "f3be049eea67b700ba0297647bd609fde0cf170a298829bd0e3d5bba628211ca"
+    },
+    {
+      "name": "Tectonic Hazard",
+      "oracle_text": "Tectonic Hazard deals 1 damage to each opponent and each creature they control.",
+      "java_source": "Mage.Sets/src/mage/cards/t/TectonicHazard.java",
+      "java_sha256": "86462bcf45115799e410e235aa72d91847646615123773f90033923c1e928f91"
+    }
+  ]
+}

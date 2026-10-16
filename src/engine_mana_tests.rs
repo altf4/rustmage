@@ -218,6 +218,7 @@ fn resolution_mana_choice_is_private_owned_and_replayable_before_later_instructi
         ],
         pc: 0,
         target_group: 0,
+        moved_count: None,
         discards: [0; 2],
         mana_payment: None,
         selected_discards: [Vec::new(), Vec::new()],
