@@ -80,7 +80,7 @@ fn damage_to_walkers_removes_loyalty_and_zero_loyalty_sba_ignores_indestructible
 #[test]
 fn loyalty_entry_and_zone_resets_are_separate_from_turn_and_cleanup() {
     let mut g = scenario();
-    let w = walker(&mut g, Player::P1, "Professor Dellian Fel");
+    let w = walker(&mut g, Player::P1, "Vivien Reid");
     assert_eq!(g.object_view(w).counters.loyalty, 5);
     g.state.objects[w as usize]
         .counters
@@ -103,7 +103,7 @@ fn loyalty_entry_and_zone_resets_are_separate_from_turn_and_cleanup() {
 #[test]
 fn marked_damage_deathtouch_lifelink_and_player_damage_events_are_distinct() {
     let mut g = scenario();
-    let w = walker(&mut g, Player::P1, "Professor Dellian Fel");
+    let w = walker(&mut g, Player::P1, "Vivien Reid");
     let source = named(&mut g, Player::P0, "Vampire Nighthawk", Zone::Battlefield);
     g.apply_damage_batch(&[DamageEvent {
         source: g.damage_source(source),
@@ -124,7 +124,7 @@ fn marked_damage_deathtouch_lifelink_and_player_damage_events_are_distinct() {
 #[test]
 fn huge_damage_removes_only_available_counters_without_narrowing_the_event() {
     let mut g = scenario();
-    let w = walker(&mut g, Player::P1, "Professor Dellian Fel");
+    let w = walker(&mut g, Player::P1, "Vivien Reid");
     let source = named(&mut g, Player::P0, "Bear Cub", Zone::Battlefield);
     g.state.objects[w as usize].counters.loyalty = u64::MAX;
     g.apply_damage_batch(&[DamageEvent {
@@ -147,8 +147,8 @@ fn huge_damage_removes_only_available_counters_without_narrowing_the_event() {
 #[test]
 fn group_damage_is_simultaneous_for_creatures_and_walkers_and_does_not_target_hexproof() {
     let mut g = scenario();
-    let own = walker(&mut g, Player::P0, "Professor Dellian Fel");
-    let enemy = walker(&mut g, Player::P1, "Professor Dellian Fel");
+    let own = walker(&mut g, Player::P0, "Vivien Reid");
+    let enemy = walker(&mut g, Player::P1, "Vivien Reid");
     let bear = named(&mut g, Player::P1, "Bear Cub", Zone::Battlefield);
     for id in [own, enemy, bear] {
         g.state.objects[id as usize].gained_keywords = Keywords::HEXPROOF;
@@ -185,8 +185,8 @@ fn every_new_modal_mode_has_exact_controller_sets_and_draw_or_damage_programs() 
     for name in ["Splatter Technique", "Fulminous Forte"] {
         for mode in 0..2 {
             let mut g = scenario();
-            let own = walker(&mut g, Player::P0, "Professor Dellian Fel");
-            let enemy = walker(&mut g, Player::P1, "Professor Dellian Fel");
+            let own = walker(&mut g, Player::P0, "Vivien Reid");
+            let enemy = walker(&mut g, Player::P1, "Vivien Reid");
             let bear = named(&mut g, Player::P1, "Bear Cub", Zone::Battlefield);
             let spell = funded(&mut g, name);
             replay(&mut g, Action::AnnounceCast { card: spell });
@@ -240,7 +240,7 @@ fn targeted_damage_and_discard_choices_defer_zero_loyalty_sbas_until_resolution_
     assert_eq!(g.object_view(w).zone, Zone::Battlefield);
     assert_eq!(g.object_view(w).counters.loyalty, 0);
     let json = serde_json::to_value(g.observe(Player::P0)).unwrap();
-    assert_eq!(json["schema"], 39);
+    assert_eq!(json["schema"], 40);
     settle(&mut g);
     assert_eq!(g.object_view(w).zone, Zone::Graveyard);
     assert_eq!(g.state.players[0].cards_drawn_this_turn, 1);

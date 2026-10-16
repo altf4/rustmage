@@ -137,7 +137,8 @@ fn source_obligations(
     let requires_source = ability.cost.tap
         || ability.cost.sacrifice
         || ability.cost.discard
-        || ability.cost.remove.is_some();
+        || ability.cost.remove.is_some()
+        || ability.cost.loyalty.is_some();
     if let Some(object) = current {
         Game::object_activation_available(
             object,

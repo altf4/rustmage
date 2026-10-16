@@ -14,13 +14,48 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_loyalty_symbols_are_costs_with_inherent_sorcery_timing(self):
+        for cost,change in [('+2',2),('0',0),('−3',-3)]:
+            card=self.card(type_line='Legendary Planeswalker — Example',loyalty='5',oracle_text=cost+': You gain 3 life.')
+            result=generate.permanent_program_template(card);self.assertIsNotNone(result)
+            ability=result[3][0];self.assertEqual(ability[0]['loyalty'],change)
+            self.assertFalse(ability[0]['mana_component']);self.assertTrue(ability[3])
+            self.assertIn('loyalty: Some('+str(change)+')',generate.rust_activations(result[3]))
+        for cost in ['−X','+2147483648','−2147483649','-3','{T}','+2, {T}']:
+            self.assertIsNone(generate.permanent_program_template(self.card(type_line='Planeswalker — Example',loyalty='5',oracle_text=cost+': You gain 3 life.')),cost)
+
+    def test_loyalty_mana_compiles_as_a_finite_stack_program(self):
+        result=generate.permanent_program_template(self.card(type_line='Planeswalker — Example',loyalty='5',oracle_text='+1: Add {R}{R}.'))
+        self.assertIsNotNone(result);self.assertEqual(result[3][0][0]['loyalty'],1)
+        self.assertTrue(result[3][0][2][0].startswith('AddMana'))
+
+    def test_professor_admits_every_ability_and_only_referenced_emblem_factories(self):
+        import json,copy,hashlib
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        rust,coverage=generate.compile_catalogue(rows,target)
+        self.assertTrue(next(r for r in coverage['cards'] if r['name']=='Professor Dellian Fel')['implemented'])
+        self.assertEqual(coverage['emblem_definitions'],1)
+        self.assertIn('LoseGainedLife(PlayerSet::Targeted)',rust)
+        for suffix in ['\n+1: Discover 3.','\nCreatures you control have protection from red.']:
+            changed=copy.deepcopy(rows);card=next(c for c in changed['cards'] if c['name']=='Professor Dellian Fel');card['oracle_text']+=suffix
+            changed['cards_sha256']=hashlib.sha256(json.dumps(changed['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+            _,report=generate.compile_catalogue(changed,target)
+            self.assertFalse(next(r for r in report['cards'] if r['name']=='Professor Dellian Fel')['implemented'])
+            self.assertEqual(report['emblem_definitions'],0)
+
+    def test_unknown_emblem_bodies_and_extra_clauses_fail_whole_card_admission(self):
+        for effect in ['You get an emblem with "Whenever you gain life, each opponent loses that much life."',
+                       'You get an emblem with "Whenever you gain life, target opponent loses that much life." Then draw a card.',
+                       'You get an emblem with "Creatures you control get +2/+2."']:
+            self.assertIsNone(generate.permanent_program_template(self.card(type_line='Planeswalker — Example',loyalty='5',oracle_text='−6: '+effect)))
+
     def test_loyalty_damage_unlocks_only_complete_bodies_and_preserves_walker_gates(self):
         import json
         rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
         rust,coverage=generate.compile_catalogue(rows,target);supported={r['name'] for r in coverage['cards'] if r['implemented']}
         for name in ['Broadside Barrage','Dragonback Assault','Fulminous Forte','Sear','Splatter Technique']:
             self.assertIn(name,supported,name)
-        for name in ['Professor Dellian Fel','Chandra, Torch of Defiance','The Aetherspark','Liliana, Dreadhorde General']:
+        for name in ['Vivien Reid','Chandra, Torch of Defiance','The Aetherspark','Liliana, Dreadhorde General']:
             self.assertNotIn(name,supported,name)
         self.assertIn('fn starting_loyalty(card: Card) -> u64',rust)
         self.assertEqual(generate.targeted_program('this spell deals 4 damage to target creature or planeswalker.'),('CreaturePlaneswalker',['Damage(4)']))
@@ -147,7 +182,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         definitions=coverage['cards']
         for name,mask in [('Cat-Owl',3),('Forest',0),('Grizzly Bears',16),('Abandon Attachments',10)]:
             self.assertEqual(colors[next(i for i,c in enumerate(definitions) if c['name']==name)],mask)
-        self.assertEqual(len(colors),len(definitions)+coverage['token_definitions'])
+        self.assertEqual(len(colors),len(definitions)+coverage['token_definitions']+coverage['emblem_definitions'])
 
     def test_missing_invalid_colors_fail_closed_even_with_fresh_checksum(self):
         import json,hashlib,copy

@@ -11,6 +11,7 @@ from pathlib import Path
 import re
 
 ROOT = Path(__file__).resolve().parents[1]
+EMBLEM_DEFS = {}
 LEGACY = [
     ('Plains', 'Land', '{W}', 0), ('Island', 'Land', '{U}', 1),
     ('Swamp', 'Land', '{B}', 2), ('Mountain', 'Land', '{R}', 3), ('Forest', 'Land', '{G}', 4),
@@ -639,6 +640,11 @@ def statement_program(text):
     if not isinstance(text, str) or not text:
         return None
     text = normalize_duration(text[0].lower() + text[1:])
+    if text == 'you get an emblem with "Whenever you gain life, target opponent loses that much life."':
+        body='Whenever you gain life, target opponent loses that much life.'
+        key=hashlib.sha256(body.encode()).hexdigest()[:24]
+        EMBLEM_DEFS[key]=body
+        return [f'CreateEmblem(__EMBLEM_{key}__)']
     if result:=battlefield_move_program(text):return result
     if result:=battlefield_damage_program(text):return result
     if m:=re.fullmatch(r'this creature connives(?: ([0-9]+))?\.',text):
@@ -1496,7 +1502,7 @@ def modal_spell_template(card):
 
 
 def activation_cost(text):
-    cost = dict(colored=[0] * 6, generic=0, mana_component=False, tap=False, sacrifice=False, life=0, remove=None, guard="Always")
+    cost = dict(colored=[0] * 6, generic=0, mana_component=False, tap=False, sacrifice=False, life=0, remove=None, loyalty=None, guard="Always")
     seen = set()
     for component in text.split(', '):
         mana = fixed_cost(component)
@@ -1594,7 +1600,7 @@ def permanent_program_template(card):
         return None
     typ = permanent_type(card)
     if set(card.get('type_line','').split(' — ')[-1].split()) & {'Equipment','Aura'}: return None
-    if typ not in ('Creature', 'Artifact Creature', 'Enchantment Creature', 'Artifact', 'Enchantment'):
+    if typ not in ('Creature', 'Artifact Creature', 'Enchantment Creature', 'Artifact', 'Enchantment', 'Planeswalker'):
         return None
     creature = 'Creature' in typ
     if creature and (not card.get('power', '').isdigit() or not card.get('toughness', '').isdigit()):
@@ -1613,7 +1619,14 @@ def permanent_program_template(card):
             body.append(line)
             continue
         cost_text, effect_text = line.split(': ', 1)
-        cost = activation_cost(cost_text)
+        if typ == 'Planeswalker':
+            if not re.fullmatch(r'(?:0|[+−][0-9]+)',cost_text): return None
+            change=int(cost_text.replace('−','-'))
+            if change < -2147483648 or change > 2147483647: return None
+            cost=activation_cost('{0}')
+            cost.update(mana_component=False, loyalty=change)
+        else:
+            cost = activation_cost(cost_text)
         if cost is None: return None
         if guard:=re.fullmatch(r'(.+) Activate only if you control (?:a|an) ([A-Z][A-Za-z ]+?)(?: or (?:a|an) ([A-Z][A-Za-z ]+?))?\.',effect_text):
             subtypes=[word for word in guard.groups()[1:] if word is not None]
@@ -1634,13 +1647,13 @@ def permanent_program_template(card):
         if program is None: return None
         if any(instruction.startswith('AddMana') for instruction in program) and (len(program) != 1 or targets != 'None'):
             return None
-        if program[0].startswith('AddMana') and not (cost['tap'] or cost['sacrifice'] or cost['life'] or cost['remove'] or once):
+        if program[0].startswith('AddMana') and cost['loyalty'] is None and not (cost['tap'] or cost['sacrifice'] or cost['life'] or cost['remove'] or once):
             # Unbounded positive production needs an infinite-resource solver.
             # Resource-free conversions that do not increase total mana are finite.
             fixed = re.search(r'Fixed\((\[[^]]*\])\)', program[0])
             produced = sum(json.loads(fixed[1])) if fixed else int(re.search(r'amount: ([0-9]+)', program[0])[1])
             if produced > sum(cost['colored']) + cost['generic']: return None
-        activations.append((cost, targets, program, sorcery, once))
+        activations.append((cost, targets, program, sorcery or cost['loyalty'] is not None, once))
     if len(activations) > 64: return None
     body_text = '\n'.join(body).strip()
     proxy = dict(card, type_line='Creature', power=card.get('power', '0'),
@@ -1732,7 +1745,7 @@ def rust_activations(abilities):
     rows = []
     for cost, targets, program, sorcery, once in abilities:
         remove = 'None' if cost['remove'] is None else f"Some(({'None' if cost['remove'][0] is None else 'Some(CounterKind::' + cost['remove'][0] + ')'}, {cost['remove'][1]}))"
-        rows.append(f"ActivatedAbility {{ guard: ActivationGuard::{cost.get('guard','Always')}, cycling: {str(cost.get('cycling',False)).lower()}, origin: ActivationOrigin::{cost.get('origin','Battlefield')}, cost: ActivationCost {{ colored: {cost['colored']}, generic: {cost['generic']}, mana_component: {str(cost['mana_component']).lower()}, tap: {str(cost['tap']).lower()}, sacrifice: {str(cost['sacrifice']).lower()}, discard: {str(cost.get('discard',False)).lower()}, life: {cost['life']}, remove: {remove} }}, targets: {rust_targets(targets)}, program: {rust_program(program)}, sorcery: {str(sorcery).lower()}, once_per_turn: {str(once).lower()} }}")
+        rows.append(f"ActivatedAbility {{ guard: ActivationGuard::{cost.get('guard','Always')}, cycling: {str(cost.get('cycling',False)).lower()}, origin: ActivationOrigin::{cost.get('origin','Battlefield')}, cost: ActivationCost {{ colored: {cost['colored']}, generic: {cost['generic']}, mana_component: {str(cost['mana_component']).lower()}, tap: {str(cost['tap']).lower()}, sacrifice: {str(cost['sacrifice']).lower()}, discard: {str(cost.get('discard',False)).lower()}, life: {cost['life']}, remove: {remove}, loyalty: {'None' if cost.get('loyalty') is None else 'Some('+str(cost['loyalty'])+')'} }}, targets: {rust_targets(targets)}, program: {rust_program(program)}, sorcery: {str(sorcery).lower()}, once_per_turn: {str(once).lower()} }}")
     return '&[' + ', '.join(rows) + ']'
 
 
@@ -1741,6 +1754,7 @@ def rust_program(program):
 
 def compile_catalogue(snapshot, target):
     TOKEN_DEFS.clear()
+    EMBLEM_DEFS.clear()
     creature_types_bytes = (ROOT / 'data/creature-types.json').read_bytes()
     creature_types = json.loads(creature_types_bytes)['types']
     if (creature_types != sorted(set(creature_types)) or not creature_types
@@ -1916,6 +1930,16 @@ def compile_catalogue(snapshot, target):
         color_masks.append(factory['colors'])
         marker = '__TOKEN_' + key + '__'
         definitions = [definition.replace(marker, f'Card({index})') for definition in definitions]
+    used_emblems=sorted(set(re.findall(r'__EMBLEM_([0-9a-f]+)__', '\n'.join(definitions))))
+    emblem_base=len(names)
+    emblem_infos=[]
+    for key in used_emblems:
+        index=len(names);name='@emblem/'+key;names.append(name);color_masks.append(0)
+        body=EMBLEM_DEFS[key]
+        triggers='&[TriggeredAbility { condition: TriggerCondition::LifeGained { first_only: false, own_turn: false }, targets: TargetPlan::Single(TargetSpec::one(TargetRule::Player { opponent_only: true })), program: &[Instruction::LoseGainedLife(PlayerSet::Targeted)] }]'
+        definitions.append(f'Definition {{ info: CardInfo {{ name: {json.dumps(name)}, oracle_id: None, mana_cost: "", type_line: "", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: Keywords(0), deck_limit: None }}, effect: Effect::Emblem, triggers: {triggers}, activated: &[], enters: Counters {{ plus_one: 0, minus_one: 0, stun: 0, loyalty: 0 }}, entry: EntryTapped::Never, kind: 0, basic: false, mana_color: None, colored: [0; 6], generic: 0 }},')
+        emblem_infos.append(f'EmblemInfo {{ oracle_text: {json.dumps(body)} }},')
+        definitions=[row.replace('__EMBLEM_'+key+'__',f'Card({index})') for row in definitions]
     if len(names) > 65536:
         raise ValueError('catalogue exceeds u16 identity space')
     # The fingerprint covers data and compiler logic; card IDs are local to it.
@@ -1927,7 +1951,7 @@ def compile_catalogue(snapshot, target):
              '#[rustfmt::skip]', f'pub(super) static DEFINITIONS: [Definition; {len(names)}] = [', *definitions, '];',
              '#[rustfmt::skip]', f'pub(super) static NAME_INDEX: [(&str, u16); {len(names)}] = [']
     lines += [f'    ({json.dumps(name, ensure_ascii=False)}, {index}),' for name, index in sorted((name, index) for index, name in enumerate(names))]
-    lines += ['];', f'pub(super) const TOKEN_BASE: usize = {token_base};',
+    lines += ['];', f'pub(super) const TOKEN_BASE: usize = {token_base};', f'pub(super) const EMBLEM_BASE: usize = {emblem_base};', '#[rustfmt::skip]', f'pub(super) static EMBLEMS: [EmblemInfo; {len(emblem_infos)}] = [', *emblem_infos, '];',
               '#[rustfmt::skip]', f'pub(super) static TOKENS: [TokenInfo; {len(token_infos)}] = [', *token_infos, '];',
               '#[allow(non_upper_case_globals)]', 'impl Card {', '#[rustfmt::skip]',
               f'    pub const ALL: [Card; {len(supported)}] = [{", ".join(f"Card({i})" for i in supported)}];']
@@ -1943,7 +1967,7 @@ def compile_catalogue(snapshot, target):
     lines += ['#[rustfmt::skip]', 'pub(super) fn starting_loyalty(card: Card) -> u64 {', '    match card.0 {', *loyalty_rows, '        _ => 0,', '    }', '}', '']
     return '\n'.join(lines), {'schema': 1, 'catalogue_version': version, 'standard_legal_cards': len(cards),
         'implemented_standard_cards': sum(row['implemented'] and row['standard_legal'] for row in coverage),
-        'implemented_total': len(supported), 'token_definitions': len(used_tokens), 'cards': coverage}
+        'implemented_total': len(supported), 'token_definitions': len(used_tokens), 'emblem_definitions': len(used_emblems), 'cards': coverage}
 
 
 if __name__ == '__main__':

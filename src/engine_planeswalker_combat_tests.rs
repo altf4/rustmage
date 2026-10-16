@@ -64,7 +64,7 @@ fn declaration_is_generation_bound_not_targeted_and_private_until_committed() {
     let a = bear(&mut g, Player::P0);
     let w = walker(&mut g, Player::P1, "Chandra, Torch of Defiance");
     g.state.objects[w as usize].gained_keywords = Keywords::HEXPROOF;
-    let own = walker(&mut g, Player::P0, "Professor Dellian Fel");
+    let own = walker(&mut g, Player::P0, "Vivien Reid");
     let other = bear(&mut g, Player::P1);
     begin(&mut g);
     let action = attack(&g, a, w);
@@ -161,7 +161,7 @@ fn attackers_choose_separate_players_and_walkers_then_damage_is_simultaneous() {
         let b = bear(&mut g, active);
         let c = bear(&mut g, active);
         let w = walker(&mut g, active.other(), "Chandra, Torch of Defiance");
-        let v = walker(&mut g, active.other(), "Professor Dellian Fel");
+        let v = walker(&mut g, active.other(), "Vivien Reid");
         begin(&mut g);
         replay(&mut g, Action::Attack { card: a });
         let action = attack(&g, b, w);
@@ -457,7 +457,7 @@ fn real_c_abi_accepts_generation_bound_attack_and_owns_pending_defenders_across_
         crate::protocol::Session::from_game(g),
     )));
     let before = observe(&h, "P0");
-    assert_eq!(before["schema"], 39);
+    assert_eq!(before["schema"], 40);
     let saved = request(&h, serde_json::json!({"op":"snapshot"}))["snapshot"].clone();
     let mut action = serde_json::to_value(Action::AttackPlaneswalker {
         card: a,

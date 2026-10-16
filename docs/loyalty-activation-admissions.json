@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "as_of": "2026-10-15",
+  "cards": [
+    {
+      "name": "Professor Dellian Fel",
+      "oracle_id": "8c5fe985-69e1-4a03-99fc-a6fd2314a9a7",
+      "oracle_text": "+2: You gain 3 life.\n0: You draw a card and lose 1 life.\n\u22123: Destroy target creature.\n\u22126: You get an emblem with \"Whenever you gain life, target opponent loses that much life.\"",
+      "loyalty": "5",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/ProfessorDellianFel.java",
+          "java_sha256": "a2695a49d2204e941396e893bb7a38ae8974f20a9223225c74a9e4c9e16329e5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/command/emblems/ProfessorDellianFelEmblem.java",
+          "java_sha256": "f35cc896d8dc2626b7f7eacf400ab67ec1970a98ce70c380523aa1f9b5faa86d"
+        }
+      ]
+    }
+  ]
+}

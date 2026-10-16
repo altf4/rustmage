@@ -340,6 +340,7 @@ impl Game {
             damage_event: None,
             discard_event: None,
             draw_event: None,
+            life_event: None,
             source_attachment: self.state.objects[card as usize].attached_to,
             card,
             object,

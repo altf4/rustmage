@@ -2,10 +2,11 @@ use crate::capacity::{CapacityExt, CapacitySignal};
 use crate::cards::{
     ActivatedAbility, ActivationCost, ActivationGuard, ActivationOrigin, AdditionalCost,
     BattlefieldFilter, CastRelation, CountFilter, CountZone, CounterKind, CounterSubject, Counters,
-    CreatureFilter, DamageQualification, DamageSubject, Effect, EffectChoiceKind, EntryTapped,
-    Instruction, ManaCost, ManaProduction, MillAmount, PlayerSet, RecoveryFilter, SacrificeFilter,
-    SearchSpec, StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetPlan,
-    TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
+    CreatureFilter, DamageQualification, DamageSubject, Effect, EffectChoiceKind, EmblemInfo,
+    EntryTapped, Instruction, ManaCost, ManaProduction, MillAmount, PlayerSet, RecoveryFilter,
+    SacrificeFilter, SearchSpec, StatExpr, StatValue, Stats, StepGuard, StepValue, Subject,
+    TargetPlan, TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep,
+    payments,
 };
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
@@ -138,6 +139,7 @@ pub enum Zone {
     Stack,
     Graveyard,
     Exile,
+    Command,
     /// Vacant slot after a token ceases to exist; never a game zone.
     Outside,
 }
@@ -488,6 +490,7 @@ pub struct SpellView {
     pub damage_event: Option<DamageTriggerView>,
     pub discard_event: Option<DiscardTriggerView>,
     pub draw_event: Option<DrawTriggerView>,
+    pub life_event: Option<LifeTriggerView>,
     pub source_facts: DamageFacts,
     pub related_stack: Option<StackLink>,
     pub card: CardId,
@@ -590,6 +593,13 @@ pub struct DamageEvent {
     pub target: Target,
     pub amount: i128,
     pub combat: bool,
+}
+
+/// A public life-gain event captured when an observer triggers.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct LifeTriggerView {
+    pub player: Player,
+    pub amount: i128,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -753,6 +763,7 @@ pub struct ObjectView {
     pub toughness: i128,
     pub keywords: Keywords,
     pub token: Option<&'static TokenInfo>,
+    pub emblem: Option<&'static EmblemInfo>,
 }
 
 /// A single zone transition with the departing object's last-known characteristics.
@@ -964,9 +975,14 @@ impl Game {
                 }
             }
             for &card in deck {
-                if card.is_token() {
+                if card.is_token() || card.is_emblem() {
                     return Err(Error::InvalidDeck(
-                        "tokens cannot be submitted in decks".into(),
+                        if card.is_emblem() {
+                            "emblems cannot be submitted in decks"
+                        } else {
+                            "tokens cannot be submitted in decks"
+                        }
+                        .into(),
                     ));
                 }
                 if config.deck_rules == DeckRules::Standard && !card.is_standard_legal() {
@@ -2210,6 +2226,7 @@ impl Game {
             toughness: stats.toughness,
             keywords: self.keywords(id),
             token: obj.card.token_info(),
+            emblem: obj.card.emblem_info(),
         }
     }
 
@@ -2320,7 +2337,7 @@ impl Game {
     ) -> ZoneChange {
         let id = before.id;
         // CR111.8: after leaving the battlefield, a token cannot move again.
-        if before.card.is_token() && before.zone != Zone::Battlefield {
+        if before.card.is_emblem() || (before.card.is_token() && before.zone != Zone::Battlefield) {
             return ZoneChange {
                 after: before.reference,
                 destination: before.zone,
@@ -2831,7 +2848,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 39,
+            schema: 40,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -3349,3 +3366,10 @@ mod loyalty_tests;
 #[cfg(test)]
 #[path = "engine_planeswalker_combat_tests.rs"]
 mod planeswalker_combat_tests;
+
+#[path = "engine_emblems.rs"]
+mod emblems;
+
+#[cfg(test)]
+#[path = "engine_loyalty_activation_tests.rs"]
+mod loyalty_activation_tests;

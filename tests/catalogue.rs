@@ -182,7 +182,7 @@ fn printed_starting_loyalty_matches_pinned_front_faces_without_admitting_their_b
     }
     assert!(count >= 28);
     for name in [
-        "Professor Dellian Fel",
+        "Vivien Reid",
         "Chandra, Torch of Defiance",
         "The Aetherspark",
     ] {
@@ -192,5 +192,38 @@ fn printed_starting_loyalty_matches_pinned_front_faces_without_admitting_their_b
         let mut cfg = config(vec![c; 60]);
         cfg.deck_rules = DeckRules::Freeform;
         assert!(Game::new(cfg).is_err());
+    }
+}
+
+#[test]
+fn emblem_factories_are_noncard_objects_and_rejected_in_every_deck_mode() {
+    let coverage: serde_json::Value =
+        serde_json::from_str(include_str!("../data/standard/coverage.json")).unwrap();
+    let emblems: Vec<_> = Card::catalogue().filter(|c| c.is_emblem()).collect();
+    assert_eq!(
+        emblems.len(),
+        coverage["emblem_definitions"].as_u64().unwrap() as usize
+    );
+    assert!(!emblems.is_empty());
+    for card in emblems {
+        assert!(!card.is_token());
+        assert!(!card.is_standard_legal());
+        assert!(!Card::ALL.contains(&card));
+        assert!(card.info().type_line.is_empty());
+        assert_eq!(card.colors(), 0);
+        for rules in [
+            DeckRules::Freeform,
+            DeckRules::Constructed,
+            DeckRules::Standard,
+        ] {
+            let mut cfg = config(vec![card; 60]);
+            cfg.deck_rules = rules;
+            assert!(
+                Game::new(cfg)
+                    .unwrap_err()
+                    .to_string()
+                    .contains("emblems cannot")
+            );
+        }
     }
 }
