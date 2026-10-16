@@ -474,6 +474,7 @@ impl Object {
 struct PlayerState {
     spells_cast_this_turn: u64,
     cards_drawn_this_turn: u64,
+    cards_discarded_this_turn: u64,
     life_gain_events_this_turn: u64,
     life_gained_this_turn: u128,
     life_lost_this_turn: u128,
@@ -792,6 +793,7 @@ pub struct ZoneChange {
 pub struct PlayerView {
     pub spells_cast_this_turn: u64,
     pub cards_drawn_this_turn: u64,
+    pub cards_discarded_this_turn: u64,
     pub life_gain_events_this_turn: u64,
     pub life_gained_this_turn: u128,
     pub life_lost_this_turn: u128,
@@ -1021,6 +1023,7 @@ impl Game {
         let mut players = std::array::from_fn(|_| PlayerState {
             spells_cast_this_turn: 0,
             cards_drawn_this_turn: 0,
+            cards_discarded_this_turn: 0,
             life_gain_events_this_turn: 0,
             life_gained_this_turn: 0,
             life_lost_this_turn: 0,
@@ -2550,6 +2553,7 @@ impl Game {
         for player in &mut self.state.players {
             player.spells_cast_this_turn = 0;
             player.cards_drawn_this_turn = 0;
+            player.cards_discarded_this_turn = 0;
             player.life_gain_events_this_turn = 0;
             player.life_gained_this_turn = 0;
             player.life_lost_this_turn = 0;
@@ -2927,7 +2931,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 46,
+            schema: 47,
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
             creatures_died_this_turn: s.creatures_died_this_turn,
             catalogue: crate::CATALOGUE_VERSION,
@@ -2969,6 +2973,7 @@ impl Game {
             players: std::array::from_fn(|i| PlayerView {
                 spells_cast_this_turn: s.players[i].spells_cast_this_turn,
                 cards_drawn_this_turn: s.players[i].cards_drawn_this_turn,
+                cards_discarded_this_turn: s.players[i].cards_discarded_this_turn,
                 life_gain_events_this_turn: s.players[i].life_gain_events_this_turn,
                 life_gained_this_turn: s.players[i].life_gained_this_turn,
                 life_lost_this_turn: s.players[i].life_lost_this_turn,
@@ -3510,3 +3515,7 @@ mod hybrid_activation_tests;
 #[cfg(test)]
 #[path = "engine_activation_discard_tests.rs"]
 mod activation_discard_tests;
+
+#[cfg(test)]
+#[path = "engine_discard_history_tests.rs"]
+mod discard_history_tests;

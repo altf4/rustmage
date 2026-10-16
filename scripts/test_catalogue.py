@@ -14,6 +14,27 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_discard_history_amount_and_two_complete_bodies(self):
+        import json
+        self.assertEqual(generate.amount_value("the number of cards you've discarded this turn"),'AmountValue::CardsDiscardedThisTurn')
+        self.assertEqual(generate.statement_program("Draw a card for each card you've discarded this turn."),['DrawScaled(PlayerSet::Controller, AmountValue::CardsDiscardedThisTurn)'])
+        self.assertEqual(generate.statement_program("Discard a card. Then draw a card for each card you've discarded this turn."),['Discard(PlayerSet::Controller, 1)','DrawScaled(PlayerSet::Controller, AmountValue::CardsDiscardedThisTurn)'])
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,coverage=generate.compile_catalogue(snapshot,target)
+        supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for name in ['Green Goblin, Revenant','Misty Knight, Hero for Hire']:
+            c=next(c for c in snapshot['cards'] if c['name']==name);self.assertIn(name,supported)
+            self.assertIsNone(generate.permanent_program_template(dict(c,oracle_text=c['oracle_text']+'\nDiscover 4.')))
+        self.assertNotIn('Jiang Yanggu, Alone',supported)
+        admitted=json.loads((generate.ROOT/'docs/discard-history-admissions.json').read_text())['cards']
+        self.assertEqual({c['name'] for c in admitted},{'Green Goblin, Revenant','Misty Knight, Hero for Hire'})
+        for a in admitted:self.assertEqual(a['oracle_text'],next(c['oracle_text'] for c in snapshot['cards'] if c['name']==a['name']))
+        goblin=next(c for c in snapshot['cards'] if c['name']=='Green Goblin, Revenant')
+        self.assertIsNone(generate.trigger_creature_template(dict(goblin,name='An Unrelated Creature')))
+        for text in ["Draw a card for each card an opponent discarded this turn.","Draw a card for each card you've discarded this turn. Discover 4.","Discard two cards. Then draw a card for each card you've discarded this turn."]:
+            self.assertIsNone(generate.statement_program(text),text)
+
     def test_activation_discard_costs_are_one_owned_choice_with_complete_gates(self):
         cost=generate.activation_cost('{1}{R}, {T}, Discard a card, Sacrifice this creature')
         self.assertEqual(cost['generic'],1);self.assertEqual(cost['colored'][3],1)
@@ -48,7 +69,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         _,coverage=generate.compile_catalogue(json.loads((generate.ROOT/'data/standard/cards.json').read_text()),json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text()))
         supported={c['name'] for c in coverage['cards'] if c['implemented']}
         self.assertTrue(names<=supported)
-        for name in ['Hardened Academic','Liliana the Faultless','Misty Knight, Hero for Hire','Possessed Goat','Professor Zei, Anthropologist','Avishkar Raceway','Fomori Vault']:
+        for name in ['Hardened Academic','Liliana the Faultless','Possessed Goat','Professor Zei, Anthropologist','Avishkar Raceway','Fomori Vault']:
             self.assertNotIn(name,supported)
 
     def test_reductions_preserve_exact_scope_filters_timing_and_unsupported_clauses(self):

@@ -205,6 +205,7 @@ TOKEN_DEFS = {}
 TOKEN_COUNTS = dict(COUNT_WORDS, an=1, seven=7, eight=8)
 
 def amount_value(text):
+    if text == "the number of cards you've discarded this turn": return 'AmountValue::CardsDiscardedThisTurn'
     if text == 'the amount of life you gained this turn': return 'AmountValue::LifeGainedThisTurn'
     if ' plus the number of ' in text:
         parts=text.split(' plus the number of ')
@@ -907,6 +908,8 @@ def statement_program(text):
     if m:=re.fullmatch(r'each opponent loses X life and you gain X life, where X is (.+)\.',text):
         value=amount_value(m[1])
         return [f'DrainLifeScaled({value})'] if value else None
+    if text=="draw a card for each card you've discarded this turn.":return ['DrawScaled(PlayerSet::Controller, AmountValue::CardsDiscardedThisTurn)']
+    if text=='discard a card.':return ['Discard(PlayerSet::Controller, 1)']
     if text=='discard your hand.':return ['DiscardHand(PlayerSet::Controller)']
     if program:=scaled_life_program(text):return program
     if text == 'you get an emblem with "Whenever you gain life, target opponent loses that much life."':
@@ -1666,6 +1669,7 @@ def trigger_creature_template(card):
         **STEP_PREFIXES,
         **VITAL_PREFIXES,
     }
+
     text = re.sub(r'\([^()]*\)', '', card['oracle_text']).strip()
     for line in text.split('\n'):
         line = line.strip()

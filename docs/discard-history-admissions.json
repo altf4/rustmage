@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Green Goblin, Revenant",
+      "oracle_text": "Flying, deathtouch\nWhenever Green Goblin attacks, discard a card. Then draw a card for each card you've discarded this turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GreenGoblinRevenant.java",
+          "java_sha256": "916f2ddf4329a3722e43b95a0a72f896103cb30beaecfe422773feab4ca3b46c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/watchers/common/DiscardedCardWatcher.java",
+          "java_sha256": "9e83e53154c9a1bf14384776e367e712bf6f454ad6d63c42767c7adfd57ba244"
+        }
+      ]
+    },
+    {
+      "name": "Misty Knight, Hero for Hire",
+      "oracle_text": "{2}, {T}, Discard a card: Draw a card for each card you've discarded this turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MistyKnightHeroForHire.java",
+          "java_sha256": "503a2f5ac39156d2bd6582c523287a18b2ec174860438471eabe9fca142e21ca"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/watchers/common/DiscardedCardWatcher.java",
+          "java_sha256": "9e83e53154c9a1bf14384776e367e712bf6f454ad6d63c42767c7adfd57ba244"
+        }
+      ]
+    }
+  ]
+}

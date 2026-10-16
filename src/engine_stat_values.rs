@@ -109,6 +109,9 @@ impl Game {
     ) -> u128 {
         match value {
             AmountValue::Stat(value) => self.stat_value(value, source, owner).max(0) as u128,
+            AmountValue::CardsDiscardedThisTurn => {
+                u128::from(self.state.players[owner.index()].cards_discarded_this_turn)
+            }
             AmountValue::LifeGainedThisTurn => {
                 self.state.players[owner.index()].life_gained_this_turn
             }

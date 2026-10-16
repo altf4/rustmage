@@ -469,6 +469,7 @@ pub(crate) struct CountFilter {
 pub(crate) enum AmountValue {
     Stat(StatValue),
     LifeGainedThisTurn,
+    CardsDiscardedThisTurn,
     Multiple {
         value: &'static AmountValue,
         factor: u16,

@@ -25,16 +25,23 @@ impl Game {
             .map(|&id| self.object_view(id))
             .collect();
         let events = self.move_objects_raw(cards, Zone::Graveyard);
-        self.finish_zone_events(&events, &[]);
         let mut counts = [0u32; 2];
-        for event in &events {
-            if !event.moved {
-                continue;
-            }
+        for event in events.iter().filter(|event| event.moved) {
             let player = event.before.owner;
             counts[player.index()] = counts[player.index()]
                 .checked_add(1)
                 .capacity("discard count exhausted");
+        }
+        // Commit the entire simultaneous batch before any discard/zone observer.
+        for (p, count) in self.state.players.iter_mut().zip(counts) {
+            p.cards_discarded_this_turn = p
+                .cards_discarded_this_turn
+                .checked_add(u64::from(count))
+                .capacity("cards discarded this turn representation exhausted");
+        }
+        self.finish_zone_events(&events, &[]);
+        for event in events.iter().filter(|event| event.moved) {
+            let player = event.before.owner;
             let cycling = cycled == Some(event.before.reference);
             // Self-discard/cycle triggers use the card in its destination zone.
             let source = self.object_view(event.after.card);
