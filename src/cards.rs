@@ -886,6 +886,7 @@ pub(crate) struct ActivationCost {
     pub colored: Mana,
     pub generic: u32,
     pub alternatives: &'static [ManaCost],
+    pub additional: Option<AdditionalCost>,
     pub mana_component: bool,
     pub tap: bool,
     pub sacrifice: bool,

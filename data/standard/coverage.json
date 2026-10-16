@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "a3e6a4f1ba6a95eb4e0afac839b5f2d5a7cda9ac1fd29b6530714f863533c8fa",
+  "catalogue_version": "719f19e1c65c6c887e1d39768a8814de2b51aaad6fe5556dc1672b5e740477df",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1105,
-  "implemented_total": 1111,
+  "implemented_standard_cards": 1112,
+  "implemented_total": 1118,
   "token_definitions": 49,
   "emblem_definitions": 1,
   "cards": [
@@ -4348,8 +4348,8 @@
     {
       "name": "Charging Strifeknight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Charmed Clothier",
@@ -9268,8 +9268,8 @@
     {
       "name": "Flamecache Gecko",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Flamehold Grappler",
@@ -13036,8 +13036,8 @@
     {
       "name": "Inner Demons Gangsters",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Innkeeper's Talent",
@@ -13414,8 +13414,8 @@
     {
       "name": "Iron-Shield Elf",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Ironheart, Clever Champion",
@@ -16060,8 +16060,8 @@
     {
       "name": "Masked Meower",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Massacre Girl, Known Killer",
@@ -17302,8 +17302,8 @@
     {
       "name": "Murmuring Volume",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Muse Seeker",
@@ -27514,8 +27514,8 @@
     {
       "name": "Thunderhead Gunner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Thundering Broodwagon",

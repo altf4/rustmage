@@ -941,6 +941,8 @@ def statement_program(text):
     if m:=re.fullmatch(r'this creature gets ([+-][0-9]+)/([+-][0-9]+) until end of turn and can\'t be blocked this turn\.',text):
         if max(abs(int(m[1])),abs(int(m[2])))>32767: return None
         return [grow_instruction('Source',int(m[1]),int(m[2])),'GrantKeywords { subject: Subject::Source, keywords: Keywords(16384) }']
+    if m:=re.fullmatch(r'this creature (gains .+ until end of turn)\. Tap it\.',text):
+        if program:=keyword_effect(m[1]+'.','Source'): return [*program,'TapSource']
     if text == 'untap this creature.': return ['UntapSource']
     if text == 'tap this creature.': return ['TapSource']
     if m := re.fullmatch(r'untap (.+)\.', text):
@@ -1830,7 +1832,7 @@ def modal_spell_template(card):
 
 
 def activation_cost(text):
-    cost = dict(colored=[0] * 6, generic=0, alternatives=[], mana_component=False, tap=False, sacrifice=False, life=0, remove=None, loyalty=None, guard="Always")
+    cost = dict(colored=[0] * 6, generic=0, alternatives=[], additional=None, mana_component=False, tap=False, sacrifice=False, life=0, remove=None, loyalty=None, guard="Always")
     seen = set()
     for component in text.split(', '):
         mana = spell_cost_options(component)
@@ -1840,6 +1842,9 @@ def activation_cost(text):
             cost['mana_component'] = True
             cost['colored'], cost['generic'] = mana[0]
             cost['alternatives'] = mana[1:]
+        elif component == 'Discard a card':
+            if cost['additional'] is not None: return None
+            cost['additional'] = 'AdditionalCost { kind: EffectChoiceKind::Discard, filter: '+sacrifice_spec('a permanent')[1]+' }'
         elif component == '{T}':
             if cost['tap']: return None
             cost['tap'] = True
@@ -1854,6 +1859,8 @@ def activation_cost(text):
             cost['remove'] = (COUNTER_KINDS[m[2]] if m[2] else None, COUNT_WORDS[m[1]])
         else:
             return None
+    # Wider composite costs need payment-order choices before admission.
+    if cost['additional'] is not None and (cost['life'] or cost['remove'] or cost['loyalty'] is not None): return None
     return cost
 
 
@@ -1965,11 +1972,15 @@ def permanent_program_template(card):
             if any(word not in vocabulary for word in subtypes): return None
             cost['guard']='ControlSubtypeAny(&['+', '.join(json.dumps(word) for word in sorted(set(subtypes)))+'])'
             effect_text=guard[1]
-        sorcery = effect_text.endswith(' Activate only as a sorcery.')
-        once = effect_text.endswith(' Activate only once each turn.')
-        if sorcery: effect_text = effect_text[:-len(' Activate only as a sorcery.')]
-        if once: effect_text = effect_text[:-len(' Activate only once each turn.')]
-        # All admitted costs refer only to the source, mana, life or its counters;
+        combined = effect_text.endswith(' Activate only as a sorcery and only once each turn.')
+        if combined: effect_text = effect_text[:-len(' Activate only as a sorcery and only once each turn.')]
+        sorcery = combined or effect_text.endswith(' Activate only as a sorcery.')
+        once = combined or effect_text.endswith(' Activate only once each turn.')
+        if sorcery and not combined: effect_text = effect_text[:-len(' Activate only as a sorcery.')]
+        if once and not combined: effect_text = effect_text[:-len(' Activate only once each turn.')]
+        # With an external card cost, an initial pronoun may refer to that card.
+        if cost['additional'] is not None and re.match(r'^[Ii]t deals ', effect_text): return None
+        # The remaining source aliases refer only to the source, mana, life or its counters;
         # an initial pronoun in this activation therefore denotes the source.
         effect_text = re.sub(r'^[Ii]t deals ', 'this permanent deals ', effect_text)
         targeted = targeted_program(effect_text)
@@ -1978,6 +1989,8 @@ def permanent_program_template(card):
         if program is None: return None
         if any(instruction.startswith('AddMana') for instruction in program) and (len(program) != 1 or targets != 'None'):
             return None
+        # Counterfactual mana search does not consume hand-card resources yet.
+        if program[0].startswith('AddMana') and cost['additional'] is not None: return None
         if program[0].startswith('AddMana') and cost['loyalty'] is None and not (cost['tap'] or cost['sacrifice'] or cost['life'] or cost['remove'] or once):
             # Unbounded positive production needs an infinite-resource solver.
             # Resource-free conversions that do not increase total mana are finite.
@@ -1994,6 +2007,9 @@ def permanent_program_template(card):
     if template: effect, keywords = template; triggers = []
     elif trigger: effect, keywords, triggers = trigger
     else: return None
+    # Sacrificing a discard observer before versus after discarding may change
+    # which events it observes. Do not hide that cost-order decision.
+    if triggers and any(a[0]['additional'] is not None and a[0]['sacrifice'] for a in activations): return None
     if not creature: effect = 'Permanent'
     if not activations and not any(enters) and creature: return None
     return effect, keywords, triggers, activations, enters
@@ -2077,7 +2093,7 @@ def rust_activations(abilities):
     for cost, targets, program, sorcery, once in abilities:
         remove = 'None' if cost['remove'] is None else f"Some(({'None' if cost['remove'][0] is None else 'Some(CounterKind::' + cost['remove'][0] + ')'}, {cost['remove'][1]}))"
         alternatives = '&[' + ', '.join(f'ManaCost {{ colored: {mana}, generic: {generic} }}' for mana,generic in cost.get('alternatives', [])) + ']'
-        rows.append(f"ActivatedAbility {{ guard: ActivationGuard::{cost.get('guard','Always')}, cycling: {str(cost.get('cycling',False)).lower()}, origin: ActivationOrigin::{cost.get('origin','Battlefield')}, cost: ActivationCost {{ colored: {cost['colored']}, generic: {cost['generic']}, alternatives: {alternatives}, mana_component: {str(cost['mana_component']).lower()}, tap: {str(cost['tap']).lower()}, sacrifice: {str(cost['sacrifice']).lower()}, discard: {str(cost.get('discard',False)).lower()}, life: {cost['life']}, remove: {remove}, loyalty: {'None' if cost.get('loyalty') is None else 'Some('+str(cost['loyalty'])+')'} }}, targets: {rust_targets(targets)}, program: {rust_program(program)}, sorcery: {str(sorcery).lower()}, once_per_turn: {str(once).lower()} }}")
+        rows.append(f"ActivatedAbility {{ guard: ActivationGuard::{cost.get('guard','Always')}, cycling: {str(cost.get('cycling',False)).lower()}, origin: ActivationOrigin::{cost.get('origin','Battlefield')}, cost: ActivationCost {{ colored: {cost['colored']}, generic: {cost['generic']}, alternatives: {alternatives}, additional: {'None' if cost.get('additional') is None else 'Some('+cost['additional']+')'}, mana_component: {str(cost['mana_component']).lower()}, tap: {str(cost['tap']).lower()}, sacrifice: {str(cost['sacrifice']).lower()}, discard: {str(cost.get('discard',False)).lower()}, life: {cost['life']}, remove: {remove}, loyalty: {'None' if cost.get('loyalty') is None else 'Some('+str(cost['loyalty'])+')'} }}, targets: {rust_targets(targets)}, program: {rust_program(program)}, sorcery: {str(sorcery).lower()}, once_per_turn: {str(once).lower()} }}")
     return '&[' + ', '.join(rows) + ']'
 
 

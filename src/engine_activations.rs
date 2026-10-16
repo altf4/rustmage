@@ -105,18 +105,21 @@ impl Game {
             let done = counter_payments(ability.cost, object.counters, |counter_payment| {
                 let fundable = || {
                     ability.cost.mana_options().any(|cost| {
-                        self.can_fund(FundingGoal {
-                            reserve: None,
-                            actor,
-                            required: cost.colored,
-                            generic: cost.generic,
-                            source: Some((
-                                self.object_ref(card),
-                                index as u16,
-                                counter_payment,
-                                object.card,
-                            )),
-                        })
+                        self.activation_can_fund(
+                            FundingGoal {
+                                reserve: None,
+                                actor,
+                                required: cost.colored,
+                                generic: cost.generic,
+                                source: Some((
+                                    self.object_ref(card),
+                                    index as u16,
+                                    counter_payment,
+                                    object.card,
+                                )),
+                            },
+                            ability.cost.additional,
+                        )
                     })
                 };
                 if self.targets_available(ability.targets, actor, self.object_ref(card))
@@ -141,6 +144,10 @@ impl Game {
                     if done {
                         return true;
                     }
+                }
+                // Direct actions have no owned external-cost selection.
+                if ability.cost.additional.is_some() {
+                    return false;
                 }
                 let mut done = false;
                 let mut seen = std::collections::HashSet::new();

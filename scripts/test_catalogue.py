@@ -14,6 +14,43 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_activation_discard_costs_are_one_owned_choice_with_complete_gates(self):
+        cost=generate.activation_cost('{1}{R}, {T}, Discard a card, Sacrifice this creature')
+        self.assertEqual(cost['generic'],1);self.assertEqual(cost['colored'][3],1)
+        self.assertTrue(cost['tap']);self.assertTrue(cost['sacrifice']);self.assertIn('EffectChoiceKind::Discard',cost['additional'])
+        self.assertFalse(cost.get('discard',False)) # cycling's self-discard remains separate
+        for text in ['Discard two cards','Discard a land card','Discard a card, Discard a card','Discard a card, Sacrifice another creature','Discard a card, Pay 1 life','Discard a card, Remove a counter from this creature']:
+            self.assertIsNone(generate.activation_cost(text),text)
+        for text in ['Discard a card: Add {R}.','{T}, Discard a card: Add {R}.',
+                     'Discard a card: It deals 1 damage to any target.',
+                     'Discard a card: Draw a card. Activate only once.',
+                     'Discard a card: Draw a card. Unknown residual.',
+                     'Whenever you discard a card, you gain 1 life.\nDiscard a card, Sacrifice this creature: Draw a card.']:
+            self.assertIsNone(generate.permanent_program_template(self.card(oracle_text=text)),text)
+        result=generate.permanent_program_template(self.card(oracle_text='Discard a card: Draw a card. Activate only as a sorcery and only once each turn.'))
+        self.assertEqual(len(result[3]),1);self.assertTrue(result[3][0][3]);self.assertTrue(result[3][0][4])
+        result=generate.permanent_program_template(self.card(oracle_text='Discard a card: This creature gains indestructible until end of turn. Tap it.'))
+        self.assertEqual(result[3][0][2],['GrantKeywords { subject: Subject::Source, keywords: Keywords(8192) }','TapSource'])
+
+    def test_seven_discard_activation_bodies_admit_only_full_oracle(self):
+        import json
+        cards=json.loads((generate.ROOT/'data/standard/cards.json').read_text())['cards']
+        names={'Charging Strifeknight','Flamecache Gecko','Inner Demons Gangsters','Iron-Shield Elf','Masked Meower','Murmuring Volume','Thunderhead Gunner'}
+        for c in cards:
+            if c['name'] not in names:continue
+            result=generate.permanent_program_template(c);self.assertIsNotNone(result,c['name'])
+            self.assertTrue(any(a[0]['additional'] is not None for a in result[3]),c['name'])
+            self.assertIsNone(generate.permanent_program_template(dict(c,oracle_text=c['oracle_text']+'\nDiscover 4.')),c['name'])
+        self.assertEqual(sum(c['name'] in names for c in cards),7)
+        admitted=json.loads((generate.ROOT/'docs/activation-discard-admissions.json').read_text())['cards']
+        self.assertEqual({c['name'] for c in admitted},names)
+        for a in admitted:self.assertEqual(a['oracle_text'],next(c['oracle_text'] for c in cards if c['name']==a['name']))
+        _,coverage=generate.compile_catalogue(json.loads((generate.ROOT/'data/standard/cards.json').read_text()),json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text()))
+        supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        self.assertTrue(names<=supported)
+        for name in ['Hardened Academic','Liliana the Faultless','Misty Knight, Hero for Hire','Possessed Goat','Professor Zei, Anthropologist','Avishkar Raceway','Fomori Vault']:
+            self.assertNotIn(name,supported)
+
     def test_reductions_preserve_exact_scope_filters_timing_and_unsupported_clauses(self):
         for text,needles in [
             ('Dragon spells you cast cost {1} less to cast.',['source_only: false','Subtype("Dragon")','SpellReductionAmount::Fixed(1)']),
@@ -62,7 +99,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             card=next(c for c in snapshot['cards'] if c['name']==admitted['name']);self.assertIn(admitted['name'],supported);self.assertEqual(card['oracle_text'],admitted['oracle_text'])
             proxy,_=generate.extract_entry_counters(dict(card,oracle_text=card['oracle_text']+'\nWhenever you cast a spell, discover 3.'))
             self.assertIsNone(generate.creature_template(proxy));self.assertIsNone(generate.trigger_creature_template(proxy));self.assertIsNone(generate.permanent_program_template(proxy));self.assertIsNone(generate.static_permanent_template(proxy))
-        for name in ['Flamecache Gecko','Hired Claw','Gev, Scaled Scorch','Azra Oddsmaker']:
+        for name in ['Hired Claw','Gev, Scaled Scorch','Azra Oddsmaker']:
             self.assertNotIn(name,supported)
 
     def test_opponent_life_loss_predicate_and_vampire_target_scope_are_exact(self):
@@ -84,7 +121,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             card=next(c for c in snapshot['cards'] if c['name']==admitted['name']);self.assertEqual(card['oracle_text'],admitted['oracle_text']);self.assertIn(admitted['name'],supported)
             proxy,_=generate.extract_entry_counters(dict(card,oracle_text=card['oracle_text']+'\nWhenever you cast a spell, discover 3.'))
             self.assertIsNone(generate.creature_template(proxy));self.assertIsNone(generate.trigger_creature_template(proxy));self.assertIsNone(generate.permanent_program_template(proxy));self.assertIsNone(generate.static_permanent_template(proxy))
-        for name in ['Flamecache Gecko','Hired Claw','Fireglass Mentor','Gev, Scaled Scorch']:
+        for name in ['Hired Claw','Fireglass Mentor','Gev, Scaled Scorch']:
             self.assertNotIn(name,supported)
 
     def test_morbid_predicate_is_shared_by_entry_cost_and_intervening_step_rules(self):
@@ -149,7 +186,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             proxy,rules=generate.extract_entry_counters(altered);self.assertTrue(rules)
             self.assertIsNone(generate.creature_template(proxy));self.assertIsNone(generate.trigger_creature_template(proxy))
             self.assertIsNone(generate.permanent_program_template(proxy));self.assertIsNone(generate.static_permanent_template(proxy))
-        for name in ['Cruel Administrator','Blacksnag Buzzard','Patched Plaything','Putrid Pals','Flamecache Gecko']:
+        for name in ['Cruel Administrator','Blacksnag Buzzard','Patched Plaything','Putrid Pals']:
             self.assertNotIn(name,supported)
 
     def test_attack_intervening_guards_require_the_complete_tapped_declaration(self):
@@ -2008,7 +2045,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertEqual(generate.activation_cost('Remove two counters from this creature')['remove'], (None, 2))
         self.assertEqual(generate.activation_cost('Remove a stun counter from this artifact')['remove'], ('Stun', 1))
         self.assertEqual(generate.activation_cost('{T}, Pay 2 life')['life'], 2)
-        for line in ['{X}: Draw a card.', '{1}, Discard a card: Draw a card.',
+        for line in ['{X}: Draw a card.', '{1}, Discard two cards: Draw a card.',
                      '{1}, Sacrifice another creature: Draw a card.',
                      '{1}: Draw a card. Activate only if you control a Hero with power 4 or greater.',
                      'Power-up — {1}: Draw a card.', '{1}: Add {U}. Draw a card.',

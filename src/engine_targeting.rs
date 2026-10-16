@@ -19,6 +19,18 @@ pub(super) struct Announcement {
 }
 
 impl Announcement {
+    pub(super) fn additional_cost(&self) -> Option<AdditionalCost> {
+        match self.item.kind {
+            StackKind::Spell => self.item.source_card.additional_cost(),
+            StackKind::ActivatedAbility { ability } => {
+                self.item.source_card.activations()[ability as usize]
+                    .cost
+                    .additional
+            }
+            StackKind::TriggeredAbility { .. } => None,
+        }
+    }
+
     pub(super) fn cost_options(&self) -> crate::cards::ManaCostOptions {
         match self.item.kind {
             StackKind::Spell => self.item.source_card.cost_options(),
@@ -467,18 +479,16 @@ impl Game {
                 self.state.announcing.as_mut().unwrap().total_cost = Some(total);
             }
             let announcement = self.state.announcing.as_ref().unwrap();
-            self.state.pending = if announcement.item.kind == StackKind::Spell
-                && announcement.item.source_card.additional_cost().is_some()
-                && announcement.additional.is_none()
-            {
-                Pending::AdditionalCost {
-                    player: announcement.item.controller,
-                }
-            } else {
-                Pending::PayCosts {
-                    player: announcement.item.controller,
-                }
-            };
+            self.state.pending =
+                if announcement.additional_cost().is_some() && announcement.additional.is_none() {
+                    Pending::AdditionalCost {
+                        player: announcement.item.controller,
+                    }
+                } else {
+                    Pending::PayCosts {
+                        player: announcement.item.controller,
+                    }
+                };
             return;
         }
         let mut announcement = self.state.announcing.take().unwrap();
@@ -486,6 +496,14 @@ impl Game {
             .item
             .targets
             .sort_by_key(|bound| (bound.group, bound.target));
+        // External discard precedes source sacrifice so its event captures the
+        // battlefield observers before the source departs. No priority is granted.
+        if matches!(announcement.item.kind, StackKind::ActivatedAbility { .. })
+            && !announcement.additional_paid
+        {
+            self.pay_additional_cost(&mut announcement);
+            announcement.additional_paid = true;
+        }
         if let Some(payment) = announcement.payment {
             if matches!(announcement.item.kind, StackKind::ActivatedAbility { .. }) {
                 self.pay_activation(&announcement.item, payment, announcement.counter_payment);
@@ -502,6 +520,10 @@ impl Game {
         // Costs may synchronously return exiled Auras/lands. Finish their entry
         // choices before the spell becomes cast and cast observers are collected.
         announcement.payment = None;
+        if self.state.entry_batch.is_some() {
+            self.state.announcing = Some(announcement);
+            return;
+        }
         if announcement.item.kind == StackKind::Spell && !announcement.additional_paid {
             self.pay_additional_cost(&mut announcement);
             if self.state.entry_batch.is_some() {

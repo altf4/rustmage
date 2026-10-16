@@ -621,9 +621,7 @@ impl Game {
             || a.additional_paid
             || !a.pay_window
             || a.needs_mana_cost()
-            || (a.item.kind == StackKind::Spell
-                && a.item.source_card.additional_cost().is_some()
-                && a.additional.is_none())
+            || (a.additional_cost().is_some() && a.additional.is_none())
         {
             return None;
         }
@@ -638,18 +636,21 @@ impl Game {
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
         match a.item.kind {
             StackKind::Spell => self.spell_can_fund(a.item.controller, a.item.card, cost),
-            StackKind::ActivatedAbility { ability } => self.can_fund(FundingGoal {
-                reserve: None,
-                actor: a.item.controller,
-                required: cost.colored,
-                generic: cost.generic,
-                source: Some((
-                    a.item.object,
-                    ability,
-                    a.counter_payment,
-                    a.item.source_card,
-                )),
-            }),
+            StackKind::ActivatedAbility { ability } => self.activation_can_fund(
+                FundingGoal {
+                    reserve: None,
+                    actor: a.item.controller,
+                    required: cost.colored,
+                    generic: cost.generic,
+                    source: Some((
+                        a.item.object,
+                        ability,
+                        a.counter_payment,
+                        a.item.source_card,
+                    )),
+                },
+                a.additional_cost(),
+            ),
             StackKind::TriggeredAbility { .. } => false,
         }
     }
@@ -668,7 +669,7 @@ impl Game {
                 FundingGoal {
                     reserve: announcement
                         .additional
-                        .map(|r| (r, announcement.item.source_card.additional_cost().unwrap())),
+                        .map(|r| (r, announcement.additional_cost().unwrap())),
                     actor: announcement.item.controller,
                     required,
                     generic,
@@ -678,7 +679,9 @@ impl Game {
             StackKind::ActivatedAbility { ability } => {
                 let cost = announcement.item.source_card.activations()[ability as usize].cost;
                 FundingGoal {
-                    reserve: None,
+                    reserve: announcement
+                        .additional
+                        .map(|r| (r, announcement.additional_cost().unwrap())),
                     actor: announcement.item.controller,
                     required: announcement.cost.map_or(cost.colored, |c| c.colored),
                     generic: announcement.cost.map_or(cost.generic, |c| c.generic),
