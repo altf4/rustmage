@@ -9,6 +9,16 @@ impl Game {
         amount: u128,
         tapped: bool,
     ) {
+        self.create_token_batch(controller, token, amount, tapped, None);
+    }
+    pub(super) fn create_token_batch(
+        &mut self,
+        controller: Player,
+        token: Card,
+        amount: u128,
+        tapped: bool,
+        defenders: Option<&[CombatDefender]>,
+    ) -> Vec<ObjectRef> {
         assert!(token.is_token(), "token instruction requires a factory");
         // Quantities are resolved once before any newcomer exists. Fail before
         // mutation if the entire simultaneous batch cannot fit the identity arena.
@@ -19,7 +29,14 @@ impl Game {
             .filter(|&end| end <= u128::from(CardId::MAX) + 1)
             .capacity("object slots exhausted");
         if amount == 0 {
-            return;
+            return Vec::new();
+        }
+        if let Some(d) = defenders {
+            assert_eq!(d.len(), amount);
+            self.state
+                .attackers
+                .try_reserve(amount)
+                .capacity("attacking token allocation exhausted");
         }
         // Replacement effects inspect the pre-event battlefield once, before
         // any token in this simultaneous batch is installed as a new source.
@@ -32,7 +49,7 @@ impl Game {
             .objects
             .try_reserve(fresh)
             .capacity("object allocation exhausted");
-        for _ in 0..amount {
+        for index in 0..amount {
             let (id, generation) = match self.state.free_tokens.pop() {
                 Some(id) => {
                     let old = &self.state.objects[id as usize];
@@ -76,6 +93,13 @@ impl Game {
                 .capacity("object generation exhausted");
             object.tapped = tapped;
             object.summoning_sick = true;
+            if let Some(d) = defenders {
+                self.state.attackers.push(Attacker {
+                    card: id,
+                    defender: Some(d[index]),
+                    blocked: false,
+                });
+            }
             self.record_nonland_entry(controller, token);
             self.register_battlefield_sources(id);
             events.push(ZoneChange {
@@ -93,6 +117,11 @@ impl Game {
         }
         // Every newcomer exists before any entry event inspects the battlefield.
         self.finish_zone_events(&events, &[]);
+        if defenders.is_some() {
+            events.iter().map(|e| e.after).collect()
+        } else {
+            Vec::new()
+        }
     }
 
     pub(super) fn cease_token(&mut self, id: CardId) {

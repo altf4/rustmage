@@ -1,0 +1,252 @@
+//! Attacking entry batches and source-independent, owned next-end-step abilities.
+use super::*;
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct DelayedSacrificeView {
+    pub id: u64,
+    pub source: ObjectRef,
+    pub source_card: Card,
+    pub controller: Player,
+    pub tokens: Vec<ObjectRef>,
+}
+impl DelayedSacrificeView {
+    pub(super) fn bytes(&self) -> usize {
+        std::mem::size_of::<Self>() + self.tokens.len() * std::mem::size_of::<ObjectRef>()
+    }
+}
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct DelayedBatch {
+    pub view: DelayedSacrificeView,
+    keywords: Keywords,
+    tapped: bool,
+    facts: DamageFacts,
+    attachment: Option<ObjectRef>,
+}
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct MobilizePlan {
+    token: Card,
+    amount: usize,
+    defenders: Vec<CombatDefender>,
+}
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct MobilizeChoiceView {
+    pub source: ObjectRef,
+    pub token: Card,
+    pub amount: usize,
+    pub defenders: Vec<CombatDefender>,
+}
+impl Game {
+    pub(super) fn mobilize_choice(&self) -> Option<MobilizeChoiceView> {
+        let f = self.state.mobilize.as_ref()?;
+        Some(MobilizeChoiceView {
+            source: self.state.resolving.as_ref()?.item.object,
+            token: f.token,
+            amount: f.amount,
+            defenders: f.defenders.clone(),
+        })
+    }
+    fn mobilize_defender_valid(&self, p: Player, d: CombatDefender) -> bool {
+        match d {
+            CombatDefender::Player(q) => q == p.other(),
+            CombatDefender::Planeswalker(r) => {
+                self.state.objects.get(r.card as usize).is_some_and(|o| {
+                    o.generation == r.generation
+                        && o.zone == Zone::Battlefield
+                        && o.owner == p.other()
+                        && o.card.is_planeswalker()
+                })
+            }
+        }
+    }
+    pub(super) fn visit_mobilize_actions(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
+        let p = self.state.resolving.as_ref().unwrap().item.controller;
+        let f = self.state.mobilize.as_ref().unwrap();
+        if f.defenders
+            .iter()
+            .any(|&d| !self.mobilize_defender_valid(p, d))
+        {
+            return false;
+        }
+        if emit(Action::ChooseMobilizeDefender {
+            defender: CombatDefender::Player(p.other()),
+        }) {
+            return true;
+        }
+        for (id, o) in self.state.objects.iter().enumerate() {
+            if o.zone == Zone::Battlefield
+                && o.owner == p.other()
+                && o.card.is_planeswalker()
+                && emit(Action::ChooseMobilizeDefender {
+                    defender: CombatDefender::Planeswalker(self.object_ref(id as CardId)),
+                })
+            {
+                return true;
+            }
+        }
+        false
+    }
+    pub(super) fn start_mobilize(&mut self, token: Card, count: u128, item: &SpellView) -> bool {
+        let amount = usize::try_from(count).capacity("mobilize count representation exhausted");
+        let fresh = amount.saturating_sub(self.state.free_tokens.len());
+        (self.state.objects.len() as u128)
+            .checked_add(fresh as u128)
+            .filter(|&n| n <= u128::from(CardId::MAX) + 1)
+            .capacity("mobilize object slots exhausted");
+        if amount == 0 {
+            return false;
+        }
+        let mut defenders = Vec::new();
+        defenders
+            .try_reserve_exact(amount)
+            .capacity("mobilize defender allocation exhausted");
+        let choice = self.state.objects.iter().any(|o| {
+            o.zone == Zone::Battlefield
+                && o.owner == item.controller.other()
+                && o.card.is_planeswalker()
+        });
+        if !choice {
+            defenders.resize(amount, CombatDefender::Player(item.controller.other()));
+        }
+        self.state.mobilize = Some(Box::new(MobilizePlan {
+            token,
+            amount,
+            defenders,
+        }));
+        if choice {
+            self.state.pending = Pending::Mobilize {
+                player: item.controller,
+            };
+            true
+        } else {
+            self.finish_mobilize();
+            false
+        }
+    }
+    pub(super) fn choose_mobilize_defender(&mut self, defender: CombatDefender) {
+        let f = self.state.mobilize.as_mut().unwrap();
+        f.defenders.push(defender);
+        if f.defenders.len() == f.amount {
+            self.finish_mobilize();
+            self.run_program();
+        }
+    }
+    fn finish_mobilize(&mut self) {
+        let f = self.state.mobilize.take().unwrap();
+        assert_eq!(f.amount, f.defenders.len());
+        let item = self.state.resolving.as_ref().unwrap().item.clone();
+        assert!(
+            f.defenders
+                .iter()
+                .all(|&d| self.mobilize_defender_valid(item.controller, d))
+        );
+        let tokens = self.create_token_batch(
+            item.controller,
+            f.token,
+            f.amount as u128,
+            true,
+            Some(&f.defenders),
+        );
+        if tokens.is_empty() {
+            return;
+        }
+        let id = self.next_stack_id();
+        let batch = DelayedBatch {
+            view: DelayedSacrificeView {
+                id,
+                source: item.object,
+                source_card: item.source_card,
+                controller: item.controller,
+                tokens,
+            },
+            keywords: item.source_keywords,
+            tapped: item.source_tapped,
+            facts: item.source_facts,
+            attachment: item.source_attachment,
+        };
+        let batches = self
+            .state
+            .delayed_sacrifices
+            .get_or_insert_with(|| Box::new(Vec::new()));
+        batches
+            .try_reserve(1)
+            .capacity("delayed sacrifice allocation exhausted");
+        batches.push(batch);
+    }
+    pub(super) fn queue_delayed_sacrifices(&mut self) {
+        let Some(batches) = self.state.delayed_sacrifices.take() else {
+            return;
+        };
+        self.state
+            .pending_triggers
+            .try_reserve(batches.len())
+            .capacity("delayed trigger allocation exhausted");
+        for b in *batches {
+            let id = self.next_stack_id();
+            let source = b.view.source;
+            let card = b.view.source_card;
+            let controller = b.view.controller;
+            self.state.pending_triggers.push(SpellView {
+                delayed_sacrifice: Some(Box::new(b.view)),
+                x: None,
+                attachment_trigger: None,
+                cast: None,
+                entering_object: None,
+                evidence_collected: false,
+                id,
+                kind: StackKind::DelayedSacrifice,
+                source_card: card,
+                source_keywords: b.keywords,
+                source_tapped: b.tapped,
+                source_attachment: b.attachment,
+                source_facts: b.facts,
+                related_stack: None,
+                damage_event: None,
+                discard_event: None,
+                draw_event: None,
+                life_event: None,
+                card: source.card,
+                object: source,
+                targets: Vec::new(),
+                mode: None,
+                controller,
+            });
+        }
+    }
+    pub(super) fn sacrifice_delayed_tokens(&mut self, item: &SpellView) {
+        let d = item
+            .delayed_sacrifice
+            .as_ref()
+            .expect("delayed sacrifice context");
+        let sacrifices: Vec<_> = d
+            .tokens
+            .iter()
+            .filter_map(|r| {
+                self.state
+                    .objects
+                    .get(r.card as usize)
+                    .filter(|o| {
+                        o.zone == Zone::Battlefield
+                            && o.generation == r.generation
+                            && o.owner == d.controller
+                    })
+                    .map(|_| (d.controller, r.card))
+            })
+            .collect();
+        if !sacrifices.is_empty() {
+            self.sacrifice_batch(&sacrifices);
+        }
+    }
+    pub(super) fn mobilize_bytes(&self) -> usize {
+        self.state.mobilize.as_ref().map_or(0, |f| {
+            std::mem::size_of::<MobilizePlan>()
+                + f.defenders.len() * std::mem::size_of::<CombatDefender>()
+        }) + self.state.delayed_sacrifices.as_ref().map_or(0, |b| {
+            std::mem::size_of::<Vec<DelayedBatch>>()
+                + b.iter()
+                    .map(|d| {
+                        std::mem::size_of::<DelayedBatch>()
+                            + d.view.tokens.len() * std::mem::size_of::<ObjectRef>()
+                    })
+                    .sum::<usize>()
+        })
+    }
+}
