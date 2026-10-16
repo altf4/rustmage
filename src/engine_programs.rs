@@ -282,6 +282,7 @@ impl Game {
                     | TriggerCondition::CreatureDiesFiltered { .. }
                     | TriggerCondition::Sacrificed { .. }
                     | TriggerCondition::LifeGained { .. }
+                    | TriggerCondition::AttackDeclared { .. }
                     | TriggerCondition::SelfAttacks
                     | TriggerCondition::SelfBecomesTapped
                     | TriggerCondition::SpellCast { .. }
@@ -497,6 +498,48 @@ impl Game {
                 TriggerCondition::SelfBecomesTapped
             ) {
                 self.queue_trigger(&source, index);
+            }
+        }
+    }
+
+    /// One event per completed declaration, irrespective of whether its observer attacked.
+    pub(super) fn declaration_triggers(&mut self, actor: Player) {
+        let sources: Vec<_> = self
+            .state
+            .attack_sources
+            .iter()
+            .copied()
+            .filter(|&id| self.on_battlefield(id) && self.state.objects[id as usize].owner == actor)
+            .map(|id| self.object_view(id))
+            .collect();
+        for source in sources {
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                if let TriggerCondition::AttackDeclared {
+                    minimum,
+                    power_min,
+                    guard,
+                } = ability.condition.event()
+                {
+                    let count = self
+                        .state
+                        .attackers
+                        .iter()
+                        .filter(|a| {
+                            let o = &self.state.objects[a.card as usize];
+                            o.owner == actor
+                                && o.zone == Zone::Battlefield
+                                && o.card.is_creature()
+                                && power_min
+                                    .is_none_or(|p| self.object_view(a.card).power >= i128::from(p))
+                        })
+                        .count();
+                    // This is an event qualification, never an intervening-if recheck.
+                    if count >= usize::from(minimum)
+                        && self.step_guard(guard, actor, source.reference, source.tapped)
+                    {
+                        self.queue_trigger(&source, index);
+                    }
+                }
             }
         }
     }

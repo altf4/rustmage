@@ -433,6 +433,7 @@ def stat_count_filter(text):
 
 
 def stat_value(text):
+    if text in ('attacking creature','attacking creatures'):return 'StatValue::AttackingCreatures'
     if text=='tokens you control':
         return 'StatValue::Tokens('+stat_count_filter('permanents you control')+')'
     if text=='your life total':return 'StatValue::ControllerLife'
@@ -1272,6 +1273,9 @@ for _name, _base, _predicate in [
     ('CreatureNonOutlaw', 'Creature', 'NonOutlaw'),
 ]:
     TARGET_RULES[_name] = filtered_target(_base, _predicate)
+TARGET_RULES['GoblinAttackingYou'] = 'TargetRule::Filtered { base: &'+TARGET_RULES['CreatureYou']+', predicate: &TargetPredicate::Attacking }'
+TARGET_RULES['GoblinAttackingYou'] = 'TargetRule::Filtered { base: &'+TARGET_RULES['GoblinAttackingYou']+', predicate: &TargetPredicate::Subtype("Goblin") }'
+
 for _name, _members in [
     ('ArtifactEnchantmentCreatureFlying', ['ArtifactEnchantment', 'CreatureFlying']),
     ('ArtifactEnchantmentCreaturePowerMin4', ['ArtifactEnchantment', 'CreaturePowerMin4']),
@@ -1433,6 +1437,10 @@ def targeted_program(text):
         return None
     text = strip_rule_label(text)
     text = normalize_duration(text[0].lower() + text[1:])
+    for subject,rule in [('target attacking creature','CreatureAttacking'),('target attacking Goblin you control','GoblinAttackingYou')]:
+        if text.startswith(subject+' '):
+            result=targeted_program('target creature '+text[len(subject)+1:])
+            return (rule,result[1]) if result and result[0]=='Creature' else None
     # Exact subject/cardinality mapping shared by announcement and resolution.
     object_subjects={
         'target creature':'Creature','target creature you control':'CreatureYou',
@@ -1971,6 +1979,11 @@ def trigger_creature_template(card):
            for noun in ('creature','artifact','enchantment','Aura','Equipment')},
         'Whenever this creature attacks, ': 'SelfAttacks',
         'Whenever this creature becomes tapped, ': 'SelfBecomesTapped',
+        'Whenever you attack, ': 'AttackDeclared { minimum: 1, power_min: None, guard: StepGuard::Always }',
+        'Whenever one or more creatures you control attack, ': 'AttackDeclared { minimum: 1, power_min: None, guard: StepGuard::Always }',
+        'Whenever you attack with three or more creatures, ': 'AttackDeclared { minimum: 3, power_min: None, guard: StepGuard::Always }',
+        'Whenever you attack with one or more creatures with power 4 or greater, ': 'AttackDeclared { minimum: 1, power_min: Some(4), guard: StepGuard::Always }',
+        'Whenever you attack while you control a creature with power 4 or greater, ': 'AttackDeclared { minimum: 1, power_min: None, guard: StepGuard::Threshold { value: StepValue::GreatestCreaturePower, minimum: Some(4), maximum: None } }',
         'Whenever this creature enters or attacks, ': 'SelfEntersOrAttacks',
         'Whenever another artifact you control enters, ': 'OtherArtifactEntersYou',
         'Whenever an artifact you control enters, ': 'ArtifactEntersYou',
