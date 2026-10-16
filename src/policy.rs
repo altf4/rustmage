@@ -114,6 +114,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     400
                 }
             }
+            Action::ChooseX { value } => 80 + i128::from((*value).min(20)),
             Action::ChooseOffspring { pay } | Action::ChooseKicker { pay } => {
                 if *pay {
                     100

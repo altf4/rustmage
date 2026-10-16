@@ -184,6 +184,12 @@ impl Game {
         // declarations precede targets, mana abilities and payment.
         if needs_mode {
             self.state.pending = Pending::Modes { player };
+        } else if a.pay_window
+            && a.item.kind == StackKind::Spell
+            && a.item.source_card.x_symbols() > 0
+            && a.item.x.is_none()
+        {
+            self.state.pending = Pending::X { player };
         } else if a.needs_offspring() {
             self.state.pending = Pending::Offspring { player };
         } else if a.needs_bargain() {
@@ -319,8 +325,7 @@ impl Game {
                             max_mana,
                         } => {
                             (colors == 0 || item.source_card.colors() & colors != 0)
-                                && (min_mana..=max_mana)
-                                    .contains(&item.source_card.fixed_mana_value())
+                                && (min_mana..=max_mana).contains(&item.mana_value())
                         }
                         _ => false,
                     }
@@ -429,6 +434,7 @@ impl Game {
         let object = self.move_object(card, Zone::Stack).after;
         let id = self.next_stack_id();
         SpellView {
+            x: None,
             attachment_trigger: None,
             cast: Some(CastInfo {
                 origin,
@@ -552,12 +558,22 @@ impl Game {
         {
             if announcement.item.kind == StackKind::Spell && announcement.total_cost.is_none() {
                 let base = Self::announcement_base_cost(announcement);
-                let total = self.target_spell_cost(
-                    announcement.item.controller,
-                    announcement.item.card,
-                    base,
-                    &announcement.item.targets,
-                );
+                let total = if announcement.item.source_card.x_symbols() > 0 {
+                    self.scalar_x_total(
+                        announcement.item.controller,
+                        announcement.item.card,
+                        base,
+                        announcement.item.x.expect("X chosen"),
+                    )
+                    .expect("validated scalar cost")
+                } else {
+                    self.target_spell_cost(
+                        announcement.item.controller,
+                        announcement.item.card,
+                        base,
+                        &announcement.item.targets,
+                    )
+                };
                 self.state.announcing.as_mut().unwrap().total_cost = Some(total);
             }
             let announcement = self.state.announcing.as_ref().unwrap();

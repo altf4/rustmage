@@ -8,6 +8,103 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_scalar_x_twelve_complete_bodies_and_original_printed_costs(self):
+        import json,hashlib
+        names=['Choco-Comet','Mind Spring','Pedal to the Metal','Procrastinate','Slice from the Shadows','Song of Totentanz','Spectral Denial','Syncopate','Traumatic Critique','United Front','Morlun, Devourer of Spiders','Pterafractyl']
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        rust,report=generate.compile_catalogue(snapshot,target)
+        supported={c['name'] for c in report['cards'] if c['implemented']}
+        self.assertEqual(report["token_definitions"],74)
+        manifest=json.loads((generate.ROOT/'docs/scalar-x-admissions.json').read_text())
+        self.assertEqual([r['name'] for r in manifest['cards']],names)
+        self.assertEqual(sum(len(r['sources']) for r in manifest['cards']),75)
+        for r in manifest['cards']:
+            original=next(c for c in snapshot['cards'] if c['name']==r['name'])
+            self.assertEqual((r['oracle_text'],r['mana_cost']),(original['oracle_text'],original['mana_cost']))
+            for source in r['sources']:self.assertRegex(source['java_sha256'],r'^[0-9a-f]{64}$')
+        for r in manifest['gated']:self.assertNotIn(r['name'],supported)
+        self.assertIn('CreaturePowerCount { minimum: 4 }',rust)
+        for name in names:
+            row=next(c for c in snapshot['cards'] if c['name']==name)
+            self.assertIn(name,supported)
+            # Printed mana value remains X=0 away from the stack.
+            self.assertIn('mana_cost: '+json.dumps(row['mana_cost']),rust)
+            scalar=generate.scalar_x_body(generate.extract_cost_reductions(generate.extract_uncounterable(row)[0])[0])
+            self.assertIsNotNone(scalar,name)
+            for suffix in ['\nDiscover 3.','\nDraw a card.','\nWhen this creature dies, draw a card.']:
+                altered=dict(row,oracle_text=row['oracle_text']+suffix)
+                one=dict(cards=[altered],card_count=1)
+                one['cards_sha256']=hashlib.sha256(json.dumps(one['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+                _,bad=generate.compile_catalogue(one,dict(banned_card_names=[]))
+                self.assertFalse(next(c for c in bad['cards'] if c['name']==name)['implemented'],(name,suffix))
+
+    def test_scalar_x_composite_costs_and_unknown_numeric_bodies_stay_closed(self):
+        import json,hashlib
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        row=next(c for c in snapshot['cards'] if c['name']=='Mind Spring')
+        cases=[dict(row,mana_cost='{X}{X}{U}'),dict(row,mana_cost='{X}{U/R}'),dict(row,layout='modal_dfc'),dict(row,type_line='Creature — Human',power='2',toughness='2')]
+        for prefix in ['Kicker {1}\n','Offspring {1}\n','As an additional cost to cast this spell, sacrifice a creature.\n','This spell costs {1} less to cast.\n','This spell costs {2} less to cast for each creature you control with power 4 or greater.\n']:
+            cases.append(dict(row,oracle_text=prefix+row['oracle_text']))
+        cases.append(dict(row,oracle_text=row['oracle_text']+'\nFlashback {2}{U}'))
+        for altered in cases:
+            one=dict(cards=[altered],card_count=1)
+            one['cards_sha256']=hashlib.sha256(json.dumps(one['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+            _,bad=generate.compile_catalogue(one,dict(banned_card_names=[]))
+            self.assertFalse(next(c for c in bad['cards'] if c['name']==row['name'])['implemented'],altered)
+        for text in ['Draw twice X cards.','Draw X cards. You gain X life.','Counter target spell with mana value X.','Put X +1/+1 counters on each creature.']:
+            self.assertIsNone(generate.scalar_x_body(dict(row,oracle_text=text)))
+
+    def test_scalar_x_bargain_combinations_remain_whole_body_gated(self):
+        import json, hashlib
+        snapshot = json.loads((generate.ROOT / 'data/standard/cards.json').read_text())
+        manifest = json.loads((generate.ROOT / 'docs/scalar-x-admissions.json').read_text())
+        names = {row['name'] for row in manifest['cards']}
+        declaration = 'Bargain (You may sacrifice an artifact, enchantment, or token as you cast this spell.)\n'
+        cards = [dict(row, oracle_text=declaration + row['oracle_text'])
+                 for row in snapshot['cards'] if row['name'] in names]
+        bargain = json.loads((generate.ROOT / 'docs/bargain-admissions.json').read_text())
+        bargain_names = {row['name'] for row in bargain['cards']}
+        cards += [dict(row, mana_cost='{X}' + row['mana_cost'])
+                  for row in snapshot['cards'] if row['name'] in bargain_names]
+        names |= bargain_names
+        altered = dict(cards=cards, card_count=len(cards))
+        altered['cards_sha256'] = hashlib.sha256(json.dumps(cards, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+        _, report = generate.compile_catalogue(altered, dict(banned_card_names=[]))
+        self.assertEqual(len(cards), 22)
+        self.assertFalse(any(row['implemented'] for row in report['cards'] if row['name'] in names))
+
+    def test_fixed_bargain_and_scalar_base_costs_require_bounded_supported_mana(self):
+        import json, hashlib
+        snapshot = json.loads((generate.ROOT / 'data/standard/cards.json').read_text())
+        bargain = json.loads((generate.ROOT / 'docs/bargain-admissions.json').read_text())
+        names = {row['name'] for row in bargain['cards']}
+        invalid = ['{Y}{W}', '{X/P}{W}', '{W/P}', '{Q}{W}', '{W/U}',
+                   '{4294967296}{W}', '{4294967295}{1}{W}', '']
+        for row in snapshot['cards']:
+            if row['name'] not in names:
+                continue
+            for cost in invalid:
+                altered = dict(row, mana_cost=cost)
+                with self.subTest(name=row['name'], cost=cost):
+                    self.assertIsNone(generate.fixed_bargain_body(altered))
+                    cards = [altered]
+                    one = dict(cards=cards, card_count=1)
+                    one['cards_sha256'] = hashlib.sha256(json.dumps(cards, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+                    _, report = generate.compile_catalogue(one, dict(banned_card_names=[]))
+                    self.assertFalse(next(c for c in report['cards'] if c['name'] == row['name'])['implemented'])
+        row = next(c for c in snapshot['cards'] if c['name'] == 'Mind Spring')
+        for base in ['{4294967296}{U}', '{4294967295}{1}{U}']:
+            altered = dict(row, mana_cost='{X}' + base)
+            self.assertIsNone(generate.scalar_x_body(altered))
+            cards = [altered]
+            one = dict(cards=cards, card_count=1)
+            one['cards_sha256'] = hashlib.sha256(json.dumps(cards, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+            _, report = generate.compile_catalogue(one, dict(banned_card_names=[]))
+            self.assertFalse(next(c for c in report['cards'] if c['name'] == row['name'])['implemented'])
+        # The printed base must fit u32; adding chosen X is widened at runtime.
+        self.assertIsNotNone(generate.scalar_x_body(dict(row, mana_cost='{X}{4294967295}{U}')))
+
     def test_exact_search_qualities_quantifiers_and_clause_boundaries(self):
         positives = [
             ('basic land cards and/or Gate cards', 'up to two', 'them', 'AnyOf'),
@@ -999,11 +1096,11 @@ class CatalogueCompilerTests(unittest.TestCase):
         rows=json.loads((generate.ROOT/'docs/uncounterable-admissions.json').read_text())['cards'];self.assertEqual(len(rows),4)
         for row in rows:
             c=next(c for c in snapshot['cards'] if c['name']==row['name']);self.assertEqual(c['oracle_text'],row['oracle_text']);self.assertIn(c['name'],supported)
-        for name in ['Inevitable Defeat','Slice from the Shadows','Koma, World-Eater','Frenzied Baloth','Hexing Squelcher']:
+        for name in ['Inevitable Defeat','Koma, World-Eater','Frenzied Baloth','Hexing Squelcher']:
             self.assertNotIn(name,supported)
         changed=copy.deepcopy(snapshot)
         for c in changed['cards']:
-            if c['name'] in {r['name'] for r in rows}:c['oracle_text']+='\nDiscover 4.'
+            if c['name'] in {r['name'] for r in rows}|{'Slice from the Shadows'}:c['oracle_text']+='\nDiscover 4.'
         changed['cards_sha256']=hashlib.sha256(json.dumps(changed['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()
         rust,bad=generate.compile_catalogue(changed,target)
         self.assertFalse(any(c['implemented'] for c in bad['cards'] if c['name'] in {r['name'] for r in rows}))
@@ -1581,7 +1678,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertTrue(rules,name)
             self.assertIsNone(generate.spell_program_template(proxy),name);self.assertIsNone(generate.permanent_program_template(proxy),name)
             self.assertIsNone(generate.static_permanent_template(proxy),name);self.assertIsNone(generate.modal_spell_template(proxy),name)
-        for name in ['Cruel Administrator','Don & Raph, Hard Science','Spectral Denial',
+        for name in ['Cruel Administrator','Don & Raph, Hard Science',
                      'The Dawning Archaic','Tomik, Wielder of Law','Rottenmouth Viper','Sunderflock','Sapling Nursery']:
             self.assertNotIn(name,supported)
 
@@ -1619,7 +1716,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertTrue(rules,name)
             self.assertIsNone(generate.spell_program_template(proxy),name);self.assertIsNone(generate.permanent_program_template(proxy),name)
             self.assertIsNone(generate.static_permanent_template(proxy),name);self.assertIsNone(generate.modal_spell_template(proxy),name)
-        for name in ['Thalia, the Survivor',"Dragon's Prey",'Spectral Denial',
+        for name in ['Thalia, the Survivor',"Dragon's Prey",
                      'Eluge, the Shoreless Sea','Inquisitive Glimmer','Traxos, Academy Guardian']:
             self.assertNotIn(name,supported)
 
@@ -1650,7 +1747,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             extra=dict(card,oracle_text=card['oracle_text']+'\nWhenever you cast a spell, discover 3.')
             self.assertIsNone(generate.spell_program_template(extra),name)
             self.assertIsNone(generate.permanent_program_template(extra),name)
-        for name in ['Dazzling Denial','Spell Stutter','Syncopate','An Offer You Can\'t Refuse','Unravel']:
+        for name in ['Dazzling Denial','Spell Stutter','An Offer You Can\'t Refuse','Unravel']:
             self.assertNotIn(name,supported)
 
     def test_guarded_blocks_keep_only_the_first_sentence_conditional_and_else_offsets_exact(self):

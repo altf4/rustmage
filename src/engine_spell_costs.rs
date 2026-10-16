@@ -89,10 +89,23 @@ impl Game {
         })
     }
     pub(super) fn spell_reduction(&self, actor: Player, id: CardId) -> u32 {
+        u32::try_from(self.spell_reduction_at_mana_value(
+            actor,
+            id,
+            self.state.objects[id as usize].card.fixed_mana_value(),
+        ))
+        .unwrap_or(u32::MAX)
+    }
+    pub(super) fn spell_reduction_at_mana_value(
+        &self,
+        actor: Player,
+        id: CardId,
+        mana_value: u64,
+    ) -> u64 {
         let recipient = &self.state.objects[id as usize];
         let applies = |rule: &crate::cards::SpellReduction, source: CardId| {
             let object = &self.state.objects[source as usize];
-            rule.filter.matches(recipient.card)
+            rule.filter.matches_mana_value(recipient.card, mana_value)
                 && match rule.turn {
                     CostTurn::Any => true,
                     CostTurn::Own => self.state.active == actor,
@@ -101,14 +114,27 @@ impl Game {
                 && self.step_guard(rule.guard, actor, self.object_ref(source), object.tapped)
         };
         let amount = |rule: &crate::cards::SpellReduction, source: CardId| match rule.amount {
-            crate::cards::SpellReductionAmount::Fixed(n) => n,
+            crate::cards::SpellReductionAmount::CreaturePowerCount { minimum } => {
+                self.state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|(id, o)| {
+                        o.zone == Zone::Battlefield
+                            && o.owner == actor
+                            && o.card.is_creature()
+                            && self.stats(*id as CardId).power >= i128::from(minimum)
+                    })
+                    .count() as u64
+            }
+            crate::cards::SpellReductionAmount::Fixed(n) => u64::from(n),
             crate::cards::SpellReductionAmount::Attackers { factor } => {
-                u32::try_from(self.state.attacked_this_turn.len())
-                    .unwrap_or(u32::MAX)
-                    .saturating_mul(u32::from(factor))
+                u64::try_from(self.state.attacked_this_turn.len())
+                    .unwrap_or(u64::MAX)
+                    .saturating_mul(u64::from(factor))
             }
             crate::cards::SpellReductionAmount::SourcePower => {
-                u32::try_from(self.stats(source).power.max(0)).unwrap_or(u32::MAX)
+                u64::try_from(self.stats(source).power.max(0)).unwrap_or(u64::MAX)
             }
             crate::cards::SpellReductionAmount::CreaturePower { filter, greatest } => {
                 let mut powers = self
@@ -129,22 +155,22 @@ impl Game {
                         .try_fold(0i128, i128::checked_add)
                         .capacity("spell power aggregate exhausted")
                 };
-                u32::try_from(value.max(0)).unwrap_or(u32::MAX)
+                u64::try_from(value.max(0)).unwrap_or(u64::MAX)
             }
             crate::cards::SpellReductionAmount::Stat { value, factor } => {
-                // Clamp before multiplying: reductions above u32::MAX are
-                // equivalent for every representable generic requirement.
+                // Widen before multiplying: raw X plus printed generic may exceed
+                // u32 before a legal discount makes its payment representable.
                 let n = self
                     .stat_value(value, self.object_ref(source), actor)
                     .max(0);
-                u32::try_from(n)
-                    .unwrap_or(u32::MAX)
-                    .saturating_mul(u32::from(factor))
+                u64::try_from(n)
+                    .unwrap_or(u64::MAX)
+                    .saturating_mul(u64::from(factor))
             }
         };
-        // Requirements are u32; saturation is exact for every representable
-        // generic cost and avoids an artificial limit on the number of reducers.
-        let mut reduction = 0u32;
+        // Raw scalar requirements fit u64; discounts above u64::MAX are
+        // equivalent and impose no artificial reducer-count limit.
+        let mut reduction = 0u64;
         for rule in recipient.card.cost_reductions() {
             if rule.source_only && applies(rule, id) {
                 reduction = reduction.saturating_add(amount(rule, id));

@@ -13,6 +13,7 @@ pub(super) struct EntryMove {
     pub offspring_paid: bool,
     pub kicked: bool,
     pub bargained: bool,
+    pub x: u32,
     /// Frozen before replacement choices; payments in this event cannot enable it.
     pub counters: Counters,
 }
@@ -134,6 +135,7 @@ impl Game {
             offspring_paid: false,
             kicked: false,
             bargained: false,
+            x: 0,
             counters: Counters::default(),
         }
     }
@@ -150,6 +152,12 @@ impl Game {
         // choices. Later ETB triggers will instead observe the committed payments.
         for movement in &mut moves {
             movement.counters = self.pre_entry_counters(&movement.before, movement.destination);
+            if movement.before.card.x_entry_counters() && movement.destination == Zone::Battlefield
+            {
+                movement
+                    .counters
+                    .add(CounterKind::PlusOne, u64::from(movement.x));
+            }
             if movement.kicked && movement.destination == Zone::Battlefield {
                 movement.counters.add(
                     CounterKind::PlusOne,
@@ -231,6 +239,7 @@ impl Game {
             event.offspring_paid = movement.offspring_paid;
             event.kicked = movement.kicked;
             event.bargained = movement.bargained;
+            event.x = movement.x;
             if event.moved {
                 if let Some(target) = movement.attachment {
                     attachments.push((event.after, target));

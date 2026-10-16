@@ -1,0 +1,402 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-16",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "rules": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+  "cards": [
+    {
+      "name": "Choco-Comet",
+      "mana_cost": "{X}{R}{R}",
+      "oracle_text": "Choco-Comet deals X damage to any target.\nCreate a 2/2 green Bird creature token with \"Whenever a land you control enters, this token gets +1/+0 until end of turn.\"",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/ChocoComet.java",
+          "java_sha256": "03bad5da9b5ffa9b540e3349753cdf07f01ddcf9860a5ec38be49fec6bc999d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+          "java_sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/ChocoboToken.java",
+          "java_sha256": "4a0a98b49b02e51f1000751a695225dfe581df883fb537e97c819aae0571b2e5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetAnyTarget.java",
+          "java_sha256": "94f28b8a4a9908ef9b7599805c0ac39faf0aae249231969cd51373db206ebf34"
+        }
+      ]
+    },
+    {
+      "name": "Mind Spring",
+      "mana_cost": "{X}{U}{U}",
+      "oracle_text": "Draw X cards.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MindSpring.java",
+          "java_sha256": "f0bfb27159308ed0e560b7bab11bcdde559ce78e7f7c38e78f2593656e6cc005"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+          "java_sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        }
+      ]
+    },
+    {
+      "name": "Pedal to the Metal",
+      "mana_cost": "{X}{R}",
+      "oracle_text": "Target creature gets +X/+0 and gains first strike until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PedalToTheMetal.java",
+          "java_sha256": "04586754e43036a8a6e50bde7d32180297d2e0d9902938dbf2aadf5fc43022a6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+          "java_sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+          "java_sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FirstStrikeAbility.java",
+          "java_sha256": "997831ae93b8f148ce96ac211e3e2a86e2df46403677fe1106d7c20554678235"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "name": "Procrastinate",
+      "mana_cost": "{X}{U}",
+      "oracle_text": "Tap target creature. Put twice X stun counters on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/Procrastinate.java",
+          "java_sha256": "03b67f74383895b3fe73fba04e0a7ce330bb216a4e633bd454f119778c0e61ee"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+          "java_sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/MultipliedValue.java",
+          "java_sha256": "d8e70d3468d5bfaf3ab1f030aebb4a66738648af642ab39502a5cffffd38c314"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+          "java_sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+          "java_sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "name": "Slice from the Shadows",
+      "mana_cost": "{X}{B}",
+      "oracle_text": "This spell can't be countered. (This includes by the ward ability.)\nTarget creature gets -X/-X until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SliceFromTheShadows.java",
+          "java_sha256": "5cf33424981e254c52dee7186ae23c1ffd56f072f2ca18c261665de99536cf00"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/CantBeCounteredSourceAbility.java",
+          "java_sha256": "ab592d3d97f245e6b3ca9971e1c559a7063c8717a4a5963b64564a13abd768de"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+          "java_sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+          "java_sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SignInversionDynamicValue.java",
+          "java_sha256": "4c4175b8acbc1aeafe355bcad4f1fece8983c36ee7b506fae1de38563dde6da0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "name": "Song of Totentanz",
+      "mana_cost": "{X}{R}",
+      "oracle_text": "Create X 1/1 black Rat creature tokens with \"This token can't block.\" Creatures you control gain haste until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SongOfTotentanz.java",
+          "java_sha256": "fa936b6a1eeee6f49a775319e99e4e25afbe56cfc90b99f1ae16703fce8763c6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+          "java_sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+          "java_sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+          "java_sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/RatCantBlockToken.java",
+          "java_sha256": "aab83bf3ec8d02a815343fe29084d4c4476a37f088e7a16f47209e1d8ef2e65b"
+        }
+      ]
+    },
+    {
+      "name": "Spectral Denial",
+      "mana_cost": "{X}{U}",
+      "oracle_text": "This spell costs {1} less to cast for each creature you control with power 4 or greater.\nCounter target spell unless its controller pays {X}.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SpectralDenial.java",
+          "java_sha256": "6033a4165443d2e5d1ec253e387e3f56c039adddc2f8c4ad0d1e641c492f161b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+          "java_sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+          "java_sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+          "java_sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+          "java_sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionForEachSourceEffect.java",
+          "java_sha256": "47265899e05cec6a04b65519e61353b4684a7c0c1bdf6abf04af79ae4c7708eb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/hint/Hint.java",
+          "java_sha256": "5b3e37a154109935f244c02a79a0182695daad1bee2180f5f0b407bdf630509a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/hint/ValueHint.java",
+          "java_sha256": "d0748934608e742b2bb47c3dab958c95246fc69ef40a54a5f4d95c64cb79e99a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetSpell.java",
+          "java_sha256": "349d67f29235bc2e3ad846c3b177f18dc1097e87e80327a77c852667289f94cc"
+        }
+      ]
+    },
+    {
+      "name": "Syncopate",
+      "mana_cost": "{X}{U}",
+      "oracle_text": "Counter target spell unless its controller pays {X}. If that spell is countered this way, exile it instead of putting it into its owner's graveyard.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/Syncopate.java",
+          "java_sha256": "da762634c65e83a8078e120342c0622be6f547ff6d03c30b84ed0429d3bf1286"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+          "java_sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+          "java_sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetSpell.java",
+          "java_sha256": "349d67f29235bc2e3ad846c3b177f18dc1097e87e80327a77c852667289f94cc"
+        }
+      ]
+    },
+    {
+      "name": "Traumatic Critique",
+      "mana_cost": "{X}{U}{R}",
+      "oracle_text": "Traumatic Critique deals X damage to any target. Draw two cards, then discard a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TraumaticCritique.java",
+          "java_sha256": "82f708ccc10631754c76973cf6bcda9c83afe57e0c914eb35429fcea0bdd6441"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+          "java_sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+          "java_sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetAnyTarget.java",
+          "java_sha256": "94f28b8a4a9908ef9b7599805c0ac39faf0aae249231969cd51373db206ebf34"
+        }
+      ]
+    },
+    {
+      "name": "United Front",
+      "mana_cost": "{X}{W}{W}",
+      "oracle_text": "Create X 1/1 white Ally creature tokens, then put a +1/+1 counter on each creature you control.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/u/UnitedFront.java",
+          "java_sha256": "be4fa6ed75ce5b8b0a645620772c5518c618db2d31f5eb3b0d8889787fff3c90"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+          "java_sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
+          "java_sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/AllyToken.java",
+          "java_sha256": "f923612258b7cffbdcb17f3d99f23d7519c956c0a499542f060ffef00ef99b1c"
+        }
+      ]
+    },
+    {
+      "name": "Morlun, Devourer of Spiders",
+      "mana_cost": "{X}{B}{B}",
+      "oracle_text": "Lifelink\nMorlun enters with X +1/+1 counters on him.\nWhen Morlun enters, he deals X damage to target opponent.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MorlunDevourerOfSpiders.java",
+          "java_sha256": "b2e658199334cc05c5657bfe59567b76c8c699a41912a7f061179ebf56b393dd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAbility.java",
+          "java_sha256": "8f8fd13f114dcff33a7022d97b46aa6af78c44986d66d9e9757c7838ada4d81f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+          "java_sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/EntersBattlefieldWithXCountersEffect.java",
+          "java_sha256": "b4aae4bf8b6f794367dbed4450268a52dd4c494c8fd6aa6e7d62a14eacab30d7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+          "java_sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+          "java_sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+        }
+      ]
+    },
+    {
+      "name": "Pterafractyl",
+      "mana_cost": "{X}{G}{U}",
+      "oracle_text": "Flying\nThis creature enters with X +1/+1 counters on it.\nWhen this creature enters, you gain 2 life.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/Pterafractyl.java",
+          "java_sha256": "3e3278f1c6a5be456645858624c4527dafcee3dcb54396d44b198244f1de1268"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAbility.java",
+          "java_sha256": "8f8fd13f114dcff33a7022d97b46aa6af78c44986d66d9e9757c7838ada4d81f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/EntersBattlefieldWithXCountersEffect.java",
+          "java_sha256": "b4aae4bf8b6f794367dbed4450268a52dd4c494c8fd6aa6e7d62a14eacab30d7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        }
+      ]
+    }
+  ],
+  "gated": [
+    {
+      "name": "Finale of Revelation",
+      "reason": "Threshold alternative resolution with graveyard shuffle and maximum-hand-size duration."
+    },
+    {
+      "name": "Repulsive Mutation",
+      "reason": "Variable counter placement and power-dependent counter payment beyond these exact bodies."
+    }
+  ]
+}

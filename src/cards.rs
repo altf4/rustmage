@@ -402,6 +402,15 @@ pub(crate) enum Instruction {
         subject: Subject,
         amount: u16,
     },
+    CounterUnlessPayScaled {
+        amount: AmountValue,
+        exile: bool,
+    },
+    PutCountersScaled {
+        subject: Subject,
+        kind: CounterKind,
+        amount: AmountValue,
+    },
     CounterUnlessPay {
         cost: ManaCost,
         subject: CounterSubject,
@@ -577,6 +586,8 @@ pub(crate) struct CountFilter {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum AmountValue {
+    /// Explicit immutable parameter of the resolving spell or its exact ETB packet.
+    ChosenX,
     Stat(StatValue),
     LifeGainedThisTurn,
     CardsDiscardedThisTurn,
@@ -819,13 +830,16 @@ pub(crate) enum CastFilter {
 }
 impl CastFilter {
     pub fn matches(self, card: Card) -> bool {
+        self.matches_mana_value(card, card.fixed_mana_value())
+    }
+    pub(crate) fn matches_mana_value(self, card: Card, mana_value: u64) -> bool {
         match self {
             Self::Any => true,
             // Contextual cast observers use Game::cast_filter_matches instead.
             Self::Targeted { .. } => false,
             Self::Multicolored => card.colors().count_ones() >= 2,
             Self::ManaValueMaximum { filter, maximum } => {
-                filter.matches(card) && card.fixed_mana_value() <= maximum
+                filter.matches_mana_value(card, mana_value) && mana_value <= maximum
             }
             Self::Creature => card.is_creature(),
             Self::Noncreature => !card.is_creature(),
@@ -833,9 +847,11 @@ impl CastFilter {
             Self::Artifact => card.is_artifact(),
             Self::Enchantment => card.kind_mask() & 32 != 0,
             Self::Subtype(subtype) => card.has_subtype(subtype),
-            Self::AnyOf(filters) => filters.iter().any(|filter| filter.matches(card)),
+            Self::AnyOf(filters) => filters
+                .iter()
+                .any(|filter| filter.matches_mana_value(card, mana_value)),
             Self::ManaValueMinimum { filter, minimum } => {
-                filter.matches(card) && card.fixed_mana_value() >= minimum
+                filter.matches_mana_value(card, mana_value) && mana_value >= minimum
             }
         }
     }
@@ -850,6 +866,9 @@ pub(crate) enum CostTurn {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum SpellReductionAmount {
+    CreaturePowerCount {
+        minimum: u32,
+    },
     Fixed(u32),
     Attackers {
         factor: u16,
@@ -1494,6 +1513,12 @@ impl Card {
     }
     pub(crate) fn mana_color(self) -> Option<usize> {
         generated::DEFINITIONS[self.0 as usize].mana_color
+    }
+    pub fn x_symbols(self) -> u8 {
+        generated::x_symbols(self)
+    }
+    pub(crate) fn x_entry_counters(self) -> bool {
+        generated::x_entry_counters(self)
     }
     pub(crate) fn fixed_mana_value(self) -> u64 {
         // The canonical equivalent takes every two-brid symbol's generic side;
