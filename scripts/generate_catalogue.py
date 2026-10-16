@@ -916,6 +916,8 @@ def extract_bargain(card):
 
 def fixed_bargain_body(card):
     """Ten closed complete bodies; no partial parsing of unknown bargain tails."""
+    cost=card.get('mana_cost','')
+    if fixed_cost(cost) is None or spell_cost_options(cost) is None:return None
     text=card.get('oracle_text','')
     branch=lambda yes,no:['IfBargained { skip: '+str(len(yes)+1)+' }',*yes,'Skip('+str(len(no))+')',*no]
     selection=lambda n:['SelectLibrary(LibrarySelectionSpec { look: '+str(n)+', count: LibrarySelectionCount::Fixed(2), filter: LibrarySelectionFilter::Any, optional: false, reveal: false, remainder: LibraryRemainder::BottomRandom })']
@@ -961,7 +963,8 @@ def extract_kicker(card):
 def scalar_x_body(card):
     """Complete fixed-target, single-X bodies. Other X/card-cost systems stay closed."""
     cost=card.get('mana_cost','')
-    if card.get('layout')!='normal' or cost.count('{X}')!=1 or fixed_cost(cost.replace('{X}','') or '{0}') is None:return None
+    base=cost.replace('{X}','') or '{0}'
+    if card.get('layout')!='normal' or cost.count('{X}')!=1 or fixed_cost(base) is None or spell_cost_options(base) is None:return None
     if not isinstance(card.get('oracle_text'),str):return None
     creature='Creature' in card.get('type_line','').split(' — ')[0].split()
     if creature and any(not isinstance(card.get(k),str) or re.fullmatch(r'-?[0-9]+',card[k]) is None or abs(int(card[k]))>32767 for k in ('power','toughness')):return None

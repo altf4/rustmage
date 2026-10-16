@@ -74,6 +74,37 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertEqual(len(cards), 22)
         self.assertFalse(any(row['implemented'] for row in report['cards'] if row['name'] in names))
 
+    def test_fixed_bargain_and_scalar_base_costs_require_bounded_supported_mana(self):
+        import json, hashlib
+        snapshot = json.loads((generate.ROOT / 'data/standard/cards.json').read_text())
+        bargain = json.loads((generate.ROOT / 'docs/bargain-admissions.json').read_text())
+        names = {row['name'] for row in bargain['cards']}
+        invalid = ['{Y}{W}', '{X/P}{W}', '{W/P}', '{Q}{W}', '{W/U}',
+                   '{4294967296}{W}', '{4294967295}{1}{W}', '']
+        for row in snapshot['cards']:
+            if row['name'] not in names:
+                continue
+            for cost in invalid:
+                altered = dict(row, mana_cost=cost)
+                with self.subTest(name=row['name'], cost=cost):
+                    self.assertIsNone(generate.fixed_bargain_body(altered))
+                    cards = [altered]
+                    one = dict(cards=cards, card_count=1)
+                    one['cards_sha256'] = hashlib.sha256(json.dumps(cards, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+                    _, report = generate.compile_catalogue(one, dict(banned_card_names=[]))
+                    self.assertFalse(next(c for c in report['cards'] if c['name'] == row['name'])['implemented'])
+        row = next(c for c in snapshot['cards'] if c['name'] == 'Mind Spring')
+        for base in ['{4294967296}{U}', '{4294967295}{1}{U}']:
+            altered = dict(row, mana_cost='{X}' + base)
+            self.assertIsNone(generate.scalar_x_body(altered))
+            cards = [altered]
+            one = dict(cards=cards, card_count=1)
+            one['cards_sha256'] = hashlib.sha256(json.dumps(cards, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+            _, report = generate.compile_catalogue(one, dict(banned_card_names=[]))
+            self.assertFalse(next(c for c in report['cards'] if c['name'] == row['name'])['implemented'])
+        # The printed base must fit u32; adding chosen X is widened at runtime.
+        self.assertIsNotNone(generate.scalar_x_body(dict(row, mana_cost='{X}{4294967295}{U}')))
+
     def test_exact_search_qualities_quantifiers_and_clause_boundaries(self):
         positives = [
             ('basic land cards and/or Gate cards', 'up to two', 'them', 'AnyOf'),

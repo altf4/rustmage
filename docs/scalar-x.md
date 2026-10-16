@@ -1,6 +1,6 @@
 # Scalar X declarations and complete numeric domains
 
-Issue [#224](https://github.com/altf4/rustmage/issues/224) adds twelve complete Standard bodies to the in-process library. The integrated checkpoint supports **1,599 / 5,164 Standard cards**, 1,605 total implemented definitions, 74 immutable token factories and one emblem. Its catalogue fingerprint is `9fed03e1d33db0469e1b11bb3c4e02b4122bea04e79072c029766e8acc2138ad`. The [manifest](scalar-x-admissions.json) records every complete pinned Oracle text, **75 source records across 50 Java files** for constructors and direct rules-helper dependencies at XMage revision `492369c7844b8d76479f0393ff9eb6b0b0cf30d7`.
+Issue [#224](https://github.com/altf4/rustmage/issues/224) adds twelve complete Standard bodies to the in-process library. The integrated checkpoint supports **1,599 / 5,164 Standard cards**, 1,605 total implemented definitions, 74 immutable token factories and one emblem. Its catalogue fingerprint is `34a70c2fe2060ab6c58b9abb6075e834d1c084a5d96808ccd853429d8e2f1e54`. The [manifest](scalar-x-admissions.json) records every complete pinned Oracle text, **75 source records across 50 Java files** for constructors and direct rules-helper dependencies at XMage revision `492369c7844b8d76479f0393ff9eb6b0b0cf30d7`.
 
 | Card | Complete behavior |
 | --- | --- |
@@ -19,7 +19,7 @@ Issue [#224](https://github.com/altf4/rustmage/issues/224) adds twelve complete 
 
 ## Declaration API
 
-Schema **62** adds `Action::ChooseX { value: u32 }`, decision `x`, and `SpellView.x: Option<u32>`. The actor's `Observation.x_choice` and native `LegalActionSpace.x_choice` expose an exact object reference and sorted, disjoint inclusive intervals. Other viewers receive no numeric choice or actions. An example disconnected domain is:
+Schema **64** adds `Action::ChooseX { value: u32 }`, decision `x`, and `SpellView.x: Option<u32>`. The actor's `Observation.x_choice` and native `LegalActionSpace.x_choice` expose an exact object reference and sorted, disjoint inclusive intervals. Other viewers receive no numeric choice or actions. An example disconnected domain is:
 
 ```json
 {"card":{"card":17,"generation":3},"intervals":[{"minimum":0,"maximum":0},{"minimum":2,"maximum":2}]}
