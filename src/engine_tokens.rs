@@ -6,11 +6,29 @@ impl Game {
         &mut self,
         controller: Player,
         token: Card,
-        amount: u16,
+        amount: u128,
         tapped: bool,
     ) {
         assert!(token.is_token(), "token instruction requires a factory");
-        let mut events = Vec::with_capacity(amount as usize);
+        // Quantities are resolved once before any newcomer exists. Fail before
+        // mutation if the entire simultaneous batch cannot fit the identity arena.
+        let amount = usize::try_from(amount).capacity("token count representation exhausted");
+        let fresh = amount.saturating_sub(self.state.free_tokens.len());
+        (self.state.objects.len() as u128)
+            .checked_add(fresh as u128)
+            .filter(|&end| end <= u128::from(CardId::MAX) + 1)
+            .capacity("object slots exhausted");
+        if amount == 0 {
+            return;
+        }
+        let mut events = Vec::new();
+        events
+            .try_reserve_exact(amount)
+            .capacity("token batch allocation exhausted");
+        self.state
+            .objects
+            .try_reserve(fresh)
+            .capacity("object allocation exhausted");
         for _ in 0..amount {
             let (id, generation) = match self.state.free_tokens.pop() {
                 Some(id) => {

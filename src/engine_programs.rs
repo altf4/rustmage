@@ -90,6 +90,10 @@ impl Game {
             .life
             .checked_add(amount)
             .capacity("life total exhausted");
+        state.life_gained_this_turn = state
+            .life_gained_this_turn
+            .checked_add(amount as u128)
+            .capacity("life gained this turn representation exhausted");
         state.life_gain_events_this_turn = state
             .life_gain_events_this_turn
             .checked_add(1)
@@ -129,7 +133,12 @@ impl Game {
             .collect()
     }
 
-    pub(super) fn zone_triggers(&mut self, event: &ZoneChange, death_sources: &[ObjectView]) {
+    pub(super) fn zone_triggers(
+        &mut self,
+        event: &ZoneChange,
+        death_sources: &[ObjectView],
+        sources: &[ObjectView],
+    ) {
         if !event.moved {
             return;
         }
@@ -173,17 +182,12 @@ impl Game {
         if event.destination != Zone::Battlefield {
             return;
         }
-        // Enter triggers see the post-event battlefield, including the newcomer.
-        let sources: Vec<_> = self
-            .state
-            .objects
-            .iter()
-            .enumerate()
-            .filter(|(_, obj)| obj.zone == Zone::Battlefield && !obj.card.triggers().is_empty())
-            .map(|(i, _)| self.object_view(i as CardId))
-            .collect();
+        // All entries in a simultaneous batch see the same post-event sources.
+        if sources.is_empty() {
+            return;
+        }
         let entered = self.object_view(event.after.card);
-        for source in &sources {
+        for source in sources {
             let same = source.reference == event.after;
             let yours = source.owner == entered.owner;
             for (index, ability) in source.card.triggers().iter().enumerate() {
@@ -706,12 +710,20 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::CreateTokensScaled {
+                    token,
+                    amount,
+                    tapped,
+                } => {
+                    let amount = self.amount_value(amount, item.object, item.controller);
+                    self.create_tokens(item.controller, token, amount, tapped);
+                }
                 Instruction::CreateTokens {
                     token,
                     amount,
                     tapped,
                 } => {
-                    self.create_tokens(item.controller, token, amount, tapped);
+                    self.create_tokens(item.controller, token, u128::from(amount), tapped);
                 }
                 Instruction::May { skip } => {
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");

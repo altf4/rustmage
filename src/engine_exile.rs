@@ -38,8 +38,24 @@ impl Game {
         events: &[ZoneChange],
         death_sources: &[ObjectView],
     ) {
+        // No zone changes occur while observers are queued. Freeze their
+        // post-event views once instead of rescanning the arena per newcomer.
+        let sources: Vec<_> = if events
+            .iter()
+            .any(|e| e.moved && e.destination == Zone::Battlefield)
+        {
+            self.state
+                .objects
+                .iter()
+                .enumerate()
+                .filter(|(_, o)| o.zone == Zone::Battlefield && !o.card.triggers().is_empty())
+                .map(|(i, _)| self.object_view(i as CardId))
+                .collect()
+        } else {
+            Vec::new()
+        };
         for event in events {
-            self.zone_triggers(event, death_sources);
+            self.zone_triggers(event, death_sources, &sources);
         }
         if self.state.exile_links.is_empty()
             || !events

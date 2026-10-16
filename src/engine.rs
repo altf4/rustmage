@@ -1,12 +1,12 @@
 use crate::capacity::{CapacityExt, CapacitySignal};
 use crate::cards::{
     ActivatedAbility, ActivationCost, ActivationGuard, ActivationOrigin, AdditionalCost,
-    BattlefieldFilter, CastRelation, CountFilter, CountZone, CounterKind, CounterSubject, Counters,
-    CreatureFilter, DamageQualification, DamageSubject, Effect, EffectChoiceKind, EmblemInfo,
-    EntryTapped, Instruction, ManaCost, ManaProduction, MillAmount, PlayerSet, RecoveryFilter,
-    SacrificeFilter, SearchSpec, StatExpr, StatValue, Stats, StepGuard, StepValue, Subject,
-    TargetPlan, TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep,
-    payments,
+    AmountValue, BattlefieldFilter, CastRelation, CountFilter, CountZone, CounterKind,
+    CounterSubject, Counters, CreatureFilter, DamageQualification, DamageSubject, Effect,
+    EffectChoiceKind, EmblemInfo, EntryTapped, Instruction, ManaCost, ManaProduction, MillAmount,
+    PlayerSet, RecoveryFilter, SacrificeFilter, SearchSpec, StatExpr, StatValue, Stats, StepGuard,
+    StepValue, Subject, TargetPlan, TargetPredicate, TargetRule, TargetSpec, TargetZone,
+    TriggerCondition, TriggerStep, payments,
 };
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
@@ -470,6 +470,7 @@ struct PlayerState {
     spells_cast_this_turn: u64,
     cards_drawn_this_turn: u64,
     life_gain_events_this_turn: u64,
+    life_gained_this_turn: u128,
     attacked_this_turn: bool,
     life: i128,
     mana: Mana,
@@ -781,6 +782,7 @@ pub struct PlayerView {
     pub spells_cast_this_turn: u64,
     pub cards_drawn_this_turn: u64,
     pub life_gain_events_this_turn: u64,
+    pub life_gained_this_turn: u128,
     pub attacked_this_turn: bool,
     pub life: i128,
     pub mana: Mana,
@@ -1004,6 +1006,7 @@ impl Game {
             spells_cast_this_turn: 0,
             cards_drawn_this_turn: 0,
             life_gain_events_this_turn: 0,
+            life_gained_this_turn: 0,
             attacked_this_turn: false,
             life: 20,
             mana: [0; 6],
@@ -2471,6 +2474,7 @@ impl Game {
             player.spells_cast_this_turn = 0;
             player.cards_drawn_this_turn = 0;
             player.life_gain_events_this_turn = 0;
+            player.life_gained_this_turn = 0;
             player.attacked_this_turn = false;
         }
         self.state.land_played = false;
@@ -2848,7 +2852,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 40,
+            schema: 41,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -2888,6 +2892,7 @@ impl Game {
                 spells_cast_this_turn: s.players[i].spells_cast_this_turn,
                 cards_drawn_this_turn: s.players[i].cards_drawn_this_turn,
                 life_gain_events_this_turn: s.players[i].life_gain_events_this_turn,
+                life_gained_this_turn: s.players[i].life_gained_this_turn,
                 attacked_this_turn: s.players[i].attacked_this_turn,
                 life: s.players[i].life,
                 mana: s.players[i].mana,
@@ -3373,3 +3378,7 @@ mod emblems;
 #[cfg(test)]
 #[path = "engine_loyalty_activation_tests.rs"]
 mod loyalty_activation_tests;
+
+#[cfg(test)]
+#[path = "engine_scaled_token_tests.rs"]
+mod scaled_token_tests;

@@ -67,7 +67,7 @@ def spell_cost_options(cost):
 
 def permanent_type(card):
     typ = card.get('type_line', '').split(' — ')[0]
-    return typ.removeprefix('Legendary ')
+    return typ.removeprefix('Legendary ').removeprefix('Kindred ')
 
 
 def creature_template(card):
@@ -117,6 +117,27 @@ def counter_instruction(subject, count, kind):
 
 TOKEN_DEFS = {}
 TOKEN_COUNTS = dict(COUNT_WORDS, an=1, seven=7, eight=8)
+
+def amount_value(text):
+    if text == 'the amount of life you gained this turn': return 'AmountValue::LifeGainedThisTurn'
+    if text.startswith('the number of '):text=text[len('the number of '):]
+    value=stat_value(text)
+    return f'AmountValue::Stat({value})' if value else None
+
+
+def scaled_token_program(text):
+    body,value=None,None
+    if m:=re.fullmatch(r'create X (.+), where X is (.+)\.',text):
+        body='a '+m[1];value=amount_value(m[2])
+    elif m:=re.fullmatch(r'for each (.+), create (.+)\.',text):
+        value=amount_value(m[1]);body=m[2]
+    elif m:=re.fullmatch(r'create (.+) for each (.+)\.',text):
+        body=m[1];value=amount_value(m[2])
+    if value is None or body is None or not re.match(r'(?:a|an|one) ',body): return None
+    program=token_program('create '+body+'.') or predefined_program('create '+body+'.')
+    if not program or len(program)!=1 or not program[0].startswith('CreateTokens {'):return None
+    return [re.sub(r'amount: [0-9]+', 'amount: '+value, program[0],count=1).replace('CreateTokens {','CreateTokensScaled {',1)]
+
 
 def token_program(text):
     """Fixed fully-described creature tokens only; no inferred predefined abilities."""
@@ -259,12 +280,14 @@ def stat_count_filter(text):
     else:return None
     kinds={'creature':1,'creatures':1,'land':2,'lands':2,'artifact':16,'artifacts':16,
            'enchantment':32,'enchantments':32,'permanent':1|2|16|32|64|256,'permanents':1|2|16|32|64|256,
-           'instant and sorcery':4|8,'creature and planeswalker':1|64}
+           'instant and sorcery':4|8,'creature and planeswalker':1|64,'artifact and/or creature':16|1}
     kind,exclude,basic,subtype=0,0,False,None
     if cards:
         if noun.endswith(' cards'):noun=noun[:-6]
         elif noun.endswith(' card'):noun=noun[:-5]
         elif noun!='cards':return None
+    if zone=='Battlefield' and noun.startswith('nontoken '):
+        noun=noun[len('nontoken '):];cards=True
     if noun=='cards' and zone=='Battlefield':return None
     if noun in ('cards','permanents'):pass
     elif noun=='nonland permanents':exclude=2
@@ -280,6 +303,7 @@ def stat_count_filter(text):
 
 
 def stat_value(text):
+    if text=='your life total':return 'StatValue::ControllerLife'
     if text=='card types among cards in all graveyards':return 'StatValue::GraveyardCardTypes'
     if text.startswith('greatest mana value among '):
         filt=stat_count_filter(text[len('greatest mana value among '):])
@@ -655,7 +679,7 @@ def statement_program(text):
     if choice := optional_payment_program(text, False): return choice
     if sacrifice := sacrifice_program(text):
         if sacrifice[0] == 'None': return sacrifice[1]
-    token = token_program(text) or predefined_program(text)
+    token = scaled_token_program(text) or token_program(text) or predefined_program(text)
     if token: return token
     if text in ('tap enchanted creature.','tap equipped creature.'): return ['TapAttached']
     if m := re.fullmatch(r'(?:enchanted|equipped) creature gets ([+-][0-9]+)/([+-][0-9]+) until end of turn\.',text):
@@ -1354,6 +1378,8 @@ def trigger_creature_template(card):
     text = re.sub(r'\([^()]*\)', '', card['oracle_text']).strip()
     for line in text.split('\n'):
         line = line.strip()
+        for label in ('Do You Like Squirrels? — ', 'I LOVE Squirrels! — '):
+            if line.startswith(label):line=line[len(label):]
         limited = line.endswith(' This ability triggers only once each turn.')
         if limited: line = line[:-len(' This ability triggers only once each turn.')]
         name = card.get('name', '')
@@ -1609,6 +1635,8 @@ def permanent_program_template(card):
     activations, body = [], []
     enters = [0, 0, 0]
     for line in text.split('\n'):
+        for label in ('Do You Like Squirrels? — ', 'I LOVE Squirrels! — '):
+            if line.startswith(label):line=line[len(label):]
         # These aliases denote the source only, not any arbitrary mentioned name.
         line = line.replace('When this artifact enters, ', 'When this creature enters, ').replace('When this enchantment enters, ', 'When this creature enters, ')
         if m := re.fullmatch(r'This creature enters with (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on it\.', line):
@@ -1878,7 +1906,7 @@ def compile_catalogue(snapshot, target):
         deck_limit = 'None' if basic or name in UNLIMITED else 'Some(4)'
         quote = lambda value: json.dumps(value, ensure_ascii=False)
         oracle_id = f"Some({quote(card['oracle_id'])})" if card else 'None'
-        type_line = card.get('type_line', 'Basic Land' if basic else 'Creature' if kind & 1 else 'Instant' if kind & 8 else 'Sorcery' if kind & 4 else '')
+        type_line = card.get('type_line', {'Grizzly Bears':'Creature — Bear','Goblin Piker':'Creature — Goblin Warrior','Hill Giant':'Creature — Giant'}.get(name, 'Basic Land' if basic else 'Creature' if kind & 1 else 'Instant' if kind & 8 else 'Sorcery' if kind & 4 else ''))
         if card:
             # Multiple-face cards are still unsupported; expose front-face facts
             # rather than deriving colors from color identity or one hybrid cost.

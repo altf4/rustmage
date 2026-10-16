@@ -30,6 +30,7 @@ impl Game {
     }
     pub(super) fn stat_value(&self, value: StatValue, source: ObjectRef, owner: Player) -> i128 {
         match value {
+            StatValue::ControllerLife => self.state.players[owner.index()].life,
             StatValue::Count(filter) => i128::try_from(
                 (0..self.state.objects.len())
                     .filter(|&id| self.count_matches(filter, source, owner, id as CardId))
@@ -58,6 +59,19 @@ impl Game {
                 .map(|&value| self.stat_value(value, source, owner))
                 .try_fold(0i128, i128::checked_add)
                 .capacity("stat sum exhausted"),
+        }
+    }
+    pub(super) fn amount_value(
+        &self,
+        value: AmountValue,
+        source: ObjectRef,
+        owner: Player,
+    ) -> u128 {
+        match value {
+            AmountValue::Stat(value) => self.stat_value(value, source, owner).max(0) as u128,
+            AmountValue::LifeGainedThisTurn => {
+                self.state.players[owner.index()].life_gained_this_turn
+            }
         }
     }
     pub(super) fn stat_expression(&self, expr: StatExpr, source: ObjectRef, owner: Player) -> i128 {
