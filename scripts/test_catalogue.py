@@ -8,6 +8,39 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_draw_and_token_composition_keeps_entire_sentence_and_order(self):
+        for word,n in [('a card',1),('two cards',2),('three cards',3),('four cards',4)]:
+            result=generate.statement_program('Draw '+word+' and create a Treasure token.')
+            self.assertEqual(result,[f'Draw(PlayerSet::Controller, {n})',*generate.predefined_program('create a Treasure token.')])
+        robot='create a 2/2 colorless Robot artifact creature token.'
+        self.assertEqual(generate.statement_program('Draw two cards and '+robot),['Draw(PlayerSet::Controller, 2)',*generate.token_program(robot)])
+        for text in ['Draw a card and create a Map token.', 'Draw a card and create a Treasure token. It becomes a creature.', 'Draw a card and create a Treasure token unless an opponent pays {1}.', 'Draw a card and create a token copy of target creature.', 'Draw a card or create a Treasure token.', 'Draw five cards and create a Treasure token.']:
+            self.assertIsNone(generate.statement_program(text),text)
+        optional=generate.optional_payment_program('you may sacrifice another creature or artifact. If you do, draw a card and create a Treasure token.',False)
+        self.assertIn('optional_skip: Some(2)',optional[0]);self.assertEqual(optional[1:],[*generate.statement_program('Draw a card and create a Treasure token.')])
+
+    def test_permanent_lines_normalize_reminder_whitespace_without_swallowing_residuals(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text())['cards']
+        for name in ['Lunatic Pandora','Popular Egotist']:
+            c=next(c for c in rows if c['name']==name);normal=generate.permanent_program_template(c);self.assertIsNotNone(normal)
+            variant=dict(c,oracle_text=' \n'.join('  '+line+'  ' for line in c['oracle_text'].split('\n')))
+            self.assertEqual(generate.permanent_program_template(variant),normal)
+            self.assertIsNone(generate.permanent_program_template(dict(c,oracle_text=c['oracle_text']+'\nDiscover 3.')))
+        c=self.card(name='The Exact Names',type_line='Legendary Creature — Human',oracle_text='When The Exact Names enter, draw a card.')
+        self.assertEqual(generate.trigger_creature_template(c)[2][0][0],'SelfEnters')
+        self.assertIsNone(generate.trigger_creature_template(dict(c,oracle_text='When Other Names enter, draw a card.')))
+
+    def test_draw_token_body_migration_admits_exact_complete_seven_cards(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());_,coverage=generate.compile_catalogue(rows,target);supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for name in ['Biomechan Engineer','Lunatic Pandora','Popular Egotist','Reckless Lackey','Redrock Sentinel','Seize the Spoils','The Sackville-Bagginses']:
+            self.assertIn(name,supported)
+            c=next(c for c in rows['cards'] if c['name']==name);bad=dict(c,oracle_text=c['oracle_text']+'\nWhenever you cast a spell, discover 3.')
+            for compiler in [generate.permanent_program_template,generate.trigger_creature_template,generate.spell_program_template]:self.assertIsNone(compiler(bad),name)
+        for name in ['Fanatical Offering','Dyadrine, Synthesis Amalgam','Esoteric Duplicator','Camellia, the Seedmiser']:
+            self.assertNotIn(name,supported)
+
     def test_sacrifice_triggers_compile_exact_filters_and_triggered_mana(self):
         for phrase,kinds,other,subtype,turn in [('an artifact',16,False,None,False),('a Food',16,False,'Food',False),('another creature or artifact',17,True,None,False),('another permanent',0,True,None,False),('a permanent during your turn',0,False,None,True),('a token',0,False,None,False)]:
             result=generate.trigger_creature_template(self.card(oracle_text='Whenever you sacrifice '+phrase+', draw a card.'))
@@ -27,7 +60,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIn(name,supported)
             c=next(c for c in rows['cards'] if c['name']==name);bad=dict(c,oracle_text=c['oracle_text']+'\nWhenever you cast a spell, discover 3.')
             for compiler in [generate.permanent_program_template,generate.trigger_creature_template]:self.assertIsNone(compiler(bad),name)
-        for name in ['Curious Cadaver','Esoteric Duplicator','Magnetic Snuffler','Persuasive Interrogators','Popular Egotist','The Sackville-Bagginses','Zhao, Ruthless Admiral','Camellia, the Seedmiser']:
+        for name in ['Curious Cadaver','Esoteric Duplicator','Magnetic Snuffler','Persuasive Interrogators','Zhao, Ruthless Admiral','Camellia, the Seedmiser']:
             self.assertNotIn(name,supported)
 
     def test_permanent_departures_compile_exact_sources_and_kind_scoped_exclusions(self):
@@ -1264,7 +1297,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIn(name,supported)
         for name in ['Grab the Prize','Laughing Mad','Pumpkin Bombardment','Souls Lost','Fear of Isolation']:
             self.assertNotIn(name,supported)
-        self.assertEqual(rust.count('=> Some(AdditionalCost {'),6)
+        self.assertEqual(rust.count('=> Some(AdditionalCost {'),7)
         prefix='As an additional cost to cast this spell, '
         for cost in ['discard two cards.','you may discard a card.','sacrifice two creatures.',
                      'discard a card or pay {2}.','sacrifice an artifact or pay {2}.',

@@ -992,6 +992,9 @@ def statement_program(text):
         if sacrifice[0] == 'None': return sacrifice[1]
     token = scaled_token_program(text) or token_program(text) or predefined_program(text)
     if token: return token
+    if m:=re.fullmatch(r'(?:you )?draw (a card|two cards|three cards|four cards) and (create .+)\.',text):
+        if program:=token_program(m[2]+'.') or predefined_program(m[2]+'.'):
+            return [f'Draw(PlayerSet::Controller, {DRAW_COUNTS[m[1]]})',*program]
     if text in ('tap enchanted creature.','tap equipped creature.'): return ['TapAttached']
     if m := re.fullmatch(r'(?:enchanted|equipped) creature gets ([+-][0-9]+)/([+-][0-9]+) until end of turn\.',text):
         if max(abs(int(m[1])),abs(int(m[2])))>32767: return None
@@ -1830,6 +1833,8 @@ def trigger_creature_template(card):
                 line='Whenever this creature becomes the target of '+line[len('Whenever ' + alias + ' becomes the target of '):]
             if line.startswith('Whenever ' + alias + ' attacks, '):
                 line = 'Whenever this creature attacks, ' + line[len('Whenever ' + alias + ' attacks, '):]
+            # An authenticated plural source name still denotes this object.
+            line=line.replace('When '+alias+' enter, ','When this creature enters, ')
             if line.startswith('When ' + alias + ' enters, '):
                 line = 'When this creature enters, ' + line[len('When ' + alias + ' enters, '):]
             if line.startswith('When ' + alias + ' dies, '):
@@ -2131,6 +2136,8 @@ def permanent_program_template(card):
     activations, body = [], []
     enters = [0, 0, 0]
     for line in text.split('\n'):
+        # Removing a reminder can leave trailing spaces before a newline.
+        line=line.strip()
         for label in ('Do You Like Squirrels? — ', 'I LOVE Squirrels! — '):
             if line.startswith(label):line=line[len(label):]
         # These aliases denote the source only, not any arbitrary mentioned name.

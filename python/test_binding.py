@@ -9,6 +9,62 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def test_seven_draw_token_bodies_and_both_pandora_abilities_replay_native_frames(self):
+        cases=[('Biomechan Engineer',0),('Lunatic Pandora',0),('Lunatic Pandora',1),('Popular Egotist',0),('Reckless Lackey',0),('Redrock Sentinel',0),('Seize the Spoils',0),('The Sackville-Bagginses',0)]
+        for wanted,ability in cases:
+            lands=sum(([n]*6 for n in ['Plains','Island','Swamp','Mountain','Forest']),[]);deck=lands+[wanted]*12+['Bear Cub']*18
+            with self.subTest(card=wanted,ability=ability),Game([deck,['Forest']*48+['Bear Cub']*12],seed=7,deck_rules='Freeform') as game:
+                for _ in range(20000):
+                    obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor']);objects={o['id']:o for o in obs['objects']};own=[o for o in objects.values() if o['owner']=='P0' and o['zone']=='Battlefield'];sources=[o for o in own if o['card']==wanted];bears=[o for o in own if o['card']=='Bear Cub'];enemy=[o for o in objects.values() if o['owner']=='P1' and o['zone']=='Battlefield' and o['card']=='Bear Cub']
+                    kind='Spell' if wanted=='Seize the Spoils' else {'TriggeredAbility':{'ability':0}} if wanted=='The Sackville-Bagginses' else {'ActivatedAbility':{'ability':ability}}
+                    roots=[s for s in obs['stack'] if s['source_card']==wanted and s['kind']==kind]
+                    if roots:break
+                    def score(a):
+                        k=a['kind']
+                        if k in ('Cast','AnnounceCast'):
+                            n=objects[a['card']]['card']
+                            if n==wanted:return 250 if not sources and (wanted!='The Sackville-Bagginses' or bears) else -100
+                            if n=='Bear Cub':return 200 if obs['actor']=='P0' and not bears or obs['actor']=='P1' and not enemy else -100
+                            return -100
+                        if k=='AnnounceActivate':return 270 if sources and a['card']==sources[0]['id'] and a['ability']==ability and not obs['stack'] and (wanted!='Popular Egotist' or bears) and (wanted!='Lunatic Pandora' or ability==0 or enemy) else -100
+                        if k in ('Activate','BeginActivate','ActivateMana','AnnounceMana'):return -100
+                        if k=='ChooseTarget':return 240 if enemy and a['target'].get('Card')==enemy[0]['id'] or a['target'].get('Player')=='P1' else -100
+                        if k=='ChooseAdditionalCost':
+                            o=objects[a['object']['card']]
+                            return 240 if wanted=='Redrock Sentinel' and o['card'] in ('Plains','Island','Swamp','Mountain','Forest') or wanted=='Popular Egotist' and o['card']=='Bear Cub' or wanted=='Seize the Spoils' and o['card']=='Bear Cub' else 100
+                        if k=='TapMana':return 180 if obs['decision']=='pay_costs' else -100
+                        if k in ('ChooseSpellCost','ChooseActivationCost'):return 210
+                        return self.professor_score(obs,a)
+                    game.step(obs,max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i])))
+                else:self.fail('native body frame not reached')
+                root=roots[-1];before=game.observe('P0');source=root['card'];saved=game.snapshot()
+                def finish(handle):
+                    for _ in range(120):
+                        o=handle.observe('P0');live=o['stack']+o['waiting_triggers']+[x for x in (o['announcing'],o['resolving']) if x]
+                        if all(s['id']!=root['id'] for s in live):return o
+                        o=handle.observe(o['actor'])
+                        if o['library_choice']:
+                            other=handle.observe('P1' if o['actor']=='P0' else 'P0');self.assertIsNone(other['library_choice']);self.assertEqual(other['actions'],[])
+                        def score(a):
+                            if a['kind']=='Sacrifice':return 130
+                            if a['kind']=='ChooseTarget':return 120 if a['target'].get('Player')=='P1' else -100
+                            return {'Pass':110,'PutTrigger':110,'ArrangeLibrary':110,'Discard':110,'ChooseOptional':100}.get(a['kind'],-100)
+                        handle.step(o,max(range(len(o['actions'])),key=lambda i:score(o['actions'][i])))
+                    self.fail('body frame did not finish')
+                with game.clone() as fork:expected=finish(fork)
+                after=finish(game);self.assertEqual(after,expected);game.restore(saved)
+                with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(before,0)
+                again=finish(game);after['revision']=again['revision'];self.assertEqual(after,again);game.drop_snapshot(saved)
+                draws={'Biomechan Engineer':2,'Reckless Lackey':1,'Redrock Sentinel':1,'Seize the Spoils':2,'The Sackville-Bagginses':1}.get(wanted,0);self.assertEqual(after['players'][0]['cards_drawn_this_turn'],before['players'][0]['cards_drawn_this_turn']+draws)
+                if draws:
+                    subtype='Robot' if wanted=='Biomechan Engineer' else 'Treasure';new=[o for o in after['objects'] if o['owner']=='P0' and o['zone']=='Battlefield' and o['token'] and o['token']['subtypes']==subtype];self.assertEqual(len(new),1);self.assertEqual((new[0]['power'],new[0]['toughness']),(2,2) if subtype=='Robot' else (0,0));self.assertEqual(new[0]['token']['colors'],0)
+                if wanted=='Popular Egotist':
+                    now=next(o for o in after['objects'] if o['id']==source);self.assertTrue(now['tapped']);self.assertTrue(now['keywords']&8192);self.assertEqual(after['players'][0]['life'],before['players'][0]['life']+1);self.assertEqual(after['players'][1]['life'],before['players'][1]['life']-1)
+                if wanted=='Lunatic Pandora':
+                    self.assertEqual(next(o for o in after['objects'] if o['id']==source)['zone'],'Graveyard' if ability==1 else 'Battlefield')
+                    if ability==1:self.assertEqual(next(o for o in after['objects'] if o['id']==root['targets'][0]['target']['Card'])['zone'],'Graveyard')
+                public=game.observe('P1');self.assertTrue(all(o['zone']!='Hand' or o['owner']!='P0' or o['reference'] in public['known_hand'] for o in public['objects']))
+
     def test_seven_sacrifice_event_bodies_use_real_costs_and_owned_library_replay(self):
         names=['Biotech Specialist','Crime Novelist','Experimental Confectioner','Gleaming Geardrake','Lightless Evangel','Pirate Peddlers','Tolls of War']
         for wanted in names:

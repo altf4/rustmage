@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "19631167eab6b9d4e2afa9cce8441d360382abf1fd8f7be851f64018651ba2eb",
+  "catalogue_version": "5602c1a377c8ae3e7c7d6437d36d759d20632143990102df39f2399ebb6df076",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1235,
-  "implemented_total": 1241,
+  "implemented_standard_cards": 1242,
+  "implemented_total": 1248,
   "token_definitions": 56,
   "emblem_definitions": 1,
   "cards": [
@@ -2512,8 +2512,8 @@
     {
       "name": "Biomechan Engineer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Biorganic Carapace",
@@ -15514,8 +15514,8 @@
     {
       "name": "Lunatic Pandora",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Lupinflower Village",
@@ -19234,8 +19234,8 @@
     {
       "name": "Popular Egotist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Portent of Calamity",
@@ -20536,8 +20536,8 @@
     {
       "name": "Reckless Lackey",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Reckless Ransacking",
@@ -20626,8 +20626,8 @@
     {
       "name": "Redrock Sentinel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Redshift, Rocketeer Chief",
@@ -22666,8 +22666,8 @@
     {
       "name": "Seize the Spoils",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Seized from Slumber",
@@ -26968,8 +26968,8 @@
     {
       "name": "The Sackville-Bagginses",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "The Scarlet Witch",
