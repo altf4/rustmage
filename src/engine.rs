@@ -924,6 +924,9 @@ enum Pending {
 /// Card definitions are enum/static data, never cloned object graphs or trait objects.
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
+    // Sparse registry: keep an eight-byte pointer in the common empty state
+    // rather than an inline Vec header for games with no delayed obligation.
+    #[allow(clippy::box_collection)]
     delayed_sacrifices: Option<Box<Vec<mobilize::DelayedBatch>>>,
     mobilize: Option<Box<mobilize::MobilizePlan>>,
     saddled: Vec<ObjectRef>,

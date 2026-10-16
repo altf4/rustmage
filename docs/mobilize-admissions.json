@@ -1,0 +1,528 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-16",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "rules": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+  "shared_sources": [
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+      "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/DelayedTriggeredAbility.java",
+      "java_sha256": "6f74a2ccfd069f65ed3ae7e7c99a7d6933043d586b0c43e1c11f0d557f9e41ff"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/Mode.java",
+      "java_sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/SpellAbility.java",
+      "java_sha256": "4e4176a30f97131904087a7dd383dcc0751afc17514457761eb2ceeaa7e71354"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "java_sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/delayed/AtTheBeginOfNextEndStepDelayedTriggeredAbility.java",
+      "java_sha256": "9f3272690e0ade9a48526bd13165b3015a71d8bbed9d86a997af960d5f3214a5"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/delayed/AtTheEndOfCombatDelayedTriggeredAbility.java",
+      "java_sha256": "002e2647f2a140f6779712baab32f0c9677bc25421148a9c457ac978e8896c33"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+      "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+      "java_sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+      "java_sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/Effect.java",
+      "java_sha256": "92f49363848fa1b18215e3a0d516923e10d917638a38e5bbad73f274f6a1e917"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/SacrificeTargetEffect.java",
+      "java_sha256": "c45c32e2c47bd7f62480c732af33864bcac93ec246a9cf7e292dd32a2d10917c"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/BestowAbility.java",
+      "java_sha256": "ab551843d9160a7952d88eb27d0bec1e54f85f9bc5ef8bbb0c5c7e6120f86c4f"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/MobilizeAbility.java",
+      "java_sha256": "84ea782ab71b1b147b349c5f5ac8b2c03ae60211c95393a2e4e994da8ee5eac8"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/RedWarriorToken.java",
+      "java_sha256": "91af8e32ddafb0a605511b4fd6a3e78e00d46465b90463b47ce6c6266a38582c"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/Token.java",
+      "java_sha256": "77098d7376c01bf204d0fed3cd83eb2a99b55b03525dfeff9188e1dbce27903f"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/TokenImpl.java",
+      "java_sha256": "64e2102a28036ddfaaec4914c34355f7174f90df30d71527b0553aef9a14687d"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/custom/CreatureToken.java",
+      "java_sha256": "71de72a2543d4471901857cc0d58c1a06c383b25760e2a59e46b094862b2f31c"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/Target.java",
+      "java_sha256": "bfa4bcb195f5bc43a53e61baf312f392c782fd177d36c4b232e4146156a6b916"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+      "java_sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+    }
+  ],
+  "cards": [
+    {
+      "name": "Avenger of the Fallen",
+      "mana_cost": "{2}{B}",
+      "oracle_text": "Deathtouch\nMobilize X, where X is the number of creature cards in your graveyard. (Whenever this creature attacks, create X tapped and attacking 1/1 red Warrior creature tokens. Sacrifice them at the beginning of the next end step.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AvengerOfTheFallen.java",
+          "java_sha256": "70786a0021062ed38ef1f2af6fdbb25d3def6678c99036e07e334c07e8425f7d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+          "java_sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardsInControllerGraveyardCount.java",
+          "java_sha256": "1681b71d7aeed7c96c0e4b1963a4ebec63874299ad681fd1bf7b9f1b539ba297"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/hint/Hint.java",
+          "java_sha256": "5b3e37a154109935f244c02a79a0182695daad1bee2180f5f0b407bdf630509a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/hint/ValueHint.java",
+          "java_sha256": "d0748934608e742b2bb47c3dab958c95246fc69ef40a54a5f4d95c64cb79e99a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+          "java_sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MobilizeAbility.java",
+          "java_sha256": "84ea782ab71b1b147b349c5f5ac8b2c03ae60211c95393a2e4e994da8ee5eac8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        }
+      ],
+      "type_line": "Creature — Human Warrior",
+      "power": "2",
+      "toughness": "4"
+    },
+    {
+      "name": "Dalkovan Packbeasts",
+      "mana_cost": "{2}{W}",
+      "oracle_text": "Vigilance\nMobilize 3 (Whenever this creature attacks, create three tapped and attacking 1/1 red Warrior creature tokens. Sacrifice them at the beginning of the next end step.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DalkovanPackbeasts.java",
+          "java_sha256": "b81ff0df1165999b7e254490bc825dad09680f7ac9127d64e4befe12440c0acf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MobilizeAbility.java",
+          "java_sha256": "84ea782ab71b1b147b349c5f5ac8b2c03ae60211c95393a2e4e994da8ee5eac8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "java_sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        }
+      ],
+      "type_line": "Creature — Ox",
+      "power": "0",
+      "toughness": "4"
+    },
+    {
+      "name": "Dragonback Lancer",
+      "mana_cost": "{3}{W}",
+      "oracle_text": "Flying\nMobilize 1 (Whenever this creature attacks, create a tapped and attacking 1/1 red Warrior creature token. Sacrifice it at the beginning of the next end step.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DragonbackLancer.java",
+          "java_sha256": "09404d2417cb76045d155b6de8a15631d48a206d0c74d3deed5990cf3b083be8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MobilizeAbility.java",
+          "java_sha256": "84ea782ab71b1b147b349c5f5ac8b2c03ae60211c95393a2e4e994da8ee5eac8"
+        }
+      ],
+      "type_line": "Creature — Human Soldier",
+      "power": "3",
+      "toughness": "3"
+    },
+    {
+      "name": "Nightblade Brigade",
+      "mana_cost": "{2}{B}",
+      "oracle_text": "Deathtouch\nMobilize 1 (Whenever this creature attacks, create a tapped and attacking 1/1 red Warrior creature token. Sacrifice it at the beginning of the next end step.)\nWhen this creature enters, surveil 1. (Look at the top card of your library. You may put it into your graveyard.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/n/NightbladeBrigade.java",
+          "java_sha256": "fa971c47eaf326e5680e0d20033df3f8b0ec94aceb4ddcaaed8b1fec78df8f7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+          "java_sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+          "java_sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MobilizeAbility.java",
+          "java_sha256": "84ea782ab71b1b147b349c5f5ac8b2c03ae60211c95393a2e4e994da8ee5eac8"
+        }
+      ],
+      "type_line": "Creature — Goblin Soldier",
+      "power": "1",
+      "toughness": "3"
+    },
+    {
+      "name": "Reigning Victor",
+      "mana_cost": "{2/R}{2/W}{2/B}",
+      "oracle_text": "Mobilize 1 (Whenever this creature attacks, create a tapped and attacking 1/1 red Warrior creature token. Sacrifice it at the beginning of the next end step.)\nWhen this creature enters, target creature gets +1/+0 and gains indestructible until end of turn. (Damage and effects that say \"destroy\" don't destroy it.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/ReigningVictor.java",
+          "java_sha256": "64c558184ba8066f3220d288ed85ccaee81002219d35a316d04b7257bef4b1d5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+          "java_sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MobilizeAbility.java",
+          "java_sha256": "84ea782ab71b1b147b349c5f5ac8b2c03ae60211c95393a2e4e994da8ee5eac8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ],
+      "type_line": "Creature — Orc Warrior",
+      "power": "3",
+      "toughness": "3"
+    },
+    {
+      "name": "Shock Brigade",
+      "mana_cost": "{1}{R}",
+      "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)\nMobilize 1 (Whenever this creature attacks, create a tapped and attacking 1/1 red Warrior creature token. Sacrifice it at the beginning of the next end step.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/ShockBrigade.java",
+          "java_sha256": "eac7fdcfcbdb55003078004c114fa91bff2243b2753d5a039c9e3c6937de5b13"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+          "java_sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MobilizeAbility.java",
+          "java_sha256": "84ea782ab71b1b147b349c5f5ac8b2c03ae60211c95393a2e4e994da8ee5eac8"
+        }
+      ],
+      "type_line": "Creature — Goblin Soldier",
+      "power": "1",
+      "toughness": "3"
+    },
+    {
+      "name": "Stadium Headliner",
+      "mana_cost": "{R}",
+      "oracle_text": "Mobilize 1 (Whenever this creature attacks, create a tapped and attacking 1/1 red Warrior creature token. Sacrifice it at the beginning of the next end step.)\n{1}{R}, Sacrifice this creature: It deals damage equal to the number of creatures you control to target creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StadiumHeadliner.java",
+          "java_sha256": "c2c104ba003314379019213a6fc1e45aedf4c8b2b12ce30e63005bb864f84857"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+          "java_sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CreaturesYouControlCount.java",
+          "java_sha256": "17e5433bd06fd2d48cf22a5c5d105fb9081c3678b21ddad78dc78bac60281acd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/Effect.java",
+          "java_sha256": "92f49363848fa1b18215e3a0d516923e10d917638a38e5bbad73f274f6a1e917"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MobilizeAbility.java",
+          "java_sha256": "84ea782ab71b1b147b349c5f5ac8b2c03ae60211c95393a2e4e994da8ee5eac8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ],
+      "type_line": "Creature — Goblin Warrior",
+      "power": "1",
+      "toughness": "1"
+    },
+    {
+      "name": "Zurgo's Vanguard",
+      "mana_cost": "{2}{R}",
+      "oracle_text": "Mobilize 1 (Whenever this creature attacks, create a tapped and attacking 1/1 red Warrior creature token. Sacrifice it at the beginning of the next end step.)\nZurgo's Vanguard's power is equal to the number of creatures you control.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/z/ZurgosVanguard.java",
+          "java_sha256": "46faf9259db14fb0b31e2b7882aae04d490ce68dc2a365e7cbd10e550a4369ca"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CreaturesYouControlCount.java",
+          "java_sha256": "17e5433bd06fd2d48cf22a5c5d105fb9081c3678b21ddad78dc78bac60281acd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerSourceEffect.java",
+          "java_sha256": "07d7b0ba8fdb6f3e6eeb405c2768a37677e7fded311795af1425dc2bfdb9bbd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MobilizeAbility.java",
+          "java_sha256": "84ea782ab71b1b147b349c5f5ac8b2c03ae60211c95393a2e4e994da8ee5eac8"
+        }
+      ],
+      "type_line": "Creature — Dog Soldier",
+      "power": "*",
+      "toughness": "3"
+    }
+  ],
+  "gated": [
+    {
+      "name": "Bone-Cairn Butcher",
+      "mana_cost": "{1}{R}{W}{B}",
+      "oracle_text": "Mobilize 2 (Whenever this creature attacks, create two tapped and attacking 1/1 red Warrior creature tokens. Sacrifice them at the beginning of the next end step.)\nAttacking tokens you control have deathtouch.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BoneCairnButcher.java",
+          "java_sha256": "20e2002571f2cf5b6870a96b1bcede046b6dbc0e905d6e91efcfa330000fa384"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+          "java_sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+          "java_sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MobilizeAbility.java",
+          "java_sha256": "84ea782ab71b1b147b349c5f5ac8b2c03ae60211c95393a2e4e994da8ee5eac8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/AttackingPredicate.java",
+          "java_sha256": "31b80ba46b462c287c4c5d4a4867f7271dccaf8eedc555fb5cbbfe9fea156617"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/TokenPredicate.java",
+          "java_sha256": "3213600d28e7e1f76d66cee4f781fb3eb01627759fa9306e22c42a6f6fb880da"
+        }
+      ],
+      "type_line": "Creature — Demon",
+      "power": "4",
+      "toughness": "4",
+      "gate": "Full attacking-token-only deathtouch recipient grammar remains gated."
+    },
+    {
+      "name": "Venerated Stormsinger",
+      "mana_cost": "{3}{B}",
+      "oracle_text": "Mobilize 1 (Whenever this creature attacks, create a tapped and attacking 1/1 red Warrior creature token. Sacrifice it at the beginning of the next end step.)\nWhenever this creature or another creature you control dies, each opponent loses 1 life and you gain 1 life.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VeneratedStormsinger.java",
+          "java_sha256": "b642699f90c234261a4b7a495053d472089251c31be97edbc81a2bd260c558bb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DiesThisOrAnotherTriggeredAbility.java",
+          "java_sha256": "4511f11fe0c29d6984fc30bc40f6c270865b68a607f740f7247998c33b80fe01"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsEffect.java",
+          "java_sha256": "0efbab18123aec32ac502d57e9a8d9571965d09f3f4e09c448a4ed4cf10aa0e1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MobilizeAbility.java",
+          "java_sha256": "84ea782ab71b1b147b349c5f5ac8b2c03ae60211c95393a2e4e994da8ee5eac8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        }
+      ],
+      "type_line": "Creature — Orc Cleric",
+      "power": "3",
+      "toughness": "3",
+      "gate": "Full source-or-another-creature death observer with both life effects remains gated."
+    },
+    {
+      "name": "Voice of Victory",
+      "mana_cost": "{1}{W}",
+      "oracle_text": "Mobilize 2 (Whenever this creature attacks, create two tapped and attacking 1/1 red Warrior creature tokens. Sacrifice them at the beginning of the next end step.)\nYour opponents can't cast spells during your turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VoiceOfVictory.java",
+          "java_sha256": "0386b8825e5439b5f2e32e238ba9c8c7d54e3d55d3fe43980855c785e8fc9a21"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/CantCastDuringYourTurnEffect.java",
+          "java_sha256": "eaae2c161a24b18f272dc7b26a726f1c171f68bdf2d4ee7c3a6902ea2247a276"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MobilizeAbility.java",
+          "java_sha256": "84ea782ab71b1b147b349c5f5ac8b2c03ae60211c95393a2e4e994da8ee5eac8"
+        }
+      ],
+      "type_line": "Creature — Human Bard",
+      "power": "1",
+      "toughness": "3",
+      "gate": "Opponent casting prohibition on the source controller turn is not implemented."
+    },
+    {
+      "name": "Zurgo, Thunder's Decree",
+      "mana_cost": "{R}{W}{B}",
+      "oracle_text": "Mobilize 2 (Whenever this creature attacks, create two tapped and attacking 1/1 red Warrior creature tokens. Sacrifice them at the beginning of the next end step.)\nDuring your end step, Warrior tokens you control have \"This token can't be sacrificed.\"",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/z/ZurgoThundersDecree.java",
+          "java_sha256": "79b772f4f40da0bca7f245d631fd6b3246bb79625d5e85c7ed3060427447ca0a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+          "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/IsStepCondition.java",
+          "java_sha256": "b3f0092f2f07317847908a76c367c0f02462a8e8b284cebc02a1673b15c29cc4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+          "java_sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/CantBeSacrificedSourceEffect.java",
+          "java_sha256": "d79fde524805cc269d9af69967a3201a3632308fa20117662295f57209f8a522"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+          "java_sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MobilizeAbility.java",
+          "java_sha256": "84ea782ab71b1b147b349c5f5ac8b2c03ae60211c95393a2e4e994da8ee5eac8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/TokenPredicate.java",
+          "java_sha256": "3213600d28e7e1f76d66cee4f781fb3eb01627759fa9306e22c42a6f6fb880da"
+        }
+      ],
+      "type_line": "Legendary Creature — Orc Warrior",
+      "power": "2",
+      "toughness": "4",
+      "gate": "Warrior-token sacrifice prohibition and its end-step interaction remain gated."
+    }
+  ]
+}
