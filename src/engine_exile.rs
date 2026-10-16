@@ -55,6 +55,23 @@ impl Game {
             Vec::new()
         };
         for event in events {
+            // These zones are public in the supported rules subset (all exile
+            // is face up). Preserve the exact new hand incarnation for both
+            // observers; library draws and private searches reveal nothing.
+            if event.moved
+                && event.destination == Zone::Hand
+                && matches!(
+                    event.before.zone,
+                    Zone::Battlefield | Zone::Graveyard | Zone::Stack | Zone::Exile
+                )
+                && !event.before.card.is_token()
+                && !event.before.card.is_emblem()
+                && self.object_ref(event.after.card) == event.after
+                && self.state.objects[event.after.card as usize].zone == Zone::Hand
+                && !self.state.known_hand.contains(&event.after)
+            {
+                self.state.known_hand.push(event.after);
+            }
             self.zone_triggers(event, death_sources, &sources);
         }
         if self.state.exile_links.is_empty()

@@ -592,14 +592,7 @@ impl Game {
                     if self.object_ref(item.card) == item.object
                         && self.state.objects[item.card as usize].zone == zone
                     {
-                        let event = self.move_object(item.card, Zone::Hand);
-                        // The exact public source remains known in its new hand incarnation.
-                        if event.moved
-                            && !event.before.card.is_token()
-                            && !self.state.known_hand.contains(&event.after)
-                        {
-                            self.state.known_hand.push(event.after);
-                        }
+                        self.move_object(item.card, Zone::Hand);
                     }
                 }
                 Instruction::ReturnSourceToBattlefield { tapped } => {

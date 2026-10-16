@@ -231,13 +231,13 @@ fn revealed_land_hand_knowledge_is_public_until_that_incarnation_leaves() {
     assert!(game.state.known_hand.is_empty());
     game.move_object(dual, Zone::Hand);
     assert!(
-        !game
-            .observe(Player::P1)
+        game.observe(Player::P1)
             .objects
             .iter()
             .any(|o| o.id == dual)
     );
     assert_ne!(game.object_ref(dual), known);
+    assert_eq!(game.state.known_hand, vec![game.object_ref(dual)]);
     assert_eq!(game.object_view(world).zone, Zone::Graveyard);
 }
 
