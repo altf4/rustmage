@@ -37,6 +37,32 @@ class CatalogueCompilerTests(unittest.TestCase):
             proxy,rules=generate.extract_cost_reductions(self.card(oracle_text=text))
             self.assertEqual(proxy['oracle_text'],text);self.assertEqual(rules,[],text)
 
+    def test_morbid_predicate_is_shared_by_entry_cost_and_intervening_step_rules(self):
+        guard='StepGuard::CreatureDied'
+        self.assertEqual(generate.step_guard('a creature died this turn'),guard)
+        proxy,rules=generate.extract_entry_counters(self.card(oracle_text='This creature enters with a +1/+1 counter on it if a creature died this turn.'))
+        self.assertEqual(proxy['oracle_text'],'');self.assertIn(guard,rules[0])
+        proxy,rules=generate.extract_cost_reductions(self.card(oracle_text='This spell costs {3} less to cast if a creature died this turn.\nFlying'))
+        self.assertEqual(proxy['oracle_text'],'Flying');self.assertIn(guard,rules[0]);self.assertIn('Fixed(3)',rules[0])
+        result=generate.trigger_creature_template(self.card(oracle_text='Morbid — At the beginning of your end step, if a creature died this turn, put a +1/+1 counter on this creature.'))
+        self.assertIsNotNone(result);self.assertIn(guard,result[2][0][0]);self.assertIn('TriggerStep::End',result[2][0][0]);self.assertIn('CastRelation::You',result[2][0][0])
+        for text in ['a creature you control died this turn','a nontoken creature died this turn','a creature left the battlefield this turn']:
+            self.assertIsNone(generate.step_guard(text))
+
+    def test_five_morbid_bodies_and_residual_gates(self):
+        import json
+        admissions=json.loads((generate.ROOT/'docs/death-history-admissions.json').read_text())['cards'];self.assertEqual(len(admissions),5)
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,report=generate.compile_catalogue(snapshot,target);supported={c['name'] for c in report['cards'] if c['implemented']}
+        for admitted in admissions:
+            original=next(c for c in snapshot['cards'] if c['name']==admitted['name']);self.assertIn(admitted['name'],supported)
+            self.assertEqual(admitted['oracle_text'],original['oracle_text'])
+            proxy,_=generate.extract_cost_reductions(dict(original,oracle_text=original['oracle_text']+'\nWhenever you cast a spell, discover 3.'))
+            proxy,_=generate.extract_entry_counters(proxy)
+            self.assertIsNone(generate.creature_template(proxy));self.assertIsNone(generate.trigger_creature_template(proxy));self.assertIsNone(generate.permanent_program_template(proxy));self.assertIsNone(generate.static_permanent_template(proxy))
+        for name in ['Blacksnag Buzzard','Rictus Robber','Old Flitterfang','Wardens of the Cycle','Tragic Banshee']:
+            self.assertNotIn(name,supported)
+
     def test_entry_counter_replacements_use_exact_pre_entry_predicates(self):
         texts = [
             ('Raid — This creature enters with a +1/+1 counter on it if you attacked this turn.', ['StepGuard::Attacked', 'Fixed(1)']),
@@ -73,7 +99,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             proxy,rules=generate.extract_entry_counters(altered);self.assertTrue(rules)
             self.assertIsNone(generate.creature_template(proxy));self.assertIsNone(generate.trigger_creature_template(proxy))
             self.assertIsNone(generate.permanent_program_template(proxy));self.assertIsNone(generate.static_permanent_template(proxy))
-        for name in ['Cruel Administrator','Cackling Slasher','Patched Plaything','Putrid Pals','Frilled Sparkshooter']:
+        for name in ['Cruel Administrator','Blacksnag Buzzard','Patched Plaything','Putrid Pals','Frilled Sparkshooter']:
             self.assertNotIn(name,supported)
 
     def test_attack_intervening_guards_require_the_complete_tapped_declaration(self):
@@ -290,7 +316,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                             ('there are four or more card types among cards in your graveyard','CardTypes'),
                             ('you control another creature with power 4 or greater','GreatestOtherCreaturePower')]:
             self.assertIn(needle,generate.step_guard(text),text)
-        for text in ['you controlled a Mount as you cast this spell','you controlled that permanent','a creature died this turn',
+        for text in ['you controlled a Mount as you cast this spell','you controlled that permanent','a nontoken creature died this turn',
                      'you control another Elf that attacked this turn','there are four or more cards exiled with this creature',
                      'you control 65536 or more creatures','you control a tapped Elf']:
             self.assertIsNone(generate.step_guard(text),text)
@@ -302,7 +328,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         result=generate.targeted_program('Put a +1/+1 counter on target creature you control. It gains hexproof until end of turn.')
         self.assertEqual(result[0],'CreatureYou');self.assertIn('PutCounters',result[1][0]);self.assertIn('GrantKeywords',result[1][1])
         for text in ['Target player draws a card. It gains hexproof until end of turn.',
-                     'Target creature gets +1/+1 until end of turn. If a creature died this turn, it gains flying until end of turn.',
+                     'Target creature gets +1/+1 until end of turn. If a creature left the battlefield this turn, it gains flying until end of turn.',
                      'Return target creature to its owner\'s hand. If you controlled that creature, draw a card.',
                      'Target creature gets +2/+2 until end of turn. If you control three or more creatures, it gets +4/+4 until end of turn instead. Draw a card.']:
             self.assertIsNone(generate.targeted_program(text),text)
@@ -957,7 +983,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Startled Relic Sloth',"Syr Alin, the Lion's Claw",'Unstable Experiment','Wreck Remover','Yellowjacket, Heartless Marauder']:
             self.assertIn(name,supported)
         for name in ['Baron Helmut Zemo','Baron Strucker, HYDRA Overlord','Leader, Super-Genius','M.O.D.O.K.',
-                     'Scorpion, Seething Striker','Swordsman, Sharp Scoundrel',"Trickster's Stratagem",'Villainous Hideout']:
+                     'Swordsman, Sharp Scoundrel',"Trickster's Stratagem",'Villainous Hideout']:
             self.assertNotIn(name,supported)
 
     def test_draw_conditions_and_event_player_are_bound_only_to_draw_triggers(self):

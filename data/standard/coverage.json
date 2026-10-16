@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "4e58bbb421e7b44972fdfb15acc1a08c95817ff38c6a2a8cf7bcdb0f6cedacde",
+  "catalogue_version": "f53f514bcff942b217c133db63adadaf8d27d59da2fbe171ba3f19cef1d68618",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1094,
-  "implemented_total": 1100,
+  "implemented_standard_cards": 1099,
+  "implemented_total": 1105,
   "token_definitions": 49,
   "emblem_definitions": 1,
   "cards": [
@@ -3670,14 +3670,14 @@
     {
       "name": "Cackling Prowler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Cackling Slasher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Cactarantula",
@@ -7060,8 +7060,8 @@
     {
       "name": "Dreaded Bat-Cloud",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Dreadmaw's Ire",
@@ -17488,8 +17488,8 @@
     {
       "name": "Needletooth Pack",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Negate",
@@ -22384,8 +22384,8 @@
     {
       "name": "Scorpion, Seething Striker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Scour for Scrap",

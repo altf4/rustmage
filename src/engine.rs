@@ -690,6 +690,7 @@ enum Pending {
 struct State {
     objects: SharedVec<Object>,
     attacked_this_turn: SharedVec<ObjectRef>,
+    creatures_died_this_turn: u64,
     free_tokens: Vec<CardId>,
     static_sources: Vec<CardId>,
     cast_sources: Vec<CardId>,
@@ -908,6 +909,8 @@ pub struct Observation {
     pub schema: u32,
     /// Number of distinct declared attacker objects this turn, including departures.
     pub creatures_attacked_this_turn: usize,
+    /// Actual battlefield-to-graveyard creature transitions this turn, including tokens.
+    pub creatures_died_this_turn: u64,
     pub catalogue: &'static str,
     pub viewer: Player,
     pub revision: u64,
@@ -1050,6 +1053,7 @@ impl Game {
             state: State {
                 objects: objects.into(),
                 attacked_this_turn: Vec::new().into(),
+                creatures_died_this_turn: 0,
                 free_tokens: Vec::new(),
                 static_sources: Vec::new(),
                 cast_sources: Vec::new(),
@@ -2374,6 +2378,16 @@ impl Game {
             before.zone, destination,
             "same-zone moves are ordering operations"
         );
+        if before.zone == Zone::Battlefield
+            && destination == Zone::Graveyard
+            && before.card.is_creature()
+        {
+            self.state.creatures_died_this_turn = self
+                .state
+                .creatures_died_this_turn
+                .checked_add(1)
+                .capacity("creature death history exhausted");
+        }
         let generation = before
             .reference
             .generation
@@ -2516,6 +2530,7 @@ impl Game {
     fn begin_turn(&mut self) {
         self.state.triggered_this_turn.clear();
         self.state.attacked_this_turn.clear();
+        self.state.creatures_died_this_turn = 0;
         for player in &mut self.state.players {
             player.spells_cast_this_turn = 0;
             player.cards_drawn_this_turn = 0;
@@ -2898,8 +2913,9 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 42,
+            schema: 43,
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
+            creatures_died_this_turn: s.creatures_died_this_turn,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -3460,3 +3476,7 @@ mod attack_history_tests;
 #[cfg(test)]
 #[path = "engine_entry_counter_tests.rs"]
 mod entry_counter_tests;
+
+#[cfg(test)]
+#[path = "engine_death_history_tests.rs"]
+mod death_history_tests;

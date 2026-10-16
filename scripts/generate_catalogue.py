@@ -453,6 +453,8 @@ def extract_entry_counters(card):
     for line in card['oracle_text'].split('\n'):
         if line == 'Raid — This creature enters with a +1/+1 counter on it if you attacked this turn.':
             rules.append('EntryCounterRule { guard: StepGuard::Attacked, amount: EntryCounterAmount::Fixed(1) }')
+        elif line == 'This creature enters with a +1/+1 counter on it if a creature died this turn.':
+            rules.append('EntryCounterRule { guard: StepGuard::CreatureDied, amount: EntryCounterAmount::Fixed(1) }')
         elif line == "This creature enters with two +1/+1 counters on it if you've cast two or more spells this turn.":
             rules.append('EntryCounterRule { guard: StepGuard::Threshold { value: StepValue::SpellsCast, minimum: Some(2), maximum: None }, amount: EntryCounterAmount::Fixed(2) }')
         elif line == 'This creature enters with a +1/+1 counter on it for each other creature and/or artifact you control.':
@@ -1442,6 +1444,7 @@ def cast_condition(relation='You', filter_='Any', ordinal=None):
 
 def step_guard(text):
     if text == 'you attacked this turn': return 'StepGuard::Attacked'
+    if text == 'a creature died this turn': return 'StepGuard::CreatureDied'
     if text == 'this creature is tapped': return 'StepGuard::SourceTapped'
     def threshold(value, minimum=None, maximum=None):
         lo = 'None' if minimum is None else f'Some({minimum})'
@@ -1675,7 +1678,7 @@ def trigger_creature_template(card):
             if line.startswith('When ' + alias + ' dies, '):
                 line = 'When this creature dies, ' + line[len('When ' + alias + ' dies, '):]
         if line.startswith('Raid — When '):line=line[len('Raid — '):]
-        for label in ('Raid — ', 'Formidable — ', 'Survival — '):
+        for label in ('Raid — ', 'Formidable — ', 'Survival — ', 'Morbid — '):
             if line.startswith(label + 'At the beginning of '): line = line[len(label):]
         for alias in names:
             line=re.sub(r'^Whenever '+re.escape(alias)+r' deals? ((?:combat )?damage to )',r'Whenever this creature deals \1',line)
