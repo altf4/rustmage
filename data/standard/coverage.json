@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "73be3ffb087eb26274e18dab29984c92e3e8b7e1690abc117a6b7d692c3a0b15",
+  "catalogue_version": "33fa02ba8313782d577f0c5adb2b7aec77b0d36fef3ed78a6206a327a7e16521",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1143,
-  "implemented_total": 1149,
-  "token_definitions": 49,
+  "implemented_standard_cards": 1153,
+  "implemented_total": 1159,
+  "token_definitions": 51,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -3766,8 +3766,8 @@
     {
       "name": "Camera Launcher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Campus Composer // Aqueous Aria",
@@ -6892,8 +6892,8 @@
     {
       "name": "Draconautics Engineer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Draconic Visitor",
@@ -11236,8 +11236,8 @@
     {
       "name": "Greenbelt Guardian",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Greenbelt Radical",
@@ -11824,8 +11824,8 @@
     {
       "name": "Hazard of the Dunes",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Hazardroot Herbalist",
@@ -14002,8 +14002,8 @@
     {
       "name": "Keen Buccaneer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Keen-Eyed Curator",
@@ -15328,8 +15328,8 @@
     {
       "name": "Loot, the Pathfinder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Loporrit Scout",
@@ -18520,8 +18520,8 @@
     {
       "name": "Pacesetter Paragon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Pacifism",
@@ -19606,8 +19606,8 @@
     {
       "name": "Prowcatcher Specialist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Prowler, Clawed Thief",
@@ -23464,8 +23464,8 @@
     {
       "name": "Skystreak Engineer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Skyward Spider",
@@ -24568,8 +24568,8 @@
     {
       "name": "Stampeding Scurryfoot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Stand Up for Yourself",

@@ -2024,6 +2024,8 @@ def permanent_program_template(card):
         if ': ' not in line:
             body.append(line)
             continue
+        exhaust=line.startswith('Exhaust — ')
+        if exhaust:line=line[len('Exhaust — '):].strip()
         cost_text, effect_text = line.split(': ', 1)
         # Exact source-name cost components, with the same authenticated short
         # legendary names used by self-event triggers. Never rewrite effect text.
@@ -2043,6 +2045,7 @@ def permanent_program_template(card):
         else:
             cost = activation_cost(cost_text)
         if cost is None: return None
+        cost['exhaust']=exhaust
         if guard:=re.fullmatch(r'(.+) Activate only if you control (?:a|an) ([A-Z][A-Za-z ]+?)(?: or (?:a|an) ([A-Z][A-Za-z ]+?))?\.',effect_text):
             subtypes=[word for word in guard.groups()[1:] if word is not None]
             vocabulary={'Plains','Island','Swamp','Mountain','Forest',*SUBTYPE_PLURALS.values()}
@@ -2059,6 +2062,13 @@ def permanent_program_template(card):
         once = combined or effect_text.endswith(' Activate only once each turn.')
         if sorcery and not combined: effect_text = effect_text[:-len(' Activate only as a sorcery.')]
         if once and not combined: effect_text = effect_text[:-len(' Activate only once each turn.')]
+        for alias in aliases:
+            if effect_text.startswith(alias+' deals '):
+                effect_text='this permanent deals '+effect_text[len(alias+' deals '):]
+        # This complete source-counter sentence proves the following keyword
+        # pronoun. No intervening target or later pronoun receives a guessed bind.
+        if re.fullmatch(r'Put (?:a|one|two|three|four|five|six) (?:\+1/\+1|-1/-1|stun) counters? on this creature\. It gains? [^.]+ until end of turn\.',effect_text):
+            effect_text=effect_text.replace('. It ','. This creature ',1)
         # With an external card cost, an initial pronoun may refer to that card.
         if cost['additional'] is not None and re.match(r'^[Ii]t deals ', effect_text): return None
         # The remaining source aliases refer only to the source, mana, life or its counters;
@@ -2072,7 +2082,7 @@ def permanent_program_template(card):
             return None
         # Counterfactual mana search does not consume hand-card resources yet.
         if program[0].startswith('AddMana') and cost['additional'] is not None: return None
-        if program[0].startswith('AddMana') and cost['loyalty'] is None and not (cost['tap'] or cost['sacrifice'] or cost['life'] or cost['remove'] or once):
+        if program[0].startswith('AddMana') and cost['loyalty'] is None and not (cost['tap'] or cost['sacrifice'] or cost['life'] or cost['remove'] or once or exhaust):
             # Unbounded positive production needs an infinite-resource solver.
             # Resource-free conversions that do not increase total mana are finite.
             fixed = re.search(r'Fixed\((\[[^]]*\])\)', program[0])
@@ -2174,7 +2184,7 @@ def rust_activations(abilities):
     for cost, targets, program, sorcery, once in abilities:
         remove = 'None' if cost['remove'] is None else f"Some(({'None' if cost['remove'][0] is None else 'Some(CounterKind::' + cost['remove'][0] + ')'}, {cost['remove'][1]}))"
         alternatives = '&[' + ', '.join(f'ManaCost {{ colored: {mana}, generic: {generic} }}' for mana,generic in cost.get('alternatives', [])) + ']'
-        rows.append(f"ActivatedAbility {{ guard: ActivationGuard::{cost.get('guard','Always')}, cycling: {str(cost.get('cycling',False)).lower()}, origin: ActivationOrigin::{cost.get('origin','Battlefield')}, cost: ActivationCost {{ colored: {cost['colored']}, generic: {cost['generic']}, alternatives: {alternatives}, additional: {'None' if cost.get('additional') is None else 'Some('+cost['additional']+')'}, mana_component: {str(cost['mana_component']).lower()}, tap: {str(cost['tap']).lower()}, sacrifice: {str(cost['sacrifice']).lower()}, discard: {str(cost.get('discard',False)).lower()}, life: {cost['life']}, remove: {remove}, loyalty: {'None' if cost.get('loyalty') is None else 'Some('+str(cost['loyalty'])+')'} }}, targets: {rust_targets(targets)}, program: {rust_program(program)}, sorcery: {str(sorcery).lower()}, once_per_turn: {str(once).lower()} }}")
+        rows.append(f"ActivatedAbility {{ exhaust: {str(cost.get('exhaust',False)).lower()}, guard: ActivationGuard::{cost.get('guard','Always')}, cycling: {str(cost.get('cycling',False)).lower()}, origin: ActivationOrigin::{cost.get('origin','Battlefield')}, cost: ActivationCost {{ colored: {cost['colored']}, generic: {cost['generic']}, alternatives: {alternatives}, additional: {'None' if cost.get('additional') is None else 'Some('+cost['additional']+')'}, mana_component: {str(cost['mana_component']).lower()}, tap: {str(cost['tap']).lower()}, sacrifice: {str(cost['sacrifice']).lower()}, discard: {str(cost.get('discard',False)).lower()}, life: {cost['life']}, remove: {remove}, loyalty: {'None' if cost.get('loyalty') is None else 'Some('+str(cost['loyalty'])+')'} }}, targets: {rust_targets(targets)}, program: {rust_program(program)}, sorcery: {str(sorcery).lower()}, once_per_turn: {str(once).lower()} }}")
     return '&[' + ', '.join(rows) + ']'
 
 
@@ -2206,6 +2216,7 @@ def compile_catalogue(snapshot, target):
         raise ValueError('catalogue exceeds u16 identity space')
     definitions = []
     color_masks = []
+    exhaust_rows = []
     loyalty_rows = []
     supported = []
     coverage = []
@@ -2335,6 +2346,8 @@ def compile_catalogue(snapshot, target):
             if dynamic is not None:dynamic_rows.append(f'        {index} => Some({dynamic}),')
             if scaling:scaling_rows.append(f'        {index} => &['+', '.join(scaling)+'],')
         definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(name)}, oracle_id: {oracle_id}, mana_cost: {quote(cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in cards).lower()}, legendary: {str(card.get('type_line', '').startswith('Legendary ')).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, activated: {rust_activations(activations)}, enters: Counters {{ plus_one: {enters[0]}, minus_one: {enters[1]}, stun: {enters[2]}, loyalty: 0 }}, entry: EntryTapped::{entry}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
+        exhaust_mask=sum(1<<i for i,a in enumerate(activations) if a[0].get('exhaust',False))
+        if exhaust_mask and effect!='Unsupported':exhaust_rows.append(f'        {index} => {exhaust_mask},')
         coverage.append({'name': name, 'standard_legal': name in cards, 'implemented': effect != 'Unsupported',
                          'implementation': 'explicit' if name in legacy else 'land_template' if land else 'creature_template' if template else 'trigger_template' if trigger_template else 'modal_template' if modal else 'spell_template' if spell else 'aura_template' if aura else 'equipment_template' if equipment else 'permanent_template' if permanent else 'static_template' if static else None})
 
@@ -2402,6 +2415,7 @@ def compile_catalogue(snapshot, target):
     lines += ['#[rustfmt::skip]', "pub(super) fn cost_alternatives(card: Card) -> &'static [ManaCost] {", '    match card.0 {', *hybrid_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn entry_counter_rules(card: Card) -> &'static [EntryCounterRule] {", '    match card.0 {', *entry_counter_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn starting_loyalty(card: Card) -> u64 {', '    match card.0 {', *loyalty_rows, '        _ => 0,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn exhaust_mask(card: Card) -> u64 {', '    match card.0 {', *exhaust_rows, '        _ => 0,', '    }', '}', '']
     return '\n'.join(lines), {'schema': 1, 'catalogue_version': version, 'standard_legal_cards': len(cards),
         'implemented_standard_cards': sum(row['implemented'] and row['standard_legal'] for row in coverage),
         'implemented_total': len(supported), 'token_definitions': len(used_tokens), 'emblem_definitions': len(used_emblems), 'cards': coverage}
