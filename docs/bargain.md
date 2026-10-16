@@ -48,3 +48,11 @@ The public [Python acceptance](../python/test_bargain.py) uses real paid games, 
 The [Standard workload](../examples/standard_bargain.rs) plays legal 60-card decks. Two independent 100-game executions produce identical full vectors and complete **85,454 decisions and matching replay boundaries** with all 40 cast/effect cells nonzero, 161 real sacrifices, 120 private frames/80 selected cards, 44 returns, 28 draws, nine exiles, 23 all-invalid fizzles, six countered packets and 666 rejected actions.
 
 Measured initial state is **19,976 bytes**, an increase of 32 bytes from 19,944. `CastInfo` is five bytes and `SpellView` is 272 bytes (previously 256); enclosing owned context layout accounts for this cost. No per-object or new persistent State field is added. The Standard100 peak is **23,084 logical bytes**. Active bargain selection reuses the announcement's existing additional-cost reference; funding scans existing resources without enumerating sacrifice subsets or cloning game state.
+
+## Integration with explore
+
+On the merged explore base, the combined branch passes **1,439 Rust tests (1,427 unit and 12 integration), 278 compiler/data tests and 187 fresh-release Python tests**. The latter suites complete in 560.083 and 332.048 seconds during concurrent validation. All-target Clippy, formatting, regenerated catalogue and whitespace checks pass.
+
+Canonical comparison with the final explore runtime proves exactly **10 changed / 5,248 unchanged definitions**, all 74 existing factories/metadata, ordinary identities/colors and 494 previous numeric helper arms preserved after normalizing the explicit false sacrifice-filter default. Ten new bargain helper arms encode the admitted metadata. All 82 provenance records across 45 files match the pinned Java checkout.
+
+The bargain workload reproduces all 85,454 decisions/replays and complete vectors. The adjacent explore workload retains all 215,656 decisions and vectors; its peak becomes 21,644 logical bytes with the expanded context. Initial state remains 19,976 bytes. A concurrent 1,000-game native smoke run reports 571,049 decisions at about 262,000 decisions/s, with 182 ns clone and 187 ns restore. It excludes inference/JSON/tensors and provides no Java performance comparison.
