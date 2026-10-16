@@ -221,6 +221,7 @@ fn resolution_mana_choice_is_private_owned_and_replayable_before_later_instructi
         moved_count: None,
         discards: [0; 2],
         mana_payment: None,
+        forage: None,
         selected_discards: [Vec::new(), Vec::new()],
         milled: Vec::new(),
         library: None,

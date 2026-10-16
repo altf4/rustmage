@@ -2,7 +2,7 @@
 use super::*;
 impl Game {
     pub(super) fn announcement_base_cost(a: &Announcement) -> ManaCost {
-        let base = a.cost.unwrap_or_else(|| {
+        let mut base = a.cost.unwrap_or_else(|| {
             if a.item
                 .cast
                 .is_some_and(|cast| cast.method == CastMethod::Flashback)
@@ -16,6 +16,14 @@ impl Game {
             let (colored, generic) = a.item.source_card.cost();
             ManaCost { colored, generic }
         });
+        if a.forage
+            .as_ref()
+            .is_some_and(|f| f.route == Some(ForageRoute::Black))
+        {
+            base.colored[2] = base.colored[2]
+                .checked_add(1)
+                .capacity("forage alternative mana cost exhausted");
+        }
         Self::with_offspring_cost(
             base,
             a.item.source_card,

@@ -354,6 +354,7 @@ fn scaled_amount_ir_rejects_unrepresentable_damage_gain_and_multiplication_atomi
             moved_count: None,
             connive: None,
             mana_payment: None,
+            forage: None,
             discards: [0; 2],
             selected_discards: [Vec::new(), Vec::new()],
             milled: Vec::new(),

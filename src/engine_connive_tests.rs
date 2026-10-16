@@ -92,6 +92,7 @@ fn program(g: &mut Game, source: CardId, code: &'static [Instruction], targets: 
         search: None,
         choice: None,
         mana_payment: None,
+        forage: None,
     });
     g.run_program();
 }

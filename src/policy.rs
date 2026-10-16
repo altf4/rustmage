@@ -114,6 +114,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 }
             }
             Action::ChooseAdditionalCost { .. } => 60,
+            Action::ChooseForageRoute { .. } | Action::ChooseForage { .. } => 60,
+            Action::DeclineForage => -10,
             Action::ChooseConniver { .. } => 60,
             Action::PayResolutionMana { .. } => 100,
             Action::DeclineResolutionMana => -1,

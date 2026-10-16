@@ -888,7 +888,9 @@ def extract_additional_cost(card):
     costs = [line for line in lines if line.startswith('As an additional cost to cast this spell, ')]
     if len(costs) != 1: return card, None
     line = costs[0]
-    if line == 'As an additional cost to cast this spell, discard a card.':
+    if line in ('As an additional cost to cast this spell, forage or pay {B}.','As an additional cost to cast this spell, forage or pay {B}. (To forage, exile three cards from your graveyard or sacrifice a Food.)'):
+        kind, spec = 'ForageOrBlack', sacrifice_spec('a permanent')
+    elif line == 'As an additional cost to cast this spell, discard a card.':
         kind, spec = 'Discard', sacrifice_spec('a permanent')
     else:
         m = re.fullmatch(r'As an additional cost to cast this spell, sacrifice (.+)\.', line)
@@ -1062,6 +1064,12 @@ def statement_program(text):
     if not text:return None
     text = normalize_duration(text[0].lower() + text[1:])
     if selected:=library_selection_program(text):return selected
+
+    if text=='you may forage.': return ['Forage { skip: 0 }']
+    if m:=re.fullmatch(r'you may forage\. If you do, ([^.]+)\.',text):
+        body=statement_program(m[1]+'.')
+        return ['Forage { skip: '+str(len(body))+' }',*body] if body else None
+
     if text=='draw two cards. Then discard a card unless you attacked this turn.':
         # On raid, execute the forward skip; otherwise bypass it and discard.
         return ['Draw(PlayerSet::Controller, 2)', 'If { guard: StepGuard::Attacked, skip: 1 }',
@@ -1251,6 +1259,7 @@ for _name, _zone, _kinds, _relation, _other, _nonland in [
     ('ArtifactCreatureYou', 'Battlefield', 17, 0, False, False),
     ('Enchantment', 'Battlefield', 32, -1, False, False),
     ('ArtifactEnchantment', 'Battlefield', 48, -1, False, False),
+    ('PermanentGraveYou', 'Graveyard', 0, 0, False, False),
     ('CreatureGraveYou', 'Graveyard', 1, 0, False, False),
     ('OtherCreatureGraveYou', 'Graveyard', 1, 0, True, False),
     ('InstantSorceryGraveYou', 'Graveyard', 12, 0, False, False),
@@ -1259,6 +1268,8 @@ for _name, _zone, _kinds, _relation, _other, _nonland in [
     TARGET_RULES[_name] = (f'TargetRule::Object {{ zone: TargetZone::{_zone}, kinds: {_kinds}, '
                           f'relation: {_relation}, other: {str(_other).lower()}, nonland: {str(_nonland).lower()}, tapped: false, min_mana: 0, max_mana: u32::MAX }}')
 
+
+TARGET_RULES['PermanentGraveYou']='TargetRule::Filtered { base: &'+TARGET_RULES['PermanentGraveYou']+', predicate: &TargetPredicate::Permanent }'
 
 for _name, _kinds, _relation, _nonland, _tapped, _minimum, _maximum in [
     ('CreatureOpponentTapped', 1, 1, False, True, 0, 4294967295),
@@ -2013,6 +2024,8 @@ def trigger_creature_template(card):
     keywords = 0
     abilities = []
     prefixes = {
+        'Whenever you forage, ': 'Foraged',
+        'Whenever you sacrifice one or more Foods, ': 'FoodsSacrificed',
         'Whenever you draw a card, ': draw_condition(),
         'Whenever you draw your first card each turn, ': draw_condition(ordinal=1),
         'Whenever you draw your second card each turn, ': draw_condition(ordinal=2),
@@ -2217,6 +2230,16 @@ def trigger_creature_template(card):
                     # Only this whole source-counter sentence proves its antecedent.
                     # A later 'it' can refer to an earlier target or another object.
                     effect_text=effect_text.replace(' on it.',' on this creature.')
+                if condition=='SelfEnters' and effect_text=='you may forage. When you do, return target permanent card from your graveyard to your hand.':
+                    result=('PermanentGraveYou',['ReturnToHand'])
+                    if result is None:return None
+                    target,body=result
+                    index=len(abilities)+1
+                    abilities.append((condition,['Forage { skip: 1 }',f'Reflexive {{ ability: {index} }}'],'None'))
+                    abilities.append(('Reflexive',body,target))
+                    break
+                if condition=='SelfEnters' and effect_text=='you may forage. If you do, put two +1/+1 counters on it.':
+                    effect_text=effect_text.replace(' on it.',' on this creature.')
                 entering_program=entering_object_program(effect_text,condition)
                 if entering_program is not None:
                     targets,program=entering_program
@@ -2310,6 +2333,9 @@ def activation_cost(text):
             cost['mana_component'] = True
             cost['colored'], cost['generic'] = mana[0]
             cost['alternatives'] = mana[1:]
+        elif component == 'Forage':
+            if cost['additional'] is not None:return None
+            cost['additional']='AdditionalCost { kind: EffectChoiceKind::Forage, filter: '+sacrifice_spec('a permanent')[1]+' }'
         elif component == 'Discard a card':
             if cost['additional'] is not None: return None
             cost['additional'] = 'AdditionalCost { kind: EffectChoiceKind::Discard, filter: '+sacrifice_spec('a permanent')[1]+' }'
@@ -2337,6 +2363,7 @@ def activation_cost(text):
     # Wider composite costs need payment-order choices before admission.
     if cost['additional'] is not None and (cost['life'] or cost['remove'] or cost['loyalty'] is not None): return None
     if external_sacrifice and cost['sacrifice']:return None
+    if cost['additional'] is not None and 'Forage' in cost['additional'] and cost['sacrifice']:return None
     if cost['exile_self'] and (cost['tap'] or cost['sacrifice'] or cost['life'] or cost['remove'] or cost['additional'] is not None or cost['loyalty'] is not None): return None
     return cost
 

@@ -5,11 +5,13 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,449 have executable rules so far.
+knows all 5,164 pinned Standard identities; 1,455 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
-The latest [private library selection](docs/library-selection.md) adds fifteen complete bodies
+The latest [forage](docs/forage.md) adds six complete bodies with owned payments,
+true sacrifice/exile events and post-payment reflexive targets.
+[Private library selection](docs/library-selection.md) adds fifteen complete bodies
 with filtered picks, conditional counts, exact private continuations, graveyard/bottom
 remainders and rollback. [Offspring casting](docs/offspring.md) adds ten complete bodies with
 optional additional costs and exact immutable 1/1 copies retaining names, mana values and abilities.
@@ -29,7 +31,7 @@ pre-event replacement timing, token entry and opponent-entry life triggers.
 [Owned entering-object context](docs/entering-object-context.md) adds
 Good-Fortune Unicorn, Serra Redeemer and Wartime Protestors with exact
 non-targeted references and snapshot-safe counters/haste. Observations use schema
-55 (`rustmage::OBSERVATION_SCHEMA`); earlier milestone pages retain their original
+56 (`rustmage::OBSERVATION_SCHEMA`); earlier milestone pages retain their original
 schema and measurements. [Entry predicates](docs/entry-predicates.md) add nine complete bodies
 with entry-time power thresholds, subtype unions, outlaw and kind-or-subtype
 conditions, including Impact Tremors and Warleader's Call.

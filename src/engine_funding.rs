@@ -674,8 +674,13 @@ impl Game {
             || a.additional_paid
             || !a.pay_window
             || a.needs_offspring()
+            || a.additional_cost().is_some_and(forage::is_forage_cost) && a.forage.is_none()
             || a.needs_mana_cost()
-            || (a.additional_cost().is_some() && a.additional.is_none())
+            || (a
+                .additional_cost()
+                .is_some_and(|spec| !forage::is_forage_cost(spec))
+                && a.additional.is_none())
+            || a.forage.as_ref().is_some_and(|f| !f.complete())
         {
             return None;
         }
@@ -729,9 +734,7 @@ impl Game {
                 let required = cost.colored;
                 let generic = cost.generic;
                 FundingGoal {
-                    reserve: announcement
-                        .additional
-                        .map(|r| (r, announcement.additional_cost().unwrap())),
+                    reserve: self.announcement_reserve(announcement),
                     actor: announcement.item.controller,
                     required,
                     generic,
@@ -741,9 +744,7 @@ impl Game {
             StackKind::ActivatedAbility { ability } => {
                 let cost = announcement.item.source_card.activations()[ability as usize].cost;
                 FundingGoal {
-                    reserve: announcement
-                        .additional
-                        .map(|r| (r, announcement.additional_cost().unwrap())),
+                    reserve: self.announcement_reserve(announcement),
                     actor: announcement.item.controller,
                     required: announcement.cost.map_or(cost.colored, |c| c.colored),
                     generic: announcement.cost.map_or(cost.generic, |c| c.generic),

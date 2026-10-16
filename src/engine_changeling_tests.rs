@@ -89,6 +89,7 @@ fn program(g: &mut Game, code: &'static [Instruction]) {
         search: None,
         choice: None,
         mana_payment: None,
+        forage: None,
     });
     g.run_program();
 }

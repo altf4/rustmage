@@ -274,6 +274,7 @@ fn unrepresentable_derived_stats_cannot_escape_at_an_optional_resolution_boundar
         moved_count: None,
         connive: None,
         mana_payment: None,
+        forage: None,
         discards: [0; 2],
         selected_discards: [Vec::new(), Vec::new()],
         milled: Vec::new(),

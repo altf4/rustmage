@@ -1,0 +1,319 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Bushy Bodyguard",
+      "oracle_text": "Offspring {2} (You may pay an additional {2} as you cast this spell. If you do, when this creature enters, create a 1/1 token copy of it.)\nWhen this creature enters, you may forage. If you do, put two +1/+1 counters on it. (To forage, exile three cards from your graveyard or sacrifice a Food.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BushyBodyguard.java",
+          "java_sha256": "937265f21b73a9b7123fd48f1b94fdde8313b45c53e6c6e121dc9000164e9cce"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ForageCost.java",
+          "java_sha256": "167c6de322fe5d8f3059e6141da2c9173a6ce06cfec5bef1fcd8690f3af82762"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ExileFromGraveCost.java",
+          "java_sha256": "0fbd76b0759d6ff66e0517af68a598d62dfd5fca5a520f4ee834132b0275166e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/OrCost.java",
+          "java_sha256": "a36fc6c29c41ef6d0673a6e40c9992c8f5b6c9bb64f9559d4011d0b9593fcf10"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ForageTriggeredAbility.java",
+          "java_sha256": "0f76822fde0d27164e570f63b2001de0ebd8c6b34277b725bbf484d0ebd8a5c6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+          "java_sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/OffspringAbility.java",
+          "java_sha256": "9e3620de5724a8d48e2058c815a76cf870ee74852e8002ec4e05e6e5151fad9b"
+        }
+      ]
+    },
+    {
+      "name": "Camellia, the Seedmiser",
+      "oracle_text": "Menace\nOther Squirrels you control have menace.\nWhenever you sacrifice one or more Foods, create a 1/1 green Squirrel creature token.\n{2}, Forage: Put a +1/+1 counter on each other Squirrel you control. (To forage, exile three cards from your graveyard or sacrifice a Food.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CamelliaTheSeedmiser.java",
+          "java_sha256": "04c4b281bd811a22dd71f9539ebabb1beca8960beec19c6de9dedc1f4cadaae9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ForageCost.java",
+          "java_sha256": "167c6de322fe5d8f3059e6141da2c9173a6ce06cfec5bef1fcd8690f3af82762"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ExileFromGraveCost.java",
+          "java_sha256": "0fbd76b0759d6ff66e0517af68a598d62dfd5fca5a520f4ee834132b0275166e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/OrCost.java",
+          "java_sha256": "a36fc6c29c41ef6d0673a6e40c9992c8f5b6c9bb64f9559d4011d0b9593fcf10"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ForageTriggeredAbility.java",
+          "java_sha256": "0f76822fde0d27164e570f63b2001de0ebd8c6b34277b725bbf484d0ebd8a5c6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SacrificeOneOrMorePermanentsTriggeredAbility.java",
+          "java_sha256": "85702083e26a010d6ef75663648eb01fb7a438719ece286a48cc3acb7f56d79f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+          "java_sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
+          "java_sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+          "java_sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+          "java_sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+          "java_sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+          "java_sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/SquirrelToken.java",
+          "java_sha256": "34d46fc673e10e27abe37fb524ebba351fa1c30e4d9b049f54b20840c08a1da6"
+        }
+      ]
+    },
+    {
+      "name": "Corpseberry Cultivator",
+      "oracle_text": "At the beginning of combat on your turn, you may forage. (Exile three cards from your graveyard or sacrifice a Food.)\nWhenever you forage, put a +1/+1 counter on this creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CorpseberryCultivator.java",
+          "java_sha256": "49248edca7ee2816eea53cd5a720f406059bff4245ccdffa57b1bdb5e855c482"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ForageCost.java",
+          "java_sha256": "167c6de322fe5d8f3059e6141da2c9173a6ce06cfec5bef1fcd8690f3af82762"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ExileFromGraveCost.java",
+          "java_sha256": "0fbd76b0759d6ff66e0517af68a598d62dfd5fca5a520f4ee834132b0275166e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/OrCost.java",
+          "java_sha256": "a36fc6c29c41ef6d0673a6e40c9992c8f5b6c9bb64f9559d4011d0b9593fcf10"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ForageTriggeredAbility.java",
+          "java_sha256": "0f76822fde0d27164e570f63b2001de0ebd8c6b34277b725bbf484d0ebd8a5c6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/triggers/BeginningOfCombatTriggeredAbility.java",
+          "java_sha256": "c8f16a3b46db04f428d1bebc9c1ee8171d14dc9879ff0f6f825a2b49909f2f41"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+          "java_sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        }
+      ]
+    },
+    {
+      "name": "Curious Forager",
+      "oracle_text": "When this creature enters, you may forage. When you do, return target permanent card from your graveyard to your hand. (To forage, exile three cards from your graveyard or sacrifice a Food.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CuriousForager.java",
+          "java_sha256": "21ccf587a6c929845fa4ca6160d4727b784579b5dadd8a84003fc680826d01ea"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ForageCost.java",
+          "java_sha256": "167c6de322fe5d8f3059e6141da2c9173a6ce06cfec5bef1fcd8690f3af82762"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ExileFromGraveCost.java",
+          "java_sha256": "0fbd76b0759d6ff66e0517af68a598d62dfd5fca5a520f4ee834132b0275166e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/OrCost.java",
+          "java_sha256": "a36fc6c29c41ef6d0673a6e40c9992c8f5b6c9bb64f9559d4011d0b9593fcf10"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ForageTriggeredAbility.java",
+          "java_sha256": "0f76822fde0d27164e570f63b2001de0ebd8c6b34277b725bbf484d0ebd8a5c6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+          "java_sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+          "java_sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+          "java_sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+          "java_sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+        }
+      ]
+    },
+    {
+      "name": "Feed the Cycle",
+      "oracle_text": "As an additional cost to cast this spell, forage or pay {B}. (To forage, exile three cards from your graveyard or sacrifice a Food.)\nDestroy target creature or planeswalker.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FeedTheCycle.java",
+          "java_sha256": "7f510dfae89794cc94eda97e1cb4c09fe153470f5aa72e76bf814a0f1790cdd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ForageCost.java",
+          "java_sha256": "167c6de322fe5d8f3059e6141da2c9173a6ce06cfec5bef1fcd8690f3af82762"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ExileFromGraveCost.java",
+          "java_sha256": "0fbd76b0759d6ff66e0517af68a598d62dfd5fca5a520f4ee834132b0275166e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/OrCost.java",
+          "java_sha256": "a36fc6c29c41ef6d0673a6e40c9992c8f5b6c9bb64f9559d4011d0b9593fcf10"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ForageTriggeredAbility.java",
+          "java_sha256": "0f76822fde0d27164e570f63b2001de0ebd8c6b34277b725bbf484d0ebd8a5c6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+          "java_sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreatureOrPlaneswalker.java",
+          "java_sha256": "74a515df49ac9de9bab546fb06aa877375286ce8bb4ea19113e77d811177d85f"
+        }
+      ]
+    },
+    {
+      "name": "Treetop Sentries",
+      "oracle_text": "Reach\nWhen this creature enters, you may forage. If you do, draw a card. (To forage, exile three cards from your graveyard or sacrifice a Food.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TreetopSentries.java",
+          "java_sha256": "ab923e5159f0364ecc4d8c0264badda7769262948be99d0a5f88d864daef3a6f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ForageCost.java",
+          "java_sha256": "167c6de322fe5d8f3059e6141da2c9173a6ce06cfec5bef1fcd8690f3af82762"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/ExileFromGraveCost.java",
+          "java_sha256": "0fbd76b0759d6ff66e0517af68a598d62dfd5fca5a520f4ee834132b0275166e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/OrCost.java",
+          "java_sha256": "a36fc6c29c41ef6d0673a6e40c9992c8f5b6c9bb64f9559d4011d0b9593fcf10"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ForageTriggeredAbility.java",
+          "java_sha256": "0f76822fde0d27164e570f63b2001de0ebd8c6b34277b725bbf484d0ebd8a5c6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+          "java_sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+          "java_sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+        }
+      ]
+    }
+  ]
+}

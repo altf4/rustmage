@@ -37,6 +37,7 @@ impl Game {
         let zone = match spec.kind {
             EffectChoiceKind::Discard => Zone::Hand,
             EffectChoiceKind::Sacrifice => Zone::Battlefield,
+            _ => return false,
         };
         let f = spec.filter;
         o.owner == actor
@@ -61,6 +62,9 @@ impl Game {
         let Some(spec) = definition.additional_cost() else {
             return self.can_fund(base);
         };
+        if forage::is_forage_cost(spec) {
+            return self.forage_cost_fundable(base, spec, None);
+        }
         self.state.objects.iter().enumerate().any(|(id, _)| {
             let object = self.object_ref(id as CardId);
             self.additional_candidate(spec, actor, self.object_ref(card), object)
@@ -79,6 +83,9 @@ impl Game {
             return self.can_fund(goal);
         };
         let source = goal.source.expect("activation source").0;
+        if forage::is_forage_cost(spec) {
+            return self.forage_cost_fundable(goal, spec, None);
+        }
         self.state.objects.iter().enumerate().any(|(id, _)| {
             let object = self.object_ref(id as CardId);
             self.additional_candidate(spec, goal.actor, source, object)
@@ -111,6 +118,14 @@ impl Game {
         let Some(spec) = a.additional_cost() else {
             return;
         };
+        if forage::is_forage_cost(spec) {
+            let selection = a.forage.as_ref().expect("forage cost selected");
+            if selection.route != Some(ForageRoute::Black) {
+                self.commit_forage(a.item.controller, selection);
+            }
+            a.additional_paid = true;
+            return;
+        }
         let object = a.additional.expect("additional cost selected");
         assert!(
             self.additional_candidate(spec, a.item.controller, a.item.object, object),
@@ -118,6 +133,7 @@ impl Game {
         );
         a.additional_paid = true;
         match spec.kind {
+            EffectChoiceKind::Forage | EffectChoiceKind::ForageOrBlack => unreachable!(),
             EffectChoiceKind::Discard => self.discard_batch(&[object.card], None),
             EffectChoiceKind::Sacrifice => {
                 self.sacrifice_batch(&[(a.item.controller, object.card)]);
@@ -130,6 +146,9 @@ impl Game {
             return None;
         }
         let spec = a.additional_cost()?;
+        if forage::is_forage_cost(spec) {
+            return None;
+        }
         let candidates = if matches!(self.state.pending, Pending::AdditionalCost { .. }) {
             (0..self.state.objects.len())
                 .map(|id| self.object_ref(id as CardId))

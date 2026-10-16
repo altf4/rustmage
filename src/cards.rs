@@ -66,6 +66,7 @@ pub(crate) enum TargetRule {
 /// Immutable live constraints; indirection keeps target plans compact in checkpoints.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetPredicate {
+    Permanent,
     Attacking,
     AttackingOrBlocking,
     Damaged,
@@ -242,6 +243,8 @@ pub(crate) struct SearchSpec {
 /// A resolution choice; discard here is a cost, not a forced discard effect.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EffectChoiceKind {
+    Forage,
+    ForageOrBlack,
     Sacrifice,
     Discard,
 }
@@ -318,6 +321,12 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    Forage {
+        skip: usize,
+    },
+    Reflexive {
+        ability: u16,
+    },
     /// Definition-only modal trigger header; selected before targets, never executed.
     Modal(&'static [SpellMode]),
     /// Skip the following block when its live condition is false.
@@ -896,6 +905,9 @@ pub(crate) enum EntryPredicate {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    Foraged,
+    FoodsSacrificed,
+    Reflexive,
     /// A cast-event qualification, not an intervening-if resolution guard.
     DuringOpponentsTurn(&'static TriggerCondition),
     OncePerTurn(&'static TriggerCondition),

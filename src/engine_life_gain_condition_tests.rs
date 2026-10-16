@@ -361,6 +361,7 @@ fn gain_only_suspension_cannot_commit_unrepresentable_continuous_stats() {
                     moved_count: None,
                     connive: None,
                     mana_payment: None,
+                    forage: None,
                     discards: [0; 2],
                     selected_discards: [Vec::new(), Vec::new()],
                     milled: Vec::new(),

@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "684a9b9b9d964a4c5184505ce936cbd8144aaf7066a04927fc209c1d7d3b0644",
+  "catalogue_version": "e5819641011ac8befea007a7907ce34529bdec14d5b7d95c2eba00eeecbb3a43",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1449,
-  "implemented_total": 1455,
-  "token_definitions": 70,
+  "implemented_standard_cards": 1455,
+  "implemented_total": 1461,
+  "token_definitions": 71,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -3622,8 +3622,8 @@
     {
       "name": "Bushy Bodyguard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Buster Sword",
@@ -3760,8 +3760,8 @@
     {
       "name": "Camellia, the Seedmiser",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Camera Launcher",
@@ -5122,8 +5122,8 @@
     {
       "name": "Corpseberry Cultivator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Corpses of the Lost",
@@ -5602,8 +5602,8 @@
     {
       "name": "Curious Forager",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Curious Inquiry",
@@ -8890,8 +8890,8 @@
     {
       "name": "Feed the Cycle",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Feed the Flames",
@@ -28054,8 +28054,8 @@
     {
       "name": "Treetop Sentries",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Treetop Snarespinner",
