@@ -70,6 +70,13 @@ impl Game {
             StatValue::CardsDrawnThisTurn => {
                 i128::from(self.state.players[owner.index()].cards_drawn_this_turn)
             }
+            StatValue::AttackingCreatures => objects()
+                .filter(|(id, o)| {
+                    o.zone == Zone::Battlefield
+                        && o.card.is_creature()
+                        && self.state.attackers.iter().any(|a| a.card == *id)
+                })
+                .count() as i128,
             StatValue::SourceAttacking => i128::from(
                 attacking
                     && objects().any(|(id, o)| {

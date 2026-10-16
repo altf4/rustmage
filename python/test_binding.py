@@ -128,6 +128,55 @@ class BindingTests(unittest.TestCase):
                     if done:break
                 self.assertTrue(done,source);self.assertGreater(replayed,0);self.assertGreater(taps,0)
 
+    def test_fourteen_attack_bodies_complete_effects_and_rollback(self):
+        names=['Ancestor Dragon','Armasaur Guide','Battlesong Berserker','Boggart Prankster','Jolene, Plundering Pugilist','Lionheart Glimmer','Malamet Brawler','Marshal of the Lost','Meddling Youths','Most Valuable Slayer','Nori, Teller of Tales','Razorkin Hordecaller','Seasoned Consultant','The Chief Warg']
+        for i,name in enumerate(names):
+            for hybrid in range(2 if i==10 else 1):
+                lands=(['Plains','Mountain','Forest','Swamp']*10);mate='Gigantoad' if i==13 else "Dragonlord's Servant"
+                with self.subTest(card=name,hybrid=hybrid),Game([lands+[name]*12+[mate]*24,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+                    done=False;replayed=0;observed=set();chosen=False
+                    for _ in range(20000):
+                        obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor']);objects={v['id']:v for v in obs['objects']};creatures=[v for v in objects.values() if v['zone']=='Battlefield' and v['owner']=='P0' and v['card'] in (name,mate)];live=any(v['card']==name for v in creatures);ready=live and len(creatures)>=3
+                        def score(a):
+                            k=a['kind']
+                            if k in ('Cast','AnnounceCast'):
+                                n=objects[a['card']]['card'];return 280 if n==name and not live else 250 if n==mate and len(creatures)<4 else -100
+                            if k=='ChooseSpellCost':return 400 if a['cost']==hybrid else -100
+                            if k=='PayCosts':return 500
+                            if k=='TapMana':return 150 if obs['decision']=='pay_costs' else -100
+                            if k=='Attack':return 220 if ready else -100
+                            if k in ('Activate','BeginActivate','AnnounceActivate','ActivateMana','AnnounceMana'):return -100
+                            return self.professor_score(obs,a)
+                        j=max(range(len(obs['actions'])),key=lambda j:score(obs['actions'][j]));action=obs['actions'][j]
+                        if action['kind']=='ChooseSpellCost':chosen=True
+                        if live or obs['announcing'] or obs['stack']:
+                            saved=game.snapshot()
+                            with game.clone() as fork:expected=fork.step(fork.observe(obs['actor']),j)
+                            self.assertEqual(game.step(obs,j),expected);game.restore(saved)
+                            with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,j)
+                            after=game.step(game.observe(obs['actor']),j);expected['revision']=after['revision'];self.assertEqual(after,expected);game.drop_snapshot(saved);replayed+=1
+                        else:after=game.step(obs,j)
+                        for item in after['stack']+after['waiting_triggers']+[v for v in [after['announcing'],after['resolving']] if v is not None]:
+                            if item['source_card']==name and item['kind']!='Spell':self.assertIsNone(item['entering_object']);observed.add(item['id'])
+                        if action['kind']=='Pass' and obs['stack']:
+                            item=obs['stack'][-1]
+                            if item['source_card']==name and item['kind']!='Spell' and all(v['id']!=item['id'] for v in after['stack']):
+                                self.assertEqual(len(observed),1);before={v['reference']['card']:v for v in obs['objects']};now={v['id']:v for v in after['objects']};target=next((v['object']['card'] for v in item['targets'] if v['object'] is not None),None)
+                                if i==0:self.assertEqual(int(after['players'][0]['life']),int(obs['players'][0]['life'])+len(obs['attackers']))
+                                elif i==1:self.assertEqual(int(now[target]['counters']['plus_one']),int(before[target]['counters']['plus_one'])+1)
+                                elif i in (2,3,6,7,9,10):
+                                    dp,dt,keyword={2:(1,0,32768),3:(1,0,0),6:(0,0,256),7:(len(obs['attackers']),len(obs['attackers']),0),9:(1,0,512),10:(0,0,512)}[i]
+                                    self.assertEqual(int(now[target]['power']),int(before[target]['power'])+dp);self.assertEqual(int(now[target]['toughness']),int(before[target]['toughness'])+dt);self.assertEqual(now[target]['keywords'],before[target]['keywords']|keyword)
+                                elif i in (4,8,11):self.assertEqual(sum(v['zone']=='Battlefield' and v['id'] not in before for v in after['objects']),1)
+                                elif i==5:
+                                    for v in creatures:self.assertEqual(int(now[v['id']]['power']),int(v['power'])+1);self.assertEqual(int(now[v['id']]['toughness']),int(v['toughness'])+1)
+                                elif i==12:
+                                    source=next(v for v in creatures if v['card']==name);self.assertEqual(int(now[source['id']]['power']),int(source['power'])+2)
+                                elif i==13:self.assertEqual(after['players'][0]['library_count']+1,obs['players'][0]['library_count']);self.assertEqual(int(after['players'][0]['life']),int(obs['players'][0]['life'])-1)
+                                self.assertEqual(after['schema'],52);done=True;break
+                    self.assertTrue(done,name);self.assertGreater(replayed,0)
+                    if i==10:self.assertTrue(chosen)
+
     def test_opponent_entry_tapped_authority_spider_hybrid_and_suppression_replay(self):
         cases=[('Authority of the Consuls','Helpful Hunter',False,0,True),('Authority of the Consuls','Helpful Hunter',True,0,True),('Authority of the Consuls','Mephitic Draught',False,0,False),('Spider-Woman, Stunning Savior','Helpful Hunter',False,0,True),('Spider-Woman, Stunning Savior','Mephitic Draught',False,1,True)]
         for source,wanted,orb,cost,tapped in cases:

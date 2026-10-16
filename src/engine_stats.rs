@@ -15,6 +15,14 @@ impl Game {
         if triggers.iter().any(|ability| {
             matches!(
                 ability.condition.event(),
+                TriggerCondition::AttackDeclared { .. }
+            )
+        }) {
+            self.state.attack_sources.push(id);
+        }
+        if triggers.iter().any(|ability| {
+            matches!(
+                ability.condition.event(),
                 TriggerCondition::CardDrawn { .. }
             )
         }) {

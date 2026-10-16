@@ -1,0 +1,439 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Ancestor Dragon",
+      "oracle_text": "Flying\nWhenever one or more creatures you control attack, you gain 1 life for each attacking creature.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+          "java_sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AncestorDragon.java",
+          "java_sha256": "7b7e32a3d306a08341d67861151ea614e455bf1759c5601cdfe62ceaaad7cc00"
+        }
+      ]
+    },
+    {
+      "name": "Armasaur Guide",
+      "oracle_text": "Vigilance (Attacking doesn't cause this creature to tap.)\nWhenever you attack with three or more creatures, put a +1/+1 counter on target creature you control.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+          "java_sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "java_sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/ArmasaurGuide.java",
+          "java_sha256": "439a4f776b06f06cfb93135ca0da5a87f92aec8a563028b94a091e6c1001dff7"
+        }
+      ]
+    },
+    {
+      "name": "Battlesong Berserker",
+      "oracle_text": "Whenever you attack, target creature you control gets +1/+0 and gains menace until end of turn. (It can't be blocked except by two or more creatures.)",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+          "java_sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+          "java_sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BattlesongBerserker.java",
+          "java_sha256": "88ea97e834c07ef22e58b84f2fb1f2b381dc8ec6a5a9b70547fe6d90fd40c2dc"
+        }
+      ]
+    },
+    {
+      "name": "Boggart Prankster",
+      "oracle_text": "Whenever you attack, target attacking Goblin you control gets +1/+0 until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+          "java_sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+          "java_sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/AttackingPredicate.java",
+          "java_sha256": "31b80ba46b462c287c4c5d4a4867f7271dccaf8eedc555fb5cbbfe9fea156617"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BoggartPrankster.java",
+          "java_sha256": "d46bcf8db7a2523b96c488392017536bdc83554a7cfe0ac85ee0c83f8985d7c0"
+        }
+      ]
+    },
+    {
+      "name": "Jolene, Plundering Pugilist",
+      "oracle_text": "Whenever you attack with one or more creatures with power 4 or greater, create a Treasure token.\n{1}{R}, Sacrifice a Treasure: Jolene deals 1 damage to any target.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+          "java_sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+          "java_sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/PowerPredicate.java",
+          "java_sha256": "909b9038e02c0653920408059e987b6ee3cfad717900e62e78c597285f137dde"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+          "java_sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetAnyTarget.java",
+          "java_sha256": "94f28b8a4a9908ef9b7599805c0ac39faf0aae249231969cd51373db206ebf34"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/j/JolenePlunderingPugilist.java",
+          "java_sha256": "1d10eda3ce82eb86547156d1f901df95496ecd64619cf4d3b0dd8346d530c9dd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetSacrifice.java",
+          "java_sha256": "24e8ec2dda0609630c60e91b1b890feebc7c8dbb0eb6002565897a07ca9113d7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/token/TreasureAbility.java",
+          "java_sha256": "d0b4701fc40514cb0d6efe11255d4644b28e4d6b9f5d5acf3c92093c571b5bae"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/mana/AddManaOfAnyColorEffect.java",
+          "java_sha256": "1ab49b0ed403a80a0daed4883b432e65e47e38a72d5e4ebca87894284c4fa085"
+        }
+      ]
+    },
+    {
+      "name": "Lionheart Glimmer",
+      "oracle_text": "Ward {2} (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)\nWhenever you attack, creatures you control get +1/+1 until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+          "java_sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+          "java_sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LionheartGlimmer.java",
+          "java_sha256": "7c21ba7c0336a5e69494b1a99c1e7dbc089684b8277da60e198ce1a78804a0d7"
+        }
+      ]
+    },
+    {
+      "name": "Malamet Brawler",
+      "oracle_text": "Whenever this creature attacks, target attacking creature gains trample until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+          "java_sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+          "java_sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetAttackingCreature.java",
+          "java_sha256": "363350ad2acb98ab5c6c846d03056ec043afe46651ae395550f1c25d56314965"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MalametBrawler.java",
+          "java_sha256": "042cf614ae25bf8b636d88d99f3891abf65af2cd4c5d6eac15636f510bb9a163"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterAttackingCreature.java",
+          "java_sha256": "e42cf80f6c0414aa1547a092102896d5149783e7179f782d77f2e1e0263ad191"
+        }
+      ]
+    },
+    {
+      "name": "Marshal of the Lost",
+      "oracle_text": "Deathtouch\nWhenever you attack, target creature gets +X/+X until end of turn, where X is the number of attacking creatures.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+          "java_sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+          "java_sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MarshalOfTheLost.java",
+          "java_sha256": "bbfbaa6d222bae63dd2eea166a04cac661abb331953b945995139181ca3000e9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+          "java_sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterAttackingCreature.java",
+          "java_sha256": "e42cf80f6c0414aa1547a092102896d5149783e7179f782d77f2e1e0263ad191"
+        }
+      ]
+    },
+    {
+      "name": "Meddling Youths",
+      "oracle_text": "Haste\nWhenever you attack with three or more creatures, investigate. (Create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+          "java_sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/InvestigateEffect.java",
+          "java_sha256": "db04263634b8969dee966be525deac8165e358e3a0774b3e11de300f024ac3ed"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+          "java_sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MeddlingYouths.java",
+          "java_sha256": "4dcabaeacd7dd3e456f4c39113824af8ae291213a282b9e68d14ab8415a728c0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/ClueArtifactToken.java",
+          "java_sha256": "711939b0212d808576d149e8c95b0007df2e003c29095ddb26c4cdce94a3ddd8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/token/ClueAbility.java",
+          "java_sha256": "ade27801ef45e9379e70fa7a5a8528f847e9df65d86410f562818e94b1e908b6"
+        }
+      ]
+    },
+    {
+      "name": "Most Valuable Slayer",
+      "oracle_text": "Whenever you attack, target attacking creature gets +1/+0 and gains first strike until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+          "java_sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FirstStrikeAbility.java",
+          "java_sha256": "997831ae93b8f148ce96ac211e3e2a86e2df46403677fe1106d7c20554678235"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetAttackingCreature.java",
+          "java_sha256": "363350ad2acb98ab5c6c846d03056ec043afe46651ae395550f1c25d56314965"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MostValuableSlayer.java",
+          "java_sha256": "807b6120aea9e9c717bd387ed6b91813235bbfc3645f9148ac0a49995d5dd384"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterAttackingCreature.java",
+          "java_sha256": "e42cf80f6c0414aa1547a092102896d5149783e7179f782d77f2e1e0263ad191"
+        }
+      ]
+    },
+    {
+      "name": "Nori, Teller of Tales",
+      "oracle_text": "Whenever Nori attacks, target attacking creature gains first strike until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+          "java_sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FirstStrikeAbility.java",
+          "java_sha256": "997831ae93b8f148ce96ac211e3e2a86e2df46403677fe1106d7c20554678235"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetAttackingCreature.java",
+          "java_sha256": "363350ad2acb98ab5c6c846d03056ec043afe46651ae395550f1c25d56314965"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/n/NoriTellerOfTales.java",
+          "java_sha256": "35a87891a7400f355624ad70637db90b2a73c43c4189b301f9772b5dc1bf5ac7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterAttackingCreature.java",
+          "java_sha256": "e42cf80f6c0414aa1547a092102896d5149783e7179f782d77f2e1e0263ad191"
+        }
+      ]
+    },
+    {
+      "name": "Razorkin Hordecaller",
+      "oracle_text": "Haste\nWhenever you attack, create a 1/1 red Gremlin creature token.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+          "java_sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+          "java_sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/Gremlin11Token.java",
+          "java_sha256": "08530631c03cdf1254fce51d7cf882a3c05e167c3b6e809eb9ceebffc0a79ff3"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RazorkinHordecaller.java",
+          "java_sha256": "9719cb759485fc462b7f7eae02bebd98b1c0c6be9f49ba8952b8d8bdd36a35eb"
+        }
+      ]
+    },
+    {
+      "name": "Seasoned Consultant",
+      "oracle_text": "Whenever you attack with three or more creatures, this creature gets +2/+0 until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+          "java_sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+          "java_sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SeasonedConsultant.java",
+          "java_sha256": "73cfe756429a305bf02e9347c088c5caba1698bac56028e8ede58e5aefd8892e"
+        }
+      ]
+    },
+    {
+      "name": "The Chief Warg",
+      "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)\nFerocious \u2014 Whenever you attack while you control a creature with power 4 or greater, you draw a card and lose 1 life.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+          "java_sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/FerociousCondition.java",
+          "java_sha256": "4cb67672f9434ee2230c941595cd3489a6b27658508e5cadaa3cecacbc8e84fa"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+          "java_sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+          "java_sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TheChiefWarg.java",
+          "java_sha256": "b2ca78314fcd757cb743e324133ea08c5b1f4af3e7eb26850649dc85ca7b27ee"
+        }
+      ]
+    }
+  ]
+}

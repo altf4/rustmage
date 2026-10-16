@@ -54,6 +54,41 @@ class CatalogueCompilerTests(unittest.TestCase):
             body=programs(name)[0][1];self.assertIn('optional_skip: Some(1)',body[0]);self.assertIn('Discard',body[0]);self.assertIn('Draw',body[1])
         seed=programs('Seedship Agrarian');self.assertEqual(len(seed),2);self.assertEqual(seed[0][0],'SelfBecomesTapped');self.assertEqual(seed[1][0],'LandEntersYou');self.assertIn('PutCounters',seed[1][1][0])
 
+    def test_aggregate_attack_prefixes_are_closed_and_preserve_event_guards(self):
+        clauses={
+            'Whenever you attack, ':'minimum: 1, power_min: None, guard: StepGuard::Always',
+            'Whenever one or more creatures you control attack, ':'minimum: 1, power_min: None, guard: StepGuard::Always',
+            'Whenever you attack with three or more creatures, ':'minimum: 3, power_min: None, guard: StepGuard::Always',
+            'Whenever you attack with one or more creatures with power 4 or greater, ':'minimum: 1, power_min: Some(4)',
+            'Whenever you attack while you control a creature with power 4 or greater, ':'minimum: 1, power_min: None, guard: StepGuard::Threshold',
+        }
+        for prefix,expected in clauses.items():
+            result=generate.trigger_creature_template(self.card(oracle_text=prefix+'draw a card.'))
+            self.assertIn('AttackDeclared { '+expected,result[2][0][0]);self.assertNotIn('InterveningIf',result[2][0][0])
+        for prefix in ['Whenever you attack with two or more creatures, ','Whenever you attack a player, ','Whenever an opponent attacks, ','Whenever you attack with one or more Goblins, ','Whenever you attack with creatures with total power 4 or greater, ']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=prefix+'draw a card.')),prefix)
+        self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='Whenever you attack, draw a card. Then discover 3.')))
+        self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='Whenever you attack, put a +1/+1 counter on it.')))
+
+    def test_attacking_target_subjects_retain_all_qualifiers_and_full_effect(self):
+        self.assertEqual(generate.targeted_program('Target attacking creature gains trample until end of turn.'),('CreatureAttacking',['GrantKeywords { subject: Subject::Targets, keywords: Keywords(256) }']))
+        result=generate.targeted_program('Target attacking Goblin you control gets +1/+0 until end of turn.')
+        self.assertEqual(result[0],'GoblinAttackingYou');rule=generate.TARGET_RULES[result[0]]
+        for text in ['TargetPredicate::Attacking','TargetPredicate::Subtype("Goblin")','relation: 0']:self.assertIn(text,rule)
+        for text in ['Target attacking Goblin gets +1/+0 until end of turn.','Target attacking creature gains trample until end of turn. Then discover 3.','Target attacking Goblin you control becomes a copy of target creature.']:
+            self.assertIsNone(generate.targeted_program(text))
+        for text in ['attacking creature','attacking creatures','the number of attacking creatures']:self.assertEqual(generate.amount_value(text),'AmountValue::Stat(StatValue::AttackingCreatures)')
+        self.assertIsNone(generate.amount_value('attacking creatures that died this turn'))
+
+    def test_attack_declaration_complete_admissions_and_unknown_residuals(self):
+        import json,hashlib
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());manifest=json.loads((generate.ROOT/'docs/attack-declaration-admissions.json').read_text());self.assertEqual(len(manifest['cards']),14)
+        source,cov=generate.compile_catalogue(rows,target);supported={c['name'] for c in cov['cards'] if c['implemented']};names={c['name'] for c in manifest['cards']}
+        for row in manifest['cards']:
+            self.assertIn(row['name'],supported);card=next(c for c in rows['cards'] if c['name']==row['name']);self.assertEqual(card['oracle_text'],row['oracle_text'])
+        modified=dict(rows,cards=[dict(c,oracle_text=c['oracle_text']+'\nWhenever you attack, discover 3.') if c['name'] in names else c for c in rows['cards']]);modified['cards_sha256']=hashlib.sha256(json.dumps(modified['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();_,cov=generate.compile_catalogue(modified,target)
+        self.assertTrue(all(not c['implemented'] for c in cov['cards'] if c['name'] in names))
+
     def test_opponent_entry_tapped_extraction_is_exact_and_keeps_unknown_labels_and_residuals(self):
         for subject,mask in [('Creatures',1),('Artifacts',16),('Artifacts and creatures',17)]:
             for battlefield in ['', ' the battlefield']:
@@ -648,7 +683,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             c=next(c for c in snapshot['cards'] if c['name']==a['name']);self.assertEqual(c['oracle_text'],a['oracle_text']);self.assertIn(c['name'],supported)
             c=dict(c,oracle_text=c['oracle_text']+'\nDiscover 4.')
             self.assertIsNone(generate.permanent_program_template(c));self.assertIsNone(generate.land_template(c))
-        for name in ['Ice Cream Kitty','Agency Coroner','Intruding Soulrager',"Bolg's Company",'Jolene, Plundering Pugilist','Technodrome','Memorial Vault','Quina, Qu Gourmet','Diversion Specialist','Sidisi, Regent of the Mire','Metalhead','Alquist Proft, Master Sleuth','Boneyard Desecrator','Rune-Brand Juggler']:
+        for name in ['Ice Cream Kitty','Agency Coroner','Intruding Soulrager',"Bolg's Company",'Technodrome','Memorial Vault','Quina, Qu Gourmet','Diversion Specialist','Sidisi, Regent of the Mire','Metalhead','Alquist Proft, Master Sleuth','Boneyard Desecrator','Rune-Brand Juggler']:
             self.assertNotIn(name,supported)
 
     def test_creature_tapped_entry_extraction_is_exact_and_retains_counter_clause(self):
@@ -1871,7 +1906,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Slithering Cryptid','Tempest Angler','Wandering Musicians']:
             self.assertIn(name,supported)
         for name in ['Mouser Mark III',
-                     'Sokka, Lateral Strategist','Nori, Teller of Tales']:
+                     'Sokka, Lateral Strategist']:
             self.assertNotIn(name,supported)
 
     def test_once_per_turn_wraps_complete_events_and_rejects_other_limit_meanings(self):

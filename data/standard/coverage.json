@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "43304f0d919fe89ac4d50a4a699fd02ecb9f8d88b2b920ea1ec030b5c279a1d2",
+  "catalogue_version": "4e19d02febef51b7252f6bcbaeb8e3c2edf28c487ca2c5ddc58a8b4c185a3568",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1384,
-  "implemented_total": 1390,
-  "token_definitions": 57,
+  "implemented_standard_cards": 1398,
+  "implemented_total": 1404,
+  "token_definitions": 58,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -934,8 +934,8 @@
     {
       "name": "Ancestor Dragon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Ancestors' Aid",
@@ -1354,8 +1354,8 @@
     {
       "name": "Armasaur Guide",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Armor Wars",
@@ -2116,8 +2116,8 @@
     {
       "name": "Battlesong Berserker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Baxter Building",
@@ -2878,8 +2878,8 @@
     {
       "name": "Boggart Prankster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Bogslither's Embrace",
@@ -13726,8 +13726,8 @@
     {
       "name": "Jolene, Plundering Pugilist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Jolly Gerbils",
@@ -15100,8 +15100,8 @@
     {
       "name": "Lionheart Glimmer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Lita, Little Orphan Amphibian",
@@ -15832,8 +15832,8 @@
     {
       "name": "Malamet Brawler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Malamet Scythe",
@@ -16024,8 +16024,8 @@
     {
       "name": "Marshal of the Lost",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Marshals' Pathcruiser",
@@ -16222,8 +16222,8 @@
     {
       "name": "Meddling Youths",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Medic's Kitesail",
@@ -17176,8 +17176,8 @@
     {
       "name": "Most Valuable Slayer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Mourner's Surprise",
@@ -17770,8 +17770,8 @@
     {
       "name": "Nori, Teller of Tales",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Norin, Swift Survivalist",
@@ -20446,8 +20446,8 @@
     {
       "name": "Razorkin Hordecaller",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Razorkin Needlehead",
@@ -22534,8 +22534,8 @@
     {
       "name": "Seasoned Consultant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Seasoned Cryomancer",
@@ -26572,8 +26572,8 @@
     {
       "name": "The Chief Warg",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "The Clone Saga",

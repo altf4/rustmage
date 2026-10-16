@@ -749,6 +749,7 @@ struct State {
     free_tokens: Vec<CardId>,
     static_sources: Vec<CardId>,
     cast_sources: Vec<CardId>,
+    attack_sources: Vec<CardId>,
     damage_sources: Vec<CardId>,
     discard_sources: Vec<CardId>,
     draw_sources: Vec<CardId>,
@@ -1124,6 +1125,7 @@ impl Game {
                 free_tokens: Vec::new(),
                 static_sources: Vec::new(),
                 cast_sources: Vec::new(),
+                attack_sources: Vec::new(),
                 damage_sources: Vec::new(),
                 discard_sources: Vec::new(),
                 draw_sources: Vec::new(),
@@ -2561,6 +2563,7 @@ impl Game {
             }
             self.state.static_sources.retain(|&source| source != id);
             self.state.cast_sources.retain(|&source| source != id);
+            self.state.attack_sources.retain(|&source| source != id);
             self.state.damage_sources.retain(|&source| source != id);
             self.state.discard_sources.retain(|&source| source != id);
             self.state.draw_sources.retain(|&source| source != id);
@@ -2641,6 +2644,9 @@ impl Game {
         self.tap_objects(&to_tap);
         for attack in declared {
             event(self, attack.card);
+        }
+        if self.state.attack_declared {
+            self.declaration_triggers(actor);
         }
     }
 
@@ -3361,6 +3367,7 @@ impl Game {
             + (s.free_tokens.len()
                 + s.static_sources.len()
                 + s.cast_sources.len()
+                + s.attack_sources.len()
                 + s.damage_sources.len()
                 + s.discard_sources.len()
                 + s.draw_sources.len()
@@ -3764,3 +3771,7 @@ mod source_tap_tests;
 #[cfg(test)]
 #[path = "engine_qualified_cast_tests.rs"]
 mod qualified_cast_tests;
+
+#[cfg(test)]
+#[path = "engine_attack_declaration_tests.rs"]
+mod attack_declaration_tests;

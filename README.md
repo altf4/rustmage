@@ -5,11 +5,13 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,384 have executable rules so far.
+knows all 5,164 pinned Standard identities; 1,398 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
-The latest [qualified cast events](docs/qualified-cast-events.md) add thirteen complete bodies
+The latest [attack-declaration events](docs/attack-declaration-events.md) add fourteen
+complete bodies with aggregate events, attacking targets, live counts and both hybrid payments.
+[Qualified cast events](docs/qualified-cast-events.md) add thirteen complete bodies
 with printed mana-value/color filters, opponent-turn qualification and private replay.
 [Source tap events](docs/source-taps.md) add thirteen complete bodies
 with precise untapped-to-tapped events, private choices, tokens, costs and replay.
@@ -53,6 +55,7 @@ PYTHONPATH=python python3 -m unittest discover -s python -p 'test_*.py' -v
 cargo run --release --bin benchmark -- 1000
 cargo run --release --example branch
 cargo run --release --example standard
+cargo run --release --example standard_attack_declarations -- 100
 cargo run --release --example standard_qualified_casts -- 100
 cargo run --release --example standard_source_taps -- 100
 cargo run --release --example standard_opponent_entry_tapped -- 100

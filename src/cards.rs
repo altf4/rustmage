@@ -498,6 +498,7 @@ pub(crate) enum StatValue {
     Not(&'static StatValue),
     CardsDrawnThisTurn,
     SourceAttacking,
+    AttackingCreatures,
     SourceModified,
     Tokens(CountFilter),
     AtLeast {
@@ -918,6 +919,11 @@ pub(crate) enum TriggerCondition {
     SelfEntersOrDies,
     SelfAttacks,
     SelfBecomesTapped,
+    AttackDeclared {
+        minimum: u16,
+        power_min: Option<i32>,
+        guard: StepGuard,
+    },
     SelfEntersOrAttacks,
     /// Explicit self entry OR another owned permanent satisfying all filters.
     /// The self arm bypasses the other-permanent filters; it is never counted twice.
