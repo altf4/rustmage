@@ -158,15 +158,47 @@ impl Game {
             self.state.entry_batch = Some(Box::new(batch));
         }
     }
+    pub(super) fn pre_entry_counters(&self, before: &ObjectView, destination: Zone) -> Counters {
+        if destination != Zone::Battlefield {
+            return Counters::default();
+        }
+        let mut counters = before.card.enters_counters();
+        for rule in before.card.entry_counter_rules() {
+            if self.step_guard(rule.guard, before.owner, before.reference, before.tapped) {
+                let amount = match rule.amount {
+                    EntryCounterAmount::Fixed(n) => u64::from(n),
+                    EntryCounterAmount::Stat(value) => u64::try_from(
+                        self.stat_value(value, before.reference, before.owner)
+                            .max(0),
+                    )
+                    .capacity("entry counter amount exhausted"),
+                };
+                counters.add(CounterKind::PlusOne, amount);
+            }
+        }
+        counters
+    }
     fn commit_entries(&mut self, batch: EntryBatch) {
+        // CR614.12: replacements inspect the world before this simultaneous event.
+        // No incoming permanent may affect a later member's counter quantity.
+        let moves: Vec<_> = batch
+            .moves
+            .into_iter()
+            .filter(|m| !m.skipped)
+            .map(|m| {
+                let counters = self.pre_entry_counters(&m.before, m.destination);
+                (m, counters)
+            })
+            .collect();
         let mut events = Vec::new();
         let mut attachments = Vec::new();
-        for movement in batch.moves {
-            if movement.skipped {
-                continue;
-            }
-            let event =
-                self.transition_object(movement.before, movement.destination, movement.tapped);
+        for (movement, counters) in moves {
+            let event = self.transition_object_with_counters(
+                movement.before,
+                movement.destination,
+                movement.tapped,
+                counters,
+            );
             if event.moved {
                 if let Some(target) = movement.attachment {
                     attachments.push((event.after, target));

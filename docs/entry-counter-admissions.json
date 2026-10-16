@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Effortless Master",
+      "oracle_text": "Vigilance\nMenace (This creature can't be blocked except by two or more creatures.)\nThis creature enters with two +1/+1 counters on it if you've cast two or more spells this turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/EffortlessMaster.java",
+          "java_sha256": "7278d0772cf788dba062e6144b6ce8fc17bf4d1ee35fe5458e05a81cbceec7c9"
+        }
+      ]
+    },
+    {
+      "name": "Goblin Boarders",
+      "oracle_text": "Raid \u2014 This creature enters with a +1/+1 counter on it if you attacked this turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GoblinBoarders.java",
+          "java_sha256": "87dc15aef01a024a333899ecfeb9ccd97b3183424309253071ccd954d6390a1d"
+        }
+      ]
+    },
+    {
+      "name": "Luxknight Breacher",
+      "oracle_text": "This creature enters with a +1/+1 counter on it for each other creature and/or artifact you control.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LuxknightBreacher.java",
+          "java_sha256": "9bf066b1b5e1fff801507da54738c78f02d1b8bac2617f9f94dfec16694d3483"
+        }
+      ]
+    }
+  ]
+}

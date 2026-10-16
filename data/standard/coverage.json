@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "08f1a32d42f12e009e917eb1fdd2268a466852c1c64f3accf18d008f90fa1249",
+  "catalogue_version": "4e58bbb421e7b44972fdfb15acc1a08c95817ff38c6a2a8cf7bcdb0f6cedacde",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1091,
-  "implemented_total": 1097,
+  "implemented_standard_cards": 1094,
+  "implemented_total": 1100,
   "token_definitions": 49,
   "emblem_definitions": 1,
   "cards": [
@@ -7636,8 +7636,8 @@
     {
       "name": "Effortless Master",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Ego Drain",
@@ -10816,8 +10816,8 @@
     {
       "name": "Goblin Boarders",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Goblin Firebomb",
@@ -15544,8 +15544,8 @@
     {
       "name": "Luxknight Breacher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Luxurious Locomotive",

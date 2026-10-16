@@ -3,10 +3,10 @@ use crate::cards::{
     ActivatedAbility, ActivationCost, ActivationGuard, ActivationOrigin, AdditionalCost,
     AmountValue, BattlefieldFilter, CastRelation, CostTurn, CountFilter, CountZone, CounterKind,
     CounterSubject, Counters, CreatureFilter, DamageQualification, DamageSubject, Effect,
-    EffectChoiceKind, EmblemInfo, EntryTapped, Instruction, ManaCost, ManaProduction, MillAmount,
-    PlayerSet, RecoveryFilter, SacrificeFilter, SearchSpec, StatExpr, StatValue, Stats, StepGuard,
-    StepValue, Subject, TargetPlan, TargetPredicate, TargetRule, TargetSpec, TargetZone,
-    TriggerCondition, TriggerStep, payments,
+    EffectChoiceKind, EmblemInfo, EntryCounterAmount, EntryTapped, Instruction, ManaCost,
+    ManaProduction, MillAmount, PlayerSet, RecoveryFilter, SacrificeFilter, SearchSpec, StatExpr,
+    StatValue, Stats, StepGuard, StepValue, Subject, TargetPlan, TargetPredicate, TargetRule,
+    TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
@@ -2268,15 +2268,20 @@ impl Game {
                         ),
                     "choice-bearing entry must be staged"
                 );
+                let view = self.object_view(id);
+                let counters = self.pre_entry_counters(&view, destination);
                 (
-                    self.object_view(id),
+                    view,
                     destination == Zone::Battlefield && self.enters_tapped(id),
+                    counters,
                 )
             })
             .collect();
         before
             .into_iter()
-            .map(|(before, tapped)| self.transition_object(before, destination, tapped))
+            .map(|(before, tapped, counters)| {
+                self.transition_object_with_counters(before, destination, tapped, counters)
+            })
             .collect()
     }
 
@@ -2343,6 +2348,17 @@ impl Game {
         before: ObjectView,
         destination: Zone,
         tapped: bool,
+    ) -> ZoneChange {
+        let counters = self.pre_entry_counters(&before, destination);
+        self.transition_object_with_counters(before, destination, tapped, counters)
+    }
+
+    fn transition_object_with_counters(
+        &mut self,
+        before: ObjectView,
+        destination: Zone,
+        tapped: bool,
+        counters: Counters,
     ) -> ZoneChange {
         let id = before.id;
         // CR111.8: after leaving the battlefield, a token cannot move again.
@@ -2447,11 +2463,7 @@ impl Game {
         obj.deathtouch_since_sba = false;
         obj.growth = Stats::default();
         obj.gained_keywords = Keywords::NONE;
-        obj.counters = if destination == Zone::Battlefield {
-            obj.card.enters_counters()
-        } else {
-            Counters::default()
-        };
+        obj.counters = counters;
         obj.used_abilities = 0;
         obj.attached_to = None;
         if destination == Zone::Library {
@@ -3444,3 +3456,7 @@ mod conditional_tests;
 #[cfg(test)]
 #[path = "engine_attack_history_tests.rs"]
 mod attack_history_tests;
+
+#[cfg(test)]
+#[path = "engine_entry_counter_tests.rs"]
+mod entry_counter_tests;
