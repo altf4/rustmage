@@ -82,6 +82,9 @@ def reduction_filter(noun):
     return None
 
 def reduction_quantity(text):
+    if text.casefold() in ('outlaws you control','assassin, mercenary, pirate, rogue, and/or warlock you control'):
+        filters=[stat_count_filter(noun+' you control') for noun in ['Assassin','Mercenary','Pirate','Rogue','Warlock']]
+        return 'StatValue::CountUnion(&['+', '.join(filters)+'])'
     if text.startswith('color among '):text='colors among '+text[len('color among '):]
     if text.endswith(' you own in exile and in your graveyard'):
         noun=text[:-len(' you own in exile and in your graveyard')]
@@ -89,15 +92,23 @@ def reduction_quantity(text):
         return 'StatValue::Sum(&['+', '.join(values)+'])' if all(values) else None
     return stat_value(text)
 
+def derived_reduction(text,card):
+    text=text.removeprefix('the ')
+    if m:=re.fullmatch(r'(greatest power among|total power of) (.+)',text):
+        filt=creature_filter(m[2])
+        if filt:return f'SpellReductionAmount::CreaturePower {{ filter: {filt}, greatest: {str(m[1].startswith("greatest")).lower()} }}'
+    if card.get('name') and text==card['name']+"'s power":return 'SpellReductionAmount::SourcePower'
+    return None
+
 def extract_cost_reductions(card):
     text=card.get('oracle_text')
     if not isinstance(text,str) or card.get('layout')!='normal':return card,[]
     body,rules=[],[]
     for original in text.split('\n'):
-        line=original.strip();turn='Any';guard='StepGuard::Always';source_only=False;filt=None;amount=None;quantity=None
+        line=original.strip();turn='Any';guard='StepGuard::Always';source_only=False;filt=None;amount=None;quantity=None;derived=None
         for prefix,timing in [('During turns other than yours, ','Other'),('During your turn, ','Own')]:
             if line.startswith(prefix):turn=timing;line=line[len(prefix):];break
-        if m:=re.fullmatch(r'Affinity for ([A-Za-z -]+)(?: \(This spell costs \{1\} less to cast for each ([A-Za-z -]+) you control\.\))?',line):
+        if m:=re.fullmatch(r'Affinity for ([A-Za-z -]+)(?: \(This spell costs \{1\} less to cast for each (.+) you control\.\))?',line):
             noun=m[1]
             candidate=reduction_quantity(noun.casefold()+' you control')
             if m[2] is None or candidate==reduction_quantity(m[2].casefold()+' you control'):
@@ -106,6 +117,11 @@ def extract_cost_reductions(card):
             quantity=reduction_quantity(m[2]);amount=int(m[1]);source_only=True;filt='CastFilter::Any'
         elif m:=re.fullmatch(r'This spell costs \{X\} less to cast, where X is (?:the number of )?(.+)\.',line):
             quantity=reduction_quantity(m[1].removeprefix('the '));amount=1;source_only=True;filt='CastFilter::Any'
+            if quantity is None:derived=derived_reduction(m[1],card)
+        elif m:=re.fullmatch(r'([A-Za-z -]+) spells you cast with mana value ([0-9]+) or greater cost \{X\} less to cast, where X is (.+)\.',line):
+            base_filter=reduction_filter(m[1]);minimum=int(m[2]);derived=derived_reduction(m[3],card);amount=1
+            if base_filter and minimum<=18446744073709551615:
+                filt=f'CastFilter::ManaValueMinimum {{ filter: &{base_filter}, minimum: {minimum} }}'
         elif m:=re.fullmatch(r'(?:([A-Za-z -]+) )?[Ss]pells you cast have affinity for ([A-Za-z -]+)\.(?: \(They cost \{1\} less to cast for each ([A-Za-z -]+) you control\.\))?',line):
             candidate=reduction_quantity(m[2].casefold()+' you control')
             if m[3] is None or candidate==reduction_quantity(m[3].casefold()+' you control'):
@@ -125,12 +141,12 @@ def extract_cost_reductions(card):
                 if guard and 'StepValue::Hand' in guard:guard=None
             elif line.endswith(' during your turn.'):turn='Own'
         scaled=('Affinity for ' in line or 'affinity for ' in line or ' less to cast for each ' in line or 'less to cast, where X is ' in line)
-        if filt is None or guard is None or amount is None or amount>65535 or (scaled and quantity is None):
+        if filt is None or guard is None or amount is None or amount>65535 or (scaled and quantity is None and derived is None):
             body.append(original);continue
         # Cost predicates/quantities must not inspect the pre-proposal hand.
         # stat_value has only battlefield/graveyard/exile count vocabulary.
-        amount=(f'SpellReductionAmount::Stat {{ value: {quantity}, factor: {amount} }}' if quantity
-                else f'SpellReductionAmount::Fixed({amount})')
+        amount=(derived or (f'SpellReductionAmount::Stat {{ value: {quantity}, factor: {amount} }}' if quantity
+                else f'SpellReductionAmount::Fixed({amount})'))
         rules.append(f'SpellReduction {{ source_only: {str(source_only).lower()}, filter: {filt}, amount: {amount}, turn: CostTurn::{turn}, guard: {guard} }}')
     return dict(card,oracle_text='\n'.join(body)),rules
 
@@ -410,6 +426,9 @@ def stat_count_filter(text):
 def stat_value(text):
     if text=='your life total':return 'StatValue::ControllerLife'
     if text=='card types among cards in all graveyards':return 'StatValue::GraveyardCardTypes'
+    if text.startswith('differently named '):
+        filt=stat_count_filter(text[len('differently named '):])
+        return f'StatValue::DistinctNames({filt})' if filt else None
     for prefix,variant in [('colors among ','Colors'),('card types among ','CardTypes')]:
         if text.startswith(prefix):
             filt=stat_count_filter(text[len(prefix):])

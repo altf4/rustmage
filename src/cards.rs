@@ -473,6 +473,8 @@ pub(crate) enum StatValue {
     ControllerLife,
     Count(CountFilter),
     GreatestManaValue(CountFilter),
+    DistinctNames(CountFilter),
+    CountUnion(&'static [CountFilter]),
     Colors(CountFilter),
     CardTypes(CountFilter),
     GraveyardCardTypes,
@@ -650,6 +652,10 @@ pub(crate) enum CastFilter {
     Enchantment,
     Subtype(&'static str),
     AnyOf(&'static [CastFilter]),
+    ManaValueMinimum {
+        filter: &'static CastFilter,
+        minimum: u64,
+    },
 }
 impl CastFilter {
     pub fn matches(self, card: Card) -> bool {
@@ -662,6 +668,9 @@ impl CastFilter {
             Self::Enchantment => card.kind_mask() & 32 != 0,
             Self::Subtype(subtype) => card.has_subtype(subtype),
             Self::AnyOf(filters) => filters.iter().any(|filter| filter.matches(card)),
+            Self::ManaValueMinimum { filter, minimum } => {
+                filter.matches(card) && card.fixed_mana_value() >= minimum
+            }
         }
     }
 }
@@ -676,7 +685,15 @@ pub(crate) enum CostTurn {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum SpellReductionAmount {
     Fixed(u32),
-    Stat { value: StatValue, factor: u16 },
+    Stat {
+        value: StatValue,
+        factor: u16,
+    },
+    CreaturePower {
+        filter: CreatureFilter,
+        greatest: bool,
+    },
+    SourcePower,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct SpellReduction {

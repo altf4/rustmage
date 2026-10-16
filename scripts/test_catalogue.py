@@ -29,13 +29,52 @@ class CatalogueCompilerTests(unittest.TestCase):
             for needle in needles:self.assertIn(needle,rules[0],text)
         for text in ['This spell costs {2} less to cast if it targets a tapped creature.',
                      'This spell costs {1}{U} less to cast if it targets an instant or sorcery spell.',
-                     'This spell costs {X} less to cast, where X is the number of differently named lands you control.',
+                     'This spell costs {X} less to cast, where X is the number of cards in your hand.',
                      'The first creature spell you cast each turn costs {2} less to cast.',
                      'Noncreature spells your opponents cast cost {1} more to cast.',
                      'Dragon spells you cast cost {65536} less to cast.',
                      'Artifact spells you cast cost {1} less to cast. Activate only once each turn.']:
             proxy,rules=generate.extract_cost_reductions(self.card(oracle_text=text))
             self.assertEqual(proxy['oracle_text'],text);self.assertEqual(rules,[],text)
+
+    def test_derived_cost_quantities_keep_live_stats_out_of_characteristic_layers(self):
+        for text,needles in [
+            ('This spell costs {X} less to cast, where X is the total power of creatures you control.',['CreaturePower','greatest: false','relation: 0']),
+            ('This spell costs {X} less to cast, where X is the greatest power among creatures you control.',['CreaturePower','greatest: true']),
+            ('This spell costs {X} less to cast, where X is the total power of creatures you control with flying.',['CreaturePower','keyword: Keywords(1)']),
+            ('This spell costs {X} less to cast, where X is the number of differently named lands you control.',['DistinctNames','kind: 2']),
+            ('Affinity for outlaws (This spell costs {1} less to cast for each Assassin, Mercenary, Pirate, Rogue, and/or Warlock you control.)',['CountUnion','"Assassin"','"Mercenary"','"Pirate"','"Rogue"','"Warlock"']),
+            ("Instant and sorcery spells you cast with mana value 4 or greater cost {X} less to cast, where X is The Scarlet Witch's power.",['ManaValueMinimum','minimum: 4','CastFilter::InstantSorcery','SourcePower','source_only: false']),
+        ]:
+            proxy,rules=generate.extract_cost_reductions(self.card(name='The Scarlet Witch',oracle_text=text+'\nFlying'))
+            self.assertEqual(proxy['oracle_text'],'Flying');self.assertEqual(len(rules),1)
+            for needle in needles:self.assertIn(needle,rules[0],text)
+        self.assertIsNone(generate.stat_value('total power of creatures you control'))
+        self.assertIsNone(generate.stat_value('greatest power among creatures you control'))
+        for text in [
+            'This spell costs {X} less to cast, where X is the power of target creature.',
+            'This spell costs {X} less to cast, where X is the total power of creatures that attacked this turn.',
+            'This spell costs {X} less to cast, where X is the number of differently named cards in your hand.',
+            "Instant and sorcery spells you cast with mana value 18446744073709551616 or greater cost {X} less to cast, where X is The Scarlet Witch's power.",
+            "Instant and sorcery spells you cast with mana value 4 or greater cost {X} less to cast, where X is Another Creature's power.",
+            'Affinity for outlaws (This spell costs {1} less to cast for each Assassin and Rogue you control.)',
+        ]:
+            proxy,rules=generate.extract_cost_reductions(self.card(name='The Scarlet Witch',oracle_text=text))
+            self.assertEqual(proxy['oracle_text'],text);self.assertEqual(rules,[],text)
+
+    def test_seven_derived_reduction_admissions_require_every_body_clause(self):
+        import json
+        admissions=json.loads((generate.ROOT/'docs/derived-reduction-admissions.json').read_text())['cards'];self.assertEqual(len(admissions),7)
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,report=generate.compile_catalogue(rows,target);supported={r['name'] for r in report['cards'] if r['implemented']}
+        for admitted in admissions:
+            name=admitted['name'];self.assertIn(name,supported)
+            card=next(c for c in rows['cards'] if c['name']==name);self.assertEqual(card['oracle_text'],admitted['oracle_text'])
+            proxy,_=generate.extract_cost_reductions(dict(card,oracle_text=card['oracle_text']+'\nWhenever you cast a spell, discover 3.'))
+            self.assertIsNone(generate.spell_program_template(proxy),name);self.assertIsNone(generate.permanent_program_template(proxy),name)
+            self.assertIsNone(generate.static_permanent_template(proxy),name);self.assertIsNone(generate.modal_spell_template(proxy),name)
+        for name in ['Ghalta the Immovable','The Pride of Hull Clade','The Skullspore Nexus','Rowdy Research','Sunderflock']:
+            self.assertNotIn(name,supported)
 
     def test_scaled_reductions_bind_exact_count_zones_unions_and_affinity(self):
         for text,needles in [
@@ -61,7 +100,6 @@ class CatalogueCompilerTests(unittest.TestCase):
             'This spell costs {1} less to cast for each permanent sacrificed this way.',
             'This spell costs {1} less to cast for each creature you control with power 4 or greater.',
             'This spell costs {65536} less to cast for each artifact you control.',
-            'Affinity for outlaws',
         ]:
             proxy,rules=generate.extract_cost_reductions(self.card(oracle_text=text))
             self.assertEqual(proxy['oracle_text'],text);self.assertEqual(rules,[],text)
@@ -80,7 +118,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertTrue(rules,name)
             self.assertIsNone(generate.spell_program_template(proxy),name);self.assertIsNone(generate.permanent_program_template(proxy),name)
             self.assertIsNone(generate.static_permanent_template(proxy),name);self.assertIsNone(generate.modal_spell_template(proxy),name)
-        for name in ['Eddymurk Crab','Rowdy Research','Witchstalker Frenzy','Hellspur Brute','Fungal Colossus',
+        for name in ['Eddymurk Crab','Rowdy Research','Witchstalker Frenzy','Don & Raph, Hard Science','Spectral Denial',
                      'The Dawning Archaic','Tomik, Wielder of Law','Rottenmouth Viper','Sunderflock','Sapling Nursery']:
             self.assertNotIn(name,supported)
 
@@ -118,7 +156,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertTrue(rules,name)
             self.assertIsNone(generate.spell_program_template(proxy),name);self.assertIsNone(generate.permanent_program_template(proxy),name)
             self.assertIsNone(generate.static_permanent_template(proxy),name);self.assertIsNone(generate.modal_spell_template(proxy),name)
-        for name in ['Thalia, the Survivor','Out of Air',"Dragon's Prey",'Quicksand Whirlpool','Fungal Colossus',
+        for name in ['Thalia, the Survivor','Out of Air',"Dragon's Prey",'Quicksand Whirlpool','Spectral Denial',
                      'Eluge, the Shoreless Sea','Inquisitive Glimmer','Mental Modulation','Traxos, Academy Guardian']:
             self.assertNotIn(name,supported)
 

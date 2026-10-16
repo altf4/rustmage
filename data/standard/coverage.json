@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "65e436517890724f1aabaefb8a420834d4b1e7c1b9ffbb52778444cb64716013",
+  "catalogue_version": "6ea8db4e049b3868df1fce1114a6d1fbf4c1c235e452dc54c521458ec37889c0",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1077,
-  "implemented_total": 1083,
+  "implemented_standard_cards": 1084,
+  "implemented_total": 1090,
   "token_definitions": 49,
   "emblem_definitions": 1,
   "cards": [
@@ -796,8 +796,8 @@
     {
       "name": "All-Fates Scroll",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "All-Fates Stalker",
@@ -9910,8 +9910,8 @@
     {
       "name": "Fungal Colossus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Fungal Fortitude",
@@ -10372,14 +10372,14 @@
     {
       "name": "Ghalta the Unstoppable",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Ghalta, Primal Hunger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Ghalta, Stampede Tyrant",
@@ -12010,8 +12010,8 @@
     {
       "name": "Hellspur Brute",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Hellspur Posse Boss",
@@ -26824,8 +26824,8 @@
     {
       "name": "The Lord of the Eagles",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "The Lunar Whale",
@@ -26974,8 +26974,8 @@
     {
       "name": "The Scarlet Witch",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "The Sentry, Golden Guardian",

@@ -956,3 +956,277 @@ fn hivepool_affinity_grants_keywords_and_creates_exact_upkeep_slivers() {
     let swarm = named(&mut g, Player::P0, "Huskburster Swarm", Zone::Hand);
     assert_eq!(generic(&g, swarm), 7); // token remnants are not creature cards
 }
+
+#[test]
+fn distinct_land_names_discount_fungal_without_counting_duplicates_or_other_zones() {
+    let mut g = scenario();
+    let spell = named(&mut g, Player::P0, "Fungal Colossus", Zone::Hand);
+    for name in ["Forest", "Forest", "Island"] {
+        let id = named(&mut g, Player::P0, name, Zone::Battlefield);
+        g.state.objects[id as usize].tapped = true;
+    }
+    named(&mut g, Player::P1, "Swamp", Zone::Battlefield);
+    named(&mut g, Player::P0, "Mountain", Zone::Graveyard);
+    named(&mut g, Player::P0, "Plains", Zone::Hand);
+    assert_eq!(generic(&g, spell), 4);
+    g.state.players[0].mana = [0, 0, 0, 0, 1, 3];
+    reject(&mut g, Action::AnnounceCast { card: spell });
+    g.state.players[0].mana[5] = 4;
+    replay(&mut g, Action::AnnounceCast { card: spell });
+    assert_eq!(g.observe(Player::P0).payment_request.unwrap().generic, 4);
+    pay(&mut g);
+    passes(&mut g);
+    assert_eq!((g.stats(spell).power, g.stats(spell).toughness), (5, 5));
+}
+
+#[test]
+fn ghalta_power_aggregates_keep_negative_power_and_use_live_effective_values() {
+    for (name, expected) in [("Ghalta the Unstoppable", 3), ("Ghalta, Primal Hunger", 7)] {
+        let mut g = scenario();
+        let spell = named(&mut g, Player::P0, name, Zone::Hand);
+        assert_eq!(
+            generic(&g, spell),
+            if name == "Ghalta the Unstoppable" {
+                8
+            } else {
+                10
+            }
+        );
+        let weak = named(&mut g, Player::P0, "Bear Cub", Zone::Battlefield);
+        g.state.objects[weak as usize].growth.power = -4; // power -2, toughness remains 2
+        assert_eq!(
+            generic(&g, spell),
+            if name == "Ghalta the Unstoppable" {
+                8
+            } else {
+                10
+            }
+        );
+        let strong = named(&mut g, Player::P0, "Fire Elemental", Zone::Battlefield);
+        named(
+            &mut g,
+            Player::P1,
+            "Ghalta, Primal Hunger",
+            Zone::Battlefield,
+        );
+        assert_eq!(generic(&g, spell), expected); // max 5, signed sum 5 + -2 = 3
+        g.state.objects[strong as usize].counters.plus_one = 1;
+        assert_eq!(generic(&g, spell), expected - 1);
+        g.state.players[0].mana = [0, 0, 0, 0, 2, expected - 1];
+        cast(&mut g, spell, None);
+        passes(&mut g);
+        assert!(g.keywords(spell).contains(Keywords::TRAMPLE));
+        let stats = if name == "Ghalta the Unstoppable" {
+            (8, 8)
+        } else {
+            (12, 12)
+        };
+        assert_eq!((g.stats(spell).power, g.stats(spell).toughness), stats);
+        assert_eq!(
+            g.keywords(weak).contains(Keywords::TRAMPLE),
+            name == "Ghalta the Unstoppable"
+        );
+    }
+}
+
+#[test]
+fn eagle_discount_filters_live_flying_and_sums_signed_power() {
+    let mut g = scenario();
+    let eagle = named(&mut g, Player::P0, "The Lord of the Eagles", Zone::Hand);
+    let memory = named(&mut g, Player::P0, "Memory Guardian", Zone::Battlefield);
+    named(&mut g, Player::P0, "Geyser Drake", Zone::Battlefield);
+    let ground = named(&mut g, Player::P0, "Fire Elemental", Zone::Battlefield);
+    named(&mut g, Player::P1, "Serra Angel", Zone::Battlefield);
+    assert_eq!(generic(&g, eagle), 2);
+    g.state.objects[memory as usize].growth.power = -5;
+    assert_eq!(generic(&g, eagle), 7); // -2 + 2
+    g.state.objects[ground as usize].gained_keywords = Keywords::FLYING;
+    assert_eq!(generic(&g, eagle), 2);
+    g.state.players[0].mana = [0, 2, 0, 0, 0, 2];
+    cast(&mut g, eagle, None);
+    passes(&mut g);
+    assert_eq!((g.stats(eagle).power, g.stats(eagle).toughness), (8, 8));
+    assert!(
+        g.keywords(eagle)
+            .contains(Keywords::FLASH.union(Keywords::FLYING))
+    );
+}
+
+#[test]
+fn outlaw_affinity_counts_overlapping_types_and_changeling_once() {
+    let mut g = scenario();
+    let spell = named(&mut g, Player::P0, "Hellspur Brute", Zone::Hand);
+    named(&mut g, Player::P0, "Three Tree Mascot", Zone::Battlefield);
+    named(&mut g, Player::P0, "The Scarlet Witch", Zone::Battlefield); // Warlock
+    named(
+        &mut g,
+        Player::P0,
+        "Sami, Wildcat Captain",
+        Zone::Battlefield,
+    ); // Rogue
+    named(&mut g, Player::P1, "Hellspur Brute", Zone::Battlefield);
+    named(&mut g, Player::P0, "Three Tree Mascot", Zone::Graveyard);
+    // Three outlaws reduce by three; Sami separately discounts by one artifact.
+    assert_eq!(generic(&g, spell), 0);
+    let sami = g
+        .state
+        .objects
+        .iter()
+        .position(|o| o.card.name() == "Sami, Wildcat Captain")
+        .unwrap() as CardId;
+    g.move_object(sami, Zone::Graveyard);
+    assert_eq!(generic(&g, spell), 2);
+    g.state.players[0].mana = [0, 0, 0, 1, 0, 2];
+    cast(&mut g, spell, None);
+    passes(&mut g);
+    assert_eq!((g.stats(spell).power, g.stats(spell).toughness), (5, 4));
+    assert!(g.keywords(spell).contains(Keywords::TRAMPLE));
+}
+
+#[test]
+fn scarlet_source_power_filters_printed_mana_value_and_receiving_spell_type() {
+    let mut g = scenario();
+    let source = named(&mut g, Player::P0, "The Scarlet Witch", Zone::Battlefield);
+    for (name, expected) in [
+        ("Quick Study", 2),
+        ("Murder", 1),
+        ("Arcane Epiphany", 1),
+        ("Kin-Tree Severance", 4),
+        ("Memory Guardian", 4),
+    ] {
+        let spell = named(&mut g, Player::P0, name, Zone::Hand);
+        assert_eq!(generic(&g, spell), expected, "{name}");
+    }
+    let draw = named(&mut g, Player::P0, "Arcane Epiphany", Zone::Hand);
+    g.state.objects[source as usize].counters.plus_one = 1;
+    assert_eq!(generic(&g, draw), 0);
+    g.state.objects[source as usize].growth.power = -6;
+    assert_eq!(generic(&g, draw), 3);
+    g.state.objects[source as usize].growth.power = 0;
+    g.state.players[0].mana[1] = 2;
+    cast(&mut g, draw, None);
+    passes(&mut g);
+    assert_eq!(g.state.players[0].library.len(), 17);
+    g.move_object(source, Zone::Graveyard);
+    assert_eq!(generic(&g, draw), 3);
+}
+
+#[test]
+fn derived_total_stays_locked_when_mana_sacrifice_changes_a_creature_cda() {
+    let mut g = scenario();
+    let bunny = named(&mut g, Player::P0, "Regal Bunnicorn", Zone::Battlefield);
+    let treasure = Card::catalogue()
+        .find(|c| c.token_info().is_some_and(|i| i.name == "Treasure Token"))
+        .unwrap();
+    let token = spawn(&mut g, Player::P0, treasure, Zone::Battlefield);
+    let spell = named(&mut g, Player::P0, "Ghalta, Primal Hunger", Zone::Hand);
+    assert_eq!(g.stats(bunny).power, 2);
+    assert_eq!(generic(&g, spell), 8);
+    g.state.players[0].mana = [0, 0, 0, 0, 2, 7];
+    replay(&mut g, Action::AnnounceCast { card: spell });
+    assert_eq!(g.observe(Player::P0).payment_request.unwrap().generic, 8);
+    let a=g.legal_actions().into_iter().find(|a|matches!(a,Action::ActivateMana{card,production,..} if *card==token&&*production==[0,0,0,0,1,0])).unwrap();
+    replay(&mut g, a);
+    assert_eq!(g.stats(bunny).power, 1);
+    assert_eq!(generic(&g, spell), 9);
+    assert_eq!(g.observe(Player::P0).payment_request.unwrap().generic, 8);
+    pay(&mut g);
+    passes(&mut g);
+    assert_eq!(g.object_view(spell).zone, Zone::Battlefield);
+}
+
+#[test]
+fn scarlet_two_brid_uses_printed_value_and_keeps_total_after_source_departure() {
+    let mut g = scenario();
+    let source = named(&mut g, Player::P0, "The Scarlet Witch", Zone::Battlefield);
+    let target = named(&mut g, Player::P1, "Shivan Dragon", Zone::Battlefield);
+    let spell = named(&mut g, Player::P0, "Kin-Tree Severance", Zone::Hand);
+    g.state.players[0].mana[5] = 4;
+    replay(&mut g, Action::AnnounceCast { card: spell });
+    replay(&mut g, Action::ChooseSpellCost { cost: 0 });
+    replay(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(target),
+        },
+    );
+    g.move_object(source, Zone::Graveyard);
+    assert_eq!(generic(&g, spell), 6);
+    assert_eq!(g.observe(Player::P0).payment_request.unwrap().generic, 4);
+    pay(&mut g);
+    passes(&mut g);
+    assert_eq!(g.object_view(target).zone, Zone::Exile);
+}
+
+#[test]
+fn all_fates_scroll_mana_and_sacrifice_draw_use_distinct_land_names() {
+    let mut g = scenario();
+    let source = named(&mut g, Player::P0, "All-Fates Scroll", Zone::Battlefield);
+    let saved = g.snapshot();
+    for color in 0..5 {
+        g.restore(&saved).unwrap();
+        let mut production = [0; 6];
+        production[color] = 1;
+        let a=g.legal_actions().into_iter().find(|a|matches!(a,Action::ActivateMana{card,production:p,..} if *card==source&&*p==production)).unwrap();
+        replay(&mut g, a);
+        assert_eq!(g.state.players[0].mana[color], 1);
+        assert!(g.object_view(source).tapped);
+    }
+    g.restore(&saved).unwrap();
+    for name in ["Forest", "Forest", "Island"] {
+        named(&mut g, Player::P0, name, Zone::Battlefield);
+    }
+    named(&mut g, Player::P1, "Swamp", Zone::Battlefield);
+    named(&mut g, Player::P0, "Mountain", Zone::Graveyard);
+    g.state.players[0].mana[5] = 7;
+    let a = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a,Action::Activate{card,ability:1,..} if *card==source))
+        .unwrap();
+    replay(&mut g, a);
+    assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+    passes(&mut g);
+    assert_eq!(g.state.players[0].library.len(), 18);
+}
+
+#[test]
+fn distinct_names_use_rules_names_rather_than_internal_token_factory_keys() {
+    let mut g = scenario();
+    let source = named(&mut g, Player::P0, "Fungal Colossus", Zone::Hand);
+    let (left, right) = Card::catalogue()
+        .filter(|c| c.is_token())
+        .find_map(|left| {
+            Card::catalogue()
+                .find(|right| {
+                    *right != left
+                        && right
+                            .token_info()
+                            .is_some_and(|r| r.name == left.token_info().unwrap().name)
+                })
+                .map(|right| (left, right))
+        })
+        .expect("two factories with one rules name");
+    assert_ne!(left.name(), right.name());
+    spawn(&mut g, Player::P0, left, Zone::Battlefield);
+    spawn(&mut g, Player::P0, right, Zone::Battlefield);
+    named(&mut g, Player::P0, "Bear Cub", Zone::Battlefield);
+    let filter = CountFilter {
+        zone: CountZone::Battlefield,
+        relation: 0,
+        kind: 1,
+        exclude: 0,
+        subtype: None,
+        basic: false,
+        other: false,
+        cards_only: false,
+    };
+    assert_eq!(
+        g.stat_value(
+            StatValue::DistinctNames(filter),
+            g.object_ref(source),
+            Player::P0
+        ),
+        2
+    );
+}
