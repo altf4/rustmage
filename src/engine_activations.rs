@@ -24,10 +24,13 @@ impl Game {
     }
 
     pub(super) fn activation_guard_available(&self, guard: ActivationGuard, actor: Player) -> bool {
-        guard == ActivationGuard::Always
-            || self.state.objects.iter().any(|o| {
+        match guard {
+            ActivationGuard::Always => true,
+            ActivationGuard::OwnTurn => self.state.active == actor,
+            ActivationGuard::ControlSubtypeAny(_) => self.state.objects.iter().any(|o| {
                 o.zone == Zone::Battlefield && o.owner == actor && guard.matches_card(o.card)
-            })
+            }),
+        }
     }
     pub(super) fn activation_cost_available(
         &self,

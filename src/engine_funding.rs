@@ -291,12 +291,15 @@ impl FundingState {
         keywords
     }
     fn guard_available(&self, guard: ActivationGuard, actor: Player) -> bool {
-        guard == ActivationGuard::Always
-            || self.resources.iter().any(|r| {
+        match guard {
+            ActivationGuard::Always => true,
+            ActivationGuard::OwnTurn => self.active == actor,
+            ActivationGuard::ControlSubtypeAny(_) => self.resources.iter().any(|r| {
                 r.object.zone == Zone::Battlefield
                     && r.object.owner == actor
                     && guard.matches_card(r.object.card)
-            })
+            }),
+        }
     }
     fn moves(&self, goal: FundingGoal) -> Vec<FundingMove> {
         let mut moves = Vec::new();
@@ -1045,5 +1048,29 @@ mod hybrid_cost_tests {
         found.clear();
         funding_cost_payments([0, 0, 1, 1, 0, 0], cost, |payment| found.push(payment));
         assert_eq!(found, vec![[0, 0, 1, 1, 0, 0]]);
+    }
+}
+
+#[cfg(test)]
+mod own_turn_guard_tests {
+    use super::*;
+    #[test]
+    fn virtual_guard_respects_active_player_without_a_board_witness() {
+        // Future mana-cost IR uses the same guard helper; neither new printed
+        // ability in this stage produces mana.
+        for active in [Player::P0, Player::P1] {
+            let state = FundingState {
+                active,
+                mana: [0; 6],
+                life: 20,
+                resources: Vec::new(),
+            };
+            assert!(state.guard_available(ActivationGuard::OwnTurn, active));
+            assert!(!state.guard_available(ActivationGuard::OwnTurn, active.other()));
+            assert!(state.guard_available(ActivationGuard::Always, active.other()));
+            assert!(
+                !state.guard_available(ActivationGuard::ControlSubtypeAny(&["Dragon"]), active)
+            );
+        }
     }
 }

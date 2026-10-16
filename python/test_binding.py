@@ -12,6 +12,60 @@ class BindingTests(unittest.TestCase):
     def game(self):
         return Game([["Mountain"] * 24 + ["LightningBolt"] * 36] * 2, seed=17, deck_rules="Freeform")
 
+    def recovery_index(self,obs,wanted,ability=None):
+        objects={o['id']:o for o in obs['objects']};own=[o for o in objects.values() if o['owner']=='P0'];source=next((o for o in own if o['card']==wanted and o['zone']=='Battlefield'),None)
+        grave=any(o['card']=='Shock' and o['zone']=='Graveyard' for o in own)
+        def score(a):
+            k=a['kind']
+            if k in ('Cast','AnnounceCast'):
+                name=objects[a['card']]['card']
+                if name==wanted:return 180 if source is None and (wanted=='Rescue Girl, First Responder' or grave) else -100
+                if name=='Shock':return 170 if not grave and (k!='Cast' or a['target']=={'Player':'P1'}) else -100
+                return -100
+            if k=='AnnounceActivate':return 190 if source and a['card']==source['id'] and a['ability']==ability else -100
+            if k in ('Activate','BeginActivate','AnnounceMana','ActivateMana'):return -100
+            if k=='ChooseTarget':
+                if a['target'].get('Player')=='P1':return 230
+                b=objects.get(a['target'].get('Card'))
+                if b and b['owner']=='P0' and ((wanted=='Rescue Girl, First Responder' and b['zone']=='Battlefield' and b['card']=='Plains') or (wanted!='Rescue Girl, First Responder' and b['zone']=='Graveyard' and b['card']=='Shock')):return 220
+                return -100
+            if k=='TapMana':return 160 if obs['decision']=='pay_costs' else -100
+            return self.professor_score(obs,a)
+        return max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i]))
+
+    def test_own_turn_recovery_activations_are_native_and_replayable(self):
+        for wanted,ability,deck in [
+            ('Professor Zei, Anthropologist',1,['Mountain']*36+['Professor Zei, Anthropologist']*12+['Shock']*12),
+            ('Rescue Girl, First Responder',0,['Plains']*36+['Rescue Girl, First Responder']*24),
+        ]:
+            with self.subTest(card=wanted),Game([deck,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+                for _ in range(10000):
+                    obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor'])
+                    if obs['stack'] and obs['stack'][-1]['source_card']==wanted and obs['stack'][-1]['kind']!='Spell':break
+                    game.step(obs,self.recovery_index(obs,wanted,ability))
+                else:self.fail('own-turn recovery activation not reached')
+                root=obs['stack'][-1];target=root['targets'][0]['object']['card'];self.assertEqual(obs['active'],'P0');saved=game.snapshot()
+                source=next(o for o in obs['objects'] if o['id']==root['card'])
+                self.assertEqual(source['zone'],'Graveyard' if ability==1 else 'Battlefield')
+                if ability==0:self.assertTrue(source['tapped'])
+                with game.clone() as fork:expected=self.resolve_vital_top(fork,'P0')
+                after=self.resolve_vital_top(game,'P0');self.assertEqual(after,expected);self.assertEqual(next(o for o in after['objects'] if o['id']==target)['zone'],'Hand')
+                game.restore(saved);again=self.resolve_vital_top(game,'P0');after['revision']=again['revision'];self.assertEqual(again,after);game.drop_snapshot(saved)
+
+    def test_typed_instant_sorcery_recovery_entry_triggers_replay(self):
+        for wanted in ['Shipwreck Dowser','Zealous Lorecaster']:
+            deck=['Mountain']*18+['Island']*18+['Shock']*12+[wanted]*12
+            with self.subTest(card=wanted),Game([deck,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+                for _ in range(10000):
+                    obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor'])
+                    if obs['stack'] and obs['stack'][-1]['source_card']==wanted and obs['stack'][-1]['kind']!='Spell' and obs['stack'][-1]['targets']:break
+                    game.step(obs,self.recovery_index(obs,wanted))
+                else:self.fail('typed recovery entry trigger not reached')
+                target=obs['stack'][-1]['targets'][0]['object']['card'];saved=game.snapshot()
+                with game.clone() as fork:expected=self.resolve_vital_top(fork,'P0')
+                after=self.resolve_vital_top(game,'P0');self.assertEqual(after,expected);self.assertEqual(next(o for o in after['objects'] if o['id']==target)['zone'],'Hand')
+                game.restore(saved);again=self.resolve_vital_top(game,'P0');after['revision']=again['revision'];self.assertEqual(again,after);game.drop_snapshot(saved)
+
     def test_misty_draw_uses_public_committed_discard_history_and_native_replay(self):
         wanted='Misty Knight, Hero for Hire';deck=['Mountain']*36+[wanted]*24
         with Game([deck,['Forest']*60],seed=7,deck_rules='Freeform') as game:
@@ -75,11 +129,11 @@ class BindingTests(unittest.TestCase):
             return self.professor_score(obs,a)
         return max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i]))
 
-    def test_activation_discard_is_private_committed_and_replayable_for_all_seven_bodies(self):
+    def test_activation_discard_is_private_committed_and_replayable_for_supported_bodies(self):
         for wanted,ability,keyword in [
             ('Flamecache Gecko',0,0),('Charging Strifeknight',0,0),
             ('Inner Demons Gangsters',0,32768),('Iron-Shield Elf',0,8192),
-            ('Masked Meower',0,0),('Murmuring Volume',1,0),('Thunderhead Gunner',0,0),
+            ('Masked Meower',0,0),('Murmuring Volume',1,0),('Thunderhead Gunner',0,0),('Professor Zei, Anthropologist',0,0),
         ]:
             deck=['Mountain']*18+['Swamp']*18+[wanted]*24
             with self.subTest(card=wanted),Game([deck,['Forest']*60],seed=7,deck_rules='Freeform') as game:

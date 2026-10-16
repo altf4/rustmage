@@ -1052,6 +1052,7 @@ for _name, _zone, _kinds, _relation, _other, _nonland in [
     ('Permanent', 'Battlefield', 0, -1, False, False),
     ('Nonland', 'Battlefield', 0, -1, False, True),
     ('OtherNonlandYou', 'Battlefield', 0, 0, True, True),
+    ('OtherPermanentYou', 'Battlefield', 0, 0, True, False),
     ('NonlandOpponent', 'Battlefield', 0, 1, False, True),
     ('CreatureEnchantment', 'Battlefield', 33, -1, False, False),
     ('CardGrave', 'Graveyard', 0, -1, False, False),
@@ -1062,6 +1063,7 @@ for _name, _zone, _kinds, _relation, _other, _nonland in [
     ('Enchantment', 'Battlefield', 32, -1, False, False),
     ('ArtifactEnchantment', 'Battlefield', 48, -1, False, False),
     ('CreatureGraveYou', 'Graveyard', 1, 0, False, False),
+    ('InstantSorceryGraveYou', 'Graveyard', 12, 0, False, False),
     ('CreatureGrave', 'Graveyard', 1, -1, False, False),
 ]:
     TARGET_RULES[_name] = (f'TargetRule::Object {{ zone: TargetZone::{_zone}, kinds: {_kinds}, '
@@ -1363,6 +1365,8 @@ def targeted_program(text):
         'untap one or two target creatures. They each get +2/+2 until end of turn.': (('Creature', 1, 2), ['Untap', grow_instruction('Targets', 2, 2)]),
         "return target creature card from your graveyard to the battlefield.": ('CreatureGraveYou', ['ReturnToBattlefield']),
         "return target creature card from your graveyard to your hand.": ('CreatureGraveYou', ['ReturnToHand']),
+        "return target instant or sorcery card from your graveyard to your hand.": ('InstantSorceryGraveYou', ['ReturnToHand']),
+        "return another target permanent you control to its owner's hand.": ('OtherPermanentYou', ['ReturnToHand']),
         "return target creature card from a graveyard to its owner's hand.": ('CreatureGrave', ['ReturnToHand']),
         'destroy target creature.': ('Creature', ['Destroy']),
         'destroy target artifact.': ('Artifact', ['Destroy']),
@@ -1961,6 +1965,15 @@ def permanent_program_template(card):
             body.append(line)
             continue
         cost_text, effect_text = line.split(': ', 1)
+        # Exact source-name cost components, with the same authenticated short
+        # legendary names used by self-event triggers. Never rewrite effect text.
+        name = card.get('name', '')
+        aliases = [name] if name else []
+        if name and card.get('type_line', '').startswith('Legendary '):
+            aliases.append(name.split(',')[0])
+            if ' the ' in name: aliases.append(name.split(' the ')[0])
+        for alias in sorted(set(aliases), key=len, reverse=True):
+            cost_text = re.sub(r'(^|, )Sacrifice '+re.escape(alias)+r'(?=, |$)', r'\1Sacrifice this permanent', cost_text)
         if typ == 'Planeswalker':
             if not re.fullmatch(r'(?:0|[+−][0-9]+)',cost_text): return None
             change=int(cost_text.replace('−','-'))
@@ -1976,6 +1989,10 @@ def permanent_program_template(card):
             if any(word not in vocabulary for word in subtypes): return None
             cost['guard']='ControlSubtypeAny(&['+', '.join(json.dumps(word) for word in sorted(set(subtypes)))+'])'
             effect_text=guard[1]
+        if effect_text.endswith(' Activate only during your turn.'):
+            if cost['guard'] != 'Always': return None
+            cost['guard'] = 'OwnTurn'
+            effect_text = effect_text[:-len(' Activate only during your turn.')]
         combined = effect_text.endswith(' Activate only as a sorcery and only once each turn.')
         if combined: effect_text = effect_text[:-len(' Activate only as a sorcery and only once each turn.')]
         sorcery = combined or effect_text.endswith(' Activate only as a sorcery.')

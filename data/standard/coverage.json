@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "74e5d02190a48e82a4446c848e655984a6e79a1b1fe71bfa8f64fc3d223a8d87",
+  "catalogue_version": "645980960a22c6932b79117b6d63c03efcaed89b2ca3954863e6c9c014dc03f7",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1114,
-  "implemented_total": 1120,
+  "implemented_standard_cards": 1118,
+  "implemented_total": 1124,
   "token_definitions": 49,
   "emblem_definitions": 1,
   "cards": [
@@ -19510,8 +19510,8 @@
     {
       "name": "Professor Zei, Anthropologist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Proft's Eidetic Memory",
@@ -20854,8 +20854,8 @@
     {
       "name": "Rescue Girl, First Responder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Rescue Leopard",
@@ -23020,8 +23020,8 @@
     {
       "name": "Shipwreck Dowser",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Shipwreck Marsh",
@@ -30940,8 +30940,8 @@
     {
       "name": "Zealous Lorecaster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Zell Dincht",
