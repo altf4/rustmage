@@ -8,6 +8,27 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_entry_predicate_prefixes_preserve_entry_time_thresholds_and_singular_unions(self):
+        cases=[('another creature you control with power 2 or less','CreaturePowerAtMost(2)'),('another outlaw you control','SubtypeAny(&["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"])'),('another Villain and/or artifact you control','KindOrSubtype { kinds: 16, subtype: "Villain" }'),('another Frog, Rabbit, Raccoon, or Squirrel you control','SubtypeAny(&["Frog", "Rabbit", "Raccoon", "Squirrel"])'),('another Frog or Rabbit you control','SubtypeAny(&["Frog", "Rabbit"])')]
+        for subject,predicate in cases:
+            result=generate.trigger_creature_template(self.card(oracle_text='Whenever '+subject+' enters, draw a card.'));self.assertIsNotNone(result);self.assertEqual(result[2][0][0],'OtherFilteredEntersYou(EntryPredicate::'+predicate+')')
+        plain=generate.trigger_creature_template(self.card(oracle_text='Whenever a creature you control enters, draw a card.'));self.assertEqual(plain[2][0][0],'CreatureEntersYou')
+        wrapped=generate.trigger_creature_template(self.card(oracle_text='Whenever another creature you control with power 2 or less enters, if you gained life this turn, draw a card. This ability triggers only once each turn.'));self.assertIsNotNone(wrapped);self.assertIn('OncePerTurn',wrapped[2][0][0]);self.assertIn('InterveningIf',wrapped[2][0][0])
+
+    def test_entry_predicate_unknown_relations_multiplicity_bounds_and_antecedents_stay_gated(self):
+        for subject in ['another creature you control with power 32768 or less','another creature you control with power -1 or less','another creature you control with toughness 2 or less','another Frog, Rabbit or Squirrel you control','another Frog or Unknown you control','another Frog or Frog you control','another Villain or artifact you control','one or more outlaws you control','a creature an opponent controls','another outlaw with flying you control']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='Whenever '+subject+' enters, draw a card.')),subject)
+        for effect in ['put a +1/+1 counter on that creature.','it gets +1/+1 until end of turn.','draw a card. Then discover 3.']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='Whenever another creature you control with power 2 or less enters, '+effect)))
+
+    def test_entry_predicate_nine_admissions_are_whole_cards_with_unknown_tails_rejected(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());manifest=json.loads((generate.ROOT/'docs/entry-predicate-admissions.json').read_text());_,coverage=generate.compile_catalogue(rows,target);supported={c['name'] for c in coverage['cards'] if c['implemented']};self.assertEqual(len(manifest['cards']),9)
+        for row in manifest['cards']:
+            self.assertIn(row['name'],supported);card=next(c for c in rows['cards'] if c['name']==row['name']);self.assertEqual(row['oracle_text'],card['oracle_text']);bad=dict(card,oracle_text=card['oracle_text']+'\nWhenever you attack, discover 3.')
+            for compiler in [generate.creature_template,generate.trigger_creature_template,generate.permanent_program_template,generate.static_permanent_template]:self.assertIsNone(compiler(bad),row['name'])
+        for name in ['Good-Fortune Unicorn','Serra Redeemer','Wartime Protestors','Authority of the Consuls','Terror of the Peaks']:self.assertNotIn(name,supported)
+
     def test_entry_suppression_extraction_is_closed_and_preserves_residual_rules(self):
         for subject,mask in [('Creatures',1),('Artifacts and creatures',17)]:
             for battlefield in ['', ' the battlefield']:

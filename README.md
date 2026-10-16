@@ -5,11 +5,14 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,344 have executable rules so far.
+knows all 5,164 pinned Standard identities; 1,353 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
-The latest [entry-trigger suppression](docs/entry-trigger-suppression.md) adds
+The latest [entry predicates](docs/entry-predicates.md) add nine complete bodies
+with entry-time power thresholds, subtype unions, outlaw and kind-or-subtype
+conditions, including Impact Tremors and Warleader's Call.
+[Entry-trigger suppression](docs/entry-trigger-suppression.md) adds
 Torpor Orb, Doorkeeper Thrull and Karn with post-batch event enforcement,
 entry replacements and full rollback. [Fixed-effect sequences](docs/fixed-effect-sequences.md) add twelve
 complete bodies with exact damage targets, life gain/loss and private discard
@@ -39,6 +42,7 @@ PYTHONPATH=python python3 -m unittest discover -s python -p 'test_*.py' -v
 cargo run --release --bin benchmark -- 1000
 cargo run --release --example branch
 cargo run --release --example standard
+cargo run --release --example standard_entry_predicates -- 100
 cargo run --release --example standard_entry_suppression -- 100
 cargo run --release --example standard_fixed_effects -- 100
 cargo run --release --example standard_filtered_entries -- 100

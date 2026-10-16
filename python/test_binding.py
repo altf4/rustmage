@@ -9,6 +9,53 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def test_nine_entry_predicate_bodies_effects_private_surveil_and_replay(self):
+        names=['HYDRA Assault Robot','Impact Tremors','Marketwatch Phantom','Neighborhood Guardian','Snarling Gorehound','Valley Mightcaller','Vial Smasher, Gleeful Grenadier','Vicious Clown',"Warleader's Call"]
+        for i,source in enumerate(names):
+            mate='Three Tree Mascot' if i==0 else 'Gigantoad' if i==5 else 'Swab Goblin' if i==6 else 'Bear Cub'
+            colors=['Mountain'] if i==0 else ['Forest'] if i==5 else ['Swamp','Mountain'] if i==6 else ['Plains','Mountain','Forest'] if i==8 else ['Swamp','Forest'] if i==4 else ['Plains','Forest'] if i in (2,3) else ['Mountain','Forest']
+            lands=sum(([n]*(30//len(colors)) for n in colors),[])
+            with self.subTest(card=source),Game([lands+[source]*12+[mate]*18,['Forest']*30+['Bear Cub']*30],seed=7,deck_rules='Freeform') as game:
+                done=False;replayed=0;private=0;pending={}
+                for _ in range(16000):
+                    obs=game.observe('P0');self.assertIsNone(obs['outcome'],source);obs=game.observe(obs['actor']);objects={v['id']:v for v in obs['objects']};live=any(v['zone']=='Battlefield' and v['card']==source for v in objects.values())
+                    def score(a):
+                        k=a['kind']
+                        if k in ('Cast','AnnounceCast') and obs['actor']=='P0':
+                            n=objects[a['card']]['card'];return 270 if n==source and not live else 260 if n==mate and live else -100
+                        if k=='PayCosts':return 500
+                        if k=='TapMana':return 150 if obs['decision']=='pay_costs' else -100
+                        if k in ('Attack','Block','Activate','BeginActivate','AnnounceActivate','ActivateMana','AnnounceMana'):return -100
+                        if k=='PlayLand' and obs['actor']=='P0':
+                            n=objects[a['card']]['card'];count=sum(v['zone']=='Battlefield' and v['owner']=='P0' and v['card']==n for v in objects.values());return 320 if count==0 else 300
+                        return self.professor_score(obs,a)
+                    choice=max(range(len(obs['actions'])),key=lambda j:score(obs['actions'][j]));action=obs['actions'][choice]
+                    if obs['library_choice'] is not None:
+                        other=game.observe('P1' if obs['actor']=='P0' else 'P0');self.assertIsNone(other['library_choice']);self.assertEqual(other['actions'],[]);private+=1
+                    if obs['announcing'] or obs['resolving'] or obs['stack'] or live:
+                        saved=game.snapshot()
+                        with game.clone() as fork:expected=fork.step(fork.observe(obs['actor']),choice)
+                        self.assertEqual(game.step(obs,choice),expected);game.restore(saved)
+                        with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,choice)
+                        after=game.step(game.observe(obs['actor']),choice);expected['revision']=after['revision'];self.assertEqual(after,expected);game.drop_snapshot(saved);replayed+=1
+                    else:after=game.step(obs,choice)
+                    if obs['stack'] and action['kind']=='Pass':
+                        root=obs['stack'][-1]
+                        if root['controller']=='P0' and root['source_card']==source and root['kind']!='Spell' and root['id'] not in {x['id'] for x in after['stack']}:pending[root['id']]=(root,obs)
+                    for stack_id,(root,before) in list(pending.items()):
+                        if any(x['id']==stack_id for x in after['stack']) or after['resolving'] and after['resolving']['id']==stack_id:continue
+                        old={v['id']:v for v in before['objects']};new={v['id']:v for v in after['objects']};v=new[root['card']]
+                        if i in (0,1,6,8):self.assertEqual(after['players'][1]['life'],int(before['players'][1]['life'])-1)
+                        elif i==2:self.assertTrue(v['keywords']&1)
+                        elif i==3:
+                            target=root['targets'][0]['target']['Card'];self.assertEqual(new[target]['power'],int(old[target]['power'])+1);self.assertEqual(new[target]['toughness'],int(old[target]['toughness'])+1)
+                        elif i==4:self.assertGreater(private,0);self.assertIn(before['players'][0]['library_count']-after['players'][0]['library_count'],[0,1])
+                        elif i==5:self.assertEqual(v['counters']['plus_one'],int(old[root['card']]['counters']['plus_one'])+1)
+                        elif i==7:self.assertEqual(v['power'],int(old[root['card']]['power'])+2)
+                        done=True;break
+                    if done:break
+                self.assertTrue(done,source);self.assertGreater(replayed,0)
+
     def test_entry_suppression_three_sources_creature_artifact_and_enchantment_replay(self):
         for source in ['Torpor Orb','Doorkeeper Thrull','Karn, Argent Defender']:
             for wanted in ['Helpful Hunter','Mephitic Draught','Hopeful Vigil']:
