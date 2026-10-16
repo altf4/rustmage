@@ -9,6 +9,52 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def test_nine_graveyard_returns_pay_before_moving_and_replay_known_hand_or_tapped_entry(self):
+        names=['Abzan Devotee','Bestial Bloodline','Blessed Ghoul','Merchant of Many Hats','Project Deathlok Soldier','Reassembling Skeleton','Summoned Dromedary',"Teacher's Pest",'Tunnel Rats']
+        for wanted in names:
+            deck=['Plains']*6+['Island']*6+['Swamp']*6+['Forest']*6+[wanted]*12+['Deathcap Marionette']*12+['Grizzly Bears']*12
+            with self.subTest(card=wanted),Game([deck,['Forest']*24+['Grizzly Bears']*36],seed=7,deck_rules='Freeform') as game:
+                obs=self.reach_graveyard_activation_payment(game,wanted);root=obs['announcing'];source=next(o for o in obs['objects'] if o['id']==root['card']);self.assertEqual(source['zone'],'Graveyard');action=next(a for a in obs['actions'] if a['kind']=='PayCosts');saved=game.snapshot()
+                def finish(handle):
+                    paid=handle.act(handle.observe('P0'),action);now=next(o for o in paid['objects'] if o['id']==source['id']);self.assertEqual(now['zone'],'Graveyard');self.assertEqual(now['reference'],source['reference']);self.assertEqual(paid['players'][0]['mana'],[n-c for n,c in zip(obs['players'][0]['mana'],action['payment'])])
+                    return self.finish_self_target(handle,'P0',root['id'])
+                with game.clone() as fork:expected=finish(fork)
+                after=finish(game);self.assertEqual(after,expected);now=next(o for o in after['objects'] if o['id']==source['id']);self.assertNotEqual(now['reference'],source['reference']);battlefield=wanted in ('Reassembling Skeleton',"Teacher's Pest",'Tunnel Rats');self.assertEqual(now['zone'],'Battlefield' if battlefield else 'Hand')
+                if battlefield:self.assertTrue(now['tapped'] and now['summoning_sick'])
+                else:self.assertIn(now['reference'],game.observe('P1')['known_hand']);self.assertTrue(any(o['reference']==now['reference'] for o in game.observe('P1')['objects']))
+                game.restore(saved)
+                with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,0)
+                again=finish(game);after['revision']=again['revision'];self.assertEqual(after,again);game.drop_snapshot(saved)
+
+    def test_arcanis_and_wingspan_battlefield_returns_preserve_native_replay_and_public_knowledge(self):
+        for wanted in ['Arcanis the Omnipotent','Wingspan Stride']:
+            with self.subTest(card=wanted),Game([['Island']*18+['Forest']*6+[wanted]*12+['Grizzly Bears']*24,['Forest']*24+['Grizzly Bears']*36],seed=7,deck_rules='Freeform') as game:
+                for _ in range(20000):
+                    obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor']);objects={o['id']:o for o in obs['objects']};root=obs['announcing'];sources=[o for o in objects.values() if o['owner']=='P0' and o['card']==wanted and o['zone']=='Battlefield'];bears=[o for o in objects.values() if o['owner']=='P0' and o['card']=='Grizzly Bears' and o['zone']=='Battlefield']
+                    if obs['decision']=='pay_costs' and root['source_card']==wanted and root['kind']=={'ActivatedAbility':{'ability':1 if wanted.startswith('Arcanis') else 0}} and any(a['kind']=='PayCosts' for a in obs['actions']):break
+                    def score(a):
+                        k=a['kind']
+                        if k in ('Cast','AnnounceCast'):
+                            name=objects[a['card']]['card']
+                            if name==wanted:return 180 if not sources and (wanted.startswith('Arcanis') or bears) else -100
+                            if obs['actor']=='P0':return 130 if not bears else -100
+                        if k=='AnnounceActivate':return 240 if sources and a['card']==sources[0]['id'] and a['ability']==(1 if wanted.startswith('Arcanis') else 0) else -100
+                        if k in ('Activate','ActivateMana','AnnounceMana','BeginActivate'):return -100
+                        if k=='ChooseTarget':return 220 if bears and a['target'].get('Card')==bears[0]['id'] else -100
+                        if k=='TapMana' and obs['decision']=='pay_costs':return 160
+                        return self.professor_score(obs,a)
+                    game.step(obs,max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i])))
+                else:self.fail('battlefield return payment not reached')
+                root=obs['announcing'];old=root['object'];action=next(a for a in obs['actions'] if a['kind']=='PayCosts');saved=game.snapshot()
+                def finish(handle):
+                    paid=handle.act(handle.observe('P0'),action);self.assertTrue(any(o['reference']==old and o['zone']=='Battlefield' for o in paid['objects']))
+                    return self.finish_self_target(handle,'P0',root['id'])
+                with game.clone() as fork:expected=finish(fork)
+                after=finish(game);self.assertEqual(after,expected);now=next(o for o in after['objects'] if o['id']==root['card']);self.assertEqual(now['zone'],'Hand');self.assertIn(now['reference'],game.observe('P1')['known_hand'])
+                game.restore(saved)
+                with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,0)
+                again=finish(game);after['revision']=again['revision'];self.assertEqual(after,again);game.drop_snapshot(saved)
+
     def reach_graveyard_activation_payment(self,game,wanted):
         for _ in range(15000):
             obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor']);objects={o['id']:o for o in obs['objects']};root=obs['announcing']

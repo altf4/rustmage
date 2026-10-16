@@ -317,6 +317,10 @@ pub(crate) enum Instruction {
         exile: bool,
         unpaid_skip: usize,
     },
+    ReturnSourceToHand(TargetZone),
+    ReturnSourceToBattlefield {
+        tapped: bool,
+    },
     CounterRelated,
     MayPayOpponentLife {
         amount: u16,

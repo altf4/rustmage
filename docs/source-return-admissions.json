@@ -1,0 +1,165 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Abzan Devotee",
+      "oracle_text": "{1}: Add {W}, {B}, or {G}. Activate only once each turn.\n{2}{B}: Return this card from your graveyard to your hand.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AbzanDevotee.java",
+          "java_sha256": "3e5b50becc21164543dc31613069fecc7a6c2365f3aeb72ed4b632f3b6133e2b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToHandEffect.java",
+          "java_sha256": "36a1255bbe73cc6e97976aa6749cbc9c458b58b2fa3541010a79722ca4e78e70"
+        }
+      ]
+    },
+    {
+      "name": "Arcanis the Omnipotent",
+      "oracle_text": "{T}: Draw three cards.\n{2}{U}{U}: Return Arcanis to its owner's hand.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/ArcanisTheOmnipotent.java",
+          "java_sha256": "b48f2c93beb2e91944fe0e00d8603e1598db681c84596d77ad07fdf205c14aa3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandSourceEffect.java",
+          "java_sha256": "3af51f033e9d30c6f946feca7948ce7ee423fdd1314a715820d3ae9d98ca7935"
+        }
+      ]
+    },
+    {
+      "name": "Bestial Bloodline",
+      "oracle_text": "Enchant creature\nEnchanted creature gets +2/+2.\n{4}{G}: Return this card from your graveyard to your hand.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BestialBloodline.java",
+          "java_sha256": "8d622372c297a8a088ef5aaf94479474109c8caab33d47a1817bf5827e9d5cea"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToHandEffect.java",
+          "java_sha256": "36a1255bbe73cc6e97976aa6749cbc9c458b58b2fa3541010a79722ca4e78e70"
+        }
+      ]
+    },
+    {
+      "name": "Blessed Ghoul",
+      "oracle_text": "Lifelink\n{2}{W/B}: Return this card from your graveyard to your hand.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BlessedGhoul.java",
+          "java_sha256": "3dbe2c9b0bc47eca7c546f2af5b857f7946a5a5cf8a3c1177b89140c84f0ecf5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToHandEffect.java",
+          "java_sha256": "36a1255bbe73cc6e97976aa6749cbc9c458b58b2fa3541010a79722ca4e78e70"
+        }
+      ]
+    },
+    {
+      "name": "Merchant of Many Hats",
+      "oracle_text": "{2}{B}: Return this card from your graveyard to your hand.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MerchantOfManyHats.java",
+          "java_sha256": "c0156336493b20026ad76abfda152fe5b538135411dd8b427529fe5f225643aa"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToHandEffect.java",
+          "java_sha256": "36a1255bbe73cc6e97976aa6749cbc9c458b58b2fa3541010a79722ca4e78e70"
+        }
+      ]
+    },
+    {
+      "name": "Project Deathlok Soldier",
+      "oracle_text": "{2}{B}: Return this card from your graveyard to your hand.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/ProjectDeathlokSoldier.java",
+          "java_sha256": "cb4cd9a083de7c1273d5ebcc39ff623b130fdf2b4235687997048d74e60a7433"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToHandEffect.java",
+          "java_sha256": "36a1255bbe73cc6e97976aa6749cbc9c458b58b2fa3541010a79722ca4e78e70"
+        }
+      ]
+    },
+    {
+      "name": "Reassembling Skeleton",
+      "oracle_text": "{1}{B}: Return this card from your graveyard to the battlefield tapped.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/ReassemblingSkeleton.java",
+          "java_sha256": "615b7e2af9d7ddbc84f4060900b6fb9ee7d48821a636006e02d9048d0ddf97c3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToBattlefieldEffect.java",
+          "java_sha256": "16cae19ce2e7af02a635cb76afbd5f1139e792df2170daa35f5692a12412f54b"
+        }
+      ]
+    },
+    {
+      "name": "Summoned Dromedary",
+      "oracle_text": "Vigilance\n{1}{W}: Return this card from your graveyard to your hand. Activate only as a sorcery.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SummonedDromedary.java",
+          "java_sha256": "44b5060ea8f6ff4f6b68bf54c64a74b64bc353a7485cd21a38065b0d76ff16f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToHandEffect.java",
+          "java_sha256": "36a1255bbe73cc6e97976aa6749cbc9c458b58b2fa3541010a79722ca4e78e70"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "java_sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        }
+      ]
+    },
+    {
+      "name": "Teacher's Pest",
+      "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)\nWhenever this creature attacks, you gain 1 life.\n{B}{G}: Return this card from your graveyard to the battlefield tapped.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TeachersPest.java",
+          "java_sha256": "d727aac1915e17608442baed405c9676f9de0347867b14537b0f4f07155e354a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToBattlefieldEffect.java",
+          "java_sha256": "16cae19ce2e7af02a635cb76afbd5f1139e792df2170daa35f5692a12412f54b"
+        }
+      ]
+    },
+    {
+      "name": "Tunnel Rats",
+      "oracle_text": "{4}{B}: Return this card from your graveyard to the battlefield tapped.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TunnelRats.java",
+          "java_sha256": "00ee797bcfa5b411a1dcc510204cd4579fd5f9e8c1bcc4afeda3fed9f35607dc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToBattlefieldEffect.java",
+          "java_sha256": "16cae19ce2e7af02a635cb76afbd5f1139e792df2170daa35f5692a12412f54b"
+        }
+      ]
+    },
+    {
+      "name": "Wingspan Stride",
+      "oracle_text": "Enchant creature\nEnchanted creature gets +1/+1 and has flying.\n{2}{U}: Return this Aura to its owner's hand.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WingspanStride.java",
+          "java_sha256": "8ee4eaa0fed12e3b1ef860e7a8c52518af634678d43fc26cbce84ac48b6fd4d1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandSourceEffect.java",
+          "java_sha256": "3af51f033e9d30c6f946feca7948ce7ee423fdd1314a715820d3ae9d98ca7935"
+        }
+      ]
+    }
+  ]
+}

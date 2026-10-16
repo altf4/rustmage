@@ -2071,6 +2071,18 @@ def equipment_template(card):
     return (*result,power,toughness,keywords) if result else None
 
 
+def source_return_program(text):
+    """Exact activated source returns; never infer a death-trigger zone binding."""
+    if text == 'Return this card from your graveyard to your hand.':
+        return 'Graveyard', ['ReturnSourceToHand(TargetZone::Graveyard)']
+    if text in ('Return this card from your graveyard to the battlefield.',
+                'Return this card from your graveyard to the battlefield tapped.'):
+        return 'Graveyard', ['ReturnSourceToBattlefield { tapped: '+str(text.endswith(' tapped.')).lower()+' }']
+    if re.fullmatch(r"Return this (?:creature|artifact|enchantment|permanent|Aura) to its owner's hand\.", text):
+        return 'Battlefield', ['ReturnSourceToHand(TargetZone::Battlefield)']
+    return None
+
+
 def permanent_program_template(card):
     """Whole supported permanent text, including all activation restrictions."""
     if (card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'), str)
@@ -2154,9 +2166,20 @@ def permanent_program_template(card):
         # The remaining source aliases refer only to the source, mana, life or its counters;
         # an initial pronoun in this activation therefore denotes the source.
         effect_text = re.sub(r'^[Ii]t deals ', 'this permanent deals ', effect_text)
-        targeted = targeted_program(effect_text)
-        if targeted: targets, program = targeted
-        else: targets, program = 'None', statement_program(effect_text)
+        for alias in aliases:
+            if effect_text == 'Return '+alias+" to its owner's hand.":
+                effect_text = "Return this permanent to its owner's hand."
+        source_return = source_return_program(effect_text)
+        if source_return:
+            origin, program = source_return
+            if cost.get('origin', origin) != origin: return None
+            if origin == 'Graveyard' and (cost['tap'] or cost['sacrifice'] or cost['remove'] or cost['loyalty'] is not None or exhaust): return None
+            cost['origin'] = origin
+            targets = 'None'
+        else:
+            targeted = targeted_program(effect_text)
+            if targeted: targets, program = targeted
+            else: targets, program = 'None', statement_program(effect_text)
         if program is None: return None
         if any(instruction.startswith('AddMana') for instruction in program) and (len(program) != 1 or targets != 'None'):
             return None

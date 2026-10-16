@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "d626deeb0f374a35b92ae26a41606578ea72b18e5bd69db5b095b87810cafd93",
+  "catalogue_version": "95664285e02e408361e0e9e37153edf94d5ba6122039ac31e54b3f7243556b50",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1201,
-  "implemented_total": 1207,
+  "implemented_standard_cards": 1212,
+  "implemented_total": 1218,
   "token_definitions": 55,
   "emblem_definitions": 1,
   "cards": [
@@ -274,8 +274,8 @@
     {
       "name": "Abzan Devotee",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Abzan Monument",
@@ -1246,8 +1246,8 @@
     {
       "name": "Arcanis the Omnipotent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Archaic's Agony",
@@ -2380,8 +2380,8 @@
     {
       "name": "Bestial Bloodline",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Bestial Incursion",
@@ -2692,8 +2692,8 @@
     {
       "name": "Blessed Ghoul",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Blight Rot",
@@ -16342,8 +16342,8 @@
     {
       "name": "Merchant of Many Hats",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Merciless Enforcers",
@@ -19540,8 +19540,8 @@
     {
       "name": "Project Deathlok Soldier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Projektor Inspector",
@@ -20512,8 +20512,8 @@
     {
       "name": "Reassembling Skeleton",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Rebellious Captives",
@@ -25378,8 +25378,8 @@
     {
       "name": "Summoned Dromedary",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Summoner's Grimoire",
@@ -26104,8 +26104,8 @@
     {
       "name": "Teacher's Pest",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Team Avatar",
@@ -28222,8 +28222,8 @@
     {
       "name": "Tunnel Rats",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Tunnel Surveyor",
@@ -30490,8 +30490,8 @@
     {
       "name": "Wingspan Stride",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Winnowing",
