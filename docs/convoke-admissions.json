@@ -424,5 +424,39 @@
         }
       ]
     }
+  ],
+  "shared_sources": [
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/costs/mana/AlternateManaPaymentAbility.java",
+      "java_sha256": "a23a31a88b076ed73aef4f2cc234e2c7b1d5e424f67d50020f7be5715678002a"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ActivationManaAbilityStep.java",
+      "java_sha256": "0ede5ae9ad1389f6997693209dfb3a5e735b7e159fce5de560f4713a4c43e671"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+      "java_sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+      "java_sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+      "java_sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/ColorPredicate.java",
+      "java_sha256": "b62ced1f121575b7737a20875425334d7bf61e018a809548805d14f38d71e82b"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "java_sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    }
   ]
 }
