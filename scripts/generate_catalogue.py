@@ -1379,6 +1379,7 @@ LAND_ENTRY = {
     'This land enters tapped unless you control two or fewer other lands.': 'UnlessAtMostTwo',
     'This land enters tapped unless you control two or more other lands.': 'UnlessAtLeastTwo',
     'This land enters tapped unless a player has 13 or less life.': 'UnlessLowLife',
+    'This land enters tapped unless you control a planeswalker.': 'UnlessPlaneswalker',
 }
 
 
@@ -1406,7 +1407,10 @@ def land_template(card):
     for line in text.split('\n'):
         line = line.strip()
         if not line: continue
-        if line in LAND_ENTRY:
+        if match := re.fullmatch(r"As this land enters, you may pay ([1-9][0-9]*) life\. If you don't, it enters tapped\.",line):
+            if entry != 'Never' or int(match[1]) > 65535: return None
+            entry = f'PayLife({int(match[1])})'
+        elif line in LAND_ENTRY:
             if entry != 'Never': return None
             entry = LAND_ENTRY[line]
         else:

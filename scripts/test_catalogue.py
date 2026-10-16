@@ -1280,6 +1280,43 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Skilled Battlecarver','Vulture, Scheming Scavenger']:
             self.assertIn(name,supported)
 
+    def test_pre_entry_life_payment_requires_exact_complete_land_text(self):
+        def land(text,typ='Land'):
+            return self.card(type_line=typ,mana_cost='',oracle_text=text)
+        clause="As this land enters, you may pay 2 life. If you don't, it enters tapped."
+        for amount in [1,2,10,65535]:
+            result=generate.land_template(land(clause.replace('2 life',str(amount)+' life')+'\n{T}: Add {C}.'))
+            self.assertEqual(result[5],f'PayLife({amount})')
+        result=generate.land_template(land('({T}: Add {W} or {U}.)\n'+clause,'Land — Plains Island'))
+        self.assertEqual(result[5],'PayLife(2)');self.assertIn('mask: 3',result[3][0][2][0])
+        for text in [clause+'\n'+clause+'\n{T}: Add {G}.',
+                     clause+'\nThis land enters tapped.\n{T}: Add {G}.',
+                     'This land enters tapped.\n'+clause+'\n{T}: Add {G}.',
+                     clause+'\n{T}: Add {G}.\nWhen this land enters, proliferate.',
+                     clause.replace('2 life','0 life')+'\n{T}: Add {G}.',
+                     clause.replace('2 life','65536 life')+'\n{T}: Add {G}.',
+                     clause.replace('2 life','X life')+'\n{T}: Add {G}.',
+                     clause.replace('2 life','-2 life')+'\n{T}: Add {G}.',
+                     clause.replace("If you don't, it enters tapped.",'Draw a card.')+'\n{T}: Add {G}.',
+                     'This land enters tapped unless you control two planeswalkers.\n{T}: Add {G}.']:
+            self.assertIsNone(generate.land_template(land(text)),text)
+        self.assertIsNone(generate.land_template(land('({T}: Add {W}.)\n'+clause,'Land — Plains Island')))
+        self.assertIsNone(generate.permanent_program_template(self.card(oracle_text=clause)))
+
+    def test_all_twenty_new_land_admissions_preserve_complete_bodies(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,coverage=generate.compile_catalogue(rows,target)
+        implemented={c['name'] for c in coverage['cards'] if c['implemented']}
+        shocks=['Blood Crypt','Breeding Pool','Godless Shrine','Hallowed Fountain','Overgrown Tomb',
+                'Sacred Foundry','Steam Vents','Stomping Ground','Temple Garden','Watery Grave']
+        annexes=['Dedicated Commons','Fatehold Annex','Formidable Commons','Innovative Commons','Konstrari Annex',
+                 'Meticulous Commons','Stingerquill Annex','Theorix Annex','Transformative Commons','Vigorbloom Annex']
+        for name in shocks+annexes:self.assertIn(name,implemented)
+        for name in ['Uncharted Haven','Radiant Summit','Prismatic Vista','Blazemire Verge','Willowrush Verge']:
+            self.assertNotIn(name,implemented)
+
 
 if __name__ == '__main__':
     unittest.main()

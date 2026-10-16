@@ -126,6 +126,20 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::ChooseMode { .. } => 50,
             Action::ChooseSearch { .. } => 60,
             Action::FinishSearch => 0,
+            Action::ChooseEntryLife { pay } => {
+                // Avoid voluntary lethal payment; the example still exercises
+                // both branches as life falls during games.
+                if *pay
+                    && observation.players[actor.index()].life
+                        > i64::from(observation.entry_life.as_ref().unwrap().cost) + 4
+                {
+                    80
+                } else if !*pay {
+                    70
+                } else {
+                    -2
+                }
+            }
             Action::KeepLegend { .. } => 100,
             Action::Keep => 100,
             Action::Mulligan => -100,

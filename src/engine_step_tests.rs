@@ -362,7 +362,14 @@ fn every_admitted_step_source_is_indexed_removed_and_restored_by_zone_changes() 
     let mut g = scenario();
     for card in Card::ALL.into_iter().filter(|c| !c.is_token()) {
         let id = spawn(&mut g, Player::P0, card, Zone::Hand);
-        g.move_object(id, Zone::Battlefield);
+        if matches!(card.entry_tapped(), EntryTapped::PayLife(_)) {
+            g.stage_entries(vec![g.entry_move(id, Zone::Battlefield, false)], None);
+            g.advance_entries();
+            g.choose_entry_life(false);
+            g.advance_entries();
+        } else {
+            g.move_object(id, Zone::Battlefield);
+        }
         let expected = card
             .triggers()
             .iter()
