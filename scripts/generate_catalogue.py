@@ -75,6 +75,7 @@ def spell_cost_options(cost):
     return [(list(row[:6]),row[6]) for row in sorted(variants)]
 
 def reduction_filter(noun):
+    if noun=="Lesson": return 'CastFilter::Subtype("Lesson")'
     words={'': 'Any','creature':'Creature','noncreature':'Noncreature','artifact':'Artifact',
            'enchantment':'Enchantment','instant and sorcery':'InstantSorcery'}
     if noun.casefold() in words:return 'CastFilter::'+words[noun.casefold()]
@@ -1024,7 +1025,7 @@ def statement_program(text):
         return [f'Draw(PlayerSet::Controller, {DRAW_COUNTS[m[1]]})',f'LoseLife(PlayerSet::Controller, {int(m[2])})']
     if m := re.fullmatch(r'you lose ([0-9]+) life and (create .+)\.', text):
         if int(m[1])>65535: return None
-        if program := token_program(m[2]+'.'): return [f'LoseLife(PlayerSet::Controller, {int(m[1])})', *program]
+        if program := token_program(m[2]+'.') or predefined_program(m[2]+'.'): return [f'LoseLife(PlayerSet::Controller, {int(m[1])})', *program]
     if m := re.fullmatch(r'this (?:creature|artifact|enchantment|permanent|spell) deals ([0-9]+) damage to each opponent(?: and you gain ([0-9]+) life)?\.', text):
         if int(m[1]) > 32767 or (m[2] and int(m[2]) > 65535): return None
         return [f'DamagePlayers(PlayerSet::Opponent, {int(m[1])})'] + ([f'GainLife(PlayerSet::Controller, {int(m[2])})'] if m[2] else [])
@@ -1867,6 +1868,12 @@ def trigger_creature_template(card):
             if limited:return None
             abilities.append(('Ward',ward,'None'))
             continue
+        if m:=re.fullmatch(r'Firebending ([0-9]+)',line):
+            if limited or int(m[1])>65535:return None
+            abilities.append(('SelfAttacks',[f'AddCombatRed({int(m[1])})'],'None'));continue
+        if line=="Firebending X, where X is the number of creatures you control.":
+            if limited:return None
+            abilities.append(('SelfAttacks',['AddCombatRedScaled('+amount_value('the number of creatures you control')+')'],'None'));continue
         words = [word.strip().casefold() for word in line.split(',') if word.strip()]
         if words and all(word in INTRINSIC_KEYWORDS or word == 'prowess' or ward_word(word) is not None for word in words):
             if limited: return None

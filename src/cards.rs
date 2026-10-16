@@ -358,6 +358,8 @@ pub(crate) enum Instruction {
         recipient: u16,
     },
     AddMana(ManaProduction),
+    AddCombatRed(u16),
+    AddCombatRedScaled(AmountValue),
     Scry(u16),
     Surveil(u16),
     Search(SearchSpec),

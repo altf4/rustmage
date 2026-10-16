@@ -137,13 +137,7 @@ impl Game {
             .take()
             .unwrap();
         if let Some(payment) = payment {
-            for (pool, paid) in self.state.players[request.payer.index()]
-                .mana
-                .iter_mut()
-                .zip(payment)
-            {
-                *pool -= paid;
-            }
+            self.spend_mana(request.payer, payment);
         } else {
             self.state.resolving.as_mut().unwrap().pc = request.unpaid_pc;
             self.counter_stack_item(request.victim, request.exile);

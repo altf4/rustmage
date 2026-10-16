@@ -486,6 +486,8 @@ struct PlayerState {
     mulligans: u8,
     kept: bool,
     attempted_empty_draw: bool,
+    // Subset of mana[3], retained across steps until this combat ends.
+    combat_red_mana: u32,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -806,6 +808,7 @@ pub struct PlayerView {
     pub life: i128,
     pub poison_counters: u64,
     pub mana: Mana,
+    pub combat_red_mana: u32,
     pub library_count: usize,
     pub hand_count: usize,
 }
@@ -1041,6 +1044,7 @@ impl Game {
             mulligans: 0,
             kept: false,
             attempted_empty_draw: false,
+            combat_red_mana: 0,
         });
         let mut rng = Rng(config.seed);
         for (p, deck) in [Player::P0, Player::P1].into_iter().zip(config.decks) {
@@ -2020,13 +2024,7 @@ impl Game {
                 if self.start_announcement(item, false) {
                     self.state.announcing.as_mut().unwrap().payment = Some(payment);
                 } else {
-                    for (pool, cost) in self.state.players[actor.index()]
-                        .mana
-                        .iter_mut()
-                        .zip(payment)
-                    {
-                        *pool -= cost;
-                    }
+                    self.spend_mana(actor, payment);
                     self.record_spell_cast(actor, self.state.objects[card as usize].card);
                 }
             }
@@ -2635,8 +2633,24 @@ impl Game {
     }
 
     fn advance_step(&mut self) {
+        // Firebending's red remains through each combat step, including the
+        // end-of-combat priority window, and expires when that combat ends.
+        let keep_combat = matches!(
+            self.state.step,
+            Step::BeginCombat
+                | Step::Attackers
+                | Step::Blockers
+                | Step::FirstStrikeDamage
+                | Step::CombatDamage
+        );
         for player in &mut self.state.players {
-            player.mana = [0; 6];
+            let keep = if keep_combat {
+                player.combat_red_mana
+            } else {
+                0
+            };
+            player.mana = [0, 0, 0, keep, 0, 0];
+            player.combat_red_mana = keep;
         }
         match self.state.step {
             Step::Upkeep => {
@@ -2987,7 +3001,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 50,
+            schema: 51,
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
             creatures_died_this_turn: s.creatures_died_this_turn,
             catalogue: crate::CATALOGUE_VERSION,
@@ -3037,6 +3051,7 @@ impl Game {
                 life: s.players[i].life,
                 poison_counters: s.players[i].poison_counters,
                 mana: s.players[i].mana,
+                combat_red_mana: s.players[i].combat_red_mana,
                 library_count: s.players[i].library.len(),
                 hand_count: self.hand_count(if i == 0 { Player::P0 } else { Player::P1 }),
             }),
@@ -3639,3 +3654,7 @@ mod draw_token_body_tests;
 #[cfg(test)]
 #[path = "engine_poison_tests.rs"]
 mod poison_tests;
+
+#[cfg(test)]
+#[path = "engine_firebending_tests.rs"]
+mod firebending_tests;

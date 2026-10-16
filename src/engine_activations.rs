@@ -12,6 +12,32 @@ impl ActivatedAbility {
 }
 
 impl Game {
+    /// Payment origins have no independent effects in the admitted subset.
+    /// Spend red that expires sooner first, retaining the longer-lived subset.
+    pub(super) fn spend_mana(&mut self, actor: Player, payment: Mana) {
+        let player = &mut self.state.players[actor.index()];
+        let ordinary_red = player.mana[3] - player.combat_red_mana;
+        let retained_paid = payment[3].saturating_sub(ordinary_red);
+        player.combat_red_mana -= retained_paid;
+        for (pool, paid) in player.mana.iter_mut().zip(payment) {
+            *pool -= paid;
+        }
+    }
+
+    pub(super) fn add_combat_red(&mut self, actor: Player, amount: u128) {
+        let amount = u32::try_from(amount).capacity("combat mana representation exhausted");
+        let player = &mut self.state.players[actor.index()];
+        let red = player.mana[3]
+            .checked_add(amount)
+            .capacity("mana representation exhausted");
+        let retained = player
+            .combat_red_mana
+            .checked_add(amount)
+            .capacity("combat mana representation exhausted");
+        player.mana[3] = red;
+        player.combat_red_mana = retained;
+    }
+
     pub(super) fn add_mana(&mut self, player: Player, production: Mana) {
         for (pool, amount) in self.state.players[player.index()]
             .mana
@@ -286,13 +312,7 @@ impl Game {
         };
         let definition = &item.source_card.activations()[ability as usize];
         let cost: ActivationCost = definition.cost;
-        for (pool, cost) in self.state.players[item.controller.index()]
-            .mana
-            .iter_mut()
-            .zip(payment)
-        {
-            *pool -= cost;
-        }
+        self.spend_mana(item.controller, payment);
         self.lose_life(item.controller, i128::from(cost.life));
         let object = &mut self.state.objects[item.card as usize];
         if object.generation != item.object.generation || object.zone != definition.source_zone() {
