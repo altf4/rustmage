@@ -3627,3 +3627,7 @@ mod permanent_graveyard_tests;
 #[cfg(test)]
 #[path = "engine_sacrifice_trigger_tests.rs"]
 mod sacrifice_trigger_tests;
+
+#[cfg(test)]
+#[path = "engine_draw_token_body_tests.rs"]
+mod draw_token_body_tests;
