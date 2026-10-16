@@ -3386,3 +3386,7 @@ mod scaled_token_tests;
 #[cfg(test)]
 #[path = "engine_scaled_effect_tests.rs"]
 mod scaled_effect_tests;
+
+#[cfg(test)]
+#[path = "engine_distinct_amount_tests.rs"]
+mod distinct_amount_tests;

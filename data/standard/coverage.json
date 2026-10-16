@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "40603409de0aad203758a31f5946f55d8e3ae8703a9e14ce439e1f35d7523233",
+  "catalogue_version": "8c4fef84a9a3855dada4ebdb1b4c191b11ce694bad16d22ff95423598d7d5aa2",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1006,
-  "implemented_total": 1012,
+  "implemented_standard_cards": 1014,
+  "implemented_total": 1020,
   "token_definitions": 48,
   "emblem_definitions": 1,
   "cards": [
@@ -8458,8 +8458,8 @@
     {
       "name": "Explosive Prodigy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Expose the Culprit",
@@ -9820,8 +9820,8 @@
     {
       "name": "Frontline Rush",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Frontline War-Rager",
@@ -10714,8 +10714,8 @@
     {
       "name": "Glister Bairn",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Glitch Ghost Surveyor",
@@ -15484,8 +15484,8 @@
     {
       "name": "Luminollusk",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Luminous Rebuke",
@@ -18730,8 +18730,8 @@
     {
       "name": "Peer Past the Veil",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Peerless Recycling",
@@ -22996,8 +22996,8 @@
     {
       "name": "Shimmercreep",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Shimmerwilds Growth",
@@ -23008,8 +23008,8 @@
     {
       "name": "Shinestriker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Shinra Reinforcements",
@@ -24484,8 +24484,8 @@
     {
       "name": "Squawkroaster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Squire's Lightblade",

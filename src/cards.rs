@@ -341,6 +341,12 @@ pub(crate) enum Instruction {
         power: i32,
         toughness: i32,
     },
+    GrowScaled {
+        subject: Subject,
+        amount: AmountValue,
+        power: i32,
+        toughness: i32,
+    },
     GrantKeywords {
         subject: Subject,
         keywords: Keywords,
@@ -385,10 +391,13 @@ pub(crate) enum Instruction {
         tapped: bool,
     },
     Draw(PlayerSet, u16),
+    DrawScaled(PlayerSet, AmountValue),
     Discard(PlayerSet, u16),
     GainLife(PlayerSet, u16),
     GainLifeScaled(PlayerSet, AmountValue),
     LoseLife(PlayerSet, u16),
+    /// Each opponent loses the frozen amount; the controller gains it once.
+    DrainLifeScaled(AmountValue),
     /// Optional block containing the following `skip` instructions.
     May {
         skip: usize,
@@ -453,6 +462,8 @@ pub(crate) enum StatValue {
     ControllerLife,
     Count(CountFilter),
     GreatestManaValue(CountFilter),
+    Colors(CountFilter),
+    CardTypes(CountFilter),
     GraveyardCardTypes,
     Sum(&'static [StatValue]),
 }

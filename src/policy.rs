@@ -42,11 +42,15 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 Instruction::Connive { .. } => Some(true),
                 Instruction::Grow {
                     power, toughness, ..
+                }
+                | Instruction::GrowScaled {
+                    power, toughness, ..
                 } => Some(*power >= 0 && *toughness >= 0),
                 Instruction::Untap
                 | Instruction::ReturnToBattlefield
                 | Instruction::AttachSource => Some(true),
                 Instruction::Draw(PlayerSet::Targeted, _)
+                | Instruction::DrawScaled(PlayerSet::Targeted, _)
                 | Instruction::GainLife(PlayerSet::Targeted, _) => Some(true),
                 Instruction::ReturnToHand => Some(match target {
                     Target::Card(id) => observation
