@@ -8,6 +8,30 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_filtered_library_nouns_preserve_closed_union_conjunction_and_complement(self):
+        expected={'an artifact card':'Kinds(16)','a Mutant, Ninja, Turtle, or land card':'AnyOf(&[LibrarySelectionFilter::Subtype("Mutant"), LibrarySelectionFilter::Subtype("Ninja"), LibrarySelectionFilter::Subtype("Turtle"), LibrarySelectionFilter::Kinds(2)])','a Mount creature card or a Plains card':'AnyOf(&[LibrarySelectionFilter::AllOf(&[LibrarySelectionFilter::Kinds(1), LibrarySelectionFilter::Subtype("Mount")]), LibrarySelectionFilter::Subtype("Plains")])','an Ally, Equipment, or Lesson card':'AnyOf(&[LibrarySelectionFilter::Subtype("Ally"), LibrarySelectionFilter::Subtype("Equipment"), LibrarySelectionFilter::Subtype("Lesson")])','an artifact or Pirate card':'AnyOf(&[LibrarySelectionFilter::Kinds(16), LibrarySelectionFilter::Subtype("Pirate")])','a noncreature, nonland card':'ExcludingKinds(3)'}
+        for noun,result in expected.items():
+            self.assertEqual(generate.library_selection_filter(noun),result)
+            body='Look at the top four cards of your library. You may reveal '+noun+' from among them and put it into your hand. Put the rest on the bottom of your library in a random order.'
+            program=generate.statement_program(body);self.assertEqual(len(program),1);self.assertIn(result,program[0]);self.assertIn('optional: true, reveal: true',program[0]);self.assertIsNone(generate.statement_program(body+' Then discover 3.'))
+        for noun in ['a Mount card or a Plains creature card','a Mount creature card and a Plains card','an artifact and Pirate card','a Mutant, Ninja, Turtle, and land card','a noncreature or nonland card','a noncreature, nonland card with mana value 2 or less','a Goblin, Swamp, or Island card','an Equipment creature card']:
+            self.assertIsNone(generate.library_selection_filter(noun),noun)
+
+    def test_eclipsed_selection_subtypes_preserve_all_five_exact_union_filters(self):
+        for noun,subtypes in [('a Goblin, Swamp, or Mountain card',['Goblin','Swamp','Mountain']),('an Elf, Swamp, or Forest card',['Elf','Swamp','Forest']),('an Elemental, Island, or Mountain card',['Elemental','Island','Mountain']),('a Kithkin, Forest, or Plains card',['Kithkin','Forest','Plains']),('a Merfolk, Plains, or Island card',['Merfolk','Plains','Island'])]:
+            result=generate.library_selection_filter(noun);self.assertTrue(result.startswith('AnyOf('));self.assertNotIn('Kinds(',result)
+            for subtype in subtypes:self.assertIn('Subtype("'+subtype+'")',result)
+            self.assertEqual(result.count('Subtype('),3)
+
+    def test_twelve_filtered_library_full_bodies_and_trainer_copy_reject_unknown_residuals(self):
+        import json,hashlib,re
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());manifest=json.loads((generate.ROOT/'docs/filtered-library-selection-admissions.json').read_text());self.assertEqual(len(manifest['cards']),12);names={c['name'] for c in manifest['cards']};source,coverage=generate.compile_catalogue(snapshot,target);supported={c['name'] for c in coverage['cards'] if c['implemented']};self.assertTrue(names<=supported)
+        for row in manifest['cards']:self.assertEqual(row['oracle_text'],next(c['oracle_text'] for c in snapshot['cards'] if c['name']==row['name']))
+        trainer=[line for line in source.splitlines() if 'Definition { info: CardInfo { name: "Thundertrap Trainer",' in line];self.assertEqual(len(trainer),2)
+        for line in trainer:self.assertIn('SelfOffspring',line);self.assertIn('SelfEnters',line);self.assertIn('ExcludingKinds(3)',line);self.assertIn('optional: true, reveal: true',line)
+        self.assertIn('Effect::Creature(1, 1)',trainer[1]);self.assertIn('standard_legal: false',trainer[1])
+        altered=dict(snapshot,cards=[dict(c,oracle_text=c.get('oracle_text','')+'\nDiscover 3.') if c['name'] in names else c for c in snapshot['cards']]);altered['cards_sha256']=hashlib.sha256(json.dumps(altered['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();_,bad=generate.compile_catalogue(altered,target);self.assertFalse(names&{c['name'] for c in bad['cards'] if c['implemented']})
+
     def test_contextual_cast_headers_keep_complete_target_and_spell_qualifications(self):
         headers={
             'Whenever you cast a spell that targets a creature you control, ':'CastTarget::Creature(CastRelation::You)',
@@ -75,7 +99,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         for c in manifest['cards']:
             self.assertIn(c['name'],supported);self.assertEqual(next(r for r in snapshot['cards'] if r['name']==c['name'])['oracle_text'],c['oracle_text'])
             definitions=[row for row in source.splitlines() if row.startswith('    Definition {') and 'name: '+json.dumps(c['name'])+',' in row];self.assertEqual(len(definitions),2,c['name']);self.assertIn('Effect::Creature(1, 1)',definitions[1]);self.assertIn('SelfOffspring',definitions[1]);self.assertIn('standard_legal: false',definitions[1])
-        for name in ['Darkstar Augur','Manifold Mouse','Pawpatch Recruit','Thornplate Intimidator','Thundertrap Trainer','Warren Warleader']:self.assertNotIn(name,supported)
+        for name in ['Darkstar Augur','Manifold Mouse','Pawpatch Recruit','Thornplate Intimidator','Warren Warleader']:self.assertNotIn(name,supported)
         altered=dict(snapshot,cards=[dict(c,oracle_text=c['oracle_text']+'\nDiscover 3.') if c['name'] in names else c for c in snapshot['cards']]);altered['cards_sha256']=hashlib.sha256(json.dumps(altered['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();_,gated=generate.compile_catalogue(altered,target);self.assertTrue(all(not c['implemented'] for c in gated['cards'] if c['name'] in names))
 
 
@@ -83,7 +107,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         bodies=[('Look at the top three cards of your library. Put one of them into your hand and the rest into your graveyard.','Fixed(1)','Graveyard'),('Look at the top five cards of your library. Put two of them into your hand and the rest on the bottom of your library in any order.','Fixed(2)','BottomAny'),('Look at the top four cards of your library. You may reveal a creature card with power 2 or less from among them and put it into your hand. Put the rest on the bottom of your library in a random order.','CreaturePowerAtMost(2)','BottomRandom')]
         for body,count,remainder in bodies:
             result=generate.statement_program(body);self.assertIsNotNone(result);self.assertIn(count,result[0]);self.assertIn(remainder,result[0]);self.assertIsNone(generate.statement_program(body+' Then discover 3.'))
-        for body in ['Look at the top three cards of your library. Put one of them onto the battlefield.','Look at the top four cards of your library. You may reveal a noncreature, nonland card from among them and put it into your hand. Put the rest on the bottom of your library in a random order.','Look at the top three cards of target player\'s library. Put one of them into your hand and the rest into your graveyard.','Look at the top five cards of your library. You may reveal a creature card with toughness 2 or less from among them and put it into your hand. Put the rest on the bottom of your library in a random order.','Look at the top three cards of your library. Put one of them into your hand and the rest on top of your library.']:
+        for body in ['Look at the top three cards of your library. Put one of them onto the battlefield.','Look at the top four cards of your library. You may reveal a nonartifact, nonland card from among them and put it into your hand. Put the rest on the bottom of your library in a random order.','Look at the top three cards of target player\'s library. Put one of them into your hand and the rest into your graveyard.','Look at the top five cards of your library. You may reveal a creature card with toughness 2 or less from among them and put it into your hand. Put the rest on the bottom of your library in a random order.','Look at the top three cards of your library. Put one of them into your hand and the rest on top of your library.']:
             self.assertIsNone(generate.statement_program(body),body)
 
     def test_library_selection_conditions_are_one_frozen_resolution_spec_and_complete_bodies(self):
