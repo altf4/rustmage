@@ -549,6 +549,7 @@ def extract_entry_counters(card):
 
 def stat_threshold_condition(text):
     """Boolean source-stat predicates over earlier-layer counts or owned history."""
+    if text=='two or more nonland permanents entered the battlefield under your control this turn':return 'StatValue::AtLeast { value: &StatValue::NonlandEntriesThisTurn, minimum: 2 }'
     if text=="it's attacking":return 'StatValue::SourceAttacking'
     if text=="it's modified":return 'StatValue::SourceModified'
     if text=="you haven't cast a spell this turn":return 'StatValue::Not(&StatValue::SpellsCastThisTurn)'
@@ -748,7 +749,7 @@ def normalize_duration(text):
     return text
 
 
-RULE_LABELS = ('Infusion — ', 'Delirium — ', 'Threshold — ', 'Descend 4 — ', 'Descend 8 — ', 'Ferocious — ', 'Alliance — ')
+RULE_LABELS = ('Celebration — ', 'Infusion — ', 'Delirium — ', 'Threshold — ', 'Descend 4 — ', 'Descend 8 — ', 'Ferocious — ', 'Alliance — ')
 
 def strip_rule_label(text):
     for label in RULE_LABELS:
@@ -1930,6 +1931,8 @@ def targeted_program(text):
         keywords=keyword_list(m[3])
         if keywords is None: return None
         return ('CreatureVehicle',0,1),[counter_instruction('Targets',m[1],m[2]),f'GrantKeywords {{ subject: Subject::Targets, keywords: Keywords({keywords}) }}']
+    if text=='attach this Equipment to up to one target creature you control.':
+        return ('CreatureYou',0,1),['AttachSource']
     if text=='attach this Equipment to target Pirate creature you control.':
         return 'PirateYou',['AttachSource']
     if m := re.fullmatch(r'attach this Equipment to target creature you control\.(?: That creature gains (.+) until end of turn\.)?', text):
@@ -2147,6 +2150,8 @@ def cast_condition(relation='You', filter_='Any', ordinal=None):
 
 
 def step_guard(text):
+    if text=='two or more nonland permanents entered the battlefield under your control this turn':
+        return 'StepGuard::Expression { value: StatValue::NonlandEntriesThisTurn, minimum: Some(2), maximum: None }'
     if text == 'you control an outlaw': return 'StepGuard::Outlaw'
     if text == 'you gained life this turn': return 'StepGuard::GainedLife'
     if text == 'you attacked this turn': return 'StepGuard::Attacked'

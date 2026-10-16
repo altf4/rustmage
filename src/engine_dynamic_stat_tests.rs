@@ -337,8 +337,14 @@ fn all_scaling_sources_are_indexed_and_round_trip_source_removal() {
     let cards: Vec<_> = Card::catalogue()
         .filter(|c| !c.scaling_modifiers().is_empty())
         .collect();
-    assert_eq!(cards.len(), 33);
-    for name in ["Magitek Infantry", "Outcaster Greenblade"] {
+    assert_eq!(cards.len(), 36);
+    for name in [
+        "Magitek Infantry",
+        "Outcaster Greenblade",
+        "Armory Mice",
+        "Grand Ball Guest",
+        "Tuinvale Guide",
+    ] {
         assert!(cards.contains(&Card::from_name(name).unwrap()), "{name}");
     }
     for card in cards {
