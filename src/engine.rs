@@ -3579,3 +3579,7 @@ mod source_return_tests;
 #[cfg(test)]
 #[path = "engine_public_hand_tests.rs"]
 mod public_hand_tests;
+
+#[cfg(test)]
+#[path = "engine_temporary_blocking_tests.rs"]
+mod temporary_blocking_tests;

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "95664285e02e408361e0e9e37153edf94d5ba6122039ac31e54b3f7243556b50",
+  "catalogue_version": "cfc113b9de5c1e736368d9530e5522749ea5910b4fd245ed7a28ed68f75f5b2b",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1212,
-  "implemented_total": 1218,
+  "implemented_standard_cards": 1218,
+  "implemented_total": 1224,
   "token_definitions": 55,
   "emblem_definitions": 1,
   "cards": [
@@ -3148,8 +3148,8 @@
     {
       "name": "Brambleback Brute",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Brambleguard Captain",
@@ -22096,8 +22096,8 @@
     {
       "name": "Sandstorm Verge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Sandworm",
@@ -23938,8 +23938,8 @@
     {
       "name": "Sower of Chaos",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Sozin's Comet",
@@ -25276,8 +25276,8 @@
     {
       "name": "Summit Intimidator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Summit Sentinel",
@@ -29848,8 +29848,8 @@
     {
       "name": "War Squeak",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Warden of the Grove",
@@ -31018,8 +31018,8 @@
     {
       "name": "Zog, Triceraton Castaway",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Zombify",

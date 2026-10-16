@@ -5,13 +5,13 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,212 have executable rules so far.
+knows all 5,164 pinned Standard identities; 1,218 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
-The latest [exact source returns](docs/source-returns.md) add eleven complete
-bodies with graveyard activation, independent stack effects, tapped entry and
-public hand knowledge. [Public hand knowledge](docs/public-hand-knowledge.md)
+The latest [temporary blocking prohibitions](docs/temporary-blocking.md) add six
+complete bodies with activation costs, entry triggers, Aura attachment and
+typed cycling. [Public hand knowledge](docs/public-hand-knowledge.md)
 also covers shared targeted and batch returns while preserving private draws.
 Full Standard rules remain in progress.
 
@@ -27,6 +27,7 @@ PYTHONPATH=python python3 -m unittest discover -s python -p 'test_*.py' -v
 cargo run --release --bin benchmark -- 1000
 cargo run --release --example branch
 cargo run --release --example standard
+cargo run --release --example standard_temporary_blocking -- 100
 cargo run --release --example standard_triggers -- 100
 cargo run --release --example standard_counters -- 100
 cargo run --release --example standard_lands -- 100

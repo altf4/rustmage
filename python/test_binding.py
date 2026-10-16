@@ -9,6 +9,52 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def test_six_temporary_blocking_bodies_resolve_expire_and_replay_in_process(self):
+        names=['Brambleback Brute','Sandstorm Verge','Sower of Chaos','Summit Intimidator','War Squeak','Zog, Triceraton Castaway']
+        for wanted in names:
+            lands=12 if wanted=='Sandstorm Verge' else 24
+            deck=['Mountain']*lands+[wanted]*12+['Bear Cub']*(48-lands)
+            # Bears require green; split the ordinary lands without reducing the
+            # spell's red sources. Sandstorm itself is the remaining land slot.
+            deck[:lands]=['Mountain']*(lands//2)+['Forest']*(lands-lands//2)
+            with self.subTest(card=wanted),Game([deck,['Forest']*24+['Bear Cub']*36],seed=7,deck_rules='Freeform') as game:
+                for _ in range(16000):
+                    obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor']);objects={o['id']:o for o in obs['objects']}
+                    own=[o for o in objects.values() if o['owner']=='P0' and o['zone']=='Battlefield' and o['card']=='Bear Cub'];enemy=[o for o in objects.values() if o['owner']=='P1' and o['zone']=='Battlefield' and o['card']=='Bear Cub'];sources=[o for o in objects.values() if o['owner']=='P0' and o['zone']=='Battlefield' and o['card']==wanted]
+                    roots=[s for s in obs['stack'] if s['source_card']==wanted and s['kind']!='Spell' and s['targets']]
+                    if roots:break
+                    def score(a):
+                        k=a['kind']
+                        if k=='PlayLand' and wanted=='Sandstorm Verge' and objects[a['card']]['card']==wanted:return 250 if not sources else -100
+                        if k in ('Cast','AnnounceCast'):
+                            name=objects[a['card']]['card']
+                            if name==wanted:return 200 if enemy and not sources and (wanted!='War Squeak' or own) else -100
+                            return 160 if name=='Bear Cub' and not (own if obs['actor']=='P0' else enemy) else -100
+                        if k=='AnnounceActivate':return 240 if wanted in names[:3] and sources and a['card']==sources[0]['id'] and a['ability']==(1 if wanted=='Sandstorm Verge' else 0) and enemy else -100
+                        if k in ('Activate','ActivateMana','AnnounceMana','BeginActivate'):return -100
+                        if k=='ChooseTarget':
+                            root=obs['announcing'];attachment=root and root['source_card']==wanted and root['kind']=='Spell'
+                            choices=own if attachment else enemy
+                            return 220 if choices and a['target'].get('Card')==choices[0]['id'] else -100
+                        if k=='TapMana' and obs['decision']=='pay_costs':return 180
+                        return self.professor_score(obs,a)
+                    game.step(obs,max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i])))
+                else:self.fail('blocking effect was not committed')
+                root=roots[-1];target=root['targets'][0]['object'];saved=game.snapshot()
+                def finish(handle):
+                    after=self.finish_self_target(handle,'P0',root['id']);now=next(o for o in after['objects'] if o['reference']==target);self.assertTrue(now['keywords']&2048);return after
+                with game.clone() as fork:expected=finish(fork)
+                after=finish(game);self.assertEqual(after,expected);game.restore(saved)
+                with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,0)
+                again=finish(game);after['revision']=again['revision'];self.assertEqual(after,again);game.drop_snapshot(saved)
+                turn=after['turn']
+                for _ in range(200):
+                    current=game.observe('P0')
+                    if current['turn']!=turn:break
+                    current=game.observe(current['actor']);i=max(range(len(current['actions'])),key=lambda i:100 if current['actions'][i]['kind']=='Pass' else 90 if current['actions'][i]['kind'].startswith('Finish') else 80 if current['actions'][i]['kind']=='Discard' else -1000 if current['actions'][i]['kind']=='Concede' else -100);game.step(current,i)
+                else:self.fail('cleanup not reached')
+                now=next(o for o in current['objects'] if o['reference']==target);self.assertFalse(now['keywords']&2048)
+
     def test_targeted_graveyard_returns_publish_new_hand_refs_and_replay_owned_payment(self):
         for wanted in ['Bonebind Orator', 'Theoretical Necromancer']:
             deck=['Swamp']*18+['Forest']*6+[wanted]*12+['Deathcap Marionette']*12+['Grizzly Bears']*12
