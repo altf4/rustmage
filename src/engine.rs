@@ -473,6 +473,7 @@ struct PlayerState {
     cards_drawn_this_turn: u64,
     life_gain_events_this_turn: u64,
     life_gained_this_turn: u128,
+    life_lost_this_turn: u128,
     attacked_this_turn: bool,
     life: i128,
     mana: Mana,
@@ -787,6 +788,7 @@ pub struct PlayerView {
     pub cards_drawn_this_turn: u64,
     pub life_gain_events_this_turn: u64,
     pub life_gained_this_turn: u128,
+    pub life_lost_this_turn: u128,
     pub attacked_this_turn: bool,
     pub life: i128,
     pub mana: Mana,
@@ -1015,6 +1017,7 @@ impl Game {
             cards_drawn_this_turn: 0,
             life_gain_events_this_turn: 0,
             life_gained_this_turn: 0,
+            life_lost_this_turn: 0,
             attacked_this_turn: false,
             life: 20,
             mana: [0; 6],
@@ -2536,6 +2539,7 @@ impl Game {
             player.cards_drawn_this_turn = 0;
             player.life_gain_events_this_turn = 0;
             player.life_gained_this_turn = 0;
+            player.life_lost_this_turn = 0;
             player.attacked_this_turn = false;
         }
         self.state.land_played = false;
@@ -2706,10 +2710,7 @@ impl Game {
             }
             match event.target {
                 Target::Player(p) => {
-                    let life = &mut self.state.players[p.index()].life;
-                    *life = life
-                        .checked_sub(event.amount)
-                        .capacity("life representation exhausted");
+                    self.lose_life(p, event.amount);
                 }
                 Target::Card(id) => {
                     let obj = &mut self.state.objects[id as usize];
@@ -2913,7 +2914,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 43,
+            schema: 44,
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
             creatures_died_this_turn: s.creatures_died_this_turn,
             catalogue: crate::CATALOGUE_VERSION,
@@ -2956,6 +2957,7 @@ impl Game {
                 cards_drawn_this_turn: s.players[i].cards_drawn_this_turn,
                 life_gain_events_this_turn: s.players[i].life_gain_events_this_turn,
                 life_gained_this_turn: s.players[i].life_gained_this_turn,
+                life_lost_this_turn: s.players[i].life_lost_this_turn,
                 attacked_this_turn: s.players[i].attacked_this_turn,
                 life: s.players[i].life,
                 mana: s.players[i].mana,
@@ -3480,3 +3482,7 @@ mod entry_counter_tests;
 #[cfg(test)]
 #[path = "engine_death_history_tests.rs"]
 mod death_history_tests;
+
+#[cfg(test)]
+#[path = "engine_life_loss_tests.rs"]
+mod life_loss_tests;

@@ -10,6 +10,8 @@ pub(super) struct EntryMove {
     pub skipped: bool,
     pub reveal_hand: bool,
     pub life_paid: Option<bool>,
+    /// Frozen before replacement choices; payments in this event cannot enable it.
+    pub counters: Counters,
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EntryBatch {
@@ -126,13 +128,23 @@ impl Game {
             skipped: false,
             reveal_hand: false,
             life_paid: None,
+            counters: Counters::default(),
         }
     }
-    pub(super) fn stage_entries(&mut self, moves: Vec<EntryMove>, shuffle_after: Option<Player>) {
+    pub(super) fn stage_entries(
+        &mut self,
+        mut moves: Vec<EntryMove>,
+        shuffle_after: Option<Player>,
+    ) {
         assert!(
             self.state.entry_batch.is_none(),
             "one entry transaction at a time"
         );
+        // Entry replacements inspect the pre-event world, before any life-payment
+        // choices. Later ETB triggers will instead observe the committed payments.
+        for movement in &mut moves {
+            movement.counters = self.pre_entry_counters(&movement.before, movement.destination);
+        }
         let mut choices: Vec<_> = moves
             .iter()
             .enumerate()
@@ -179,14 +191,19 @@ impl Game {
         counters
     }
     fn commit_entries(&mut self, batch: EntryBatch) {
-        // CR614.12: replacements inspect the world before this simultaneous event.
-        // No incoming permanent may affect a later member's counter quantity.
+        // Apply quantities captured before this event's replacement choices.
+        // No incoming permanent or same-event life payment changes those values.
         let moves: Vec<_> = batch
             .moves
             .into_iter()
             .filter(|m| !m.skipped)
             .map(|m| {
-                let counters = self.pre_entry_counters(&m.before, m.destination);
+                // Impossible Aura entry can redirect an already staged move.
+                let counters = if m.destination == Zone::Battlefield {
+                    m.counters
+                } else {
+                    Counters::default()
+                };
                 (m, counters)
             })
             .collect();
@@ -313,12 +330,13 @@ impl Game {
         let EntryTapped::PayLife(cost) = movement.before.card.entry_tapped() else {
             unreachable!()
         };
-        if pay {
-            self.state.players[movement.before.owner.index()].life -= i128::from(cost);
-        }
+        let player = movement.before.owner;
         movement.life_paid = Some(pay);
         movement.tapped |= !pay;
         batch.next += 1;
+        if pay {
+            self.lose_life(player, i128::from(cost));
+        }
     }
     pub(super) fn entry_life_view(&self, viewer: Player) -> Option<EntryLifeView> {
         if !matches!(self.state.pending, Pending::EntryLife { .. }) {

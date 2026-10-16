@@ -269,7 +269,7 @@ impl Game {
         {
             *pool -= cost;
         }
-        self.state.players[item.controller.index()].life -= i128::from(cost.life);
+        self.lose_life(item.controller, i128::from(cost.life));
         let object = &mut self.state.objects[item.card as usize];
         if object.generation != item.object.generation || object.zone != definition.source_zone() {
             assert!(

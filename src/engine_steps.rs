@@ -83,6 +83,9 @@ impl Game {
             }
             StepGuard::Attacked => return p.attacked_this_turn,
             StepGuard::CreatureDied => return self.state.creatures_died_this_turn > 0,
+            StepGuard::OpponentLostLife => {
+                return self.state.players[player.other().index()].life_lost_this_turn > 0;
+            }
             StepGuard::SourceTapped => {
                 return if self.on_battlefield(source.card) && self.object_ref(source.card) == source
                 {
