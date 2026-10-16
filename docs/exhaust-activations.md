@@ -87,7 +87,7 @@ resolves independently.
 
 - **869 Rust tests**: 857 unit and 12 integration, including nine new rules tests
   and one funding regression.
-- **163 compiler/data tests**, including two new whole-body/limit methods.
+- **164 compiler/data tests**, including three new whole-body/limit/loyalty-gate methods.
 - **119 fresh release Python tests**. Two new methods exercise all thirteen
   exhaust abilities, payment/body replay, persistence, forged action rejection,
   actual Unsummon/recast reset and private discard through the C ABI.

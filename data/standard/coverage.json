@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "be517b7e1df02a7e1580ea7fd8cc730e86a162b85acce200bbc31e089ce14cde",
+  "catalogue_version": "830ee35e5c8729da30e0f8f55d86cb5181dcfdf9798e9b1d501b388745b4b9ff",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1153,
-  "implemented_total": 1159,
+  "implemented_standard_cards": 1157,
+  "implemented_total": 1163,
   "token_definitions": 51,
   "emblem_definitions": 1,
   "cards": [
@@ -23326,8 +23326,8 @@
     {
       "name": "Sire of Seven Deaths",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Sita Varma, Masked Racer",
@@ -24022,8 +24022,8 @@
     {
       "name": "Spectral Snatcher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Speed, Young Avenger",
@@ -25474,8 +25474,8 @@
     {
       "name": "Sunset Saboteur",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Sunset Strikemaster",
@@ -29152,8 +29152,8 @@
     {
       "name": "Vein Ripper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Veloheart Bike",

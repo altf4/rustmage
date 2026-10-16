@@ -317,6 +317,11 @@ pub(crate) enum Instruction {
         exile: bool,
         unpaid_skip: usize,
     },
+    CounterRelated,
+    MayPayOpponentLife {
+        amount: u16,
+        skip: usize,
+    },
     DrawDamageAmount,
     PutDiscardCounters(CounterKind),
     DamageDiscardAmount(PlayerSet),

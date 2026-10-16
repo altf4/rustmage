@@ -8,6 +8,38 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_nonmana_ward_costs_use_exact_optional_cost_branches(self):
+        for clause,kind in [('Discard a card','Discard'),('Sacrifice a creature','Sacrifice')]:
+            program=generate.nonmana_ward_program('Ward—'+clause+'.')
+            self.assertIn('EffectChoiceKind::'+kind,program[0])
+            self.assertIn('PlayerSet::Opponent',program[0]);self.assertIn('optional_skip: Some(1)',program[0])
+            self.assertEqual(program[1:],['Skip(1)','CounterRelated'])
+        for amount in [0,7,65535]:
+            p=generate.nonmana_ward_program(f'Ward—Pay {amount} life.')
+            self.assertEqual(p,[f'MayPayOpponentLife {{ amount: {amount}, skip: 2 }}',f'LoseLife(PlayerSet::Opponent, {amount})','Skip(1)','CounterRelated'])
+        for clause in ['Ward—Pay 65536 life.','Ward—Pay X life.','Ward—Discard two cards.','Ward—Sacrifice an artifact.',
+                       'Ward—Discard a card and pay 2 life.','Ward—Discard a card. Draw a card.',
+                       'Ward—Pay 2 life, discard a card.','Flying, Ward—Pay 2 life.']:
+            self.assertIsNone(generate.nonmana_ward_program(clause),clause)
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=clause)),clause)
+        repeated=generate.trigger_creature_template(self.card(oracle_text='Ward—Discard a card.\nWard—Discard a card.'))
+        self.assertEqual(len(repeated[2]),2)
+        self.assertEqual(generate.targeted_program('Put a +1/+1 counter on target creature an opponent controls.')[0],'CreatureOpponent')
+        self.assertEqual(generate.targeted_program('Target opponent loses 2 life and you gain 2 life.'),('Opponent',['LoseLife(PlayerSet::Targeted, 2)','GainLife(PlayerSet::Controller, 2)']))
+
+    def test_four_nonmana_ward_bodies_match_pinned_text_and_remain_whole(self):
+        import json
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        rust,coverage=generate.compile_catalogue(snapshot,target);supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        rows=json.loads((generate.ROOT/'docs/nonmana-ward-admissions.json').read_text())['cards'];self.assertEqual(len(rows),4)
+        for a in rows:
+            c=next(c for c in snapshot['cards'] if c['name']==a['name']);self.assertEqual(c['oracle_text'],a['oracle_text']);self.assertIn(c['name'],supported)
+            altered=dict(c,oracle_text=c['oracle_text']+'\nDiscover 4.')
+            self.assertIsNone(generate.trigger_creature_template(altered))
+            self.assertIsNone(generate.permanent_program_template(altered))
+        self.assertIn('Instruction::CounterRelated',rust)
+        self.assertNotIn('Tragedy Feaster',supported)
+
     def card(self, **overrides):
         row = {'layout': 'normal', 'type_line': 'Creature — Cat', 'power': '2', 'toughness': '1',
                'mana_cost': '{W}', 'oracle_text': '', 'colors': ['W']}
@@ -1420,7 +1452,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertEqual([a[0] for a in result[2]],['Ward','Ward','SelfEnters'])
         self.assertIn('generic: 2',result[2][0][1][0]);self.assertIn('CounterSubject::Related',result[2][0][1][0])
         self.assertIn('colored: [0, 1, 0, 0, 0, 0]',result[2][1][1][0])
-        for text in ['Ward—Discard a card.','Ward—Pay 2 life.','Ward {X}','Ward {2}, pay 2 life',
+        for text in ['Ward—Discard two cards.','Ward—Pay X life.','Ward {X}','Ward {2}, pay 2 life',
                      'Ward {2}\nOther creatures have ward {2}.','Equipped creature has ward {1}.']:
             self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=text)),text)
         self.assertIsNone(generate.mana_cost_spec('{4294967296}'))
@@ -1449,9 +1481,9 @@ class CatalogueCompilerTests(unittest.TestCase):
         supported={c['name'] for c in coverage['cards'] if c['implemented']}
         for name in ['Archive Dragon','Confusticate and Bebother','Diversion Unit','Divert Disaster',"Don't Make a Sound",'Essence Scatter',
                      'Hulking Raptor',"It'll Quench Ya!",'Negate','No More Lies','Spell Pierce','Spider-Rex, Daring Dino',
-                     'Theorix Charm','Toadstool Admirer','Unflinching Hortimancer','Wrecking Gecko']:
+                     'Theorix Charm','Toadstool Admirer','Unflinching Hortimancer','Wrecking Gecko','Vein Ripper','Sire of Seven Deaths']:
             self.assertIn(name,supported)
-        for name in ['Vein Ripper','Sire of Seven Deaths','Dazzling Denial','Spell Stutter','Eddymurk Crab',"Falcon's Wing Harness"]:
+        for name in ['Dazzling Denial','Spell Stutter','Eddymurk Crab',"Falcon's Wing Harness"]:
             self.assertNotIn(name,supported)
 
     def test_player_damage_filters_and_event_amount_scope(self):
@@ -1653,11 +1685,11 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Vanguard Seraph','Cat Collector','Agent Venom','Boggart Cursecrafter',
                      'High-Society Hunter','Midnight Reaper',"Sephiroth, Planet's Heir",'Voracious Vermin',
                      'Drogskol Reaver','Dori, Bearer of Friends','Glacier Godmaw','Gladiolus Amicitia',
-                     'Professional Wrestler','Provisions Merchant','Pulse Tracker','Shroudstomper','Starling, Aerial Ally']:
+                     'Professional Wrestler','Provisions Merchant','Pulse Tracker','Shroudstomper','Starling, Aerial Ally','Vein Ripper']:
             self.assertIsNotNone(generate.trigger_creature_template(cards[name]),name)
         for name in ['Engine Rat',"Thrór's Map"]:
             self.assertIsNotNone(generate.permanent_program_template(cards[name]),name)
-        for name in ['Aerith Gainsborough','Vein Ripper','Twinblade Paladin']:
+        for name in ['Aerith Gainsborough','Twinblade Paladin']:
             self.assertIsNone(generate.trigger_creature_template(cards[name]),name)
             self.assertIsNone(generate.permanent_program_template(cards[name]),name)
 
@@ -2116,7 +2148,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertEqual(len(generate.trigger_creature_template(card)[2]), 2)
         for change in [dict(oracle_text=None), dict(oracle_text=card['oracle_text'] + '\n{T}: Draw a card.'),
                        dict(oracle_text='When this creature enters, draw a card if you control an Elf.'),
-                       dict(oracle_text='When this creature enters, draw a card.\nWard—Discard a card.'),
+                       dict(oracle_text='When this creature enters, draw a card.\nWard—Discard two cards.'),
                        dict(mana_cost='{G/U/P}{G/U/P}'), dict(layout='transform'),
                        dict(type_line='Snow Creature — Cat'), dict(toughness='*')]:
             self.assertIsNone(generate.trigger_creature_template(dict(card, **change)), change)
@@ -2216,7 +2248,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         accepted = self.card(name='Factory Test', oracle_id='factory-test', type_line='Sorcery',
                              oracle_text='Create two 1/1 red Goblin creature tokens.')
         rejected = self.card(name='Rejected Factory', oracle_id='rejected-factory',
-                             oracle_text='When this creature enters, create a 4/4 green Beast creature token.\nWard—Discard a card.')
+                             oracle_text='When this creature enters, create a 4/4 green Beast creature token.\nWard—Discard two cards.')
         cards = [accepted, rejected]
         canonical = json.dumps(cards, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()
         snapshot = {'cards': cards, 'card_count': len(cards), 'cards_sha256': hashlib.sha256(canonical).hexdigest()}
