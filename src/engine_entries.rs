@@ -1,4 +1,4 @@
-//! Owned pre-entry attachment choices; no object moves until the whole batch is ready.
+//! Owned pre-entry attachment/life choices; no object moves until the batch is ready.
 use super::*;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -9,6 +9,7 @@ pub(super) struct EntryMove {
     pub attachment: Option<ObjectRef>,
     pub skipped: bool,
     pub reveal_hand: bool,
+    pub life_paid: Option<bool>,
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EntryBatch {
@@ -37,6 +38,65 @@ pub struct AuraEntryView {
     pub card: Card,
     pub candidates: Vec<ObjectRef>,
     pub selected: Vec<AuraAttachmentView>,
+    pub selected_life: Vec<EntryLifeSelection>,
+}
+#[derive(Clone, Debug, Serialize)]
+pub struct EntryLifeSelection {
+    pub object: ObjectRef,
+    pub card: Card,
+    pub cost: u32,
+    pub paid: bool,
+}
+#[derive(Clone, Debug, Serialize)]
+pub struct EntryLifeView {
+    pub object: ObjectRef,
+    pub card: Card,
+    pub cost: u32,
+    /// Another effect already requires tapped entry. Paying does not undo it.
+    pub already_tapped: bool,
+    pub selected: Vec<EntryLifeSelection>,
+    pub selected_attachments: Vec<AuraAttachmentView>,
+}
+fn visible(m: &EntryMove, viewer: Player, known_hand: &[ObjectRef]) -> bool {
+    m.before.owner == viewer
+        || known_hand.contains(&m.before.reference)
+        || !matches!(m.before.zone, Zone::Hand | Zone::Library)
+}
+impl EntryBatch {
+    fn selected_life(&self, viewer: Player, known_hand: &[ObjectRef]) -> Vec<EntryLifeSelection> {
+        self.moves
+            .iter()
+            .filter(|m| visible(m, viewer, known_hand))
+            .filter_map(|m| {
+                let EntryTapped::PayLife(cost) = m.before.card.entry_tapped() else {
+                    return None;
+                };
+                Some(EntryLifeSelection {
+                    object: m.before.reference,
+                    card: m.before.card,
+                    cost,
+                    paid: m.life_paid?,
+                })
+            })
+            .collect()
+    }
+    fn selected_attachments(
+        &self,
+        viewer: Player,
+        known_hand: &[ObjectRef],
+    ) -> Vec<AuraAttachmentView> {
+        self.moves
+            .iter()
+            .filter(|m| visible(m, viewer, known_hand))
+            .filter_map(|m| {
+                Some(AuraAttachmentView {
+                    aura: m.before.reference,
+                    card: m.before.card,
+                    attachment: m.attachment?,
+                })
+            })
+            .collect()
+    }
 }
 impl Game {
     pub(super) fn aura_can_enchant(
@@ -65,6 +125,7 @@ impl Game {
             attachment: None,
             skipped: false,
             reveal_hand: false,
+            life_paid: None,
         }
     }
     pub(super) fn stage_entries(&mut self, moves: Vec<EntryMove>, shuffle_after: Option<Player>) {
@@ -77,8 +138,9 @@ impl Game {
             .enumerate()
             .filter(|(_, m)| {
                 m.destination == Zone::Battlefield
-                    && m.before.card.aura().is_some()
-                    && m.attachment.is_none()
+                    && (m.before.card.aura().is_some() && m.attachment.is_none()
+                        || matches!(m.before.card.entry_tapped(), EntryTapped::PayLife(_))
+                            && m.life_paid.is_none())
             })
             .map(|(i, _)| i)
             .collect();
@@ -146,6 +208,16 @@ impl Game {
                     .get(batch.next)
                     .map(|&index| (index, batch.moves[index].before.owner))
             }) {
+                let movement = &self.state.entry_batch.as_ref().unwrap().moves[index];
+                if matches!(movement.before.card.entry_tapped(), EntryTapped::PayLife(_)) {
+                    if self.can_pay_entry_life() {
+                        self.state.pending = Pending::EntryLife { player: owner };
+                        return true;
+                    }
+                    // An optional positive payment is impossible below the cost.
+                    self.choose_entry_life(false);
+                    continue;
+                }
                 let eligible = self
                     .state
                     .objects
@@ -186,13 +258,56 @@ impl Game {
         batch.moves[index].attachment = Some(target);
         batch.next += 1;
     }
-    pub(super) fn aura_entry_view(&self, viewer: Player) -> Option<AuraEntryView> {
+    pub(super) fn can_pay_entry_life(&self) -> bool {
+        let batch = self.state.entry_batch.as_ref().unwrap();
+        let movement = &batch.moves[batch.choices[batch.next]];
+        let EntryTapped::PayLife(cost) = movement.before.card.entry_tapped() else {
+            unreachable!()
+        };
+        self.state.players[movement.before.owner.index()].life >= i64::from(cost)
+    }
+    pub(super) fn choose_entry_life(&mut self, pay: bool) {
+        assert!(!pay || self.can_pay_entry_life());
+        let batch = self.state.entry_batch.as_mut().unwrap();
+        let movement = &mut batch.moves[batch.choices[batch.next]];
+        let EntryTapped::PayLife(cost) = movement.before.card.entry_tapped() else {
+            unreachable!()
+        };
+        if pay {
+            self.state.players[movement.before.owner.index()].life -= i64::from(cost);
+        }
+        movement.life_paid = Some(pay);
+        movement.tapped |= !pay;
+        batch.next += 1;
+    }
+    pub(super) fn entry_life_view(&self, viewer: Player) -> Option<EntryLifeView> {
+        if !matches!(self.state.pending, Pending::EntryLife { .. }) {
+            return None;
+        }
         let batch = self.state.entry_batch.as_ref()?;
         let movement = batch.moves.get(*batch.choices.get(batch.next)?)?;
-        let visible = |m: &EntryMove| {
-            m.before.owner == viewer || !matches!(m.before.zone, Zone::Hand | Zone::Library)
+        if !visible(movement, viewer, &self.state.known_hand) {
+            return None;
+        }
+        let EntryTapped::PayLife(cost) = movement.before.card.entry_tapped() else {
+            return None;
         };
-        if !visible(movement) {
+        Some(EntryLifeView {
+            object: movement.before.reference,
+            card: movement.before.card,
+            cost,
+            already_tapped: movement.tapped,
+            selected: batch.selected_life(viewer, &self.state.known_hand),
+            selected_attachments: batch.selected_attachments(viewer, &self.state.known_hand),
+        })
+    }
+    pub(super) fn aura_entry_view(&self, viewer: Player) -> Option<AuraEntryView> {
+        if !matches!(self.state.pending, Pending::AuraEntry { .. }) {
+            return None;
+        }
+        let batch = self.state.entry_batch.as_ref()?;
+        let movement = batch.moves.get(*batch.choices.get(batch.next)?)?;
+        if !visible(movement, viewer, &self.state.known_hand) {
             return None;
         }
         Some(AuraEntryView {
@@ -206,18 +321,8 @@ impl Game {
                 .map(|(i, _)| self.object_ref(i as CardId))
                 .filter(|&r| self.entry_candidate(r))
                 .collect(),
-            selected: batch
-                .moves
-                .iter()
-                .filter(|m| visible(m))
-                .filter_map(|m| {
-                    m.attachment.map(|attachment| AuraAttachmentView {
-                        aura: m.before.reference,
-                        card: m.before.card,
-                        attachment,
-                    })
-                })
-                .collect(),
+            selected: batch.selected_attachments(viewer, &self.state.known_hand),
+            selected_life: batch.selected_life(viewer, &self.state.known_hand),
         })
     }
 }

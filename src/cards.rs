@@ -732,6 +732,8 @@ pub(crate) enum EntryTapped {
     UnlessAtMostTwo,
     UnlessAtLeastTwo,
     UnlessLowLife,
+    UnlessPlaneswalker,
+    PayLife(u32),
 }
 
 struct Definition {

@@ -78,6 +78,9 @@ impl Player {
 #[path = "engine_damage_tests.rs"]
 mod damage_tests;
 #[cfg(test)]
+#[path = "engine_entry_life_tests.rs"]
+mod entry_life_tests;
+#[cfg(test)]
 #[path = "engine_identity_tests.rs"]
 mod identity_tests;
 #[path = "engine_programs.rs"]
@@ -171,6 +174,9 @@ pub enum Action {
     DeclineResolutionMana,
     RecoverMilled {
         object: Option<ObjectRef>,
+    },
+    ChooseEntryLife {
+        pay: bool,
     },
     ChooseAuraAttachment {
         object: ObjectRef,
@@ -526,6 +532,9 @@ enum Pending {
         player: Player,
         filter: RecoveryFilter,
     },
+    EntryLife {
+        player: Player,
+    },
     AuraEntry {
         player: Player,
     },
@@ -807,6 +816,7 @@ pub struct Observation {
     pub search_choice: Option<SearchChoiceView>,
     pub effect_choice: Option<EffectChoiceView>,
     pub aura_entry: Option<entries::AuraEntryView>,
+    pub entry_life: Option<entries::EntryLifeView>,
     pub connive_choice: Option<connive::ConniveChoiceView>,
     pub known_hand: Vec<ObjectRef>,
     pub payment_request: Option<PaymentRequestView>,
@@ -982,6 +992,7 @@ impl Game {
             Pending::SpellCost { player }
             | Pending::ConniveOrder { player }
             | Pending::ResolutionMana { player }
+            | Pending::EntryLife { player }
             | Pending::AuraEntry { player }
             | Pending::EffectChoice { player }
             | Pending::Legend { player }
@@ -1091,6 +1102,13 @@ impl Game {
         match s.pending {
             Pending::ResolutionMana { .. } => {
                 if self.visit_resolution_payment(&mut emit) {
+                    return true;
+                }
+            }
+            Pending::EntryLife { .. } => {
+                if emit(Action::ChooseEntryLife { pay: false })
+                    || self.can_pay_entry_life() && emit(Action::ChooseEntryLife { pay: true })
+                {
                     return true;
                 }
             }
@@ -1520,6 +1538,7 @@ impl Game {
             }
             Action::PayResolutionMana { payment } => self.finish_resolution_payment(Some(payment)),
             Action::DeclineResolutionMana => self.finish_resolution_payment(None),
+            Action::ChooseEntryLife { pay } => self.choose_entry_life(pay),
             Action::ChooseAuraAttachment { object } => self.choose_aura_attachment(object),
             Action::Keep => {
                 self.state.players[actor.index()].kept = true;
@@ -1567,7 +1586,21 @@ impl Game {
                 }
             }
             Action::PlayLand { card } => {
-                self.move_object(card, Zone::Battlefield);
+                if matches!(
+                    self.state.objects[card as usize].card.entry_tapped(),
+                    EntryTapped::PayLife(_)
+                ) {
+                    // A land play is public even while its pre-entry choice is pending.
+                    let reference = self.object_ref(card);
+                    if !self.state.known_hand.contains(&reference) {
+                        self.state.known_hand.push(reference);
+                    }
+                    let movement =
+                        self.entry_move(card, Zone::Battlefield, self.enters_tapped(card));
+                    self.stage_entries(vec![movement], None);
+                } else {
+                    self.move_object(card, Zone::Battlefield);
+                }
                 self.state.land_played = true;
                 self.state.passes = 0;
             }
@@ -1946,6 +1979,14 @@ impl Game {
         let before: Vec<_> = ids
             .iter()
             .map(|&id| {
+                assert!(
+                    destination != Zone::Battlefield
+                        || !matches!(
+                            self.state.objects[id as usize].card.entry_tapped(),
+                            EntryTapped::PayLife(_)
+                        ),
+                    "choice-bearing entry must be staged"
+                );
                 (
                     self.object_view(id),
                     destination == Zone::Battlefield && self.enters_tapped(id),
@@ -1961,7 +2002,12 @@ impl Game {
     fn enters_tapped(&self, id: CardId) -> bool {
         let object = &self.state.objects[id as usize];
         match object.card.entry_tapped() {
-            EntryTapped::Never => false,
+            EntryTapped::Never | EntryTapped::PayLife(_) => false,
+            EntryTapped::UnlessPlaneswalker => !self.state.objects.iter().any(|o| {
+                o.zone == Zone::Battlefield
+                    && o.owner == object.owner
+                    && o.card.kind_mask() & 64 != 0
+            }),
             EntryTapped::Always => true,
             EntryTapped::UnlessLowLife => self.state.players.iter().all(|p| p.life > 13),
             EntryTapped::UnlessBasic => !self.state.objects.iter().any(|o| {
@@ -1999,6 +2045,14 @@ impl Game {
         destination: Zone,
         tapped: bool,
     ) -> ZoneChange {
+        assert!(
+            destination != Zone::Battlefield
+                || !matches!(
+                    self.state.objects[id as usize].card.entry_tapped(),
+                    EntryTapped::PayLife(_)
+                ),
+            "choice-bearing entry must be staged"
+        );
         let before = self.object_view(id);
         self.transition_object(before, destination, tapped)
     }
@@ -2453,7 +2507,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 32,
+            schema: 33,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -2480,6 +2534,7 @@ impl Game {
                 Pending::EffectSearch { .. } => "library_search",
                 Pending::EffectDiscard { .. } => "effect_discard",
                 Pending::EffectChoice { .. } => "effect_choice",
+                Pending::EntryLife { .. } => "entry_life",
                 Pending::AuraEntry { .. } => "aura_entry",
                 Pending::Attackers => "attackers",
                 Pending::Blockers => "blockers",
@@ -2516,6 +2571,7 @@ impl Game {
             },
             effect_choice: self.effect_choice_view(viewer),
             aura_entry: self.aura_entry_view(viewer),
+            entry_life: self.entry_life_view(viewer),
             objects,
             exile_links: s.exile_links.clone(),
             triggered_this_turn: s.triggered_this_turn.clone(),
@@ -2876,7 +2932,7 @@ mod equipment_tests;
 
 #[path = "engine_entries.rs"]
 mod entries;
-pub use entries::{AuraAttachmentView, AuraEntryView};
+pub use entries::{AuraAttachmentView, AuraEntryView, EntryLifeSelection, EntryLifeView};
 
 #[cfg(test)]
 #[path = "engine_aura_tests.rs"]

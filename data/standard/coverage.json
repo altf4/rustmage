@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "603392d485767f582193fad33bbce698b3ea8a37ea536d929f633910507dbfc5",
+  "catalogue_version": "fb20405a4f4c56ae3446ac2e3ac66c7ba5bdd892390458417cc5edb6b256f2f6",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 858,
-  "implemented_total": 864,
+  "implemented_standard_cards": 878,
+  "implemented_total": 884,
   "token_definitions": 41,
   "cards": [
     {
@@ -2721,8 +2721,8 @@
     {
       "name": "Blood Crypt",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Blood Hustler",
@@ -3267,8 +3267,8 @@
     {
       "name": "Breeding Pool",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Bria, Riptide Rogue",
@@ -6111,8 +6111,8 @@
     {
       "name": "Dedicated Commons",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Deduce",
@@ -8721,8 +8721,8 @@
     {
       "name": "Fatehold Annex",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Fatehold Charm",
@@ -9597,8 +9597,8 @@
     {
       "name": "Formidable Commons",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Formidable Speaker",
@@ -10899,8 +10899,8 @@
     {
       "name": "Godless Shrine",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Gogo, Master of Mimicry",
@@ -11595,8 +11595,8 @@
     {
       "name": "Hallowed Fountain",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Hallway Heckler // Vicious Verse",
@@ -13059,8 +13059,8 @@
     {
       "name": "Innovative Commons",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Inquisitive Glimmer",
@@ -14379,8 +14379,8 @@
     {
       "name": "Konstrari Annex",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Konstrari Charm",
@@ -16419,8 +16419,8 @@
     {
       "name": "Meticulous Commons",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Miasma Demon",
@@ -18411,8 +18411,8 @@
     {
       "name": "Overgrown Tomb",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Overgrown Zealot",
@@ -21873,8 +21873,8 @@
     {
       "name": "Sacred Foundry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Safewright Cavalry",
@@ -24753,8 +24753,8 @@
     {
       "name": "Steam Vents",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Steamcore Scholar",
@@ -24873,8 +24873,8 @@
     {
       "name": "Stingerquill Annex",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Stingerquill Charm",
@@ -24975,8 +24975,8 @@
     {
       "name": "Stomping Ground",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Stone Docent",
@@ -26175,8 +26175,8 @@
     {
       "name": "Temple Garden",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Temple of Abandon",
@@ -27153,8 +27153,8 @@
     {
       "name": "Theorix Annex",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Theorix Charm",
@@ -27957,8 +27957,8 @@
     {
       "name": "Transformative Commons",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Transit Mage",
@@ -29343,8 +29343,8 @@
     {
       "name": "Vigorbloom Annex",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Vigorbloom Charm",
@@ -30033,8 +30033,8 @@
     {
       "name": "Watery Grave",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Wax-Wane Witness",
