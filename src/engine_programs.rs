@@ -79,7 +79,7 @@ impl Game {
         id
     }
 
-    pub(super) fn gain_life(&mut self, player: Player, amount: i64) {
+    pub(super) fn gain_life(&mut self, player: Player, amount: i128) {
         if amount <= 0 {
             return;
         }
@@ -708,7 +708,7 @@ impl Game {
                 }
                 Instruction::Draw(set, amount) => {
                     for player in self.program_players(set, &item) {
-                        self.draw_many(player, u64::from(amount));
+                        self.draw_many(player, u128::from(amount));
                     }
                 }
                 Instruction::Discard(set, amount) => {
@@ -720,12 +720,12 @@ impl Game {
                 Instruction::GainLife(set, amount) => {
                     let players: Vec<_> = self.program_players(set, &item).collect();
                     for player in players {
-                        self.gain_life(player, i64::from(amount));
+                        self.gain_life(player, i128::from(amount));
                     }
                 }
                 Instruction::LoseLife(set, amount) => {
                     for player in self.program_players(set, &item) {
-                        self.state.players[player.index()].life -= i64::from(amount);
+                        self.state.players[player.index()].life -= i128::from(amount);
                     }
                 }
                 Instruction::UntapCreatures(filter) | Instruction::TapCreatures(filter) => {
@@ -766,14 +766,13 @@ impl Game {
                 | Instruction::DamageDiscardAmount(_) => {
                     let amount = match instruction {
                         Instruction::Damage(amount) | Instruction::DamagePlayers(_, amount) => {
-                            amount
+                            i128::from(amount)
                         }
-                        Instruction::DamageDiscardAmount(_) => i32::try_from(
+                        Instruction::DamageDiscardAmount(_) => i128::from(
                             item.discard_event
                                 .expect("discard-sized effect requires event")
                                 .amount,
-                        )
-                        .expect("discard damage exhausted"),
+                        ),
                         _ => unreachable!(),
                     };
                     let source = if self.object_ref(item.card) == item.object {
@@ -815,7 +814,10 @@ impl Game {
                     power,
                     toughness,
                 } => {
-                    let stats = Stats { power, toughness };
+                    let stats = Stats {
+                        power: i128::from(power),
+                        toughness: i128::from(toughness),
+                    };
                     match subject {
                         Subject::Source => {
                             if self.on_battlefield(item.card)
@@ -891,7 +893,10 @@ impl Game {
                         })
                         .collect();
                     for id in affected {
-                        self.state.objects[id as usize].growth += Stats { power, toughness };
+                        self.state.objects[id as usize].growth += Stats {
+                            power: i128::from(power),
+                            toughness: i128::from(toughness),
+                        };
                     }
                 }
                 Instruction::PutDiscardCounters(kind) => {
@@ -900,8 +905,48 @@ impl Game {
                             kind,
                             item.discard_event
                                 .expect("discard-sized effect requires event")
-                                .amount,
+                                .amount
+                                .into(),
                         );
+                    }
+                }
+                Instruction::PutCreatureCounters {
+                    filter,
+                    kind,
+                    amount,
+                } => {
+                    // One instruction fixes the entire affected set before any counters change.
+                    let affected: Vec<_> = (0..self.state.objects.len())
+                        .map(|id| id as CardId)
+                        .filter(|&id| {
+                            self.creature_matches(filter, item.controller, item.object, id)
+                        })
+                        .collect();
+                    for id in affected {
+                        self.state.objects[id as usize]
+                            .counters
+                            .add(kind, u64::from(amount));
+                    }
+                }
+                Instruction::DoubleCounters => {
+                    for bound in &item.targets {
+                        if self.same_target_object(*bound)
+                            && let Target::Card(id) = bound.target
+                        {
+                            let counters = &mut self.state.objects[id as usize].counters;
+                            counters.plus_one = counters
+                                .plus_one
+                                .checked_mul(2)
+                                .expect("counter representation exhausted");
+                            counters.minus_one = counters
+                                .minus_one
+                                .checked_mul(2)
+                                .expect("counter representation exhausted");
+                            counters.stun = counters
+                                .stun
+                                .checked_mul(2)
+                                .expect("counter representation exhausted");
+                        }
                     }
                 }
                 Instruction::PutCounters {
@@ -911,7 +956,9 @@ impl Game {
                 } => match subject {
                     Subject::Attached => {
                         if let Some(id) = self.attached_subject(&item) {
-                            self.state.objects[id as usize].counters.add(kind, amount);
+                            self.state.objects[id as usize]
+                                .counters
+                                .add(kind, u64::from(amount));
                         }
                     }
                     Subject::Source => {
@@ -920,7 +967,7 @@ impl Game {
                         {
                             self.state.objects[item.card as usize]
                                 .counters
-                                .add(kind, amount);
+                                .add(kind, u64::from(amount));
                         }
                     }
                     Subject::Targets => {
@@ -928,7 +975,9 @@ impl Game {
                             if self.same_target_object(*bound)
                                 && let Target::Card(id) = bound.target
                             {
-                                self.state.objects[id as usize].counters.add(kind, amount);
+                                self.state.objects[id as usize]
+                                    .counters
+                                    .add(kind, u64::from(amount));
                             }
                         }
                     }

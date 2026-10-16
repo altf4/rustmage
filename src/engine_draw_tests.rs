@@ -317,12 +317,12 @@ fn targeted_draw_trigger_grants_lifelink_and_counters_or_is_countered_by_ward() 
         } else {
             resolve(&mut g);
         }
-        assert_eq!(g.object_view(target).counters.plus_one, u32::from(!ward));
+        assert_eq!(g.object_view(target).counters.plus_one, u64::from(!ward));
         assert_eq!(g.keywords(target).contains(Keywords::LIFELINK), !ward);
         g.state.step = Step::End;
         pass_pair(&mut g);
         assert!(!g.keywords(target).contains(Keywords::LIFELINK));
-        assert_eq!(g.object_view(target).counters.plus_one, u32::from(!ward));
+        assert_eq!(g.object_view(target).counters.plus_one, u64::from(!ward));
     }
 }
 
@@ -523,7 +523,7 @@ fn public_draw_context_contains_no_drawn_card_identity_and_owned_replay_preserve
     g.draw_many(Player::P0, 2);
     place(&mut g);
     let public = g.observe(Player::P1);
-    assert_eq!(public.schema, 34);
+    assert_eq!(public.schema, 35);
     assert_eq!(public.players[0].cards_drawn_this_turn, 2);
     assert!(public.objects.iter().all(|o| o.id != top));
     let event = serde_json::to_value(events(&g, card)[0]).unwrap();

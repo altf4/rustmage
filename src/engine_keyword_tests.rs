@@ -464,8 +464,8 @@ fn tribal_stats_and_lifelink_apply_before_damage_and_capture_departing_batch() {
     });
     g.state.step = Step::Blockers;
     g.advance_step();
-    assert_eq!(g.state.players[0].life, 20 + i64::from(power));
-    assert_eq!(g.state.players[1].life, 20 - i64::from(power));
+    assert_eq!(g.state.players[0].life, 20 + power);
+    assert_eq!(g.state.players[1].life, 20 - power);
     let events = g.move_objects_raw(&[lord, changeling], Zone::Graveyard);
     assert!(events[1].before.keywords.contains(Keywords::LIFELINK));
     assert!(!g.keywords(changeling).contains(Keywords::LIFELINK));
@@ -560,7 +560,7 @@ fn continuous_tribal_double_strike_gives_changeling_both_damage_steps() {
         card: attacker,
         blocked: false,
     });
-    let power = i64::from(g.stats(attacker).power);
+    let power = g.stats(attacker).power;
     g.state.step = Step::Blockers;
     g.advance_step();
     assert_eq!(g.state.players[1].life, 20 - power);
@@ -596,7 +596,7 @@ fn static_grants_preserve_printed_activated_bodies() {
         assert_eq!(g.stats(carver).power, before.power + 1);
         assert_eq!(
             g.stats(carver).toughness,
-            before.toughness + i32::from(id == bearer)
+            before.toughness + i128::from(id == bearer)
         );
         assert!(g.keywords(carver).contains(Keywords::FIRST_STRIKE));
     }

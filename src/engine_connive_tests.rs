@@ -127,7 +127,7 @@ fn source_connive_draws_then_privately_discards_and_only_nonlands_add_counters()
         assert_eq!(g.state.players[0].cards_drawn_this_turn, 1);
         assert_eq!(g.object_view(source).counters.plus_one, 0);
         let public = g.observe(Player::P1);
-        assert_eq!(public.schema, 34);
+        assert_eq!(public.schema, 35);
         assert_eq!(
             public
                 .connive_choice
@@ -145,7 +145,7 @@ fn source_connive_draws_then_privately_discards_and_only_nonlands_add_counters()
         reject(&mut g, Action::Pass);
         replay(&mut g, Action::Discard { card: discard });
         assert_eq!(g.object_view(discard).zone, Zone::Graveyard);
-        assert_eq!(g.object_view(source).counters.plus_one, u32::from(nonland));
+        assert_eq!(g.object_view(source).counters.plus_one, u64::from(nonland));
         assert!(g.state.resolving.is_none());
     }
 }
@@ -311,7 +311,7 @@ fn subtype_enter_observers_require_another_owned_villain_and_keep_explicit_sourc
         settle(&mut g);
         assert_eq!(
             g.state.objects[yellow as usize].growth.power,
-            i32::from(triggered)
+            i128::from(triggered)
         );
         assert_eq!(g.keywords(yellow).contains(Keywords::LIFELINK), triggered);
     }
@@ -359,7 +359,7 @@ fn independent_player_draw_and_optional_conniver_target_groups_preserve_player_o
             assert_eq!(g.actor(), Some(Player::P0));
             replay(&mut g, Action::Discard { card: discard });
         }
-        assert_eq!(g.object_view(target).counters.plus_one, u32::from(choose));
+        assert_eq!(g.object_view(target).counters.plus_one, u64::from(choose));
         assert!(g.state.resolving.is_none());
     }
 }

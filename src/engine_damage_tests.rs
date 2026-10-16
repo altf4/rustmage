@@ -163,7 +163,7 @@ fn lifelink_groups_simultaneous_targets_by_source_and_uses_wide_life_totals() {
     let hawk = permanent(&mut game, Player::P0, "Healer's Hawk");
     let soldier = permanent(&mut game, Player::P0, "Bishop's Soldier");
     let giant = permanent(&mut game, Player::P1, "Hill Giant");
-    game.state.players[0].life = i64::from(i32::MAX);
+    game.state.players[0].life = i128::from(i32::MAX);
     let a = game.damage_source(hawk);
     let b = game.damage_source(soldier);
     let gains = game.apply_damage_batch(&[
@@ -199,7 +199,7 @@ fn lifelink_groups_simultaneous_targets_by_source_and_uses_wide_life_totals() {
             }
         ]
     );
-    assert_eq!(game.state.players[0].life, i64::from(i32::MAX) + 5);
+    assert_eq!(game.state.players[0].life, i128::from(i32::MAX) + 5);
 }
 
 #[test]
@@ -263,13 +263,13 @@ fn exhaustive_small_trample_partitions_match_complete_rule_constraints() {
         game: Game,
         b1: CardId,
         b2: CardId,
-        power: i32,
-        mut amounts: [Option<i32>; 2],
-        out: &mut BTreeSet<(i32, i32, i32)>,
+        power: i128,
+        mut amounts: [Option<i128>; 2],
+        out: &mut BTreeSet<(i128, i128, i128)>,
     ) {
         if game.state.pending != Pending::Damage {
-            let player = (20 - game.state.players[1].life) as i32;
-            let used: i32 = amounts.iter().flatten().sum();
+            let player = 20 - game.state.players[1].life;
+            let used: i128 = amounts.iter().flatten().sum();
             let mut left = power - used - player;
             for amount in &mut amounts {
                 if amount.is_none() {

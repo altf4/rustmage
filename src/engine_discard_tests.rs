@@ -282,7 +282,7 @@ fn optional_discard_payment_triggers_once_after_commit_and_declining_does_not() 
             replay(&mut g, Action::DeclineEffectPayment);
             assert!(contexts(&g, mako).is_empty());
         }
-        assert_eq!(g.object_view(mako).counters.plus_one, u32::from(accept));
+        assert_eq!(g.object_view(mako).counters.plus_one, u64::from(accept));
     }
 }
 

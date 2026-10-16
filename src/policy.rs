@@ -32,11 +32,12 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             -2
         }
     };
-    let target_score = |program: &[Instruction], target: Target| -> i32 {
+    let target_score = |program: &[Instruction], target: Target| -> i128 {
         let beneficial = program
             .iter()
             .find_map(|instruction| match instruction {
                 Instruction::PutCounters { kind, .. } => Some(*kind == CounterKind::PlusOne),
+                Instruction::DoubleCounters => Some(true),
                 Instruction::GrantKeywords { .. } => Some(true),
                 Instruction::Connive { .. } => Some(true),
                 Instruction::Grow {
@@ -86,7 +87,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
         let own = matches!(target, Target::Card(id) if observation.objects.iter().any(|o|o.id==id && o.owner==actor));
         if own == beneficial { 70 } else { -10 }
     };
-    let score = |action: &Action| -> i32 {
+    let score = |action: &Action| -> i128 {
         // A smoke policy need not spend the whole turn re-equipping, including
         // legal zero-cost activations. The engine still offers those actions.
         if let Action::Activate { card, ability, .. }
@@ -132,7 +133,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 // both branches as life falls during games.
                 if *pay
                     && observation.players[actor.index()].life
-                        > i64::from(observation.entry_life.as_ref().unwrap().cost) + 4
+                        > i128::from(observation.entry_life.as_ref().unwrap().cost) + 4
                 {
                     80
                 } else if !*pay {
@@ -265,7 +266,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
         .expect("legal action")
 }
 
-fn mana_score(observation: &crate::Observation, production: crate::Mana) -> i32 {
+fn mana_score(observation: &crate::Observation, production: crate::Mana) -> i128 {
     let pool = observation.players[observation.viewer.index()].mana;
     observation
         .objects
@@ -277,7 +278,7 @@ fn mana_score(observation: &crate::Observation, production: crate::Mana) -> i32 
                 .map(|index| {
                     required[index]
                         .saturating_sub(pool[index])
-                        .min(production[index]) as i32
+                        .min(production[index]) as i128
                 })
                 .sum()
         })

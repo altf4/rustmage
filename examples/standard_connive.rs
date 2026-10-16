@@ -99,7 +99,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         .find(|o| o.reference == current.object)
                         .map_or(0, |o| o.counters.plus_one)
                 };
-                counters += u64::from(count(&after.objects).saturating_sub(count(&before.objects)));
+                counters += count(&after.objects).saturating_sub(count(&before.objects));
             }
             if before.connive_choice.is_some()
                 || after.connive_choice.is_some()

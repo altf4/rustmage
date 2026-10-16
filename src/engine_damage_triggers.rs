@@ -2,10 +2,10 @@
 use super::*;
 
 impl Game {
-    pub(super) fn draw_many(&mut self, player: Player, amount: u64) {
+    pub(super) fn draw_many(&mut self, player: Player, amount: u128) {
         // Empty draws only set the existing failed-draw flag. No admitted card
         // replaces draws or triggers on failed draws; cap the redundant attempts.
-        let attempts = amount.min(self.state.players[player.index()].library.len() as u64 + 1);
+        let attempts = amount.min(self.state.players[player.index()].library.len() as u128 + 1);
         for _ in 0..attempts {
             self.draw(player);
         }
@@ -101,9 +101,9 @@ impl Game {
             };
             let amount = hits
                 .entry((event.source, player, event.combat))
-                .or_insert(0u64);
+                .or_insert(0u128);
             *amount = amount
-                .checked_add(event.amount as u64)
+                .checked_add(u128::try_from(event.amount).expect("positive damage"))
                 .expect("damage amount exhausted");
         }
         let sources: Vec<_> = self
@@ -132,7 +132,7 @@ impl Game {
                         continue;
                     }
                     if one_or_more {
-                        let total = aggregate.entry(player).or_insert((0u64, true));
+                        let total = aggregate.entry(player).or_insert((0u128, true));
                         total.0 = total
                             .0
                             .checked_add(amount)

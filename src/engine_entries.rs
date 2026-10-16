@@ -272,7 +272,7 @@ impl Game {
         let EntryTapped::PayLife(cost) = movement.before.card.entry_tapped() else {
             unreachable!()
         };
-        self.state.players[movement.before.owner.index()].life >= i64::from(cost)
+        self.state.players[movement.before.owner.index()].life >= i128::from(cost)
     }
     pub(super) fn choose_entry_life(&mut self, pay: bool) {
         assert!(!pay || self.can_pay_entry_life());
@@ -282,7 +282,7 @@ impl Game {
             unreachable!()
         };
         if pay {
-            self.state.players[movement.before.owner.index()].life -= i64::from(cost);
+            self.state.players[movement.before.owner.index()].life -= i128::from(cost);
         }
         movement.life_paid = Some(pay);
         movement.tapped |= !pay;

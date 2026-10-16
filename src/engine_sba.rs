@@ -14,7 +14,7 @@ pub(super) struct SbaBatch {
     deaths: Vec<CardId>,
     ceased: Vec<CardId>,
     detached: Vec<ObjectRef>,
-    pairs: Vec<(ObjectRef, u32)>,
+    pairs: Vec<(ObjectRef, u64)>,
     lost: [bool; 2],
     pub groups: Vec<LegendGroup>,
 }
@@ -22,7 +22,7 @@ impl SbaBatch {
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + (self.deaths.len() + self.ceased.len()) * std::mem::size_of::<CardId>()
-            + self.pairs.len() * std::mem::size_of::<(ObjectRef, u32)>()
+            + self.pairs.len() * std::mem::size_of::<(ObjectRef, u64)>()
             + self.detached.len() * std::mem::size_of::<ObjectRef>()
             + self.groups.len() * std::mem::size_of::<LegendGroup>()
             + self.groups.iter().map(|g| g.objects.len()).sum::<usize>()

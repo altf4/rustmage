@@ -169,11 +169,46 @@ pub struct BoundTarget {
     pub object: Option<ObjectRef>,
 }
 
+// Internally tagged Serde enums buffer through Content, which does not expose
+// deserialize_i128. Number's visitor preserves both small and large JSON integers.
+fn deserialize_damage_amount<'de, D: serde::Deserializer<'de>>(
+    deserializer: D,
+) -> Result<i128, D::Error> {
+    let number = serde_json::Number::deserialize(deserializer)?;
+    number.as_i128().ok_or_else(|| {
+        serde::de::Error::custom("damage amount is outside the signed 128-bit integer range")
+    })
+}
+
 /// Choices are incremental for declarations and multi-blocker damage; no combinatorial
 /// enumeration of attacker subsets, blocking configurations, or damage partitions.
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(tag = "kind")]
-pub enum Action {
+// Keep one variant/field list for the public enum and its JSON wire decoder.
+// Serde's internally tagged Content buffer lacks a u128/i128 visitor. Replaying
+// the exact JSON number tokens through the wire decoder also supports from_value
+// and nested protocol requests without narrowing large integers.
+macro_rules! define_actions {
+    ($($variant:ident $( { $($(#[$attribute:meta])* $field:ident: $ty:ty),* $(,)? } )?),* $(,)?) => {
+        #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+        #[serde(tag="kind")]
+        pub enum Action { $($variant $( { $($(#[$attribute])* $field: $ty),* } )?),* }
+        impl<'de> Deserialize<'de> for Action {
+            fn deserialize<D:serde::Deserializer<'de>>(deserializer:D)->Result<Self,D::Error>{
+                #[derive(Deserialize)]
+                #[serde(tag="kind")]
+                enum Wire { $($variant $( { $($(#[$attribute])* $field: $ty),* } )?),* }
+                let value=serde_json::Value::deserialize(deserializer)?;
+                let wide=value.get("amount").and_then(serde_json::Value::as_number)
+                    .is_some_and(|n|n.as_i64().is_none()&&n.as_u64().is_none());
+                let wire:Wire=if wide {
+                    let text=serde_json::to_string(&value).map_err(serde::de::Error::custom)?;
+                    serde_json::from_str(&text).map_err(serde::de::Error::custom)?
+                } else {serde_json::from_value(value).map_err(serde::de::Error::custom)?};
+                Ok(match wire { $(Wire::$variant $( { $($field),* } )? => Self::$variant $( { $($field),* } )?),* })
+            }
+        }
+    }
+}
+define_actions! {
     ChooseAdditionalCost {
         object: ObjectRef,
     },
@@ -275,7 +310,8 @@ pub enum Action {
     FinishBlockers,
     AssignDamage {
         target: Target,
-        amount: i32,
+        #[serde(deserialize_with = "deserialize_damage_amount")]
+        amount: i128,
     },
     Discard {
         card: CardId,
@@ -366,7 +402,7 @@ struct Object {
     tapped: bool,
     // True until this creature's controller begins their next turn.
     summoning_sick: bool,
-    damage: i32,
+    damage: i128,
     deathtouch_since_sba: bool,
     growth: Stats,
     gained_keywords: Keywords,
@@ -379,9 +415,8 @@ impl Object {
     fn keywords(&self) -> Keywords {
         self.card.keywords().union(self.gained_keywords)
     }
-    fn counter_delta(&self) -> i32 {
-        i32::try_from(i64::from(self.counters.plus_one) - i64::from(self.counters.minus_one))
-            .expect("counter modifier exhausted")
+    fn counter_delta(&self) -> i128 {
+        i128::from(self.counters.plus_one) - i128::from(self.counters.minus_one)
     }
     fn untap(&mut self) {
         if self.tapped {
@@ -393,15 +428,21 @@ impl Object {
         }
     }
 
-    fn local_power(&self) -> i32 {
+    fn local_power(&self) -> i128 {
         match self.card.effect() {
-            Effect::Creature(p, _) => p + self.growth.power + self.counter_delta(),
+            Effect::Creature(p, _) => i128::from(p)
+                .checked_add(self.growth.power)
+                .and_then(|v| v.checked_add(self.counter_delta()))
+                .expect("power representation exhausted"),
             _ => 0,
         }
     }
-    fn local_toughness(&self) -> i32 {
+    fn local_toughness(&self) -> i128 {
         match self.card.effect() {
-            Effect::Creature(_, t) => t + self.growth.toughness + self.counter_delta(),
+            Effect::Creature(_, t) => i128::from(t)
+                .checked_add(self.growth.toughness)
+                .and_then(|v| v.checked_add(self.counter_delta()))
+                .expect("toughness representation exhausted"),
             _ => 0,
         }
     }
@@ -413,7 +454,7 @@ struct PlayerState {
     cards_drawn_this_turn: u64,
     life_gain_events_this_turn: u64,
     attacked_this_turn: bool,
-    life: i64,
+    life: i128,
     mana: Mana,
     library: Vec<CardId>, // top is last, bottom is first
     mulligans: u8,
@@ -454,7 +495,7 @@ pub struct StackLink {
 pub struct DamageTriggerView {
     pub dealer: Option<ObjectRef>,
     pub player: Player,
-    pub amount: u64,
+    pub amount: u128,
     pub combat: bool,
 }
 
@@ -475,7 +516,7 @@ struct Attacker {
 struct DamageChoice {
     source: DamageSource,
     blockers: Vec<CardId>,
-    remaining: i32,
+    remaining: i128,
     trample: bool,
     prior_blockers_lethal: bool,
 }
@@ -522,14 +563,14 @@ pub struct DamageSource {
 pub struct DamageEvent {
     pub source: DamageSource,
     pub target: Target,
-    pub amount: i32,
+    pub amount: i128,
     pub combat: bool,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 struct LifeGainEvent {
     source: DamageSource,
-    amount: i32,
+    amount: i128,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -675,14 +716,14 @@ pub struct ObjectView {
     pub zone: Zone,
     pub tapped: bool,
     pub summoning_sick: bool,
-    pub damage: i32,
+    pub damage: i128,
     pub counters: Counters,
     pub used_abilities: u64,
     pub attached_to: Option<ObjectRef>,
     pub modified: bool,
     pub attacking: bool,
-    pub power: i32,
-    pub toughness: i32,
+    pub power: i128,
+    pub toughness: i128,
     pub keywords: Keywords,
     pub token: Option<&'static TokenInfo>,
 }
@@ -703,7 +744,7 @@ pub struct PlayerView {
     pub cards_drawn_this_turn: u64,
     pub life_gain_events_this_turn: u64,
     pub attacked_this_turn: bool,
-    pub life: i64,
+    pub life: i128,
     pub mana: Mana,
     pub library_count: usize,
     pub hand_count: usize,
@@ -804,6 +845,21 @@ pub struct TriggerUse {
     pub ability: u16,
 }
 
+/// Every integer in this inclusive range is a legal damage assignment.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct DamageAssignmentRange {
+    pub source: ObjectRef,
+    pub target: Target,
+    pub minimum: i128,
+    pub maximum: i128,
+}
+/// Complete action space: concrete choices plus every value of the numeric range.
+#[derive(Clone, Debug, Serialize)]
+pub struct LegalActionSpace {
+    pub choices: Vec<Action>,
+    pub damage_assignment: Option<DamageAssignmentRange>,
+}
+
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
     pub schema: u32,
@@ -847,6 +903,7 @@ pub struct Observation {
     pub blocks: Vec<(CardId, CardId)>,
     pub damage_assigned: Vec<DamageEvent>,
     pub damage_source: Option<CardId>,
+    pub damage_assignment: Option<DamageAssignmentRange>,
     pub outcome: Option<Outcome>,
     pub actions: Vec<Action>,
 }
@@ -1032,7 +1089,39 @@ impl Game {
         }
     }
 
-    /// Reuse a caller-owned action buffer during native rollouts.
+    /// Complete legal space, including all numeric damage assignments.
+    pub fn legal_action_space(&self) -> LegalActionSpace {
+        LegalActionSpace {
+            choices: self.legal_actions(),
+            damage_assignment: self.damage_assignment_range(),
+        }
+    }
+    /// Exact bounds without allocating or enumerating numeric damage amounts.
+    pub fn damage_assignment_range(&self) -> Option<DamageAssignmentRange> {
+        if self.state.pending != Pending::Damage {
+            return None;
+        }
+        let choice = self.state.damage_choices.last().expect("damage choice");
+        let minimum = if choice.blockers.len() == 1 && choice.trample {
+            if choice.prior_blockers_lethal {
+                self.lethal_assignment(choice.source, choice.blockers[0])
+                    .min(choice.remaining)
+            } else {
+                choice.remaining
+            }
+        } else {
+            0
+        };
+        Some(DamageAssignmentRange {
+            source: choice.source.reference,
+            target: Target::Card(choice.blockers[0]),
+            minimum,
+            maximum: choice.remaining,
+        })
+    }
+    /// Reuse a caller-owned buffer of concrete indexed choices. Numeric damage
+    /// ranges up to 64 wide are exhaustive; larger ranges provide min/lethal/max
+    /// conveniences. Use legal_action_space for the complete parametric space.
     pub fn legal_actions_into(&self, out: &mut Vec<Action>) {
         out.clear();
         if self.actor().is_none() {
@@ -1044,6 +1133,8 @@ impl Game {
         });
     }
 
+    /// Concrete indexed choices; large numeric domains are represented completely
+    /// by legal_action_space().damage_assignment, not enumerated in this vector.
     pub fn legal_actions(&self) -> Vec<Action> {
         let mut actions = Vec::new();
         self.legal_actions_into(&mut actions);
@@ -1063,7 +1154,14 @@ impl Game {
             if self.actor() != Some(actor) {
                 return Err(Error::WrongActor);
             }
-            if !self.visit_actions(|a| a == action) {
+            let legal = if let Action::AssignDamage { target, amount } = &action {
+                self.damage_assignment_range().is_some_and(|range| {
+                    *target == range.target && *amount >= range.minimum && *amount <= range.maximum
+                })
+            } else {
+                self.visit_actions(|a| a == action)
+            };
+            if !legal {
                 return Err(Error::IllegalAction);
             }
             self.apply_legal(actor, action);
@@ -1412,21 +1510,32 @@ impl Game {
                 }
             }
             Pending::Damage => {
-                let choice = s.damage_choices.last().expect("damage choice");
-                let target = Target::Card(choice.blockers[0]);
-                let minimum = if choice.blockers.len() == 1 && choice.trample {
-                    if choice.prior_blockers_lethal {
-                        self.lethal_assignment(choice.source, choice.blockers[0])
-                            .min(choice.remaining)
-                    } else {
-                        choice.remaining
+                let range = self.damage_assignment_range().unwrap();
+                if range.maximum - range.minimum <= 64 {
+                    for amount in range.minimum..=range.maximum {
+                        if emit(Action::AssignDamage {
+                            target: range.target,
+                            amount,
+                        }) {
+                            return true;
+                        }
                     }
                 } else {
-                    0
-                };
-                for amount in minimum..=choice.remaining {
-                    if emit(Action::AssignDamage { target, amount }) {
-                        return true;
+                    let choice = s.damage_choices.last().unwrap();
+                    let lethal = self
+                        .lethal_assignment(choice.source, choice.blockers[0])
+                        .clamp(range.minimum, range.maximum);
+                    let mut prior = None;
+                    for amount in [range.minimum, lethal, range.maximum] {
+                        if prior != Some(amount)
+                            && emit(Action::AssignDamage {
+                                target: range.target,
+                                amount,
+                            })
+                        {
+                            return true;
+                        }
+                        prior = Some(amount);
                     }
                 }
             }
@@ -2363,7 +2472,7 @@ impl Game {
         }
     }
 
-    fn queue_hit(&mut self, source: DamageSource, target: Target, amount: i32, combat: bool) {
+    fn queue_hit(&mut self, source: DamageSource, target: Target, amount: i128, combat: bool) {
         if amount > 0 {
             self.state.hits.push(DamageEvent {
                 source,
@@ -2383,10 +2492,18 @@ impl Game {
                 continue;
             }
             match event.target {
-                Target::Player(p) => self.state.players[p.index()].life -= i64::from(event.amount),
+                Target::Player(p) => {
+                    let life = &mut self.state.players[p.index()].life;
+                    *life = life
+                        .checked_sub(event.amount)
+                        .expect("life representation exhausted");
+                }
                 Target::Card(id) => {
                     let obj = &mut self.state.objects[id as usize];
-                    obj.damage += event.amount;
+                    obj.damage = obj
+                        .damage
+                        .checked_add(event.amount)
+                        .expect("damage representation exhausted");
                     obj.deathtouch_since_sba |=
                         event.source.keywords.contains(Keywords::DEATHTOUCH);
                 }
@@ -2396,7 +2513,10 @@ impl Game {
                 // One source damaging multiple objects simultaneously causes a
                 // single life-gain event; distinct sources remain distinct.
                 if let Some(&index) = gain_indices.get(&event.source) {
-                    gains[index].amount += event.amount;
+                    gains[index].amount = gains[index]
+                        .amount
+                        .checked_add(event.amount)
+                        .expect("life gain representation exhausted");
                 } else {
                     gain_indices.insert(event.source, gains.len());
                     gains.push(LifeGainEvent {
@@ -2407,7 +2527,7 @@ impl Game {
             }
         }
         for gain in &gains {
-            self.gain_life(gain.source.controller, i64::from(gain.amount));
+            self.gain_life(gain.source.controller, gain.amount);
         }
         self.player_damage_triggers(events);
         // Trigger events are recorded before SBAs, after the whole damage batch.
@@ -2433,9 +2553,14 @@ impl Game {
         }
     }
 
-    fn lethal_assignment(&self, source: DamageSource, blocker: CardId) -> i32 {
+    fn lethal_assignment(&self, source: DamageSource, blocker: CardId) -> i128 {
         let obj = &self.state.objects[blocker as usize];
-        let remaining = (self.stats(blocker).toughness - obj.damage).max(0);
+        let remaining = self
+            .stats(blocker)
+            .toughness
+            .checked_sub(obj.damage)
+            .expect("damage assignment representation exhausted")
+            .max(0);
         if source.keywords.contains(Keywords::DEATHTOUCH) {
             remaining.min(1)
         } else {
@@ -2540,7 +2665,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 34,
+            schema: 35,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -2796,6 +2921,11 @@ impl Game {
             } else {
                 None
             },
+            damage_assignment: if owns_choice {
+                self.damage_assignment_range()
+            } else {
+                None
+            },
             outcome: s.outcome,
             actions: if owns_choice {
                 self.legal_actions()
@@ -3018,3 +3148,7 @@ mod changeling_tests;
 #[cfg(test)]
 #[path = "engine_additional_cost_tests.rs"]
 mod additional_cost_tests;
+
+#[cfg(test)]
+#[path = "engine_counter_group_tests.rs"]
+mod counter_group_tests;

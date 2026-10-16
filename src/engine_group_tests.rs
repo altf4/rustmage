@@ -221,7 +221,7 @@ fn one_illegal_fight_participant_prevents_damage_but_keeps_other_group_effects()
         assert_eq!(game.object_view(opp).damage, 0);
         assert_eq!(
             game.object_view(own).counters.plus_one,
-            u32::from(!remove_own)
+            u64::from(!remove_own)
         );
     }
 }
