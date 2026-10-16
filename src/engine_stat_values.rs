@@ -72,7 +72,8 @@ impl Game {
             }
             StatValue::AttackingCreatures => objects()
                 .filter(|(id, o)| {
-                    o.zone == Zone::Battlefield
+                    o.owner == owner
+                        && o.zone == Zone::Battlefield
                         && o.card.is_creature()
                         && self.state.attackers.iter().any(|a| a.card == *id)
                 })

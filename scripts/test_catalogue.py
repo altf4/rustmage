@@ -39,6 +39,36 @@ class CatalogueCompilerTests(unittest.TestCase):
         altered=dict(snapshot,cards=[dict(c,oracle_text=c.get('oracle_text','')+'\nDiscover 3.') if c['name'] in names else c for c in snapshot['cards']]);altered['cards_sha256']=hashlib.sha256(json.dumps(altered['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();_,bad=generate.compile_catalogue(altered,target);self.assertFalse(names&{c['name'] for c in bad['cards'] if c['implemented']})
         self.assertFalse({'Cemetery Recruitment','Budding Insurgent'}&supported)
 
+    def test_attachment_attack_triggers_preserve_ownership_and_restricted_equip(self):
+        import json
+        cards={c['name']:c for c in json.loads((generate.ROOT/'data/standard/cards.json').read_text())['cards']}
+        manifest=json.loads((generate.ROOT/'docs/attachment-attack-admissions.json').read_text())
+        for row in manifest['cards']:
+            name=row['name'];card=cards[name];result=generate.equipment_template(card)
+            self.assertIsNotNone(result,name);self.assertEqual(row['oracle_text'],card['oracle_text'])
+            event='GrantedAttacks' if name in ['Candlestick','Diamond Pick-Axe',"Medic's Kitesail",'Pirate Hat','Web-Shooters'] else 'EquippedAttacks'
+            self.assertEqual(sum(c==event for c,_,_ in result[2]),1,name)
+            self.assertIsNone(generate.equipment_template(dict(card,oracle_text=card['oracle_text']+'\nDiscover 3.')),name)
+        hat=generate.equipment_template(cards['Pirate Hat']);self.assertEqual(hat[3][0][1],'PirateYou');self.assertEqual(hat[3][0][0]['generic'],1);self.assertEqual(hat[3][1][1],'CreatureYou');self.assertEqual(hat[3][1][0]['generic'],2)
+        for name in ["Captain America's Shield",'Thunder Lasso']:
+            self.assertEqual(next(t for c,p,t in generate.equipment_template(cards[name])[2] if c=='EquippedAttacks'),'DefendingCreature')
+        blade=generate.equipment_template(cards['Stormbeacon Blade']);self.assertIn('minimum: Some(3)',blade[2][0][1][0]);self.assertNotIn('InterveningIf',blade[2][0][0])
+        for row in manifest['gated']:self.assertIsNone(generate.equipment_template(cards[row['name']]),row['name'])
+
+    def test_attachment_attack_grammar_rejects_partial_grants_and_unbound_events(self):
+        texts=[
+            'Equipped creature gets +1/+1 and has "Whenever this creature attacks, discover 3."\nEquip {2}',
+            'Equipped creature gets +1/+1 and has "Whenever this creature attacks, draw a card. Discover 3."\nEquip {2}',
+            'Equipped creature gets +1/+1 and has flying and "{3}, {T}: Tap target creature."\nEquip {2}',
+            'Equipped creature gets +1/+1 and has "Whenever this creature attacks, you gain 1 life," and is a Cleric in addition to its other types.\nEquip {2}',
+            'Whenever equipped creature attacks, untap it. After this phase, there is an additional combat phase.\nEquip {2}',
+            'Whenever equipped creature attacks, you may sacrifice a permanent other than that creature or this Equipment. If you do, draw a card.\nEquip {2}',
+            'Equipped creature gets +1/+1.\nEquip Pirate {X}',
+        ]
+        for text in texts:self.assertIsNone(generate.equipment_template(self.card(type_line='Artifact — Equipment',oracle_text=text)),text)
+        self.assertIsNone(generate.permanent_program_template(self.card(type_line='Artifact',oracle_text='Whenever equipped creature attacks, draw a card.')))
+        self.assertIsNone(generate.targeted_program('Tap target creature defending player controls.'))
+
     def test_filtered_library_nouns_preserve_closed_union_conjunction_and_complement(self):
         expected={'an artifact card':'Kinds(16)','a Mutant, Ninja, Turtle, or land card':'AnyOf(&[LibrarySelectionFilter::Subtype("Mutant"), LibrarySelectionFilter::Subtype("Ninja"), LibrarySelectionFilter::Subtype("Turtle"), LibrarySelectionFilter::Kinds(2)])','a Mount creature card or a Plains card':'AnyOf(&[LibrarySelectionFilter::AllOf(&[LibrarySelectionFilter::Kinds(1), LibrarySelectionFilter::Subtype("Mount")]), LibrarySelectionFilter::Subtype("Plains")])','an Ally, Equipment, or Lesson card':'AnyOf(&[LibrarySelectionFilter::Subtype("Ally"), LibrarySelectionFilter::Subtype("Equipment"), LibrarySelectionFilter::Subtype("Lesson")])','an artifact or Pirate card':'AnyOf(&[LibrarySelectionFilter::Kinds(16), LibrarySelectionFilter::Subtype("Pirate")])','a noncreature, nonland card':'ExcludingKinds(3)'}
         for noun,result in expected.items():
@@ -2608,7 +2638,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                      "Squire's Lightblade",'Stolen Stark Tech','Swiftfoot Boots','Sword of Vengeance',
                      'Twin Blades','Vibranium Energy Daggers','Well-Worn Spatula']:
             self.assertIsNotNone(generate.equipment_template(cards[name]),name)
-        for name in ['Auxiliary Boosters','Bloodthorn Flail',"Captain America's Shield",
+        for name in ['Auxiliary Boosters','Bloodthorn Flail',
                      'Dragonfire Blade',"Hunter's Blowgun",'Lotus Ring',"Pirate's Cutlass",'Spider-Suit']:
             self.assertIsNone(generate.equipment_template(cards[name]),name)
 

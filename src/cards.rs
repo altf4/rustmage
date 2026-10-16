@@ -34,6 +34,8 @@ pub(crate) enum TargetRule {
         predicate: &'static TargetPredicate,
     },
     Creature,
+    /// Bound to the captured attachment attack defender before target selection.
+    DefendingCreature,
     CreatureOrVehicle {
         relation: i8,
     },
@@ -998,6 +1000,8 @@ pub(crate) enum TriggerCondition {
     SelfDies,
     SelfEntersOrDies,
     SelfAttacks,
+    EquippedAttacks,
+    GrantedAttacks,
     SelfBecomesTapped,
     AttackDeclared {
         minimum: u16,

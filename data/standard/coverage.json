@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "6887dacf503b5b12795192b85c8f7009221784be16d217f34c8f04300f46d3db",
+  "catalogue_version": "19f5a43726a4fc3503feee79cf5f630d22e41dd02ea98d43ecf2f355ee5d6581",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1523,
-  "implemented_total": 1529,
+  "implemented_standard_cards": 1533,
+  "implemented_total": 1539,
   "token_definitions": 72,
   "emblem_definitions": 1,
   "cards": [
@@ -2062,8 +2062,8 @@
     {
       "name": "Baseball Bat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Bashful Beastie",
@@ -3796,8 +3796,8 @@
     {
       "name": "Candlestick",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Candy Grapple",
@@ -3856,8 +3856,8 @@
     {
       "name": "Captain America's Shield",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Captain America, Living Legend",
@@ -6424,8 +6424,8 @@
     {
       "name": "Diamond Pick-Axe",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Diamond Weapon",
@@ -16228,8 +16228,8 @@
     {
       "name": "Medic's Kitesail",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Meditation Pools",
@@ -19030,8 +19030,8 @@
     {
       "name": "Pirate Hat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Pirate Peddlers",
@@ -25030,8 +25030,8 @@
     {
       "name": "Stormbeacon Blade",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Stormcarved Coast",
@@ -27478,8 +27478,8 @@
     {
       "name": "Thunder Lasso",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Thunder Magic",
@@ -28462,8 +28462,8 @@
     {
       "name": "Ultima Weapon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Ultima, Origin of Oblivion",
@@ -30166,8 +30166,8 @@
     {
       "name": "Web-Shooters",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Web-Warriors",

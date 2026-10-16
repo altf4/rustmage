@@ -9,7 +9,7 @@ use crate::cards::{
     TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
 /// Version of the public observation structure, including owned trigger context.
-pub const OBSERVATION_SCHEMA: u32 = 58;
+pub const OBSERVATION_SCHEMA: u32 = 59;
 
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
@@ -538,8 +538,20 @@ pub struct CastInfo {
     pub offspring: Option<bool>,
 }
 
+/// Frozen attack and immutable program provenance, independent of later attachments.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct AttachmentTriggerView {
+    pub grantor: ObjectRef,
+    pub granting_card: Card,
+    pub attacker: ObjectRef,
+    pub defender: Player,
+    /// True when the actual creature owns an ability granted by the Equipment.
+    pub granted: bool,
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
+    pub attachment_trigger: Option<Box<AttachmentTriggerView>>,
     pub cast: Option<CastInfo>,
     /// The exact event object; this is a non-targeted reference, never rebound.
     pub entering_object: Option<ObjectRef>,
@@ -563,13 +575,20 @@ pub struct SpellView {
 }
 
 impl SpellView {
+    pub(crate) fn trigger_definition(&self) -> Card {
+        self.attachment_trigger
+            .as_ref()
+            .filter(|event| event.granted)
+            .map_or(self.source_card, |event| event.granting_card)
+    }
+
     pub(crate) fn modes(&self) -> Option<&'static [SpellMode]> {
         match self.kind {
             StackKind::Spell => match self.source_card.effect() {
                 Effect::Modal(modes) => Some(modes),
                 _ => None,
             },
-            StackKind::TriggeredAbility { ability } => match self.source_card.triggers()
+            StackKind::TriggeredAbility { ability } => match self.trigger_definition().triggers()
                 [ability as usize]
                 .program
                 .first()
@@ -589,8 +608,30 @@ impl SpellView {
         }
         match self.kind {
             StackKind::TriggeredAbility { ability } => {
-                let a = &self.source_card.triggers()[ability as usize];
-                Some((a.targets, a.program))
+                let a = &self.trigger_definition().triggers()[ability as usize];
+                let targets = match a.targets {
+                    TargetPlan::Single(mut spec) if spec.rule == TargetRule::DefendingCreature => {
+                        if let Some(event) = &self.attachment_trigger {
+                            spec.rule = TargetRule::Object {
+                                zone: TargetZone::Battlefield,
+                                kinds: 1,
+                                relation: if event.defender == self.controller {
+                                    0
+                                } else {
+                                    1
+                                },
+                                other: false,
+                                nonland: false,
+                                tapped: false,
+                                min_mana: 0,
+                                max_mana: u32::MAX,
+                            };
+                        }
+                        TargetPlan::Single(spec)
+                    }
+                    plan => plan,
+                };
+                Some((targets, a.program))
             }
             StackKind::ActivatedAbility { ability } => {
                 let a = &self.source_card.activations()[ability as usize];
@@ -3749,7 +3790,13 @@ impl Game {
                 .chain(&s.ordering_triggers)
                 .chain(s.resolving.iter().map(|resolution| &resolution.item))
                 .chain(s.announcing.iter().map(|announcement| &announcement.item))
-                .map(|item| item.targets.len() * std::mem::size_of::<BoundTarget>())
+                .map(|item| {
+                    item.targets.len() * std::mem::size_of::<BoundTarget>()
+                        + item
+                            .attachment_trigger
+                            .as_ref()
+                            .map_or(0, |_| std::mem::size_of::<AttachmentTriggerView>())
+                })
                 .sum::<usize>()
             + s.attackers.len() * std::mem::size_of::<Attacker>()
             + s.blocking.len() * std::mem::size_of::<CardId>()
@@ -4142,3 +4189,7 @@ mod target_cost_exile_tests;
 #[cfg(test)]
 #[path = "engine_subject_condition_tests.rs"]
 mod subject_condition_tests;
+
+#[cfg(test)]
+#[path = "engine_attachment_attack_tests.rs"]
+mod attachment_attack_tests;

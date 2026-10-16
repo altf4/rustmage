@@ -1196,6 +1196,8 @@ def statement_program(text):
     if m:=re.fullmatch(r'(?:you )?draw (a card|two cards|three cards|four cards) and (create .+)\.',text):
         if program:=token_program(m[2]+'.') or predefined_program(m[2]+'.'):
             return [f'Draw(PlayerSet::Controller, {DRAW_COUNTS[m[1]]})',*program]
+    if text=='draw a card if you control three or more attacking creatures.':
+        return ['If { guard: StepGuard::Expression { value: StatValue::AttackingCreatures, minimum: Some(3), maximum: None }, skip: 1 }','Draw(PlayerSet::Controller, 1)']
     if text in ('tap enchanted creature.','tap equipped creature.'): return ['TapAttached']
     if m := re.fullmatch(r'(?:enchanted|equipped) creature gets ([+-][0-9]+)/([+-][0-9]+) until end of turn\.',text):
         if max(abs(int(m[1])),abs(int(m[2])))>32767: return None
@@ -1396,6 +1398,8 @@ for _name, _kinds, _relation, _tapped, _minimum, _maximum in [
     TARGET_RULES[_name] = (f'TargetRule::Object {{ zone: TargetZone::{_zone}, kinds: {_kinds}, '
                           f'relation: {_relation}, other: false, nonland: false, '
                           f'tapped: {str(_tapped).lower()}, min_mana: {_minimum}, max_mana: {_maximum} }}')
+TARGET_RULES['DefendingCreature'] = 'TargetRule::DefendingCreature'
+TARGET_RULES['PirateYou'] = filtered_target('CreatureYou','Subtype("Pirate")')
 TARGET_RULES['VampireYou'] = ('TargetRule::Filtered { base: &TargetRule::Object { zone: TargetZone::Battlefield, kinds: 0, relation: 0, other: false, nonland: false, tapped: false, min_mana: 0, max_mana: 4294967295 }, predicate: &TargetPredicate::Subtype("Vampire") }')
 
 for _name, _base, _predicate in [
@@ -1695,6 +1699,8 @@ def targeted_program(text):
         keywords=keyword_list(m[3])
         if keywords is None: return None
         return ('CreatureVehicle',0,1),[counter_instruction('Targets',m[1],m[2]),f'GrantKeywords {{ subject: Subject::Targets, keywords: Keywords({keywords}) }}']
+    if text=='attach this Equipment to target Pirate creature you control.':
+        return 'PirateYou',['AttachSource']
     if m := re.fullmatch(r'attach this Equipment to target creature you control\.(?: That creature gains (.+) until end of turn\.)?', text):
         program=['AttachSource']
         if m[1]:
@@ -2539,15 +2545,37 @@ def aura_template(card):
 
 def equipment_template(card):
     if (card.get('layout') != 'normal' or permanent_type(card) != 'Artifact'
-            or card.get('type_line', '').split(' — ')[-1] != 'Equipment'
+            or 'Equipment' not in card.get('type_line', '').split(' — ')[-1].split()
             or not isinstance(card.get('oracle_text'),str)
             or spell_cost_options(card.get('mana_cost','')) is None): return None
     text=re.sub(r'\([^()]*\)', '', card['oracle_text']).strip()
     body=[]
+    attached_abilities=[]
+    def attack_ability(text,condition):
+        if text=='tap target creature defending player controls.':
+            return condition,['Tap'],'DefendingCreature'
+        result=targeted_program(text)
+        if result:return condition,result[1],result[0]
+        program=statement_program(text)
+        return (condition,program,'None') if program else None
     power,toughness,keywords,equips=0,0,0,0
     for line in text.split('\n'):
         line=line.strip()
-        if m:=re.fullmatch(r'Equipped creature gets ([+-][0-9]+)/([+-][0-9]+)(?: and has (.+))?\.',line):
+        if m:=re.fullmatch(r'Equipped creature gets ([+-][0-9]+)/([+-][0-9]+) and has (.*?)"Whenever this creature attacks, (.+)"',line):
+            if max(abs(int(m[1])),abs(int(m[2])))>32767:return None
+            prefix=m[3]
+            if prefix and not prefix.endswith(' and '):return None
+            extra=keyword_list(prefix[:-5]) if prefix else 0
+            if extra is None:return None
+            power+=int(m[1]);toughness+=int(m[2]);keywords|=extra
+            ability=attack_ability(m[4],'GrantedAttacks')
+            if ability is None:return None
+            attached_abilities.append(ability)
+        elif line.startswith('Whenever equipped creature attacks, '):
+            ability=attack_ability(line[len('Whenever equipped creature attacks, '):],'EquippedAttacks')
+            if ability is None:return None
+            attached_abilities.append(ability)
+        elif m:=re.fullmatch(r'Equipped creature gets ([+-][0-9]+)/([+-][0-9]+)(?: and has (.+))?\.',line):
             if max(abs(int(m[1])),abs(int(m[2])))>32767: return None
             extra=keyword_list(m[3]) if m[3] else 0
             if extra is None: return None
@@ -2556,6 +2584,9 @@ def equipment_template(card):
             extra=keyword_list(m[1])
             if extra is None: return None
             keywords|=extra
+        elif m:=re.fullmatch(r'Equip Pirate ((?:\{(?:[0-9]+|[WUBRGC])\})+)',line):
+            equips+=1
+            body.append(m[1]+': Attach this Equipment to target Pirate creature you control. Activate only as a sorcery.')
         elif m:=re.fullmatch(r'Equip ((?:\{(?:[0-9]+|[WUBRGC])\})+)',line):
             equips+=1
             body.append(m[1]+': Attach this Equipment to target creature you control. Activate only as a sorcery.')
@@ -2567,7 +2598,9 @@ def equipment_template(card):
     # Source-cost aliases are exact; granted abilities and residual clauses still fail.
     body=[line.replace('Sacrifice this Equipment','Sacrifice this artifact') for line in body]
     result=permanent_program_template(dict(card,type_line='Artifact',oracle_text='\n'.join(body)))
-    return (*result,power,toughness,keywords) if result else None
+    if not result:return None
+    effect,intrinsic,abilities,activations,enters=result
+    return effect,intrinsic,[*abilities,*attached_abilities],activations,enters,power,toughness,keywords
 
 
 def source_return_program(text):

@@ -410,6 +410,7 @@ impl Game {
         let object = self.move_object(card, Zone::Stack).after;
         let id = self.next_stack_id();
         SpellView {
+            attachment_trigger: None,
             cast: Some(CastInfo {
                 origin,
                 method: CastMethod::Normal,
