@@ -221,7 +221,7 @@ fn main() -> Result<(), Error> {
             }
             let p = g.actor().unwrap();
             let before = g.observe(p);
-            assert_eq!(before.schema, 65);
+            assert_eq!(before.schema, rustmage::OBSERVATION_SCHEMA);
             let other = g.observe(p.other());
             for q in 0..2 {
                 assert_eq!(
