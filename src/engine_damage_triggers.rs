@@ -12,15 +12,29 @@ impl Game {
     }
 
     pub(super) fn is_modified(&self, id: CardId) -> bool {
-        let object = &self.state.objects[id as usize];
+        Self::object_modified_with(
+            self.object_ref(id),
+            &self.state.objects[id as usize],
+            self.state
+                .attachment_sources
+                .iter()
+                .map(|&id| &self.state.objects[id as usize]),
+        )
+    }
+
+    pub(super) fn object_modified_with<'a>(
+        source: ObjectRef,
+        object: &Object,
+        attachments: impl Iterator<Item = &'a Object>,
+    ) -> bool {
         object.zone == Zone::Battlefield
             && (object.counters.plus_one > 0
                 || object.counters.minus_one > 0
                 || object.counters.stun > 0
                 || object.counters.loyalty > 0
-                || self.state.attachment_sources.iter().any(|&attachment| {
-                    let attachment = &self.state.objects[attachment as usize];
-                    attachment.attached_to == Some(self.object_ref(id))
+                || attachments.into_iter().any(|attachment| {
+                    attachment.zone == Zone::Battlefield
+                        && attachment.attached_to == Some(source)
                         && (attachment.card.equipment().is_some()
                             || (attachment.card.aura().is_some()
                                 && attachment.owner == object.owner))

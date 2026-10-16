@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "748f98e7610e146ebb5cfc70d41033fda692af1fc4a2f641471b71ffc1b7c6f9",
+  "catalogue_version": "a7b6410cbc1c96466a54cf4a61b8056bdd0f24f48fb7620b82a5fb58e8c7bd3e",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1272,
-  "implemented_total": 1278,
+  "implemented_standard_cards": 1285,
+  "implemented_total": 1291,
   "token_definitions": 56,
   "emblem_definitions": 1,
   "cards": [
@@ -724,8 +724,8 @@
     {
       "name": "Akawalli, the Seething Tower",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Akul the Unrepentant",
@@ -4210,8 +4210,8 @@
     {
       "name": "Cephalid Inkmage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Cerebral Confiscation",
@@ -7174,8 +7174,8 @@
     {
       "name": "Druid of the Spade",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Dryad Militant",
@@ -9226,8 +9226,8 @@
     {
       "name": "First-Time Flyer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Fishing Pole",
@@ -9466,8 +9466,8 @@
     {
       "name": "Foggy Swamp Hunters",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Foggy Swamp Spirit Keeper",
@@ -10396,8 +10396,8 @@
     {
       "name": "Ghitu Lavarunner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Ghost Vacuum",
@@ -13798,8 +13798,8 @@
     {
       "name": "June, Bounty Hunter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Jungle Hollow",
@@ -14254,8 +14254,8 @@
     {
       "name": "Kitesail Corsair",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Kitesail Larcenist",
@@ -16378,8 +16378,8 @@
     {
       "name": "Messenger Hawk",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Metalhead",
@@ -17650,8 +17650,8 @@
     {
       "name": "Nightwhorl Hermit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Niko, Light of Hope",
@@ -23470,8 +23470,8 @@
     {
       "name": "Skyward Spider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Slagdrill Scrapper",
@@ -24952,8 +24952,8 @@
     {
       "name": "Stoic Sphinx",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Stolen Stark Tech",
@@ -28324,8 +28324,8 @@
     {
       "name": "Twinblade Paladin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Twinflame Travelers",

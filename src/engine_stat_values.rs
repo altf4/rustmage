@@ -44,6 +44,8 @@ impl Game {
                     .map(|(id, o)| (id as CardId, o))
             },
             self.state.players[owner.index()].life,
+            self.state.attack_declared
+                && self.state.attackers.iter().any(|a| a.card == source.card),
         )
     }
     /// The same earlier-layer evaluator serves concrete state and a borrowed
@@ -55,14 +57,42 @@ impl Game {
         owner: Player,
         objects: &F,
         life: i128,
+        attacking: bool,
     ) -> i128
     where
         F: Fn() -> I,
         I: Iterator<Item = (CardId, &'a Object)>,
     {
         match value {
+            StatValue::Not(value) => i128::from(
+                self.stat_value_with(*value, source, owner, objects, life, attacking) == 0,
+            ),
+            StatValue::CardsDrawnThisTurn => {
+                i128::from(self.state.players[owner.index()].cards_drawn_this_turn)
+            }
+            StatValue::SourceAttacking => i128::from(
+                attacking
+                    && objects().any(|(id, o)| {
+                        id == source.card
+                            && o.generation == source.generation
+                            && o.zone == Zone::Battlefield
+                    }),
+            ),
+            StatValue::SourceModified => i128::from(
+                objects()
+                    .find(|(id, o)| *id == source.card && o.generation == source.generation)
+                    .is_some_and(|(_, o)| {
+                        Self::object_modified_with(source, o, objects().map(|(_, o)| o))
+                    }),
+            ),
+            StatValue::Tokens(filter) => objects()
+                .filter(|&(id, o)| {
+                    o.card.is_token() && Self::count_object_matches(filter, source, owner, id, o)
+                })
+                .count() as i128,
             StatValue::AtLeast { value, minimum } => i128::from(
-                self.stat_value_with(*value, source, owner, objects, life) >= i128::from(minimum),
+                self.stat_value_with(*value, source, owner, objects, life, attacking)
+                    >= i128::from(minimum),
             ),
             StatValue::SpellsCastThisTurn => {
                 i128::from(self.state.players[owner.index()].spells_cast_this_turn)
@@ -122,7 +152,7 @@ impl Game {
                 .count_ones() as i128,
             StatValue::Sum(values) => values
                 .iter()
-                .map(|&value| self.stat_value_with(value, source, owner, objects, life))
+                .map(|&value| self.stat_value_with(value, source, owner, objects, life, attacking))
                 .try_fold(0i128, i128::checked_add)
                 .capacity("stat sum exhausted"),
         }
