@@ -851,6 +851,21 @@ def sacrifice_spec(text):
     return amount,filt
 
 
+def extract_flashback(card):
+    """One exact fixed mana alternative; every residual sentence still compiles."""
+    if card.get('layout') != 'normal' or card.get('type_line') not in ('Instant', 'Sorcery'):
+        return card, None
+    lines = card.get('oracle_text', '').split('\n')
+    found = [line for line in lines if line.startswith('Flashback ')]
+    if len(found) != 1: return card, None
+    match = re.fullmatch(r'Flashback ((?:\{[0-9WUBRGC]+\})+)(?: \(You may cast this card from your graveyard for its flashback cost(?: and any additional costs)?\. Then exile it\.\))?', found[0])
+    if not match: return card, None
+    options = spell_cost_options(match[1])
+    if options is None or len(options) != 1: return card, None
+    mana, generic = options[0]
+    return dict(card, oracle_text='\n'.join(line for line in lines if line != found[0])), f'ManaCost {{ colored: {mana}, generic: {generic} }}'
+
+
 def extract_additional_cost(card):
     """One mandatory object cost; the entire residual text must still compile."""
     text = card.get('oracle_text', '')
@@ -2664,6 +2679,7 @@ def compile_catalogue(snapshot, target):
     dynamic_rows = []
     scaling_rows = []
     additional_rows = []
+    flashback_rows = []
     hybrid_rows = []
     reduction_rows = []
     entry_counter_rows = []
@@ -2674,6 +2690,7 @@ def compile_catalogue(snapshot, target):
         card, entry_suppression = extract_entry_trigger_suppression(card)
         card, opponent_entry_tapped = extract_opponent_entry_tapped(card)
         card, cycling = cycling_abilities(card)
+        card, flashback = extract_flashback(card)
         card, additional = extract_additional_cost(card)
         card, reductions = extract_cost_reductions(card)
         card, dynamic, scaling = extract_stat_rules(card)
@@ -2757,6 +2774,7 @@ def compile_catalogue(snapshot, target):
             loyalty_rows.append(f'        {index} => {int(value)},')
         if effect != 'Unsupported':
             supported.append(index)
+            if flashback is not None: flashback_rows.append(f'        {index} => Some({flashback}),')
             if entry_suppression: entry_suppression_rows.append(f'        {index} => {entry_suppression},')
             if opponent_entry_tapped: opponent_entry_tapped_rows.append(f'        {index} => {opponent_entry_tapped},')
             if entry_counters: entry_counter_rows.append(f'        {index} => &[{", ".join(entry_counters)}],')
@@ -2859,6 +2877,7 @@ def compile_catalogue(snapshot, target):
     lines += ['#[rustfmt::skip]', 'pub(super) fn opponent_entry_tapped(card: Card) -> u16 {', '    match card.0 {', *opponent_entry_tapped_rows, '        _ => 0,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn keyword_grants(card: Card) -> &'static [KeywordGrant] {", '    match card.0 {', *grant_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn additional_cost(card: Card) -> Option<AdditionalCost> {', '    match card.0 {', *additional_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn flashback_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *flashback_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub const CREATURE_TYPES: &[&str] = &[', *('    '+json.dumps(name)+',' for name in creature_types), '];', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn cost_reductions(card: Card) -> &'static [SpellReduction] {", '    match card.0 {', *reduction_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn cost_alternatives(card: Card) -> &'static [ManaCost] {", '    match card.0 {', *hybrid_rows, '        _ => &[],', '    }', '}', '']

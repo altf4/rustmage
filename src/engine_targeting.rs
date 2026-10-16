@@ -33,6 +33,15 @@ impl Announcement {
 
     pub(super) fn cost_options(&self) -> crate::cards::ManaCostOptions {
         match self.item.kind {
+            StackKind::Spell
+                if self
+                    .item
+                    .cast
+                    .is_some_and(|cast| cast.method == CastMethod::Flashback) =>
+            {
+                std::iter::once(self.item.source_card.flashback_cost().unwrap())
+                    .chain([].iter().copied())
+            }
             StackKind::Spell => self.item.source_card.cost_options(),
             StackKind::ActivatedAbility { ability } => self.item.source_card.activations()
                 [ability as usize]
@@ -47,7 +56,12 @@ impl Announcement {
         self.pay_window
             && self.cost.is_none()
             && match self.item.kind {
-                StackKind::Spell => self.item.source_card.has_hybrid_cost(),
+                StackKind::Spell => {
+                    self.item
+                        .cast
+                        .is_none_or(|cast| cast.method != CastMethod::Flashback)
+                        && self.item.source_card.has_hybrid_cost()
+                }
                 StackKind::ActivatedAbility { ability } => !self.item.source_card.activations()
                     [ability as usize]
                     .cost
@@ -63,6 +77,33 @@ impl Game {
         item.program()
             .map(|(plan, _)| plan)
             .unwrap_or(TargetPlan::NONE)
+    }
+
+    // A spell will leave its origin before targets are chosen (CR601.2a/c).
+    // In particular, it cannot target its own soon-to-depart graveyard card.
+    pub(super) fn cast_targets_available(
+        &self,
+        plan: TargetPlan,
+        actor: Player,
+        source: ObjectRef,
+    ) -> bool {
+        let available = |spec: TargetSpec| {
+            if spec.min == 0 {
+                return true;
+            }
+            let mut count = 0;
+            self.visit_targets(spec.rule, actor, source, |target| {
+                if target == Target::Card(source.card) {
+                    return false;
+                }
+                count += 1;
+                count >= usize::from(spec.min)
+            })
+        };
+        match plan {
+            TargetPlan::Single(spec) => available(spec),
+            TargetPlan::Groups(groups) => groups.iter().copied().all(available),
+        }
     }
 
     pub(super) fn targets_available(
@@ -349,9 +390,14 @@ impl Game {
     pub(super) fn cast_item(&mut self, actor: Player, card: CardId, payment: Mana) -> SpellView {
         self.spend_mana(actor, payment);
         self.state.passes = 0;
+        let origin = self.state.objects[card as usize].zone;
         let object = self.move_object(card, Zone::Stack).after;
         let id = self.next_stack_id();
         SpellView {
+            cast: Some(CastInfo {
+                origin,
+                method: CastMethod::Normal,
+            }),
             id,
             kind: StackKind::Spell,
             source_card: self.state.objects[card as usize].card,

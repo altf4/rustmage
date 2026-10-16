@@ -3,6 +3,12 @@ use super::*;
 impl Game {
     pub(super) fn announcement_base_cost(a: &Announcement) -> ManaCost {
         a.cost.unwrap_or_else(|| {
+            if a.item
+                .cast
+                .is_some_and(|cast| cast.method == CastMethod::Flashback)
+            {
+                return a.item.source_card.flashback_cost().unwrap();
+            }
             assert!(
                 !a.item.source_card.has_hybrid_cost(),
                 "hybrid cost not chosen"
@@ -13,11 +19,6 @@ impl Game {
     }
     pub(super) fn spell_reduction(&self, actor: Player, id: CardId) -> u32 {
         let recipient = &self.state.objects[id as usize];
-        // The canonical equivalent has the greatest generic component. No
-        // equivalent can benefit from a generic reduction when this is zero.
-        if recipient.card.cost().1 == 0 {
-            return 0;
-        }
         let applies = |rule: &crate::cards::SpellReduction, source: CardId| {
             let object = &self.state.objects[source as usize];
             rule.filter.matches(recipient.card)
@@ -93,7 +94,11 @@ impl Game {
     }
     pub(super) fn reduced_spell_cost(&self, actor: Player, id: CardId, base: ManaCost) -> ManaCost {
         ManaCost {
-            generic: base.generic.saturating_sub(self.spell_reduction(actor, id)),
+            generic: if base.generic == 0 {
+                0
+            } else {
+                base.generic.saturating_sub(self.spell_reduction(actor, id))
+            },
             ..base
         }
     }

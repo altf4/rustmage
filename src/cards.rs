@@ -1401,6 +1401,10 @@ impl Card {
     pub(crate) fn has_hybrid_cost(self) -> bool {
         !generated::cost_alternatives(self).is_empty()
     }
+    /// The fixed alternative mana cost for casting this complete card from its graveyard.
+    pub fn flashback_cost(self) -> Option<ManaCost> {
+        generated::flashback_cost(self)
+    }
     pub(crate) fn cost_options(self) -> ManaCostOptions {
         let definition = &generated::DEFINITIONS[self.0 as usize];
         std::iter::once(ManaCost {

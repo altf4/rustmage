@@ -349,7 +349,7 @@ fn main() {
                 let predicted = spent.get(&b.reference).copied().unwrap_or(0);
                 assert_eq!(b.exhausted_abilities, predicted);
                 assert_eq!(b.used_abilities & mask(b.card.name()), predicted);
-                assert_eq!(after.schema, 49);
+                assert_eq!(after.schema, rustmage::OBSERVATION_SCHEMA);
                 entries.insert(b.card.name());
                 checks += 1;
                 if after.turn != before.turn && predicted != 0 {
