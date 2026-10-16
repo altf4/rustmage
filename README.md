@@ -5,12 +5,13 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,577 have executable rules so far.
+knows all 5,164 pinned Standard identities; 1,587 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
 [Explore and Map](docs/explore.md) add fifteen complete bodies with public exploration,
 exact source incarnations, completed-event observers and the full paid Map activation.
+[Bargain](docs/bargain.md) adds ten complete bodies with exact optional sacrifice costs, joint mana reservations and historical entry qualification.
 [Fixed kicker](docs/fixed-kicker.md) adds ten complete bodies with typed additional costs,
 exact paid-entry qualification and Gnarlid Colony's live counter-qualified trample.
 [Exact live subject conditions](docs/subject-conditions.md) add nine complete
