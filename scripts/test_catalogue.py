@@ -59,6 +59,26 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Target creature gets +2/+2 until end of turn. If you control three or more creatures, it gets +4/+4 until end of turn instead. Draw a card.']:
             self.assertIsNone(generate.targeted_program(text),text)
 
+    def test_creature_pronouns_fail_closed_after_competing_or_unproven_antecedents(self):
+        start='Target creature gets +1/+1 until end of turn. '
+        token='create a 1/1 red Goblin creature token.'
+        for pronoun in ['It','That creature']:
+            for middle in [token[0].upper()+token[1:],
+                           'If you control a Rabbit, '+token,
+                           'If you control a Rabbit, draw a card. Otherwise, '+token,
+                           'If you control a Rabbit, '+token+' You gain 2 life.',
+                           'Draw a card.']:
+                text=start+middle+' '+pronoun+' gains flying until end of turn.'
+                self.assertIsNone(generate.targeted_program(text),text)
+                self.assertIsNone(generate.spell_program_template(self.card(type_line='Instant',oracle_text=text)),text)
+            for prefix in ["Return target creature to its owner's hand. ", 'Destroy target creature. ']:
+                text=prefix+pronoun+' gains flying until end of turn.'
+                self.assertIsNone(generate.targeted_program(text),text)
+            text=start+'If you control a Rabbit, it gets +2/+2 until end of turn. '+pronoun+' gains flying until end of turn.'
+            self.assertIsNotNone(generate.targeted_program(text),text)
+        # Introducing a token is still supported when no later pronoun binds it.
+        self.assertIsNotNone(generate.targeted_program(start+'If you control a Rabbit, '+token))
+
     def test_all_nineteen_conditional_and_focused_tail_admissions_require_complete_bodies(self):
         import json
         rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())

@@ -43,7 +43,11 @@ alternative. No nested mutable interpreter stack or expression cache is needed.
 The compiler keeps a later unconditional sentence outside the preceding guarded
 sentence, preserves the exact existing optional-payment/if-you-do construct as
 one nested block, and accepts only the supported same-target stat replacement
-form. Creature pronouns bind only after a single proven creature target. Unknown
+form. Creature pronouns bind only after a single proven creature target and a
+sequence of proven focus-preserving modifiers. Token creation, zone changes and
+other unproven intervening operations block later pronouns, including across
+alternative branches. This conservative gate may reject unambiguous wording until
+its antecedent is modeled. Unknown
 antecedents, prior-cast/target ownership, event history, conditional mana semantics
 and residual clauses remain rejected. The full pinned creature-type vocabulary
 backs singular subtype predicates; no arbitrary subtype name is inferred.
@@ -71,7 +75,7 @@ Source identities, private continuations, limit ledgers and counters already bel
 to snapshots. Initial logical benchmark payload remains 19,648 bytes, excluding
 capacity, allocator/COW metadata, statics, observations and external snapshots.
 
-Author verification passes 704 Rust tests (692 unit and twelve integration), 126
+Author verification passes 704 Rust tests (692 unit and twelve integration), 127
 compiler/data tests, 87 release Python tests, catalogue consistency, rustfmt and
 Clippy with warnings denied. Twenty-five new native tests cover all nineteen
 bodies/modes, true/false event and resolution checks, simultaneous entry, subtype/

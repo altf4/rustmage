@@ -535,7 +535,27 @@ def guarded_program(text,parse):
         program+=rest
     return program
 
+def preserves_creature_focus(program):
+    # Only these instructions prove that no competing object antecedent is
+    # introduced and the original target stays in its zone. Scan both branches
+    # conservatively: an ambiguous path must not bind a later pronoun either.
+    return all(p.startswith(('If {', 'Skip(', 'Grow { subject: Subject::Targets,',
+                             'GrantKeywords { subject: Subject::Targets,',
+                             'PutCounters { subject: Subject::Targets,'))
+               or p == 'Untap' for p in program)
+
+def valid_creature_focus(program):
+    for index, instruction in enumerate(program):
+        if instruction.startswith(('Grow { subject: Subject::Targets,',
+                                   'GrantKeywords { subject: Subject::Targets,')):
+            if not preserves_creature_focus(program[:index]):return False
+    return True
+
 def focused_creature_program(text):
+    program=unchecked_focused_creature_program(text)
+    return program if program and valid_creature_focus(program) else None
+
+def unchecked_focused_creature_program(text):
     text=strip_rule_label(text)
     if not text:return None
     text=text[0].lower()+text[1:]
@@ -1274,6 +1294,7 @@ def targeted_program(text):
                         if alternative and all(p.startswith(('Grow {','GrantKeywords {')) for p in result[1]+alternative):
                             return spec,[f'If {{ guard: {guard}, skip: {len(alternative)+1} }}',*alternative,f'Skip({len(result[1])})',*result[1]]
                 tail=focused_creature_program(rest)
+                if tail and not valid_creature_focus(result[1]+tail):return None
         if result and rest == 'Untap it.':
             if isinstance(result[0], list): return None
             rule = result[0][0] if isinstance(result[0], tuple) else result[0]
