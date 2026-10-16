@@ -8,6 +8,37 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_subject_conditions_are_closed_exact_single_creature_bindings(self):
+        examples=[
+            ('Tap up to one target creature and put three stun counters on it. If you control that creature, draw two cards.','relation: 0','Draw(PlayerSet::Controller, 2)'),
+            ('Tap up to one target creature. If an opponent controls that creature, put a stun counter on it.','relation: 1','kind: CounterKind::Stun'),
+            ('Target creature you control gets +1/+0 until end of turn. If that creature is a token, it also gains deathtouch until end of turn.','tokens: Some(true)','Keywords(128)'),
+            ('Untap another target creature you control. If that creature is a Bear, put a +1/+1 counter on it.','subtype: Some("Bear")','amount: 1'),
+            ("Target creature gets +2/+2 and gains flying until end of turn. If it's a Spider, you gain 2 life.",'subtype: Some("Spider")','GainLife(PlayerSet::Controller, 2)'),
+            ('Target creature you control gets +2/+2 until end of turn. If that creature is an Ally, it also gains flying until end of turn.','subtype: Some("Ally")','Keywords(1)'),
+        ]
+        for body,condition,last in examples:
+            result=generate.targeted_program(body);self.assertIsNotNone(result,body);program=result[1];self.assertTrue(program[-2].startswith('IfSubject { subject: Subject::Targets,'));self.assertIn(condition,program[-2]);self.assertIn(last,program[-1])
+            for bad in {body+' Discover 3.',body.replace('that creature','that permanent'),body.replace('If ','Unless ',1)}-{body}:self.assertIsNone(generate.targeted_program(bad),bad)
+        for bad in ["Return target creature to its owner's hand. If it's a Spider, you gain 2 life.",'Destroy target creature. If that creature is a Bear, put a +1/+1 counter on it.','Tap up to two target creatures. If you control that creature, draw two cards.','Target creature gets +2/+2 until end of turn. If that creature is a Dragon, it also gains flying until end of turn.']:
+            self.assertIsNone(generate.targeted_program(bad),bad)
+
+    def test_subject_replacement_and_entering_context_preserve_single_operation_order(self):
+        result=generate.targeted_program('Put a +1/+1 counter on target creature. If that creature is another Hero, put two +1/+1 counters on it instead.')
+        self.assertEqual(result[0],'Creature');self.assertEqual(len(result[1]),4);self.assertIn('other: true',result[1][0]);self.assertIn('subtype: Some("Hero")',result[1][0]);self.assertIn('skip: 2',result[1][0]);self.assertIn('amount: 2',result[1][1]);self.assertEqual(result[1][2],'Skip(1)');self.assertIn('amount: 1',result[1][3])
+        body="you gain 1 life. If it's a Spider, put a +1/+1 counter on it."
+        target,program=generate.entering_object_program(body,'OtherCreatureEntersYou');self.assertEqual(target,'None');self.assertEqual(program[0],'GainLife(PlayerSet::Controller, 1)');self.assertIn('Subject::Entering',program[1]);self.assertIn('Subject::Entering',program[2]);self.assertIsNone(generate.entering_object_program(body,'SelfDies'))
+        leonin=generate.targeted_program('Put a +1/+1 counter on another target attacking creature you control. If that creature is a Cat, it gains first strike until end of turn.')
+        self.assertEqual(leonin[0],'OtherCreatureAttackingYou');self.assertIn('Attacking',generate.TARGET_RULES[leonin[0]]);self.assertIn('other: true',generate.TARGET_RULES[leonin[0]]);self.assertIn('relation: 0',generate.TARGET_RULES[leonin[0]])
+
+    def test_nine_subject_condition_full_bodies_reject_unknown_residuals_and_lki_cards(self):
+        import json,hashlib
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());manifest=json.loads((generate.ROOT/'docs/subject-condition-admissions.json').read_text());names={c['name'] for c in manifest['cards']};self.assertEqual(len(names),9)
+        source,coverage=generate.compile_catalogue(snapshot,target);supported={c['name'] for c in coverage['cards'] if c['implemented']};self.assertTrue(names<=supported)
+        for row in manifest['cards']:self.assertEqual(row['oracle_text'],next(c['oracle_text'] for c in snapshot['cards'] if c['name']==row['name']))
+        altered=dict(snapshot,cards=[dict(c,oracle_text=c.get('oracle_text','')+'\nDiscover 3.') if c['name'] in names else c for c in snapshot['cards']]);altered['cards_sha256']=hashlib.sha256(json.dumps(altered['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();_,bad=generate.compile_catalogue(altered,target);self.assertFalse(names&{c['name'] for c in bad['cards'] if c['implemented']})
+        self.assertFalse({'Cemetery Recruitment','Budding Insurgent'}&supported)
+
     def test_filtered_library_nouns_preserve_closed_union_conjunction_and_complement(self):
         expected={'an artifact card':'Kinds(16)','a Mutant, Ninja, Turtle, or land card':'AnyOf(&[LibrarySelectionFilter::Subtype("Mutant"), LibrarySelectionFilter::Subtype("Ninja"), LibrarySelectionFilter::Subtype("Turtle"), LibrarySelectionFilter::Kinds(2)])','a Mount creature card or a Plains card':'AnyOf(&[LibrarySelectionFilter::AllOf(&[LibrarySelectionFilter::Kinds(1), LibrarySelectionFilter::Subtype("Mount")]), LibrarySelectionFilter::Subtype("Plains")])','an Ally, Equipment, or Lesson card':'AnyOf(&[LibrarySelectionFilter::Subtype("Ally"), LibrarySelectionFilter::Subtype("Equipment"), LibrarySelectionFilter::Subtype("Lesson")])','an artifact or Pirate card':'AnyOf(&[LibrarySelectionFilter::Kinds(16), LibrarySelectionFilter::Subtype("Pirate")])','a noncreature, nonland card':'ExcludingKinds(3)'}
         for noun,result in expected.items():

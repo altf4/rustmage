@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "a917b33e39153e5c0102fa9900e92b00d95116213c7a25ca91f2f528d547ebd8",
+  "catalogue_version": "6887dacf503b5b12795192b85c8f7009221784be16d217f34c8f04300f46d3db",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1514,
-  "implemented_total": 1520,
+  "implemented_standard_cards": 1523,
+  "implemented_total": 1529,
   "token_definitions": 72,
   "emblem_definitions": 1,
   "cards": [
@@ -1588,8 +1588,8 @@
     {
       "name": "Aunt May",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Auntie's Sentence",
@@ -7102,8 +7102,8 @@
     {
       "name": "Dreamdew Entrancer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Dreamroot Cascade",
@@ -8806,8 +8806,8 @@
     {
       "name": "Fear of Immobility",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Fear of Impostors",
@@ -11830,8 +11830,8 @@
     {
       "name": "Hazardroot Herbalist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Hazel's Nocturne",
@@ -13006,8 +13006,8 @@
     {
       "name": "Ingenious Leonin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Ingenious Prodigy",
@@ -15118,8 +15118,8 @@
     {
       "name": "Little Bear",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Live or Die",
@@ -27550,8 +27550,8 @@
     {
       "name": "Thwip!",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Ticket Booth // Tunnel of Hate",
@@ -29734,8 +29734,8 @@
     {
       "name": "Wakandan Royal Guard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Walk with the Ancestors",
@@ -30844,8 +30844,8 @@
     {
       "name": "Yip Yip!",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Yoshimaru, Beloved Companion",
