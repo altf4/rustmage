@@ -61,6 +61,7 @@ fn program(g: &mut Game, code: &'static [Instruction]) {
         program: code,
         pc: 0,
         target_group: 0,
+        moved_count: None,
         discards: [0; 2],
         mana_payment: None,
         selected_discards: [Vec::new(), Vec::new()],
@@ -85,7 +86,7 @@ fn all_shock_lands_offer_a_pre_entry_choice_then_exact_intrinsic_mana() {
             assert!(!card.is_basic_land());
             replay(&mut g, Action::PlayLand { card: id });
             let obs = g.observe(Player::P0);
-            assert_eq!(obs.schema, 36);
+            assert_eq!(obs.schema, 37);
             assert_eq!(obs.decision, "entry_life");
             let choice = obs.entry_life.unwrap();
             assert_eq!(choice.object, reference);

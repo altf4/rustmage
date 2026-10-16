@@ -247,7 +247,7 @@ fn basic_landcycling_search_is_private_then_reveals_only_the_selected_hand_card(
     g.state.players[0].mana = [2, 0, 0, 0, 0, 0];
     cycle(&mut g, card);
     pass_pair(&mut g);
-    assert_eq!(g.observe(Player::P0).schema, 36);
+    assert_eq!(g.observe(Player::P0).schema, 37);
     assert_eq!(
         g.observe(Player::P0).search_choice.unwrap().filter,
         crate::SearchFilter::BasicLand

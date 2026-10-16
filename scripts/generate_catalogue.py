@@ -584,11 +584,62 @@ def counter_group_program(text):
     return [f'PutCreatureCounters {{ filter: {filt}, kind: CounterKind::{COUNTER_KINDS[m[2]]}, amount: {COUNT_WORDS[m[1]]} }}']
 
 
+def battlefield_filter(kinds=0, relation=-1, nonland=False, tapped=None, without=0, subtype=None, max_mana=4294967295):
+    return (f'BattlefieldFilter {{ kinds: {kinds}, relation: {relation}, nonland: {str(nonland).lower()}, '
+            f'tapped: {"None" if tapped is None else "Some("+str(tapped).lower()+")"}, '
+            f'without: Keywords({without}), subtype: {"None" if subtype is None else "Some("+json.dumps(subtype)+")"}, max_mana: {max_mana} }}')
+
+
+def battlefield_filters(subject):
+    return {
+        'creatures': [battlefield_filter(kinds=1)],
+        'tapped creatures': [battlefield_filter(kinds=1,tapped=True)],
+        'untapped creatures': [battlefield_filter(kinds=1,tapped=False)],
+        'creatures and enchantments': [battlefield_filter(kinds=33)],
+        'creatures and Spacecraft': [battlefield_filter(kinds=1),battlefield_filter(subtype='Spacecraft')],
+        'nonland permanents with mana value 1 or less': [battlefield_filter(nonland=True,max_mana=1)],
+        'artifacts with mana value 3 or less': [battlefield_filter(kinds=16,max_mana=3)],
+    }.get(subject)
+
+
+def battlefield_move_program(text):
+    result=None
+    if text=='destroy all creatures. You gain 1 life for each creature destroyed this way.':
+        text='destroy all creatures.';result='GainLifeMoved'
+    elif text=='destroy all creatures and enchantments. Draw a card for each permanent destroyed this way.':
+        text='destroy all creatures and enchantments.';result='DrawMoved'
+    if m:=re.fullmatch(r'(destroy|exile) all (.+)\.',text):
+        if filters:=battlefield_filters(m[2]):
+            program=['MoveBattlefield { filters: &['+', '.join(filters)+'], exile: '+str(m[1]=='exile').lower()+' }']
+            return program+([result] if result else [])
+    return None
+
+
+def battlefield_damage_program(text):
+    m=re.fullmatch(r'this (?:creature|artifact|enchantment|permanent|spell) deals ([0-9]+) damage to (.+)\.',text)
+    if not m or not 0<=int(m[1])<=32767: return None
+    amount=int(m[1]);subject=m[2]
+    if subject=='each player': return [f'DamagePlayers(PlayerSet::Each, {amount})']
+    filters={
+        'each creature': [battlefield_filter(kinds=1)],
+        'each creature without flying': [battlefield_filter(kinds=1,without=1)],
+        'each creature your opponents control': [battlefield_filter(kinds=1,relation=1)],
+        # Planeswalker damage removes loyalty, not marked creature damage. Whole
+        # cards using those sets remain gated until that kernel is implemented.
+        'each opponent and each creature they control': [battlefield_filter(kinds=1,relation=1)],
+    }.get(subject)
+    if filters is None:return None
+    players='Some(PlayerSet::Opponent)' if subject=='each opponent and each creature they control' else 'None'
+    return ['DamageBattlefield { filters: &['+', '.join(filters)+f'], players: {players}, amount: {amount} }}']
+
+
 def statement_program(text):
     """Compile only these complete sentences; residual text never gets ignored."""
     if not isinstance(text, str) or not text:
         return None
     text = normalize_duration(text[0].lower() + text[1:])
+    if result:=battlefield_move_program(text):return result
+    if result:=battlefield_damage_program(text):return result
     if m:=re.fullmatch(r'this creature connives(?: ([0-9]+))?\.',text):
         amount=int(m[1]) if m[1] else 1
         return [f'Connive {{ subject: Subject::Source, amount: {amount} }}'] if amount<=65535 else None
@@ -1410,8 +1461,10 @@ def spell_program_template(card):
         return None
     text = card.get('oracle_text')
     if isinstance(text, str): text = ' '.join(re.sub(r'\([^()]*\)', '', text).split())
-    if isinstance(text, str) and text.startswith(card.get('name', '') + ' deals '):
-        text = 'this spell deals ' + text[len(card['name']) + len(' deals '):]
+    if isinstance(text, str) and card.get('name'):
+        # Only exact sentence-start self references, including after an earlier
+        # instruction. Other card names and unsupported clauses remain intact.
+        text=re.sub(r'(^|\. )'+re.escape(card['name'])+r' deals ',r'\1this spell deals ',text)
     targeted = targeted_program(text)
     if targeted: return targeted
     program = statement_program(text)

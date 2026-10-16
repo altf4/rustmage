@@ -412,6 +412,7 @@ fn group_counter_instructions_finish_before_state_based_deaths_and_pair_cancella
         ],
         pc: 0,
         target_group: 0,
+        moved_count: None,
         connive: None,
         mana_payment: None,
         discards: [0; 2],

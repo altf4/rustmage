@@ -264,7 +264,29 @@ pub(crate) enum CounterSubject {
 
 /// Immutable rule bytecode. Only the program counter and choices live in state.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct BattlefieldFilter {
+    pub kinds: u16,
+    pub relation: i8,
+    pub nonland: bool,
+    pub tapped: Option<bool>,
+    pub without: Keywords,
+    pub subtype: Option<&'static str>,
+    pub max_mana: u32,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    MoveBattlefield {
+        filters: &'static [BattlefieldFilter],
+        exile: bool,
+    },
+    DamageBattlefield {
+        filters: &'static [BattlefieldFilter],
+        players: Option<PlayerSet>,
+        amount: i32,
+    },
+    DrawMoved,
+    GainLifeMoved,
     Connive {
         subject: Subject,
         amount: u16,
@@ -793,6 +815,9 @@ impl Keywords {
     pub const CHANGELING: Self = Self(524288);
     pub fn contains(self, keyword: Self) -> bool {
         self.0 & keyword.0 == keyword.0
+    }
+    pub const fn intersects(self, other: Self) -> bool {
+        self.0 & other.0 != 0
     }
     pub const fn union(self, other: Self) -> Self {
         Self(self.0 | other.0)

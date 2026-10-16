@@ -1,11 +1,11 @@
 use crate::capacity::{CapacityExt, CapacitySignal};
 use crate::cards::{
     ActivatedAbility, ActivationCost, ActivationGuard, ActivationOrigin, AdditionalCost,
-    CastRelation, CountFilter, CountZone, CounterKind, CounterSubject, Counters, CreatureFilter,
-    DamageQualification, DamageSubject, Effect, EffectChoiceKind, EntryTapped, Instruction,
-    ManaCost, ManaProduction, MillAmount, PlayerSet, RecoveryFilter, SacrificeFilter, SearchSpec,
-    StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetPlan, TargetPredicate,
-    TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
+    BattlefieldFilter, CastRelation, CountFilter, CountZone, CounterKind, CounterSubject, Counters,
+    CreatureFilter, DamageQualification, DamageSubject, Effect, EffectChoiceKind, EntryTapped,
+    Instruction, ManaCost, ManaProduction, MillAmount, PlayerSet, RecoveryFilter, SacrificeFilter,
+    SearchSpec, StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetPlan,
+    TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
@@ -26,6 +26,8 @@ mod funding;
 #[path = "engine_resolution_mana.rs"]
 mod resolution_mana;
 use funding::FundingGoal;
+#[path = "engine_battlefield_groups.rs"]
+mod battlefield_groups;
 #[path = "engine_blocking.rs"]
 mod blocking;
 #[path = "engine_effect_choices.rs"]
@@ -888,6 +890,7 @@ pub struct Observation {
     pub legend_choices: Vec<LegendGroupView>,
     pub stack: Vec<SpellView>,
     pub resolving: Option<SpellView>,
+    pub group_move_count: Option<u64>,
     pub announcing: Option<SpellView>,
     pub announcing_payment: Option<PendingPaymentView>,
     pub mana_choices: Vec<Mana>,
@@ -2752,7 +2755,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 36,
+            schema: 37,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -2843,6 +2846,10 @@ impl Game {
                 .resolving
                 .as_ref()
                 .map(|resolution| resolution.item.clone()),
+            group_move_count: s
+                .resolving
+                .as_ref()
+                .and_then(|resolution| resolution.moved_count),
             announcing: s.announcing.as_ref().map(|announcement| {
                 let mut item = announcement.item.clone();
                 if !owns_choice {
@@ -3249,3 +3256,7 @@ mod capacity_tests;
 #[cfg(test)]
 #[path = "engine_removal_target_tests.rs"]
 mod removal_target_tests;
+
+#[cfg(test)]
+#[path = "engine_battlefield_group_tests.rs"]
+mod battlefield_group_tests;

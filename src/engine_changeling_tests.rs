@@ -80,6 +80,7 @@ fn program(g: &mut Game, code: &'static [Instruction]) {
         program: code,
         pc: 0,
         target_group: 0,
+        moved_count: None,
         discards: [0; 2],
         selected_discards: [Vec::new(), Vec::new()],
         milled: Vec::new(),
