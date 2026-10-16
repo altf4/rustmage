@@ -2,11 +2,12 @@
 
 Issue: https://github.com/altf4/rustmage/issues/195
 
-On the standalone branch based on qualified-cast PR194, coverage is **1,401/5,164**
-pinned Standard cards, with **3,763 unsupported**. Six non-Standard regression
-identities, 57 token factories and one emblem remain separate. The full Standard
-migration remains incomplete, pinned to October 15, 2026. Integration with other
-independent branches changes aggregate counts and the catalogue fingerprint.
+After integrating the aggregate-attack stage, coverage is **1,415/5,164** pinned
+Standard cards, with **3,749 unsupported**. Six non-Standard regression identities,
+58 token factories and one emblem remain separate. The full migration remains
+incomplete, pinned to October 15, 2026. The standalone branch originally had
+1,401 executable Standard cards and 57 factories; its measurements below are
+identified separately from final integrated validation.
 
 This stage implements seventeen complete bodies: Colleen Wing, Street Samurai;
 Danitha, Spear of Agony; Danitha, Sword of Hope; Firespitter Whelp; Forum Necroscribe;
@@ -127,3 +128,19 @@ Full standalone validation passed: **1,223 Rust tests**, **233 compiler/data tes
 **152 fresh release Python tests**, catalogue consistency, formatting, all-target
 Clippy with warnings denied and diff checks. Independent PR reviews and integrated
 validation are recorded separately after integration.
+
+
+Final integrated validation passed **1,234 Rust tests** (1,222 unit and 12
+integration), **236 compiler/data tests**, **153 fresh release Python tests**,
+all-target Clippy, formatting, catalogue consistency and diff checks. The contextual
+Standard100 reproduced every cast/trigger/effect vector above, 59,390 decisions,
+40,599 replay boundaries and 21,236 maximum logical bytes. The aggregate-attack
+Standard100 separately reproduced 75,548 decisions and 67,161 replay boundaries
+with all fourteen bodies and both Nori cost choices.
+
+All 140 provenance hashes across 58 files were reverified against pinned blobs
+and checkout. Exactly seventeen previously unsupported immutable definitions
+change relative to merged main; all prior executable rows, identities and 58
+factories stay unchanged. The stage adds no mutable fields or schema change;
+initial logical state remains 19,880 bytes including the inherited attack index.
+Final catalogue: `543f9a0bb517df61bcd7b901c1da4bcc1a8c3607b73b6a51e6a49fc25ecfaca0`.
