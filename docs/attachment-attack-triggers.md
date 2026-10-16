@@ -1,6 +1,6 @@
 # Equipment-owned and creature-granted attack triggers
 
-Issue [#214](https://github.com/altf4/rustmage/issues/214) adds ten complete Standard Equipment bodies on standalone parent `e4480721866ef8a14d921fc2c652ffee417e65f4`. This branch's counts exclude the separately integrated target-cost and subject-condition stages. Public Python and Standard acceptance are authored in a separate worktree.
+Issue [#214](https://github.com/altf4/rustmage/issues/214) adds ten complete Standard Equipment bodies. The integrated release builds on main `f98571e11201b2c0b33ca7b2e2bc6631bb5e8736`, including target costs and subject conditions. Historical standalone measurements below use parent `e4480721866ef8a14d921fc2c652ffee417e65f4`; combined core and separately authored public acceptance evidence follows them.
 
 | Card | Complete rules |
 | --- | --- |
@@ -36,7 +36,7 @@ Defender targeting resolves the immutable `DefendingCreature` placeholder using 
 
 Stormbeacon's threshold is an effect condition, not an intervening-if trigger condition: its packet is always queued for the equipped attack, then counts live controlled attacking creatures when resolving. The shared attacking-count evaluator now explicitly checks controller ownership, including the foreign-owned fixture. Intrinsic Equipment indestructible never grants indestructible to its creature. Pirate's restricted equip ability uses normal targeting and sorcery timing; Changeling can satisfy Pirate, while the ordinary option remains available for every owned creature.
 
-## Validation and catalogue preservation
+## Standalone validation and catalogue preservation
 
 Standalone support becomes **1,505 / 5,164** Standard identities, plus six regression cards, **72 token factories** and one emblem. Exactly ten of 5,256 definition rows change; the other **5,246** rows, all identities, all **5,183 ordinary card IDs**, every previous color mask, all recipes/metadata and all **446 prior numeric helper arms** remain unchanged. Ten Equipment helper rows are added. No token factory is added. Fingerprint: `af84fcf95e137ab9a8dd9da6e41af0b8905254e0cdcc81518faa23f405178b1f`.
 
@@ -56,3 +56,15 @@ cargo fmt --check
 python3 scripts/generate_catalogue.py --check
 cargo run --release --bin benchmark -- 1000
 ```
+
+## Integrated release evidence
+
+Support advances from 1,523 to **1,533 / 5,164 Standard cards**, with 3,631 gated and six additional regression bodies. The catalogue retains **5,256 identities**, **72 token factories** and one emblem. Exactly ten definitions change and 5,246 remain unchanged; all prior IDs, color masks, factories/metadata and **466 numeric helper arms** are preserved, with ten Equipment arms added (476 total). All-section provenance verifies 91 hash records across 43 pinned Java files. Fingerprint: `19f5a43726a4fc3503feee79cf5f630d22e41dd02ea98d43ecf2f355ee5d6581`.
+
+The integrated release passes **1,376 Rust tests** (1,364 unit and twelve integration), **262 compiler/data tests** (334.652 seconds), and **168 fresh-release Python tests** (130.799 seconds). All-target Clippy, separate acceptance-example Clippy, formatting, generated-catalogue verification and whitespace checks pass. Public acceptance adds two tests covering **32 scenarios**, including all ten full paid casts/equips/static effects in both seats, both Pirate equip costs, optional zero, live Storm counts, private complete surveil/discard transactions, actual Treasure mana, Candlestick's sacrifice draw and zero/one/multiple grants alongside printed creature abilities. Three older schema assertions advance to 59; the production union preserves their gameplay behavior.
+
+`cargo run --release --example standard_attachment_attacks -- 100` reproduces **74,702 decisions and exact snapshot replays**, independently matching two author runs. Every card has positive paid-cast, equip and effect witnesses under both controllers. In table order, casts are `[27,29,22,26,16,73,26,34,28,22]`, paid equips `[27,20,22,26,12,73,26,34,28,22]`, and effects `[130,162,47,134,31,72,129,188,121,100]`. Per-seat effect counts are `[[61,69],[80,82],[19,28],[93,41],[10,21],[35,37],[74,55],[75,113],[69,52],[45,55]]`; the driver separately enforces both seats for casts and equips as well.
+
+Additional witnesses include 473 exact static changes; 71 surveil frames, 70 deferred partials and all four two-card arrangement patterns; 121 private loots; 129 Treasures and actual mana activations; 72 Candlestick sacrifice draws; Storm true/false 24/23; Pirate cheap/ordinary 13/15; 37 optional-zero attacks; 168 multiple-grant and 169 printed-ability coexistence windows; and 1,800 rejected illegal actions. Token destruction is checked as token disappearance, and a failed draw from an empty library is checked as the correct terminal outcome rather than counted as a successful draw.
+
+Initialized logical state remains **19,944 bytes**, and this workload reaches **21,828 bytes**. Active boxed context remains forty initialized bytes per packet. Adjacent subject-condition, target-cost and exile-play workloads retain their exact 62,864 / 60,950 / 60,677 decisions, replays and vectors. A combined 1,000-game smoke run retains 571,049 decisions at approximately 360,000 decisions/s, with 155/161 ns clone/restore under concurrent host load. These measurements retain the exclusions above and are not an XMage performance comparison.
