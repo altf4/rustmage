@@ -740,7 +740,7 @@ fn initialized_bytes_include_every_owned_attack_context_and_public_snapshots_kee
     );
     for p in [Player::P0, Player::P1] {
         let o = g.observe(p);
-        assert_eq!(o.schema, 59);
+        assert_eq!(o.schema, crate::engine::OBSERVATION_SCHEMA);
         assert_eq!(o.stack, g.state.stack);
         let json = serde_json::to_value(o).unwrap();
         assert_eq!(

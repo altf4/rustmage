@@ -325,11 +325,14 @@ def token_program(text):
         if not match: return None
         name, suffix = match.groups()
     keywords = 0
+    landfall_growth=None
     if suffix != '.':
         if not suffix.startswith(' with '): return None
         ability = suffix[len(' with '):]
         if ability in ('"This token can\'t block."', '"This token can\'t be blocked."'):
             keywords = 2048 if ability == '"This token can\'t block."' else 16384
+        elif ability=='"Whenever a land you control enters, this token gets +1/+0 until end of turn."':
+            landfall_growth=[1,0]
         else:
             if not ability.endswith('.'): return None
             words = [word.strip() for word in ability[:-1].replace(' and ', ',').split(',')]
@@ -338,6 +341,7 @@ def token_program(text):
     factory = {'name': name, 'subtypes': subtypes, 'colors': sum(colors[word] for word in color_names),
                'power': int(power), 'toughness': int(toughness), 'extra_type': extra_type,
                'keywords': keywords}
+    if landfall_growth is not None:factory['landfall_growth']=landfall_growth
     key = hashlib.sha256(json.dumps(factory, sort_keys=True).encode()).hexdigest()[:24]
     if key in TOKEN_DEFS and TOKEN_DEFS[key] != factory:
         raise ValueError("token factory identity collision")
@@ -820,19 +824,40 @@ def unchecked_focused_creature_program(text):
     return statement_program(text)
 
 
+def search_filter(noun):
+    """Closed card qualities, with explicit conjunctions and branch-local unions."""
+    fixed={
+        'basic land card':'BasicLand','land card':'Land','creature card':'Creature',
+        'artifact card':'Artifact','enchantment card':'Enchantment',
+        'basic land cards and/or Gate cards':'AnyOf(&[SearchFilter::BasicLand, SearchFilter::Subtype("Gate")])',
+        'basic land cards and/or Desert cards':'AnyOf(&[SearchFilter::BasicLand, SearchFilter::Subtype("Desert")])',
+        'basic land card or a Desert card':'AnyOf(&[SearchFilter::BasicLand, SearchFilter::Subtype("Desert")])',
+        'instant card or a card with flash':'AnyOf(&[SearchFilter::Kinds(8), SearchFilter::Keyword(Keywords(32))])',
+        'basic Forest card':'AllOf(&[SearchFilter::BasicLand, SearchFilter::Subtype("Forest")])',
+        'Spider Hero card':'AllOf(&[SearchFilter::Subtype("Spider"), SearchFilter::Subtype("Hero")])',
+        'Equipment card':'Subtype("Equipment")','Mountain card':'Subtype("Mountain")',
+        'card named Dragonstorm Globe or Boulderborn Dragon':'AnyOf(&[SearchFilter::Name("Dragonstorm Globe"), SearchFilter::Name("Boulderborn Dragon")])',
+        'card named Magitek Infantry':'Name("Magitek Infantry")',
+    }
+    if noun in fixed:return fixed[noun]
+    if noun in ('basic land cards','land cards','creature cards','artifact cards','enchantment cards'):
+        return fixed[noun[:-1]]
+    return None
+
+
 def search_program(text):
-    quality = r'(basic land|land|creature|artifact|enchantment)'
-    match = re.fullmatch(r'search your library for (a|up to two|up to three|up to four) ' + quality +
-        r' cards?, (reveal (?:it|them), )?put (?:it|them) (into your hand|onto the battlefield)( tapped)?, then shuffle\.', text)
-    if not match: return None
-    count, kind, reveal, destination, tapped = match.groups()
-    plural = count != 'a'
-    if (' cards,' in text) != plural or ('put them ' in text) != plural: return None
-    if reveal and (('reveal them,' in reveal) != plural): return None
-    count = {'a': 1, 'up to two': 2, 'up to three': 3, 'up to four': 4}[count]
-    if destination == 'into your hand' and (tapped or not reveal): return None
-    filter_ = {'basic land': 'BasicLand', 'land': 'Land', 'creature': 'Creature', 'artifact': 'Artifact', 'enchantment': 'Enchantment'}[kind]
-    destination = 'Hand' if destination == 'into your hand' else 'Battlefield'
+    match=re.fullmatch(r'search your library for (a |an |up to two |up to three |up to four )(.+?), (reveal (?:it|them), )?put (it|them|that card) (into your hand|onto the battlefield)( tapped)?, then shuffle\.',text)
+    if not match:return None
+    count,noun,reveal,pronoun,destination,tapped=match.groups()
+    filter_=search_filter(noun)
+    if filter_ is None:return None
+    plural=count.startswith('up to ')
+    if plural != noun.endswith('cards') or plural != (pronoun=='them'):return None
+    if count not in ('a ','an ','up to two ','up to three ','up to four '):return None
+    if reveal and plural != ('them' in reveal):return None
+    count={'a ':1,'an ':1,'up to two ':2,'up to three ':3,'up to four ':4}[count]
+    if destination=='into your hand' and (tapped or not reveal):return None
+    destination='Hand' if destination=='into your hand' else 'Battlefield'
     return [f'Search(SearchSpec {{ filter: SearchFilter::{filter_}, maximum: {count}, destination: SearchDestination::{destination}, tapped: {str(bool(tapped)).lower()}, reveal: {str(bool(reveal)).lower()} }})']
 
 
@@ -1242,6 +1267,13 @@ def statement_program(text):
         return predefined_program('create a Mutagen token.')
     if text=='you lose 2 life unless you control a Villain.':
         return ['If { guard: StepGuard::Expression { value: '+stat_value('Villains you control')+', minimum: None, maximum: Some(0) }, skip: 1 }','LoseLife(PlayerSet::Controller, 2)']
+    # A complete quoted token ability can end the final sentence without an
+    # extra period outside the quote. Split only at an unquoted sentence edge.
+    if not text.endswith('.') and '"' in text:
+        first,tail=split_sentence(text)
+        if tail:
+            head=statement_program(first);rest=statement_program(tail)
+            return [*head,*rest] if head and rest else None
     if not text.endswith('.'):
         return None
     if m := re.fullmatch(r'put (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on this creature\.', text):
@@ -1400,6 +1432,7 @@ for _name, _kinds, _relation, _tapped, _minimum, _maximum in [
                           f'tapped: {str(_tapped).lower()}, min_mana: {_minimum}, max_mana: {_maximum} }}')
 TARGET_RULES['DefendingCreature'] = 'TargetRule::DefendingCreature'
 TARGET_RULES['PirateYou'] = filtered_target('CreatureYou','Subtype("Pirate")')
+TARGET_RULES['CaveGraveYou'] = 'TargetRule::Filtered { base: &TargetRule::Object { zone: TargetZone::Graveyard, kinds: 0, relation: 0, other: false, nonland: false, tapped: false, min_mana: 0, max_mana: u32::MAX }, predicate: &TargetPredicate::Subtype("Cave") }'
 TARGET_RULES['VampireYou'] = ('TargetRule::Filtered { base: &TargetRule::Object { zone: TargetZone::Battlefield, kinds: 0, relation: 0, other: false, nonland: false, tapped: false, min_mana: 0, max_mana: 4294967295 }, predicate: &TargetPredicate::Subtype("Vampire") }')
 
 for _name, _base, _predicate in [
@@ -1773,6 +1806,7 @@ def targeted_program(text):
         'untap target nonland permanent.': ('Nonland', ['Untap']),
         'untap one or two target creatures. They each get +2/+2 until end of turn.': (('Creature', 1, 2), ['Untap', grow_instruction('Targets', 2, 2)]),
         "return target creature card from your graveyard to the battlefield.": ('CreatureGraveYou', ['ReturnToBattlefield']),
+        "return target Cave card from your graveyard to the battlefield tapped.": ('CaveGraveYou', ['ReturnToBattlefieldTapped']),
         "return another target creature card from your graveyard to your hand.": ('OtherCreatureGraveYou', ['ReturnToHand']),
         "return target creature card from your graveyard to your hand.": ('CreatureGraveYou', ['ReturnToHand']),
         "return target instant or sorcery card from your graveyard to your hand.": ('InstantSorceryGraveYou', ['ReturnToHand']),
@@ -2479,6 +2513,9 @@ def activation_cost(text):
         elif component == 'Forage':
             if cost['additional'] is not None:return None
             cost['additional']='AdditionalCost { kind: EffectChoiceKind::Forage, filter: '+sacrifice_spec('a permanent')[1]+' }'
+        elif component == 'Discard this card':
+            if cost.get('discard') or cost.get('origin','Hand')!='Hand':return None
+            cost.update(discard=True,origin='Hand')
         elif component == 'Discard a card':
             if cost['additional'] is not None: return None
             cost['additional'] = 'AdditionalCost { kind: EffectChoiceKind::Discard, filter: '+sacrifice_spec('a permanent')[1]+' }'
@@ -2507,6 +2544,7 @@ def activation_cost(text):
     if cost['additional'] is not None and (cost['life'] or cost['remove'] or cost['loyalty'] is not None): return None
     if external_sacrifice and cost['sacrifice']:return None
     if cost['additional'] is not None and 'Forage' in cost['additional'] and cost['sacrifice']:return None
+    if cost.get('discard') and (cost['tap'] or cost['sacrifice'] or cost['exile_self'] or cost['remove'] or cost['loyalty'] is not None or cost['additional'] is not None or cost['life']):return None
     if cost['exile_self'] and (cost['tap'] or cost['sacrifice'] or cost['life'] or cost['remove'] or cost['additional'] is not None or cost['loyalty'] is not None): return None
     return cost
 
@@ -2633,7 +2671,7 @@ def permanent_program_template(card):
     for line in text.split('\n'):
         # Removing a reminder can leave trailing spaces before a newline.
         line=line.strip()
-        for label in ('Do You Like Squirrels? — ', 'I LOVE Squirrels! — '):
+        for label in ('Do You Like Squirrels? — ', 'I LOVE Squirrels! — ', 'Fateful Bite — '):
             if line.startswith(label):line=line[len(label):]
         # These aliases denote the source only, not any arbitrary mentioned name.
         line = line.replace('When this artifact enters, ', 'When this creature enters, ').replace('When this enchantment enters, ', 'When this creature enters, ')
@@ -2728,7 +2766,7 @@ def permanent_program_template(card):
         if any(instruction.startswith('AddMana') for instruction in program) and (len(program) != 1 or targets != 'None'):
             return None
         # Counterfactual mana search does not consume hand-card resources yet.
-        if program[0].startswith('AddMana') and (cost['additional'] is not None or cost['exile_self']): return None
+        if program[0].startswith('AddMana') and (cost['additional'] is not None or cost['exile_self'] or cost.get('discard',False)): return None
         if program[0].startswith('AddMana') and cost['loyalty'] is None and not (cost['tap'] or cost['sacrifice'] or cost['life'] or cost['remove'] or once or exhaust):
             # Unbounded positive production needs an infinite-resource solver.
             # Resource-free conversions that do not increase total mana are finite.
@@ -3114,7 +3152,11 @@ def compile_catalogue(snapshot, target):
             kind = 1 | (16 if factory['extra_type'] == 'artifact' else 32 if factory['extra_type'] == 'enchantment' else 0)
             effect = f"Creature({factory['power']}, {factory['toughness']})"
             token_abilities = []
-        definitions.append(f"    Definition {{ info: CardInfo {{ name: {json.dumps(name)}, oracle_id: None, mana_cost: \"\", type_line: {json.dumps(type_line, ensure_ascii=False)}, oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: Keywords({factory['keywords']}), deck_limit: None }}, effect: Effect::{effect}, triggers: &[], activated: {rust_activations(token_abilities)}, enters: Counters {{ plus_one: 0, minus_one: 0, stun: 0, loyalty: 0 }}, entry: EntryTapped::Never, kind: {kind}, basic: false, mana_color: None, colored: [0; 6], generic: 0 }},")
+        token_triggers='&[]'
+        if factory.get('landfall_growth'):
+            p,t=factory['landfall_growth']
+            token_triggers='&[TriggeredAbility { condition: TriggerCondition::LandEntersYou, targets: TargetPlan::Single(TargetSpec::NONE), program: '+rust_program([grow_instruction('Source',p,t)])+' }]'
+        definitions.append(f"    Definition {{ info: CardInfo {{ name: {json.dumps(name)}, oracle_id: None, mana_cost: \"\", type_line: {json.dumps(type_line, ensure_ascii=False)}, oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: Keywords({factory['keywords']}), deck_limit: None }}, effect: Effect::{effect}, triggers: {token_triggers}, activated: {rust_activations(token_abilities)}, enters: Counters {{ plus_one: 0, minus_one: 0, stun: 0, loyalty: 0 }}, entry: EntryTapped::Never, kind: {kind}, basic: false, mana_color: None, colored: [0; 6], generic: 0 }},")
         token_infos.append(f"    TokenInfo {{ factory_identity: {json.dumps(name)}, name: {json.dumps(factory['name'])}, subtypes: {json.dumps(factory['subtypes'])}, colors: {factory['colors']} }},")
         color_masks.append(factory['colors'])
         marker = '__TOKEN_' + key + '__'

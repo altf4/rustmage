@@ -213,6 +213,11 @@ pub(crate) struct LibrarySelectionSpec {
 /// Fixed qualities admitted by library-search instructions.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum SearchFilter {
+    AnyOf(&'static [SearchFilter]),
+    AllOf(&'static [SearchFilter]),
+    Name(&'static str),
+    Kinds(u16),
+    Keyword(Keywords),
     BasicLand,
     Land,
     Creature,
@@ -223,6 +228,13 @@ pub enum SearchFilter {
 impl SearchFilter {
     pub(crate) fn matches(self, card: Card) -> bool {
         match self {
+            Self::AnyOf(filters) => filters.iter().any(|filter| filter.matches(card)),
+            Self::AllOf(filters) => filters.iter().all(|filter| filter.matches(card)),
+            Self::Name(name) => card.token_info().map_or(card.name(), |info| info.name) == name,
+            Self::Kinds(kinds) => card.kind_mask() & kinds != 0,
+            // Card characteristics in the library; flashback is not flash.
+            // Dynamic outside-battlefield ability grants remain gated.
+            Self::Keyword(keyword) => card.keywords().contains(keyword),
             Self::BasicLand => card.is_land() && card.is_basic_land(),
             Self::Land => card.is_land(),
             Self::Creature => card.is_creature(),
@@ -466,6 +478,7 @@ pub(crate) enum Instruction {
     BottomLibrary,
     OwnerLibrary,
     ReturnToBattlefield,
+    ReturnToBattlefieldTapped,
     Destroy,
     Tap,
     Untap,

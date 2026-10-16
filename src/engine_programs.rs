@@ -1676,6 +1676,19 @@ impl Game {
                         }
                     }
                 }
+                Instruction::ReturnToBattlefieldTapped => {
+                    let moves = item
+                        .targets
+                        .iter()
+                        .copied()
+                        .filter(|&bound| self.same_target_object(bound))
+                        .filter_map(|bound| match bound.target {
+                            Target::Card(id) => Some(self.entry_move(id, Zone::Battlefield, true)),
+                            _ => None,
+                        })
+                        .collect();
+                    self.stage_entries(moves, None);
+                }
                 Instruction::Exile
                 | Instruction::Destroy
                 | Instruction::ReturnToHand

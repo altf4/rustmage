@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "19f5a43726a4fc3503feee79cf5f630d22e41dd02ea98d43ecf2f355ee5d6581",
+  "catalogue_version": "04ead6ed7234c31bb805d57b3726cd5810053daefca6166f5aedc0a047f93c07",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1533,
-  "implemented_total": 1539,
-  "token_definitions": 72,
+  "implemented_standard_cards": 1552,
+  "implemented_total": 1558,
+  "token_definitions": 73,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -3736,8 +3736,8 @@
     {
       "name": "Call the Mountain Chocobo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Call the Spirit Dragons",
@@ -4468,8 +4468,8 @@
     {
       "name": "Chocobo Racetrack",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Chomping Changeling",
@@ -4540,8 +4540,8 @@
     {
       "name": "Circuitous Route",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "City Pigeon",
@@ -7012,8 +7012,8 @@
     {
       "name": "Dragonstorm Forecaster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Dragonstorm Globe",
@@ -10702,8 +10702,8 @@
     {
       "name": "Glimpse the Core",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Glint Weaver",
@@ -11524,8 +11524,8 @@
     {
       "name": "Gysahl Greens",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "H.E.R.B.I.E. Scout Unit",
@@ -11758,8 +11758,8 @@
     {
       "name": "Harvester of Misery",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Harvestrite Host",
@@ -12418,8 +12418,8 @@
     {
       "name": "Honored Knight-Captain",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Hop to It",
@@ -15724,8 +15724,8 @@
     {
       "name": "Magitek Infantry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Magitek Scythe",
@@ -15922,8 +15922,8 @@
     {
       "name": "Map the Frontier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Maralen, Fae Ascendant",
@@ -17410,8 +17410,8 @@
     {
       "name": "Mystical Teachings",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Mystical Tether",
@@ -18358,8 +18358,8 @@
     {
       "name": "Outcaster Greenblade",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Outcaster Trailblazer",
@@ -18922,8 +18922,8 @@
     {
       "name": "Pia, Aether Ascetic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Pia, Determined Rebuilder",
@@ -20020,8 +20020,8 @@
     {
       "name": "Radioactive Spider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Raft Security Officer",
@@ -23272,8 +23272,8 @@
     {
       "name": "Simulacrum Shaper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Simulacrum Synthesizer",
@@ -23758,8 +23758,8 @@
     {
       "name": "Solemn Simulacrum",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Solitary Cell",
@@ -24298,8 +24298,8 @@
     {
       "name": "Spinewoods Armadillo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Spinewoods Paladin",
@@ -24778,8 +24778,8 @@
     {
       "name": "Steel Wrecking Ball",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Steelswarm Operator",
@@ -25612,8 +25612,8 @@
     {
       "name": "Sureshot Sower",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Surgical Precision",
