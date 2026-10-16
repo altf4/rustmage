@@ -33,6 +33,10 @@ Oracle bodies and Java hashes at
 identities, six regression definitions, 48 token factories and one emblem.
 Unknown history, target-dependent costs, colored reductions, cost increases,
 variable reductions, affinity and residual unsupported bodies remain gated.
+Hand-size reductions are also gated: CR 601.2a moves the spell out of hand
+before determining its cost, while affordability currently queries the original
+hand. A compiler regression rejects that complete synthetic body; none of the
+twenty admissions depends on hand size.
 
 Immutable rules describe self/global scope, a type/subtype union, fixed generic
 amount, turn relation and a live predicate. Only owned battlefield sources apply
@@ -67,7 +71,7 @@ field is added. Observation 41, ABI 1 and protocol 2 remain unchanged. One older
 synthetic reservation test now explicitly replaces its synthetic locked total
 alongside the base requirement; real declarations cannot reprice a locked spell.
 
-Author checks pass 740 Rust tests (728 unit and twelve integration), 133
+Author checks pass 740 Rust tests (728 unit and twelve integration), 134
 compiler/data tests, 95 fresh release Python tests, consistency, rustfmt and
 Clippy with warnings denied. Twenty-one focused native tests cover every new
 body, filter/controller/turn/ordinal boundaries, tribal overlap, multiple-source

@@ -37,6 +37,24 @@ class CatalogueCompilerTests(unittest.TestCase):
             proxy,rules=generate.extract_cost_reductions(self.card(oracle_text=text))
             self.assertEqual(proxy['oracle_text'],text);self.assertEqual(rules,[],text)
 
+    def test_hand_count_reductions_remain_gated_until_cast_zone_is_modeled(self):
+        import hashlib
+        import json
+        clause='This spell costs {1} less to cast if you have fewer than 3 cards in hand.'
+        # The predicate is valid for resolution/step programs, but cost queries
+        # need the proposed casting state (three cards becomes two in hand).
+        self.assertIn('StepValue::Hand',generate.step_guard('you have fewer than 3 cards in hand'))
+        card=self.card(name='Hand Reduction Regression',type_line='Sorcery',mana_cost='{1}{U}',
+                       colors=['U'],oracle_text=clause+'\nDraw two cards.')
+        proxy,rules=generate.extract_cost_reductions(card)
+        self.assertEqual(proxy,card);self.assertEqual(rules,[])
+        cards=[card]
+        canonical=json.dumps(cards,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()
+        snapshot=dict(cards=cards,card_count=1,cards_sha256=hashlib.sha256(canonical).hexdigest())
+        _,report=generate.compile_catalogue(snapshot,dict(banned_card_names=[]))
+        row=next(row for row in report['cards'] if row['name']==card['name'])
+        self.assertFalse(row['implemented'])
+
     def test_twenty_reduction_admissions_require_every_residual_body_clause(self):
         import json
         rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())

@@ -98,6 +98,10 @@ def extract_cost_reductions(card):
             if m[2]:
                 guard=('StepGuard::Threshold { value: StepValue::SpellsCast, minimum: Some(1), maximum: None }'
                        if m[2]=="you've cast another spell this turn" else step_guard(m[2]))
+                # CR 601.2a moves the proposed spell out of hand before costs
+                # are determined. Affordability currently queries the original
+                # hand, so retain this clause until proposed-state checks exist.
+                if guard and 'StepValue::Hand' in guard:guard=None
             elif line.endswith(' during your turn.'):turn='Own'
         if filt is None or guard is None or amount is None or amount>65535:
             body.append(original);continue
