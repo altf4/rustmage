@@ -272,6 +272,7 @@ mod tests {
                     matches!(
                         a,
                         Action::FinishTargets
+                            | Action::ArrangeLibrary { .. }
                             | Action::Discard { .. }
                             | Action::PutTrigger { .. }
                             | Action::Pass
@@ -514,7 +515,7 @@ mod tests {
         replay(&mut g, a);
     }
     #[test]
-    fn virtual_mana_and_convoke_never_double_spend_a_tapped_or_sacrificed_creature() {
+    fn virtual_mana_and_convoke_never_double_spend_a_tapped_mana_creature() {
         let mut g = scenario();
         let spell = named(&mut g, Player::P0, "Sun-Dappled Celebrant", Zone::Hand);
         let elves = named(&mut g, Player::P0, "Llanowar Elves", Zone::Battlefield);
@@ -864,5 +865,304 @@ mod residual_tests {
                 }
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod context_tests {
+    use super::super::tests::scenario;
+    use super::tests::{named, replay, settle};
+    use super::*;
+    #[test]
+    fn old_reduction_locks_before_convoke_without_changing_printed_or_stack_mana_value() {
+        let mut g = scenario();
+        named(&mut g, Player::P0, "Raging Battle Mouse", Zone::Battlefield);
+        let candy = named(&mut g, Player::P0, "Candy Trail", Zone::Hand);
+        g.state.players[0].mana = [0, 0, 0, 0, 0, 1];
+        replay(&mut g, Action::AnnounceCast { card: candy });
+        replay(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, 0, 1],
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.state.players[0].spells_cast_this_turn, 1);
+        g.state.priority = Player::P0;
+        let source = named(&mut g, Player::P0, "Sun-Dappled Celebrant", Zone::Hand);
+        let helper = named(&mut g, Player::P0, "Chrome Companion", Zone::Battlefield);
+        g.state.players[0].mana = [2, 0, 0, 0, 0, 2];
+        replay(&mut g, Action::AnnounceCast { card: source });
+        assert_eq!(
+            g.state
+                .announcing
+                .as_ref()
+                .unwrap()
+                .total_cost
+                .unwrap()
+                .generic,
+            3
+        );
+        replay(&mut g, Action::BeginConvoke);
+        let object = g.object_ref(helper);
+        replay(
+            &mut g,
+            Action::ChooseConvoker {
+                object,
+                contribution: ConvokeContribution::Generic,
+            },
+        );
+        assert_eq!(g.convoke_choice().unwrap().remaining.generic, 2);
+        replay(
+            &mut g,
+            Action::PayCosts {
+                payment: [2, 0, 0, 0, 0, 2],
+            },
+        );
+        assert_eq!(g.state.stack[0].mana_value(), 6);
+        assert_eq!(
+            Card::from_name("Sun-Dappled Celebrant")
+                .unwrap()
+                .fixed_mana_value(),
+            6
+        );
+        assert_eq!(g.state.players[0].spells_cast_this_turn, 2);
+    }
+    #[test]
+    fn winter_actual_cast_packet_survives_source_departure_countering_and_cleans_up() {
+        for p in [Player::P0, Player::P1] {
+            for reenter in [false, true] {
+                let mut g = scenario();
+                g.state.active = p;
+                g.state.priority = p;
+                g.state.players[p.index()].mana = [30; 6];
+                let winter = named(&mut g, p, "Winter, Team Player", Zone::Hand);
+                let friend = named(&mut g, p, "Chrome Companion", Zone::Battlefield);
+                let enemy = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+                replay(&mut g, Action::AnnounceCast { card: winter });
+                replay(&mut g, Action::BeginConvoke);
+                let object = g.object_ref(friend);
+                replay(
+                    &mut g,
+                    Action::ChooseConvoker {
+                        object,
+                        contribution: ConvokeContribution::Generic,
+                    },
+                );
+                replay(
+                    &mut g,
+                    Action::PayCosts {
+                        payment: [0, 0, 0, 1, 0, 3],
+                    },
+                );
+                settle(&mut g);
+                assert_eq!(g.stats(winter).power, 3);
+                g.state.priority = p;
+                let shock = named(&mut g, p, "Shock", Zone::Hand);
+                replay(&mut g, Action::AnnounceCast { card: shock });
+                replay(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Player(p.other()),
+                    },
+                );
+                replay(
+                    &mut g,
+                    Action::PayCosts {
+                        payment: [0, 0, 0, 1, 0, 0],
+                    },
+                );
+                let id = g.state.stack.iter().find(|s| s.card == shock).unwrap().id;
+                assert!(g.counter_stack_item(id, false));
+                g.move_object(winter, Zone::Graveyard);
+                if reenter {
+                    g.move_object(winter, Zone::Battlefield);
+                }
+                let before = g.stats(friend);
+                settle(&mut g);
+                assert_eq!(g.stats(friend).power, before.power + 1);
+                assert_eq!(g.stats(enemy).power, 2);
+                if reenter {
+                    assert_eq!(g.stats(winter).power, 4);
+                }
+                g.state.step = Step::Cleanup;
+                g.finish_cleanup();
+                assert_eq!(g.stats(friend).power, before.power);
+                if reenter {
+                    assert_eq!(g.stats(winter).power, 3);
+                }
+            }
+        }
+    }
+    #[test]
+    fn convoking_does_not_remove_an_untapped_attacker_or_blocker_from_combat() {
+        for blocker in [false, true] {
+            let mut g = scenario();
+            let helper = named(&mut g, Player::P0, "Chrome Companion", Zone::Battlefield);
+            let enemy = named(&mut g, Player::P1, "Bear Cub", Zone::Battlefield);
+            let spell = named(&mut g, Player::P0, "Appeal to Eirdu", Zone::Hand);
+            g.state.players[0].mana = [1, 0, 0, 0, 0, 2];
+            g.state.attackers.push(Attacker {
+                card: if blocker { enemy } else { helper },
+                defender: Some(CombatDefender::Player(if blocker {
+                    Player::P0
+                } else {
+                    Player::P1
+                })),
+                blocked: blocker,
+            });
+            if blocker {
+                g.state.blocks.push((enemy, helper));
+            }
+            replay(&mut g, Action::AnnounceCast { card: spell });
+            replay(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(helper),
+                },
+            );
+            replay(&mut g, Action::FinishTargets);
+            replay(&mut g, Action::BeginConvoke);
+            let object = g.object_ref(helper);
+            replay(
+                &mut g,
+                Action::ChooseConvoker {
+                    object,
+                    contribution: ConvokeContribution::Generic,
+                },
+            );
+            replay(
+                &mut g,
+                Action::PayCosts {
+                    payment: [1, 0, 0, 0, 0, 2],
+                },
+            );
+            assert!(g.object_view(helper).tapped);
+            if blocker {
+                assert!(g.state.blocks.contains(&(enemy, helper)));
+            } else {
+                assert!(g.state.attackers.iter().any(|a| a.card == helper));
+            }
+        }
+    }
+}
+
+#[cfg(test)]
+mod mana_boundary_tests {
+    use super::super::tests::scenario;
+    use super::tests::{named, replay, settle};
+    use super::*;
+    #[test]
+    fn actual_sacrificed_mana_source_funds_only_its_real_remaining_mana() {
+        let mut g = scenario();
+        let spell = named(&mut g, Player::P0, "Sun-Dappled Celebrant", Zone::Hand);
+        let source = named(&mut g, Player::P0, "Omni-Cheese Pizza", Zone::Battlefield);
+        g.state.players[0].mana = [1, 0, 0, 0, 0, 4];
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceCast { card: spell })
+        );
+        let helper = named(&mut g, Player::P0, "Bear Cub", Zone::Battlefield);
+        replay(&mut g, Action::AnnounceCast { card: spell });
+        let mana = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a,Action::ActivateMana{card,production:[1,0,0,0,0,0],payment:[0,0,0,0,0,1],..}if *card==source))
+            .unwrap();
+        replay(&mut g, mana);
+        assert!(!g.on_battlefield(source));
+        replay(&mut g, Action::BeginConvoke);
+        assert!(
+            !g.legal_actions()
+                .iter()
+                .any(|a| matches!(a,Action::ChooseConvoker{object,..}if object.card==source))
+        );
+        let object = g.object_ref(helper);
+        replay(
+            &mut g,
+            Action::ChooseConvoker {
+                object,
+                contribution: ConvokeContribution::Generic,
+            },
+        );
+        replay(
+            &mut g,
+            Action::PayCosts {
+                payment: [2, 0, 0, 0, 0, 3],
+            },
+        );
+        assert!(g.object_view(helper).tapped);
+        assert_eq!(g.state.players[0].mana, [0; 6]);
+    }
+    #[test]
+    fn a_related_ward_request_cannot_reuse_convoke_or_untapped_creature_credits() {
+        let mut g = scenario();
+        let target = named(&mut g, Player::P1, "Hulking Raptor", Zone::Battlefield);
+        let spell = named(&mut g, Player::P0, "Vote Out", Zone::Hand);
+        let black = named(&mut g, Player::P0, "Hullcarver", Zone::Battlefield);
+        let mut helpers = Vec::new();
+        for _ in 0..3 {
+            helpers.push(named(
+                &mut g,
+                Player::P0,
+                "Chrome Companion",
+                Zone::Battlefield,
+            ));
+        }
+        let spare = named(&mut g, Player::P0, "Bear Cub", Zone::Battlefield);
+        replay(&mut g, Action::AnnounceCast { card: spell });
+        replay(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        replay(&mut g, Action::BeginConvoke);
+        let object = g.object_ref(black);
+        replay(
+            &mut g,
+            Action::ChooseConvoker {
+                object,
+                contribution: ConvokeContribution::Black,
+            },
+        );
+        for id in &helpers {
+            let object = g.object_ref(*id);
+            replay(
+                &mut g,
+                Action::ChooseConvoker {
+                    object,
+                    contribution: ConvokeContribution::Generic,
+                },
+            );
+        }
+        replay(&mut g, Action::PayCosts { payment: [0; 6] });
+        for _ in 0..30 {
+            if matches!(g.state.pending, Pending::ResolutionMana { .. }) {
+                break;
+            }
+            let a = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::Pass | Action::PutTrigger { .. }))
+                .unwrap();
+            replay(&mut g, a);
+        }
+        assert_eq!(
+            g.state.pending,
+            Pending::ResolutionMana { player: Player::P0 }
+        );
+        assert_eq!(
+            g.legal_actions(),
+            vec![Action::Concede, Action::DeclineResolutionMana]
+        );
+        assert!(g.convoke_choice().is_none());
+        replay(&mut g, Action::DeclineResolutionMana);
+        settle(&mut g);
+        assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(target).zone, Zone::Battlefield);
+        assert!(!g.object_view(spare).tapped);
+        assert!(helpers.iter().all(|&id| g.object_view(id).tapped));
+        assert!(g.object_view(black).tapped);
     }
 }
