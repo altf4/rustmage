@@ -358,3 +358,188 @@ fn real_land_mana_funds_special_action_without_consuming_hand_source_or_casting(
         assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 0);
     }
 }
+fn grant(g: &mut Game, p: Player, id: CardId) {
+    let object = g.object_ref(id);
+    g.state
+        .plot
+        .get_or_insert_with(Default::default)
+        .cards
+        .push(PlottedCard {
+            object,
+            owner: p,
+            plotted_turn: g.state.turn - 1,
+        });
+    g.state
+        .plot
+        .as_mut()
+        .unwrap()
+        .cards
+        .sort_by_key(|x| x.object.card);
+}
+#[test]
+fn plot_is_not_noncreature_cast_but_later_free_aura_cast_is_actual_cast() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let observer = named(&mut g, p, "Slickshot Show-Off", Zone::Battlefield);
+        let aura = named(&mut g, p, "Demonic Ruckus", Zone::Hand);
+        plot(&mut g, p, aura);
+        assert_eq!(g.stats(observer).power, 1);
+        assert!(g.state.pending_triggers.is_empty());
+        cast(&mut g, aura, true);
+        assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 1);
+        assert_eq!(g.stats(observer).power, 4); // genuine cast +2, attached aura +1
+        g.move_object(observer, Zone::Graveyard);
+        g.state_based_actions();
+        settle(&mut g);
+        assert_eq!(g.state.objects[aura as usize].zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 1);
+    }
+}
+#[test]
+fn stinger_scaling_is_battlefield_only_live_and_uses_shared_virtual_hand_count() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = named(&mut g, p, "Stingerback Terror", Zone::Hand);
+        for _ in 0..5 {
+            named(&mut g, p, "Forest", Zone::Hand);
+        }
+        assert_eq!((g.stats(id).power, g.stats(id).toughness), (7, 7));
+        plot(&mut g, p, id);
+        assert_eq!(g.stats(id).power, 7);
+        cast(&mut g, id, true);
+        assert_eq!((g.stats(id).power, g.stats(id).toughness), (2, 2));
+        let hand = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find(|(_, o)| o.owner == p && o.zone == Zone::Hand)
+            .unwrap()
+            .0 as CardId;
+        g.move_object(hand, Zone::Graveyard);
+        assert_eq!(g.stats(id).power, 3);
+        let value = StatValue::ControllerHandSize;
+        assert_eq!(g.stat_value(value, g.object_ref(id), p), 4);
+        named(&mut g, p.other(), "Forest", Zone::Hand);
+        assert_eq!(g.stats(id).power, 3);
+        for _ in 0..3 {
+            g.draw(p);
+        }
+        g.state_based_actions();
+        assert_eq!(g.state.objects[id as usize].zone, Zone::Graveyard);
+        assert_eq!(g.stats(id).power, 7);
+    }
+}
+#[test]
+fn free_cast_timing_overrides_intrinsic_flash_and_free_x_is_zero_without_alternative_choice() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let flash = named(&mut g, p, "Cogwork Wrestler", Zone::Exile);
+        grant(&mut g, p, flash);
+        g.state.active = p.other();
+        reject(&mut g, Action::AnnouncePlotted { card: flash });
+        g.state.active = p;
+        g.state.step = Step::BeginCombat;
+        reject(&mut g, Action::AnnouncePlotted { card: flash });
+        g.state.step = Step::Main1;
+        let x = named(&mut g, p, "Mind Spring", Zone::Exile);
+        grant(&mut g, p, x);
+        g.state.players[p.index()].mana = [0; 6];
+        replay(&mut g, Action::AnnouncePlotted { card: x });
+        assert_eq!(g.state.announcing.as_ref().unwrap().item.x, Some(0));
+        assert!(
+            !g.legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::ChooseX { .. } | Action::ChooseSpellCost { .. }))
+        );
+        let a = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        replay(&mut g, a);
+        assert_eq!(g.state.stack[0].x, Some(0));
+        assert_eq!(g.state.stack[0].mana_value(), 2);
+        settle(&mut g);
+        assert_eq!(g.state.objects[x as usize].zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 0);
+    }
+}
+#[test]
+fn free_cast_preserves_actual_mandatory_discard_cost_and_exact_private_reservation() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let spell = named(&mut g, p, "Thrill of Possibility", Zone::Exile);
+        grant(&mut g, p, spell);
+        g.state.players[p.index()].mana = [0; 6];
+        reject(&mut g, Action::AnnouncePlotted { card: spell });
+        let fodder = named(&mut g, p, "Forest", Zone::Hand);
+        let old = g.object_ref(fodder);
+        replay(&mut g, Action::AnnouncePlotted { card: spell });
+        assert!(g.observe(p.other()).additional_cost.is_none());
+        replay(&mut g, Action::ChooseAdditionalCost { object: old });
+        assert_eq!(g.state.objects[fodder as usize].zone, Zone::Hand);
+        let a = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        replay(&mut g, a);
+        assert_eq!(g.state.objects[fodder as usize].zone, Zone::Graveyard);
+        assert_eq!(g.object_ref(fodder).generation, old.generation + 1);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 2);
+        assert_eq!(g.state.objects[spell as usize].zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn plot_permissions_and_ordinary_paid_exile_rights_are_independent_and_one_shot() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = named(&mut g, p, "Spinewoods Paladin", Zone::Hand);
+        plot(&mut g, p, id);
+        g.state.exile_permissions.push(ExilePlayPermission {
+            object: g.object_ref(id),
+            player: p,
+            expires_turn: g.state.turn,
+        });
+        assert!(
+            g.legal_actions()
+                .contains(&Action::AnnounceExile { card: id })
+        );
+        reject(&mut g, Action::AnnouncePlotted { card: id });
+        replay(&mut g, Action::AnnounceExile { card: id });
+        assert!(g.observe(p).plotted_cards.is_empty());
+        assert!(g.state.exile_permissions.is_empty());
+        while g.state.announcing.is_some() {
+            pick(&mut g);
+        }
+        assert_eq!(g.state.stack[0].cast.unwrap().method, CastMethod::Normal);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 23);
+    }
+}
+#[test]
+fn real_mana_sacrifice_is_allowed_during_plot_and_never_sacrifices_reserved_hand_source() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 0];
+        let pizza = named(&mut g, p, "Omni-Cheese Pizza", Zone::Battlefield);
+        let forest = named(&mut g, p, "Forest", Zone::Battlefield);
+        let id = named(&mut g, p, "Demonic Ruckus", Zone::Hand);
+        replay(&mut g, Action::AnnouncePlot { card: id });
+        let a=g.legal_actions().into_iter().find(|a|matches!(a,Action::ActivateMana{card,production,..}if *card==pizza&&production[3]==1)).unwrap();
+        replay(&mut g, a);
+        assert_eq!(g.state.objects[pizza as usize].zone, Zone::Graveyard);
+        assert_eq!(g.state.objects[id as usize].zone, Zone::Hand);
+        assert!(!g.state.objects[forest as usize].tapped);
+        let a = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayPlot { .. }))
+            .unwrap();
+        replay(&mut g, a);
+        assert_eq!(g.state.objects[id as usize].zone, Zone::Exile);
+        assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 0);
+    }
+}
