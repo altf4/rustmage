@@ -1,6 +1,6 @@
 # Scalar X declarations and complete numeric domains
 
-Issue [#224](https://github.com/altf4/rustmage/issues/224) adds twelve complete Standard bodies to the in-process library. The integrated checkpoint supports **1,599 / 5,164 Standard cards**, 1,605 total implemented definitions, 74 immutable token factories and one emblem. Its catalogue fingerprint is `35307f2a78dc7988754a4d54ae6702e0bd0834108502c97de94ea0d3c227fc8e`. The [manifest](scalar-x-admissions.json) records every complete pinned Oracle text, **75 source records across 50 Java files** for constructors and direct rules-helper dependencies at XMage revision `492369c7844b8d76479f0393ff9eb6b0b0cf30d7`.
+Issue [#224](https://github.com/altf4/rustmage/issues/224) adds twelve complete Standard bodies to the in-process library. The integrated checkpoint supports **1,599 / 5,164 Standard cards**, 1,605 total implemented definitions, 74 immutable token factories and one emblem. Its catalogue fingerprint is `9fed03e1d33db0469e1b11bb3c4e02b4122bea04e79072c029766e8acc2138ad`. The [manifest](scalar-x-admissions.json) records every complete pinned Oracle text, **75 source records across 50 Java files** for constructors and direct rules-helper dependencies at XMage revision `492369c7844b8d76479f0393ff9eb6b0b0cf30d7`.
 
 | Card | Complete behavior |
 | --- | --- |

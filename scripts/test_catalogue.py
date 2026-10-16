@@ -63,10 +63,15 @@ class CatalogueCompilerTests(unittest.TestCase):
         declaration = 'Bargain (You may sacrifice an artifact, enchantment, or token as you cast this spell.)\n'
         cards = [dict(row, oracle_text=declaration + row['oracle_text'])
                  for row in snapshot['cards'] if row['name'] in names]
+        bargain = json.loads((generate.ROOT / 'docs/bargain-admissions.json').read_text())
+        bargain_names = {row['name'] for row in bargain['cards']}
+        cards += [dict(row, mana_cost='{X}' + row['mana_cost'])
+                  for row in snapshot['cards'] if row['name'] in bargain_names]
+        names |= bargain_names
         altered = dict(cards=cards, card_count=len(cards))
         altered['cards_sha256'] = hashlib.sha256(json.dumps(cards, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
         _, report = generate.compile_catalogue(altered, dict(banned_card_names=[]))
-        self.assertEqual(len(cards), 12)
+        self.assertEqual(len(cards), 22)
         self.assertFalse(any(row['implemented'] for row in report['cards'] if row['name'] in names))
 
     def test_exact_search_qualities_quantifiers_and_clause_boundaries(self):

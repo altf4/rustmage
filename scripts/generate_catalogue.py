@@ -3201,6 +3201,9 @@ def compile_catalogue(snapshot, target):
             else:
                 effect,keywords,abilities,spell,bargain_reduction=bargain_body
                 activations=[];enters=[0,0,0]
+        # Later fixed-cost selectors must never revive a rejected variable-cost body.
+        if '{X}' in card.get('mana_cost', '') and scalar is None:
+            effect = 'Unsupported'
         if effect != 'Unsupported':
             if creature_entry != 'Never':entry=creature_entry
             activations = [*activations, *cycling]
