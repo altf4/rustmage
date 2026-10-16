@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "6ce4ca3e32700616feda565deeb7b7860f4023b065b09c98fc0302c48074c165",
+  "catalogue_version": "629d353d666c75ca37ee7a92786fea85a960d035366158c9c74faa5230e9ac5d",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1619,
-  "implemented_total": 1625,
-  "token_definitions": 74,
+  "implemented_standard_cards": 1638,
+  "implemented_total": 1644,
+  "token_definitions": 76,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -748,7 +748,7 @@
     {
       "name": "Alacrian Jaguar",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -1642,7 +1642,7 @@
     {
       "name": "Autarch Mammoth",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -3118,7 +3118,7 @@
     {
       "name": "Bounding Felidar",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -3280,7 +3280,7 @@
     {
       "name": "Bridled Bighorn",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -3292,13 +3292,13 @@
     {
       "name": "Brightfield Glider",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
       "name": "Brightfield Mustang",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -4996,7 +4996,7 @@
     {
       "name": "Congregation Gryff",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -6616,7 +6616,7 @@
     {
       "name": "District Mascot",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -6904,7 +6904,7 @@
     {
       "name": "Dracosaur Auxiliary",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -7162,7 +7162,7 @@
     {
       "name": "Drover Grizzly",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -10504,13 +10504,13 @@
     {
       "name": "Gila Courser",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
       "name": "Gilded Ghoda",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -10750,7 +10750,7 @@
     {
       "name": "Gloryheath Lynx",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -19912,7 +19912,7 @@
     {
       "name": "Quilled Charger",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -22768,7 +22768,7 @@
     {
       "name": "Seraphic Steed",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -25174,7 +25174,7 @@
     {
       "name": "Stubborn Burrowfiend",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -27922,7 +27922,7 @@
     {
       "name": "Trained Arynx",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -28840,7 +28840,7 @@
     {
       "name": "Unswerving Sloth",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -29242,7 +29242,7 @@
     {
       "name": "Venomsac Lagac",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {

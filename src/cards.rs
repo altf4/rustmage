@@ -350,6 +350,9 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    BecomeSaddled {
+        minimum: u16,
+    },
     ExileTopPlay {
         amount: u16,
         next_turn: bool,
@@ -989,6 +992,9 @@ pub(crate) enum EntryPredicate {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    SelfAttacksWhileSaddled,
+    SelfEntersOrAttacksWhileSaddled,
+    SelfSaddledFirst,
     Foraged,
     FoodsSacrificed,
     Reflexive,
