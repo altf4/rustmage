@@ -481,6 +481,23 @@ def sacrifice_spec(text):
     return amount,filt
 
 
+def extract_additional_cost(card):
+    """One mandatory object cost; the entire residual text must still compile."""
+    text = card.get('oracle_text', '')
+    lines = text.split('\n')
+    costs = [line for line in lines if line.startswith('As an additional cost to cast this spell, ')]
+    if len(costs) != 1: return card, None
+    line = costs[0]
+    if line == 'As an additional cost to cast this spell, discard a card.':
+        kind, spec = 'Discard', sacrifice_spec('a permanent')
+    else:
+        m = re.fullmatch(r'As an additional cost to cast this spell, sacrifice (.+)\.', line)
+        if not m: return card, None
+        kind, spec = 'Sacrifice', sacrifice_spec(m[1])
+    if spec is None or spec[0] != 1 or 'source_only: true' in spec[1]: return card, None
+    return dict(card, oracle_text='\n'.join(item for item in lines if item != line)), f'AdditionalCost {{ kind: EffectChoiceKind::{kind}, filter: {spec[1]} }}'
+
+
 def object_choice(kind,players,spec,skip=None):
     amount,filter_=spec
     skip='None' if skip is None else f'Some({skip})'
@@ -1594,11 +1611,13 @@ def compile_catalogue(snapshot, target):
     grant_rows = []
     dynamic_rows = []
     scaling_rows = []
+    additional_rows = []
     hybrid_rows = []
     equipment_rows = []
     aura_rows = []
     for index, name in enumerate(names):
         card, cycling = cycling_abilities(cards.get(name, {}))
+        card, additional = extract_additional_cost(card)
         card, dynamic, scaling = extract_stat_rules(card)
         cost = card.get('mana_cost', '')
         keywords = sum(INTRINSIC_KEYWORDS[word] for word in {keyword.casefold() for keyword in card.get('keywords', [])} & INTRINSIC_KEYWORDS.keys())
@@ -1668,6 +1687,7 @@ def compile_catalogue(snapshot, target):
 
         if effect != 'Unsupported':
             supported.append(index)
+            if additional is not None: additional_rows.append(f'        {index} => Some({additional}),')
         basic = name in {'Plains', 'Island', 'Swamp', 'Mountain', 'Forest'} or card.get('type_line', '').split(' — ')[0] == 'Basic Land'
         costs = spell_cost_options(cost) or [([0] * 6, 0)]
         colored, generic = costs[0]
@@ -1731,6 +1751,7 @@ def compile_catalogue(snapshot, target):
     lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn equipment(card: Card) -> Option<EquipmentSpec> {', '    match card.0 {', *equipment_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn aura(card: Card) -> Option<AuraSpec> {', '    match card.0 {', *aura_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn dynamic_stats(card: Card) -> Option<DynamicStats> {', '    match card.0 {', *dynamic_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', "pub(super) fn scaling_modifiers(card: Card) -> &'static [ScalingModifier] {", '    match card.0 {', *scaling_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn keyword_grants(card: Card) -> &'static [KeywordGrant] {", '    match card.0 {', *grant_rows, '        _ => &[],', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn additional_cost(card: Card) -> Option<AdditionalCost> {', '    match card.0 {', *additional_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub const CREATURE_TYPES: &[&str] = &[', *('    '+json.dumps(name)+',' for name in creature_types), '];', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn cost_alternatives(card: Card) -> &'static [Mana] {", '    match card.0 {', *hybrid_rows, '        _ => &[],', '    }', '}', '']
     return '\n'.join(lines), {'schema': 1, 'catalogue_version': version, 'standard_legal_cards': len(cards),

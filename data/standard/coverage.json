@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "5434baf14ef073e225090567940f9090dbfd6bfec1c09499d48dc56b27af9f7c",
+  "catalogue_version": "00c8ac72617d97cd6291181f5fb0120b031a69e6b680c8641117cce296b8e682",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 907,
-  "implemented_total": 913,
+  "implemented_standard_cards": 910,
+  "implemented_total": 916,
   "token_definitions": 41,
   "cards": [
     {
@@ -5145,8 +5145,8 @@
     {
       "name": "Corrupted Conviction",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Corsair Captain",
@@ -9069,8 +9069,8 @@
     {
       "name": "Final Vengeance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Finale of Revelation",
@@ -27441,8 +27441,8 @@
     {
       "name": "Thrill of Possibility",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Throne of the Grim Captain // The Grim Captain",

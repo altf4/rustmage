@@ -13,6 +13,8 @@ pub(super) struct Announcement {
     pub counter_payment: Counters,
     pub pay_window: bool,
     pub production: Option<Mana>,
+    pub additional: Option<ObjectRef>,
+    pub additional_paid: bool,
 }
 
 impl Announcement {
@@ -334,6 +336,8 @@ impl Game {
             payment: None,
             cost: None,
             counter_payment: Counters::default(),
+            additional: None,
+            additional_paid: false,
             pay_window: false,
             production: None,
         });
@@ -363,6 +367,8 @@ impl Game {
             payment: None,
             cost: None,
             counter_payment: counters,
+            additional: None,
+            additional_paid: false,
             pay_window: true,
             production,
         });
@@ -374,8 +380,17 @@ impl Game {
             && announcement.pay_window
             && matches!(self.state.pending, Pending::Targets { .. })
         {
-            self.state.pending = Pending::PayCosts {
-                player: announcement.item.controller,
+            self.state.pending = if announcement.item.kind == StackKind::Spell
+                && announcement.item.source_card.additional_cost().is_some()
+                && announcement.additional.is_none()
+            {
+                Pending::AdditionalCost {
+                    player: announcement.item.controller,
+                }
+            } else {
+                Pending::PayCosts {
+                    player: announcement.item.controller,
+                }
             };
             return;
         }
@@ -395,6 +410,16 @@ impl Game {
                 {
                     *pool -= cost;
                 }
+            }
+        }
+        // Costs may synchronously return exiled Auras/lands. Finish their entry
+        // choices before the spell becomes cast and cast observers are collected.
+        announcement.payment = None;
+        if announcement.item.kind == StackKind::Spell && !announcement.additional_paid {
+            self.pay_additional_cost(&mut announcement);
+            if self.state.entry_batch.is_some() {
+                self.state.announcing = Some(announcement);
+                return;
             }
         }
         self.state.priority = if announcement.trigger {

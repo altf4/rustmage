@@ -244,6 +244,14 @@ impl Game {
             if self.state.resolving.is_some() {
                 self.run_program();
             }
+            if self
+                .state
+                .announcing
+                .as_ref()
+                .is_some_and(|a| a.additional_paid)
+            {
+                self.finish_announcement();
+            }
         }
     }
     pub(super) fn entry_candidate(&self, target: ObjectRef) -> bool {

@@ -1,11 +1,14 @@
 use crate::cards::{
-    ActivatedAbility, ActivationCost, ActivationGuard, ActivationOrigin, CastRelation, CountFilter,
-    CountZone, CounterKind, CounterSubject, Counters, CreatureFilter, DamageQualification,
-    DamageSubject, Effect, EffectChoiceKind, EntryTapped, Instruction, ManaCost, ManaProduction,
-    MillAmount, PlayerSet, RecoveryFilter, SacrificeFilter, SearchSpec, StatExpr, StatValue, Stats,
-    StepGuard, StepValue, Subject, TargetPlan, TargetRule, TargetSpec, TargetZone,
-    TriggerCondition, TriggerStep, payments,
+    ActivatedAbility, ActivationCost, ActivationGuard, ActivationOrigin, AdditionalCost,
+    CastRelation, CountFilter, CountZone, CounterKind, CounterSubject, Counters, CreatureFilter,
+    DamageQualification, DamageSubject, Effect, EffectChoiceKind, EntryTapped, Instruction,
+    ManaCost, ManaProduction, MillAmount, PlayerSet, RecoveryFilter, SacrificeFilter, SearchSpec,
+    StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetPlan, TargetRule, TargetSpec,
+    TargetZone, TriggerCondition, TriggerStep, payments,
 };
+#[path = "engine_additional_costs.rs"]
+mod additional_costs;
+pub use additional_costs::AdditionalCostView;
 #[path = "engine_activations.rs"]
 mod activations;
 #[path = "engine_connive.rs"]
@@ -171,6 +174,9 @@ pub struct BoundTarget {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
 pub enum Action {
+    ChooseAdditionalCost {
+        object: ObjectRef,
+    },
     ChooseSpellCost {
         cost: u16,
     },
@@ -572,6 +578,9 @@ enum Pending {
     Modes {
         player: Player,
     },
+    AdditionalCost {
+        player: Player,
+    },
     PayCosts {
         player: Player,
     },
@@ -826,6 +835,7 @@ pub struct Observation {
     pub effect_choice: Option<EffectChoiceView>,
     pub aura_entry: Option<entries::AuraEntryView>,
     pub entry_life: Option<entries::EntryLifeView>,
+    pub additional_cost: Option<AdditionalCostView>,
     pub connive_choice: Option<connive::ConniveChoiceView>,
     pub known_hand: Vec<ObjectRef>,
     pub payment_request: Option<PaymentRequestView>,
@@ -1001,6 +1011,7 @@ impl Game {
             Pending::SpellCost { player }
             | Pending::ConniveOrder { player }
             | Pending::ResolutionMana { player }
+            | Pending::AdditionalCost { player }
             | Pending::EntryLife { player }
             | Pending::AuraEntry { player }
             | Pending::EffectChoice { player }
@@ -1159,6 +1170,16 @@ impl Game {
                     }
                 }
             }
+            Pending::AdditionalCost { .. } => {
+                for (id, _) in s.objects.iter().enumerate() {
+                    let object = self.object_ref(id as CardId);
+                    if self.additional_choice_available(object)
+                        && emit(Action::ChooseAdditionalCost { object })
+                    {
+                        return true;
+                    }
+                }
+            }
             Pending::PayCosts { .. } => {
                 if self.visit_cost_payment(&mut emit) {
                     return true;
@@ -1255,6 +1276,9 @@ impl Game {
                     };
                     if completable {
                         let can_fund = obj.card.cost_options().any(|cost| {
+                            if obj.card.additional_cost().is_some() {
+                                return self.spell_can_fund(actor, card, cost);
+                            }
                             let colored = cost.colored;
                             let generic = cost.generic;
                             let cached = spell_funding_cache
@@ -1268,6 +1292,7 @@ impl Game {
                                 result
                             } else {
                                 let result = self.can_fund(FundingGoal {
+                                    reserve: None,
                                     actor,
                                     required: colored,
                                     generic,
@@ -1285,7 +1310,9 @@ impl Game {
                             return true;
                         }
                     }
-                    if matches!(obj.card.effect(), Effect::Modal(_)) {
+                    if obj.card.additional_cost().is_some()
+                        || matches!(obj.card.effect(), Effect::Modal(_))
+                    {
                         // Modal spells use the staged path: mode, targets, payment.
                         continue;
                     }
@@ -1406,12 +1433,8 @@ impl Game {
             Pending::SpellCost { player } => {
                 let card = s.announcing.as_ref().unwrap().item.source_card;
                 for (index, cost) in card.cost_options().enumerate() {
-                    if self.can_fund(FundingGoal {
-                        actor: player,
-                        required: cost.colored,
-                        generic: cost.generic,
-                        source: None,
-                    }) && emit(Action::ChooseSpellCost { cost: index as u16 })
+                    if self.spell_can_fund(player, s.announcing.as_ref().unwrap().item.card, cost)
+                        && emit(Action::ChooseSpellCost { cost: index as u16 })
                     {
                         return true;
                     }
@@ -1547,6 +1570,7 @@ impl Game {
             }
             Action::PayResolutionMana { payment } => self.finish_resolution_payment(Some(payment)),
             Action::DeclineResolutionMana => self.finish_resolution_payment(None),
+            Action::ChooseAdditionalCost { object } => self.choose_additional_cost(object),
             Action::ChooseEntryLife { pay } => self.choose_entry_life(pay),
             Action::ChooseAuraAttachment { object } => self.choose_aura_attachment(object),
             Action::Keep => {
@@ -2516,7 +2540,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 33,
+            schema: 34,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -2534,6 +2558,7 @@ impl Game {
                 Pending::Targets { .. } => "targets",
                 Pending::SpellCost { .. } => "spell_cost",
                 Pending::Modes { .. } => "spell_mode",
+                Pending::AdditionalCost { .. } => "additional_cost",
                 Pending::PayCosts { .. } => "pay_costs",
                 Pending::OrderTriggers { .. } => "order_triggers",
                 Pending::EffectOptional { .. } => "optional_effect",
@@ -2581,6 +2606,7 @@ impl Game {
             effect_choice: self.effect_choice_view(viewer),
             aura_entry: self.aura_entry_view(viewer),
             entry_life: self.entry_life_view(viewer),
+            additional_cost: self.additional_cost_view(viewer),
             objects,
             exile_links: s.exile_links.clone(),
             triggered_this_turn: s.triggered_this_turn.clone(),
@@ -2644,12 +2670,7 @@ impl Game {
                 card.cost_options()
                     .enumerate()
                     .filter(|(_, cost)| {
-                        self.can_fund(FundingGoal {
-                            actor: viewer,
-                            required: cost.colored,
-                            generic: cost.generic,
-                            source: None,
-                        })
+                        self.spell_can_fund(viewer, s.announcing.as_ref().unwrap().item.card, *cost)
                     })
                     .map(|(index, cost)| SpellCostChoiceView {
                         index: index as u16,
@@ -2993,3 +3014,7 @@ mod hybrid_tests;
 #[cfg(test)]
 #[path = "engine_changeling_tests.rs"]
 mod changeling_tests;
+
+#[cfg(test)]
+#[path = "engine_additional_cost_tests.rs"]
+mod additional_cost_tests;
