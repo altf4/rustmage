@@ -127,7 +127,7 @@ impl Game {
                 stats.power = power
                     .checked_add(object.growth.power)
                     .and_then(|p| p.checked_add(object.counter_delta()))
-                    .expect("power exhausted");
+                    .capacity("power exhausted");
             }
             if let Some(expr) = base.toughness {
                 // Most CDAs share a count for both axes; query that count once.
@@ -139,14 +139,14 @@ impl Game {
                         .unwrap()
                         .checked_add(expr.offset)
                         .and_then(|v| v.checked_sub(p.offset))
-                        .expect("toughness exhausted")
+                        .capacity("toughness exhausted")
                 } else {
                     self.stat_expression(expr, reference, object.owner)
                 };
                 stats.toughness = value
                     .checked_add(object.growth.toughness)
                     .and_then(|t| t.checked_add(object.counter_delta()))
-                    .expect("toughness exhausted");
+                    .capacity("toughness exhausted");
             }
         }
         if object.zone != Zone::Battlefield || !object.card.is_creature() {
@@ -174,12 +174,12 @@ impl Game {
                             .stats
                             .power
                             .checked_mul(value)
-                            .expect("power exhausted"),
+                            .capacity("power exhausted"),
                         toughness: modifier
                             .stats
                             .toughness
                             .checked_mul(value)
-                            .expect("toughness exhausted"),
+                            .capacity("toughness exhausted"),
                     };
                 }
             }

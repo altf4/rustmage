@@ -13,7 +13,7 @@ fn replay(g: &mut Game, a: Action) {
     act(g, a.clone());
     let expected = g.snapshot();
     assert_eq!(fork.snapshot(), expected);
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     act(g, a);
     assert_eq!(g.snapshot(), expected);
 }
@@ -178,7 +178,7 @@ fn changeling_receives_owned_elf_lord_bonuses_and_restores_without_a_type_cache(
     let size = g.state_bytes();
     g.move_object(lord, Zone::Graveyard);
     assert_eq!(g.stats(own).power, base);
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     assert_eq!(g.stats(own).power, base + 1);
     assert_eq!(g.state_bytes(), size);
     assert!(g.object_view(own).card.has_subtype("Dinosaur"));

@@ -72,14 +72,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 casts += 1;
                 second_spells += usize::from(after == 2);
                 let expected = game.snapshot();
-                game.restore(&saved);
+                game.restore(&saved).unwrap();
                 let mut fork = game.clone();
                 fork.apply(actor, action.clone())?;
                 game.apply(actor, action.clone())?;
                 assert_eq!(game.snapshot(), expected);
                 assert_eq!(game.snapshot(), fork.snapshot());
                 let expected = game.snapshot();
-                game.restore(&saved);
+                game.restore(&saved).unwrap();
                 game.apply(actor, action)?;
                 assert_eq!(game.snapshot(), expected);
                 total += 1;

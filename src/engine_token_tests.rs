@@ -47,7 +47,7 @@ fn token_spell_creates_distinct_summoning_sick_objects_and_replays() {
     }
     assert_eq!(game.state.objects[fodder as usize].zone, Zone::Graveyard);
     let after = game.snapshot();
-    game.restore(&before);
+    game.restore(&before).unwrap();
     pass_pair(&mut game);
     assert_eq!(game.snapshot(), after);
 }
@@ -79,7 +79,7 @@ fn simultaneous_creation_queues_one_entry_trigger_per_token_and_preserves_choice
     }
     assert_eq!(game.state.players[0].life, 24);
     let after = game.snapshot();
-    game.restore(&before);
+    game.restore(&before).unwrap();
     while let Some(action) = game
         .legal_actions()
         .into_iter()
@@ -162,7 +162,7 @@ fn reclaimed_slots_never_alias_old_targets_and_restore_the_free_list() {
     assert_eq!(game.object_view(id).power, base_power);
     assert!(game.object_view(id).tapped);
     let after = game.snapshot();
-    game.restore(&before_reuse);
+    game.restore(&before_reuse).unwrap();
     game.create_tokens(Player::P1, factory("Dragon Token"), 1, true);
     pass_pair(&mut game);
     assert_eq!(game.snapshot(), after);
@@ -201,7 +201,7 @@ fn death_ability_creates_tapped_artifact_token_after_source_leaves() {
     pass_pair(&mut game);
     assert_eq!(game.object_view(automaton).counters.plus_one, 1);
     let after = game.snapshot();
-    game.restore(&before);
+    game.restore(&before).unwrap();
     pass_pair(&mut game);
     pass_pair(&mut game);
     assert_eq!(game.snapshot(), after);
@@ -262,7 +262,7 @@ fn lethal_token_damage_ceases_and_reclaims_in_the_same_sba_fixed_point() {
             .all(|&id| game.state.objects[id as usize].zone == Zone::Outside)
     );
     let after = game.snapshot();
-    game.restore(&before);
+    game.restore(&before).unwrap();
     game.state_based_actions();
     assert_eq!(game.snapshot(), after);
 }

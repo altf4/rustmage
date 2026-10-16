@@ -13,7 +13,7 @@ fn replay(g: &mut Game, a: Action) {
     act(g, a.clone());
     let expected = g.snapshot();
     assert_eq!(fork.snapshot(), expected);
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     act(g, a);
     assert_eq!(g.snapshot(), expected);
 }
@@ -75,7 +75,7 @@ fn octobots_consume_on_first_event_even_before_resolution_and_reset_each_turn() 
     enter(&mut g, Player::P0, "Common Crook");
     settle(&mut g);
     assert_eq!(g.object_view(a).counters.plus_one, 2);
-    g.restore(&before);
+    g.restore(&before).unwrap();
     enter(&mut g, Player::P0, "Common Crook");
     assert_eq!(count(&g, a), 0);
 }
@@ -383,7 +383,7 @@ fn public_limit_ledger_is_owned_accounted_and_restore_invalidates_actions() {
     }
     let used = g.snapshot();
     let revision = g.revision;
-    g.restore(&blank);
+    g.restore(&blank).unwrap();
     assert!(g.state.triggered_this_turn.is_empty());
     assert_eq!(
         g.apply_index(Player::P0, revision, 0),

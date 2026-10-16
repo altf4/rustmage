@@ -232,7 +232,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 || matches!(action, Action::Pass) && before.stack.last().is_some()
             {
                 let expected = g.snapshot();
-                g.restore(&saved);
+                g.restore(&saved).unwrap();
                 let mut fork = g.clone();
                 g.apply(actor, action.clone())?;
                 fork.apply(actor, action)?;

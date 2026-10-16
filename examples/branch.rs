@@ -39,6 +39,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("{action:?}: {value:?}");
         assert_eq!(game.snapshot(), root);
     }
-    game.restore(&root);
+    game.restore(&root).unwrap();
     Ok(())
 }

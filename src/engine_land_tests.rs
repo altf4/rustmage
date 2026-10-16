@@ -35,7 +35,7 @@ fn land_play_is_not_a_spell_tapped_sources_cannot_fund_and_untap_replays() {
     assert!(!game.legal_actions().iter().any(|a| matches!(a,
         Action::AnnounceCast { card } if *card == lions)));
     let after = game.snapshot();
-    game.restore(&before);
+    game.restore(&before).unwrap();
     act(&mut game, Action::PlayLand { card: land });
     assert_eq!(game.snapshot(), after);
     game.begin_turn();
@@ -152,7 +152,7 @@ fn simultaneous_entry_replacements_use_pre_event_battlefield() {
         assert_eq!(game.object_view(a).tapped, tapped);
         assert_eq!(game.object_view(b).tapped, tapped);
         let after = game.snapshot();
-        game.restore(&before);
+        game.restore(&before).unwrap();
         let events = game.move_objects_raw(&[basic, a, b], Zone::Battlefield);
         game.finish_zone_events(&events, &[]);
         assert_eq!(game.snapshot(), after);
@@ -221,7 +221,7 @@ fn intrinsic_typed_land_mana_and_surveil_choices_are_private_and_replayable() {
     act(&mut game, action.clone());
     assert_eq!(game.object_view(top).zone, Zone::Graveyard);
     let after = game.snapshot();
-    game.restore(&before);
+    game.restore(&before).unwrap();
     act(&mut game, action);
     assert_eq!(game.snapshot(), after);
     game.begin_turn();
@@ -315,7 +315,7 @@ fn paired_exile_returns_apply_all_entry_conditions_before_any_return() {
     }
     assert!(game.state.exile_links.is_empty());
     let after = game.snapshot();
-    game.restore(&before);
+    game.restore(&before).unwrap();
     let events = game.move_objects_raw(&sources, Zone::Graveyard);
     game.finish_zone_events(&events, &[]);
     assert_eq!(game.snapshot(), after);

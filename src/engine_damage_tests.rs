@@ -41,7 +41,7 @@ fn first_strike_kills_before_retaliation_and_restores_between_steps() {
     assert_eq!(game.state.objects[stoat as usize].damage, 0);
     assert_eq!(game.state.players[0].life, 22);
     let normal = game.snapshot();
-    game.restore(&first);
+    game.restore(&first).unwrap();
     pass_pair(&mut game);
     assert_eq!(game.snapshot(), normal);
 }
@@ -103,7 +103,7 @@ fn first_step_decisions_and_priority_window_keep_full_continuations() {
     assert_eq!(game.state.step, Step::FirstStrikeDamage);
     pass_pair(&mut game);
     assert_eq!(game.state.players[1].life, 16); // Blocked, but trample with no live blockers.
-    game.restore(&first);
+    game.restore(&first).unwrap();
     pass_pair(&mut game);
     assert_eq!(game.state.players[1].life, 19);
 }
@@ -377,10 +377,10 @@ fn restore_during_first_strike_multiblocker_assignment_replays_exactly() {
     assert_eq!(game.state.objects[b1 as usize].zone, Zone::Graveyard);
     assert_eq!(game.state.objects[b2 as usize].zone, Zone::Battlefield);
     assert_eq!(game.state.players[0].life, 22);
-    game.restore(&saved);
+    game.restore(&saved).unwrap();
     act(&mut game, action);
     assert_eq!(game.snapshot(), outcome);
-    game.restore(&saved);
+    game.restore(&saved).unwrap();
     act(
         &mut game,
         Action::AssignDamage {
@@ -412,7 +412,7 @@ fn deathtouch_allows_both_split_and_overassigned_damage_without_trample() {
     assert_eq!(game.state.objects[b2 as usize].zone, Zone::Graveyard);
     assert_eq!(game.state.objects[source as usize].zone, Zone::Graveyard);
     assert_eq!(game.state.players[0].life, 22);
-    game.restore(&saved);
+    game.restore(&saved).unwrap();
     act(
         &mut game,
         Action::AssignDamage {

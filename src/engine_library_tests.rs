@@ -75,7 +75,10 @@ fn scry_partition_orders_both_groups_and_keeps_middle() {
     let mut expected = vec![a, c]; // chosen c is above a in bottom group.
     expected.extend_from_slice(&original[..n - 4]);
     expected.push(d);
-    assert_eq!(game.state.players[0].library, expected);
+    assert_eq!(
+        game.state.players[0].library.as_slice(),
+        expected.as_slice()
+    );
     assert!(game.state.resolving.is_none());
 }
 
@@ -138,10 +141,10 @@ fn surveil_choices_are_private_atomic_and_replayable_at_every_stage() {
     assert_eq!(game.state.objects[cards[0] as usize].zone, Zone::Graveyard);
     assert_ne!(game.object_ref(cards[0]), *refs.last().unwrap());
     assert_eq!(game.state.players[0].library.last(), Some(&cards[1]));
-    game.restore(&partial);
+    game.restore(&partial).unwrap();
     act(&mut game, final_action.clone());
     assert_eq!(game.state, result);
-    game.restore(&initial);
+    game.restore(&initial).unwrap();
     arrange(&mut game, cards[0], LibraryDestination::Graveyard);
     act(&mut game, final_action);
     assert_eq!(game.state, result);

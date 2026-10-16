@@ -125,7 +125,7 @@ fn each_group_and_payment_boundary_clones_and_restores_independently() {
         act(&mut game, action.clone());
         assert_eq!(game.snapshot(), branch.snapshot());
         let after = game.snapshot();
-        game.restore(&before);
+        game.restore(&before).unwrap();
         act(&mut game, action);
         assert_eq!(game.snapshot(), after);
     }
@@ -133,7 +133,7 @@ fn each_group_and_payment_boundary_clones_and_restores_independently() {
     pay(&mut game);
     pass_pair(&mut game);
     let after = game.snapshot();
-    game.restore(&before);
+    game.restore(&before).unwrap();
     pay(&mut game);
     pass_pair(&mut game);
     assert_eq!(game.snapshot(), after);
@@ -352,7 +352,7 @@ fn target_focus_survives_private_library_continuation_and_replays() {
     assert_eq!(game.object_view(a).counters.plus_one, 0);
     assert_eq!(game.object_view(b).counters.plus_one, 1);
     let after = game.snapshot();
-    game.restore(&before);
+    game.restore(&before).unwrap();
     act(
         &mut game,
         Action::ArrangeLibrary {
@@ -486,12 +486,12 @@ fn independent_own_opponent_target_masks_match_manual_complete_pairs() {
             assert_eq!(offered(&game), yours);
             let start = game.snapshot();
             for &own in &yours {
-                game.restore(&start);
+                game.restore(&start).unwrap();
                 choose(&mut game, own);
                 assert_eq!(offered(&game), theirs);
                 let second = game.snapshot();
                 for &opp in &theirs {
-                    game.restore(&second);
+                    game.restore(&second).unwrap();
                     choose(&mut game, opp);
                     assert!(
                         game.legal_actions()

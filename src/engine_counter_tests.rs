@@ -29,7 +29,7 @@ fn targeted_counter_is_permanent_snapshot_owned_and_resets_on_zone_change() {
     assert_eq!(game.object_view(creature).power, 3);
     assert_eq!(game.object_view(creature).counters.plus_one, 1);
     let after = game.snapshot();
-    game.restore(&before);
+    game.restore(&before).unwrap();
     pass_pair(&mut game);
     assert_eq!(game.snapshot(), after);
     // Cleanup removes temporary growth, but counters remain.
@@ -80,7 +80,7 @@ fn stun_replaces_untap_attempts_including_untap_step_but_not_already_untapped() 
     assert!(game.object_view(creature).tapped);
     assert_eq!(game.object_view(creature).counters.stun, 0);
     let after = game.snapshot();
-    game.restore(&before);
+    game.restore(&before).unwrap();
     game.begin_turn();
     assert_eq!(game.snapshot(), after);
     game.begin_turn();
@@ -179,10 +179,10 @@ fn repeated_cleanup_discards_after_death_trigger_draw_and_replays() {
     assert_eq!(game.hand_count(Player::P0), 7);
     assert_eq!(game.state.active, Player::P1);
     let after = game.snapshot();
-    game.restore(&choice);
+    game.restore(&choice).unwrap();
     act(&mut game, discard);
     assert_eq!(game.snapshot(), after);
-    game.restore(&before);
+    game.restore(&before).unwrap();
     pass_pair(&mut game);
     assert_eq!(game.snapshot(), choice);
 }

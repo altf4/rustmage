@@ -12,7 +12,7 @@ fn replay(g: &mut Game, action: Action) {
     act(g, action.clone());
     let after = g.snapshot();
     assert_eq!(after, fork.snapshot());
-    g.restore(&before);
+    g.restore(&before).unwrap();
     act(g, action);
     assert_eq!(g.snapshot(), after);
 }
@@ -117,7 +117,7 @@ fn optional_mill_requires_entire_quantity_and_decline_is_atomic_replayable() {
             let before = g.snapshot();
             replay(&mut g, Action::ChooseOptional { accept: false });
             assert_eq!(g.state.players[0].library.len(), 2);
-            g.restore(&before);
+            g.restore(&before).unwrap();
             replay(&mut g, Action::ChooseOptional { accept: true });
             assert!(g.state.players[0].library.is_empty());
         }

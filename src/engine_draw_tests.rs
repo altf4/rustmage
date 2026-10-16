@@ -12,7 +12,7 @@ fn replay(g: &mut Game, a: Action) {
     act(g, a.clone());
     let after = g.snapshot();
     assert_eq!(after, fork.snapshot());
-    g.restore(&before);
+    g.restore(&before).unwrap();
     act(g, a);
     assert_eq!(after, g.snapshot());
 }
@@ -534,7 +534,7 @@ fn public_draw_context_contains_no_drawn_card_identity_and_owned_replay_preserve
     let saved = g.snapshot();
     let a = g.legal_actions()[1].clone();
     replay(&mut g, a);
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     assert_eq!(
         g.apply_index(Player::P0, before.revision, 1),
         Err(Error::StaleRevision)

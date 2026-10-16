@@ -17,6 +17,13 @@ class EngineError(RuntimeError):
     pass
 
 
+class CapacityError(EngineError):
+    """The exact action could not fit; game state and revision are unchanged."""
+    def __init__(self, message, resource):
+        super().__init__(message)
+        self.resource = resource
+
+
 class Game:
     def __init__(self, decks, seed=0, starting_player="P0", deck_rules="Constructed", *, library=None):
         self._lock = threading.RLock()
@@ -66,6 +73,8 @@ class Game:
                 raise EngineError("null native response")
             response = json.loads(self._take_string(pointer))
             if response.get("error"):
+                if response.get("capacity"):
+                    raise CapacityError(response["error"], response["capacity"]["resource"])
                 raise EngineError(response["error"])
             return response
 

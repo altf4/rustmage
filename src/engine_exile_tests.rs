@@ -56,7 +56,7 @@ fn linked_exile_is_public_owned_and_returns_fresh_incarnation_with_etb() {
     assert!(g.state.exile_links.is_empty());
     assert_eq!(g.state.pending_triggers.len(), 1);
     let result = g.state.clone();
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     g.move_object(source, Zone::Hand);
     assert_eq!(g.state, result);
 }
@@ -105,7 +105,7 @@ fn simultaneous_sources_return_cards_together_before_entry_trigger_matching() {
     assert_eq!(g.state.pending_triggers.len(), 2);
     assert!(g.state.exile_links.is_empty());
     let result = g.state.clone();
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     let events = g.move_objects_raw(&[one, two], Zone::Graveyard);
     g.finish_zone_events(&events, &[]);
     assert_eq!(g.state, result);
@@ -233,7 +233,7 @@ fn source_sba_death_returns_creature_before_next_priority_and_replays() {
     assert!(g.state.exile_links.is_empty());
     assert_eq!(g.state.pending_triggers.len(), 1);
     let result = g.state.clone();
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     g.state_based_actions();
     assert_eq!(g.state, result);
 }

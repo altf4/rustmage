@@ -104,7 +104,7 @@ impl Game {
                 .or_insert(0u128);
             *amount = amount
                 .checked_add(u128::try_from(event.amount).expect("positive damage"))
-                .expect("damage amount exhausted");
+                .capacity("damage amount exhausted");
         }
         let sources: Vec<_> = self
             .state
@@ -136,7 +136,7 @@ impl Game {
                         total.0 = total
                             .0
                             .checked_add(amount)
-                            .expect("damage amount exhausted");
+                            .capacity("damage amount exhausted");
                         total.1 &= combat;
                     } else {
                         self.queue_damage_trigger(

@@ -101,12 +101,14 @@ impl Game {
             StepValue::TotalCreaturePower => Some(
                 creatures()
                     .map(|(id, _)| self.stats(id as CardId).power)
-                    .sum::<i128>(),
+                    .try_fold(0i128, i128::checked_add)
+                    .capacity("step aggregate exhausted"),
             ),
             StepValue::TotalCreatureToughness => Some(
                 creatures()
                     .map(|(id, _)| self.stats(id as CardId).toughness)
-                    .sum::<i128>(),
+                    .try_fold(0i128, i128::checked_add)
+                    .capacity("step aggregate exhausted"),
             ),
         };
         value.is_some_and(|value| {

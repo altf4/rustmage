@@ -15,7 +15,7 @@ fn replay(g: &mut Game, a: Action) {
     act(g, a.clone());
     let after = g.snapshot();
     assert_eq!(after, fork.snapshot());
-    g.restore(&before);
+    g.restore(&before).unwrap();
     act(g, a);
     assert_eq!(after, g.snapshot());
 }
@@ -92,7 +92,7 @@ fn actual_combat_draw_uses_captured_amount_after_source_power_changes_or_leaves(
     pass_pair(&mut g);
     assert_eq!(g.state.players[0].library.len(), 18);
     let after = g.snapshot();
-    g.restore(&before);
+    g.restore(&before).unwrap();
     pass_pair(&mut g);
     assert_eq!(after, g.snapshot());
     assert!(g.state.damage_sources.is_empty());
@@ -536,7 +536,7 @@ fn damage_observer_index_matches_all_admissions_and_snapshot_restoration() {
         let saved = g.snapshot();
         g.move_object(id, Zone::Exile);
         assert!(!g.state.damage_sources.contains(&id));
-        g.restore(&saved);
+        g.restore(&saved).unwrap();
         assert_eq!(g.state.damage_sources.contains(&id), expected);
         g.move_object(id, Zone::Exile);
     }
@@ -577,7 +577,7 @@ fn departed_hero_damage_uses_frozen_battlefield_facts_for_observers() {
     g.run_program();
     let after = g.snapshot();
     let mut fork = g.clone();
-    fork.restore(&saved);
+    fork.restore(&saved).unwrap();
     fork.run_program();
     assert_eq!(fork.snapshot(), after);
     assert_eq!(count(&g, thing), 1);

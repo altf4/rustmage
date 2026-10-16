@@ -19,7 +19,7 @@ impl Game {
         {
             *pool = pool
                 .checked_add(amount)
-                .expect("mana representation exhausted");
+                .capacity("mana representation exhausted");
         }
     }
 

@@ -18,7 +18,7 @@ fn replay(g: &mut Game, a: Action) {
     act(g, a.clone());
     let result = g.snapshot();
     assert_eq!(fork.snapshot(), result);
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     assert_eq!(g.apply_index(actor, rev, 0), Err(Error::StaleRevision));
     act(g, a);
     assert_eq!(g.snapshot(), result);
@@ -96,7 +96,7 @@ fn graveyard_and_exile_characteristics_count_cards_and_preserve_fixed_toughness(
     let saved = g.snapshot();
     g.move_object(exiled, Zone::Hand);
     assert_eq!(pt(&g, cosmo), (0, 1));
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     assert_eq!(pt(&g, cosmo), (1, 2));
 }
 
@@ -144,7 +144,7 @@ fn resolving_instant_reaches_graveyard_before_tarmogoyf_damage_sba() {
     assert_eq!(g.object_view(goyf).damage, 3);
     assert_eq!(g.object_view(goyf).zone, Zone::Battlefield);
     let expected = g.snapshot();
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     pass_pair(&mut g);
     assert_eq!(g.snapshot(), expected);
     g.move_object(strike, Zone::Exile);
@@ -204,7 +204,7 @@ fn additive_scaling_tracks_subtypes_equipment_artifacts_and_basic_land_status() 
     assert_eq!(pt(&g, steiner), (2, 1));
     assert_eq!(pt(&g, goblin), (2, 4));
     assert_eq!(pt(&g, guide), (1, 4));
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     assert_eq!(pt(&g, goblin), (4, 4));
     g.move_object(goblin, Zone::Hand);
     assert_eq!(pt(&g, goblin), (2, 4)); // Not a CDA.
@@ -271,7 +271,7 @@ fn attached_scaling_counts_itself_and_recomputes_controller_land_counts() {
         g.object_view(ethereal).attached_to,
         Some(g.object_ref(bear))
     );
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     assert_eq!(pt(&g, bear), (6, 6));
     let other = named(&mut g, Player::P1, "Grizzly Bears", Zone::Battlefield);
     // Own Aura on an opposing creature still counts the Aura controller's lands.
@@ -319,7 +319,7 @@ fn dynamic_toughness_changes_participate_in_repeated_state_based_checks() {
     let expected = g.snapshot();
     assert_eq!(g.object_view(bear).zone, Zone::Graveyard);
     assert_eq!(g.object_view(mentor).zone, Zone::Graveyard);
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     g.state_based_actions();
     assert_eq!(g.snapshot(), expected);
     let forest = named(&mut g, Player::P0, "Forest", Zone::Battlefield);
@@ -350,7 +350,7 @@ fn all_scaling_sources_are_indexed_and_round_trip_source_removal() {
         let saved = g.snapshot();
         g.move_object(id, Zone::Hand);
         assert!(!g.state.static_sources.contains(&id));
-        g.restore(&saved);
+        g.restore(&saved).unwrap();
         assert!(g.state.static_sources.contains(&id));
         g.move_object(id, Zone::Hand);
     }

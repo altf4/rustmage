@@ -18,7 +18,7 @@ fn replay(g: &mut Game, action: Action) {
     act(g, action.clone());
     assert_eq!(g.snapshot(), fork.snapshot());
     let after = g.snapshot();
-    g.restore(&before);
+    g.restore(&before).unwrap();
     act(g, action);
     assert_eq!(g.snapshot(), after);
 }
@@ -481,7 +481,7 @@ fn equipment_source_index_and_links_reset_on_every_admitted_zone_transition() {
         g.move_object(id, Zone::Exile);
         assert!(!g.state.attachment_sources.contains(&id));
         assert_eq!(g.object_view(id).attached_to, None);
-        g.restore(&saved);
+        g.restore(&saved).unwrap();
         assert_eq!(g.state.attachment_sources.contains(&id), equipped);
         g.move_object(id, Zone::Exile);
     }

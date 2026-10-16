@@ -113,7 +113,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .any(has_event)
             {
                 let expected = g.snapshot();
-                g.restore(&saved);
+                g.restore(&saved).unwrap();
                 let mut fork = g.clone();
                 g.apply(actor, action.clone())?;
                 fork.apply(actor, action)?;

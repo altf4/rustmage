@@ -16,7 +16,7 @@ fn replay(g: &mut Game, action: Action) {
     act(&mut fork, action.clone());
     assert_eq!(g.snapshot(), fork.snapshot());
     let after = g.snapshot();
-    g.restore(&before);
+    g.restore(&before).unwrap();
     act(g, action);
     assert_eq!(g.snapshot(), after);
 }

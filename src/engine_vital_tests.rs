@@ -15,7 +15,7 @@ fn replay(g: &mut Game, action: Action) {
     act(g, action.clone());
     assert_eq!(g.snapshot(), fork.snapshot());
     let after = g.snapshot();
-    g.restore(&before);
+    g.restore(&before).unwrap();
     act(g, action);
     assert_eq!(g.snapshot(), after);
 }
@@ -335,7 +335,7 @@ fn source_indices_follow_every_admitted_definition_and_round_trip_restore() {
         g.move_object(id, Zone::Exile);
         assert!(!g.state.life_sources.contains(&id));
         assert!(!g.state.death_sources.contains(&id));
-        g.restore(&before);
+        g.restore(&before).unwrap();
         assert_eq!(g.state.life_sources.contains(&id), life);
         assert_eq!(g.state.death_sources.contains(&id), death);
         g.move_object(id, Zone::Exile);

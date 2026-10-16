@@ -19,7 +19,7 @@ fn replay(g: &mut Game, action: Action) {
     act(g, action.clone());
     assert_eq!(g.snapshot(), fork.snapshot());
     let after = g.snapshot();
-    g.restore(&before);
+    g.restore(&before).unwrap();
     act(g, action);
     assert_eq!(g.snapshot(), after);
 }
@@ -85,7 +85,7 @@ fn beginning_combat_target_and_optional_effect_suspend_before_attackers_and_repl
     let before = g.snapshot();
     replay(&mut g, Action::ChooseOptional { accept: true });
     assert_eq!(g.stats(bear).power, 4);
-    g.restore(&before);
+    g.restore(&before).unwrap();
     act(&mut g, Action::ChooseOptional { accept: false });
     assert_eq!(g.stats(bear).power, 2);
     pass_pair(&mut g);
@@ -109,7 +109,7 @@ fn entering_during_an_existing_step_never_retroactively_triggers() {
     enter(&mut g, Step::Upkeep);
     let after = g.snapshot();
     assert_eq!(g.state.stack.len(), 1);
-    g.restore(&before);
+    g.restore(&before).unwrap();
     enter(&mut g, Step::Upkeep);
     assert_eq!(g.snapshot(), after);
 }
@@ -132,7 +132,7 @@ fn intervening_if_is_required_at_the_event_and_rechecked_before_resolution() {
     g.state.objects[a as usize].untap();
     pass_pair(&mut g);
     assert_eq!(g.state.players[0].life, 20);
-    g.restore(&before);
+    g.restore(&before).unwrap();
     pass_pair(&mut g);
     assert_eq!(g.state.players[0].life, 22);
 }
@@ -161,7 +161,7 @@ fn simultaneous_end_triggers_can_change_each_others_intervening_condition() {
     pass_pair(&mut g);
     assert_eq!(g.state.players[0].life, 20);
     assert!(!g.object_view(veteran).tapped && !g.object_view(bear).tapped);
-    g.restore(&before);
+    g.restore(&before).unwrap();
     let bottom = g
         .state
         .ordering_triggers
@@ -189,7 +189,7 @@ fn formidable_uses_current_derived_total_power_and_cannot_resolve_below_threshol
     g.state.objects[bear as usize].counters.plus_one = 0;
     pass_pair(&mut g);
     assert!(!g.object_view(bear).keywords.contains(Keywords::HASTE));
-    g.restore(&before);
+    g.restore(&before).unwrap();
     pass_pair(&mut g);
     assert!(g.object_view(bear).keywords.contains(Keywords::HASTE));
     assert_eq!(g.object_view(surrak).zone, Zone::Battlefield);
@@ -215,7 +215,7 @@ fn upkeep_land_condition_counts_only_own_current_lands_and_creates_complete_toke
     g.move_object(lands[0], Zone::Hand);
     pass_pair(&mut g);
     assert!(!g.state.objects.iter().any(|o| o.card.is_token()));
-    g.restore(&before);
+    g.restore(&before).unwrap();
     pass_pair(&mut g);
     let dragon = g
         .state
@@ -245,14 +245,14 @@ fn survival_checks_current_tapped_state_then_departure_lki_and_never_a_returned_
     g.state.objects[survivor as usize].untap();
     pass_pair(&mut g);
     assert_eq!(g.state.players[0].life, 20);
-    g.restore(&before);
+    g.restore(&before).unwrap();
     g.move_object(survivor, Zone::Hand);
     assert!(g.state.stack[0].source_tapped);
     g.move_object(survivor, Zone::Battlefield);
     assert!(!g.object_view(survivor).tapped);
     pass_pair(&mut g);
     assert_eq!(g.state.players[0].life, 22);
-    g.restore(&before);
+    g.restore(&before).unwrap();
     g.state.objects[survivor as usize].untap();
     g.move_object(survivor, Zone::Graveyard);
     assert!(!g.state.stack[0].source_tapped);
@@ -336,7 +336,7 @@ fn upkeep_life_loss_and_token_creation_finish_before_state_based_loss() {
     assert_eq!(token.card.token_info().unwrap().colors, 6); // blue and black
     assert!(token.keywords().contains(Keywords::FLYING));
     let after = g.snapshot();
-    g.restore(&before);
+    g.restore(&before).unwrap();
     pass_pair(&mut g);
     assert_eq!(g.snapshot(), after);
 }
@@ -383,7 +383,7 @@ fn every_admitted_step_source_is_indexed_removed_and_restored_by_zone_changes() 
         let before = g.snapshot();
         g.move_object(id, Zone::Exile);
         assert!(!g.state.step_sources.contains(&id));
-        g.restore(&before);
+        g.restore(&before).unwrap();
         assert_eq!(g.state.step_sources.contains(&id), expected);
         g.move_object(id, Zone::Exile);
     }

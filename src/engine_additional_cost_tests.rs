@@ -14,7 +14,7 @@ fn replay(g: &mut Game, a: Action) {
     act(g, a.clone());
     let expected = g.snapshot();
     assert_eq!(fork.snapshot(), expected);
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     assert_eq!(g.apply_index(actor, revision, 0), Err(Error::StaleRevision));
     act(g, a);
     assert_eq!(g.snapshot(), expected);

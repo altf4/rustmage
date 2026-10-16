@@ -128,7 +128,7 @@ impl Game {
                         .filter(|&&id| !self.state.objects[id as usize].card.is_land())
                         .count(),
                 )
-                .expect("connive count exhausted");
+                .capacity("connive count exhausted");
                 self.discard_batch(&discarded, None);
                 if self.on_battlefield(current.object.card)
                     && self.object_ref(current.object.card) == current.object

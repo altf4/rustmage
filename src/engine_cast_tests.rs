@@ -47,7 +47,7 @@ fn replay(g: &mut Game, action: Action) {
     act(g, action.clone());
     assert_eq!(g.snapshot(), fork.snapshot());
     let after = g.snapshot();
-    g.restore(&before);
+    g.restore(&before).unwrap();
     act(g, action);
     assert_eq!(g.snapshot(), after);
 }
@@ -244,7 +244,7 @@ fn second_spell_counts_earlier_casts_before_source_exists_and_resets_both_player
     let second = funded(&mut g, "Boltwave");
     cast(&mut g, second, None);
     assert_eq!(g.state.stack.len(), 2);
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     assert_eq!(
         g.state.players.each_ref().map(|p| p.spells_cast_this_turn),
         [0, 0]
@@ -364,7 +364,7 @@ fn source_index_agrees_with_full_scan_after_every_admitted_card_enters_and_leave
         let before = g.snapshot();
         g.move_object(id, Zone::Exile);
         assert!(!g.state.cast_sources.contains(&id));
-        g.restore(&before);
+        g.restore(&before).unwrap();
         assert_eq!(g.state.cast_sources.contains(&id), expected);
         g.move_object(id, Zone::Exile);
     }

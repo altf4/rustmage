@@ -33,7 +33,7 @@ fn replay(g: &mut Game, a: Action) {
     act(g, a.clone());
     let expected = g.snapshot();
     assert_eq!(expected, branch.snapshot());
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     act(g, a);
     assert_eq!(g.snapshot(), expected);
 }

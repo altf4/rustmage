@@ -43,7 +43,7 @@ fn haste_self_sacrifice_pays_before_priority_and_damage_survives_source_departur
     assert_eq!(game.state.players[1].life, 19);
     assert_eq!(game.object_view(firebrand).zone, Zone::Battlefield);
     let after = game.snapshot();
-    game.restore(&before);
+    game.restore(&before).unwrap();
     game.move_object(firebrand, Zone::Battlefield);
     pass_pair(&mut game);
     assert_eq!(game.snapshot(), after);
@@ -122,7 +122,7 @@ fn sorcery_only_abilities_require_active_main_phase_and_empty_stack() {
     pass_pair(&mut game);
     assert_eq!(game.object_view(tenderfoot).counters.plus_one, 1);
     let after = game.snapshot();
-    game.restore(&before);
+    game.restore(&before).unwrap();
     activate(&mut game, tenderfoot, None);
     pass_pair(&mut game);
     assert_eq!(game.snapshot(), after);
@@ -200,7 +200,7 @@ fn activated_draw_discard_suspends_and_restores_owned_resolution() {
     act(&mut game, discard.clone());
     assert_eq!(game.hand_count(Player::P0), 0);
     let after = game.snapshot();
-    game.restore(&before);
+    game.restore(&before).unwrap();
     act(&mut game, discard);
     assert_eq!(game.snapshot(), after);
 }
@@ -236,7 +236,7 @@ fn entry_counters_and_any_kind_removal_present_distinct_exact_payments() {
     pass_pair(&mut game);
     assert_eq!(game.hand_count(Player::P0), 1);
     let after = game.snapshot();
-    game.restore(&before);
+    game.restore(&before).unwrap();
     act(&mut game, remove_stun);
     pass_pair(&mut game);
     assert_eq!(game.snapshot(), after);
@@ -287,7 +287,7 @@ fn targeted_counter_cost_is_deferred_until_announcement_completes_and_replays() 
     pass_pair(&mut game);
     assert_eq!(game.object_view(bears).zone, Zone::Graveyard);
     let after = game.snapshot();
-    game.restore(&before);
+    game.restore(&before).unwrap();
     act(&mut game, choose);
     pass_pair(&mut game);
     assert_eq!(game.snapshot(), after);

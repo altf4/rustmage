@@ -1,3 +1,4 @@
+use crate::capacity::CapacityExt;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 /// Compact catalogue identity. The immutable definitions are shared across all
@@ -358,11 +359,11 @@ impl std::ops::AddAssign for Stats {
         self.power = self
             .power
             .checked_add(other.power)
-            .expect("power representation exhausted");
+            .capacity("power representation exhausted");
         self.toughness = self
             .toughness
             .checked_add(other.toughness)
-            .expect("toughness representation exhausted");
+            .capacity("toughness representation exhausted");
     }
 }
 
@@ -519,7 +520,7 @@ impl Counters {
         };
         *counter = counter
             .checked_add(amount)
-            .expect("counter representation exhausted");
+            .capacity("counter representation exhausted");
     }
 }
 

@@ -66,7 +66,8 @@ impl Game {
         }
         let library = &mut self.state.players[player.index()].library;
         let count = choice.top.len() + choice.bottom.len();
-        library.truncate(library.len() - count);
+        let retained = library.len() - count;
+        library.truncate(retained);
         // Reuse library capacity; only bottom insertion shifts the untouched middle.
         library.splice(0..0, choice.bottom.iter().rev().copied());
         library.extend(choice.top.iter().rev().copied());
@@ -75,7 +76,7 @@ impl Game {
 
     pub(super) fn next_stack_id(&mut self) -> u64 {
         let id = self.state.next_stack_id;
-        self.state.next_stack_id = id.checked_add(1).expect("stack identity exhausted");
+        self.state.next_stack_id = id.checked_add(1).capacity("stack identity exhausted");
         id
     }
 
@@ -87,11 +88,11 @@ impl Game {
         state.life = state
             .life
             .checked_add(amount)
-            .expect("life total exhausted");
+            .capacity("life total exhausted");
         state.life_gain_events_this_turn = state
             .life_gain_events_this_turn
             .checked_add(1)
-            .expect("life gain event count exhausted");
+            .capacity("life gain event count exhausted");
         let first = state.life_gain_events_this_turn == 1;
         let sources: Vec<_> = self
             .state
@@ -277,7 +278,7 @@ impl Game {
 
     pub(super) fn record_spell_cast(&mut self, caster: Player, card: Card) {
         let count = &mut self.state.players[caster.index()].spells_cast_this_turn;
-        *count = count.checked_add(1).expect("spell count exhausted");
+        *count = count.checked_add(1).capacity("spell count exhausted");
         let ordinal = *count;
         let sources: Vec<_> = self
             .state
@@ -725,7 +726,10 @@ impl Game {
                 }
                 Instruction::LoseLife(set, amount) => {
                     for player in self.program_players(set, &item) {
-                        self.state.players[player.index()].life -= i128::from(amount);
+                        let life = &mut self.state.players[player.index()].life;
+                        *life = life
+                            .checked_sub(i128::from(amount))
+                            .capacity("life representation exhausted");
                     }
                 }
                 Instruction::UntapCreatures(filter) | Instruction::TapCreatures(filter) => {
@@ -937,15 +941,15 @@ impl Game {
                             counters.plus_one = counters
                                 .plus_one
                                 .checked_mul(2)
-                                .expect("counter representation exhausted");
+                                .capacity("counter representation exhausted");
                             counters.minus_one = counters
                                 .minus_one
                                 .checked_mul(2)
-                                .expect("counter representation exhausted");
+                                .capacity("counter representation exhausted");
                             counters.stun = counters
                                 .stun
                                 .checked_mul(2)
-                                .expect("counter representation exhausted");
+                                .capacity("counter representation exhausted");
                         }
                     }
                 }

@@ -53,7 +53,7 @@ fn static_anthem_is_dynamic_stacks_and_restores_without_mutable_cache() {
     assert_eq!(pt(&game, hand), (3, 3));
     game.move_object(first, Zone::Graveyard);
     assert_eq!(pt(&game, bear), (2, 2));
-    game.restore(&saved);
+    game.restore(&saved).unwrap();
     assert_eq!(pt(&game, bear), (4, 4));
     assert_eq!(game.snapshot(), saved);
 }
@@ -198,7 +198,7 @@ fn asymmetric_modifiers_counters_and_cleanup_combine_in_same_layer() {
     assert_eq!(pt(&game, bear), (7, 4));
     game.finish_cleanup();
     assert_eq!(game.state, branch.state);
-    game.restore(&saved);
+    game.restore(&saved).unwrap();
     assert_eq!(pt(&game, bear), (7, 4));
 }
 
@@ -263,7 +263,7 @@ fn source_index_tracks_real_entry_departure_reentry_and_restore() {
     assert_eq!(game.state.static_sources, vec![spell]);
     game.move_object(spell, Zone::Graveyard);
     assert!(game.state.static_sources.is_empty());
-    game.restore(&saved);
+    game.restore(&saved).unwrap();
     assert_eq!(game.state.static_sources, vec![spell]);
     let mut branch = game.clone();
     branch.move_object(spell, Zone::Hand);

@@ -132,7 +132,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .is_some_and(|s| aura(s.source_card))
             {
                 let expected = g.snapshot();
-                g.restore(&saved);
+                g.restore(&saved).unwrap();
                 let mut fork = g.clone();
                 g.apply(actor, action.clone())?;
                 fork.apply(actor, action)?;

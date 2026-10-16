@@ -52,8 +52,10 @@ play. Tests cross the old signed-stat and unsigned-counter boundaries, complete
 event quantities. It increases fixed state size; the 100-game fixture reaches
 18,764 initialized state bytes. Counter storage and stat arithmetic still have
 finite checked representation limits; arbitrary native precision and a fallible
-capacity-exhaustion interface remain outstanding rather than being approximated
-by saturation or false game outcomes.
+capacity-exhaustion interface were outstanding at PR #87. The latter is now
+implemented by the [recoverable capacity contract](numeric-capacity.md); arbitrary
+native precision remains outstanding. Values are never approximated by saturation
+or false game outcomes.
 
 Regression tests exercise every admission, legality/privacy of target selection,
 source changes, live sets/changeling matching, exact mana/tap/additional costs,

@@ -12,7 +12,7 @@ fn replay(g: &mut Game, a: Action) {
     act(g, a.clone());
     let expected = g.snapshot();
     assert_eq!(fork.snapshot(), expected);
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     act(g, a);
     assert_eq!(g.snapshot(), expected);
 }
@@ -299,7 +299,7 @@ fn same_snapshot_can_branch_to_three_fixed_equivalents_and_replay_after_restorat
             g.state.players[0].mana,
             std::array::from_fn(|i| [2, 0, 0, 0, 2, 0][i] - colored[i])
         );
-        g.restore(&saved);
+        g.restore(&saved).unwrap();
         assert_eq!(
             g.apply_index(Player::P0, stale, 0),
             Err(Error::StaleRevision)
@@ -675,7 +675,7 @@ fn synthetic_modal_hybrid_declaration_commits_mode_then_cost_then_targets_then_p
     assert!(g.announcement_payment_request(Player::P0).is_none());
     assert_eq!(g.state.announcing.as_ref().unwrap().item.mode, Some(0));
     let expected = g.snapshot();
-    g.restore(&saved);
+    g.restore(&saved).unwrap();
     g.declare_mode(0, plan);
     assert_eq!(g.snapshot(), expected);
     choose(&mut g, [0, 1, 0, 0, 0, 0]);

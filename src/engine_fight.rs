@@ -32,7 +32,7 @@ impl Game {
             amount: if fight && source == recipient {
                 power
                     .checked_mul(2)
-                    .expect("damage representation exhausted")
+                    .capacity("damage representation exhausted")
             } else {
                 power
             },

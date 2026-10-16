@@ -35,7 +35,7 @@ impl Game {
                     .filter(|&id| self.count_matches(filter, source, owner, id as CardId))
                     .count(),
             )
-            .expect("stat count exhausted"),
+            .capacity("stat count exhausted"),
             StatValue::GreatestManaValue(filter) => i128::from(
                 self.state
                     .objects
@@ -57,13 +57,13 @@ impl Game {
                 .iter()
                 .map(|&value| self.stat_value(value, source, owner))
                 .try_fold(0i128, i128::checked_add)
-                .expect("stat sum exhausted"),
+                .capacity("stat sum exhausted"),
         }
     }
     pub(super) fn stat_expression(&self, expr: StatExpr, source: ObjectRef, owner: Player) -> i128 {
         self.stat_value(expr.value, source, owner)
             .checked_mul(expr.multiplier)
             .and_then(|v| v.checked_add(expr.offset))
-            .expect("stat expression exhausted")
+            .capacity("stat expression exhausted")
     }
 }

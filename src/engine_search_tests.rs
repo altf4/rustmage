@@ -78,12 +78,12 @@ fn fetch_sacrifices_before_priority_then_search_is_private_and_replayable() {
     assert_ne!(game.state.rng, rng);
     assert!(game.state.resolving.is_none());
     let after = game.snapshot();
-    game.restore(&partial);
+    game.restore(&partial).unwrap();
     act(&mut game, Action::FinishSearch);
     assert_eq!(game.snapshot(), after);
     game.draw(Player::P0);
     let future = game.snapshot();
-    game.restore(&before);
+    game.restore(&before).unwrap();
     act(&mut game, Action::ChooseSearch { card: selected });
     act(&mut game, Action::FinishSearch);
     game.draw(Player::P0);
@@ -180,7 +180,7 @@ fn multi_card_search_moves_simultaneously_before_entry_triggers_and_replays() {
     }
     assert_eq!(game.state.ordering_triggers.len(), 2);
     let after = game.snapshot();
-    game.restore(&partial);
+    game.restore(&partial).unwrap();
     act(&mut game, Action::ChooseSearch { card: options[1] });
     act(&mut game, Action::FinishSearch);
     assert_eq!(game.snapshot(), after);
@@ -223,7 +223,7 @@ fn revealed_land_hand_knowledge_is_public_until_that_incarnation_leaves() {
             .any(|o| o.id == private)
     );
     let after = game.snapshot();
-    game.restore(&before);
+    game.restore(&before).unwrap();
     act(&mut game, Action::ChooseSearch { card: dual });
     act(&mut game, Action::FinishSearch);
     assert_eq!(game.snapshot(), after);
