@@ -509,6 +509,19 @@ def extract_entry_counters(card):
     return dict(card, oracle_text='\n'.join(body)), rules
 
 
+def stat_threshold_condition(text):
+    """Boolean source-stat predicates over earlier-layer counts or owned history."""
+    if text=="you've cast two or more spells this turn":value,minimum='StatValue::SpellsCastThisTurn',2
+    elif m:=re.fullmatch(r'you control (?:a|an|another) (.+)',text):
+        value=stat_value(('other ' if text.startswith('you control another ') else '')+m[1]+' you control');minimum=1
+    elif m:=re.fullmatch(r'(?:you control|there are) (two|three|four|five|six|seven|eight|[0-9]+) or more (.+)',text):
+        minimum={**COUNT_WORDS,'seven':7,'eight':8}.get(m[1],int(m[1]) if m[1].isdigit() else 0)
+        value=stat_value(m[2]+(' you control' if text.startswith('you control ') else ''))
+    else:return None
+    if value is None or minimum>65535:return None
+    return f'StatValue::AtLeast {{ value: &{value}, minimum: {minimum} }}'
+
+
 def extract_stat_rules(card):
     """Extract exact source/attached scaling and characteristic clauses only.
     The residual card must still compile in full before any rule is emitted.
@@ -552,6 +565,14 @@ def extract_stat_rules(card):
             if 'Creature' not in types or max(abs(int(m[1])),abs(int(m[2])))>32767:body.append(original);continue
             scales.append(f'ScalingModifier {{ subject: Subject::Source, value: StatValue::LifeGainOccurredThisTurn, stats: Stats {{ power: {int(m[1])}, toughness: {int(m[2])} }} }}')
             continue
+        prefix=re.fullmatch(r'As long as (.+), this creature gets ([+-][0-9]+)/([+-][0-9]+)\.',conditional)
+        suffix=re.fullmatch(r'This creature gets ([+-][0-9]+)/([+-][0-9]+) as long as (.+)\.',conditional)
+        if prefix or suffix:
+            condition,power,toughness=prefix.groups() if prefix else (suffix[3],suffix[1],suffix[2])
+            value=stat_threshold_condition(condition)
+            if 'Creature' in types and value is not None and max(abs(int(power)),abs(int(toughness)))<=32767:
+                scales.append(f'ScalingModifier {{ subject: Subject::Source, value: {value}, stats: Stats {{ power: {int(power)}, toughness: {int(toughness)} }} }}')
+                continue
         m=re.fullmatch(r'(This creature|Enchanted creature|Equipped creature) gets ([+-][0-9]+)/([+-][0-9]+) for each (.+?)(?: and has (.+))?\.',line)
         if m:
             subject,power,toughness,value,keywords=m.groups()

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "cca616808fb0dddf5e9566d1e06e367da2e4f71fdb630c15fcf552f540dafffa",
+  "catalogue_version": "b0f5e68e9711ea841924a48852b941b09ba7066bc3f7f926fd4f001a2c5a82dd",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1254,
-  "implemented_total": 1260,
+  "implemented_standard_cards": 1263,
+  "implemented_total": 1269,
   "token_definitions": 56,
   "emblem_definitions": 1,
   "cards": [
@@ -2086,8 +2086,8 @@
     {
       "name": "Basking Capybara",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Basri, Tomorrow's Champion",
@@ -2488,8 +2488,8 @@
     {
       "name": "Billowing Shriekmass",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Binding Negotiation",
@@ -3310,8 +3310,8 @@
     {
       "name": "Brightspear Zealot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Brigid's Command",
@@ -4696,8 +4696,8 @@
     {
       "name": "Cloudsculpt Technician",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Cloudspire Captain",
@@ -9772,8 +9772,8 @@
     {
       "name": "Frilled Cave-Wurm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Frilled Sparkshooter",
@@ -9976,8 +9976,8 @@
     {
       "name": "Gaelicat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Gaius van Baelsar",
@@ -10486,8 +10486,8 @@
     {
       "name": "Gigantoad",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Gigantosaurus",
@@ -16570,8 +16570,8 @@
     {
       "name": "Mind Drill Assailant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Mind Meanderer",
@@ -22372,8 +22372,8 @@
     {
       "name": "Scorpion Sentinel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Scorpion's Sting",

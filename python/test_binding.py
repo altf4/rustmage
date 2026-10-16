@@ -9,6 +9,47 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def test_nine_count_threshold_bodies_reach_live_bonus_and_native_python_replay(self):
+        rows=[('Basking Capybara',(1,3),(3,0)),('Billowing Shriekmass',(2,3),(2,1)),('Brightspear Zealot',(2,4),(2,0)),('Cloudsculpt Technician',(1,4),(1,0)),('Frilled Cave-Wurm',(2,5),(2,0)),('Gaelicat',(1,3),(2,0)),('Gigantoad',(4,4),(2,2)),('Mind Drill Assailant',(2,5),(3,0)),('Scorpion Sentinel',(1,4),(3,0))]
+        types={c["name"]:c["type_line"].split(" — ")[0].split() for c in json.loads((Path(__file__).resolve().parents[1]/"data/standard/cards.json").read_text())["cards"]}
+        for wanted,base,bonus in rows:
+            enabler='Scorpion Sentinel' if wanted in ('Cloudsculpt Technician','Gaelicat') else 'Opt' if wanted=='Brightspear Zealot' else 'Mind Drill Assailant'
+            lands=sum(([n]*8 for n in ['Plains','Island','Swamp','Mountain','Forest']),[])
+            with self.subTest(card=wanted),Game([lands+[wanted]*12+[enabler]*8,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+                crossed=False
+                for _ in range(16000):
+                    obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor']);objects={o['id']:o for o in obs['objects']};owned=[o for o in objects.values() if o['owner']=='P0'];board=[o for o in owned if o['zone']=='Battlefield'];sources=[o for o in board if o['card']==wanted];helpers=[o for o in board if o['card']==enabler];grave=[o for o in owned if o['zone']=='Graveyard' and not o['token']];permanents=[o for o in grave if any(t in ('Artifact','Creature','Enchantment','Land','Planeswalker','Battle') for t in types[o['card']])]
+                    on=(len(permanents)>=4 if wanted in ('Basking Capybara','Frilled Cave-Wurm') else len(grave)>=7 if wanted in ('Billowing Shriekmass','Mind Drill Assailant') else obs['players'][0]['spells_cast_this_turn']>=2 if wanted=='Brightspear Zealot' else sum('Artifact' in types[o['card']] for o in board)>=(2 if wanted=='Gaelicat' else 1) if wanted in ('Cloudsculpt Technician','Gaelicat') else sum('Land' in types[o['card']] for o in board)>=7)
+                    for o in sources:self.assertEqual((o['power'],o['toughness']),(base[0]+(bonus[0] if on else 0),base[1]+(bonus[1] if on else 0)))
+                    if sources and on:crossed=True;break
+                    def score(a):
+                        k=a['kind']
+                        if k in ('Cast','AnnounceCast'):
+                            n=objects[a['card']]['card']
+                            if n==wanted:return 250 if not sources else -100
+                            if n==enabler and sources:return 230 if (enabler=='Opt' and obs['active']=='P0' or len(helpers)<(2 if enabler=='Scorpion Sentinel' else 1)) else -100
+                            return -100
+                        if k=='AnnounceActivate':return 240 if objects[a['card']]['card']=='Mind Drill Assailant' and sources and not obs['stack'] and len(grave)<7 else -100
+                        if k in ('Activate','BeginActivate','ActivateMana','AnnounceMana'):return -100
+                        if k in ('ChooseSpellCost','ChooseActivationCost'):return 220
+                        if k=='TapMana':return 180 if obs['decision']=='pay_costs' else -100
+                        if k=='ArrangeLibrary':return 210 if a['destination']=='Graveyard' else -100
+                        return self.professor_score(obs,a)
+                    choice=max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i]));action=obs['actions'][choice]
+                    # Replay every semantic source/cost/private-library boundary, including the crossing itself.
+                    if sources and (obs['announcing'] or obs['resolving'] or obs['library_choice']):
+                        saved=game.snapshot()
+                        with game.clone() as fork:expected=fork.step(fork.observe(obs['actor']),choice)
+                        after=game.step(obs,choice);self.assertEqual(after,expected);game.restore(saved)
+                        with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,choice)
+                        again=game.step(game.observe(obs['actor']),choice);after['revision']=again['revision'];self.assertEqual(after,again);game.drop_snapshot(saved)
+                    else:game.step(obs,choice)
+                    if obs['library_choice']:
+                        other=game.observe('P1' if obs['actor']=='P0' else 'P0');self.assertIsNone(other['library_choice']);self.assertEqual(other['actions'],[])
+                else:self.fail('live source threshold not reached')
+                self.assertTrue(crossed);self.assertEqual(obs['schema'],51)
+                public=game.observe('P1');source=next(o for o in public['objects'] if o['id']==sources[0]['id']);self.assertEqual((source['power'],source['toughness']),(base[0]+bonus[0],base[1]+bonus[1]))
+
     def test_complete_firebending_bodies_replay_attack_mana_and_combat_expiry(self):
         rows=[('Azula, On the Hunt',2),('Fire Sages',1),('Rough Rhino Cavalry',2),('Sun Warriors',1),('Uncle Iroh',1),('Vindictive Warden',1),('Zhao, Ruthless Admiral',2)]
         for wanted,amount in rows:

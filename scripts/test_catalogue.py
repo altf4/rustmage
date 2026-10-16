@@ -8,6 +8,29 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_source_stat_threshold_counts_have_exact_boolean_bounds_and_scopes(self):
+        for condition,minimum in [('you control an artifact',1),('you control another creature',1),('you control seven or more lands',7),('there are four or more permanent cards in your graveyard',4),('there are seven or more cards in your graveyard',7),("you've cast two or more spells this turn",2),('you control 65535 or more lands',65535)]:
+            value=generate.stat_threshold_condition(condition);self.assertIn('StatValue::AtLeast',value);self.assertIn('minimum: '+str(minimum),value)
+        for condition in ['you control 65536 or more lands','you control a creature with power 4 or greater',"you control artifacts and it's your turn",'you control a token',"there are seven or more cards in an opponent's graveyard",'you control one or fewer cards',"you've cast two spells this game"]:
+            self.assertIsNone(generate.stat_threshold_condition(condition),condition)
+
+    def test_source_stat_threshold_extraction_retains_entire_residual_and_bounded_signed_bonus(self):
+        for line in ['As long as you control an artifact, this creature gets +1/+0.','This creature gets +1/+0 as long as you control an artifact.']:
+            proxy,base,scales=generate.extract_stat_rules(self.card(oracle_text='Flying\n'+line));self.assertEqual(proxy['oracle_text'],'Flying');self.assertIsNone(base);self.assertEqual(len(scales),1);self.assertIn('minimum: 1',scales[0]);self.assertIn('power: 1, toughness: 0',scales[0])
+        proxy,_,scales=generate.extract_stat_rules(self.card(oracle_text='Threshold — This creature gets -32767/+32767 as long as there are seven or more cards in your graveyard.'));self.assertEqual(len(scales),1)
+        for text in ['This creature gets +32768/+0 as long as you control an artifact.','Enchanted creature gets +1/+0 as long as you control an artifact.','This creature gets +1/+0 and has haste as long as you control an artifact.','This creature gets +1/+0 as long as you control an artifact. Then discover 3.','As long as this creature is attacking, this creature gets +1/+0.']:
+            proxy,_,scales=generate.extract_stat_rules(self.card(oracle_text=text));self.assertEqual(scales,[]);self.assertEqual(proxy['oracle_text'],text)
+        proxy,_,scales=generate.extract_stat_rules(self.card(oracle_text='This creature gets +1/+0 as long as you control an artifact.\nThis creature gets +1/+0 as long as you control an artifact.\nWhenever you attack, discover 3.'));self.assertEqual(len(scales),2);self.assertIn('discover 3',proxy['oracle_text'])
+
+    def test_source_stat_threshold_admits_nine_full_bodies_and_keeps_unknown_keyword_history_gates(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());_,coverage=generate.compile_catalogue(rows,target);supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        names=['Basking Capybara','Billowing Shriekmass','Brightspear Zealot','Cloudsculpt Technician','Frilled Cave-Wurm','Gaelicat','Gigantoad','Mind Drill Assailant','Scorpion Sentinel']
+        for name in names:
+            self.assertIn(name,supported);c=next(c for c in rows['cards'] if c['name']==name);proxy,_,_=generate.extract_stat_rules(dict(c,oracle_text=c['oracle_text']+'\nWhenever you attack, discover 3.'));self.assertIsNone(generate.permanent_program_template(proxy));self.assertIsNone(generate.trigger_creature_template(proxy))
+        for name in ['Goblin Tomb Raider','Druid of the Spade','Dreadwing Scavenger','Kitesail Corsair','Armory Mice','First-Time Flyer','Colossal Rattlewurm','Spineseeker Centipede']:
+            self.assertNotIn(name,supported)
+
     def test_firebending_exact_triggers_preserve_multiplicity_and_scaled_count(self):
         for n in [0,1,2,65535]:
             result=generate.trigger_creature_template(self.card(oracle_text='Firebending '+str(n)))

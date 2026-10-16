@@ -3658,3 +3658,7 @@ mod poison_tests;
 #[cfg(test)]
 #[path = "engine_firebending_tests.rs"]
 mod firebending_tests;
+
+#[cfg(test)]
+#[path = "engine_count_threshold_tests.rs"]
+mod count_threshold_tests;

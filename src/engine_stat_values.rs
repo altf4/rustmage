@@ -30,6 +30,12 @@ impl Game {
     }
     pub(super) fn stat_value(&self, value: StatValue, source: ObjectRef, owner: Player) -> i128 {
         match value {
+            StatValue::AtLeast { value, minimum } => {
+                i128::from(self.stat_value(*value, source, owner) >= i128::from(minimum))
+            }
+            StatValue::SpellsCastThisTurn => {
+                i128::from(self.state.players[owner.index()].spells_cast_this_turn)
+            }
             StatValue::LifeGainOccurredThisTurn => {
                 i128::from(self.state.players[owner.index()].life_gained_this_turn > 0)
             }

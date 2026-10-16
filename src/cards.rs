@@ -493,6 +493,11 @@ pub(crate) enum AmountValue {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StatValue {
+    AtLeast {
+        value: &'static StatValue,
+        minimum: u16,
+    },
+    SpellsCastThisTurn,
     LifeGainOccurredThisTurn,
     ControllerLife,
     Count(CountFilter),
