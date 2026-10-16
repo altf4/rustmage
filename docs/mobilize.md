@@ -1,6 +1,6 @@
 # Mobilize: attacking entry and exact delayed sacrifices
 
-The combined integration includes Convoke and executes **1,656 / 5,164 Standard identities**, schema **69**, with78 immutable token factories. Fingerprint: `2832c7d3b10b18fbfba527d035b862053e17ef028334526101b249980cc98596`. Standalone measurements below retain their exact original base.
+The combined integration includes Convoke and executes **1,656 / 5,164 Standard identities**, schema **69**, with 78 immutable token factories. Fingerprint: `2832c7d3b10b18fbfba527d035b862053e17ef028334526101b249980cc98596`. Standalone measurements below retain their exact original base.
 
 Issue [235](https://github.com/altf4/rustmage/issues/235). Eight complete bodies are executable: Avenger of the Fallen; Dalkovan Packbeasts; Dragonback Lancer; Nightblade Brigade; Reigning Victor; Shock Brigade; Stadium Headliner; Zurgo's Vanguard. This branch builds on frozen saddle9539958 and has 1,646 Standard bodies, 77 immutable token factories and schema68. Standalone verification and the exact integration boundary are recorded below.
 
@@ -47,3 +47,7 @@ cargo run --release --bin benchmark -- 1000
 Use a HOME-backed target and an explicitly supplied immutable library path for isolated public checks. An environment variable does not change `Game`'s default library selection, and a library mapped by a live process must not be overwritten.
 
 Standalone broad public validation passes a **200-test fresh-library collection in 255.749 seconds**. That collection includes the first two Mobilize methods; the later added Stadium and source-departure methods are independently included in the final **four-method / 38-scenario** focused run, passing in **4.824 seconds** against the same immutable library. This verifies all 202 currently present Python methods across the broad and final focused runs without representing the earlier collection as a 202-test run. The complete **298-test compiler/data suite passes in 321.754 seconds** after correcting only three stale pre-admission fixtures (two formerly gated names and the added factory count).
+
+## Combined integration and independent reviews
+
+The combined catalogue fingerprint and schema at the beginning of this page include the accepted Convoke baseline. [PR239 review evidence](review-pr-239.md) records two independent nonauthor approvals, full303-test compiler and204-test fresh-library Python collections, canonical preservation of all77 previous factories and532 helper arms, and additional actually paid entry/ordering/slot-reuse/ownership probes. Integrated Mobilize Standard100 repeats63,181decisions; adjacent Convoke retains72,648decisions and all previous full-effect vectors. Initial logical state is20,136bytes,48above exact accepted Convoke20,088. The integrator's separate compiler collection is still running at evidence-record creation; the two independent full collections are complete.
