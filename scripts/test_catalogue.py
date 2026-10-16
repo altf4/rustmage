@@ -16,7 +16,7 @@ class CatalogueCompilerTests(unittest.TestCase):
 
     def test_reductions_preserve_exact_scope_filters_timing_and_unsupported_clauses(self):
         for text,needles in [
-            ('Dragon spells you cast cost {1} less to cast.',['source_only: false','Subtype("Dragon")','amount: 1']),
+            ('Dragon spells you cast cost {1} less to cast.',['source_only: false','Subtype("Dragon")','SpellReductionAmount::Fixed(1)']),
             ('Kithkin spells and Soldier spells you cast cost {1} less to cast.',['AnyOf','Subtype("Kithkin")','Subtype("Soldier")']),
             ('During turns other than yours, spells you cast cost {1} less to cast.',['CostTurn::Other']),
             ('The second spell you cast each turn costs {2} less to cast.',['StepValue::SpellsCast','minimum: Some(1)','maximum: Some(1)']),
@@ -36,6 +36,53 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Artifact spells you cast cost {1} less to cast. Activate only once each turn.']:
             proxy,rules=generate.extract_cost_reductions(self.card(oracle_text=text))
             self.assertEqual(proxy['oracle_text'],text);self.assertEqual(rules,[],text)
+
+    def test_scaled_reductions_bind_exact_count_zones_unions_and_affinity(self):
+        for text,needles in [
+            ('Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.)',['CountZone::Battlefield','kind: 16','source_only: true']),
+            ('Affinity for Slivers',['Subtype','source_only: true']),
+            ('This spell costs {1} less to cast for each artifact and/or creature card in your graveyard.',['CountZone::Graveyard','kind: 17','cards_only: true']),
+            ('This spell costs {1} less to cast for each creature card you own in exile and in your graveyard.',['StatValue::Sum','CountZone::Exile','CountZone::Graveyard']),
+            ('This spell costs {1} less to cast for each Cave you control and each Cave card in your graveyard.',['StatValue::Sum','"Cave"','CountZone::Battlefield','CountZone::Graveyard']),
+            ('Vivid — This spell costs {1} less to cast for each color among permanents you control.',['StatValue::Colors','kind: 0']),
+            ('Instant and sorcery spells you cast have affinity for creatures.',['CastFilter::InstantSorcery','source_only: false','kind: 1']),
+            ('Spells you cast have affinity for artifacts. (They cost {1} less to cast for each artifact you control.)',['CastFilter::Any','kind: 16','source_only: false']),
+            ('This spell costs {X} less to cast, where X is the greatest mana value among Goblins you control.',['GreatestManaValue','"Goblin"']),
+        ]:
+            proxy,rules=generate.extract_cost_reductions(self.card(oracle_text=text+'\nFlying'))
+            self.assertEqual(proxy['oracle_text'],'Flying',text);self.assertEqual(len(rules),1,text)
+            for needle in needles:self.assertIn(needle.replace('Subtype','subtype: Some'),rules[0],text)
+            self.assertIn('SpellReductionAmount::Stat',rules[0])
+        for text in [
+            'Affinity for artifacts (This spell costs {1} less to cast for each creature you control.)',
+            'Spells you cast have affinity for artifacts. (They cost {1} less to cast for each creature you control.)',
+            'This spell costs {1} less to cast for each creature that attacked this turn.',
+            'This spell costs {1} less to cast for each card in your hand.',
+            'This spell costs {1} less to cast for each permanent sacrificed this way.',
+            'This spell costs {1} less to cast for each creature you control with power 4 or greater.',
+            'This spell costs {65536} less to cast for each artifact you control.',
+            'Affinity for outlaws',
+        ]:
+            proxy,rules=generate.extract_cost_reductions(self.card(oracle_text=text))
+            self.assertEqual(proxy['oracle_text'],text);self.assertEqual(rules,[],text)
+
+    def test_fourteen_scaled_reduction_bodies_and_provenance_are_complete(self):
+        import json
+        admissions=json.loads((generate.ROOT/'docs/scaled-reduction-admissions.json').read_text())['cards']
+        self.assertEqual(len(admissions),14)
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,report=generate.compile_catalogue(rows,target);supported={r['name'] for r in report['cards'] if r['implemented']}
+        for admitted in admissions:
+            name=admitted['name'];self.assertIn(name,supported)
+            card=next(c for c in rows['cards'] if c['name']==name)
+            self.assertEqual(card['oracle_text'],admitted['oracle_text'])
+            proxy,rules=generate.extract_cost_reductions(dict(card,oracle_text=card['oracle_text']+'\nWhenever you cast a spell, discover 3.'))
+            self.assertTrue(rules,name)
+            self.assertIsNone(generate.spell_program_template(proxy),name);self.assertIsNone(generate.permanent_program_template(proxy),name)
+            self.assertIsNone(generate.static_permanent_template(proxy),name);self.assertIsNone(generate.modal_spell_template(proxy),name)
+        for name in ['Eddymurk Crab','Rowdy Research','Witchstalker Frenzy','Hellspur Brute','Fungal Colossus',
+                     'The Dawning Archaic','Tomik, Wielder of Law','Rottenmouth Viper','Sunderflock','Sapling Nursery']:
+            self.assertNotIn(name,supported)
 
     def test_hand_count_reductions_remain_gated_until_cast_zone_is_modeled(self):
         import hashlib
@@ -71,8 +118,8 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertTrue(rules,name)
             self.assertIsNone(generate.spell_program_template(proxy),name);self.assertIsNone(generate.permanent_program_template(proxy),name)
             self.assertIsNone(generate.static_permanent_template(proxy),name);self.assertIsNone(generate.modal_spell_template(proxy),name)
-        for name in ['Thalia, the Survivor','Out of Air',"Dragon's Prey",'Quicksand Whirlpool','Memory Guardian',
-                     'Wildvine Pummeler','Inquisitive Glimmer','Mental Modulation','Traxos, Academy Guardian']:
+        for name in ['Thalia, the Survivor','Out of Air',"Dragon's Prey",'Quicksand Whirlpool','Fungal Colossus',
+                     'Eluge, the Shoreless Sea','Inquisitive Glimmer','Mental Modulation','Traxos, Academy Guardian']:
             self.assertNotIn(name,supported)
 
     def test_restricted_counter_targets_compile_exact_unions_colors_and_mana_ranges(self):
@@ -990,7 +1037,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Hulking Raptor',"It'll Quench Ya!",'Negate','No More Lies','Spell Pierce','Spider-Rex, Daring Dino',
                      'Theorix Charm','Toadstool Admirer','Unflinching Hortimancer','Wrecking Gecko']:
             self.assertIn(name,supported)
-        for name in ['Vein Ripper','Sire of Seven Deaths','Dazzling Denial','Spell Stutter','Tolarian Terror',"Falcon's Wing Harness"]:
+        for name in ['Vein Ripper','Sire of Seven Deaths','Dazzling Denial','Spell Stutter','Eddymurk Crab',"Falcon's Wing Harness"]:
             self.assertNotIn(name,supported)
 
     def test_player_damage_filters_and_event_amount_scope(self):

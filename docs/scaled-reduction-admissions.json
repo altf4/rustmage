@@ -1,0 +1,147 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Chitin Gravestalker",
+      "oracle_text": "This spell costs {1} less to cast for each artifact and/or creature card in your graveyard.\nCycling {2} ({2}, Discard this card: Draw a card.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/ChitinGravestalker.java",
+          "java_sha256": "15b1b39cce9c8b5fd4a6fe80658d993ab727adb07edbd2e201ea1b9874d9c404"
+        }
+      ]
+    },
+    {
+      "name": "Claws Out",
+      "oracle_text": "Affinity for Cats (This spell costs {1} less to cast for each Cat you control.)\nCreatures you control get +2/+2 until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/ClawsOut.java",
+          "java_sha256": "6efecb79c2a33444bfce97ef610eb1dfdbd219c3923b2f7ab834de6cb5027900"
+        }
+      ]
+    },
+    {
+      "name": "Gargantuan Leech",
+      "oracle_text": "This spell costs {1} less to cast for each Cave you control and each Cave card in your graveyard.\nLifelink",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GargantuanLeech.java",
+          "java_sha256": "af2d340e47ff7255a5880887beda17d61152a823c06c522f2be733fdd26be305"
+        }
+      ]
+    },
+    {
+      "name": "Huskburster Swarm",
+      "oracle_text": "This spell costs {1} less to cast for each creature card you own in exile and in your graveyard.\nMenace, deathtouch",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HuskbursterSwarm.java",
+          "java_sha256": "7ed213ad2c8eca878bdef5bd345b2caef9e45515f744c41ac72d2a93405a7b5a"
+        }
+      ]
+    },
+    {
+      "name": "Memory Guardian",
+      "oracle_text": "Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.)\nFlying",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MemoryGuardian.java",
+          "java_sha256": "af309e3119a9e07aaadd0a371f5eb3998dd30ebbea07bfa3c29b72f299cb71fa"
+        }
+      ]
+    },
+    {
+      "name": "Salt Road Packbeast",
+      "oracle_text": "Affinity for creatures (This spell costs {1} less to cast for each creature you control.)\nWhen this creature enters, draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SaltRoadPackbeast.java",
+          "java_sha256": "e6a05401ef286b37c600e89831f956038d0a5a18466ced1439deb0f22b74056d"
+        }
+      ]
+    },
+    {
+      "name": "Sami, Wildcat Captain",
+      "oracle_text": "Double strike, vigilance\nSpells you cast have affinity for artifacts. (They cost {1} less to cast for each artifact you control.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SamiWildcatCaptain.java",
+          "java_sha256": "8c478b2565c97938f18f81554f7f4ff933c7d1567e7c61b74e501f28cb629231"
+        }
+      ]
+    },
+    {
+      "name": "Scales of Shale",
+      "oracle_text": "Affinity for Lizards (This spell costs {1} less to cast for each Lizard you control.)\nTarget creature gets +2/+0 and gains lifelink and indestructible until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/ScalesOfShale.java",
+          "java_sha256": "54c0f6d17e1695c36eab0bb191b0cd51495d6d6463fae5381dc5d07a774b89a5"
+        }
+      ]
+    },
+    {
+      "name": "Thrumming Hivepool",
+      "oracle_text": "Affinity for Slivers (This spell costs {1} less to cast for each Sliver you control.)\nSlivers you control have double strike and haste.\nAt the beginning of your upkeep, create two 1/1 colorless Sliver creature tokens.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/ThrummingHivepool.java",
+          "java_sha256": "595d2ee8770250b38a1ef970d124cefb691cb0f1a9cbcec202174c08b5da4f7b"
+        }
+      ]
+    },
+    {
+      "name": "Tolarian Terror",
+      "oracle_text": "This spell costs {1} less to cast for each instant and sorcery card in your graveyard.\nWard {2} (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TolarianTerror.java",
+          "java_sha256": "c7b19d806485d142868deb489e443167da5b64d7b07cb6d4723e9507900eab60"
+        }
+      ]
+    },
+    {
+      "name": "Travel the Overworld",
+      "oracle_text": "Affinity for Towns (This spell costs {1} less to cast for each Town you control.)\nDraw four cards.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TravelTheOverworld.java",
+          "java_sha256": "65fe0b41add1f13811d732009825c5a9f82a3d96d62367754dc5931e85711311"
+        }
+      ]
+    },
+    {
+      "name": "Valkyrie Aerial Unit",
+      "oracle_text": "Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.)\nFlying\nWhen this creature enters, surveil 2. (Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/ValkyrieAerialUnit.java",
+          "java_sha256": "7c83989d0cbc8c39106a1231c64dd3fa249e36fd32d9f0ac4a22042e5222fb36"
+        }
+      ]
+    },
+    {
+      "name": "Wildvine Pummeler",
+      "oracle_text": "Vivid — This spell costs {1} less to cast for each color among permanents you control.\nReach, trample",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WildvinePummeler.java",
+          "java_sha256": "e21357f47aab790a110ca094246652a1eacdf0cefab06c63b2c973bc9a2e5eb0"
+        }
+      ]
+    },
+    {
+      "name": "Witherbloom, the Balancer",
+      "oracle_text": "Affinity for creatures (This spell costs {1} less to cast for each creature you control.)\nFlying, deathtouch\nInstant and sorcery spells you cast have affinity for creatures.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WitherbloomTheBalancer.java",
+          "java_sha256": "c9b511022e909d7e4f1e8486f6102cfedf64783dc53236cd5a383c5b787c2db8"
+        }
+      ]
+    }
+  ]
+}

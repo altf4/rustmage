@@ -674,10 +674,15 @@ pub(crate) enum CostTurn {
     Other,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum SpellReductionAmount {
+    Fixed(u32),
+    Stat { value: StatValue, factor: u16 },
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct SpellReduction {
     pub source_only: bool,
     pub filter: CastFilter,
-    pub amount: u32,
+    pub amount: SpellReductionAmount,
     pub turn: CostTurn,
     pub guard: StepGuard,
 }

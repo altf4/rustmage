@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "38beeaf796804e78e093158a74a0001b20a03c3349fa0dbaff5dc44acaaf17f6",
+  "catalogue_version": "65e436517890724f1aabaefb8a420834d4b1e7c1b9ffbb52778444cb64716013",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1063,
-  "implemented_total": 1069,
-  "token_definitions": 48,
+  "implemented_standard_cards": 1077,
+  "implemented_total": 1083,
+  "token_definitions": 49,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -4438,8 +4438,8 @@
     {
       "name": "Chitin Gravestalker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Chitinous Graspling",
@@ -4606,8 +4606,8 @@
     {
       "name": "Claws Out",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Clay-Fired Bricks // Cosmium Kiln",
@@ -10096,8 +10096,8 @@
     {
       "name": "Gargantuan Leech",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Garland, Knight of Cornelia // Chaos, the Endless",
@@ -12664,8 +12664,8 @@
     {
       "name": "Huskburster Swarm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Hustle // Bustle",
@@ -16300,8 +16300,8 @@
     {
       "name": "Memory Guardian",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Memory Trap",
@@ -21958,8 +21958,8 @@
     {
       "name": "Salt Road Packbeast",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Salt Road Skirmish",
@@ -21994,8 +21994,8 @@
     {
       "name": "Sami, Wildcat Captain",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Sample Collector",
@@ -22258,8 +22258,8 @@
     {
       "name": "Scales of Shale",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Scalestorm Summoner",
@@ -27466,8 +27466,8 @@
     {
       "name": "Thrumming Hivepool",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Thrór's Map",
@@ -27730,8 +27730,8 @@
     {
       "name": "Tolarian Terror",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Tolls of War",
@@ -27994,8 +27994,8 @@
     {
       "name": "Travel the Overworld",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Traveling Botanist",
@@ -28972,8 +28972,8 @@
     {
       "name": "Valkyrie Aerial Unit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Valkyrie's Call",
@@ -30418,8 +30418,8 @@
     {
       "name": "Wildvine Pummeler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Wildwood Mentor",
@@ -30604,8 +30604,8 @@
     {
       "name": "Witherbloom, the Balancer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Withering Curse",

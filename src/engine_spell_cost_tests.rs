@@ -610,3 +610,349 @@ fn mistmeadow_council_discount_and_entry_draw_both_execute() {
         assert!(g.keywords(id).contains(Keywords::FLYING));
     }
 }
+
+#[test]
+fn artifact_affinity_uses_owned_battlefield_count_and_preserves_colored_payment() {
+    for staged in [false, true] {
+        let mut g = scenario();
+        let spell = named(&mut g, Player::P0, "Memory Guardian", Zone::Hand);
+        named(&mut g, Player::P0, "Memory Guardian", Zone::Battlefield);
+        named(&mut g, Player::P0, "Goldvein Pick", Zone::Battlefield);
+        named(&mut g, Player::P1, "Goldvein Pick", Zone::Battlefield);
+        named(&mut g, Player::P0, "Goldvein Pick", Zone::Hand);
+        named(&mut g, Player::P0, "Bear Cub", Zone::Battlefield);
+        assert_eq!(generic(&g, spell), 2);
+        g.state.players[0].mana = [0, 1, 0, 0, 0, 1];
+        reject(&mut g, Action::AnnounceCast { card: spell });
+        g.state.players[0].mana = [0, 0, 0, 0, 0, 5];
+        reject(&mut g, Action::AnnounceCast { card: spell });
+        g.state.players[0].mana = [0, 1, 0, 0, 0, 2];
+        if staged {
+            replay(&mut g, Action::AnnounceCast { card: spell });
+            assert_eq!(g.observe(Player::P0).payment_request.unwrap().generic, 2);
+            pay(&mut g);
+        } else {
+            cast(&mut g, spell, None);
+        }
+        passes(&mut g);
+        assert_eq!(g.object_view(spell).zone, Zone::Battlefield);
+        assert_eq!((g.stats(spell).power, g.stats(spell).toughness), (3, 4));
+        assert!(g.keywords(spell).contains(Keywords::FLYING));
+    }
+}
+
+#[test]
+fn graveyard_affinity_unions_count_each_owned_card_once() {
+    let mut g = scenario();
+    let chitin = named(&mut g, Player::P0, "Chitin Gravestalker", Zone::Hand);
+    let terror = named(&mut g, Player::P0, "Tolarian Terror", Zone::Hand);
+    for name in [
+        "Memory Guardian",
+        "Bear Cub",
+        "Goldvein Pick",
+        "Divination",
+        "Counterspell",
+    ] {
+        named(&mut g, Player::P0, name, Zone::Graveyard);
+    }
+    named(&mut g, Player::P1, "Memory Guardian", Zone::Graveyard);
+    named(&mut g, Player::P0, "Memory Guardian", Zone::Battlefield);
+    assert_eq!(generic(&g, chitin), 2); // artifact creature counts once, not twice
+    assert_eq!(generic(&g, terror), 4);
+    g.state.players[0].mana = [0, 0, 1, 0, 0, 2];
+    cast(&mut g, chitin, None);
+    passes(&mut g);
+    assert_eq!((g.stats(chitin).power, g.stats(chitin).toughness), (5, 4));
+    g.state.players[0].mana = [0, 1, 0, 0, 0, 4];
+    cast(&mut g, terror, None);
+    passes(&mut g);
+    assert_eq!((g.stats(terror).power, g.stats(terror).toughness), (5, 5));
+    assert!(
+        g.state.objects[terror as usize]
+            .card
+            .triggers()
+            .iter()
+            .any(|t| t.condition == crate::cards::TriggerCondition::Ward)
+    );
+}
+
+#[test]
+fn affinity_does_not_discount_cycling_activation() {
+    let mut g = scenario();
+    let chitin = named(&mut g, Player::P0, "Chitin Gravestalker", Zone::Hand);
+    for _ in 0..6 {
+        named(&mut g, Player::P0, "Memory Guardian", Zone::Graveyard);
+    }
+    assert_eq!(generic(&g, chitin), 0);
+    g.state.players[0].mana[5] = 1;
+    assert!(
+        !g.legal_actions()
+            .iter()
+            .any(|a| matches!(a,Action::Activate{card,..} if *card==chitin))
+    );
+    g.state.players[0].mana[5] = 2;
+    let a = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a,Action::Activate{card,..} if *card==chitin))
+        .unwrap();
+    replay(&mut g, a);
+    assert_eq!(g.object_view(chitin).zone, Zone::Graveyard);
+    passes(&mut g);
+    assert_eq!(g.state.players[0].library.len(), 19);
+    assert_eq!(g.state.players[0].spells_cast_this_turn, 0);
+}
+
+#[test]
+fn creature_affinity_entry_draw_and_global_spell_scope_are_exact() {
+    let mut g = scenario();
+    let source = named(&mut g, Player::P0, "Witherbloom, the Balancer", Zone::Hand);
+    named(&mut g, Player::P0, "Bear Cub", Zone::Battlefield);
+    named(&mut g, Player::P1, "Bear Cub", Zone::Battlefield);
+    assert_eq!(generic(&g, source), 5);
+    g.state.players[0].mana = [0, 0, 1, 0, 1, 5];
+    cast(&mut g, source, None);
+    passes(&mut g);
+    assert!(
+        g.keywords(source).contains(Keywords::FLYING)
+            && g.keywords(source).contains(Keywords::DEATHTOUCH)
+    );
+    let draw = named(&mut g, Player::P0, "Divination", Zone::Hand);
+    let pack = named(&mut g, Player::P0, "Salt Road Packbeast", Zone::Hand);
+    assert_eq!(generic(&g, draw), 0);
+    assert_eq!(generic(&g, pack), 3);
+    g.state.players[0].mana = [1, 0, 0, 0, 0, 3];
+    cast(&mut g, pack, None);
+    passes(&mut g);
+    triggered(&mut g, None);
+    passes(&mut g);
+    assert_eq!(g.state.players[0].library.len(), 19);
+    assert_eq!((g.stats(pack).power, g.stats(pack).toughness), (4, 3));
+    g.state.players[0].mana[1] = 1;
+    cast(&mut g, draw, None);
+    passes(&mut g);
+    assert_eq!(g.state.players[0].library.len(), 17);
+}
+
+#[test]
+fn cave_reductions_sum_real_owned_battlefield_and_graveyard_lands() {
+    let mut g = scenario();
+    let leech = named(&mut g, Player::P0, "Gargantuan Leech", Zone::Hand);
+    // Captivating Cave is an executable Cave; graveyard lands count as cards.
+    named(&mut g, Player::P0, "Captivating Cave", Zone::Battlefield);
+    named(&mut g, Player::P0, "Captivating Cave", Zone::Graveyard);
+    named(&mut g, Player::P1, "Captivating Cave", Zone::Graveyard);
+    named(&mut g, Player::P0, "Captivating Cave", Zone::Hand);
+    named(&mut g, Player::P0, "Captivating Cave", Zone::Exile);
+    assert_eq!(generic(&g, leech), 5);
+    g.state.players[0].mana = [0, 0, 1, 0, 0, 5];
+    cast(&mut g, leech, None);
+    passes(&mut g);
+    assert!(g.keywords(leech).contains(Keywords::LIFELINK));
+    assert_eq!((g.stats(leech).power, g.stats(leech).toughness), (5, 5));
+}
+
+#[test]
+fn exile_and_graveyard_creature_counts_exclude_other_zones_and_opponent() {
+    let mut g = scenario();
+    let swarm = named(&mut g, Player::P0, "Huskburster Swarm", Zone::Hand);
+    named(&mut g, Player::P0, "Bear Cub", Zone::Graveyard);
+    named(&mut g, Player::P0, "Memory Guardian", Zone::Exile);
+    named(&mut g, Player::P1, "Bear Cub", Zone::Exile);
+    named(&mut g, Player::P0, "Goldvein Pick", Zone::Graveyard);
+    named(&mut g, Player::P0, "Bear Cub", Zone::Battlefield);
+    assert_eq!(generic(&g, swarm), 5);
+    g.state.players[0].mana = [0, 0, 1, 0, 0, 5];
+    cast(&mut g, swarm, None);
+    passes(&mut g);
+    assert!(
+        g.keywords(swarm).contains(Keywords::MENACE)
+            && g.keywords(swarm).contains(Keywords::DEATHTOUCH)
+    );
+    assert_eq!((g.stats(swarm).power, g.stats(swarm).toughness), (6, 6));
+}
+
+#[test]
+fn vivid_counts_distinct_live_colors_and_no_colorless_or_hand_color() {
+    let mut g = scenario();
+    let spell = named(&mut g, Player::P0, "Wildvine Pummeler", Zone::Hand);
+    assert_eq!(generic(&g, spell), 6);
+    named(
+        &mut g,
+        Player::P0,
+        "Sami, Wildcat Captain",
+        Zone::Battlefield,
+    );
+    named(
+        &mut g,
+        Player::P0,
+        "Witherbloom, the Balancer",
+        Zone::Battlefield,
+    );
+    named(&mut g, Player::P0, "Geyser Drake", Zone::Battlefield);
+    named(&mut g, Player::P0, "Geyser Drake", Zone::Battlefield);
+    assert_eq!(generic(&g, spell), 1);
+    named(&mut g, Player::P0, "Three Tree Mascot", Zone::Battlefield);
+    // Five colors reduce by five; Sami's separate artifact affinity adds one.
+    assert_eq!(generic(&g, spell), 0);
+    g.state.players[0].mana[4] = 1;
+    cast(&mut g, spell, None);
+    passes(&mut g);
+    assert!(
+        g.keywords(spell).contains(Keywords::REACH)
+            && g.keywords(spell).contains(Keywords::TRAMPLE)
+    );
+    assert_eq!((g.stats(spell).power, g.stats(spell).toughness), (6, 5));
+}
+
+#[test]
+fn multiple_affinity_instances_stack_without_discounting_colored_components() {
+    let mut g = scenario();
+    named(
+        &mut g,
+        Player::P0,
+        "Sami, Wildcat Captain",
+        Zone::Battlefield,
+    );
+    named(&mut g, Player::P0, "Memory Guardian", Zone::Battlefield);
+    named(&mut g, Player::P0, "Goldvein Pick", Zone::Battlefield);
+    let spell = named(&mut g, Player::P0, "Memory Guardian", Zone::Hand);
+    assert_eq!(generic(&g, spell), 0); // two artifacts apply to self and granted affinity
+    g.state.players[0].mana[5] = 5;
+    reject(&mut g, Action::AnnounceCast { card: spell });
+    g.state.players[0].mana = [0, 1, 0, 0, 0, 0];
+    cast(&mut g, spell, None);
+    passes(&mut g);
+}
+
+#[test]
+fn affinity_total_stays_locked_when_additional_sacrifice_removes_counted_artifact() {
+    let mut g = scenario();
+    named(
+        &mut g,
+        Player::P0,
+        "Sami, Wildcat Captain",
+        Zone::Battlefield,
+    );
+    let victim = named(&mut g, Player::P0, "Memory Guardian", Zone::Battlefield);
+    let receiver = named(&mut g, Player::P0, "Bear Cub", Zone::Battlefield);
+    let spell = named(&mut g, Player::P0, "Duty Beyond Death", Zone::Hand);
+    g.state.players[0].mana[0] = 1;
+    replay(&mut g, Action::AnnounceCast { card: spell });
+    let reference = g.object_ref(victim);
+    replay(&mut g, Action::ChooseAdditionalCost { object: reference });
+    assert_eq!(g.observe(Player::P0).payment_request.unwrap().generic, 0);
+    pay(&mut g);
+    assert_eq!(g.object_view(victim).zone, Zone::Graveyard);
+    assert_eq!(generic(&g, spell), 1);
+    passes(&mut g);
+    assert_eq!(g.object_view(receiver).counters.plus_one, 1);
+    assert!(g.keywords(receiver).contains(Keywords::INDESTRUCTIBLE));
+}
+
+#[test]
+fn tribal_affinity_uses_changeling_and_executes_claws_and_scales_bodies() {
+    let mut g = scenario();
+    let mascot = named(&mut g, Player::P0, "Three Tree Mascot", Zone::Battlefield);
+    named(&mut g, Player::P1, "Three Tree Mascot", Zone::Battlefield);
+    let claws = named(&mut g, Player::P0, "Claws Out", Zone::Hand);
+    let scales = named(&mut g, Player::P0, "Scales of Shale", Zone::Hand);
+    assert_eq!(generic(&g, claws), 2);
+    assert_eq!(generic(&g, scales), 1);
+    g.state.players[0].mana = [2, 0, 0, 0, 0, 2];
+    cast(&mut g, claws, None);
+    passes(&mut g);
+    assert_eq!((g.stats(mascot).power, g.stats(mascot).toughness), (4, 3));
+    g.state.players[0].mana = [0, 0, 1, 0, 0, 1];
+    cast(&mut g, scales, Some(Target::Card(mascot)));
+    passes(&mut g);
+    assert_eq!((g.stats(mascot).power, g.stats(mascot).toughness), (6, 3));
+    assert!(
+        g.keywords(mascot).contains(Keywords::LIFELINK)
+            && g.keywords(mascot).contains(Keywords::INDESTRUCTIBLE)
+    );
+}
+
+#[test]
+fn town_affinity_draw_four_and_artifact_entry_surveil_replay() {
+    let mut g = scenario();
+    named(&mut g, Player::P0, "Gohn, Town of Ruin", Zone::Battlefield);
+    named(&mut g, Player::P0, "Gohn, Town of Ruin", Zone::Graveyard);
+    let travel = named(&mut g, Player::P0, "Travel the Overworld", Zone::Hand);
+    assert_eq!(generic(&g, travel), 4);
+    g.state.players[0].mana = [0, 2, 0, 0, 0, 4];
+    cast(&mut g, travel, None);
+    passes(&mut g);
+    assert_eq!(g.state.players[0].library.len(), 16);
+    named(&mut g, Player::P0, "Three Tree Mascot", Zone::Battlefield);
+    let valk = named(&mut g, Player::P0, "Valkyrie Aerial Unit", Zone::Hand);
+    assert_eq!(generic(&g, valk), 4);
+    g.state.players[0].mana = [0, 2, 0, 0, 0, 4];
+    cast(&mut g, valk, None);
+    passes(&mut g);
+    triggered(&mut g, None);
+    passes(&mut g);
+    assert_eq!(g.observe(Player::P1).actions.len(), 0);
+    for _ in 0..10 {
+        if g.state.pending == Pending::Priority {
+            break;
+        }
+        let a = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| !matches!(a, Action::Concede))
+            .unwrap();
+        replay(&mut g, a);
+    }
+    assert_eq!(g.state.pending, Pending::Priority);
+    assert!(g.keywords(valk).contains(Keywords::FLYING));
+    assert_eq!((g.stats(valk).power, g.stats(valk).toughness), (5, 4));
+}
+
+#[test]
+fn hivepool_affinity_grants_keywords_and_creates_exact_upkeep_slivers() {
+    let mut g = scenario();
+    let mascot = named(&mut g, Player::P0, "Three Tree Mascot", Zone::Battlefield);
+    let hive = named(&mut g, Player::P0, "Thrumming Hivepool", Zone::Hand);
+    assert_eq!(generic(&g, hive), 5);
+    g.state.players[0].mana[5] = 5;
+    cast(&mut g, hive, None);
+    passes(&mut g);
+    assert!(
+        g.keywords(mascot).contains(Keywords::DOUBLE_STRIKE)
+            && g.keywords(mascot).contains(Keywords::HASTE)
+    );
+    g.begin_step(Step::Upkeep);
+    g.give_priority();
+    g.prepare_triggers();
+    triggered(&mut g, None);
+    passes(&mut g);
+    let slivers: Vec<_> = g
+        .state
+        .objects
+        .iter()
+        .enumerate()
+        .filter(|(_, o)| {
+            o.owner == Player::P0
+                && o.zone == Zone::Battlefield
+                && o.card.is_token()
+                && o.card.has_subtype("Sliver")
+        })
+        .map(|(i, _)| i as CardId)
+        .collect();
+    assert_eq!(slivers.len(), 2);
+    let token_card = g.state.objects[slivers[0] as usize].card;
+    for id in slivers {
+        assert_eq!((g.stats(id).power, g.stats(id).toughness), (1, 1));
+        assert!(
+            g.keywords(id).contains(Keywords::DOUBLE_STRIKE)
+                && g.keywords(id).contains(Keywords::HASTE)
+        );
+    }
+    let second = named(&mut g, Player::P0, "Thrumming Hivepool", Zone::Hand);
+    assert_eq!(generic(&g, second), 3);
+    spawn(&mut g, Player::P0, token_card, Zone::Graveyard);
+    spawn(&mut g, Player::P0, token_card, Zone::Exile);
+    let swarm = named(&mut g, Player::P0, "Huskburster Swarm", Zone::Hand);
+    assert_eq!(generic(&g, swarm), 7); // token remnants are not creature cards
+}
