@@ -78,6 +78,7 @@ impl Game {
                 after: self.object_ref(id),
                 destination: Zone::Battlefield,
                 moved: true,
+                sacrificed_by: None,
             });
         }
         // Every newcomer exists before any entry event inspects the battlefield.

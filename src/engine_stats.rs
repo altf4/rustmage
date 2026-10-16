@@ -51,6 +51,7 @@ impl Game {
                     | TriggerCondition::SelfEntersOrDies
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::PermanentToGraveyard { .. }
+                    | TriggerCondition::Sacrificed { .. }
             )
         }) {
             self.state.death_sources.push(id);

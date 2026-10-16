@@ -5,13 +5,14 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,228 have executable rules so far.
+knows all 5,164 pinned Standard identities; 1,235 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
-The latest [permanent graveyard triggers](docs/permanent-graveyard-triggers.md)
-add ten complete bodies with frozen departure events, simultaneous observers,
-Aura cleanup and owned costs. [Public hand knowledge](docs/public-hand-knowledge.md)
+The latest [explicit sacrifice events](docs/sacrifice-events.md) add seven complete
+bodies with typed sacrifice causes, simultaneous observers, stack timing and
+once-per-turn enforcement. [Permanent graveyard triggers](docs/permanent-graveyard-triggers.md)
+also cover frozen departures and Aura cleanup. [Public hand knowledge](docs/public-hand-knowledge.md)
 also covers shared targeted and batch returns while preserving private draws.
 Full Standard rules remain in progress.
 
@@ -27,6 +28,7 @@ PYTHONPATH=python python3 -m unittest discover -s python -p 'test_*.py' -v
 cargo run --release --bin benchmark -- 1000
 cargo run --release --example branch
 cargo run --release --example standard
+cargo run --release --example standard_sacrifice_events -- 100
 cargo run --release --example standard_permanent_graveyard -- 100
 cargo run --release --example standard_temporary_blocking -- 100
 cargo run --release --example standard_triggers -- 100

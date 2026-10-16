@@ -120,7 +120,7 @@ impl Game {
         match spec.kind {
             EffectChoiceKind::Discard => self.discard_batch(&[object.card], None),
             EffectChoiceKind::Sacrifice => {
-                self.move_object(object.card, Zone::Graveyard);
+                self.sacrifice_batch(&[(a.item.controller, object.card)]);
             }
         }
     }

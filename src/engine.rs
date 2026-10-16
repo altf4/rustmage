@@ -789,6 +789,8 @@ pub struct ZoneChange {
     pub after: ObjectRef,
     pub destination: Zone,
     pub moved: bool,
+    /// Explicit cause for an actual sacrifice; never inferred from the destination.
+    pub sacrificed_by: Option<Player>,
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -2291,6 +2293,39 @@ impl Game {
         event
     }
 
+    /// Sacrifices are an explicit action, including costs paid for mana abilities.
+    /// Freeze every observer and departing object before the simultaneous batch.
+    fn sacrifice_batch(&mut self, sacrifices: &[(Player, CardId)]) {
+        for (index, &(actor, id)) in sacrifices.iter().enumerate() {
+            let object = &self.state.objects[id as usize];
+            assert_eq!(
+                object.zone,
+                Zone::Battlefield,
+                "sacrifice requires a permanent"
+            );
+            assert_eq!(object.owner, actor, "sacrifice requires control");
+            debug_assert!(
+                !sacrifices[..index].iter().any(|&(_, prior)| prior == id),
+                "duplicate sacrifice"
+            );
+        }
+        let sources = self.death_trigger_sources();
+        // Most sacrifice costs move one object. Avoid batch-vector allocations
+        // in this hot path while retaining the same frozen observer boundary.
+        if let [(actor, id)] = sacrifices {
+            let mut event = self.move_object_raw(*id, Zone::Graveyard);
+            event.sacrificed_by = Some(*actor);
+            self.finish_zone_events(std::slice::from_ref(&event), &sources);
+            return;
+        }
+        let ids: Vec<_> = sacrifices.iter().map(|&(_, id)| id).collect();
+        let mut events = self.move_objects_raw(&ids, Zone::Graveyard);
+        for (event, &(actor, _)) in events.iter_mut().zip(sacrifices) {
+            event.sacrificed_by = Some(actor);
+        }
+        self.finish_zone_events(&events, &sources);
+    }
+
     /// Capture every pre-event characteristic before any simultaneous departure.
     fn move_objects_raw(&mut self, ids: &[CardId], destination: Zone) -> Vec<ZoneChange> {
         let before: Vec<_> = ids
@@ -2405,6 +2440,7 @@ impl Game {
                 destination: before.zone,
                 before,
                 moved: false,
+                sacrificed_by: None,
             };
         }
         assert_ne!(
@@ -2524,6 +2560,7 @@ impl Game {
             after: self.object_ref(id),
             destination,
             moved: true,
+            sacrificed_by: None,
         }
     }
 
@@ -3587,3 +3624,6 @@ mod temporary_blocking_tests;
 #[cfg(test)]
 #[path = "engine_permanent_graveyard_tests.rs"]
 mod permanent_graveyard_tests;
+#[cfg(test)]
+#[path = "engine_sacrifice_trigger_tests.rs"]
+mod sacrifice_trigger_tests;

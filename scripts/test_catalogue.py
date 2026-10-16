@@ -8,6 +8,28 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_sacrifice_triggers_compile_exact_filters_and_triggered_mana(self):
+        for phrase,kinds,other,subtype,turn in [('an artifact',16,False,None,False),('a Food',16,False,'Food',False),('another creature or artifact',17,True,None,False),('another permanent',0,True,None,False),('a permanent during your turn',0,False,None,True),('a token',0,False,None,False)]:
+            result=generate.trigger_creature_template(self.card(oracle_text='Whenever you sacrifice '+phrase+', draw a card.'))
+            self.assertIsNotNone(result);condition=result[2][0][0]
+            self.assertTrue(condition.startswith('Sacrificed {'));self.assertIn('kinds: '+str(kinds),condition);self.assertIn('other: '+str(other).lower(),condition);self.assertIn('own_turn: '+str(turn).lower(),condition)
+            if subtype:self.assertIn('subtype: Some("'+subtype+'")',condition)
+        result=generate.trigger_creature_template(self.card(oracle_text='Whenever you sacrifice an artifact, put a +1/+1 counter on this creature and add {R}.'))
+        self.assertEqual(result[2][0][1],[generate.counter_instruction('Source','a','+1/+1'),'AddMana(ManaProduction::Fixed([0, 0, 0, 1, 0, 0]))'])
+        for text in ['Whenever you sacrifice one or more artifacts, draw a card.', 'Whenever an opponent sacrifices an artifact, draw a card.', 'When you sacrifice a Clue, return this card from your graveyard to your hand.', 'Whenever you sacrifice an artifact, return it to the battlefield.', 'Whenever you sacrifice an artifact, draw cards equal to its power.', 'Whenever you sacrifice an artifact for mana, draw a card.', 'Whenever you sacrifice an artifact, draw a card. Then discover 3.', 'Whenever you sacrifice an artifact, put a +1/+1 counter on this creature and add {R}. This mana lasts until end of combat.']:
+            self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text=text)),text)
+
+    def test_sacrifice_events_admit_seven_complete_bodies_and_gate_residual_rules(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());_,coverage=generate.compile_catalogue(rows,target)
+        supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for name in ['Biotech Specialist','Crime Novelist','Experimental Confectioner','Gleaming Geardrake','Lightless Evangel','Pirate Peddlers','Tolls of War']:
+            self.assertIn(name,supported)
+            c=next(c for c in rows['cards'] if c['name']==name);bad=dict(c,oracle_text=c['oracle_text']+'\nWhenever you cast a spell, discover 3.')
+            for compiler in [generate.permanent_program_template,generate.trigger_creature_template]:self.assertIsNone(compiler(bad),name)
+        for name in ['Curious Cadaver','Esoteric Duplicator','Magnetic Snuffler','Persuasive Interrogators','Popular Egotist','The Sackville-Bagginses','Zhao, Ruthless Admiral','Camellia, the Seedmiser']:
+            self.assertNotIn(name,supported)
+
     def test_permanent_departures_compile_exact_sources_and_kind_scoped_exclusions(self):
         for noun in ['artifact','enchantment','Aura','Equipment']:
             for clause,condition in [('is put into a graveyard from the battlefield','SelfDies'),('enters or is put into a graveyard from the battlefield','SelfEntersOrDies')]:

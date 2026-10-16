@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "951574a8bf42f1addd3fcef1e18b37d9d7c8d4c161ae4bf2227acd8ba934fc37",
+  "catalogue_version": "19631167eab6b9d4e2afa9cce8441d360382abf1fd8f7be851f64018651ba2eb",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1228,
-  "implemented_total": 1234,
+  "implemented_standard_cards": 1235,
+  "implemented_total": 1241,
   "token_definitions": 56,
   "emblem_definitions": 1,
   "cards": [
@@ -2530,8 +2530,8 @@
     {
       "name": "Biotech Specialist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Birnin Zana Plaza",
@@ -5344,8 +5344,8 @@
     {
       "name": "Crime Novelist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Crimestopper Sprite",
@@ -8434,8 +8434,8 @@
     {
       "name": "Experimental Confectioner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Explorer's Cache",
@@ -10642,8 +10642,8 @@
     {
       "name": "Gleaming Geardrake",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Gleaming Splendor",
@@ -14980,8 +14980,8 @@
     {
       "name": "Lightless Evangel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Lightning Helix",
@@ -19036,8 +19036,8 @@
     {
       "name": "Pirate Peddlers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Pirate's Cutlass",
@@ -27736,8 +27736,8 @@
     {
       "name": "Tolls of War",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Tolsimir, Midnight's Light",
