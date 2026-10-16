@@ -60,7 +60,7 @@ other unsupported card is admitted.
 
 Validation: 518 Rust tests (510 unit plus eight integration), 92 compiler tests,
 59 rebuilt release Python tests, consistency, rustfmt and Clippy with warnings
-denied. Runtime fixtures cover all ten land cycles against all five basic types,
+denied. Runtime fixtures cover all ten lands against all five basic types,
 both controllers and several zones, exact mana colors, typed nonbasics,
 changeling/token witnesses, forged actions, paid spell announcements and owned
 clone/restore. Small-board native mana-action enumeration independently checks
