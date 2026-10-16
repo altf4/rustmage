@@ -8,6 +8,28 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_saddle_whole_bodies_and_closed_contribution_history(self):
+        import json
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        rows={c['name']:c for c in snapshot['cards']}
+        names=['Alacrian Jaguar','Autarch Mammoth','Bounding Felidar','Bridled Bighorn','Brightfield Glider','Brightfield Mustang','Congregation Gryff','District Mascot','Dracosaur Auxiliary','Drover Grizzly','Gila Courser','Gilded Ghoda','Gloryheath Lynx','Quilled Charger','Seraphic Steed','Stubborn Burrowfiend','Trained Arynx','Unswerving Sloth','Venomsac Lagac']
+        for name in names:
+            row=rows[name];body=generate.saddle_body(row)
+            self.assertIsNotNone(body,name)
+            self.assertEqual(body[3][-1][1],'None')
+            self.assertTrue(body[3][-1][3]);self.assertFalse(body[3][-1][0]['tap'])
+            self.assertIn('BecomeSaddled',body[3][-1][2][0])
+            for suffix in ['\nDiscover 3.','\nWhenever this creature becomes saddled, draw a card.','\nSaddle 1']:
+                self.assertIsNone(generate.saddle_body(dict(row,oracle_text=row['oracle_text']+suffix)),(name,suffix))
+        for row in rows.values():
+            if 'Saddle ' in row.get('oracle_text','') and row['name'] not in names:
+                self.assertIsNone(generate.saddle_body(row),row['name'])
+        self.assertIn('Subtype("Plains")',str(generate.saddle_body(rows['Gloryheath Lynx'])))
+        self.assertIn('BasicLand',str(generate.saddle_body(rows['Gloryheath Lynx'])))
+        self.assertEqual(len(generate.saddle_body(rows['District Mascot'])[3]),2)
+        for invalid in ['Saddle 0','Saddle 65536','Saddle X','Saddle 1 and crew 1']:
+            row=rows['District Mascot'];self.assertIsNone(generate.saddle_body(dict(row,oracle_text=row['oracle_text'].replace('Saddle 1',invalid))))
+
     def test_scalar_x_twelve_complete_bodies_and_original_printed_costs(self):
         import json,hashlib
         names=['Choco-Comet','Mind Spring','Pedal to the Metal','Procrastinate','Slice from the Shadows','Song of Totentanz','Spectral Denial','Syncopate','Traumatic Critique','United Front','Morlun, Devourer of Spiders','Pterafractyl']
@@ -15,7 +37,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
         rust,report=generate.compile_catalogue(snapshot,target)
         supported={c['name'] for c in report['cards'] if c['implemented']}
-        self.assertEqual(report["token_definitions"],74)
+        self.assertEqual(report["token_definitions"],76)
         manifest=json.loads((generate.ROOT/'docs/scalar-x-admissions.json').read_text())
         self.assertEqual([r['name'] for r in manifest['cards']],names)
         self.assertEqual(sum(len(r['sources']) for r in manifest['cards']),75)

@@ -394,7 +394,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             g.apply(p, action.clone())?;
             assert_eq!(g.snapshot(), expected);
             let after = g.observe(p);
-            assert_eq!(after.schema, 66);
+            assert_eq!(after.schema, rustmage::OBSERVATION_SCHEMA);
             decisions += 1;
             max_bytes = max_bytes.max(g.state_bytes());
             if matches!(action, Action::FinishAttackers) {

@@ -733,7 +733,7 @@ impl Game {
         &self,
         viewer: Player,
     ) -> Option<PaymentRequestView> {
-        if self.actor() != Some(viewer) {
+        if self.actor() != Some(viewer) || matches!(self.state.pending, Pending::Saddle { .. }) {
             return None;
         }
         let a = self.state.announcing.as_ref()?;

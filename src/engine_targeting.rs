@@ -568,6 +568,9 @@ impl Game {
     }
 
     pub(super) fn finish_announcement(&mut self) {
+        if self.start_saddle_payment() {
+            return;
+        }
         if let Some(announcement) = &self.state.announcing
             && announcement.pay_window
             && matches!(self.state.pending, Pending::Targets { .. })

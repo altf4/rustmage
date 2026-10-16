@@ -3121,6 +3121,64 @@ def cycling_abilities(card):
     return dict(card,oracle_text='\n'.join(body)),abilities
 
 
+def saddle_body(card):
+    """Closed whole-body Saddle grammar; contribution histories stay gated."""
+    if not isinstance(card.get('oracle_text'),str): return None
+    text=re.sub(r'\([^()]*\)','',card['oracle_text']).strip()
+    lines=[line.strip() for line in text.split('\n')]
+    saddles=[line for line in lines if line.startswith('Saddle ')]
+    if len(saddles)!=1 or not (m:=re.fullmatch(r'Saddle ([0-9]+)',saddles[0])): return None
+    minimum=int(m[1])
+    if not 1<=minimum<=65535 or creature_template(dict(card,oracle_text='')) is None:return None
+    triggers=[];residual=[]
+    prefixes={
+        'Whenever this creature attacks while saddled, ':'SelfAttacksWhileSaddled',
+        'When this creature enters and whenever it attacks while saddled, ':'SelfEntersOrAttacksWhileSaddled',
+        'Whenever this creature becomes saddled for the first time each turn, ':'SelfSaddledFirst',
+    }
+    for line in lines:
+        if line==saddles[0]:continue
+        line=line.replace(card.get('name','\0'),'this creature')
+        prefix=next((p for p in prefixes if line.startswith(p)),None)
+        if prefix is None:residual.append(line);continue
+        tail=line[len(prefix):]
+        # Only the exact self-event binds these source pronouns. Subsequent
+        # arbitrary target/card pronouns are never rewritten.
+        tail=re.sub(r'^it (gets|gains|deals) ',r'this creature \1 ',tail)
+        if tail=='untap it and put a +1/+1 counter on it.':
+            tail='untap this creature. Put a +1/+1 counter on this creature.'
+        if tail=='put a +1/+1 counter on it.':tail='put a +1/+1 counter on this creature.'
+        targets='None'
+        if tail=='this creature gets +X/+X until end of turn, where X is the number of Mounts you control.':
+            program=['GrowScaled { subject: Subject::Source, amount: '+amount_value('the number of Mounts you control')+', power: 1, toughness: 1 }']
+        elif tail=='mill two cards, then this creature gets +X/+X until end of turn, where X is the number of creature cards in your graveyard.':
+            program=[mill_instruction('Controller',2),'GrowScaled { subject: Subject::Source, amount: '+amount_value('the number of creature cards in your graveyard')+', power: 1, toughness: 1 }']
+        elif tail=='put a +1/+1 counter on each other creature you control. You gain 1 life for each of those creatures.':
+            program=statement_program('put a +1/+1 counter on each other creature you control.')+scaled_life_program('you gain 1 life for each other creature you control.')
+        elif tail=='search your library for a basic Plains card, reveal it, put it into your hand, then shuffle.':
+            program=[step.replace('Subtype("Forest")','Subtype("Plains")') for step in statement_program(tail.replace('basic Plains','basic Forest'))]
+        else:
+            targeted=targeted_program(tail)
+            if targeted:targets,program=targeted
+            else:
+                program=statement_program(tail)
+                if program is None:
+                    first,rest=split_sentence(tail)
+                    head=statement_program(first);remaining=statement_program(rest) if rest else None
+                    program=head+remaining if head and remaining else None
+        if not program:return None
+        triggers.append((prefixes[prefix],program,targets))
+    proxy=dict(card,oracle_text='\n'.join(residual))
+    body=permanent_program_template(proxy)
+    if body is None:
+        base=creature_template(proxy)
+        if base is None:return None
+        body=(*base,[],[],[0,0,0])
+    effect,keywords,abilities,activations,enters=body
+    cost=activation_cost('{0}');cost['mana_component']=False
+    return effect,keywords,[*abilities,*triggers],[*activations,(cost,'None',[f'BecomeSaddled {{ minimum: {minimum} }}'],True,False)],enters
+
+
 def rust_activations(abilities):
     rows = []
     for cost, targets, program, sorcery, once in abilities:
@@ -3278,6 +3336,10 @@ def compile_catalogue(snapshot, target):
             else:
                 effect,keywords,abilities,spell,activations=evidence_body
                 enters=[0,0,0]
+        if any(line.startswith('Saddle ') for line in card.get('oracle_text','').split('\n')):
+            saddle=saddle_body(card) if evidence is None and not cycling and all(v is None for v in (flashback,offspring,kicker,additional,target_reduction)) and not bargain and not reductions and not dynamic and not scaling else None
+            if saddle is None:effect='Unsupported'
+            else:effect,keywords,abilities,activations,enters=saddle
         # Later fixed-cost selectors must never revive a rejected variable-cost body.
         if '{X}' in card.get('mana_cost', '') and scalar is None:
             effect = 'Unsupported'

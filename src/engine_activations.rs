@@ -133,6 +133,18 @@ impl Game {
             if !self.activation_cost_available(card, ability, index, actor, sorcery) {
                 continue;
             }
+            if let Some(minimum) = ability.saddle_minimum() {
+                if self.saddle_fundable(self.object_ref(card), actor, minimum)
+                    && emit(Action::AnnounceActivate {
+                        card,
+                        ability: index as u16,
+                        counter_payment: Counters::default(),
+                    })
+                {
+                    return true;
+                }
+                continue;
+            }
             let done = counter_payments(ability.cost, object.counters, |counter_payment| {
                 let fundable = || {
                     ability.cost.mana_options().any(|cost| {

@@ -304,6 +304,7 @@ impl Game {
                     TriggerCondition::EvidenceCollected => false,
                     TriggerCondition::SelfEnters
                     | TriggerCondition::SelfEntersOrAttacks
+                    | TriggerCondition::SelfEntersOrAttacksWhileSaddled
                     | TriggerCondition::SelfEntersOrDies => same,
                     TriggerCondition::CreatureExploresYou
                     | TriggerCondition::Foraged
@@ -324,6 +325,8 @@ impl Game {
                     | TriggerCondition::LifeGained { .. }
                     | TriggerCondition::AttackDeclared { .. }
                     | TriggerCondition::SelfAttacks
+                    | TriggerCondition::SelfAttacksWhileSaddled
+                    | TriggerCondition::SelfSaddledFirst
                     | TriggerCondition::EquippedAttacks
                     | TriggerCondition::GrantedAttacks
                     | TriggerCondition::SelfBecomesTapped
@@ -750,10 +753,12 @@ impl Game {
 
     pub(super) fn attack_triggers(&mut self, source: &ObjectView) {
         for (index, ability) in source.card.triggers().iter().enumerate() {
-            if matches!(
-                ability.condition.event(),
-                TriggerCondition::SelfAttacks | TriggerCondition::SelfEntersOrAttacks
-            ) {
+            if match ability.condition.event() {
+                TriggerCondition::SelfAttacks | TriggerCondition::SelfEntersOrAttacks => true,
+                TriggerCondition::SelfAttacksWhileSaddled
+                | TriggerCondition::SelfEntersOrAttacksWhileSaddled => source.saddled,
+                _ => false,
+            } {
                 self.queue_trigger(source, index);
             }
         }
@@ -1013,6 +1018,7 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::BecomeSaddled { .. } => self.resolve_saddle(&item),
                 Instruction::BottomLibrary => {
                     for bound in &item.targets {
                         if self.valid_library_target(&item, *bound) {

@@ -5,7 +5,7 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,619 have executable rules so far.
+knows all 5,164 pinned Standard identities; 1,638 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
@@ -55,7 +55,7 @@ pre-event replacement timing, token entry and opponent-entry life triggers.
 [Owned entering-object context](docs/entering-object-context.md) adds
 Good-Fortune Unicorn, Serra Redeemer and Wartime Protestors with exact
 non-targeted references and snapshot-safe counters/haste. Observations use schema
-66 (`rustmage::OBSERVATION_SCHEMA`); earlier milestone pages retain their original
+67 (`rustmage::OBSERVATION_SCHEMA`); earlier milestone pages retain their original
 schema and measurements. [Entry predicates](docs/entry-predicates.md) add nine complete bodies
 with entry-time power thresholds, subtype unions, outlaw and kind-or-subtype
 conditions, including Impact Tremors and Warleader's Call.
@@ -373,3 +373,5 @@ Committed hybrid spell costs and their coverage are described in
 
 All-zones changeling and shared subtype matching are described in
 [changeling.md](docs/changeling.md).
+
+[Saddle](docs/saddle.md) adds nineteen complete Mount bodies with private incremental tap costs, exact resolved designations and captured attack triggers.

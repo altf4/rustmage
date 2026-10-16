@@ -8,8 +8,11 @@ use crate::cards::{
     SpellMode, StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetPlan,
     TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
-/// Version of the public observation structure, including owned trigger context.
-pub const OBSERVATION_SCHEMA: u32 = 66;
+#[path = "engine_saddle.rs"]
+mod saddle;
+pub use saddle::SaddleChoiceView;
+/// Version of the public observation structure, including private Saddle costs.
+pub const OBSERVATION_SCHEMA: u32 = 67;
 
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
@@ -247,6 +250,8 @@ define_actions! {
     ChooseEvidence { object: ObjectRef },
     FinishEvidence,
     DeclineEvidence,
+    ChooseSaddler { object: ObjectRef },
+    FinishSaddle,
     ChooseLibraryDestination { object: ObjectRef, destination: LibraryDestination },
     ChooseForageRoute { route: ForageRoute },
     ChooseForage { object: ObjectRef },
@@ -799,6 +804,9 @@ enum Pending {
     Evidence {
         player: Player,
     },
+    Saddle {
+        player: Player,
+    },
     Explore {
         player: Player,
     },
@@ -904,6 +912,8 @@ enum Pending {
 /// Card definitions are enum/static data, never cloned object graphs or trait objects.
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
+    saddled: Vec<ObjectRef>,
+    saddle_payment: Option<Box<saddle::SaddlePayment>>,
     objects: SharedVec<Object>,
     attacked_this_turn: SharedVec<ObjectRef>,
     creatures_died_this_turn: u64,
@@ -970,6 +980,7 @@ pub struct Game {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ObjectView {
+    pub saddled: bool,
     pub id: CardId,
     pub reference: ObjectRef,
     pub card: Card,
@@ -1164,6 +1175,7 @@ pub struct LegalActionSpace {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    pub saddle_choice: Option<SaddleChoiceView>,
     /// Complete scalar domain, visible only to its choosing actor.
     pub x_choice: Option<XChoiceView>,
     pub schema: u32,
@@ -1348,6 +1360,8 @@ impl Game {
                 known_hand: Vec::new(),
                 explore_data: None,
                 evidence_data: None,
+                saddled: Vec::new(),
+                saddle_payment: None,
                 last_target_library_move: None,
                 players,
                 rng,
@@ -1414,6 +1428,7 @@ impl Game {
             Pending::Priority => Some(self.state.priority),
             Pending::EvidenceIntent { player }
             | Pending::Evidence { player }
+            | Pending::Saddle { player }
             | Pending::Explore { player }
             | Pending::Bargain { player }
             | Pending::X { player }
@@ -1632,6 +1647,11 @@ impl Game {
         // result. Cache capacity affects work only, never the admitted action set.
         let mut spell_funding_cache: [Option<(Mana, u32, bool)>; 8] = [None; 8];
         match s.pending {
+            Pending::Saddle { .. } => {
+                if self.visit_saddle_actions(&mut emit) {
+                    return true;
+                }
+            }
             Pending::TargetLibrary { .. } => {
                 let object = s
                     .resolving
@@ -2597,6 +2617,14 @@ impl Game {
                 a.additional = sacrifice;
                 self.continue_announcement_choices(false);
             }
+            Action::ChooseSaddler { object } => self
+                .state
+                .saddle_payment
+                .as_mut()
+                .unwrap()
+                .selected
+                .push(object),
+            Action::FinishSaddle => self.finish_saddle_payment(),
             Action::ChooseX { value } => {
                 self.state.announcing.as_mut().unwrap().item.x = Some(value);
                 self.continue_announcement_choices(false);
@@ -2854,6 +2882,7 @@ impl Game {
         let obj = &self.state.objects[id as usize];
         let stats = self.stats(id);
         ObjectView {
+            saddled: self.is_saddled(self.object_ref(id)),
             id,
             reference: self.object_ref(id),
             card: obj.card,
@@ -3087,6 +3116,9 @@ impl Game {
                 .creatures_died_this_turn
                 .checked_add(1)
                 .capacity("creature death history exhausted");
+        }
+        if before.zone == Zone::Battlefield {
+            self.state.saddled.retain(|r| *r != before.reference);
         }
         let generation = before
             .reference
@@ -3409,6 +3441,7 @@ impl Game {
     }
 
     fn finish_cleanup(&mut self) {
+        self.state.saddled.clear();
         self.state
             .exile_permissions
             .retain(|p| p.expires_turn > self.state.turn);
@@ -3679,6 +3712,11 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
+            saddle_choice: if owns_choice {
+                self.saddle_choice()
+            } else {
+                None
+            },
             x_choice: if owns_choice { self.x_choice() } else { None },
             schema: OBSERVATION_SCHEMA,
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
@@ -3701,6 +3739,7 @@ impl Game {
                 Pending::Offspring { .. } => "offspring",
                 Pending::Bargain { .. } => "bargain",
                 Pending::Kicker { .. } => "kicker",
+                Pending::Saddle { .. } => "saddle",
                 Pending::Explore { .. } => "explore",
                 Pending::X { .. } => "x",
                 Pending::EvidenceIntent { .. } => "evidence_intent",
@@ -4017,7 +4056,11 @@ impl Game {
         std::mem::size_of::<State>()
             + std::mem::size_of::<Vec<Object>>()
             + std::mem::size_of::<Vec<ObjectRef>>()
-            + s.attacked_this_turn.len() * std::mem::size_of::<ObjectRef>()
+            + (s.attacked_this_turn.len() + s.saddled.len()) * std::mem::size_of::<ObjectRef>()
+            + s.saddle_payment.as_ref().map_or(0, |f| {
+                std::mem::size_of::<saddle::SaddlePayment>()
+                    + f.selected.len() * std::mem::size_of::<ObjectRef>()
+            })
             + 2 * std::mem::size_of::<Vec<CardId>>()
             + s.objects.len() * std::mem::size_of::<Object>()
             + s.exile_links.len() * std::mem::size_of::<ExileLink>()
