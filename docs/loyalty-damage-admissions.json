@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "as_of": "2026-10-15",
+  "cards": [
+    {
+      "name": "Broadside Barrage",
+      "oracle_text": "Broadside Barrage deals 5 damage to target creature or planeswalker. Draw a card, then discard a card.",
+      "java_source": "Mage.Sets/src/mage/cards/b/BroadsideBarrage.java",
+      "java_sha256": "73db04f9712c5c5519139f4f280ccc1420f2894ecc2c315004f1a63a14cbb64b"
+    },
+    {
+      "name": "Dragonback Assault",
+      "oracle_text": "When this enchantment enters, it deals 3 damage to each creature and each planeswalker.\nLandfall — Whenever a land you control enters, create a 4/4 red Dragon creature token with flying.",
+      "java_source": "Mage.Sets/src/mage/cards/d/DragonbackAssault.java",
+      "java_sha256": "aa0a4324b983a89ed085ea9f6ae8c26d7a529704b30889c5b6d2ab2d6c2b62ad"
+    },
+    {
+      "name": "Fulminous Forte",
+      "oracle_text": "Choose one —\n• Fulminous Forte deals 1 damage to each creature and planeswalker your opponents control.\n• Fulminous Forte deals 5 damage to target creature or planeswalker.",
+      "java_source": "Mage.Sets/src/mage/cards/f/FulminousForte.java",
+      "java_sha256": "763c8b9d54ef8a069cd86f5f88b3505fe35424c61817a3fad70c6ac08bc6a16a"
+    },
+    {
+      "name": "Sear",
+      "oracle_text": "Sear deals 4 damage to target creature or planeswalker.",
+      "java_source": "Mage.Sets/src/mage/cards/s/Sear.java",
+      "java_sha256": "63ab57b925fb4fe17d5e188ccb3b9a57968588f2735e8b1eee268061a47f7454"
+    },
+    {
+      "name": "Splatter Technique",
+      "oracle_text": "Choose one —\n• Draw four cards.\n• Splatter Technique deals 4 damage to each creature and planeswalker.",
+      "java_source": "Mage.Sets/src/mage/cards/s/SplatterTechnique.java",
+      "java_sha256": "52f148089fbe0dc26299698ff532e57cb4e19b0419b1b534c166e85e35bf6eda"
+    }
+  ]
+}

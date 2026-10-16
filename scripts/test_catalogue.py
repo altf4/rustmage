@@ -14,6 +14,30 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_loyalty_damage_unlocks_only_complete_bodies_and_preserves_walker_gates(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        rust,coverage=generate.compile_catalogue(rows,target);supported={r['name'] for r in coverage['cards'] if r['implemented']}
+        for name in ['Broadside Barrage','Dragonback Assault','Fulminous Forte','Sear','Splatter Technique']:
+            self.assertIn(name,supported,name)
+        for name in ['Professor Dellian Fel','Chandra, Torch of Defiance','The Aetherspark','Liliana, Dreadhorde General']:
+            self.assertNotIn(name,supported,name)
+        self.assertIn('fn starting_loyalty(card: Card) -> u64',rust)
+        self.assertEqual(generate.targeted_program('this spell deals 4 damage to target creature or planeswalker.'),('CreaturePlaneswalker',['Damage(4)']))
+        self.assertIsNone(generate.targeted_program('this spell deals 4 damage to target creature, planeswalker, or battle.'))
+        self.assertIn('kinds: 65',generate.statement_program('this spell deals 1 damage to each creature and planeswalker your opponents control.')[0])
+
+    def test_invalid_starting_loyalty_fails_closed_with_fresh_data_checksum(self):
+        import json,hashlib,copy
+        original=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        for value in [None,5,'-1','18446744073709551616']:
+            rows=copy.deepcopy(original);card=next(c for c in rows['cards'] if c['name']=='Professor Dellian Fel')
+            if value is None:del card['loyalty']
+            else:card['loyalty']=value
+            rows['cards_sha256']=hashlib.sha256(json.dumps(rows['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+            with self.assertRaisesRegex(ValueError,'starting loyalty: Professor Dellian Fel'):
+                generate.compile_catalogue(rows,target)
+
     def test_battlefield_groups_are_whole_non_targeted_batches_with_frozen_results(self):
         cases={
             'Destroy all creatures.':'kinds: 1',
@@ -35,16 +59,16 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Destroy all creatures and Vehicles. They lose indestructible.']:
             self.assertIsNone(generate.statement_program(text),text)
 
-    def test_group_damage_is_one_source_batch_and_planeswalker_damage_stays_gated(self):
+    def test_group_damage_is_one_source_batch_with_planeswalker_sets(self):
         for text,expected in [
             ('this spell deals 2 damage to each creature.','kinds: 1'),
             ('this spell deals 2 damage to each creature without flying.','without: Keywords(1)'),
             ('this spell deals 1 damage to each opponent and each creature they control.','players: Some(PlayerSet::Opponent)'),
-            ('this spell deals 3 damage to each creature your opponents control.','relation: 1')]:
+            ('this spell deals 3 damage to each creature your opponents control.','relation: 1'),
+            ('this spell deals 2 damage to each creature and planeswalker.','kinds: 65')]:
             program=generate.statement_program(text);self.assertEqual(len(program),1);self.assertIn('DamageBattlefield',program[0]);self.assertIn(expected,program[0])
         self.assertEqual(generate.statement_program('this spell deals 3 damage to each player.'),['DamagePlayers(PlayerSet::Each, 3)'])
-        for text in ['this spell deals 2 damage to each creature and planeswalker.',
-                     'this spell deals 2 damage to each creature and each planeswalker.',
+        for text in ['this spell deals 2 damage to each creature and battle.',
                      'this spell deals X damage to each creature.',
                      'this spell deals 32768 damage to each creature.',
                      'this spell deals 2 damage to each creature with flying.',
@@ -63,7 +87,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Fuel the Flames','Fumigate','Pest Control','Pyroclasm','Ruinous Rampage',
                      'Seismic Rupture','Slagstorm','Split Up','Tectonic Hazard']:
             self.assertIn(name,supported,name)
-        for name in ['Dragonback Assault','Splatter Technique','Fulminous Forte','No Witnesses','Withering Curse',
+        for name in ['No Witnesses','Withering Curse',
                      'Kindred Judgment','Villainous Wrath','Expel the Interlopers','Settle the Wreckage',
                      'Spectacular Pileup','Singularity Rupture','Desolation of Smaug']:
             self.assertNotIn(name,supported,name)

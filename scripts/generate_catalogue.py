@@ -624,8 +624,9 @@ def battlefield_damage_program(text):
         'each creature': [battlefield_filter(kinds=1)],
         'each creature without flying': [battlefield_filter(kinds=1,without=1)],
         'each creature your opponents control': [battlefield_filter(kinds=1,relation=1)],
-        # Planeswalker damage removes loyalty, not marked creature damage. Whole
-        # cards using those sets remain gated until that kernel is implemented.
+        'each creature and planeswalker': [battlefield_filter(kinds=65)],
+        'each creature and each planeswalker': [battlefield_filter(kinds=65)],
+        'each creature and planeswalker your opponents control': [battlefield_filter(kinds=65,relation=1)],
         'each opponent and each creature they control': [battlefield_filter(kinds=1,relation=1)],
     }.get(subject)
     if filters is None:return None
@@ -1103,9 +1104,9 @@ def targeted_program(text):
     if m := re.fullmatch(r'target (player|opponent) (gains|loses) ([0-9]+) life\.', text):
         if int(m[3]) > 65535: return None
         return ('Player' if m[1] == 'player' else 'Opponent'), [f'{"GainLife" if m[2] == "gains" else "LoseLife"}(PlayerSet::Targeted, {int(m[3])})']
-    if m := re.fullmatch(r'this (?:creature|artifact|enchantment|permanent|spell) deals ([0-9]+) damage to (any target|target creature|target opponent|target player)\.', text):
+    if m := re.fullmatch(r'this (?:creature|artifact|enchantment|permanent|spell) deals ([0-9]+) damage to (any target|target creature or planeswalker|target creature|target opponent|target player)\.', text):
         if int(m[1]) > 32767: return None
-        return {'any target': 'Any', 'target creature': 'Creature', 'target opponent': 'Opponent', 'target player': 'Player'}[m[2]], [f'Damage({int(m[1])})']
+        return {'any target': 'Any', 'target creature': 'Creature', 'target creature or planeswalker': 'CreaturePlaneswalker', 'target opponent': 'Opponent', 'target player': 'Player'}[m[2]], [f'Damage({int(m[1])})']
     if m := re.fullmatch(r'(target creature|target creature you control|another target creature you control) gets ([+-][0-9]+)/([+-][0-9]+) until end of turn\.', text):
         if max(abs(int(m[2])), abs(int(m[3]))) > 32767: return None
         rule = {'target creature': 'Creature', 'target creature you control': 'CreatureYou', 'another target creature you control': 'OtherCreatureYou'}[m[1]]
@@ -1762,6 +1763,7 @@ def compile_catalogue(snapshot, target):
         raise ValueError('catalogue exceeds u16 identity space')
     definitions = []
     color_masks = []
+    loyalty_rows = []
     supported = []
     coverage = []
     static_rows = []
@@ -1842,6 +1844,15 @@ def compile_catalogue(snapshot, target):
             effect = f'Spell({rust_targets(rule)}, {rust_program(program)})'
         triggers_rust = '&[' + ', '.join(f'TriggeredAbility {{ condition: TriggerCondition::{condition}, targets: {rust_targets(targets)}, program: {rust_program(program)} }}' for condition, program, targets in abilities) + ']'
 
+        if kind & 64:
+            face = card
+            if 'loyalty' not in face:
+                faces = card.get('card_faces')
+                if isinstance(faces,list) and faces and isinstance(faces[0],dict):face=faces[0]
+            value=face.get('loyalty')
+            if not isinstance(value,str) or not value.isdigit() or int(value)>18446744073709551615:
+                raise ValueError(f'invalid or missing starting loyalty: {name}')
+            loyalty_rows.append(f'        {index} => {int(value)},')
         if effect != 'Unsupported':
             supported.append(index)
             if additional is not None: additional_rows.append(f'        {index} => Some({additional}),')
@@ -1874,7 +1885,7 @@ def compile_catalogue(snapshot, target):
         if effect != 'Unsupported':
             if dynamic is not None:dynamic_rows.append(f'        {index} => Some({dynamic}),')
             if scaling:scaling_rows.append(f'        {index} => &['+', '.join(scaling)+'],')
-        definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(name)}, oracle_id: {oracle_id}, mana_cost: {quote(cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in cards).lower()}, legendary: {str(card.get('type_line', '').startswith('Legendary ')).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, activated: {rust_activations(activations)}, enters: Counters {{ plus_one: {enters[0]}, minus_one: {enters[1]}, stun: {enters[2]} }}, entry: EntryTapped::{entry}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
+        definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(name)}, oracle_id: {oracle_id}, mana_cost: {quote(cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in cards).lower()}, legendary: {str(card.get('type_line', '').startswith('Legendary ')).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, activated: {rust_activations(activations)}, enters: Counters {{ plus_one: {enters[0]}, minus_one: {enters[1]}, stun: {enters[2]}, loyalty: 0 }}, entry: EntryTapped::{entry}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
         coverage.append({'name': name, 'standard_legal': name in cards, 'implemented': effect != 'Unsupported',
                          'implementation': 'explicit' if name in legacy else 'land_template' if land else 'creature_template' if template else 'trigger_template' if trigger_template else 'modal_template' if modal else 'spell_template' if spell else 'aura_template' if aura else 'equipment_template' if equipment else 'permanent_template' if permanent else 'static_template' if static else None})
 
@@ -1900,7 +1911,7 @@ def compile_catalogue(snapshot, target):
             kind = 1 | (16 if factory['extra_type'] == 'artifact' else 32 if factory['extra_type'] == 'enchantment' else 0)
             effect = f"Creature({factory['power']}, {factory['toughness']})"
             token_abilities = []
-        definitions.append(f"    Definition {{ info: CardInfo {{ name: {json.dumps(name)}, oracle_id: None, mana_cost: \"\", type_line: {json.dumps(type_line, ensure_ascii=False)}, oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: Keywords({factory['keywords']}), deck_limit: None }}, effect: Effect::{effect}, triggers: &[], activated: {rust_activations(token_abilities)}, enters: Counters {{ plus_one: 0, minus_one: 0, stun: 0 }}, entry: EntryTapped::Never, kind: {kind}, basic: false, mana_color: None, colored: [0; 6], generic: 0 }},")
+        definitions.append(f"    Definition {{ info: CardInfo {{ name: {json.dumps(name)}, oracle_id: None, mana_cost: \"\", type_line: {json.dumps(type_line, ensure_ascii=False)}, oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: Keywords({factory['keywords']}), deck_limit: None }}, effect: Effect::{effect}, triggers: &[], activated: {rust_activations(token_abilities)}, enters: Counters {{ plus_one: 0, minus_one: 0, stun: 0, loyalty: 0 }}, entry: EntryTapped::Never, kind: {kind}, basic: false, mana_color: None, colored: [0; 6], generic: 0 }},")
         token_infos.append(f"    TokenInfo {{ name: {json.dumps(factory['name'])}, subtypes: {json.dumps(factory['subtypes'])}, colors: {factory['colors']} }},")
         color_masks.append(factory['colors'])
         marker = '__TOKEN_' + key + '__'
@@ -1929,6 +1940,7 @@ def compile_catalogue(snapshot, target):
     lines += ['#[rustfmt::skip]', 'pub(super) fn additional_cost(card: Card) -> Option<AdditionalCost> {', '    match card.0 {', *additional_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub const CREATURE_TYPES: &[&str] = &[', *('    '+json.dumps(name)+',' for name in creature_types), '];', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn cost_alternatives(card: Card) -> &'static [Mana] {", '    match card.0 {', *hybrid_rows, '        _ => &[],', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn starting_loyalty(card: Card) -> u64 {', '    match card.0 {', *loyalty_rows, '        _ => 0,', '    }', '}', '']
     return '\n'.join(lines), {'schema': 1, 'catalogue_version': version, 'standard_legal_cards': len(cards),
         'implemented_standard_cards': sum(row['implemented'] and row['standard_legal'] for row in coverage),
         'implemented_total': len(supported), 'token_definitions': len(used_tokens), 'cards': coverage}

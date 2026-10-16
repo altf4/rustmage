@@ -2579,13 +2579,22 @@ impl Game {
                 }
                 Target::Card(id) => {
                     let obj = &mut self.state.objects[id as usize];
-                    obj.damage = obj
-                        .damage
-                        .checked_add(event.amount)
-                        .capacity("damage representation exhausted");
+                    if obj.card.is_planeswalker() {
+                        let removed = u128::try_from(event.amount)
+                            .expect("positive damage")
+                            .min(u128::from(obj.counters.loyalty))
+                            as u64;
+                        obj.counters.loyalty -= removed;
+                    }
+                    if obj.card.is_creature() || !obj.card.is_planeswalker() {
+                        obj.damage = obj
+                            .damage
+                            .checked_add(event.amount)
+                            .capacity("damage representation exhausted");
+                    }
                     obj.damaged_this_turn = true;
-                    obj.deathtouch_since_sba |=
-                        event.source.keywords.contains(Keywords::DEATHTOUCH);
+                    obj.deathtouch_since_sba |= obj.card.is_creature()
+                        && event.source.keywords.contains(Keywords::DEATHTOUCH);
                 }
                 Target::Spell(_) => unreachable!("damage cannot target stack objects"),
             }
@@ -2755,7 +2764,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 37,
+            schema: 38,
             catalogue: crate::CATALOGUE_VERSION,
             viewer,
             revision: self.revision,
@@ -3260,3 +3269,7 @@ mod removal_target_tests;
 #[cfg(test)]
 #[path = "engine_battlefield_group_tests.rs"]
 mod battlefield_group_tests;
+
+#[cfg(test)]
+#[path = "engine_loyalty_tests.rs"]
+mod loyalty_tests;

@@ -155,3 +155,42 @@ fn intrinsic_colors_match_every_pinned_face_and_token_factory() {
         }
     }
 }
+
+#[test]
+fn printed_starting_loyalty_matches_pinned_front_faces_without_admitting_their_bodies() {
+    let snapshot: serde_json::Value =
+        serde_json::from_str(include_str!("../data/standard/cards.json")).unwrap();
+    let mut count = 0;
+    for row in snapshot["cards"].as_array().unwrap() {
+        let c = Card::from_name(row["name"].as_str().unwrap()).unwrap();
+        if !c.is_planeswalker() {
+            assert_eq!(c.starting_loyalty(), 0);
+            continue;
+        }
+        let face = if row.get("loyalty").is_some() {
+            row
+        } else {
+            &row["card_faces"][0]
+        };
+        assert_eq!(
+            c.starting_loyalty(),
+            face["loyalty"].as_str().unwrap().parse::<u64>().unwrap(),
+            "{}",
+            c.name()
+        );
+        count += 1;
+    }
+    assert!(count >= 28);
+    for name in [
+        "Professor Dellian Fel",
+        "Chandra, Torch of Defiance",
+        "The Aetherspark",
+    ] {
+        let c = Card::from_name(name).unwrap();
+        assert!(c.is_planeswalker());
+        assert!(!c.is_supported());
+        let mut cfg = config(vec![c; 60]);
+        cfg.deck_rules = DeckRules::Freeform;
+        assert!(Game::new(cfg).is_err());
+    }
+}

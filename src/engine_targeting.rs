@@ -237,8 +237,10 @@ impl Game {
                             && (obj.card.is_creature() || obj.card.has_subtype("Vehicle"))
                             && (relation == -1 || (obj.owner == controller) == (relation == 0))
                     }
-                    TargetRule::Creature | TargetRule::Any => {
-                        obj.zone == Zone::Battlefield && obj.card.is_creature()
+                    TargetRule::Creature => obj.zone == Zone::Battlefield && obj.card.is_creature(),
+                    TargetRule::Any => {
+                        obj.zone == Zone::Battlefield
+                            && (obj.card.is_creature() || obj.card.is_planeswalker())
                     }
                     TargetRule::Object {
                         zone,
