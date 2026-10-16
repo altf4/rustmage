@@ -694,6 +694,12 @@ impl Counters {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum CastTarget {
+    Creature(CastRelation),
+    OpponentOrCreature,
+    Source,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum CastFilter {
     Any,
     Creature,
@@ -706,6 +712,10 @@ pub(crate) enum CastFilter {
     Subtype(&'static str),
     AnyOf(&'static [CastFilter]),
     Multicolored,
+    Targeted {
+        filter: &'static CastFilter,
+        target: CastTarget,
+    },
     ManaValueMaximum {
         filter: &'static CastFilter,
         maximum: u64,
@@ -719,6 +729,8 @@ impl CastFilter {
     pub fn matches(self, card: Card) -> bool {
         match self {
             Self::Any => true,
+            // Contextual cast observers use Game::cast_filter_matches instead.
+            Self::Targeted { .. } => false,
             Self::Multicolored => card.colors().count_ones() >= 2,
             Self::ManaValueMaximum { filter, maximum } => {
                 filter.matches(card) && card.fixed_mana_value() <= maximum

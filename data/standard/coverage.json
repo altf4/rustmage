@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "4e19d02febef51b7252f6bcbaeb8e3c2edf28c487ca2c5ddc58a8b4c185a3568",
+  "catalogue_version": "543f9a0bb517df61bcd7b901c1da4bcc1a8c3607b73b6a51e6a49fc25ecfaca0",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1398,
-  "implemented_total": 1404,
+  "implemented_standard_cards": 1415,
+  "implemented_total": 1421,
   "token_definitions": 58,
   "emblem_definitions": 1,
   "cards": [
@@ -4798,8 +4798,8 @@
     {
       "name": "Colleen Wing, Street Samurai",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Collision Course",
@@ -5740,14 +5740,14 @@
     {
       "name": "Danitha, Spear of Agony",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Danitha, Sword of Hope",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Daredevil, Man Without Fear",
@@ -9214,8 +9214,8 @@
     {
       "name": "Firespitter Whelp",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Firion, Wild Rose Warrior",
@@ -9634,8 +9634,8 @@
     {
       "name": "Forum Necroscribe",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Forum of Amity",
@@ -10768,8 +10768,8 @@
     {
       "name": "Gnarlback Rhino",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Gnarlbark Elm",
@@ -11044,8 +11044,8 @@
     {
       "name": "Graduation Day",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Graft Surgeon",
@@ -13000,8 +13000,8 @@
     {
       "name": "Informed Inkwright",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Ingenious Leonin",
@@ -13024,14 +13024,14 @@
     {
       "name": "Inkling Mascot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Inkshape Demonstrator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Inner Demons Gangsters",
@@ -14812,8 +14812,8 @@
     {
       "name": "Lecturing Scornmage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Leech Collector // Bloodletting",
@@ -15646,8 +15646,8 @@
     {
       "name": "Madame Hydra",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Madame Masque",
@@ -16246,8 +16246,8 @@
     {
       "name": "Melancholic Poet",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Melded Moxite",
@@ -16858,8 +16858,8 @@
     {
       "name": "Mockingbird, Ace Agent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Mold Adder",
@@ -20692,8 +20692,8 @@
     {
       "name": "Rehearsed Debater",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Reigning Victor",
@@ -21460,8 +21460,8 @@
     {
       "name": "Rodeo Pyromancers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Rogue's Passage",
@@ -24916,8 +24916,8 @@
     {
       "name": "Stirring Hopesinger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Stock Up",

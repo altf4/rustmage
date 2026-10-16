@@ -1,5 +1,6 @@
 //! Typed immutable programs and owned, snapshot-safe execution continuations.
 use super::*;
+use crate::cards::{CastFilter, CastTarget};
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Resolution {
@@ -407,10 +408,73 @@ impl Game {
         let cast = (item.kind == StackKind::Spell).then_some((item.controller, item.source_card));
         self.state.stack.push(item);
         let Some((caster, card)) = cast else { return };
-        self.record_spell_cast(caster, card);
+        self.record_cast(caster, card, Some(self.state.stack.len() - 1));
     }
 
+    #[cfg(test)]
     pub(super) fn record_spell_cast(&mut self, caster: Player, card: Card) {
+        self.record_cast(caster, card, None);
+    }
+
+    /// CR115.9b: inspect the current expected zone/incarnation; never use target LKI.
+    pub(super) fn cast_filter_matches(
+        &self,
+        filter: CastFilter,
+        card: Card,
+        source: &ObjectView,
+        targets: &[BoundTarget],
+    ) -> bool {
+        match filter {
+            CastFilter::AnyOf(filters) => filters
+                .iter()
+                .any(|f| self.cast_filter_matches(*f, card, source, targets)),
+            CastFilter::ManaValueMaximum { filter, maximum } => {
+                card.fixed_mana_value() <= maximum
+                    && self.cast_filter_matches(*filter, card, source, targets)
+            }
+            CastFilter::ManaValueMinimum { filter, minimum } => {
+                card.fixed_mana_value() >= minimum
+                    && self.cast_filter_matches(*filter, card, source, targets)
+            }
+            CastFilter::Targeted { filter, target } => {
+                self.cast_filter_matches(*filter, card, source, targets)
+                    && targets.iter().any(|bound| {
+                        if let Target::Player(player) = bound.target {
+                            return target == CastTarget::OpponentOrCreature
+                                && player != source.owner;
+                        }
+                        let (Target::Card(id), Some(reference)) = (bound.target, bound.object)
+                        else {
+                            return false;
+                        };
+                        if id != reference.card
+                            || !self.on_battlefield(id)
+                            || self.object_ref(id) != reference
+                        {
+                            return false;
+                        }
+                        let object = &self.state.objects[id as usize];
+                        match target {
+                            CastTarget::Source => reference == source.reference,
+                            CastTarget::OpponentOrCreature => {
+                                object.card.is_creature() && object.owner != source.owner
+                            }
+                            CastTarget::Creature(relation) => {
+                                object.card.is_creature()
+                                    && match relation {
+                                        CastRelation::You => object.owner == source.owner,
+                                        CastRelation::Opponent => object.owner != source.owner,
+                                        CastRelation::Any => true,
+                                    }
+                            }
+                        }
+                    })
+            }
+            _ => filter.matches(card),
+        }
+    }
+
+    pub(super) fn record_cast(&mut self, caster: Player, card: Card, stack: Option<usize>) {
         let count = &mut self.state.players[caster.index()].spells_cast_this_turn;
         *count = count.checked_add(1).capacity("spell count exhausted");
         let ordinal = *count;
@@ -436,7 +500,14 @@ impl Game {
                     if related
                         && (!ability.condition.requires_opponents_turn()
                             || self.state.active != source.owner)
-                        && filter.matches(card)
+                        && self.cast_filter_matches(
+                            filter,
+                            card,
+                            &source,
+                            stack
+                                .map(|i| self.state.stack[i].targets.as_slice())
+                                .unwrap_or(&[]),
+                        )
                         && wanted.is_none_or(|wanted| wanted == ordinal)
                     {
                         self.queue_trigger(&source, index);
