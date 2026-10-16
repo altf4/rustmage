@@ -407,7 +407,12 @@ fn absent_related_stack_item_does_not_alias_a_new_spell_incarnation() {
     let mut g = scenario();
     let (spell, _) = ward_spell(&mut g);
     pass_pair(&mut g);
-    let old = g.observe(Player::P0).resolution_payment.unwrap().victim;
+    let old = g
+        .observe(Player::P0)
+        .resolution_payment
+        .unwrap()
+        .victim
+        .unwrap();
     // Synthetic intervening zone movement checks the owned association by stack
     // identity, rather than by a reusable physical card slot.
     g.move_object(spell, Zone::Graveyard);

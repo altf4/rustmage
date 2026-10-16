@@ -1,0 +1,210 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-16",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "rules": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+  "shared_sources": [
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "java_sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/DiesCreatureTriggeredAbility.java",
+      "java_sha256": "62d53cb6be7c685032f9bf3a509c9217177b4ee44ccd9a294be1d8dca7d77b81"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOrAttacksSourceTriggeredAbility.java",
+      "java_sha256": "b5c87d096aa0a689c9915ee2c8c8f8b6eb0fcd2acd4ad8c0c8696c6204f27224"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "java_sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+      "java_sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/EndureSourceEffect.java",
+      "java_sha256": "b32a2eef10ea3a3f03e93398e6e5a6aeebd279daa5a95edda6aab6380e1d9dcd"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/FirstStrikeAbility.java",
+      "java_sha256": "997831ae93b8f148ce96ac211e3e2a86e2df46403677fe1106d7c20554678235"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "java_sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "java_sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "java_sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "java_sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/counters/CounterType.java",
+      "java_sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+      "java_sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+      "java_sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/TokenPredicate.java",
+      "java_sha256": "3213600d28e7e1f76d66cee4f781fb3eb01627759fa9306e22c42a6f6fb880da"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/NoFlyingSpiritWhite11Token.java",
+      "java_sha256": "ae86fa5f2d2e9df5fe94d034fe7a720d7b69c3365f9d5e79585668e94c5db558"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/NoFlyingSpiritWhite22Token.java",
+      "java_sha256": "9600c4dca746b3607b1e9096ea55a01c0b23be5009f02c036374ac6a85f4e9b7"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/NoFlyingSpiritWhite33Token.java",
+      "java_sha256": "a201a7d69d8317c37c1b10b2129368bdca4a81420f4f870fbc41c85413f430a1"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/SpiritXXToken.java",
+      "java_sha256": "4932f0d1ba9b345e349a094d413209ad21588cae39049d7076781eff34ec12e7"
+    }
+  ],
+  "cards": [
+    {
+      "name": "Anafenza, Unyielding Lineage",
+      "mana_cost": "{2}{W}",
+      "oracle_text": "Flash\nFirst strike\nWhenever another nontoken creature you control dies, Anafenza endures 2. (Put two +1/+1 counters on it or create a 2/2 white Spirit creature token.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AnafenzaUnyieldingLineage.java",
+          "java_sha256": "025e9e71e3a3360207e98be9428936750a566e677b687b9106aa04373400b11e"
+        }
+      ]
+    },
+    {
+      "name": "Descendant of Storms",
+      "mana_cost": "{W}",
+      "oracle_text": "Whenever this creature attacks, you may pay {1}{W}. If you do, it endures 1. (Put a +1/+1 counter on it or create a 1/1 white Spirit creature token.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DescendantOfStorms.java",
+          "java_sha256": "c0f5cd59eb84115bcb65dfad12ea9554109194dc69f2a224369ac559cbd52d27"
+        }
+      ]
+    },
+    {
+      "name": "Dusyut Earthcarver",
+      "mana_cost": "{5}{G}",
+      "oracle_text": "Reach\nWhen this creature enters, it endures 3. (Put three +1/+1 counters on it or create a 3/3 white Spirit creature token.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DusyutEarthcarver.java",
+          "java_sha256": "c4fde54a716eeda6bd86a6ff0825f34f4014c7cd0647a513b2a02b5eeae9559b"
+        }
+      ]
+    },
+    {
+      "name": "Fortress Kin-Guard",
+      "mana_cost": "{1}{W}",
+      "oracle_text": "When this creature enters, it endures 1. (Put a +1/+1 counter on it or create a 1/1 white Spirit creature token.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FortressKinGuard.java",
+          "java_sha256": "97ef4bcc3685162d48c691809fd5b2eb254c58fdf6d52f080a96118234dac0ad"
+        }
+      ]
+    },
+    {
+      "name": "Inspirited Vanguard",
+      "mana_cost": "{4}{G}",
+      "oracle_text": "Whenever this creature enters or attacks, it endures 2. (Put two +1/+1 counters on it or create a 2/2 white Spirit creature token.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/i/InspiritedVanguard.java",
+          "java_sha256": "a12724301b83d1924a4fd30b21006a8418cc83089887bae6b41dcc447c83a879"
+        }
+      ]
+    },
+    {
+      "name": "Kin-Tree Nurturer",
+      "mana_cost": "{2}{B}",
+      "oracle_text": "Lifelink\nWhen this creature enters, it endures 1. (Put a +1/+1 counter on it or create a 1/1 white Spirit creature token.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/k/KinTreeNurturer.java",
+          "java_sha256": "d10516b1645f868eaa4a69ce638505c4030bcd00f28cb162e49528b6a6057eee"
+        }
+      ]
+    },
+    {
+      "name": "Sandskitter Outrider",
+      "mana_cost": "{3}{B}",
+      "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)\nWhen this creature enters, it endures 2. (Put two +1/+1 counters on it or create a 2/2 white Spirit creature token.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SandskitterOutrider.java",
+          "java_sha256": "a9a42565b9eada3e9ef6701e67a12fed7939d0820cece645998817ee27b834b9"
+        }
+      ]
+    },
+    {
+      "name": "Sinkhole Surveyor",
+      "mana_cost": "{1}{B}",
+      "oracle_text": "Flying\nWhenever this creature attacks, you lose 1 life and this creature endures 1. (Put a +1/+1 counter on it or create a 1/1 white Spirit creature token.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SinkholeSurveyor.java",
+          "java_sha256": "c87b9a505e8c27129f1dbbdb4cd63c7315a0dff2ebf180fc0047787632aa1803"
+        }
+      ]
+    }
+  ],
+  "gated": [
+    {
+      "name": "Krumar Initiate",
+      "oracle_text": "{X}{B}, {T}, Pay X life: This creature endures X. Activate only as a sorcery. (Put X +1/+1 counters on it or create an X/X white Spirit creature token.)",
+      "reason": "Variable endure amount or recipient and complete residual are outside fixed source-Endure scope.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/k/KrumarInitiate.java",
+          "java_sha256": "82b3aa7066a5b08fb32b1b2a0b4540630399b640cd112780a9f3a503885c4b42"
+        }
+      ]
+    },
+    {
+      "name": "Warden of the Grove",
+      "oracle_text": "At the beginning of your end step, put a +1/+1 counter on this creature.\nWhenever another nontoken creature you control enters, it endures X, where X is the number of counters on this creature. (Put X +1/+1 counters on the creature that entered or create an X/X white Spirit creature token.)",
+      "reason": "Variable endure amount or recipient and complete residual are outside fixed source-Endure scope.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WardenOfTheGrove.java",
+          "java_sha256": "56ce553bfa6f989e9659b26741048e1ae11c1ca25bf74407a16c16767ef36587"
+        }
+      ]
+    }
+  ]
+}

@@ -5,7 +5,7 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,656 have executable rules so far.
+knows all 5,164 pinned Standard identities; 1,664 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
@@ -14,6 +14,7 @@ per-token non-target defender choices and owned next-end-step sacrifice abilitie
 [Convoke](docs/convoke.md) adds nine complete intrinsic bodies with exact joint funding and private tap payments, plus the complete adjacent Bespoke Bō Equipment.
 [Explore and Map](docs/explore.md) add fifteen complete bodies with public exploration,
 exact source incarnations, completed-event observers and the full paid Map activation.
+[Fixed endure](docs/endure.md) adds eight complete bodies with resolving counter/token choices and exact nonflying Spirit factories.
 [Collect evidence](docs/evidence.md) adds ten complete bodies with owned graveyard subsets, actual collection observers, payer-owned ward and historical entry qualification.
 [Bargain](docs/bargain.md) adds ten complete bodies with exact optional sacrifice costs, joint mana reservations and historical entry qualification.
 [Celebration](docs/celebration.md) adds ten complete bodies with historical nonland
@@ -58,7 +59,7 @@ pre-event replacement timing, token entry and opponent-entry life triggers.
 [Owned entering-object context](docs/entering-object-context.md) adds
 Good-Fortune Unicorn, Serra Redeemer and Wartime Protestors with exact
 non-targeted references and snapshot-safe counters/haste. Observations use schema
-69 (`rustmage::OBSERVATION_SCHEMA`); earlier milestone pages retain their original
+70 (`rustmage::OBSERVATION_SCHEMA`); earlier milestone pages retain their original
 schema and measurements. [Entry predicates](docs/entry-predicates.md) add nine complete bodies
 with entry-time power thresholds, subtype unions, outlaw and kind-or-subtype
 conditions, including Impact Tremors and Warleader's Call.

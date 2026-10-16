@@ -11,8 +11,9 @@ use crate::cards::{
 #[path = "engine_saddle.rs"]
 mod saddle;
 pub use saddle::SaddleChoiceView;
-/// Version of the public observation structure, including private Saddle costs.
-pub const OBSERVATION_SCHEMA: u32 = 69;
+/// Version of the public observation structure, including Mobilize and private Endure decisions.
+pub const OBSERVATION_SCHEMA: u32 = 70;
+
 #[path = "engine_mobilize.rs"]
 mod mobilize;
 pub use mobilize::{DelayedSacrificeView, MobilizeChoiceView};
@@ -54,6 +55,8 @@ mod damage_triggers;
 mod discard_events;
 #[path = "engine_draw_events.rs"]
 mod draw_events;
+#[path = "engine_endure.rs"]
+mod endure;
 #[path = "engine_funding.rs"]
 mod funding;
 pub use convoke::{ConvokeChoiceView, ConvokeContribution, ConvokePaymentView};
@@ -256,6 +259,7 @@ define_actions! {
     ChooseEvidence { object: ObjectRef },
     FinishEvidence,
     DeclineEvidence,
+    ChooseEndure { put_counters: bool },
     BeginConvoke,
     ChooseConvoker { object: ObjectRef, contribution: ConvokeContribution },
     ChooseMobilizeDefender { defender: CombatDefender },
@@ -812,6 +816,12 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    Endure {
+        player: Player,
+        source: ObjectRef,
+        amount: u16,
+        token: Card,
+    },
     Convoke {
         player: Player,
     },
@@ -1001,6 +1011,13 @@ pub struct Snapshot(State);
 pub struct Game {
     state: State,
     revision: u64,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct EndureChoiceView {
+    pub source: ObjectRef,
+    pub amount: u16,
+    pub token: Card,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -1200,6 +1217,7 @@ pub struct LegalActionSpace {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    pub endure_choice: Option<EndureChoiceView>,
     pub convoke_choice: Option<ConvokeChoiceView>,
     pub delayed_sacrifices: Vec<DelayedSacrificeView>,
     pub mobilize_choice: Option<MobilizeChoiceView>,
@@ -1458,6 +1476,7 @@ impl Game {
             Pending::Priority => Some(self.state.priority),
             Pending::EvidenceIntent { player }
             | Pending::Evidence { player }
+            | Pending::Endure { player, .. }
             | Pending::Convoke { player }
             | Pending::Mobilize { player }
             | Pending::Saddle { player }
@@ -1679,6 +1698,15 @@ impl Game {
         // result. Cache capacity affects work only, never the admitted action set.
         let mut spell_funding_cache: [Option<(Mana, u32, bool)>; 8] = [None; 8];
         match s.pending {
+            Pending::Endure { .. } => {
+                if emit(Action::ChooseEndure { put_counters: true })
+                    || emit(Action::ChooseEndure {
+                        put_counters: false,
+                    })
+                {
+                    return true;
+                }
+            }
             Pending::Convoke { .. } => {
                 if self.visit_convoke_actions(&mut emit) {
                     return true;
@@ -2557,6 +2585,7 @@ impl Game {
                 let item = self.activation_item(actor, card, ability);
                 self.open_payment_announcement(item, counter_payment, Some(production));
             }
+            Action::ChooseEndure { put_counters } => self.choose_endure(put_counters),
             Action::BeginConvoke => self.begin_convoke(),
             Action::ChooseConvoker {
                 object,
@@ -3761,6 +3790,23 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
+            endure_choice: if owns_choice {
+                match s.pending {
+                    Pending::Endure {
+                        source,
+                        amount,
+                        token,
+                        ..
+                    } => Some(EndureChoiceView {
+                        source,
+                        amount,
+                        token,
+                    }),
+                    _ => None,
+                }
+            } else {
+                None
+            },
             convoke_choice: if owns_choice {
                 self.convoke_choice()
             } else {
@@ -3803,6 +3849,7 @@ impl Game {
                 Pending::Offspring { .. } => "offspring",
                 Pending::Bargain { .. } => "bargain",
                 Pending::Kicker { .. } => "kicker",
+                Pending::Endure { .. } => "endure",
                 Pending::Convoke { .. } => "convoke",
                 Pending::Mobilize { .. } => "mobilize",
                 Pending::Saddle { .. } => "saddle",
