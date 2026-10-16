@@ -223,6 +223,9 @@ define_actions! {
     ChooseSpellCost {
         cost: u16,
     },
+    ChooseActivationCost {
+        cost: u16,
+    },
     ChooseConniver {
         object: ObjectRef,
     },
@@ -615,6 +618,9 @@ struct LifeGainEvent {
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
     SpellCost {
+        player: Player,
+    },
+    ActivationCost {
         player: Player,
     },
     ConniveOrder {
@@ -1135,6 +1141,7 @@ impl Game {
             Pending::Mulligan(p) | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
             Pending::SpellCost { player }
+            | Pending::ActivationCost { player }
             | Pending::ConniveOrder { player }
             | Pending::ResolutionMana { player }
             | Pending::AdditionalCost { player }
@@ -1677,11 +1684,15 @@ impl Game {
                     }
                 }
             }
-            Pending::SpellCost { player } => {
-                let card = s.announcing.as_ref().unwrap().item.source_card;
-                for (index, cost) in card.cost_options().enumerate() {
-                    if self.spell_can_fund(player, s.announcing.as_ref().unwrap().item.card, cost)
-                        && emit(Action::ChooseSpellCost { cost: index as u16 })
+            Pending::SpellCost { player: _ } | Pending::ActivationCost { player: _ } => {
+                let a = s.announcing.as_ref().unwrap();
+                for (index, cost) in a.cost_options().enumerate() {
+                    if self.announcement_cost_fundable(a, cost)
+                        && emit(if a.item.kind == StackKind::Spell {
+                            Action::ChooseSpellCost { cost: index as u16 }
+                        } else {
+                            Action::ChooseActivationCost { cost: index as u16 }
+                        })
                     {
                         return true;
                     }
@@ -2000,7 +2011,9 @@ impl Game {
                 }
             }
             Action::KeepLegend { object } => self.keep_legend(object),
-            Action::ChooseSpellCost { cost } => self.choose_spell_cost(cost),
+            Action::ChooseSpellCost { cost } | Action::ChooseActivationCost { cost } => {
+                self.choose_mana_cost(cost)
+            }
             Action::ChooseMode { mode } => self.choose_mode(mode),
             Action::ChooseTarget { target } => {
                 let mut bound = self.bind_target(target);
@@ -2914,7 +2927,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 44,
+            schema: 45,
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
             creatures_died_this_turn: s.creatures_died_this_turn,
             catalogue: crate::CATALOGUE_VERSION,
@@ -2933,6 +2946,7 @@ impl Game {
                 Pending::Legend { .. } => "legend_rule",
                 Pending::Targets { .. } => "targets",
                 Pending::SpellCost { .. } => "spell_cost",
+                Pending::ActivationCost { .. } => "activation_cost",
                 Pending::Modes { .. } => "spell_mode",
                 Pending::AdditionalCost { .. } => "additional_cost",
                 Pending::PayCosts { .. } => "pay_costs",
@@ -3047,13 +3061,15 @@ impl Game {
                 None
             },
             announcing_cost: s.announcing.as_ref().and_then(|a| a.cost),
-            cost_choices: if owns_choice && matches!(s.pending, Pending::SpellCost { .. }) {
-                let card = s.announcing.as_ref().unwrap().item.source_card;
-                card.cost_options()
+            cost_choices: if owns_choice
+                && matches!(
+                    s.pending,
+                    Pending::SpellCost { .. } | Pending::ActivationCost { .. }
+                ) {
+                let a = s.announcing.as_ref().unwrap();
+                a.cost_options()
                     .enumerate()
-                    .filter(|(_, cost)| {
-                        self.spell_can_fund(viewer, s.announcing.as_ref().unwrap().item.card, *cost)
-                    })
+                    .filter(|(_, cost)| self.announcement_cost_fundable(a, *cost))
                     .map(|(index, cost)| SpellCostChoiceView {
                         index: index as u16,
                         cost,
@@ -3486,3 +3502,7 @@ mod death_history_tests;
 #[cfg(test)]
 #[path = "engine_life_loss_tests.rs"]
 mod life_loss_tests;
+
+#[cfg(test)]
+#[path = "engine_hybrid_activation_tests.rs"]
+mod hybrid_activation_tests;

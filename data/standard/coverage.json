@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "15109682262b5ce6413f0af1c6d77d7da8120a81eb4aa7853483e42f3c44d2b4",
+  "catalogue_version": "a3e6a4f1ba6a95eb4e0afac839b5f2d5a7cda9ac1fd29b6530714f863533c8fa",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1102,
-  "implemented_total": 1108,
+  "implemented_standard_cards": 1105,
+  "implemented_total": 1111,
   "token_definitions": 49,
   "emblem_definitions": 1,
   "cards": [
@@ -4528,8 +4528,8 @@
     {
       "name": "Cindering Cutthroat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Circle of Power",
@@ -12508,8 +12508,8 @@
     {
       "name": "Hovel Hurler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Hoverstone Pilgrim",
@@ -28138,8 +28138,8 @@
     {
       "name": "Trostani, Three Whispers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Troublemaker Ouphe",

@@ -128,7 +128,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::AnnounceActivate { .. } => 34,
             Action::AnnounceMana { .. } => -2,
             Action::PayCosts { .. } => 100,
-            Action::ChooseSpellCost { .. } => 50,
+            Action::ChooseSpellCost { .. } | Action::ChooseActivationCost { .. } => 50,
             Action::ChooseMode { .. } => 50,
             Action::ChooseSearch { .. } => 60,
             Action::FinishSearch => 0,

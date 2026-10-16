@@ -70,7 +70,7 @@ fn raid_entry_counters_exist_before_priority_and_only_use_controllers_attack() {
         let n = u64::from(attacked);
         stats(&g, id, n, 3 + i128::from(n), 2 + i128::from(n));
         assert!(g.state.pending_triggers.is_empty() && g.state.stack.is_empty());
-        assert_eq!(g.observe(Player::P1).schema, 44);
+        assert_eq!(g.observe(Player::P1).schema, 45);
     }
 }
 

@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Cindering Cutthroat",
+      "oracle_text": "This creature enters with a +1/+1 counter on it if an opponent lost life this turn.\n{1}{B/R}: This creature gains menace until end of turn. (It can't be blocked except by two or more creatures.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CinderingCutthroat.java",
+          "java_sha256": "cc9488138544b6c1b6b87a49a9684e9dba24ff4d348cad73cdf6d1949b873ead"
+        }
+      ]
+    },
+    {
+      "name": "Hovel Hurler",
+      "oracle_text": "This creature enters with two -1/-1 counters on it.\n{R/W}{R/W}, Remove a counter from this creature: Another target creature you control gets +1/+0 and gains flying until end of turn. Activate only as a sorcery.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HovelHurler.java",
+          "java_sha256": "b7293338a2b537e0c73df2d6cc4ef74144f06dd2f9c3ad7345f1f12e638acc1b"
+        }
+      ]
+    },
+    {
+      "name": "Trostani, Three Whispers",
+      "oracle_text": "{1}{G}: Target creature gains deathtouch until end of turn.\n{G/W}: Target creature gains vigilance until end of turn.\n{2}{W}: Target creature gains double strike until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TrostaniThreeWhispers.java",
+          "java_sha256": "3b55230e1ef8ba33d0c8dc85534a84e7647898abe968227d3f8340311a2e9104"
+        }
+      ]
+    }
+  ]
+}

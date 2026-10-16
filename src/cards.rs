@@ -262,6 +262,12 @@ pub struct ManaCost {
     pub colored: Mana,
     pub generic: u32,
 }
+
+pub(crate) type ManaCostOptions = std::iter::Chain<
+    std::iter::Once<ManaCost>,
+    std::iter::Copied<std::slice::Iter<'static, ManaCost>>,
+>;
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum CounterSubject {
     Targets,
@@ -879,6 +885,7 @@ pub(crate) struct TriggeredAbility {
 pub(crate) struct ActivationCost {
     pub colored: Mana,
     pub generic: u32,
+    pub alternatives: &'static [ManaCost],
     pub mana_component: bool,
     pub tap: bool,
     pub sacrifice: bool,
@@ -886,6 +893,15 @@ pub(crate) struct ActivationCost {
     pub life: u16,
     pub remove: Option<(Option<CounterKind>, u32)>,
     pub loyalty: Option<i32>,
+}
+impl ActivationCost {
+    pub(crate) fn mana_options(self) -> ManaCostOptions {
+        std::iter::once(ManaCost {
+            colored: self.colored,
+            generic: self.generic,
+        })
+        .chain(self.alternatives.iter().copied())
+    }
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ActivationOrigin {
@@ -1242,7 +1258,7 @@ impl Card {
     pub(crate) fn has_hybrid_cost(self) -> bool {
         !generated::cost_alternatives(self).is_empty()
     }
-    pub(crate) fn cost_options(self) -> impl Iterator<Item = ManaCost> {
+    pub(crate) fn cost_options(self) -> ManaCostOptions {
         let definition = &generated::DEFINITIONS[self.0 as usize];
         std::iter::once(ManaCost {
             colored: definition.colored,

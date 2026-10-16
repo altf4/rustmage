@@ -1830,15 +1830,16 @@ def modal_spell_template(card):
 
 
 def activation_cost(text):
-    cost = dict(colored=[0] * 6, generic=0, mana_component=False, tap=False, sacrifice=False, life=0, remove=None, loyalty=None, guard="Always")
+    cost = dict(colored=[0] * 6, generic=0, alternatives=[], mana_component=False, tap=False, sacrifice=False, life=0, remove=None, loyalty=None, guard="Always")
     seen = set()
     for component in text.split(', '):
-        mana = fixed_cost(component)
+        mana = spell_cost_options(component)
         if mana:
             if 'mana' in seen: return None
             seen.add('mana')
             cost['mana_component'] = True
-            cost['colored'], cost['generic'] = mana
+            cost['colored'], cost['generic'] = mana[0]
+            cost['alternatives'] = mana[1:]
         elif component == '{T}':
             if cost['tap']: return None
             cost['tap'] = True
@@ -1982,7 +1983,7 @@ def permanent_program_template(card):
             # Resource-free conversions that do not increase total mana are finite.
             fixed = re.search(r'Fixed\((\[[^]]*\])\)', program[0])
             produced = sum(json.loads(fixed[1])) if fixed else int(re.search(r'amount: ([0-9]+)', program[0])[1])
-            if produced > sum(cost['colored']) + cost['generic']: return None
+            if produced > min(sum(mana)+generic for mana,generic in [(cost['colored'],cost['generic']),*cost['alternatives']]): return None
         activations.append((cost, targets, program, sorcery or cost['loyalty'] is not None, once))
     if len(activations) > 64: return None
     body_text = '\n'.join(body).strip()
@@ -2075,7 +2076,8 @@ def rust_activations(abilities):
     rows = []
     for cost, targets, program, sorcery, once in abilities:
         remove = 'None' if cost['remove'] is None else f"Some(({'None' if cost['remove'][0] is None else 'Some(CounterKind::' + cost['remove'][0] + ')'}, {cost['remove'][1]}))"
-        rows.append(f"ActivatedAbility {{ guard: ActivationGuard::{cost.get('guard','Always')}, cycling: {str(cost.get('cycling',False)).lower()}, origin: ActivationOrigin::{cost.get('origin','Battlefield')}, cost: ActivationCost {{ colored: {cost['colored']}, generic: {cost['generic']}, mana_component: {str(cost['mana_component']).lower()}, tap: {str(cost['tap']).lower()}, sacrifice: {str(cost['sacrifice']).lower()}, discard: {str(cost.get('discard',False)).lower()}, life: {cost['life']}, remove: {remove}, loyalty: {'None' if cost.get('loyalty') is None else 'Some('+str(cost['loyalty'])+')'} }}, targets: {rust_targets(targets)}, program: {rust_program(program)}, sorcery: {str(sorcery).lower()}, once_per_turn: {str(once).lower()} }}")
+        alternatives = '&[' + ', '.join(f'ManaCost {{ colored: {mana}, generic: {generic} }}' for mana,generic in cost.get('alternatives', [])) + ']'
+        rows.append(f"ActivatedAbility {{ guard: ActivationGuard::{cost.get('guard','Always')}, cycling: {str(cost.get('cycling',False)).lower()}, origin: ActivationOrigin::{cost.get('origin','Battlefield')}, cost: ActivationCost {{ colored: {cost['colored']}, generic: {cost['generic']}, alternatives: {alternatives}, mana_component: {str(cost['mana_component']).lower()}, tap: {str(cost['tap']).lower()}, sacrifice: {str(cost['sacrifice']).lower()}, discard: {str(cost.get('discard',False)).lower()}, life: {cost['life']}, remove: {remove}, loyalty: {'None' if cost.get('loyalty') is None else 'Some('+str(cost['loyalty'])+')'} }}, targets: {rust_targets(targets)}, program: {rust_program(program)}, sorcery: {str(sorcery).lower()}, once_per_turn: {str(once).lower()} }}")
     return '&[' + ', '.join(rows) + ']'
 
 
