@@ -327,7 +327,7 @@ impl Game {
         } else if cost.discard {
             self.discard_batch(&[item.card], definition.cycling.then_some(item.object));
         } else if cost.sacrifice {
-            self.move_object(item.card, Zone::Graveyard);
+            self.sacrifice_batch(&[(item.controller, item.card)]);
         }
     }
 }

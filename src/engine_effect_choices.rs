@@ -113,22 +113,24 @@ impl Game {
             .choice
             .take()
             .unwrap();
-        let ids: Vec<_> = [self.state.active, self.state.active.other()]
-            .into_iter()
-            .flat_map(|p| choice.selected[p.index()].iter().map(|object| object.card))
-            .collect();
-        if !ids.is_empty() {
-            if choice.kind == EffectChoiceKind::Discard {
-                self.discard_batch(&ids, None);
-                return false;
+        if choice.kind == EffectChoiceKind::Discard {
+            let ids: Vec<_> = [self.state.active, self.state.active.other()]
+                .into_iter()
+                .flat_map(|p| choice.selected[p.index()].iter().map(|object| object.card))
+                .collect();
+            self.discard_batch(&ids, None);
+        } else {
+            let sacrifices: Vec<_> = [self.state.active, self.state.active.other()]
+                .into_iter()
+                .flat_map(|p| {
+                    choice.selected[p.index()]
+                        .iter()
+                        .map(move |object| (p, object.card))
+                })
+                .collect();
+            if !sacrifices.is_empty() {
+                self.sacrifice_batch(&sacrifices);
             }
-            let sources = if choice.kind == EffectChoiceKind::Sacrifice {
-                self.death_trigger_sources()
-            } else {
-                Vec::new()
-            };
-            let events = self.move_objects_raw(&ids, Zone::Graveyard);
-            self.finish_zone_events(&events, &sources);
         }
         false
     }

@@ -324,6 +324,7 @@ fn source_indices_follow_every_admitted_definition_and_round_trip_restore() {
                     | TriggerCondition::SelfEntersOrDies
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::PermanentToGraveyard { .. }
+                    | TriggerCondition::Sacrificed { .. }
             )
         });
         assert_eq!(g.state.life_sources.contains(&id), life, "{}", card.name());

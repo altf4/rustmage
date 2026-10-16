@@ -184,6 +184,23 @@ impl Game {
                                 && subtype
                                     .is_none_or(|subtype| event.before.card.has_subtype(subtype))
                         }
+                        TriggerCondition::Sacrificed {
+                            filter: f,
+                            own_turn,
+                        } => {
+                            event.sacrificed_by == Some(source.owner)
+                                && (!own_turn || self.state.active == source.owner)
+                                && (!f.source_only || source.reference == event.before.reference)
+                                && (!f.other || source.reference != event.before.reference)
+                                && (f.kinds == 0
+                                    || event.before.card.kind_mask() & u16::from(f.kinds) != 0)
+                                && (!f.nonland || !event.before.card.is_land())
+                                && event.before.keywords.contains(f.keywords)
+                                && f.tokens
+                                    .is_none_or(|token| event.before.card.is_token() == token)
+                                && f.subtype
+                                    .is_none_or(|subtype| event.before.card.has_subtype(subtype))
+                        }
                         TriggerCondition::PermanentToGraveyard {
                             kinds,
                             relation,
@@ -236,6 +253,7 @@ impl Game {
                     | TriggerCondition::SelfDies
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::PermanentToGraveyard { .. }
+                    | TriggerCondition::Sacrificed { .. }
                     | TriggerCondition::LifeGained { .. }
                     | TriggerCondition::SelfAttacks
                     | TriggerCondition::SpellCast { .. }

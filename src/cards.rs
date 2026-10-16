@@ -851,6 +851,10 @@ pub(crate) enum TriggerCondition {
         nontoken: bool,
         subtype: Option<&'static str>,
     },
+    Sacrificed {
+        filter: SacrificeFilter,
+        own_turn: bool,
+    },
     PermanentToGraveyard {
         kinds: u16,
         relation: CastRelation,

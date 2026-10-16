@@ -9,6 +9,52 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def test_seven_sacrifice_event_bodies_use_real_costs_and_owned_library_replay(self):
+        names=['Biotech Specialist','Crime Novelist','Experimental Confectioner','Gleaming Geardrake','Lightless Evangel','Pirate Peddlers','Tolls of War']
+        for wanted in names:
+            lands=sum(([n]*6 for n in ['Plains','Island','Swamp','Mountain','Forest']),[])
+            extras=['Vampiric Rites']*12+['Bear Cub']*6 if wanted in names[4:6] else ['Nutrient Block']*12+['Bear Cub']*6 if wanted=='Crime Novelist' else ['Bear Cub']*18
+            deck=lands+[wanted]*12+extras;ability=0 if wanted in names[1:2]+names[4:6] else 1
+            with self.subTest(card=wanted),Game([deck,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+                for _ in range(18000):
+                    obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor']);objects={o['id']:o for o in obs['objects']}
+                    own=[o for o in objects.values() if o['owner']=='P0' and o['zone']=='Battlefield'];sources=[o for o in own if o['card']==wanted];bears=[o for o in own if o['card']=='Bear Cub'];rites=[o for o in own if o['card']=='Vampiric Rites'];kind={'Biotech Specialist':'Lander','Experimental Confectioner':'Food','Gleaming Geardrake':'Clue','Tolls of War':'Clue'}.get(wanted)
+                    fodder=[o for o in own if (kind and o['token'] and kind in o['token']['subtypes']) or (wanted=='Crime Novelist' and o['card']=='Nutrient Block')]
+                    roots=[s for s in obs['stack'] if s['source_card']==wanted and s['kind']=={'TriggeredAbility':{'ability':ability}}]
+                    if roots:break
+                    def score(a):
+                        k=a['kind']
+                        if k in ('Cast','AnnounceCast'):
+                            n=objects[a['card']]['card']
+                            if n==wanted:return 250 if not sources else -100
+                            if n=='Vampiric Rites':return 210 if sources and not rites else -100
+                            if n=='Bear Cub':return 200 if wanted in names[4:6] and not bears else -100
+                            if n=='Nutrient Block':return 210 if sources and not fodder else -100
+                            return -100
+                        if k=='AnnounceActivate':return 260 if sources and not obs['stack'] and (fodder and a['card']==fodder[0]['id'] or rites and bears and a['card']==rites[0]['id']) else -100
+                        if k in ('Activate','BeginActivate','ActivateMana','AnnounceMana'):return -100
+                        if k=='ChooseAdditionalCost':return 240 if bears and a['object']['card']==bears[0]['id'] else -100
+                        if k=='ChooseTarget':return 230 if a['target'].get('Player')=='P1' else -100
+                        if k in ('ChooseSpellCost','ChooseActivationCost'):return 220
+                        if k=='TapMana':return 180 if obs['decision']=='pay_costs' else -100
+                        return self.professor_score(obs,a)
+                    game.step(obs,max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i])))
+                else:self.fail('sacrifice trigger not reached')
+                root=roots[-1];source=root['card'];before=game.observe('P0');saved=game.snapshot()
+                with game.clone() as fork:expected=self.finish_self_target(fork,'P0',root['id'])
+                after=self.finish_self_target(game,'P0',root['id']);self.assertEqual(after,expected);game.restore(saved)
+                with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(before,0)
+                again=self.finish_self_target(game,'P0',root['id']);after['revision']=again['revision'];self.assertEqual(after,again);game.drop_snapshot(saved)
+                if wanted in ('Crime Novelist','Gleaming Geardrake','Lightless Evangel','Pirate Peddlers'):
+                    self.assertEqual(next(o for o in after['objects'] if o['id']==source)['counters']['plus_one'],1)
+                if wanted=='Crime Novelist':self.assertEqual(after['players'][0]['mana'][3],before['players'][0]['mana'][3]+1)
+                if wanted=='Biotech Specialist':self.assertEqual(after['players'][1]['life'],before['players'][1]['life']-2)
+                if wanted in ('Experimental Confectioner','Tolls of War'):
+                    subtype='Rat' if wanted=='Experimental Confectioner' else 'Ally';created=[o for o in after['objects'] if o['owner']=='P0' and o['zone']=='Battlefield' and o['token'] and subtype in o['token']['subtypes']];self.assertEqual(len(created),1);self.assertEqual((created[0]['power'],created[0]['toughness']),(1,1))
+                if wanted!='Crime Novelist':self.assertEqual(after['players'][0]['cards_drawn_this_turn'],before['players'][0]['cards_drawn_this_turn'])
+                else:self.assertIn(after['players'][0]['cards_drawn_this_turn']-before['players'][0]['cards_drawn_this_turn'],(0,1))  # Nutrient Block also queues its independent draw.
+                other=game.observe('P1');self.assertIsNone(other['search_choice']);self.assertTrue(all(o['zone']!='Hand' or o['owner']!='P0' for o in other['objects']))
+
     def test_ten_permanent_graveyard_bodies_use_owned_native_events_and_replay(self):
         watchers=["Ashiok's Reaper",'Knight of Doves','Savior of the Sleeping','Warehouse Tabby','Wicked Visitor']
         names=watchers+['Long Feng, Grand Secretariat','Mephitic Draught','Nutrient Block','Hopeful Vigil','Reach for the Sky']

@@ -1,0 +1,237 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Biotech Specialist",
+      "oracle_text": "When this creature enters, create a Lander token. (It's an artifact with \"{2}, {T}, Sacrifice this token: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle.\")\nWhenever you sacrifice an artifact, this creature deals 2 damage to target opponent.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BiotechSpecialist.java",
+          "java_sha256": "79664cf51bd8438a7b4b74a13cc4ca407a3ffc82fb777ca73a440d751d2a03d6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SacrificePermanentTriggeredAbility.java",
+          "java_sha256": "fa6f6ae71009e45d59ba6080503c75b1c96b730ea7e0b5a075d5dc26a230efe8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/LanderToken.java",
+          "java_sha256": "5d15f49c7eab3d0b31a7d46668bcea3a14faa50b2688996344c35a5243ba53d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayEffect.java",
+          "java_sha256": "0bb9a67ad4f01956cd50eb190b2086d6d070c993cccbecece569b37726129394"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+          "java_sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "java_sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+          "java_sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+        }
+      ]
+    },
+    {
+      "name": "Crime Novelist",
+      "oracle_text": "Whenever you sacrifice an artifact, put a +1/+1 counter on this creature and add {R}.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CrimeNovelist.java",
+          "java_sha256": "09bd743400196f655ff6f79be4643a67f5bee160efbadc8d3369a5b1f501ff86"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SacrificePermanentTriggeredAbility.java",
+          "java_sha256": "fa6f6ae71009e45d59ba6080503c75b1c96b730ea7e0b5a075d5dc26a230efe8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+          "java_sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+        }
+      ]
+    },
+    {
+      "name": "Experimental Confectioner",
+      "oracle_text": "When this creature enters, create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\nWhenever you sacrifice a Food, create a 1/1 black Rat creature token with \"This token can't block.\"",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/ExperimentalConfectioner.java",
+          "java_sha256": "5c997c0af919e7f691d3b2f65a7388096b3244d5567f097ae3588eea1a93ca61"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SacrificePermanentTriggeredAbility.java",
+          "java_sha256": "fa6f6ae71009e45d59ba6080503c75b1c96b730ea7e0b5a075d5dc26a230efe8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/FoodToken.java",
+          "java_sha256": "67fca2eef5afc92dc08eefebb5d25489a0ab37ac22ab3b1b06556b17e5f0b53a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/token/FoodAbility.java",
+          "java_sha256": "79d6d33dd5aa5cf0a53784c96639953598780ecb010fcb3adc5f3db677ee22b4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/RatCantBlockToken.java",
+          "java_sha256": "aab83bf3ec8d02a815343fe29084d4c4476a37f088e7a16f47209e1d8ef2e65b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockSourceEffect.java",
+          "java_sha256": "8e20a86a1c2b5442b9281b9eb4910a3f341c30e5007204a29f1a68be3bdced20"
+        }
+      ]
+    },
+    {
+      "name": "Gleaming Geardrake",
+      "oracle_text": "Flying\nWhen this creature enters, investigate. (Create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")\nWhenever you sacrifice an artifact, put a +1/+1 counter on this creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GleamingGeardrake.java",
+          "java_sha256": "b3de1f5f8eebbf85a147298d888d9c7d30cd349e281a6e2ceb61cfb0a5a5324c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SacrificePermanentTriggeredAbility.java",
+          "java_sha256": "fa6f6ae71009e45d59ba6080503c75b1c96b730ea7e0b5a075d5dc26a230efe8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/InvestigateEffect.java",
+          "java_sha256": "db04263634b8969dee966be525deac8165e358e3a0774b3e11de300f024ac3ed"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/ClueArtifactToken.java",
+          "java_sha256": "711939b0212d808576d149e8c95b0007df2e003c29095ddb26c4cdce94a3ddd8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/token/ClueAbility.java",
+          "java_sha256": "ade27801ef45e9379e70fa7a5a8528f847e9df65d86410f562818e94b1e908b6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        }
+      ]
+    },
+    {
+      "name": "Lightless Evangel",
+      "oracle_text": "Whenever you sacrifice another creature or artifact, put a +1/+1 counter on this creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LightlessEvangel.java",
+          "java_sha256": "5df01b2febf757b3253952250eead912d93a2a287255d87b04210c93ce1fda36"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SacrificePermanentTriggeredAbility.java",
+          "java_sha256": "fa6f6ae71009e45d59ba6080503c75b1c96b730ea7e0b5a075d5dc26a230efe8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+          "java_sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+        }
+      ]
+    },
+    {
+      "name": "Pirate Peddlers",
+      "oracle_text": "Deathtouch\nWhenever you sacrifice another permanent, put a +1/+1 counter on this creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PiratePeddlers.java",
+          "java_sha256": "cc1af58732e69c04873e423c834668606b2be2253d7fa0488472ed1fd1900b0e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SacrificePermanentTriggeredAbility.java",
+          "java_sha256": "fa6f6ae71009e45d59ba6080503c75b1c96b730ea7e0b5a075d5dc26a230efe8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+          "java_sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        }
+      ]
+    },
+    {
+      "name": "Tolls of War",
+      "oracle_text": "When this enchantment enters, create a Clue token. (It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")\nWhenever you sacrifice a permanent during your turn, create a 1/1 white Ally creature token. This ability triggers only once each turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TollsOfWar.java",
+          "java_sha256": "4de7d44ff90770eb94df1c1e08a34f256aca87012cd318642907d60ad9c02224"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SacrificePermanentTriggeredAbility.java",
+          "java_sha256": "fa6f6ae71009e45d59ba6080503c75b1c96b730ea7e0b5a075d5dc26a230efe8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/ClueArtifactToken.java",
+          "java_sha256": "711939b0212d808576d149e8c95b0007df2e003c29095ddb26c4cdce94a3ddd8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/token/ClueAbility.java",
+          "java_sha256": "ade27801ef45e9379e70fa7a5a8528f847e9df65d86410f562818e94b1e908b6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/AllyToken.java",
+          "java_sha256": "f923612258b7cffbdcb17f3d99f23d7519c956c0a499542f060ffef00ef99b1c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/MyTurnCondition.java",
+          "java_sha256": "a6c7cf96d2fdec34c9c999ad4b486627d257eeac9b7e7de139f104ac1ef45d90"
+        }
+      ]
+    }
+  ]
+}

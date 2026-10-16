@@ -1009,6 +1009,8 @@ def statement_program(text):
         return [grow_instruction('Source',int(m[1]),int(m[2])),'GrantKeywords { subject: Subject::Source, keywords: Keywords(16384) }']
     if m:=re.fullmatch(r'this creature (gains .+ until end of turn)\. Tap it\.',text):
         if program:=keyword_effect(m[1]+'.','Source'): return [*program,'TapSource']
+    if text == 'put a +1/+1 counter on this creature and add {R}.':
+        return [counter_instruction('Source','a','+1/+1'), *mana_program('add {R}.')]
     if text == 'untap this creature.': return ['UntapSource']
     if text == 'tap this creature.': return ['TapSource']
     if m := re.fullmatch(r'untap (.+)\.', text):
@@ -1650,6 +1652,14 @@ for _phrase, _kinds, _relation, _exclude_source_kinds in [
 ]:
     VITAL_PREFIXES[f'Whenever {_phrase} is put into a graveyard from the battlefield, '] = (
         f'PermanentToGraveyard {{ kinds: {_kinds}, relation: CastRelation::{_relation}, exclude_source_kinds: {_exclude_source_kinds} }}')
+
+
+# Single sacrifice events only. Event quantities and sacrificed-object pronouns
+# are not bound to an unrelated ability-cost context.
+for _phrase in ('an artifact','a Food','another creature or artifact','another permanent','a permanent','a token','a permanent during your turn'):
+    _spec=sacrifice_spec(_phrase.replace(' during your turn',''))
+    VITAL_PREFIXES['Whenever you sacrifice '+_phrase+', ']=(
+        'Sacrificed { filter: '+_spec[1]+', own_turn: '+str(' during your turn' in _phrase).lower()+' }')
 
 
 
