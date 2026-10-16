@@ -25,6 +25,13 @@ the game. Entry triggers observe the completed batch and wait for resolution to
 finish. Search libraries stay unmodified through the pre-entry decisions, then
 the entry commits, the library shuffles and the program continues.
 
+Existing low-life entry conditions use life totals before simultaneous shock-land
+payments. The official Lakeside Shack + Breeding Pool example at 14 life is a
+regression: Shack enters tapped whether Pool's payment is accepted or declined,
+regardless of the movement order. See Wizards' [Duskmourn release notes](https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes),
+New Cycle of Nonbasic Lands. This keeps the precomputed condition intentional;
+rechecking it after the payment would be incorrect.
+
 The exact `unless you control a planeswalker` clause checks the existing own
 battlefield before the batch; opposing, nonbattlefield and simultaneous entering
 planeswalkers do not count. Full planeswalker gameplay remains unsupported. The
@@ -54,7 +61,7 @@ cards remain hidden. Private search continuations retain existing visibility;
 public exile returns expose the entry choice. Only the acting player receives
 actions. The C ABI version remains unchanged; JSON clients should check schema.
 
-Twelve focused runtime fixtures cover every shock, both payment branches, exact
+Thirteen focused runtime fixtures cover every shock, both payment branches, exact
 mana colors, illegal/wrong-actor/stale submissions, lifetime changes, simultaneous
 and mixed batches, forced tapped entry, search/shuffle/program ordering, source
 reentry, knowledge projection and all ten planeswalker-dependent lands. The real
@@ -62,7 +69,7 @@ Canyon Crawler swampcycling ability finds a shock land, reveals it to hand and
 then offers its payment on play. Synthetic IR search/linked-return cases are
 explicitly distinguished from printed-card admissions.
 
-Validation: 510 Rust tests (502 unit and eight integration), 90 compiler tests,
+Validation: 511 Rust tests (503 unit and eight integration), 90 compiler tests,
 57 rebuilt release Python tests, catalogue consistency, rustfmt and Clippy with
 warnings denied. One hundred supported Standard games completed naturally with
 42,623 decisions, 847 paid entries, 86 declined payments and 7,842 cloned/replayed

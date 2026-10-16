@@ -521,3 +521,37 @@ fn real_swampcycling_finds_a_nonbasic_shock_then_its_land_play_offers_payment() 
     assert!(!g.object_view(land).tapped);
     assert_eq!(g.state.players[0].life, 18);
 }
+
+#[test]
+fn official_shack_and_shock_example_uses_life_before_simultaneous_payment() {
+    // Wizards' Duskmourn release notes, New Cycle of Nonbasic Lands:
+    // https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes
+    // Shack + Breeding Pool at 14 life: Shack enters tapped whether or not
+    // the player pays for Pool. Replacement ordering does not change this.
+    for life in [13, 14] {
+        for pay in [false, true] {
+            for shock_first in [false, true] {
+                let mut g = scenario();
+                g.state.players[0].life = life;
+                let shack = named(&mut g, Player::P0, "Lakeside Shack", Zone::Exile);
+                let pool = named(&mut g, Player::P0, "Breeding Pool", Zone::Exile);
+                let m1 = g.entry_move(shack, Zone::Battlefield, g.enters_tapped(shack));
+                let m2 = g.entry_move(pool, Zone::Battlefield, g.enters_tapped(pool));
+                g.stage_entries(
+                    if shock_first {
+                        vec![m2, m1]
+                    } else {
+                        vec![m1, m2]
+                    },
+                    None,
+                );
+                g.advance_entries();
+                assert_eq!(g.observe(Player::P0).entry_life.unwrap().object.card, pool);
+                replay(&mut g, Action::ChooseEntryLife { pay });
+                assert_eq!(g.object_view(shack).tapped, life > 13);
+                assert_eq!(g.object_view(pool).tapped, !pay);
+                assert_eq!(g.state.players[0].life, life - if pay { 2 } else { 0 });
+            }
+        }
+    }
+}
