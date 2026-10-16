@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "0049f32655b778863e81899073df110ffd9d586b64fcc2384a2a3b748bcacc30",
+  "catalogue_version": "d1ae7ad81463066d46af708a9ffe6f1aa8fe38944bea1823af85e7d5632e23ad",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1424,
-  "implemented_total": 1430,
-  "token_definitions": 60,
+  "implemented_standard_cards": 1434,
+  "implemented_total": 1440,
+  "token_definitions": 70,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -5158,8 +5158,8 @@
     {
       "name": "Coruscation Mage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Cosmic Cube",
@@ -9082,8 +9082,8 @@
     {
       "name": "Finch Formation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Finneas, Ace Archer",
@@ -9430,8 +9430,8 @@
     {
       "name": "Flowerfoot Swordmaster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Flying Octobot",
@@ -13234,8 +13234,8 @@
     {
       "name": "Intrepid Rabbit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Intrepid Stablemaster",
@@ -13330,8 +13330,8 @@
     {
       "name": "Iridescent Vinelasher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Iroh's Demonstration",
@@ -21784,8 +21784,8 @@
     {
       "name": "Rust-Shield Rampager",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Rustler Rampage",
@@ -24370,8 +24370,8 @@
     {
       "name": "Splash Lasher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Splash Portal",
@@ -24670,8 +24670,8 @@
     {
       "name": "Starscape Cleric",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Starseer Mentor",
@@ -24766,8 +24766,8 @@
     {
       "name": "Steampath Charger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Steel Hellkite",
@@ -26290,8 +26290,8 @@
     {
       "name": "Tender Wildguide",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Tenderize",

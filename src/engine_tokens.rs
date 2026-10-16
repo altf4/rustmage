@@ -83,6 +83,7 @@ impl Game {
                 destination: Zone::Battlefield,
                 moved: true,
                 sacrificed_by: None,
+                offspring_paid: false,
             });
         }
         // Every newcomer exists before any entry event inspects the battlefield.

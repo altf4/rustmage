@@ -106,6 +106,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             return -10;
         }
         match action {
+            Action::ChooseOffspring { pay } => {
+                if *pay {
+                    100
+                } else {
+                    0
+                }
+            }
             Action::ChooseAdditionalCost { .. } => 60,
             Action::ChooseConniver { .. } => 60,
             Action::PayResolutionMana { .. } => 100,

@@ -117,8 +117,16 @@ fn token_factories_are_not_submitted_cards_in_any_deck_mode() {
     for card in tokens {
         assert!(!card.is_standard_legal());
         assert!(!Card::ALL.contains(&card));
-        assert!(card.info().mana_cost.is_empty());
-        assert!(card.name().starts_with("@token/"));
+        let identity = card.token_info().unwrap().factory_identity;
+        assert!(identity.starts_with("@token/"));
+        assert_eq!(Card::from_name(identity), Some(card));
+        if card.offspring_cost().is_some() {
+            let parent = Card::from_name(card.name()).unwrap();
+            assert!(!parent.is_token());
+            assert_eq!(card.info().mana_cost, parent.info().mana_cost);
+        } else {
+            assert!(card.info().mana_cost.is_empty());
+        }
         for rules in [
             DeckRules::Freeform,
             DeckRules::Constructed,

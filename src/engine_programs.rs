@@ -267,6 +267,7 @@ impl Game {
                     | TriggerCondition::InterveningIf { .. } => {
                         unreachable!("unwrapped event")
                     }
+                    TriggerCondition::SelfOffspring => same && event.offspring_paid,
                     TriggerCondition::SelfEnters
                     | TriggerCondition::SelfEntersOrAttacks
                     | TriggerCondition::SelfEntersOrDies => same,
@@ -720,7 +721,17 @@ impl Game {
                     return;
                 }
                 Effect::Creature(..) | Effect::Permanent => {
-                    self.move_object(item.card, Zone::Battlefield);
+                    if item.cast.is_some_and(|c| c.offspring == Some(true)) {
+                        let mut movement = self.entry_move(
+                            item.card,
+                            Zone::Battlefield,
+                            self.enters_tapped(item.card),
+                        );
+                        movement.offspring_paid = true;
+                        self.stage_entries(vec![movement], None);
+                    } else {
+                        self.move_object(item.card, Zone::Battlefield);
+                    }
                     self.give_priority();
                     return;
                 }

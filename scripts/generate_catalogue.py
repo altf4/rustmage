@@ -851,6 +851,21 @@ def sacrifice_spec(text):
     return amount,filt
 
 
+def extract_offspring(card):
+    lines=card.get('oracle_text','').splitlines()
+    found=[line for line in lines if line.startswith('Offspring ')]
+    if not found:return card,None
+    if len(found)!=1 or card.get('layout')!='normal' or 'Creature' not in card.get('type_line','').split(' — ')[0].split():return card,None
+    m=re.fullmatch(r'Offspring (?P<cost>(?:\{[0-9WUBRGC]+\})+)(?: \(You may pay an additional (?P=cost) as you cast this spell\. If you do, when this creature enters, create a 1/1 token copy of it\.\))?',found[0])
+    if not m:return card,None
+    choices=spell_cost_options(m[1])
+    if choices is None or len(choices)!=1:return card,None
+    colored,generic=choices[0]
+    base=spell_cost_options(card.get('mana_cost',''))
+    if base is None or any(generic+n>4294967295 or any(a+b>4294967295 for a,b in zip(colored,mana)) for mana,n in base):return card,None
+    return dict(card,oracle_text='\n'.join(line for line in lines if line!=found[0])), f'ManaCost {{ colored: {colored}, generic: {generic} }}'
+
+
 def extract_flashback(card):
     """One exact fixed mana alternative; every residual sentence still compiles."""
     if card.get('layout') != 'normal' or card.get('type_line') not in ('Instant', 'Sorcery'):
@@ -2680,6 +2695,9 @@ def compile_catalogue(snapshot, target):
     scaling_rows = []
     additional_rows = []
     flashback_rows = []
+    offspring_rows = []
+    offspring_copy_rows = []
+    offspring_factories = {}
     hybrid_rows = []
     reduction_rows = []
     entry_counter_rows = []
@@ -2691,6 +2709,7 @@ def compile_catalogue(snapshot, target):
         card, opponent_entry_tapped = extract_opponent_entry_tapped(card)
         card, cycling = cycling_abilities(card)
         card, flashback = extract_flashback(card)
+        card, offspring = extract_offspring(card)
         card, additional = extract_additional_cost(card)
         card, reductions = extract_cost_reductions(card)
         card, dynamic, scaling = extract_stat_rules(card)
@@ -2761,6 +2780,14 @@ def compile_catalogue(snapshot, target):
         elif effect == 'Spell':
             rule, program = spell
             effect = f'Spell({rust_targets(rule)}, {rust_program(program)})'
+        offspring_key=None
+        if offspring is not None and effect!='Unsupported':
+            # Fixed copiable values only. The definition below preserves complete
+            # immutable abilities; identity is separate from the printed name.
+            factory={'name':name,'offspring_source':cards[name]['oracle_id'],'power':1,'toughness':1,'keywords':keywords,'subtypes':card.get('type_line','').split(' — ')[-1],'colors':sum(1 << 'WUBRG'.index(color) for color in card.get('colors',[])),'extra_type':None}
+            offspring_key=hashlib.sha256(json.dumps(factory,sort_keys=True).encode()).hexdigest()[:24]
+            TOKEN_DEFS[offspring_key]=factory
+            abilities=[('SelfOffspring',[f'CreateTokens {{ token: __TOKEN_{offspring_key}__, amount: 1, tapped: false }}'],'None'),*abilities]
         triggers_rust = '&[' + ', '.join(f'TriggeredAbility {{ condition: TriggerCondition::{condition}, targets: {rust_targets(targets)}, program: {rust_program(program)} }}' for condition, program, targets in abilities) + ']'
 
         if kind & 64:
@@ -2774,6 +2801,9 @@ def compile_catalogue(snapshot, target):
             loyalty_rows.append(f'        {index} => {int(value)},')
         if effect != 'Unsupported':
             supported.append(index)
+            if offspring is not None:
+                offspring_rows.append(f'        {index} => Some({offspring}),')
+                offspring_copy_rows.append(f'        {index} => Some(__TOKEN_{offspring_key}__),')
             if flashback is not None: flashback_rows.append(f'        {index} => Some({flashback}),')
             if entry_suppression: entry_suppression_rows.append(f'        {index} => {entry_suppression},')
             if opponent_entry_tapped: opponent_entry_tapped_rows.append(f'        {index} => {opponent_entry_tapped},')
@@ -2810,6 +2840,8 @@ def compile_catalogue(snapshot, target):
             if dynamic is not None:dynamic_rows.append(f'        {index} => Some({dynamic}),')
             if scaling:scaling_rows.append(f'        {index} => &['+', '.join(scaling)+'],')
         definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(name)}, oracle_id: {oracle_id}, mana_cost: {quote(cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in cards).lower()}, legendary: {str(card.get('type_line', '').startswith('Legendary ')).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, activated: {rust_activations(activations)}, enters: Counters {{ plus_one: {enters[0]}, minus_one: {enters[1]}, stun: {enters[2]}, loyalty: 0 }}, entry: EntryTapped::{entry}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
+        if offspring_key is not None:
+            offspring_factories[offspring_key]=(index,definitions[-1],color_mask,card.get('type_line','').split(' — ')[-1])
         if uncounterable and effect != 'Unsupported': uncounterable_rows.append(str(index))
         exhaust_mask=sum(1<<i for i,a in enumerate(activations) if a[0].get('exhaust',False))
         if exhaust_mask and effect!='Unsupported':exhaust_rows.append(f'        {index} => {exhaust_mask},')
@@ -2826,6 +2858,25 @@ def compile_catalogue(snapshot, target):
         name = '@token/' + key
         names.append(name)
 
+        if key in offspring_factories:
+            source_index,definition,color,subtypes=offspring_factories[key]
+            definition=re.sub(r'effect: Effect::Creature\([^)]*\)', 'effect: Effect::Creature(1, 1)',definition,count=1)
+            definition=re.sub(r'oracle_id: Some\([^)]*\)', 'oracle_id: None',definition,count=1)
+            definition=definition.replace('standard_legal: true','standard_legal: false').replace('deck_limit: Some(4)','deck_limit: None')
+            definitions.append(definition)
+            token_infos.append(f"    TokenInfo {{ factory_identity: {json.dumps(name)}, name: {json.dumps(factory['name'])}, subtypes: {json.dumps(subtypes)}, colors: {color} }},")
+            color_masks.append(color)
+            # Clone every compiled property table for the immutable copy; no
+            # mutable copy/type-changing engine or runtime card-name dispatch.
+            for table in [static_rows,grant_rows,dynamic_rows,scaling_rows,additional_rows,hybrid_rows,reduction_rows,entry_counter_rows,entry_suppression_rows,opponent_entry_tapped_rows,offspring_rows]:
+                prefix=f'        {source_index} =>'
+                table.extend(row.replace(prefix,f'        {index} =>',1) for row in list(table) if row.startswith(prefix))
+            offspring_copy_rows.append(f'        {index} => Some(__TOKEN_{key}__),')
+            marker='__TOKEN_'+key+'__'
+            definitions=[row.replace(marker,f'Card({index})') for row in definitions]
+            offspring_copy_rows=[row.replace(marker,f'Card({index})') for row in offspring_copy_rows]
+            continue
+
         predefined = factory.get('predefined')
         if predefined:
             effect, _, _, token_abilities, _ = permanent_program_template({
@@ -2839,10 +2890,15 @@ def compile_catalogue(snapshot, target):
             effect = f"Creature({factory['power']}, {factory['toughness']})"
             token_abilities = []
         definitions.append(f"    Definition {{ info: CardInfo {{ name: {json.dumps(name)}, oracle_id: None, mana_cost: \"\", type_line: {json.dumps(type_line, ensure_ascii=False)}, oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: Keywords({factory['keywords']}), deck_limit: None }}, effect: Effect::{effect}, triggers: &[], activated: {rust_activations(token_abilities)}, enters: Counters {{ plus_one: 0, minus_one: 0, stun: 0, loyalty: 0 }}, entry: EntryTapped::Never, kind: {kind}, basic: false, mana_color: None, colored: [0; 6], generic: 0 }},")
-        token_infos.append(f"    TokenInfo {{ name: {json.dumps(factory['name'])}, subtypes: {json.dumps(factory['subtypes'])}, colors: {factory['colors']} }},")
+        token_infos.append(f"    TokenInfo {{ factory_identity: {json.dumps(name)}, name: {json.dumps(factory['name'])}, subtypes: {json.dumps(factory['subtypes'])}, colors: {factory['colors']} }},")
         color_masks.append(factory['colors'])
         marker = '__TOKEN_' + key + '__'
         definitions = [definition.replace(marker, f'Card({index})') for definition in definitions]
+    token_indices={key:token_base+offset for offset,key in enumerate(used_tokens)}
+    def replace_token_markers(row):
+        return re.sub(r'__TOKEN_([0-9a-f]+)__',lambda match:f'Card({token_indices[match[1]]})',row)
+    definitions=[replace_token_markers(row) for row in definitions]
+    offspring_copy_rows=[replace_token_markers(row) for row in offspring_copy_rows]
     used_emblems=sorted(set(re.findall(r'__EMBLEM_([0-9a-f]+)__', '\n'.join(definitions))))
     emblem_base=len(names)
     emblem_infos=[]
@@ -2877,6 +2933,8 @@ def compile_catalogue(snapshot, target):
     lines += ['#[rustfmt::skip]', 'pub(super) fn opponent_entry_tapped(card: Card) -> u16 {', '    match card.0 {', *opponent_entry_tapped_rows, '        _ => 0,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn keyword_grants(card: Card) -> &'static [KeywordGrant] {", '    match card.0 {', *grant_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn additional_cost(card: Card) -> Option<AdditionalCost> {', '    match card.0 {', *additional_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn offspring_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *offspring_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn offspring_copy(card: Card) -> Option<Card> {', '    match card.0 {', *offspring_copy_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn flashback_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *flashback_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub const CREATURE_TYPES: &[&str] = &[', *('    '+json.dumps(name)+',' for name in creature_types), '];', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn cost_reductions(card: Card) -> &'static [SpellReduction] {", '    match card.0 {', *reduction_rows, '        _ => &[],', '    }', '}', '']
