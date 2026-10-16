@@ -12,6 +12,43 @@ class BindingTests(unittest.TestCase):
     def game(self):
         return Game([["Mountain"] * 24 + ["LightningBolt"] * 36] * 2, seed=17, deck_rules="Freeform")
 
+    def test_continuous_haste_is_derived_in_native_library_and_replays(self):
+        deck=['Mountain']*12+['Forest']*12+["Samut, Hazoret's Champion"]*12+['Llanowar Elves']*24
+        with Game([deck,['Forest']*60],seed=9,deck_rules='Freeform') as game:
+            obs=game.observe('P0')
+            for _ in range(2500):
+                self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor'])
+                elves=[o for o in obs['objects'] if o['zone']=='Battlefield' and o['card']=='Llanowar Elves' and o['summoning_sick']]
+                samut=[o for o in obs['objects'] if o['zone']=='Battlefield' and o['card']=="Samut, Hazoret's Champion"]
+                if elves and samut and any(a['kind'] in ('TapMana','ActivateMana') and a['card']==elves[0]['id'] for a in obs['actions']):break
+                obs=game.step(obs,self.discard_index(obs))
+            else:self.fail('newly entered mana Elf with continuous haste not reached')
+            elf=elves[0];self.assertTrue(elf['keywords']&4)
+            index=next(i for i,a in enumerate(obs['actions']) if a['kind'] in ('TapMana','ActivateMana') and a['card']==elf['id'])
+            saved=game.snapshot()
+            with game.clone() as fork:expected=fork.step(fork.observe(obs['actor']),index)
+            actual=game.step(obs,index);self.assertEqual(actual,expected)
+            self.assertTrue(next(o for o in actual['objects'] if o['id']==elf['id'])['tapped'])
+            game.restore(saved)
+            with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,index)
+            game.drop_snapshot(saved)
+
+    def test_own_turn_first_strike_is_not_written_into_base_state(self):
+        deck=['Mountain']*24+['Skilled Battlecarver']*36
+        with Game([deck,['Forest']*60],seed=3,deck_rules='Freeform') as game:
+            obs=game.observe('P0');reference=None;seen=set()
+            for _ in range(2500):
+                self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor'])
+                carvers=[o for o in obs['objects'] if o['zone']=='Battlefield' and o['owner']=='P0' and o['card']=='Skilled Battlecarver']
+                if carvers:
+                    if reference is None:reference=carvers[0]['reference']
+                    card=next(o for o in carvers if o['reference']==reference)
+                    self.assertEqual(bool(card['keywords']&512),obs['active']=='P0')
+                    seen.add(obs['active'])
+                    if len(seen)==2:break
+                obs=game.step(obs,self.discard_index(obs))
+            else:self.fail('both turn scopes not reached')
+
     def test_changeling_entry_matches_angel_observer_in_native_library_with_replay(self):
         deck=['Plains']*24+['Youthful Valkyrie']*12+['Prideful Feastling']*12+['Mary Jane Watson']*12
         with Game([deck,['Forest']*60],seed=8,deck_rules='Freeform') as game:

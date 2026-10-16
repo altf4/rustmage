@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "6a93ebbab12633590fba661e54ca7bdf9bd2e00d5a5f4815b633063f705c17a7",
+  "catalogue_version": "603392d485767f582193fad33bbce698b3ea8a37ea536d929f633910507dbfc5",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 846,
-  "implemented_total": 852,
-  "token_definitions": 40,
+  "implemented_standard_cards": 858,
+  "implemented_total": 864,
+  "token_definitions": 41,
   "cards": [
     {
       "name": "Plains",
@@ -585,8 +585,8 @@
     {
       "name": "Aggressive Mammoth",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Aggressive Negotiations",
@@ -2163,8 +2163,8 @@
     {
       "name": "Bearer of Glory",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Beast, Erudite Aerialist",
@@ -2919,8 +2919,8 @@
     {
       "name": "Boldwyr Aggressor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Bolg of the North",
@@ -5169,8 +5169,8 @@
     {
       "name": "Cosmic Spider-Man",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Cosmium Blast",
@@ -8907,8 +8907,8 @@
     {
       "name": "Feisty Spikeling",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Feldon's Cane",
@@ -14439,8 +14439,8 @@
     {
       "name": "Krang, Utrom Warlord",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Kraul Whipcracker",
@@ -17859,8 +17859,8 @@
     {
       "name": "Null Group Biological Assets",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Null Summoner",
@@ -18021,8 +18021,8 @@
     {
       "name": "Okoye, Dora Milaje Leader",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Old Fat Spider",
@@ -20679,8 +20679,8 @@
     {
       "name": "Regal Caracal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Regal Imperiosaur",
@@ -22011,8 +22011,8 @@
     {
       "name": "Samut, Hazoret's Champion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Samut, Tyrant of Naktamun",
@@ -23361,8 +23361,8 @@
     {
       "name": "Skilled Battlecarver",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Skirmish Rhino",
@@ -29709,8 +29709,8 @@
     {
       "name": "Vulture, Scheming Scavenger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Wail of War",
