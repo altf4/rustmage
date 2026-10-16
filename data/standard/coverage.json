@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "830ee35e5c8729da30e0f8f55d86cb5181dcfdf9798e9b1d501b388745b4b9ff",
+  "catalogue_version": "90a3af94b4edfde4746afe251ec1fe8aaff5c09d00009fa4ee3cf343e1744ccc",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1157,
-  "implemented_total": 1163,
+  "implemented_standard_cards": 1162,
+  "implemented_total": 1168,
   "token_definitions": 51,
   "emblem_definitions": 1,
   "cards": [
@@ -5776,8 +5776,8 @@
     {
       "name": "Daring Thunder-Thief",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Daring Waverider",
@@ -6532,8 +6532,8 @@
     {
       "name": "Diregraf Ghoul",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Diresight",
@@ -7570,8 +7570,8 @@
     {
       "name": "Eddymurk Crab",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Eden, Seat of the Sanctum",
@@ -19024,8 +19024,8 @@
     {
       "name": "Piranha Fly",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Pirate Hat",
@@ -23518,8 +23518,8 @@
     {
       "name": "Sleep-Cursed Faerie",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Sleight of Hand",
