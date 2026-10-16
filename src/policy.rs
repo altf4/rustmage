@@ -222,7 +222,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                         .unwrap_or(70)
                 }
             }
-            Action::Attack { .. } | Action::Block { .. } => 60,
+            Action::Attack { .. } | Action::AttackPlaneswalker { .. } | Action::Block { .. } => 60,
             Action::AssignDamage { amount, .. } => 50 + *amount,
             Action::Bottom { .. } | Action::Discard { .. } => 50,
             Action::PutTrigger { .. } => 50,

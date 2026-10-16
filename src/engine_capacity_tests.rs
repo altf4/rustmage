@@ -154,6 +154,7 @@ fn life_exhaustion_restores_batch_damage_and_lifelink_events() {
     let hawk = named(&mut g, Player::P0, "Vampire Nighthawk", Zone::Battlefield);
     g.state.players[0].life = i128::MAX;
     g.state.attackers.push(Attacker {
+        defender: Some(CombatDefender::Player(Player::P1)),
         card: hawk,
         blocked: false,
     });

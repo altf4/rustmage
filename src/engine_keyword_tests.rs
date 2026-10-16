@@ -224,6 +224,7 @@ fn granted_flying_changes_blocking_and_layer7_flying_anthem_immediately() {
         (4, 6)
     );
     g.state.attackers.push(Attacker {
+        defender: Some(CombatDefender::Player(Player::P1)),
         card: bear,
         blocked: false,
     });
@@ -275,6 +276,7 @@ fn granted_lifelink_and_deathtouch_use_current_damage_source_characteristics() {
     let blocker = named(&mut g, Player::P1, "Hill Giant", Zone::Battlefield);
     spell(&mut g, "Toxin Analysis", Some(Target::Card(attacker)));
     g.state.attackers.push(Attacker {
+        defender: Some(CombatDefender::Player(Player::P1)),
         card: attacker,
         blocked: true,
     });
@@ -301,6 +303,7 @@ fn granted_double_strike_gets_both_strike_steps() {
             .contains(Keywords::DOUBLE_STRIKE)
     );
     g.state.attackers.push(Attacker {
+        defender: Some(CombatDefender::Player(Player::P1)),
         card: bear,
         blocked: false,
     });
@@ -459,6 +462,7 @@ fn tribal_stats_and_lifelink_apply_before_damage_and_capture_departing_batch() {
     }
     let power = g.stats(changeling).power;
     g.state.attackers.push(Attacker {
+        defender: Some(CombatDefender::Player(Player::P1)),
         card: changeling,
         blocked: false,
     });
@@ -530,10 +534,12 @@ fn attacking_token_first_strike_recomputes_and_does_not_make_a_second_hit() {
     assert_eq!(tokens.len(), 2);
     assert!(!g.keywords(tokens[0]).contains(Keywords::FIRST_STRIKE));
     g.state.attackers.push(Attacker {
+        defender: Some(CombatDefender::Player(Player::P1)),
         card: tokens[0],
         blocked: false,
     });
     g.state.attackers.push(Attacker {
+        defender: Some(CombatDefender::Player(Player::P1)),
         card: okoye,
         blocked: false,
     });
@@ -557,6 +563,7 @@ fn continuous_tribal_double_strike_gives_changeling_both_damage_steps() {
     let attacker = named(&mut g, Player::P0, "Three Tree Mascot", Zone::Battlefield);
     assert!(g.keywords(attacker).contains(Keywords::DOUBLE_STRIKE));
     g.state.attackers.push(Attacker {
+        defender: Some(CombatDefender::Player(Player::P1)),
         card: attacker,
         blocked: false,
     });

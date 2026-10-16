@@ -232,6 +232,7 @@ fn damage_assignment_uses_anthem_power_and_toughness() {
         Zone::Battlefield,
     );
     game.state.attackers.push(Attacker {
+        defender: Some(CombatDefender::Player(Player::P1)),
         card: attacker,
         blocked: true,
     });
@@ -288,6 +289,7 @@ fn creature_filters_use_exact_earlier_layer_characteristics() {
     game.create_tokens(Player::P0, token_card, 1, false);
     let token = (game.state.objects.len() - 1) as CardId;
     game.state.attackers.push(Attacker {
+        defender: Some(CombatDefender::Player(Player::P1)),
         card: source,
         blocked: false,
     });

@@ -13,6 +13,7 @@ fn permanent(game: &mut Game, owner: Player, name: &str) -> CardId {
 
 fn combat(game: &mut Game, attacker: CardId, blockers: &[CardId]) {
     game.state.attackers.push(Attacker {
+        defender: Some(CombatDefender::Player(game.state.active.other())),
         card: attacker,
         blocked: !blockers.is_empty(),
     });
@@ -148,6 +149,7 @@ fn simultaneous_lifelink_prevents_loss_even_when_its_source_dies() {
     let soldier = permanent(&mut game, Player::P0, "Bishop's Soldier");
     combat(&mut game, giant, &[soldier]);
     game.state.attackers.push(Attacker {
+        defender: Some(CombatDefender::Player(game.state.active.other())),
         card: piker,
         blocked: false,
     });

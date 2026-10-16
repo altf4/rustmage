@@ -9,9 +9,9 @@ knows all 5,164 pinned Standard identities; 986 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
-The latest [loyalty-damage foundation](docs/loyalty-damage.md) adds five complete
-damage bodies. Observation schema 38 represents loyalty counters; whole walker
-bodies and legal loyalty activations/combat remain incomplete.
+The latest [planeswalker combat kernel](docs/planeswalker-combat.md) tracks exact
+defenders through combat and rollback. Observation schema 39 adds public attack
+declarations. Whole walker bodies and legal loyalty activations remain incomplete.
 
 ## Build and use
 

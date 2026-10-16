@@ -55,6 +55,7 @@ fn resolve_all(g: &mut Game) {
 }
 fn combat(g: &mut Game, attacker: CardId, blockers: &[CardId]) {
     g.state.attackers.push(Attacker {
+        defender: Some(CombatDefender::Player(Player::P1)),
         card: attacker,
         blocked: !blockers.is_empty(),
     });

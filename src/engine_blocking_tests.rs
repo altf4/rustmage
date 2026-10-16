@@ -4,6 +4,7 @@ fn attacker(g: &mut Game, flags: Keywords) -> CardId {
     let id = spawn(g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
     g.state.objects[id as usize].gained_keywords = flags;
     g.state.attackers.push(Attacker {
+        defender: Some(CombatDefender::Player(Player::P1)),
         card: id,
         blocked: false,
     });
@@ -342,6 +343,7 @@ fn compiled_restrictions_and_created_menace_tokens_use_shared_legality() {
         .0 as CardId;
     assert!(g.object_view(token).keywords.contains(Keywords::MENACE));
     g.state.attackers.push(Attacker {
+        defender: Some(CombatDefender::Player(Player::P1)),
         card: token,
         blocked: false,
     });
@@ -357,6 +359,7 @@ fn compiled_restrictions_and_created_menace_tokens_use_shared_legality() {
         Zone::Battlefield,
     );
     g.state.attackers.push(Attacker {
+        defender: Some(CombatDefender::Player(Player::P1)),
         card: ceratops,
         blocked: false,
     });
