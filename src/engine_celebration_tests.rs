@@ -518,3 +518,24 @@ fn celebration_raging_actual_second_selected_x_spell_preserves_printed_mana_valu
         assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 3)
     }
 }
+#[test]
+fn celebration_temporary_combat_effects_expire_at_actual_cleanup() {
+    for p in [Player::P0, Player::P1] {
+        for name in ["Belligerent of the Ball", "Raging Battle Mouse"] {
+            let mut g = setup(p);
+            enter(&mut g, p, name);
+            let target = enter(&mut g, p, "Bear Cub");
+            g.begin_step(Step::BeginCombat);
+            settle(&mut g, Some(target));
+            assert_eq!(g.object_view(target).power, 3);
+            g.state.step = Step::Cleanup;
+            g.finish_cleanup();
+            assert_eq!(
+                (g.object_view(target).power, g.object_view(target).toughness),
+                (2, 2)
+            );
+            assert!(!g.keywords(target).contains(Keywords::MENACE));
+            assert_eq!(count(&g, p), 0)
+        }
+    }
+}

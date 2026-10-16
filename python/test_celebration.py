@@ -28,13 +28,12 @@ class CelebrationTests(unittest.TestCase):
  def scenario(self,i,seat,positive,decline=False):
   p=int(seat[1]);name=NAMES[i];deck=['Plains']*20+['Mountain']*20+[name]*16+['Novice Inspector']*16
   foe=['Forest']*70;decks=[deck,foe] if p==0 else [foe,deck]
-  paid=False;qualified=False;source_ref=None;draw_before=0;boost=False;cleanup=False;discount=False;saw_zero=False;equip_paid=False
+  paid=False;source_ref=None;saw_zero=False;equip_paid=False
   with Game(decks,seed=41,starting_player=seat,deck_rules='Freeform') as g:
    for _ in range(14000):
     o=g.observe('P0');self.assertIsNone(o['outcome'],name);o=g.observe(o['actor']);actor=o['actor'];objects={v['id']:v for v in o['objects']};body=next((v for v in objects.values() if v['owner']==seat and v['zone']=='Battlefield' and v['card']==name),None)
     hist=o['players'][p]['nonland_permanents_entered_this_turn'];self.assertEqual(hist,g.observe('P1' if actor=='P0' else 'P0')['players'][p]['nonland_permanents_entered_this_turn'])
     if body and source_ref is None:source_ref=body['reference'];self.assertTrue(paid)
-    if body and hist>=2:qualified=True
     if body and o['active']==seat:
      if not positive and o['step']==('End' if i==6 else 'Main2') and not o['stack'] and not o['announcing']:
       self.assertLess(hist,2);self.assertEqual((body['power'],body['toughness']),BASE[i]);self.assertEqual(body['counters']['plus_one'],0);self.assertIsNone(body['attached_to']);self.assertFalse(body['keywords'] & {4:1024,5:256,9:64}.get(i,0));return

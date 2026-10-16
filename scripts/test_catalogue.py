@@ -861,8 +861,8 @@ class CatalogueCompilerTests(unittest.TestCase):
         names=['Basking Capybara','Billowing Shriekmass','Brightspear Zealot','Cloudsculpt Technician','Frilled Cave-Wurm','Gaelicat','Gigantoad','Mind Drill Assailant','Scorpion Sentinel']
         for name in names:
             self.assertIn(name,supported);c=next(c for c in rows['cards'] if c['name']==name);proxy,_,_=generate.extract_stat_rules(dict(c,oracle_text=c['oracle_text']+'\nWhenever you attack, discover 3.'));self.assertIsNone(generate.permanent_program_template(proxy));self.assertIsNone(generate.trigger_creature_template(proxy))
-        for name in ['Armory Mice','Colossal Rattlewurm']:
-            self.assertNotIn(name,supported)
+        self.assertIn('Armory Mice',supported)  # Complete historical celebration is now supported.
+        self.assertNotIn('Colossal Rattlewurm',supported)
 
     def test_firebending_exact_triggers_preserve_multiplicity_and_scaled_count(self):
         for n in [0,1,2,65535]:

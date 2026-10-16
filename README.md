@@ -12,6 +12,8 @@ The first training target is [current Standard, pinned to October 15, 2026](docs
 [Explore and Map](docs/explore.md) add fifteen complete bodies with public exploration,
 exact source incarnations, completed-event observers and the full paid Map activation.
 [Bargain](docs/bargain.md) adds ten complete bodies with exact optional sacrifice costs, joint mana reservations and historical entry qualification.
+[Celebration](docs/celebration.md) adds ten complete bodies with historical nonland
+entry counts, typed static conditions and intervening-if triggers.
 [Scalar X casting](docs/scalar-x.md) adds twelve complete bodies with actor-private complete
 interval domains, contextual stack mana values and exact entry amounts.
 [Fixed kicker](docs/fixed-kicker.md) adds ten complete bodies with typed additional costs,
