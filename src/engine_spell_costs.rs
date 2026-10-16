@@ -46,6 +46,9 @@ impl Game {
         base
     }
     pub(super) fn offspring_choice_fundable(&self, a: &Announcement, pay: bool) -> bool {
+        if a.item.source_card.target_cost_reduction().is_some() {
+            return self.announcement_target_fundable(a, None, None, Some(pay), None, false);
+        }
         a.cost_options().any(|cost| {
             self.spell_can_fund(
                 a.item.controller,

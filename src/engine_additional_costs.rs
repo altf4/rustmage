@@ -50,8 +50,17 @@ impl Game {
     }
 
     pub(super) fn spell_can_fund(&self, actor: Player, card: CardId, cost: ManaCost) -> bool {
-        let definition = self.state.objects[card as usize].card;
         let cost = self.reduced_spell_cost(actor, card, cost);
+        self.spell_can_fund_total(actor, card, cost, None)
+    }
+    pub(super) fn spell_can_fund_total(
+        &self,
+        actor: Player,
+        card: CardId,
+        cost: ManaCost,
+        route: Option<ForageRoute>,
+    ) -> bool {
+        let definition = self.state.objects[card as usize].card;
         let base = FundingGoal {
             actor,
             required: cost.colored,
@@ -63,7 +72,11 @@ impl Game {
             return self.can_fund(base);
         };
         if forage::is_forage_cost(spec) {
-            return self.forage_cost_fundable(base, spec, None);
+            return if route == Some(ForageRoute::Black) {
+                self.can_fund(base)
+            } else {
+                self.forage_cost_fundable(base, spec, route)
+            };
         }
         self.state.objects.iter().enumerate().any(|(id, _)| {
             let object = self.object_ref(id as CardId);

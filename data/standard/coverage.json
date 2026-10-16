@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "c945320f4cf738ccb6765f5081fca7c77511dc69369781619e58dd1bd81f0166",
+  "catalogue_version": "a917b33e39153e5c0102fa9900e92b00d95116213c7a25ca91f2f528d547ebd8",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1495,
-  "implemented_total": 1501,
+  "implemented_standard_cards": 1514,
+  "implemented_total": 1520,
   "token_definitions": 72,
   "emblem_definitions": 1,
   "cards": [
@@ -700,8 +700,8 @@
     {
       "name": "Ajani's Response",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Ajani, Caller of the Pride",
@@ -3448,8 +3448,8 @@
     {
       "name": "Brush Off",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Bubble Smuggler",
@@ -5800,8 +5800,8 @@
     {
       "name": "Dark Endurance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Dark Fortress",
@@ -6280,8 +6280,8 @@
     {
       "name": "Depower",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Depressurize",
@@ -6520,8 +6520,8 @@
     {
       "name": "Dire Downdraft",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Dire Flail // Dire Blunderbuss",
@@ -8704,8 +8704,8 @@
     {
       "name": "Fate of the Sun-Cryst",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Fated Firepower",
@@ -11320,8 +11320,8 @@
     {
       "name": "Grounded for Life",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Group Project",
@@ -11332,8 +11332,8 @@
     {
       "name": "Grow Extra Arms",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Grow from the Ashes",
@@ -15490,8 +15490,8 @@
     {
       "name": "Luminous Rebuke",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Lumra, Bellow of the Woods",
@@ -15766,8 +15766,8 @@
     {
       "name": "Magnificent End",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Magnifying Glass",
@@ -18352,8 +18352,8 @@
     {
       "name": "Out of Air",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Outcaster Greenblade",
@@ -19894,8 +19894,8 @@
     {
       "name": "Quicksand Whirlpool",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Quicksilver, Brash Blur",
@@ -21136,8 +21136,8 @@
     {
       "name": "Ride's End",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Riftburst Hellion",
@@ -21364,8 +21364,8 @@
     {
       "name": "Roadside Blowout",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Roamer's Routine",
@@ -21718,14 +21718,14 @@
     {
       "name": "Run Behind",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Run Over",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Runaway Boulder",
@@ -22672,8 +22672,8 @@
     {
       "name": "Seized from Slumber",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Selesnya Guildgate",
@@ -25720,8 +25720,8 @@
     {
       "name": "Swampsnare Trap",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Swarm Culler",
@@ -28660,8 +28660,8 @@
     {
       "name": "Uneasy Partings",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Unending Whisper",

@@ -74,6 +74,35 @@ def spell_cost_options(cost):
     # side of every two-brid symbol. Its total remains the printed mana value.
     return [(list(row[:6]),row[6]) for row in sorted(variants)]
 
+def extract_target_cost_reduction(card):
+    if card.get('layout')!='normal' or not isinstance(card.get('oracle_text'),str):return card,None
+    def obj(kinds=0,relation=-1,tapped=False,min_mana=0,max_mana=4294967295):
+        return f'TargetRule::Object {{ zone: TargetZone::Battlefield, kinds: {kinds}, relation: {relation}, other: false, nonland: false, tapped: {str(tapped).lower()}, min_mana: {min_mana}, max_mana: {max_mana} }}'
+    def filtered(base,predicate):return 'TargetRule::Filtered { base: &'+base+', predicate: &TargetPredicate::'+predicate+' }'
+    attacking=filtered('TargetRule::Creature','Attacking')
+    rules={
+        'a tapped creature':obj(1,tapped=True),'a tapped permanent':obj(tapped=True),
+        'a blocking creature':filtered('TargetRule::Creature','Blocking'),
+        'an attacking creature':attacking,
+        'an attacking or tapped creature':'TargetRule::Union(&['+attacking+', '+obj(1,tapped=True)+'])',
+        'an attacking nontoken creature':filtered(attacking,'Nontoken'),
+        'a Spider':filtered(obj(),'Subtype("Spider")'),
+        'a creature with flying':filtered('TargetRule::Creature','Keyword(Keywords(1))'),
+        'a permanent with mana value 1':obj(min_mana=1,max_mana=1),
+        'a Mount or Vehicle you control':'TargetRule::Union(&['+', '.join(filtered(obj(relation=0),'Subtype('+json.dumps(t)+')') for t in ['Mount','Vehicle'])+'])',
+        'a creature spell':'TargetRule::SpellKinds { kinds: 1, excluded: 0 }',
+        'an instant or sorcery spell':'TargetRule::SpellKinds { kinds: 12, excluded: 0 }',
+    }
+    body=[];found=[]
+    for line in card['oracle_text'].split('\n'):
+        m=re.fullmatch(r'This spell costs ((?:\{(?:[0-9]+|[WUBRGC])\})+) less to cast if it targets (.+)\.',line)
+        cost=fixed_cost(m[1]) if m else None;rule=rules.get(m[2]) if m else None
+        if cost and rule:found.append('TargetSpellReduction { rule: '+rule+', discount: ManaCost { colored: '+str(cost[0])+', generic: '+str(cost[1])+' } }')
+        else:body.append(line)
+    if len(found)!=1:return card,None
+    return dict(card,oracle_text='\n'.join(body)),found[0]
+
+
 def reduction_filter(noun):
     if noun=="Lesson": return 'CastFilter::Subtype("Lesson")'
     words={'': 'Any','creature':'Creature','noncreature':'Noncreature','artifact':'Artifact',
@@ -2812,6 +2841,7 @@ def compile_catalogue(snapshot, target):
     offspring_factories = {}
     hybrid_rows = []
     reduction_rows = []
+    target_reduction_rows = []
     entry_counter_rows = []
     equipment_rows = []
     aura_rows = []
@@ -2823,6 +2853,7 @@ def compile_catalogue(snapshot, target):
         card, flashback = extract_flashback(card)
         card, offspring = extract_offspring(card)
         card, additional = extract_additional_cost(card)
+        card, target_reduction = extract_target_cost_reduction(card)
         card, reductions = extract_cost_reductions(card)
         card, dynamic, scaling = extract_stat_rules(card)
         card, creature_entry = extract_creature_entry_tapped(card)
@@ -2920,6 +2951,7 @@ def compile_catalogue(snapshot, target):
             if entry_suppression: entry_suppression_rows.append(f'        {index} => {entry_suppression},')
             if opponent_entry_tapped: opponent_entry_tapped_rows.append(f'        {index} => {opponent_entry_tapped},')
             if entry_counters: entry_counter_rows.append(f'        {index} => &[{", ".join(entry_counters)}],')
+            if target_reduction: target_reduction_rows.append(f'        {index} => Some(&{target_reduction}),')
             if reductions: reduction_rows.append(f'        {index} => &[{", ".join(reductions)}],')
             if additional is not None: additional_rows.append(f'        {index} => Some({additional}),')
         basic = name in {'Plains', 'Island', 'Swamp', 'Mountain', 'Forest'} or card.get('type_line', '').split(' — ')[0] == 'Basic Land'
@@ -2980,7 +3012,7 @@ def compile_catalogue(snapshot, target):
             color_masks.append(color)
             # Clone every compiled property table for the immutable copy; no
             # mutable copy/type-changing engine or runtime card-name dispatch.
-            for table in [static_rows,grant_rows,dynamic_rows,scaling_rows,additional_rows,hybrid_rows,reduction_rows,entry_counter_rows,entry_suppression_rows,opponent_entry_tapped_rows,offspring_rows]:
+            for table in [static_rows,grant_rows,dynamic_rows,scaling_rows,additional_rows,hybrid_rows,reduction_rows,target_reduction_rows,entry_counter_rows,entry_suppression_rows,opponent_entry_tapped_rows,offspring_rows]:
                 prefix=f'        {source_index} =>'
                 table.extend(row.replace(prefix,f'        {index} =>',1) for row in list(table) if row.startswith(prefix))
             offspring_copy_rows.append(f'        {index} => Some(__TOKEN_{key}__),')
@@ -3049,6 +3081,7 @@ def compile_catalogue(snapshot, target):
     lines += ['#[rustfmt::skip]', 'pub(super) fn offspring_copy(card: Card) -> Option<Card> {', '    match card.0 {', *offspring_copy_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn flashback_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *flashback_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub const CREATURE_TYPES: &[&str] = &[', *('    '+json.dumps(name)+',' for name in creature_types), '];', '']
+    lines += ['#[rustfmt::skip]', "pub(super) fn target_cost_reduction(card: Card) -> Option<&'static TargetSpellReduction> {", '    match card.0 {', *target_reduction_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn cost_reductions(card: Card) -> &'static [SpellReduction] {", '    match card.0 {', *reduction_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn cost_alternatives(card: Card) -> &'static [ManaCost] {", '    match card.0 {', *hybrid_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn entry_counter_rules(card: Card) -> &'static [EntryCounterRule] {", '    match card.0 {', *entry_counter_rows, '        _ => &[],', '    }', '}', '']

@@ -67,6 +67,26 @@ class CatalogueCompilerTests(unittest.TestCase):
         changed=dict(snapshot,cards=[dict(c,oracle_text=c['oracle_text'].replace('Until the end of your next turn','Until end of turn')) if c['name']=="Alania's Pathmaker" else c for c in snapshot['cards']]);changed['cards_sha256']=hashlib.sha256(json.dumps(changed['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();_,altered=generate.compile_catalogue(changed,target)
         self.assertNotEqual(original['catalogue_version'],altered['catalogue_version']);self.assertTrue(next(c['implemented'] for c in altered['cards'] if c['name']=="Alania's Pathmaker"))
 
+    def test_target_dependent_reductions_keep_complete_colored_predicates_and_residuals(self):
+        import json,hashlib
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());manifest=json.loads((generate.ROOT/'docs/target-cost-admissions.json').read_text());self.assertEqual(len(manifest['cards']),19)
+        source,coverage=generate.compile_catalogue(snapshot,target);names={c['name'] for c in manifest['cards']};supported={c['name'] for c in coverage['cards'] if c['implemented']};self.assertTrue(names<=supported)
+        for c in manifest['cards']:self.assertEqual(c['oracle_text'],next(r['oracle_text'] for r in snapshot['cards'] if r['name']==c['name']))
+        altered=dict(snapshot,cards=[dict(c,oracle_text=c['oracle_text']+'\nDiscover 3.') if c['name'] in names else c for c in snapshot['cards']]);altered['cards_sha256']=hashlib.sha256(json.dumps(altered['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();_,cov=generate.compile_catalogue(altered,target);self.assertFalse(names&{c['name'] for c in cov['cards'] if c['implemented']})
+        brush=next(c for c in snapshot['cards'] if c['name']=='Brush Off');body,rule=generate.extract_target_cost_reduction(brush);self.assertIn('colored: [0, 1, 0, 0, 0, 0]',rule);self.assertIn('generic: 1',rule);self.assertIn('kinds: 12',rule);self.assertEqual(body['oracle_text'],'Counter target spell.')
+
+    def test_target_discount_unknown_scope_multiplicity_and_nonspell_modifiers_stay_gated(self):
+        for clause in ['This spell costs {1} less to cast if it targets two tapped creatures.','This spell costs {1} less to cast if it targets only a tapped creature.','This spell costs {X} less to cast if it targets a tapped creature.','This spell costs {G/U} less to cast if it targets a creature with flying.','This spell costs {1} less to cast if an opponent controls a tapped creature.','This ability costs {1} less to activate if it targets a tapped creature.']:
+            c=self.card(oracle_text=clause+'\nWhen this creature enters, draw a card.');residual,rule=generate.extract_target_cost_reduction(c);self.assertIsNone(rule);self.assertEqual(residual,c)
+        clause='This spell costs {1} less to cast if it targets a tapped creature.';c=self.card(oracle_text=clause+'\n'+clause+'\nFlying');self.assertEqual(generate.extract_target_cost_reduction(c),(c,None))
+        c=self.card(oracle_text=clause+'\nFlying');c['layout']='transform';self.assertEqual(generate.extract_target_cost_reduction(c),(c,None))
+
+    def test_target_discount_extraction_preserves_other_costs_and_fingerprint(self):
+        import json,hashlib
+        clause='This spell costs {1} less to cast if it targets a tapped creature.';c=self.card(oracle_text=clause+'\nOffspring {2}\nFlying');residual,rule=generate.extract_target_cost_reduction(c);self.assertIn('Offspring {2}',residual['oracle_text']);self.assertIsNotNone(rule)
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());_,before=generate.compile_catalogue(snapshot,target)
+        changed=dict(snapshot,cards=[dict(c,oracle_text=c['oracle_text'].replace('costs {1}{U} less','costs {2}{U} less')) if c['name']=='Brush Off' else c for c in snapshot['cards']]);changed['cards_sha256']=hashlib.sha256(json.dumps(changed['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();_,after=generate.compile_catalogue(changed,target);self.assertNotEqual(before['catalogue_version'],after['catalogue_version'])
+
     def test_library_tuck_exact_owner_and_fixed_bottom_grammar(self):
         bodies=[("Target creature's owner puts it on their choice of the top or bottom of their library.",'Creature','OwnerLibrary'),("Target artifact or creature's owner puts it on their choice of the top or bottom of their library.",'ArtifactCreature','OwnerLibrary'),("Target nonland permanent's owner puts it on their choice of the top or bottom of their library.",'Nonland','OwnerLibrary'),("The owner of target nonland permanent puts it on their choice of the top or bottom of their library.",'Nonland','OwnerLibrary'),("Put target card from a graveyard on the bottom of its owner's library.",'CardGrave','BottomLibrary')]
         for text,target,op in bodies:
@@ -76,15 +96,16 @@ class CatalogueCompilerTests(unittest.TestCase):
         for text in ["Target spell or creature's owner puts it on their choice of the top or bottom of their library.","Target creature's controller puts it on their choice of the top or bottom of their library.","Target attacking nontoken creature's owner puts it on their choice of the top or bottom of their library.","Put target card from a graveyard on top of its owner's library.","Target creature's owner may put it on their choice of the top or bottom of their library."]:
             self.assertIsNone(generate.targeted_program(text))
 
-    def test_library_tuck_thirteen_full_bodies_and_three_cost_gates(self):
+    def test_library_tuck_full_bodies_and_completed_historical_cost_gates(self):
         import json,hashlib
         snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());manifest=json.loads((generate.ROOT/'docs/library-tuck-admissions.json').read_text())
         self.assertEqual((len(manifest['cards']),len(manifest['gated'])),(13,3))
         source,coverage=generate.compile_catalogue(snapshot,target);supported={c['name'] for c in coverage['cards'] if c['implemented']};names={c['name'] for c in manifest['cards']};self.assertTrue(names<=supported)
         for c in manifest['cards']+manifest['gated']:self.assertEqual(c['oracle_text'],next(r['oracle_text'] for r in snapshot['cards'] if r['name']==c['name']))
-        self.assertFalse({c['name'] for c in manifest['gated']}&supported)
+        # The three historical target-cost gates are completed by issue211.
+        self.assertTrue({c['name'] for c in manifest['gated']} <= supported)
         altered=dict(snapshot,cards=[dict(c,oracle_text=c.get('oracle_text','')+'\nDiscover 3.') if c['name'] in names else c for c in snapshot['cards']]);altered['cards_sha256']=hashlib.sha256(json.dumps(altered['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();_,bad=generate.compile_catalogue(altered,target);self.assertFalse(names&{c['name'] for c in bad['cards'] if c['implemented']})
-        for name in ['Sudden Setback','Swat Away','Dire Downdraft','Run Behind','Uneasy Partings']:self.assertNotIn(name,supported)
+        for name in ['Sudden Setback','Swat Away']:self.assertNotIn(name,supported)
         self.assertIn('Mutagen Token',source)
 
     def test_library_tuck_tail_order_and_villain_condition_are_complete(self):
@@ -1470,7 +1491,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertTrue(rules,name)
             self.assertIsNone(generate.spell_program_template(proxy),name);self.assertIsNone(generate.permanent_program_template(proxy),name)
             self.assertIsNone(generate.static_permanent_template(proxy),name);self.assertIsNone(generate.modal_spell_template(proxy),name)
-        for name in ['Thalia, the Survivor','Out of Air',"Dragon's Prey",'Quicksand Whirlpool','Spectral Denial',
+        for name in ['Thalia, the Survivor',"Dragon's Prey",'Spectral Denial',
                      'Eluge, the Shoreless Sea','Inquisitive Glimmer','Traxos, Academy Guardian']:
             self.assertNotIn(name,supported)
 
@@ -1886,7 +1907,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         for name in admitted:self.assertIn(name,supported)
         for name in ['Unwanted Remake',
                      'Consuming Ashes','Bovine Intervention','Get Lost',
-                     'Ride\'s End','Protective Response','Dragon\'s Prey']:
+                     'Protective Response','Dragon\'s Prey']:
             self.assertNotIn(name,supported,name)
         import re
         colors=json.loads(re.search(r'static COLORS: \[u8; [0-9]+\] = (\[[^;]+\]);',rust)[1])
