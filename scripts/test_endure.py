@@ -42,11 +42,16 @@ class EndureCompilerTests(unittest.TestCase):
         rows = {c['name']: c for c in snapshot['cards']}
         manifest = json.loads((g.ROOT / 'docs/endure-admissions.json').read_text())
         evidence = rows['Analyze the Pollen']['oracle_text'].splitlines()[0] + '\n'
+        convoke = rows['Appeal to Eirdu']['oracle_text'].splitlines()[0] + '\n'
+        bargain = rows['Candy Grapple']['oracle_text'].splitlines()[0] + '\n'
         for row in manifest['cards']:
             card = rows[row['name']]
             mutants = [dict(card, oracle_text=card['oracle_text'] + '\nDiscover 3.'), dict(card, mana_cost='{X}' + card['mana_cost'])]
-            for prefix in ['Convoke\n', 'Bargain\n', 'Kicker {1}\n', 'Offspring {1}\n', evidence]:
-                mutants.append(dict(card, oracle_text=prefix + card['oracle_text']))
+            for prefix in [convoke, bargain, 'Kicker {1}\n', 'Offspring {1}\n', evidence]:
+                mutant = dict(card, oracle_text=prefix + card['oracle_text'])
+                if prefix == convoke: self.assertTrue(g.extract_convoke(mutant)[1])
+                if prefix == bargain: self.assertTrue(g.extract_bargain(mutant)[1])
+                mutants.append(mutant)
             mutants += [dict(card, mana_cost=cost) for cost in ['{Y}', '{W/P}', '{Q}', '{4294967296}', '{4294967295}{1}{W}']]
             for mutant in mutants:
                 with self.subTest(name=card['name'], cost=mutant['mana_cost'], text=mutant['oracle_text']):
