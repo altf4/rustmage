@@ -366,3 +366,349 @@ fn granted_vigilance_preserves_untapped_attack_and_source_grants_reset() {
     g.move_object(frog, Zone::Battlefield);
     assert!(!g.object_view(frog).keywords.contains(Keywords::REACH));
 }
+
+#[test]
+fn continuous_grants_follow_owner_zone_incarnation_and_snapshot() {
+    let mut g = scenario();
+    let bear = named(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    let enemy = named(&mut g, Player::P1, "Grizzly Bears", Zone::Battlefield);
+    let hand = named(&mut g, Player::P0, "Grizzly Bears", Zone::Hand);
+    let samut = named(
+        &mut g,
+        Player::P0,
+        "Samut, Hazoret's Champion",
+        Zone::Battlefield,
+    );
+    for id in [bear, samut] {
+        assert!(g.keywords(id).contains(Keywords::HASTE));
+    }
+    for id in [enemy, hand] {
+        assert!(!g.keywords(id).contains(Keywords::HASTE));
+    }
+    let saved = g.snapshot();
+    let reference = g.object_ref(samut);
+    g.move_object(samut, Zone::Hand);
+    assert!(!g.keywords(bear).contains(Keywords::HASTE));
+    assert!(!g.keywords(samut).contains(Keywords::HASTE));
+    g.move_object(samut, Zone::Battlefield);
+    assert_ne!(g.object_ref(samut), reference);
+    assert!(g.keywords(bear).contains(Keywords::HASTE));
+    g.restore(&saved);
+    assert_eq!(g.object_ref(samut), reference);
+    assert!(g.keywords(bear).contains(Keywords::HASTE));
+}
+
+#[test]
+fn own_turn_first_strike_is_derived_and_changeling_stays_intrinsic() {
+    let mut g = scenario();
+    for name in [
+        "Bearer of Glory",
+        "Feisty Spikeling",
+        "Null Group Biological Assets",
+        "Skilled Battlecarver",
+    ] {
+        let id = named(&mut g, Player::P0, name, Zone::Battlefield);
+        let enemy = named(&mut g, Player::P1, name, Zone::Battlefield);
+        assert!(g.keywords(id).contains(Keywords::FIRST_STRIKE));
+        assert!(!g.keywords(enemy).contains(Keywords::FIRST_STRIKE));
+        let saved = g.snapshot();
+        g.state.active = Player::P1;
+        assert!(!g.keywords(id).contains(Keywords::FIRST_STRIKE));
+        assert!(g.keywords(enemy).contains(Keywords::FIRST_STRIKE));
+        g.restore(&saved);
+        assert!(g.keywords(id).contains(Keywords::FIRST_STRIKE));
+        g.move_object(id, Zone::Graveyard);
+        assert!(!g.keywords(id).contains(Keywords::FIRST_STRIKE));
+        assert_eq!(
+            g.keywords(id).contains(Keywords::CHANGELING),
+            name == "Feisty Spikeling"
+        );
+    }
+}
+
+#[test]
+fn tribal_stats_and_lifelink_apply_before_damage_and_capture_departing_batch() {
+    let mut g = scenario();
+    let lord = named(&mut g, Player::P0, "Regal Caracal", Zone::Hand);
+    g.move_object(lord, Zone::Battlefield);
+    g.prepare_triggers();
+    pass_pair(&mut g);
+    let cats: Vec<_> = g
+        .state
+        .objects
+        .iter()
+        .enumerate()
+        .filter(|(_, o)| {
+            o.zone == Zone::Battlefield && o.card.is_token() && o.card.has_subtype("Cat")
+        })
+        .map(|(id, _)| id as CardId)
+        .collect();
+    assert_eq!(cats.len(), 2);
+    let changeling = named(&mut g, Player::P0, "Feisty Spikeling", Zone::Battlefield);
+    let enemy = named(&mut g, Player::P1, "Feisty Spikeling", Zone::Battlefield);
+    assert!(!g.keywords(lord).contains(Keywords::LIFELINK));
+    assert!(!g.keywords(enemy).contains(Keywords::LIFELINK));
+    for id in cats.iter().copied().chain([changeling]) {
+        assert!(g.keywords(id).contains(Keywords::LIFELINK));
+        let intrinsic = g.state.objects[id as usize].local_power();
+        assert_eq!(g.stats(id).power, intrinsic + 1);
+    }
+    let power = g.stats(changeling).power;
+    g.state.attackers.push(Attacker {
+        card: changeling,
+        blocked: false,
+    });
+    g.state.step = Step::Blockers;
+    g.advance_step();
+    assert_eq!(g.state.players[0].life, 20 + i64::from(power));
+    assert_eq!(g.state.players[1].life, 20 - i64::from(power));
+    let events = g.move_objects_raw(&[lord, changeling], Zone::Graveyard);
+    assert!(events[1].before.keywords.contains(Keywords::LIFELINK));
+    assert!(!g.keywords(changeling).contains(Keywords::LIFELINK));
+    for id in cats {
+        assert_eq!(g.stats(id).power, 1);
+        assert!(g.keywords(id).contains(Keywords::LIFELINK));
+    }
+}
+
+#[test]
+fn artifact_keyword_grants_feed_layer_seven_and_indestructible_rules() {
+    let mut g = scenario();
+    let krang = named(
+        &mut g,
+        Player::P0,
+        "Krang, Utrom Warlord",
+        Zone::Battlefield,
+    );
+    let robot = named(&mut g, Player::P0, "Three Tree Mascot", Zone::Battlefield);
+    let bear = named(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    let enemy = named(&mut g, Player::P1, "Three Tree Mascot", Zone::Battlefield);
+    named(&mut g, Player::P0, "Empyrean Eagle", Zone::Battlefield);
+    for keyword in [
+        Keywords::FLYING,
+        Keywords::TRAMPLE,
+        Keywords::INDESTRUCTIBLE,
+        Keywords::HASTE,
+    ] {
+        assert!(g.keywords(robot).contains(keyword));
+        assert!(!g.keywords(bear).contains(keyword));
+        assert!(!g.keywords(enemy).contains(keyword));
+    }
+    assert_eq!(
+        g.stats(robot).power,
+        g.state.objects[robot as usize].local_power() + 1
+    );
+    spell(&mut g, "Murder", Some(Target::Card(robot)));
+    assert_eq!(g.object_view(robot).zone, Zone::Battlefield);
+    g.state.objects[robot as usize].damage = 100;
+    g.state_based_actions();
+    assert_eq!(g.object_view(robot).zone, Zone::Battlefield);
+    g.move_object(krang, Zone::Hand);
+    g.state_based_actions();
+    assert_eq!(g.object_view(robot).zone, Zone::Graveyard);
+}
+
+#[test]
+fn attacking_token_first_strike_recomputes_and_does_not_make_a_second_hit() {
+    let mut g = scenario();
+    let okoye = named(&mut g, Player::P0, "Okoye, Dora Milaje Leader", Zone::Hand);
+    g.move_object(okoye, Zone::Battlefield);
+    g.prepare_triggers();
+    pass_pair(&mut g);
+    let tokens: Vec<_> = g
+        .state
+        .objects
+        .iter()
+        .enumerate()
+        .filter(|(_, o)| o.zone == Zone::Battlefield && o.card.is_token())
+        .map(|(id, _)| id as CardId)
+        .collect();
+    assert_eq!(tokens.len(), 2);
+    assert!(!g.keywords(tokens[0]).contains(Keywords::FIRST_STRIKE));
+    g.state.attackers.push(Attacker {
+        card: tokens[0],
+        blocked: false,
+    });
+    g.state.attackers.push(Attacker {
+        card: okoye,
+        blocked: false,
+    });
+    assert!(g.keywords(tokens[0]).contains(Keywords::FIRST_STRIKE));
+    assert!(!g.keywords(tokens[1]).contains(Keywords::FIRST_STRIKE));
+    assert!(!g.keywords(okoye).contains(Keywords::FIRST_STRIKE));
+    g.state.step = Step::Blockers;
+    g.advance_step();
+    assert_eq!(g.state.step, Step::FirstStrikeDamage);
+    assert_eq!(g.state.players[1].life, 19);
+    g.move_object(okoye, Zone::Hand);
+    assert!(!g.keywords(tokens[0]).contains(Keywords::FIRST_STRIKE));
+    pass_pair(&mut g);
+    assert_eq!(g.state.players[1].life, 19);
+}
+
+#[test]
+fn continuous_tribal_double_strike_gives_changeling_both_damage_steps() {
+    let mut g = scenario();
+    let source = named(&mut g, Player::P0, "Boldwyr Aggressor", Zone::Battlefield);
+    let attacker = named(&mut g, Player::P0, "Three Tree Mascot", Zone::Battlefield);
+    assert!(g.keywords(attacker).contains(Keywords::DOUBLE_STRIKE));
+    g.state.attackers.push(Attacker {
+        card: attacker,
+        blocked: false,
+    });
+    let power = i64::from(g.stats(attacker).power);
+    g.state.step = Step::Blockers;
+    g.advance_step();
+    assert_eq!(g.state.players[1].life, 20 - power);
+    let saved = g.snapshot();
+    pass_pair(&mut g);
+    assert_eq!(g.state.players[1].life, 20 - 2 * power);
+    g.restore(&saved);
+    g.move_object(source, Zone::Hand);
+    pass_pair(&mut g);
+    assert_eq!(g.state.players[1].life, 20 - power);
+}
+
+#[test]
+fn static_grants_preserve_printed_activated_bodies() {
+    let mut g = scenario();
+    let bearer = named(&mut g, Player::P0, "Bearer of Glory", Zone::Battlefield);
+    let carver = named(
+        &mut g,
+        Player::P0,
+        "Skilled Battlecarver",
+        Zone::Battlefield,
+    );
+    for (id, mana) in [(bearer, [1, 0, 0, 0, 0, 4]), (carver, [0, 0, 0, 1, 0, 1])] {
+        let before = g.stats(carver);
+        g.state.players[0].mana = mana;
+        let a = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a,Action::Activate{card,..} if *card==id))
+            .unwrap();
+        act(&mut g, a);
+        pass_pair(&mut g);
+        assert_eq!(g.stats(carver).power, before.power + 1);
+        assert_eq!(
+            g.stats(carver).toughness,
+            before.toughness + i32::from(id == bearer)
+        );
+        assert!(g.keywords(carver).contains(Keywords::FIRST_STRIKE));
+    }
+}
+
+#[test]
+fn expanded_tribal_vocabulary_preserves_temporary_trigger_recipient_sets() {
+    for (name, step, keywords) in [
+        (
+            "Cosmic Spider-Man",
+            Step::Main1,
+            Keywords::FLYING
+                .union(Keywords::FIRST_STRIKE)
+                .union(Keywords::TRAMPLE)
+                .union(Keywords::LIFELINK)
+                .union(Keywords::HASTE),
+        ),
+        (
+            "Vulture, Scheming Scavenger",
+            Step::Attackers,
+            Keywords::FLYING,
+        ),
+    ] {
+        let mut g = scenario();
+        let source = named(&mut g, Player::P0, name, Zone::Battlefield);
+        let changeling = named(&mut g, Player::P0, "Three Tree Mascot", Zone::Battlefield);
+        let enemy = named(&mut g, Player::P1, "Three Tree Mascot", Zone::Battlefield);
+        let bear = named(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+        g.state.step = step;
+        if step == Step::Main1 {
+            g.advance_step();
+        } else {
+            g.state.pending = Pending::Attackers;
+            act(&mut g, Action::Attack { card: source });
+            act(&mut g, Action::FinishAttackers);
+        }
+        g.prepare_triggers();
+        assert!(!g.state.stack.is_empty() || !g.state.pending_triggers.is_empty());
+        pass_pair(&mut g);
+        assert!(g.keywords(changeling).contains(keywords));
+        assert!(!g.keywords(enemy).contains(Keywords::FLYING));
+        assert!(!g.keywords(bear).contains(Keywords::FLYING));
+        g.move_object(source, Zone::Hand);
+        assert!(g.keywords(changeling).contains(keywords));
+        let later = named(&mut g, Player::P0, "Three Tree Mascot", Zone::Battlefield);
+        assert!(!g.keywords(later).contains(Keywords::FLYING));
+    }
+}
+
+#[test]
+fn every_admitted_continuous_source_is_registered_and_removed_on_zone_change() {
+    let mut g = scenario();
+    let sources: Vec<_> = Card::catalogue()
+        .filter(|c| !c.keyword_grants().is_empty())
+        .collect();
+    assert!(sources.len() >= 9);
+    for card in sources {
+        let id = spawn(&mut g, Player::P0, card, Zone::Hand);
+        assert!(!g.state.static_sources.contains(&id));
+        g.move_object(id, Zone::Battlefield);
+        assert_eq!(
+            g.state.static_sources.iter().filter(|&&s| s == id).count(),
+            1
+        );
+        let saved = g.snapshot();
+        g.move_object(id, Zone::Exile);
+        assert!(!g.state.static_sources.contains(&id));
+        g.restore(&saved);
+        assert_eq!(
+            g.state.static_sources.iter().filter(|&&s| s == id).count(),
+            1
+        );
+        g.move_object(id, Zone::Hand);
+    }
+}
+
+#[test]
+fn own_turn_static_source_keeps_its_optional_discard_draw_attack_trigger() {
+    for accept in [false, true] {
+        let mut g = scenario();
+        let source = named(
+            &mut g,
+            Player::P0,
+            "Null Group Biological Assets",
+            Zone::Battlefield,
+        );
+        let hand = named(&mut g, Player::P0, "Mountain", Zone::Hand);
+        let library = g.state.players[0].library.len();
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        act(&mut g, Action::Attack { card: source });
+        act(&mut g, Action::FinishAttackers);
+        pass_pair(&mut g);
+        assert_eq!(
+            g.observe(Player::P0).effect_choice.unwrap().kind,
+            EffectChoiceKind::Discard
+        );
+        let saved = g.snapshot();
+        let action = if accept {
+            Action::Discard { card: hand }
+        } else {
+            Action::DeclineEffectPayment
+        };
+        act(&mut g, action.clone());
+        let expected = g.snapshot();
+        g.restore(&saved);
+        act(&mut g, action);
+        assert_eq!(g.snapshot(), expected);
+        assert_eq!(
+            g.state.players[0].library.len(),
+            library - usize::from(accept)
+        );
+        assert_eq!(
+            g.object_view(hand).zone,
+            if accept { Zone::Graveyard } else { Zone::Hand }
+        );
+        assert!(g.keywords(source).contains(Keywords::FIRST_STRIKE));
+    }
+}

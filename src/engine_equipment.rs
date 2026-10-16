@@ -33,9 +33,28 @@ impl Game {
     }
 
     pub(super) fn keywords(&self, id: CardId) -> Keywords {
-        self.state.objects[id as usize]
-            .keywords()
-            .union(self.attachment_bonus(id).1)
+        let target = &self.state.objects[id as usize];
+        let mut keywords = target.keywords().union(self.attachment_bonus(id).1);
+        if target.zone != Zone::Battlefield {
+            return keywords;
+        }
+        let reference = self.object_ref(id);
+        let attacking = self.state.attackers.iter().any(|a| a.card == id);
+        for &source in &self.state.static_sources {
+            let object = &self.state.objects[source as usize];
+            for grant in object.card.keyword_grants() {
+                if grant.matches(
+                    target.card,
+                    target.owner == object.owner,
+                    reference == self.object_ref(source),
+                    attacking,
+                    object.owner == self.state.active,
+                ) {
+                    keywords = keywords.union(grant.keywords);
+                }
+            }
+        }
+        keywords
     }
 
     pub(super) fn attach_equipment(&mut self, source: ObjectRef, target: ObjectRef) -> bool {

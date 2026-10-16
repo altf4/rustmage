@@ -70,7 +70,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Environmental Scientist','Flock Impostor','Gangly Stompling','Graveshifter',
                      'Mischievous Sneakling','Prideful Feastling','Rooftop Percher','Three Tree Mascot']:
             self.assertIn(name,supported)
-        for name in ['Feisty Spikeling','Nameless Inversion','Barkform Harvester','Taurean Mauler','Firdoch Core',
+        for name in ['Nameless Inversion','Barkform Harvester','Taurean Mauler','Firdoch Core',
                      'Crib Swap','Sizzling Changeling','Mutable Explorer','Omni-Changeling']:
             self.assertNotIn(name,supported)
 
@@ -925,7 +925,6 @@ class CatalogueCompilerTests(unittest.TestCase):
         for text in ('Enchanted creatures you control get +2/+2.',
                      'Creatures you control get +X/+X.',
                      'Creatures you control get +1/+1 for each land you control.',
-                     'Other creatures you control get +1/+1.\nOther creatures have flying.',
                      'Other creatures you control get +1/+1.\nThis creature has base power and toughness 4/4.',
                      'Other creatures you control get +32768/+0.'):
             self.assertIsNone(generate.static_permanent_template(self.card(oracle_text=text)),text)
@@ -1243,6 +1242,43 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIsNotNone(generate.permanent_program_template(self.card(oracle_text=text)),text)
         self.assertTrue(generate.activation_cost('{0}, {T}')['mana_component'])
         self.assertFalse(generate.activation_cost('{T}')['mana_component'])
+
+    def test_continuous_keyword_grants_compile_only_supported_layer_six_scopes(self):
+        for subject, expected in [('Creatures you control','relation: 0'),
+                                  ('Other creatures','other: true'),
+                                  ('Giants you control','subtype: Some("Giant")'),
+                                  ('Attacking creature tokens you control','attacking: true'),
+                                  ('Artifact creatures you control','artifact: true')]:
+            result=generate.static_permanent_template(self.card(oracle_text=subject+' have haste and flying.'))
+            self.assertIsNotNone(result,subject)
+            self.assertIn(expected,result[6][0]); self.assertIn('keywords: Keywords(5)',result[6][0])
+        result=generate.static_permanent_template(self.card(oracle_text='During your turn, this creature has first strike.'))
+        self.assertIn('source_only: true, own_turn: true',result[6][0])
+        result=generate.static_permanent_template(self.card(oracle_text='Other Cats you control get +1/+1 and have lifelink.'))
+        self.assertEqual(len(result[5]),1);self.assertEqual(len(result[6]),1)
+        for text in ['Creatures you control with flying have haste.',
+                     'Creatures you control have changeling.',
+                     'Creatures you control have ward {2}.',
+                     'Creatures you control lose flying.',
+                     'Creatures you control have flying as long as you control an Island.',
+                     'As long as you control a Mountain, creatures you control have haste.',
+                     'During your turn, creatures you control get +1/+1.',
+                     'Creatures you control have haste.\nWhenever you cast a spell, proliferate.',
+                     'Creatures you control have haste.\nThis creature has base power and toughness 4/4.']:
+            self.assertIsNone(generate.static_permanent_template(self.card(oracle_text=text)),text)
+        self.assertIsNone(generate.static_permanent_template(self.card(type_line='Artifact',oracle_text='This creature has first strike.')))
+
+    def test_continuous_keyword_admissions_are_complete(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,coverage=generate.compile_catalogue(rows,target)
+        supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for name in ['Aggressive Mammoth','Bearer of Glory','Boldwyr Aggressor','Cosmic Spider-Man',
+                     'Feisty Spikeling','Krang, Utrom Warlord','Null Group Biological Assets',
+                     'Okoye, Dora Milaje Leader','Regal Caracal',"Samut, Hazoret's Champion",
+                     'Skilled Battlecarver','Vulture, Scheming Scavenger']:
+            self.assertIn(name,supported)
 
 
 if __name__ == '__main__':

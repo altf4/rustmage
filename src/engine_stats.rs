@@ -79,6 +79,10 @@ impl Game {
             .card
             .static_modifiers()
             .is_empty()
+            || !self.state.objects[id as usize]
+                .card
+                .keyword_grants()
+                .is_empty()
         {
             self.state.static_sources.push(id);
         }
@@ -94,21 +98,13 @@ impl Game {
         let object = &self.state.objects[id as usize];
         object.zone == Zone::Battlefield
             && object.card.is_creature()
-            && match filter.relation {
-                0 => object.owner == controller,
-                1 => object.owner != controller,
-                _ => true,
-            }
-            && (!filter.other || self.object_ref(id) != source)
-            && filter
-                .subtype
-                .is_none_or(|subtype| object.card.has_subtype(subtype))
+            && filter.matches_intrinsic(
+                object.card,
+                object.owner == controller,
+                self.object_ref(id) == source,
+                self.state.attackers.iter().any(|a| a.card == id),
+            )
             && (filter.keyword == Keywords::NONE || self.keywords(id).contains(filter.keyword))
-            && (!filter.attacking || self.state.attackers.iter().any(|a| a.card == id))
-            && filter
-                .tokens
-                .is_none_or(|tokens| object.card.is_token() == tokens)
-            && (!filter.artifact || object.card.is_artifact())
     }
 
     pub(super) fn stats(&self, id: CardId) -> Stats {

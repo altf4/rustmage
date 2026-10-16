@@ -366,6 +366,58 @@ pub(crate) struct CreatureFilter {
     pub artifact: bool,
 }
 
+impl CreatureFilter {
+    /// Earlier-layer facts only. Effective keywords are checked separately.
+    pub(crate) fn matches_intrinsic(
+        self,
+        card: Card,
+        yours: bool,
+        same: bool,
+        attacking: bool,
+    ) -> bool {
+        (match self.relation {
+            0 => yours,
+            1 => !yours,
+            _ => true,
+        }) && (!self.other || !same)
+            && self.subtype.is_none_or(|subtype| card.has_subtype(subtype))
+            && (!self.attacking || attacking)
+            && self.tokens.is_none_or(|tokens| card.is_token() == tokens)
+            && (!self.artifact || card.is_artifact())
+    }
+}
+
+/// Commuting positive layer-6 grants. Keyword-qualified recipients and ability
+/// removal/prohibition remain unsupported; no recursive dependency solver is implied.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct KeywordGrant {
+    pub filter: CreatureFilter,
+    pub source_only: bool,
+    pub own_turn: bool,
+    pub keywords: Keywords,
+}
+impl KeywordGrant {
+    pub(crate) fn matches(
+        self,
+        card: Card,
+        yours: bool,
+        same: bool,
+        attacking: bool,
+        own_turn: bool,
+    ) -> bool {
+        assert_eq!(
+            self.filter.keyword,
+            Keywords::NONE,
+            "keyword-dependent layer-6 filter"
+        );
+        (!self.own_turn || own_turn)
+            && (!self.source_only || same)
+            // A tribal noun may also describe a noncreature kindred permanent.
+            && (self.filter.subtype.is_some() || card.is_creature())
+            && self.filter.matches_intrinsic(card, yours, same, attacking)
+    }
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct StaticModifier {
     pub filter: CreatureFilter,
@@ -831,6 +883,9 @@ impl Card {
     }
     pub(crate) fn triggers(self) -> &'static [TriggeredAbility] {
         generated::DEFINITIONS[self.0 as usize].triggers
+    }
+    pub(crate) fn keyword_grants(self) -> &'static [KeywordGrant] {
+        generated::keyword_grants(self)
     }
 
     pub(crate) fn activations(self) -> &'static [ActivatedAbility] {

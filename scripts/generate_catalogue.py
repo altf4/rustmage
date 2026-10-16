@@ -206,7 +206,10 @@ SUBTYPE_PLURALS = {'elves': 'Elf', 'goblins': 'Goblin', 'dinosaurs': 'Dinosaur',
                    'allies': 'Ally', 'turtles': 'Turtle', 'soldiers': 'Soldier', 'zombies': 'Zombie',
                    'vampires': 'Vampire', 'merfolk': 'Merfolk', 'humans': 'Human', 'cats': 'Cat',
                    'dogs': 'Dog', 'rabbits': 'Rabbit', 'birds': 'Bird', 'bats': 'Bat', 'mice': 'Mouse',
-                   'kithkin': 'Kithkin', 'knights': 'Knight', 'warriors': 'Warrior', 'spirits': 'Spirit'}
+                   'kithkin': 'Kithkin', 'knights': 'Knight', 'warriors': 'Warrior', 'spirits': 'Spirit',
+                   'giants': 'Giant', 'heroes': 'Hero', 'villains': 'Villain', 'faeries': 'Faerie',
+                   'spiders': 'Spider', 'otters': 'Otter', 'squirrels': 'Squirrel', 'mounts': 'Mount',
+                   'insects': 'Insect', 'rats': 'Rat', 'snakes': 'Snake', 'wizards': 'Wizard'}
 
 
 def creature_filter(text):
@@ -242,15 +245,41 @@ def grow_instruction(subject, power, toughness):
 
 def static_permanent_template(card):
     if not isinstance(card.get('oracle_text'), str): return None
-    body, modifiers = [], []
-    for line in re.sub(r'\([^()]*\)', '', card['oracle_text']).strip().split('\n'):
-        m = re.fullmatch(r'(.+) get ([+-][0-9]+)/([+-][0-9]+)\.', line)
+    body, modifiers, grants = [], [], []
+    name=card.get('name','')
+    names=[name] if name else []
+    if name and card.get('type_line','').startswith('Legendary '): names.append(name.split(',')[0])
+    def grant(subject,words,own_turn):
+        source_only=subject.casefold()=='this creature'
+        if source_only and 'Creature' not in card.get('type_line','').split(' — ')[0].split(): return None
+        filt=creature_filter('creatures you control' if source_only else subject)
+        keywords=keyword_list(words.casefold())
+        # Positive grants commute only when recipient selection does not depend
+        # on another layer-6 ability. Dependency/removal machinery stays gated.
+        if filt is None or keywords is None or 'keyword: Keywords(0)' not in filt: return None
+        return f'KeywordGrant {{ filter: {filt}, source_only: {str(source_only).lower()}, own_turn: {str(own_turn).lower()}, keywords: Keywords({keywords}) }}'
+    for original in re.sub(r'\([^()]*\)', '', card['oracle_text']).strip().split('\n'):
+        line=original.strip()
+        own_turn=line.startswith('During your turn, ')
+        if own_turn: line=line[len('During your turn, '):]
+        for alias in names:
+            if line.startswith(alias+' has '): line='this creature has '+line[len(alias+' has '):]
+        m = re.fullmatch(r'(.+) get ([+-][0-9]+)/([+-][0-9]+)(?: and have (.+))?\.', line)
         if m:
+            if own_turn: return None
             filt = creature_filter(m[1])
             if filt is None or max(abs(int(m[2])), abs(int(m[3]))) > 32767: return None
+            if m[4]:
+                extra=grant(m[1],m[4],False)
+                if extra is None: return None
+                grants.append(extra)
             modifiers.append(f'StaticModifier {{ filter: {filt}, stats: Stats {{ power: {int(m[2])}, toughness: {int(m[3])} }} }}')
-        else: body.append(line)
-    if not modifiers: return None
+        elif m:=re.fullmatch(r'(.+) (?:have|has) (.+)\.',line):
+            extra=grant(m[1],m[2],own_turn)
+            if extra is None: return None
+            grants.append(extra)
+        else: body.append(original)
+    if not modifiers and not grants: return None
     proxy = dict(card, oracle_text='\n'.join(body).strip())
     result = permanent_program_template(proxy)
     if result is None:
@@ -258,7 +287,8 @@ def static_permanent_template(card):
         trigger = trigger_creature_template(proxy)
         if template: effect, keywords = template; result = effect, keywords, [], [], [0,0,0]
         elif trigger: effect, keywords, triggers = trigger; result = effect, keywords, triggers, [], [0,0,0]
-    return (*result, modifiers) if result else None
+    return (*result, modifiers, grants) if result else None
+
 
 
 def keyword_list(text):
@@ -1448,6 +1478,7 @@ def compile_catalogue(snapshot, target):
     supported = []
     coverage = []
     static_rows = []
+    grant_rows = []
     hybrid_rows = []
     equipment_rows = []
     aura_rows = []
@@ -1498,8 +1529,9 @@ def compile_catalogue(snapshot, target):
             elif permanent is not None:
                 effect, keywords, abilities, activations, enters = permanent
             elif static is not None:
-                effect, keywords, abilities, activations, enters, modifiers = static
-                static_rows.append(f'        {index} => &[{", ".join(modifiers)}],')
+                effect, keywords, abilities, activations, enters, modifiers, grants = static
+                if modifiers: static_rows.append(f'        {index} => &[{", ".join(modifiers)}],')
+                if grants: grant_rows.append(f'        {index} => &[{", ".join(grants)}],')
         if effect != 'Unsupported':
             activations = [*activations, *cycling]
             if len(activations) > 64: effect = 'Unsupported'; activations = []
@@ -1578,6 +1610,7 @@ def compile_catalogue(snapshot, target):
     for index, (name, _, _, _) in enumerate(LEGACY):
         lines.append(f'    pub const {name.replace(" ", "")}: Card = Card({index});')
     lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn equipment(card: Card) -> Option<EquipmentSpec> {', '    match card.0 {', *equipment_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn aura(card: Card) -> Option<AuraSpec> {', '    match card.0 {', *aura_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', "pub(super) fn keyword_grants(card: Card) -> &'static [KeywordGrant] {", '    match card.0 {', *grant_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub const CREATURE_TYPES: &[&str] = &[', *('    '+json.dumps(name)+',' for name in creature_types), '];', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn cost_alternatives(card: Card) -> &'static [Mana] {", '    match card.0 {', *hybrid_rows, '        _ => &[],', '    }', '}', '']
     return '\n'.join(lines), {'schema': 1, 'catalogue_version': version, 'standard_legal_cards': len(cards),

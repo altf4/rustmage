@@ -13,10 +13,12 @@ pub(super) struct FundingGoal {
 #[derive(Clone)]
 struct Resource {
     id: CardId,
+    attacking: bool,
     object: Object,
 }
 #[derive(Clone)]
 struct FundingState {
+    active: Player,
     mana: Mana,
     life: i64,
     resources: Vec<Resource>,
@@ -40,6 +42,7 @@ struct ResourceKey {
     used: u64,
     gained: Keywords,
     owned: bool,
+    attacking: bool,
     identity: Option<CardId>,
     attached: Option<(CardId, u64)>,
 }
@@ -113,6 +116,7 @@ impl FundingState {
                     .is_some_and(|(source, _, _, _)| source.card == *id as CardId)
                     || object.zone == Zone::Battlefield
                         && (object.card.attachment_bonus().is_some()
+                            || !object.card.keyword_grants().is_empty()
                             || (object.owner == goal.actor
                                 && (object.card.mana_color().is_some()
                                     || object
@@ -123,10 +127,12 @@ impl FundingState {
             })
             .map(|(id, object)| Resource {
                 id: id as CardId,
+                attacking: game.state.attackers.iter().any(|a| a.card == id as CardId),
                 object: object.clone(),
             })
             .collect();
         Self {
+            active: game.state.active,
             mana: game.state.players[goal.actor.index()].mana,
             life: game.state.players[goal.actor.index()].life,
             resources,
@@ -159,6 +165,25 @@ impl FundingState {
                     && let Some(spec) = source.object.card.attachment_bonus()
                 {
                     keywords = keywords.union(spec.keywords);
+                }
+            }
+        }
+        if target.object.zone == Zone::Battlefield {
+            for source in &self.resources {
+                if source.object.zone != Zone::Battlefield {
+                    continue;
+                }
+                for grant in source.object.card.keyword_grants() {
+                    if grant.matches(
+                        target.object.card,
+                        target.object.owner == source.object.owner,
+                        target.id == source.id
+                            && target.object.generation == source.object.generation,
+                        target.attacking,
+                        source.object.owner == self.active,
+                    ) {
+                        keywords = keywords.union(grant.keywords);
+                    }
                 }
             }
         }
@@ -297,6 +322,7 @@ impl FundingState {
                 used: r.object.used_abilities,
                 gained: r.object.gained_keywords,
                 owned: r.object.owner == goal.actor,
+                attacking: r.attacking,
                 identity: linked.then_some(r.id),
                 attached: r.object.attached_to.map(|r| (r.card, r.generation)),
             })
@@ -313,6 +339,7 @@ impl FundingState {
                 r.counters.stun,
                 r.used,
                 r.gained,
+                r.attacking,
                 (r.owned, r.identity, r.attached),
             )
         });
@@ -599,6 +626,92 @@ impl Game {
 mod equipment_tests {
     use super::super::tests::{scenario, spawn};
     use super::*;
+    #[test]
+    fn planning_recomputes_continuous_haste_when_source_leaves() {
+        let mut g = scenario();
+        let elf = spawn(&mut g, Player::P0, Card::LlanowarElves, Zone::Battlefield);
+        g.state.objects[elf as usize].summoning_sick = true;
+        let samut = spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Samut, Hazoret's Champion").unwrap(),
+            Zone::Battlefield,
+        );
+        let goal = FundingGoal {
+            actor: Player::P0,
+            required: [0, 0, 0, 0, 1, 0],
+            generic: 0,
+            source: None,
+        };
+        let mut state = FundingState::from_game(&g, goal);
+        assert!(state.reachable(goal, &mut HashSet::new()));
+        for resource in &state.resources {
+            assert_eq!(state.keywords(resource), g.keywords(resource.id));
+        }
+        let before = state.key(goal);
+        state
+            .resources
+            .iter_mut()
+            .find(|r| r.id == samut)
+            .unwrap()
+            .object
+            .zone = Zone::Graveyard;
+        assert!(before != state.key(goal));
+        assert!(!state.reachable(goal, &mut HashSet::new()));
+        assert!(state.moves(goal).is_empty());
+    }
+    #[test]
+    fn funding_keywords_match_live_turn_attacker_artifact_and_tribal_scopes() {
+        let mut g = scenario();
+        for name in [
+            "Bearer of Glory",
+            "Feisty Spikeling",
+            "Regal Caracal",
+            "Boldwyr Aggressor",
+            "Krang, Utrom Warlord",
+            "Okoye, Dora Milaje Leader",
+            "Samut, Hazoret's Champion",
+            "Three Tree Mascot",
+            "Llanowar Elves",
+        ] {
+            for owner in [Player::P0, Player::P1] {
+                spawn(
+                    &mut g,
+                    owner,
+                    Card::from_name(name).unwrap(),
+                    Zone::Battlefield,
+                );
+            }
+        }
+        let token = Card::catalogue()
+            .find(|c| c.token_info().is_some_and(|t| t.name == "Soldier Token"))
+            .unwrap();
+        let id = spawn(&mut g, Player::P0, token, Zone::Battlefield);
+        g.state.attackers.push(Attacker {
+            card: id,
+            blocked: false,
+        });
+        let goal = FundingGoal {
+            actor: Player::P0,
+            required: [0; 6],
+            generic: 0,
+            source: Some((g.object_ref(id), 0, Counters::default(), token)),
+        };
+        // The protected source is retained even without a mana ability. No
+        // activation goal is evaluated here: compare pure derived keywords.
+        for active in [Player::P0, Player::P1] {
+            g.state.active = active;
+            let state = FundingState::from_game(&g, goal);
+            for resource in &state.resources {
+                assert_eq!(
+                    state.keywords(resource),
+                    g.keywords(resource.id),
+                    "{} {active:?}",
+                    resource.object.card.name()
+                );
+            }
+        }
+    }
     #[test]
     fn planning_recomputes_haste_after_supporting_equipment_leaves() {
         let mut g = scenario();

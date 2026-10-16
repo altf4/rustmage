@@ -328,6 +328,51 @@ fn compact_funding_search_matches_native_exhaustive_mana_sequences_on_small_boar
         }
         false
     }
+    // The oracle executes native mana actions; it does not consult the compact
+    // funding graph. Cover new positive haste grants, opposing ownership, both
+    // active players, source departure, attachments and summoning sickness.
+    for owner in [Player::P0, Player::P1] {
+        for active in [Player::P0, Player::P1] {
+            for present in [false, true] {
+                let mut game = scenario();
+                game.state.active = active;
+                let elf = named(&mut game, "Llanowar Elves", Zone::Battlefield);
+                game.state.objects[elf as usize].summoning_sick = true;
+                let druid = named(&mut game, "Druid of the Cowl", Zone::Battlefield);
+                game.state.objects[druid as usize].summoning_sick = true;
+                let samut = spawn(
+                    &mut game,
+                    owner,
+                    Card::from_name("Samut, Hazoret's Champion").unwrap(),
+                    Zone::Battlefield,
+                );
+                if !present {
+                    game.move_object(samut, Zone::Hand);
+                }
+                named(&mut game, "Forest", Zone::Battlefield);
+                for green in 0..=4 {
+                    for generic in 0..=1 {
+                        let required = [0, 0, 0, 0, green, 0];
+                        assert_eq!(
+                            game.can_fund(FundingGoal {
+                                actor: Player::P0,
+                                required,
+                                generic,
+                                source: None
+                            }),
+                            brute(
+                                &game,
+                                required,
+                                generic,
+                                &mut std::collections::HashSet::new()
+                            ),
+                            "owner={owner:?} active={active:?} present={present} green={green} generic={generic}"
+                        );
+                    }
+                }
+            }
+        }
+    }
     let mut game = scenario();
     treasure(&mut game);
     named(&mut game, "Hedron Archive", Zone::Battlefield);
