@@ -731,3 +731,34 @@ fn selection_observer_history_allocations_are_owned_counted_and_rollback_exactly
         );
     }
 }
+#[test]
+fn bite_group_zero_only_growth_and_each_partial_illegal_target_resolve_independently() {
+    for p in [Player::P0, Player::P1] {
+        for missing in 0..4 {
+            let mut g = setup(p);
+            grave(&mut g, p);
+            let own = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let foe = named(&mut g, p.other(), "Hamlet Glutton", Zone::Battlefield);
+            let id = named(&mut g, p, "Bite Down on Crime", Zone::Hand);
+            cast(&mut g, id, true, &[own, foe]);
+            if missing & 1 != 0 {
+                g.move_object(own, Zone::Graveyard);
+            }
+            if missing & 2 != 0 {
+                g.move_object(foe, Zone::Graveyard);
+            }
+            settle(&mut g, true, &[own, foe]);
+            if missing & 1 == 0 {
+                assert_eq!(g.object_view(own).power, 4);
+            } else {
+                assert_eq!(g.state.objects[own as usize].growth, Stats::default());
+            }
+            if missing & 2 == 0 {
+                let v = g.object_view(foe);
+                assert_eq!(v.power, 6);
+                assert_eq!(v.damage, if missing & 1 == 0 { 4 } else { 0 });
+            }
+            assert_eq!(g.observe(p).last_evidence.unwrap().threshold, 6);
+        }
+    }
+}
