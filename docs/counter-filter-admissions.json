@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Annul",
+      "oracle_text": "Counter target artifact or enchantment spell.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/Annul.java",
+          "java_sha256": "90de4285b798ad2e7935fe1636f2c155e029431cd63cbc55f6b49b6602164213"
+        }
+      ]
+    },
+    {
+      "name": "Disdainful Stroke",
+      "oracle_text": "Counter target spell with mana value 4 or greater.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DisdainfulStroke.java",
+          "java_sha256": "106ef01e116e54d77956482f3cbbaca8463d2f3b9f6053cf460517fd24463e90"
+        }
+      ]
+    },
+    {
+      "name": "Flashfreeze",
+      "oracle_text": "Counter target red or green spell.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/Flashfreeze.java",
+          "java_sha256": "9b0e9293e37aa62bd0aaf122da01ccc9b2603a9c27cd36c8ac99ba4270eae3d0"
+        }
+      ]
+    },
+    {
+      "name": "Precise Redaction",
+      "oracle_text": "Counter target white or black spell.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PreciseRedaction.java",
+          "java_sha256": "ecdb8e1e34541bd27fbf2a6e6107684f7845484acad01bef03d2e517abb68057"
+        }
+      ]
+    },
+    {
+      "name": "Spectral Interference",
+      "oracle_text": "Counter target artifact or creature spell unless its controller pays {4}.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SpectralInterference.java",
+          "java_sha256": "b6addd35b78840e457a2f6ecb02eb1b87b81e05d5c45c9ce6816b759e5ed6553"
+        }
+      ]
+    },
+    {
+      "name": "Spell Snare",
+      "oracle_text": "Counter target spell with mana value 2.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SpellSnare.java",
+          "java_sha256": "cb8427de045cdc9305e5cb9cf343f1565bfd2956f8bfbe12f9ce75815eac8e4a"
+        }
+      ]
+    },
+    {
+      "name": "Voracious Greatshark",
+      "oracle_text": "Flash (You may cast this spell any time you could cast an instant.)\nWhen this creature enters, counter target artifact or creature spell.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VoraciousGreatshark.java",
+          "java_sha256": "3ae9cc070be57f53b1f906f56d7b9be05788fb7670a018c196a77b09a441bcb2"
+        }
+      ]
+    }
+  ]
+}

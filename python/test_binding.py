@@ -12,6 +12,79 @@ class BindingTests(unittest.TestCase):
     def game(self):
         return Game([["Mountain"] * 24 + ["LightningBolt"] * 36] * 2, seed=17, deck_rules="Freeform")
 
+    def counter_filter_index(self,obs,delay=False):
+        objects={o['id']:o for o in obs['objects']}
+        def score(a):
+            k=a['kind']
+            if k in ('Cast','AnnounceCast') and objects[a['card']]['owner']=='P1':
+                return 150 if obs['stack'] and (not delay or obs['turn']>=12) else -100
+            if k=='TapMana':
+                return 120 if obs['decision'] in ('pay_costs','resolution_mana') or (obs['actor']=='P0' and obs['active']=='P0' and obs['step'] in ('Main1','Main2')) or (obs['actor']=='P1' and obs['stack'] and (not delay or obs['turn']>=12)) else -100
+            if k in ('Activate','AnnounceActivate','Attack','AttackPlaneswalker'):return -100
+            return {'Keep':140,'PlayLand':130,'TapMana':120,'Cast':80,'PutTrigger':100,'ChooseTarget':90,'FinishTargets':70,'Discard':60,'PayCosts':100,'Pass':0,'FinishAttackers':0,'FinishBlockers':0,'Mulligan':-100,'Concede':-1000}.get(k,10)
+        return max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i]))
+
+    def test_restricted_counter_targets_execute_and_restore_through_native_library(self):
+        cases=[('Annul','Goldvein Pick','Forest'),('Flashfreeze','Bear Cub','Forest'),
+               ('Precise Redaction','Hinterland Sanctifier','Plains'),('Spell Snare','Bear Cub','Forest'),
+               ('Disdainful Stroke','Ordinary Bear','Forest')]
+        for name,target,land in cases:
+            with self.subTest(card=name),Game([[land]*32+[target]*28,['Island']*32+[name]*28],seed=11,deck_rules='Freeform') as game:
+                for _ in range(4000):
+                    actor=game.observe('P0')['actor'];obs=game.observe(actor);self.assertIsNone(obs['outcome'])
+                    if obs['stack'] and obs['stack'][-1]['source_card']==name:
+                        item=obs['stack'][-1];victim=item['targets'][0]['target']['Spell']
+                        self.assertEqual(next(o['card'] for o in obs['objects'] if o['id']==victim),target)
+                        saved=game.snapshot()
+                        with game.clone() as fork:expected=self.resolve_vital_top(fork,actor)
+                        after=self.resolve_vital_top(game,actor);self.assertEqual(after,expected)
+                        self.assertEqual(next(o['zone'] for o in after['objects'] if o['id']==victim),'Graveyard')
+                        self.assertEqual(next(o['zone'] for o in after['objects'] if o['id']==item['card']),'Graveyard')
+                        game.restore(saved);again=self.resolve_vital_top(game,actor);after['revision']=again['revision'];self.assertEqual(again,after);game.drop_snapshot(saved);break
+                    game.step(obs,self.counter_filter_index(obs))
+                else:self.fail('restricted counter did not resolve')
+
+    def test_spectral_four_mana_payment_and_decline_restore_native_continuation(self):
+        for paid in [False,True]:
+            with self.subTest(paid=paid),Game([['Forest']*36+['Bear Cub']*24,['Island']*36+['Spectral Interference']*24],seed=11,deck_rules='Freeform') as game:
+                for _ in range(5000):
+                    actor=game.observe('P0')['actor'];obs=game.observe(actor);self.assertIsNone(obs['outcome'])
+                    if obs['decision']=='resolution_mana':break
+                    game.step(obs,self.counter_filter_index(obs,delay=True))
+                else:self.fail('spectral payment not reached')
+                self.assertEqual(actor,'P0');self.assertEqual(obs['resolving']['source_card'],'Spectral Interference')
+                request=obs['resolution_payment'];self.assertEqual(request['cost']['generic'],4)
+                self.assertEqual(game.observe('P1')['resolution_payment'],request);self.assertEqual(game.observe('P1')['actions'],[])
+                victim=obs['resolving']['targets'][0]['target']['Spell'];saved=game.snapshot()
+                def finish(handle):
+                    for _ in range(12):
+                        current=handle.observe(actor)
+                        if current['resolution_payment'] is None:return current
+                        index=next((i for i,a in enumerate(current['actions']) if a['kind']==('PayResolutionMana' if paid else 'DeclineResolutionMana')),None)
+                        if index is None:index=next((i for i,a in enumerate(current['actions']) if a['kind']=='TapMana'),None)
+                        self.assertIsNotNone(index,'fixture needs four mana');handle.step(current,index)
+                    self.fail('spectral payment stalled')
+                with game.clone() as fork:expected=finish(fork)
+                after=finish(game);self.assertEqual(after,expected)
+                self.assertEqual(next(o['zone'] for o in after['objects'] if o['id']==victim),'Stack' if paid else 'Graveyard')
+                game.restore(saved);again=finish(game);after['revision']=again['revision'];self.assertEqual(again,after);game.drop_snapshot(saved)
+
+    def test_greatshark_flash_entry_counter_target_replays_in_process(self):
+        with Game([['Forest']*32+['Bear Cub']*28,['Island']*32+['Voracious Greatshark']*28],seed=11,deck_rules='Freeform') as game:
+            for _ in range(5000):
+                actor=game.observe('P0')['actor'];obs=game.observe(actor);self.assertIsNone(obs['outcome'])
+                if obs['stack'] and obs['stack'][-1]['source_card']=='Voracious Greatshark' and 'TriggeredAbility' in obs['stack'][-1]['kind']:
+                    item=obs['stack'][-1];victim=item['targets'][0]['target']['Spell'];source=next(o for o in obs['objects'] if o['id']==item['card'])
+                    self.assertEqual((source['zone'],source['power'],source['toughness']),('Battlefield',5,4))
+                    saved=game.snapshot()
+                    with game.clone() as fork:expected=self.resolve_vital_top(fork,actor)
+                    after=self.resolve_vital_top(game,actor);self.assertEqual(after,expected)
+                    self.assertEqual(next(o['zone'] for o in after['objects'] if o['id']==victim),'Graveyard')
+                    self.assertEqual(next(o['zone'] for o in after['objects'] if o['id']==item['card']),'Battlefield')
+                    game.restore(saved);again=self.resolve_vital_top(game,actor);after['revision']=again['revision'];self.assertEqual(again,after);game.drop_snapshot(saved);return
+                game.step(obs,self.counter_filter_index(obs))
+            self.fail('greatshark counter trigger not reached')
+
     def test_donatello_intervening_condition_controls_trigger_creation_and_native_replay(self):
         for artifact in [False,True]:
             deck=['Island']*24+['Donatello, Turtle Techie']*(24 if artifact else 36)+(['Three Tree Mascot']*12 if artifact else [])
