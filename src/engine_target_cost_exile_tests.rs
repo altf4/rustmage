@@ -59,8 +59,19 @@ fn real_exile_rights_use_only_staged_discounted_casts_and_preserve_normal_origin
             let target = match case {
                 1 => {
                     let id = named(&mut g, owner.other(), "Shock", Zone::Hand);
-                    let item = g.cast_item(owner.other(), id, [0; 6]);
-                    g.state.stack.push(item);
+                    g.state.priority = owner.other();
+                    g.state.players[owner.other().index()].mana = [0, 0, 0, 1, 0, 0];
+                    replay(
+                        &mut g,
+                        Action::Cast {
+                            card: id,
+                            target: Some(Target::Player(owner)),
+                            payment: [0, 0, 0, 1, 0, 0],
+                        },
+                    );
+                    assert_eq!(g.actor(), Some(owner.other()));
+                    replay(&mut g, Action::Pass);
+                    assert_eq!(g.actor(), Some(owner));
                     Target::Spell(id)
                 }
                 2 => Target::Card(named(&mut g, owner, "Three Tree Mascot", Zone::Battlefield)),
