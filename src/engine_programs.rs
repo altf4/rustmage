@@ -460,7 +460,10 @@ impl Game {
             if object.zone == Zone::Battlefield && !object.tapped {
                 object.tapped = true;
                 if object.card.triggers().iter().any(|ability| {
-                    matches!(ability.condition.event(), TriggerCondition::SelfBecomesTapped)
+                    matches!(
+                        ability.condition.event(),
+                        TriggerCondition::SelfBecomesTapped
+                    )
                 }) {
                     changed.push(id);
                 }
@@ -476,13 +479,19 @@ impl Game {
     fn tapped_triggers(&mut self, id: CardId) {
         let card = self.state.objects[id as usize].card;
         if !card.triggers().iter().any(|ability| {
-            matches!(ability.condition.event(), TriggerCondition::SelfBecomesTapped)
+            matches!(
+                ability.condition.event(),
+                TriggerCondition::SelfBecomesTapped
+            )
         }) {
             return;
         }
         let source = self.object_view(id);
         for (index, ability) in card.triggers().iter().enumerate() {
-            if matches!(ability.condition.event(), TriggerCondition::SelfBecomesTapped) {
+            if matches!(
+                ability.condition.event(),
+                TriggerCondition::SelfBecomesTapped
+            ) {
                 self.queue_trigger(&source, index);
             }
         }
@@ -1066,14 +1075,13 @@ impl Game {
                                 *id as CardId,
                             )
                         })
-                        .map(|(id, _)| id)
+                        .map(|(id, _)| id as CardId)
                         .collect();
                     if matches!(instruction, Instruction::TapCreatures(_)) {
-                        let ids: Vec<_> = ids.into_iter().map(|id| id as CardId).collect();
                         self.tap_objects(&ids);
                     } else {
                         for id in ids {
-                            self.state.objects[id].untap();
+                            self.state.objects[id as usize].untap();
                         }
                     }
                 }
@@ -1341,25 +1349,35 @@ impl Game {
                     }
                 },
                 Instruction::Tap | Instruction::Untap => {
-                    let ids: Vec<_> = item
-                        .targets
-                        .iter()
-                        .filter_map(|bound| {
+                    if instruction == Instruction::Untap {
+                        for bound in &item.targets {
                             if self.same_target_object(*bound)
                                 && let Target::Card(id) = bound.target
                             {
-                                Some(id)
-                            } else {
-                                None
+                                self.state.objects[id as usize].untap();
                             }
-                        })
-                        .collect();
-                    if instruction == Instruction::Tap {
-                        self.tap_objects(&ids);
-                    } else {
-                        for id in ids {
-                            self.state.objects[id as usize].untap();
                         }
+                    } else if let [bound] = item.targets.as_slice() {
+                        if self.same_target_object(*bound)
+                            && let Target::Card(id) = bound.target
+                        {
+                            self.tap_objects(&[id]);
+                        }
+                    } else {
+                        let ids: Vec<_> = item
+                            .targets
+                            .iter()
+                            .filter_map(|bound| {
+                                if self.same_target_object(*bound)
+                                    && let Target::Card(id) = bound.target
+                                {
+                                    Some(id)
+                                } else {
+                                    None
+                                }
+                            })
+                            .collect();
+                        self.tap_objects(&ids);
                     }
                 }
                 Instruction::Counter => {

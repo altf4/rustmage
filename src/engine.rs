@@ -3756,3 +3756,7 @@ mod entering_object_tests;
 #[cfg(test)]
 #[path = "engine_opponent_entry_tapped_tests.rs"]
 mod opponent_entry_tapped_tests;
+
+#[cfg(test)]
+#[path = "engine_source_tap_tests.rs"]
+mod source_tap_tests;
