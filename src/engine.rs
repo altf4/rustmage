@@ -845,6 +845,21 @@ pub struct TriggerUse {
     pub ability: u16,
 }
 
+/// Every integer in this inclusive range is a legal damage assignment.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct DamageAssignmentRange {
+    pub source: ObjectRef,
+    pub target: Target,
+    pub minimum: i128,
+    pub maximum: i128,
+}
+/// Complete action space: concrete choices plus every value of the numeric range.
+#[derive(Clone, Debug, Serialize)]
+pub struct LegalActionSpace {
+    pub choices: Vec<Action>,
+    pub damage_assignment: Option<DamageAssignmentRange>,
+}
+
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
     pub schema: u32,
@@ -888,6 +903,7 @@ pub struct Observation {
     pub blocks: Vec<(CardId, CardId)>,
     pub damage_assigned: Vec<DamageEvent>,
     pub damage_source: Option<CardId>,
+    pub damage_assignment: Option<DamageAssignmentRange>,
     pub outcome: Option<Outcome>,
     pub actions: Vec<Action>,
 }
@@ -1073,7 +1089,39 @@ impl Game {
         }
     }
 
-    /// Reuse a caller-owned action buffer during native rollouts.
+    /// Complete legal space, including all numeric damage assignments.
+    pub fn legal_action_space(&self) -> LegalActionSpace {
+        LegalActionSpace {
+            choices: self.legal_actions(),
+            damage_assignment: self.damage_assignment_range(),
+        }
+    }
+    /// Exact bounds without allocating or enumerating numeric damage amounts.
+    pub fn damage_assignment_range(&self) -> Option<DamageAssignmentRange> {
+        if self.state.pending != Pending::Damage {
+            return None;
+        }
+        let choice = self.state.damage_choices.last().expect("damage choice");
+        let minimum = if choice.blockers.len() == 1 && choice.trample {
+            if choice.prior_blockers_lethal {
+                self.lethal_assignment(choice.source, choice.blockers[0])
+                    .min(choice.remaining)
+            } else {
+                choice.remaining
+            }
+        } else {
+            0
+        };
+        Some(DamageAssignmentRange {
+            source: choice.source.reference,
+            target: Target::Card(choice.blockers[0]),
+            minimum,
+            maximum: choice.remaining,
+        })
+    }
+    /// Reuse a caller-owned buffer of concrete indexed choices. Numeric damage
+    /// ranges up to 64 wide are exhaustive; larger ranges provide min/lethal/max
+    /// conveniences. Use legal_action_space for the complete parametric space.
     pub fn legal_actions_into(&self, out: &mut Vec<Action>) {
         out.clear();
         if self.actor().is_none() {
@@ -1085,6 +1133,8 @@ impl Game {
         });
     }
 
+    /// Concrete indexed choices; large numeric domains are represented completely
+    /// by legal_action_space().damage_assignment, not enumerated in this vector.
     pub fn legal_actions(&self) -> Vec<Action> {
         let mut actions = Vec::new();
         self.legal_actions_into(&mut actions);
@@ -1104,7 +1154,14 @@ impl Game {
             if self.actor() != Some(actor) {
                 return Err(Error::WrongActor);
             }
-            if !self.visit_actions(|a| a == action) {
+            let legal = if let Action::AssignDamage { target, amount } = &action {
+                self.damage_assignment_range().is_some_and(|range| {
+                    *target == range.target && *amount >= range.minimum && *amount <= range.maximum
+                })
+            } else {
+                self.visit_actions(|a| a == action)
+            };
+            if !legal {
                 return Err(Error::IllegalAction);
             }
             self.apply_legal(actor, action);
@@ -1453,21 +1510,32 @@ impl Game {
                 }
             }
             Pending::Damage => {
-                let choice = s.damage_choices.last().expect("damage choice");
-                let target = Target::Card(choice.blockers[0]);
-                let minimum = if choice.blockers.len() == 1 && choice.trample {
-                    if choice.prior_blockers_lethal {
-                        self.lethal_assignment(choice.source, choice.blockers[0])
-                            .min(choice.remaining)
-                    } else {
-                        choice.remaining
+                let range = self.damage_assignment_range().unwrap();
+                if range.maximum - range.minimum <= 64 {
+                    for amount in range.minimum..=range.maximum {
+                        if emit(Action::AssignDamage {
+                            target: range.target,
+                            amount,
+                        }) {
+                            return true;
+                        }
                     }
                 } else {
-                    0
-                };
-                for amount in minimum..=choice.remaining {
-                    if emit(Action::AssignDamage { target, amount }) {
-                        return true;
+                    let choice = s.damage_choices.last().unwrap();
+                    let lethal = self
+                        .lethal_assignment(choice.source, choice.blockers[0])
+                        .clamp(range.minimum, range.maximum);
+                    let mut prior = None;
+                    for amount in [range.minimum, lethal, range.maximum] {
+                        if prior != Some(amount)
+                            && emit(Action::AssignDamage {
+                                target: range.target,
+                                amount,
+                            })
+                        {
+                            return true;
+                        }
+                        prior = Some(amount);
                     }
                 }
             }
@@ -2850,6 +2918,11 @@ impl Game {
             },
             damage_source: if owns_choice {
                 s.damage_choices.last().map(|choice| choice.source.object)
+            } else {
+                None
+            },
+            damage_assignment: if owns_choice {
+                self.damage_assignment_range()
             } else {
                 None
             },

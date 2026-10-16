@@ -578,3 +578,99 @@ fn wide_damage_action_round_trips_through_the_json_control_interface() {
         assert!(serde_json::from_str::<Action>(&text).is_err());
     }
 }
+#[test]
+fn huge_combat_ranges_preserve_interior_assignments_with_bounded_observation_and_validation() {
+    for trample in [false, true] {
+        let mut g = scenario();
+        let z = named(
+            &mut g,
+            Player::P0,
+            "Zimone, Paradox Sculptor",
+            Zone::Battlefield,
+        );
+        g.state.objects[z as usize].counters.plus_one = 1u64 << 40;
+        if trample {
+            g.state.objects[z as usize].gained_keywords = Keywords::TRAMPLE;
+        }
+        let a = named(&mut g, Player::P1, "Bear Cub", Zone::Battlefield);
+        let b = named(&mut g, Player::P1, "Bear Cub", Zone::Battlefield);
+        g.state.objects[a as usize].gained_keywords = Keywords::INDESTRUCTIBLE;
+        g.state.attackers.push(Attacker {
+            card: z,
+            blocked: true,
+        });
+        g.state.blocks = vec![(a, z), (b, z)];
+        g.state.blocking = vec![a, b];
+        g.state.step = Step::Blockers;
+        g.give_priority();
+        pass_pair(&mut g);
+        let range = g.damage_assignment_range().unwrap();
+        assert_eq!(range.source, g.object_ref(z));
+        assert_eq!(range.target, Target::Card(a));
+        assert_eq!(range.minimum, 0);
+        assert_eq!(range.maximum, (1i128 << 40) + 1);
+        let space = g.legal_action_space();
+        assert_eq!(space.damage_assignment, Some(range));
+        assert!(space.choices.len() <= 4);
+        assert_eq!(g.observe(Player::P0).damage_assignment, Some(range));
+        assert!(g.observe(Player::P1).damage_assignment.is_none());
+        assert!(g.observe(Player::P1).actions.is_empty());
+        reject(
+            &mut g,
+            Action::AssignDamage {
+                target: range.target,
+                amount: -1,
+            },
+        );
+        reject(
+            &mut g,
+            Action::AssignDamage {
+                target: range.target,
+                amount: range.maximum + 1,
+            },
+        );
+        reject(
+            &mut g,
+            Action::AssignDamage {
+                target: Target::Card(b),
+                amount: 100,
+            },
+        );
+        let interior = range.maximum / 2 + 123;
+        let action = Action::AssignDamage {
+            target: range.target,
+            amount: interior,
+        };
+        assert!(!space.choices.contains(&action));
+        let saved = g.snapshot();
+        assert_eq!(g.apply(Player::P1, action.clone()), Err(Error::WrongActor));
+        assert_eq!(saved, g.snapshot());
+        replay(&mut g, action);
+        if trample {
+            let last = g.damage_assignment_range().unwrap();
+            assert_eq!(last.minimum, 2);
+            assert_eq!(last.maximum, range.maximum - interior);
+            reject(
+                &mut g,
+                Action::AssignDamage {
+                    target: last.target,
+                    amount: 1,
+                },
+            );
+            replay(
+                &mut g,
+                Action::AssignDamage {
+                    target: last.target,
+                    amount: 2,
+                },
+            );
+            assert_eq!(g.outcome(), Some(Outcome::Winner(Player::P0)));
+        }
+        assert_eq!(g.object_view(a).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(a).damage, interior);
+        assert_eq!(g.object_view(b).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(z).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(z).damage, 4);
+        assert!(g.damage_assignment_range().is_none());
+    }
+}

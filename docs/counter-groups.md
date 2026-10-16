@@ -64,3 +64,24 @@ computes expected counter values from public before/after observations, while
 also cloning and restoring target/payment/resolution boundaries. Python tests
 exercise mass-counter deaths and Zimone's activated doubling through the native
 library. Full Standard acceptance and the wider RL integration remain incomplete.
+
+A second independent finding concerned damage assignment after large growth.
+Enumerating every integer up to the attacker's power is no longer used for
+large ranges. `Game::legal_action_space()` exposes the complete union of concrete
+choices and `DamageAssignmentRange { source, target, minimum, maximum }`. Every
+integer in the inclusive range remains legal and `Game::apply` validates its
+bounds and target directly in constant space/time. Native callers may query
+`damage_assignment_range()` without allocating any action vector.
+
+`legal_actions()`/`legal_actions_into()` and observation `actions` provide concrete
+indexed conveniences. Damage ranges up to 64 wide remain exhaustive; larger
+ones offer distinct minimum/lethal/maximum representatives. These representatives
+do not restrict the legal range. Observation schema 35 exposes the full
+`damage_assignment` to the actor, and Python `Game.act(observation, action)` sends
+arbitrary legal amounts through the revision-checked native control path.
+Indexed clients can still use `step`; models/searches needing interior numeric
+choices must use the range and `apply`/`act`. Tests cover huge double-blocked
+states, trample minima, interior values absent from the indexed choices, invalid
+bounds/targets/actors, privacy, exact JSON input and snapshot/clone replay. The
+public 40-doubling Python fixture then attacks into two real blockers and submits
+an interior assignment without enumerating the trillion-value domain.

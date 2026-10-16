@@ -14,7 +14,7 @@ class BindingTests(unittest.TestCase):
 
     def test_repeated_zimone_doubling_survives_i32_and_u32_boundaries_in_public_play(self):
         deck=['Forest']*12+['Island']*12+['Zimone, Paradox Sculptor']*36
-        with Game([deck,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+        with Game([deck,['Forest']*24+['Bear Cub']*36],seed=7,deck_rules='Freeform') as game:
             obs=game.observe('P0');doubled=0
             for _ in range(15000):
                 self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor'])
@@ -23,7 +23,9 @@ class BindingTests(unittest.TestCase):
                     kind=action['kind']
                     if kind=='ChooseTarget':return 110 if source and action['target']=={'Card':source['id']} else -100
                     if kind=='AnnounceActivate':return 90 if source and action['card']==source['id'] else -100
-                    if kind=='AnnounceCast':return 90 if source is None else -100
+                    if kind=='AnnounceCast':
+                        if obs['actor']=='P1':return 90 if sum(o['zone']=='Battlefield' and o['owner']=='P1' and o['card']=='Bear Cub' for o in obs['objects'])<2 else -100
+                        return 90 if source is None else -100
                     if kind=='Discard':return 70 if any(o['id']==action['card'] and o['card']=='Zimone, Paradox Sculptor' for o in obs['objects']) else 0
                     if kind in ('TapMana','ActivateMana'):return 80 if obs['decision']=='pay_costs' else -100
                     return {'Keep':120,'PlayLand':100,'PayCosts':110,'FinishTargets':80,'PutTrigger':90,
@@ -45,9 +47,35 @@ class BindingTests(unittest.TestCase):
                     self.assertEqual(current['zone'],'Battlefield');self.assertEqual(current['counters']['plus_one'],2*before)
                     self.assertEqual(current['power'],2*before+1);self.assertEqual(current['toughness'],2*before+4);doubled+=1
                     if doubled>=40:
-                        self.assertGreater(current['counters']['plus_one'],2**40);self.assertEqual(after['schema'],35);return
+                        self.assertGreater(current['counters']['plus_one'],2**40);self.assertEqual(after['schema'],35);obs=after;break
                 obs=after
-            self.fail('forty legal self-targeted doublings not reached')
+            else:self.fail('forty legal self-targeted doublings not reached')
+            for _ in range(100):
+                self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor'])
+                if obs['decision']=='damage':
+                    bounds=obs['damage_assignment'];self.assertEqual(bounds['minimum'],0);self.assertGreater(bounds['maximum'],2**40);self.assertLessEqual(len(obs['actions']),4)
+                    opponent=game.observe('P1');self.assertIsNone(opponent['damage_assignment']);self.assertEqual(opponent['actions'],[])
+                    blocked={o['id'] for o in obs['objects'] if o['zone']=='Battlefield' and o['card']=='Bear Cub' and o['owner']=='P1'};self.assertEqual(len(blocked),2)
+                    amount=bounds['maximum']//2+123;action={'kind':'AssignDamage','target':bounds['target'],'amount':amount}
+                    self.assertNotIn(action,obs['actions']);saved=game.snapshot();actor=obs['actor']
+                    with game.clone() as fork:expected=fork.act(fork.observe(actor),action)
+                    after=game.act(obs,action);self.assertEqual(after,expected);game.restore(saved)
+                    with self.assertRaisesRegex(EngineError,'StaleRevision'):game.act(obs,action)
+                    after=game.act(game.observe(actor),action);expected['revision']=after['revision'];self.assertEqual(after,expected);game.drop_snapshot(saved)
+                    current=next(o for o in after['objects'] if o['reference']==bounds['source']);self.assertEqual(current['zone'],'Battlefield');self.assertEqual(current['damage'],4)
+                    self.assertEqual(sum(o['id'] in blocked and o['zone']=='Graveyard' for o in after['objects']),2);return
+                if obs['decision']=='attackers':
+                    index=next((i for i,a in enumerate(obs['actions']) if a['kind']=='Attack' and obs['actor']=='P0'),None)
+                    if index is None:index=next(i for i,a in enumerate(obs['actions']) if a['kind']=='FinishAttackers')
+                elif obs['decision']=='blockers':
+                    index=next((i for i,a in enumerate(obs['actions']) if a['kind']=='Block' and obs['actor']=='P1'),None)
+                    if index is None:index=next(i for i,a in enumerate(obs['actions']) if a['kind']=='FinishBlockers')
+                else:
+                    candidates=[i for i,a in enumerate(obs['actions']) if a['kind'] in ('Pass','FinishTargets','FinishAttackers','FinishBlockers','Discard')]
+                    self.assertTrue(candidates,str((obs['decision'],obs['step'],obs['actor'],[a['kind'] for a in obs['actions']])))
+                    index=candidates[0]
+                obs=game.step(obs,index)
+            self.fail('huge double-blocked damage range not reached')
 
     def test_mass_negative_counters_resolve_natively_and_replay(self):
         with Game([['Swamp']*24+['Darkness Descends']*36,['Forest']*24+['Bear Cub']*36],seed=6,deck_rules='Freeform') as game:

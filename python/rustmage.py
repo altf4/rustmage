@@ -77,6 +77,11 @@ class Game:
         return self.request("step", actor=observation["actor"], revision=observation["revision"], index=index,
                             viewer=observation["actor"])["observation"]
 
+    def act(self, observation, action):
+        """Submit a concrete action, including any integer in damage_assignment bounds."""
+        return self.request("act", actor=observation["actor"], revision=observation["revision"],
+                            action=action, viewer=observation["actor"])["observation"]
+
     def snapshot(self):
         return self.request("snapshot")["snapshot"]
 

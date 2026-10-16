@@ -63,6 +63,12 @@ cargo run --release --example standard_targeting -- 100
 cargo run --bin coverage
 ```
 
+For a complete action space, use `Game::legal_action_space()`: it combines concrete
+choices with an inclusive numeric damage range. `legal_actions()` and observation
+`actions` are bounded indexed conveniences for large damage ranges. Submit any
+legal interior amount with native `apply` or Python `Game.act`; `step` selects an
+indexed choice. Full bounds are available in observation `damage_assignment`.
+
 Use the Rust API from another crate with a path or Git dependency:
 
 ```rust
