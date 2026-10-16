@@ -1,5 +1,5 @@
 //! Explicit scalar declarations and complete interval domains. Work is bounded by
-//! immutable threshold breakpoints and 32 funding queries per segment, never X.
+//! immutable threshold breakpoints and at most 33 funding queries per segment, never X.
 use super::*;
 use crate::cards::CastFilter;
 impl Game {
