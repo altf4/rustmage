@@ -329,6 +329,11 @@ class ExploreTests(unittest.TestCase):
                 with self.subTest(card=name, seat=seat):
                     self.map_scenario(name, seat)
 
+    def test_get_lost_still_gives_maps_after_indestructible_destroy_both_seats(self):
+        for seat in ('P0', 'P1'):
+            with self.subTest(seat=seat):
+                self.map_scenario('Get Lost', seat, indestructible=True)
+
     def follow_sentinel_attack(self, game, card, seat):
         attacked = False
         old = {v['reference']['card']: v['reference'] for v in game.observe(seat)['objects'] if v['zone'] == 'Battlefield' and v['token'] and v['token']['subtypes'] == 'Map'}
@@ -356,10 +361,11 @@ class ExploreTests(unittest.TestCase):
                 return
         self.fail('Actual vigilance attack did not create Sentinel Map')
 
-    def map_scenario(self, name, seat):
+    def map_scenario(self, name, seat, indestructible=False):
         other = 'P1' if seat == 'P0' else 'P0'
         map_seat = other if name == 'Get Lost' else seat
         deck = sum(([n] * 6 for n in BASICS), []) + [name] * 16 + ['Bear Cub'] * 24
+        if indestructible: deck += ['Adamant Will'] * 12
         foe = ['Forest'] * 40 + ['Bear Cub'] * 30
         decks = [deck, foe] if seat == 'P0' else [foe, deck]
         paid = False
@@ -385,7 +391,10 @@ class ExploreTests(unittest.TestCase):
                     self.assertEqual(len(own_maps), 2 if name == 'Get Lost' else 1)
                     maps_created = True
                     if destroyed:
-                        self.assertEqual(objects[destroyed['card']]['zone'], 'Graveyard')
+                        self.assertEqual(objects[destroyed['card']]['zone'], 'Battlefield' if indestructible else 'Graveyard')
+                        if indestructible:
+                            self.assertEqual(objects[destroyed['card']]['reference'], destroyed)
+                            self.assertTrue(objects[destroyed['card']]['keywords'] & 8192)
                     if sacrificed:
                         self.assertEqual(objects[sacrificed['card']]['zone'], 'Graveyard')
                     if draw_baseline is not None:
@@ -415,7 +424,12 @@ class ExploreTests(unittest.TestCase):
                         n = objects[a['card']]['card']
                         if n == name and actor == seat:
                             ready = len(friends) >= (2 if name == 'Fanatical Offering' else 1) and (name != 'Get Lost' or foes)
+                            if indestructible: ready = ready and any(v['keywords'] & 8192 for v in foes)
                             return 1100 if ready and not paid else -1000
+                        if n == 'Adamant Will' and indestructible and actor == seat and not paid:
+                            mana = [v for v in objects.values() if v['owner'] == seat and v['zone'] == 'Battlefield' and v['card'] in BASICS and not v['tapped']]
+                            ready = foes and len(mana) >= 4 and sum(v['card'] == 'Plains' for v in mana) >= 2 and any(v['owner'] == seat and v['zone'] == 'Hand' and v['card'] == name for v in objects.values())
+                            return 1200 if ready else -1000
                         return 1000 if n == 'Bear Cub' and (len(friends) if actor == seat else len(foes)) < 2 else -1000
                     if k in ('AnnounceActivate', 'BeginActivate', 'Activate'):
                         v = objects[a['card']]
@@ -429,7 +443,8 @@ class ExploreTests(unittest.TestCase):
                     if k == 'ChooseTarget':
                         if 'Card' not in a['target']: return -1000
                         v = objects[a['target']['Card']]
-                        target_owner = other if ann and ann['source_card'] == 'Get Lost' else actor
+                        target_owner = other if ann and ann['source_card'] in ('Get Lost', 'Adamant Will') else actor
+                        if indestructible and ann and ann['source_card'] == 'Get Lost' and not v['keywords'] & 8192: return -1000
                         return 1600 if v['owner'] == target_owner and v['card'] == 'Bear Cub' else -1000
                     if k == 'ChooseExplore': return 1500 if a['graveyard'] else 1000
                     if k == 'Discard': return 900 if objects[a['card']]['card'] in BASICS else 800
