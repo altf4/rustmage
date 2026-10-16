@@ -587,6 +587,18 @@ pub(crate) enum Subject {
     Attached,
 }
 
+/// Immutable +1/+1 counter replacements evaluated against the pre-entry world.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum EntryCounterAmount {
+    Fixed(u16),
+    Stat(StatValue),
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct EntryCounterRule {
+    pub guard: StepGuard,
+    pub amount: EntryCounterAmount,
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum CounterKind {
     PlusOne,
@@ -1198,6 +1210,9 @@ impl Card {
         let mut counters = generated::DEFINITIONS[self.0 as usize].enters;
         counters.loyalty = self.starting_loyalty();
         counters
+    }
+    pub(crate) fn entry_counter_rules(self) -> &'static [EntryCounterRule] {
+        generated::entry_counter_rules(self)
     }
     pub fn is_planeswalker(self) -> bool {
         self.kind_mask() & 64 != 0

@@ -444,6 +444,25 @@ def stat_value(text):
     return f'StatValue::Count({filt})' if filt else None
 
 
+def extract_entry_counters(card):
+    """Exact pre-entry replacements; only emitted after the residual body compiles."""
+    if (card.get('layout') != 'normal' or 'Creature' not in card.get('type_line', '').split(' — ')[0].split()
+            or not isinstance(card.get('oracle_text'), str)):
+        return card, []
+    body, rules = [], []
+    for line in card['oracle_text'].split('\n'):
+        if line == 'Raid — This creature enters with a +1/+1 counter on it if you attacked this turn.':
+            rules.append('EntryCounterRule { guard: StepGuard::Attacked, amount: EntryCounterAmount::Fixed(1) }')
+        elif line == "This creature enters with two +1/+1 counters on it if you've cast two or more spells this turn.":
+            rules.append('EntryCounterRule { guard: StepGuard::Threshold { value: StepValue::SpellsCast, minimum: Some(2), maximum: None }, amount: EntryCounterAmount::Fixed(2) }')
+        elif line == 'This creature enters with a +1/+1 counter on it for each other creature and/or artifact you control.':
+            filt = 'CountFilter { zone: CountZone::Battlefield, relation: 0, kind: 17, exclude: 0, subtype: None, basic: false, other: true, cards_only: false }'
+            rules.append('EntryCounterRule { guard: StepGuard::Always, amount: EntryCounterAmount::Stat(StatValue::Count(' + filt + ')) }')
+        else:
+            body.append(line)
+    return dict(card, oracle_text='\n'.join(body)), rules
+
+
 def extract_stat_rules(card):
     """Extract exact source/attached scaling and characteristic clauses only.
     The residual card must still compile in full before any rule is emitted.
@@ -2088,6 +2107,7 @@ def compile_catalogue(snapshot, target):
     additional_rows = []
     hybrid_rows = []
     reduction_rows = []
+    entry_counter_rows = []
     equipment_rows = []
     aura_rows = []
     for index, name in enumerate(names):
@@ -2095,6 +2115,7 @@ def compile_catalogue(snapshot, target):
         card, additional = extract_additional_cost(card)
         card, reductions = extract_cost_reductions(card)
         card, dynamic, scaling = extract_stat_rules(card)
+        card, entry_counters = extract_entry_counters(card)
         cost = card.get('mana_cost', '')
         keywords = sum(INTRINSIC_KEYWORDS[word] for word in {keyword.casefold() for keyword in card.get('keywords', [])} & INTRINSIC_KEYWORDS.keys())
         effect = 'Unsupported'
@@ -2172,6 +2193,7 @@ def compile_catalogue(snapshot, target):
             loyalty_rows.append(f'        {index} => {int(value)},')
         if effect != 'Unsupported':
             supported.append(index)
+            if entry_counters: entry_counter_rows.append(f'        {index} => &[{", ".join(entry_counters)}],')
             if reductions: reduction_rows.append(f'        {index} => &[{", ".join(reductions)}],')
             if additional is not None: additional_rows.append(f'        {index} => Some({additional}),')
         basic = name in {'Plains', 'Island', 'Swamp', 'Mountain', 'Forest'} or card.get('type_line', '').split(' — ')[0] == 'Basic Land'
@@ -2269,6 +2291,7 @@ def compile_catalogue(snapshot, target):
     lines += ['#[rustfmt::skip]', 'pub const CREATURE_TYPES: &[&str] = &[', *('    '+json.dumps(name)+',' for name in creature_types), '];', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn cost_reductions(card: Card) -> &'static [SpellReduction] {", '    match card.0 {', *reduction_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn cost_alternatives(card: Card) -> &'static [ManaCost] {", '    match card.0 {', *hybrid_rows, '        _ => &[],', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', "pub(super) fn entry_counter_rules(card: Card) -> &'static [EntryCounterRule] {", '    match card.0 {', *entry_counter_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn starting_loyalty(card: Card) -> u64 {', '    match card.0 {', *loyalty_rows, '        _ => 0,', '    }', '}', '']
     return '\n'.join(lines), {'schema': 1, 'catalogue_version': version, 'standard_legal_cards': len(cards),
         'implemented_standard_cards': sum(row['implemented'] and row['standard_legal'] for row in coverage),

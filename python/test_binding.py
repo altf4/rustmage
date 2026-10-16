@@ -12,6 +12,44 @@ class BindingTests(unittest.TestCase):
     def game(self):
         return Game([["Mountain"] * 24 + ["LightningBolt"] * 36] * 2, seed=17, deck_rules="Freeform")
 
+    def test_conditional_entry_counters_are_immediate_and_replay_in_process(self):
+        cases=[('Goblin Boarders',False),('Goblin Boarders',True),('Effortless Master',False),('Effortless Master',True),('Luxknight Breacher',True)]
+        for wanted,positive in cases:
+            lands=(['Island']*18+['Mountain']*18 if wanted=='Effortless Master' else [('Plains' if wanted=='Luxknight Breacher' else 'Mountain')]*36)
+            deck=lands+['Three Tree Mascot']*12+[wanted]*12
+            with self.subTest(card=wanted,positive=positive),Game([deck,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+                def choose(obs):
+                    objects={o['id']:o for o in obs['objects']}
+                    own=[o for o in objects.values() if o['owner']=='P0' and o['zone']=='Battlefield']
+                    ready=(obs['players'][0]['attacked_this_turn'] if wanted=='Goblin Boarders' else obs['players'][0]['spells_cast_this_turn']>=1 if wanted=='Effortless Master' else bool(own and any(o['card']=='Three Tree Mascot' for o in own)))
+                    def score(a):
+                        if a['kind'] in ('Cast','AnnounceCast'):
+                            if wanted=='Goblin Boarders' and positive and obs['step']=='Main1' and any(o['card']=='Three Tree Mascot' and not o['summoning_sick'] and not o['tapped'] for o in own):return -100
+                            name=objects[a['card']]['card']
+                            if name==wanted:return (180 if a['kind']=='AnnounceCast' else 170) if ready==positive else -100
+                            if name=='Three Tree Mascot':return 150 if positive else -100
+                            return -100
+                        if a['kind']=='TapMana':return 140 if obs['decision']=='pay_costs' else -100
+                        if a['kind']=='Attack':return 80
+                        return self.professor_score(obs,a)
+                    return max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i]))
+                for _ in range(10000):
+                    obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor'])
+                    if obs['stack'] and obs['stack'][-1]['source_card']==wanted:break
+                    game.step(obs,choose(obs))
+                else:self.fail('conditional entry cast not reached')
+                own=[o for o in obs['objects'] if o['owner']=='P0' and o['zone']=='Battlefield']
+                n=(int(obs['players'][0]['attacked_this_turn']) if wanted=='Goblin Boarders' else 2*int(obs['players'][0]['spells_cast_this_turn']>=2) if wanted=='Effortless Master' else len([o for o in own if o['card']=='Three Tree Mascot']))
+                self.assertEqual(n>0,positive)
+                card=obs['stack'][-1]['card'];saved=game.snapshot()
+                with game.clone() as fork:expected=self.resolve_vital_top(fork,'P0')
+                after=self.resolve_vital_top(game,'P0');self.assertEqual(after,expected)
+                obj=next(o for o in after['objects'] if o['id']==card)
+                self.assertEqual(obj['zone'],'Battlefield');self.assertEqual(obj['counters']['plus_one'],n)
+                base={'Goblin Boarders':(3,2),'Effortless Master':(4,3),'Luxknight Breacher':(2,2)}[wanted]
+                self.assertEqual((obj['power'],obj['toughness']),(base[0]+n,base[1]+n))
+                game.restore(saved);again=self.resolve_vital_top(game,'P0');after['revision']=again['revision'];self.assertEqual(again,after);game.drop_snapshot(saved)
+
     def history_index(self,obs,which):
         objects={o['id']:o for o in obs['objects']};actor=obs['actor'];own=[o for o in objects.values() if o['owner']==actor and o['zone']=='Battlefield']
         ready_creatures=sum(o['card']=='Ordinary Bear' and not o['summoning_sick'] for o in own)

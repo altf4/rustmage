@@ -37,6 +37,45 @@ class CatalogueCompilerTests(unittest.TestCase):
             proxy,rules=generate.extract_cost_reductions(self.card(oracle_text=text))
             self.assertEqual(proxy['oracle_text'],text);self.assertEqual(rules,[],text)
 
+    def test_entry_counter_replacements_use_exact_pre_entry_predicates(self):
+        texts = [
+            ('Raid — This creature enters with a +1/+1 counter on it if you attacked this turn.', ['StepGuard::Attacked', 'Fixed(1)']),
+            ("This creature enters with two +1/+1 counters on it if you've cast two or more spells this turn.", ['StepValue::SpellsCast', 'minimum: Some(2)', 'Fixed(2)']),
+            ('This creature enters with a +1/+1 counter on it for each other creature and/or artifact you control.', ['kind: 17', 'relation: 0', 'other: true', 'cards_only: false']),
+        ]
+        for text, needles in texts:
+            proxy, rules = generate.extract_entry_counters(self.card(oracle_text=text+'\nFlying'))
+            self.assertEqual(proxy['oracle_text'], 'Flying');self.assertEqual(len(rules),1)
+            for needle in needles:self.assertIn(needle,rules[0])
+        for text in [
+            'Raid — This creature enters with a +1/+1 counter on it if an opponent attacked this turn.',
+            'This creature enters with two +1/+1 counters on it if a creature died this turn.',
+            'This creature enters with a +1/+1 counter on it for each creature and/or artifact that entered this turn.',
+            'This creature enters with a divinity counter on it if you cast it from your hand.',
+            texts[0][0]+' Draw a card.',
+        ]:
+            proxy,rules=generate.extract_entry_counters(self.card(oracle_text=text))
+            self.assertEqual(proxy['oracle_text'],text);self.assertEqual(rules,[])
+
+    def test_three_entry_counter_bodies_keep_unsupported_residuals_gated(self):
+        import json
+        admissions=json.loads((generate.ROOT/'docs/entry-counter-admissions.json').read_text())['cards']
+        self.assertEqual(len(admissions),3)
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,report=generate.compile_catalogue(snapshot,target)
+        supported={c['name'] for c in report['cards'] if c['implemented']}
+        for admitted in admissions:
+            original=next(c for c in snapshot['cards'] if c['name']==admitted['name'])
+            self.assertEqual(admitted['oracle_text'],original['oracle_text'])
+            self.assertIn(admitted['name'],supported)
+            altered=dict(original,oracle_text=original['oracle_text']+'\nWhenever you cast a spell, discover 3.')
+            proxy,rules=generate.extract_entry_counters(altered);self.assertTrue(rules)
+            self.assertIsNone(generate.creature_template(proxy));self.assertIsNone(generate.trigger_creature_template(proxy))
+            self.assertIsNone(generate.permanent_program_template(proxy));self.assertIsNone(generate.static_permanent_template(proxy))
+        for name in ['Cruel Administrator','Cackling Slasher','Patched Plaything','Putrid Pals','Frilled Sparkshooter']:
+            self.assertNotIn(name,supported)
+
     def test_attack_intervening_guards_require_the_complete_tapped_declaration(self):
         result=generate.trigger_creature_template(self.card(oracle_text='Whenever this creature attacks, if you control two or more tapped creatures, draw a card.'))
         self.assertIsNotNone(result)
@@ -67,7 +106,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             proxy,_=generate.extract_cost_reductions(dict(card,oracle_text=card['oracle_text']+'\nWhenever you cast a spell, discover 3.'))
             self.assertIsNone(generate.spell_program_template(proxy),name);self.assertIsNone(generate.permanent_program_template(proxy),name)
             self.assertIsNone(generate.static_permanent_template(proxy),name);self.assertIsNone(generate.modal_spell_template(proxy),name)
-        for name in ['Goblin Boarders','Cruel Administrator','Avengers Assemble!','Full Throttle','Hexhaven Dueling Arena','Strongbox Raider']:
+        for name in ['Cruel Administrator','Avengers Assemble!','Full Throttle','Hexhaven Dueling Arena','Strongbox Raider']:
             self.assertNotIn(name,supported)
 
     def test_derived_cost_quantities_keep_live_stats_out_of_characteristic_layers(self):
@@ -151,7 +190,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertTrue(rules,name)
             self.assertIsNone(generate.spell_program_template(proxy),name);self.assertIsNone(generate.permanent_program_template(proxy),name)
             self.assertIsNone(generate.static_permanent_template(proxy),name);self.assertIsNone(generate.modal_spell_template(proxy),name)
-        for name in ['Eddymurk Crab','Cruel Administrator','Goblin Boarders','Don & Raph, Hard Science','Spectral Denial',
+        for name in ['Eddymurk Crab','Cruel Administrator','Don & Raph, Hard Science','Spectral Denial',
                      'The Dawning Archaic','Tomik, Wielder of Law','Rottenmouth Viper','Sunderflock','Sapling Nursery']:
             self.assertNotIn(name,supported)
 
