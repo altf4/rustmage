@@ -9,7 +9,7 @@ use crate::cards::{
     TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
 /// Version of the public observation structure, including owned trigger context.
-pub const OBSERVATION_SCHEMA: u32 = 65;
+pub const OBSERVATION_SCHEMA: u32 = 66;
 
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
@@ -528,6 +528,7 @@ impl Object {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct PlayerState {
+    nonland_permanents_entered_this_turn: u64,
     spells_cast_this_turn: u64,
     cards_drawn_this_turn: u64,
     cards_discarded_this_turn: u64,
@@ -1014,6 +1015,8 @@ pub struct ZoneChange {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct PlayerView {
+    /// Historical actual entries this turn; departures do not remove them.
+    pub nonland_permanents_entered_this_turn: u64,
     pub spells_cast_this_turn: u64,
     pub cards_drawn_this_turn: u64,
     pub cards_discarded_this_turn: u64,
@@ -1278,6 +1281,7 @@ impl Game {
         }
         let mut objects = Vec::with_capacity(config.decks.iter().map(Vec::len).sum());
         let mut players = std::array::from_fn(|_| PlayerState {
+            nonland_permanents_entered_this_turn: 0,
             spells_cast_this_turn: 0,
             cards_drawn_this_turn: 0,
             cards_discarded_this_turn: 0,
@@ -3198,6 +3202,8 @@ impl Game {
             self.state.players[obj.owner.index()].library.push(id);
         }
         if destination == Zone::Battlefield {
+            let (owner, card) = (obj.owner, obj.card);
+            self.record_nonland_entry(owner, card);
             self.register_battlefield_sources(id);
         }
         if revealed_top && before.zone == Zone::Library && destination == Zone::Hand {
@@ -3254,11 +3260,24 @@ impl Game {
         self.state.passes = 0;
     }
 
+    // Both normal zone moves and token batches record actual entry once. All
+    // entries in a simultaneous batch are recorded before entry observers run.
+    fn record_nonland_entry(&mut self, controller: Player, card: Card) {
+        if !card.is_land() {
+            let count =
+                &mut self.state.players[controller.index()].nonland_permanents_entered_this_turn;
+            *count = count
+                .checked_add(1)
+                .capacity("nonland entry history exhausted");
+        }
+    }
+
     fn begin_turn(&mut self) {
         self.state.triggered_this_turn.clear();
         self.state.attacked_this_turn.clear();
         self.state.creatures_died_this_turn = 0;
         for player in &mut self.state.players {
+            player.nonland_permanents_entered_this_turn = 0;
             player.spells_cast_this_turn = 0;
             player.cards_drawn_this_turn = 0;
             player.cards_discarded_this_turn = 0;
@@ -3712,6 +3731,8 @@ impl Game {
                 Pending::Terminal => "terminal",
             },
             players: std::array::from_fn(|i| PlayerView {
+                nonland_permanents_entered_this_turn: s.players[i]
+                    .nonland_permanents_entered_this_turn,
                 spells_cast_this_turn: s.players[i].spells_cast_this_turn,
                 cards_drawn_this_turn: s.players[i].cards_drawn_this_turn,
                 cards_discarded_this_turn: s.players[i].cards_discarded_this_turn,
@@ -4518,3 +4539,7 @@ mod scalar_x_tests;
 #[cfg(test)]
 #[path = "engine_evidence_tests.rs"]
 mod evidence_tests;
+
+#[cfg(test)]
+#[path = "engine_celebration_tests.rs"]
+mod celebration_tests;

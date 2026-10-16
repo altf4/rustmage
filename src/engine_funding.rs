@@ -1625,3 +1625,39 @@ mod conditional_keyword_tests {
         }
     }
 }
+
+#[cfg(test)]
+mod celebration_funding_tests {
+    use super::*;
+    use crate::engine::tests::{scenario, spawn};
+    #[test]
+    fn virtual_keywords_share_exact_historical_celebration_predicate() {
+        for p in [Player::P0, Player::P1] {
+            for n in [0, 1, 2, u64::MAX] {
+                let mut g = scenario();
+                g.state.players[p.index()].nonland_permanents_entered_this_turn = n;
+                for name in ["Gallant Pie-Wielder", "Grand Ball Guest", "Tuinvale Guide"] {
+                    let id = spawn(&mut g, p, Card::from_name(name).unwrap(), Zone::Battlefield);
+                    let state = FundingState::from_game(
+                        &g,
+                        FundingGoal {
+                            actor: p,
+                            required: [0; 6],
+                            generic: 1,
+                            reserve: None,
+                            source: None,
+                        },
+                    );
+                    let resource = state.resources.iter().find(|r| r.id == id).unwrap();
+                    assert_eq!(state.keywords(resource), g.keywords(id));
+                    let keyword = match name {
+                        "Gallant Pie-Wielder" => Keywords::DOUBLE_STRIKE,
+                        "Grand Ball Guest" => Keywords::TRAMPLE,
+                        _ => Keywords::LIFELINK,
+                    };
+                    assert_eq!(state.keywords(resource).contains(keyword), n >= 2)
+                }
+            }
+        }
+    }
+}

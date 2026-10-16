@@ -76,6 +76,7 @@ impl Game {
                 .capacity("object generation exhausted");
             object.tapped = tapped;
             object.summoning_sick = true;
+            self.record_nonland_entry(controller, token);
             self.register_battlefield_sources(id);
             events.push(ZoneChange {
                 before,

@@ -610,6 +610,7 @@ pub(crate) enum AmountValue {
 pub(crate) enum StatValue {
     Not(&'static StatValue),
     CardsDrawnThisTurn,
+    NonlandEntriesThisTurn,
     SourceAttacking,
     AttackingCreatures,
     SourceModified,

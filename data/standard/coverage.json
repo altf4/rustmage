@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "e9b6095c934c6140abedbe9b6134717d3356af49c1a4fe9c217e9368203f5657",
+  "catalogue_version": "6ce4ca3e32700616feda565deeb7b7860f4023b065b09c98fc0302c48074c165",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1609,
-  "implemented_total": 1615,
+  "implemented_standard_cards": 1619,
+  "implemented_total": 1625,
   "token_definitions": 74,
   "emblem_definitions": 1,
   "cards": [
@@ -1378,8 +1378,8 @@
     {
       "name": "Armory Mice",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Arni, Humble Scribe",
@@ -1438,8 +1438,8 @@
     {
       "name": "Ash, Party Crasher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Ashe, Princess of Dalmasca",
@@ -2284,8 +2284,8 @@
     {
       "name": "Belligerent of the Ball",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Bellowing Bruiser // Beat a Path",
@@ -2368,8 +2368,8 @@
     {
       "name": "Bespoke Battlegarb",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Bespoke Bō",
@@ -10018,8 +10018,8 @@
     {
       "name": "Gallant Pie-Wielder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Gallant Strike",
@@ -11074,8 +11074,8 @@
     {
       "name": "Grand Ball Guest",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Grand Entryway // Elegant Rotunda",
@@ -14620,8 +14620,8 @@
     {
       "name": "Lady of Laughter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Lagorin, Soul of Alacria",
@@ -18850,8 +18850,8 @@
     {
       "name": "Pests of Honor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Pet Avengers",
@@ -20056,8 +20056,8 @@
     {
       "name": "Raging Battle Mouse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Raging Goblinoids",
@@ -28198,8 +28198,8 @@
     {
       "name": "Tuinvale Guide",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Tumbleweed Rising",
