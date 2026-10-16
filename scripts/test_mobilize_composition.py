@@ -13,7 +13,9 @@ class MobilizeCompositionTests(unittest.TestCase):
         rows = {c['name']: c for c in snapshot['cards']}
         mobilize = json.loads((g.ROOT / 'docs/mobilize-admissions.json').read_text())['cards']
         convoke = ['Appeal to Eirdu', 'Disruptor of Currents', 'Lofty Dreams', 'Protective Response', 'Sun-Dappled Celebrant', 'Unexpected Assistance', 'Vote Out', 'Winter, Team Player', 'Merrow Skyswimmer']
-        cases = [dict(rows[c['name']], oracle_text='Convoke\n' + rows[c['name']]['oracle_text']) for c in mobilize]
+        declaration = rows['Appeal to Eirdu']['oracle_text'].splitlines()[0]
+        self.assertTrue(g.extract_convoke(rows['Appeal to Eirdu'])[1])
+        cases = [dict(rows[c['name']], oracle_text=declaration + '\n' + rows[c['name']]['oracle_text']) for c in mobilize]
         cases += [dict(rows[n], oracle_text=rows[n]['oracle_text'] + '\nMobilize 1') for n in convoke]
         self.assertEqual(len(cases), 17)
         for card in cases:
