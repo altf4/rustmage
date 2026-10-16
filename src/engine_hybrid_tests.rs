@@ -98,16 +98,22 @@ fn attack(g: &mut Game, id: CardId) {
 }
 
 #[test]
-fn cost_equivalents_are_unique_same_mana_value_and_fixed_costs_stay_single() {
+fn cost_equivalents_are_unique_and_canonical_preserves_printed_mana_value() {
     for card in Card::catalogue().filter(|c| c.is_supported() && !c.is_land()) {
         let options = card.cost_options().collect::<Vec<_>>();
         assert!(!options.is_empty());
         for (i, cost) in options.iter().enumerate() {
             assert!(!options[..i].contains(cost), "{}", card.name());
-            assert_eq!(
-                u64::from(cost.generic) + cost.colored.iter().map(|n| u64::from(*n)).sum::<u64>(),
-                card.fixed_mana_value()
-            );
+            let total =
+                u64::from(cost.generic) + cost.colored.iter().map(|n| u64::from(*n)).sum::<u64>();
+            if card.info().mana_cost.contains("{2/") {
+                assert!(total <= card.fixed_mana_value());
+                if i == 0 {
+                    assert_eq!(total, card.fixed_mana_value());
+                }
+            } else {
+                assert_eq!(total, card.fixed_mana_value());
+            }
         }
         assert_eq!(options.len() > 1, card.has_hybrid_cost());
     }

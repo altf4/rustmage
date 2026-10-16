@@ -12,6 +12,72 @@ class BindingTests(unittest.TestCase):
     def game(self):
         return Game([["Mountain"] * 24 + ["LightningBolt"] * 36] * 2, seed=17, deck_rules="Freeform")
 
+    def two_brid_index(self,obs,generic):
+        objects={o['id']:o for o in obs['objects']}
+        def score(a):
+            k=a['kind']
+            if k=='ChooseSpellCost':
+                cost=next(c['cost'] for c in obs['cost_choices'] if c['index']==a['cost'])
+                return 200 if cost['generic']==generic else -100
+            if k in ('Cast','AnnounceCast') and objects[a['card']]['owner']=='P0':
+                lands=[o for o in obs['objects'] if o['owner']=='P0' and o['zone']=='Battlefield' and o['card'] in ('Island','Forest','Plains','Swamp')]
+                ready=len(lands)>=6 if generic==6 else {'Forest','Plains','Swamp'}<={o['card'] for o in lands}
+                return (160 if k=='AnnounceCast' else 80) if ready else -100
+            if k=='TapMana':return 120 if obs['decision']=='pay_costs' or (obs['active']==obs['actor'] and obs['step'] in ('Main1','Main2')) else -100
+            return self.professor_score(obs,a)
+        return max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i]))
+
+    def test_two_brid_cost_commitment_and_exile_replay_at_three_and_six_mana(self):
+        for generic in [0,6]:
+            deck=(['Forest']*12+['Plains']*12+['Swamp']*12 if generic==0 else ['Island']*36)+['Kin-Tree Severance']*24
+            with self.subTest(generic=generic),Game([deck,['Forest']*36+['Ordinary Bear']*24],seed=7,deck_rules='Freeform') as game:
+                for _ in range(5000):
+                    actor=game.observe('P0')['actor'];obs=game.observe(actor);self.assertIsNone(obs['outcome'])
+                    if obs['decision']=='spell_cost':break
+                    game.step(obs,self.two_brid_index(obs,generic))
+                else:self.fail('two-brid cost decision not reached')
+                self.assertEqual(actor,'P0');self.assertEqual(game.observe('P1')['actions'],[])
+                self.assertTrue(any(c['cost']['generic']==generic for c in obs['cost_choices']))
+                saved=game.snapshot()
+                def finish(handle):
+                    paid=None
+                    for _ in range(100):
+                        current=handle.observe('P0');current=handle.observe(current['actor'])
+                        if current['stack'] and current['stack'][-1]['source_card']=='Kin-Tree Severance':
+                            self.assertEqual(sum(paid),3 if generic==0 else 6)
+                            victim=current['stack'][-1]['targets'][0]['target']['Card']
+                            after=self.resolve_vital_top(handle,'P0')
+                            self.assertEqual(next(o['zone'] for o in after['objects'] if o['id']==victim),'Exile');return after
+                        action=current['actions'][self.two_brid_index(current,generic)]
+                        if action['kind']=='PayCosts':paid=action['payment']
+                        handle.act(current,action)
+                    self.fail('committed two-brid cast did not finish')
+                with game.clone() as fork:expected=finish(fork)
+                after=finish(game);self.assertEqual(after,expected)
+                game.restore(saved);again=finish(game);after['revision']=again['revision'];self.assertEqual(again,after);game.drop_snapshot(saved)
+
+    def test_two_brid_entry_counter_and_private_loot_use_native_snapshots(self):
+        for name in ['Reputable Merchant','Temur Tawnyback']:
+            with self.subTest(card=name),Game([['Island']*36+[name]*24,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+                for _ in range(5000):
+                    actor=game.observe('P0')['actor'];obs=game.observe(actor);self.assertIsNone(obs['outcome'])
+                    if name=='Reputable Merchant' and obs['stack'] and obs['stack'][-1]['source_card']==name and 'TriggeredAbility' in obs['stack'][-1]['kind']:
+                        item=obs['stack'][-1];target=item['targets'][0]['target']['Card'];saved=game.snapshot()
+                        with game.clone() as fork:expected=self.resolve_vital_top(fork,'P0')
+                        after=self.resolve_vital_top(game,'P0');self.assertEqual(after,expected)
+                        self.assertEqual(next(o['counters']['plus_one'] for o in after['objects'] if o['id']==target),1)
+                        game.restore(saved);again=self.resolve_vital_top(game,'P0');after['revision']=again['revision'];self.assertEqual(again,after);game.drop_snapshot(saved);break
+                    if name=='Temur Tawnyback' and obs['decision']=='effect_discard':
+                        self.assertEqual(obs['players'][0]['cards_drawn_this_turn'],2)
+                        self.assertEqual(game.observe('P1')['effect_discards'],[]);self.assertEqual(game.observe('P1')['actions'],[])
+                        action=next(a for a in obs['actions'] if a['kind']=='Discard');saved=game.snapshot()
+                        with game.clone() as fork:expected=fork.act(fork.observe('P0'),action)
+                        after=game.act(obs,action);self.assertEqual(after,expected);self.assertEqual(after['players'][0]['cards_drawn_this_turn'],2)
+                        self.assertEqual(after['players'][0]['library_count'],obs['players'][0]['library_count'])
+                        game.restore(saved);again=game.act(game.observe('P0'),action);after['revision']=again['revision'];self.assertEqual(again,after);game.drop_snapshot(saved);break
+                    game.step(obs,self.two_brid_index(obs,6))
+                else:self.fail('two-brid entry body not reached')
+
     def counter_filter_index(self,obs,delay=False):
         objects={o['id']:o for o in obs['objects']}
         def score(a):

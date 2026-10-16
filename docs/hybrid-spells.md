@@ -34,8 +34,9 @@ accounting includes the announcement; static alternatives are excluded.
 
 These rules follow CR107.4e, CR202.3f and CR601.2b in the
 [September 25, 2026 Comprehensive Rules](https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf).
-Hybrid activation, cycling and resolution-payment costs, monocolored hybrid,
-Phyrexian/snow/X costs, broader alternative/additional costs and reductions remain
+[Two-brid spell costs](two-brid-spells.md) extend these equivalents with varying
+generic requirements. Hybrid activation, cycling and resolution-payment costs,
+Phyrexian/snow/X costs, broader alternative costs and reductions remain
 separately gated. Hybrid spell support never skips the rest of a card's text.
 
 Eighteen complete Standard identities are added:

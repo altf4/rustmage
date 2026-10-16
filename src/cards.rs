@@ -1165,6 +1165,8 @@ impl Card {
         generated::DEFINITIONS[self.0 as usize].mana_color
     }
     pub(crate) fn fixed_mana_value(self) -> u64 {
+        // The canonical equivalent takes every two-brid symbol's generic side;
+        // a cheaper chosen payment never changes the printed mana value.
         let (colored, generic) = self.cost();
         u64::from(generic) + colored.into_iter().map(u64::from).sum::<u64>()
     }
@@ -1177,12 +1179,11 @@ impl Card {
     }
     pub(crate) fn cost_options(self) -> impl Iterator<Item = ManaCost> {
         let definition = &generated::DEFINITIONS[self.0 as usize];
-        std::iter::once(definition.colored)
-            .chain(generated::cost_alternatives(self).iter().copied())
-            .map(|colored| ManaCost {
-                colored,
-                generic: definition.generic,
-            })
+        std::iter::once(ManaCost {
+            colored: definition.colored,
+            generic: definition.generic,
+        })
+        .chain(generated::cost_alternatives(self).iter().copied())
     }
     pub(crate) fn spell_payments(self, pool: Mana, mut emit: impl FnMut(Mana)) {
         if !self.has_hybrid_cost() {
