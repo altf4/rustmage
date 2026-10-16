@@ -8,6 +8,71 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_exact_search_qualities_quantifiers_and_clause_boundaries(self):
+        positives = [
+            ('basic land cards and/or Gate cards', 'up to two', 'them', 'AnyOf'),
+            ('basic land cards and/or Desert cards', 'up to two', 'them', 'AnyOf'),
+            ('basic Forest card', 'a', 'it', 'AllOf'),
+            ('Spider Hero card', 'a', 'it', 'AllOf'),
+            ('instant card or a card with flash', 'an', 'it', 'Keyword(Keywords(32))'),
+            ('card named Dragonstorm Globe or Boulderborn Dragon', 'a', 'it', 'Name("Dragonstorm Globe")'),
+            ('card named Magitek Infantry', 'a', 'it', 'Name("Magitek Infantry")'),
+            ('Equipment card', 'an', 'it', 'Subtype("Equipment")'),
+        ]
+        for noun,count,pronoun,marker in positives:
+            text=f'search your library for {count} {noun}, reveal {pronoun}, put {pronoun} into your hand, then shuffle.'
+            self.assertIn(marker,generate.search_program(text)[0])
+            for bad in [text+' Draw a card.',text.replace('your library','any library'),text.replace('then shuffle.','shuffle it.'),text.replace('reveal '+pronoun+', ',''),text.replace('into your hand','into your hand tapped')]:
+                self.assertIsNone(generate.search_program(bad),bad)
+        for noun in ['basic land or Gate card','Spider or Hero card','creature card with flashback','permanent card','card named Anything','basic Forest card with mana value 2']:
+            self.assertIsNone(generate.search_program(f'search your library for a {noun}, reveal it, put it into your hand, then shuffle.'))
+        self.assertIsNone(generate.search_program('search your library for up to two basic land cards and/or Gate cards, reveal it, put them into your hand, then shuffle.'))
+        self.assertIsNone(generate.search_program('search your library for a basic land cards, put them onto the battlefield, then shuffle.'))
+        self.assertEqual(generate.targeted_program('return target Cave card from your graveyard to the battlefield tapped.')[1],['ReturnToBattlefieldTapped'])
+        for bad in ['return target Cave card from a graveyard to the battlefield tapped.','return target Cave card from your graveyard to the battlefield tapped. Draw a card unless it is a land.']:
+            self.assertIsNone(generate.targeted_program(bad),bad)
+
+    def test_exact_hand_discard_cost_is_distinct_from_cycling_and_closed(self):
+        cost=generate.activation_cost('{1}{G}, Discard this card')
+        self.assertEqual((cost['origin'],cost['discard'],cost.get('cycling',False)),('Hand',True,False))
+        for text in ['{1}, {T}, Discard this card','{1}, Sacrifice this creature, Discard this card','{1}, Discard this card, Discard a card','{1}, Discard this card, Pay 1 life','{1}, Discard this card, Discard this card','{X}, Discard this card','{1}, Discard another card']:
+            self.assertIsNone(generate.activation_cost(text),text)
+        for body in ['{1}, Discard this card: Add {G}.','{1}, Discard this card: Discover 2.','{1}, Discard this card: Draw a card. Unknown residual.']:
+            self.assertIsNone(generate.permanent_program_template(self.card(oracle_text=body)),body)
+        self.assertIsNotNone(generate.permanent_program_template(self.card(oracle_text='{1}, Discard this card: Target creature gets -2/-2 until end of turn.')))
+
+    def test_exact_chocobo_factory_and_trailing_quote_sequence_are_complete(self):
+        token='create a 2/2 green Bird creature token with "Whenever a land you control enters, this token gets +1/+0 until end of turn."'
+        program=generate.statement_program('search your library for a Mountain card, reveal it, put it into your hand, then shuffle. '+token)
+        self.assertEqual(len(program),2);self.assertIn('Search(',program[0]);self.assertIn('CreateTokens',program[1])
+        factory=next(f for f in generate.TOKEN_DEFS.values() if f.get('landfall_growth')==[1,0])
+        self.assertEqual((factory['power'],factory['toughness'],factory['colors'],factory['subtypes']),(2,2,16,'Bird'))
+        for bad in [token+' Unknown.',token.replace('a land you control','any land'),token.replace('until end of turn','permanently'),token.replace('this token','target creature')]:
+            self.assertIsNone(generate.statement_program(bad),bad)
+
+    def test_exact_search_manifest_admits_all_nineteen_whole_bodies(self):
+        import json,hashlib
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        manifest=json.loads((generate.ROOT/'docs/exact-search-admissions.json').read_text())
+        self.assertEqual(len(manifest['cards']),19)
+        rust,coverage=generate.compile_catalogue(snapshot,target)
+        supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for item in manifest['cards']:
+            row=next(c for c in snapshot['cards'] if c['name']==item['name'])
+            self.assertEqual(row['oracle_text'],item['oracle_text']);self.assertIn(item['name'],supported)
+            # Recompile a real full body with an unknown trailing clause; no prefix admission.
+            changed=dict(row,oracle_text=row['oracle_text']+'\nDiscover 3.')
+            one=dict(cards=[changed],card_count=1)
+            one['cards_sha256']=hashlib.sha256(json.dumps(one['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+            _,bad=generate.compile_catalogue(one,dict(banned_card_names=[]))
+            self.assertFalse(next(c for c in bad['cards'] if c['name']==item['name'])['implemented'],item['name'])
+        for item in manifest['gated']:self.assertNotIn(item['name'],supported)
+        altered=dict(snapshot,cards=[dict(c,oracle_text=c['oracle_text'].replace('Spider Hero card','Equipment card')) if c['name']=='Radioactive Spider' else c for c in snapshot['cards']])
+        altered['cards_sha256']=hashlib.sha256(json.dumps(altered['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+        _,other=generate.compile_catalogue(altered,target)
+        self.assertNotEqual(coverage['catalogue_version'],other['catalogue_version'])
+
     def test_subject_conditions_are_closed_exact_single_creature_bindings(self):
         examples=[
             ('Tap up to one target creature and put three stun counters on it. If you control that creature, draw two cards.','relation: 0','Draw(PlayerSet::Controller, 2)'),
@@ -283,7 +348,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         rust,cov=generate.compile_catalogue(rows,target);accepted={c['name'] for c in cov['cards'] if c['implemented']};names={c['name'] for c in manifest['cards']}
         self.assertEqual(len(names),9);self.assertTrue(names<=accepted)
         flashback_rows=rust.split('pub(super) fn flashback_cost',1)[1].split('pub const CREATURE_TYPES',1)[0]
-        self.assertEqual(flashback_rows.count('=> Some(ManaCost {'),10)
+        self.assertEqual(flashback_rows.count('=> Some(ManaCost {'),13)
         for c in rows['cards']:
             if c['name'] not in names:continue
             residual,cost=generate.extract_flashback(c);residual,_=generate.extract_additional_cost(residual);self.assertIsNotNone(generate.spell_program_template(residual),c['name'])
@@ -2917,7 +2982,6 @@ class CatalogueCompilerTests(unittest.TestCase):
             'Search your library for a basic land card, put it into your hand, then shuffle.',
             'Search your library for a basic land card, reveal it, put it into your hand tapped, then shuffle.',
             'Search your library for a land card with mana value 2, reveal it, put it into your hand, then shuffle.',
-            'Search your library for a basic land card or a Desert card, put it onto the battlefield, then shuffle.',
             'Search your library for up to two basic land cards with different names, put them onto the battlefield, then shuffle.',
             'Search your library for a land card, reveal it, put it into your hand.',
             'Search your library for a basic land card, put it onto the battlefield tapped, then shuffle. Then if you control four or more lands, untap that land.',
@@ -2925,6 +2989,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             'Search your library for a basic land cards, put them onto the battlefield, then shuffle.',
             'Search your library for up to two basic land cards, reveal it, put them into your hand, then shuffle.']:
             self.assertIsNone(generate.statement_program(text), text)
+        self.assertIn('SearchFilter::AnyOf', generate.statement_program('Search your library for a basic land card or a Desert card, put it onto the battlefield, then shuffle.')[0])
         token = generate.predefined_program('create a Lander token.')
         self.assertIsNotNone(token)
         ability = generate.permanent_program_template(self.card(type_line='Artifact', mana_cost='{0}', oracle_text=generate.PREDEFINED['Lander']))

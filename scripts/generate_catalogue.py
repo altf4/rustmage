@@ -846,14 +846,12 @@ def search_filter(noun):
 
 
 def search_program(text):
-    match=re.fullmatch(r'search your library for (a |an |up to two |up to three |up to four |)(.+?), (reveal (?:it|them), )?put (it|them|that card) (into your hand|onto the battlefield)( tapped)?, then shuffle\.',text)
+    match=re.fullmatch(r'search your library for (a |an |up to two |up to three |up to four )(.+?), (reveal (?:it|them), )?put (it|them|that card) (into your hand|onto the battlefield)( tapped)?, then shuffle\.',text)
     if not match:return None
     count,noun,reveal,pronoun,destination,tapped=match.groups()
     filter_=search_filter(noun)
     if filter_ is None:return None
     plural=count.startswith('up to ')
-    if count=='':
-        if not noun.startswith('up to '):return None
     if plural != noun.endswith('cards') or plural != (pronoun=='them'):return None
     if count not in ('a ','an ','up to two ','up to three ','up to four '):return None
     if reveal and plural != ('them' in reveal):return None

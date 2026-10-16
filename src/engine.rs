@@ -4193,3 +4193,7 @@ mod subject_condition_tests;
 #[cfg(test)]
 #[path = "engine_attachment_attack_tests.rs"]
 mod attachment_attack_tests;
+
+#[cfg(test)]
+#[path = "engine_exact_search_tests.rs"]
+mod exact_search_tests;

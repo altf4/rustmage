@@ -19,7 +19,9 @@ bodies with owned top/bottom choices and public movement history.
 impulse bodies with paid casting, land plays, exact incarnations and cleanup expiry.
 [Filtered library predicates](docs/filtered-library-selection.md) add twelve complete bodies
 with subtype unions, exclusions and complete offspring copies.
-The latest [Equipment attack triggers](docs/attachment-attack-triggers.md) add ten complete
+[Exact library searches and hand discard activations](docs/exact-search.md) add nineteen
+complete bodies with typed predicates, deferred search commits and full Chocobo tokens.
+[Equipment attack triggers](docs/attachment-attack-triggers.md) add ten complete
 bodies with Equipment-owned and creature-granted source identity.
 [Forage](docs/forage.md) adds six complete bodies with owned payments,
 true sacrifice/exile events and post-payment reflexive targets.
