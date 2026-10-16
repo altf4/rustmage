@@ -156,19 +156,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 if item.kind == StackKind::Spell && item.source_card.aura().is_some() {
                     return aura_score(item.source_card, *target);
                 }
-                let program = match item.kind {
-                    StackKind::TriggeredAbility { ability } => {
-                        item.source_card.triggers()[ability as usize].program
-                    }
-                    StackKind::ActivatedAbility { ability } => {
-                        item.source_card.activations()[ability as usize].program
-                    }
-                    StackKind::Spell => item
-                        .source_card
-                        .spell_program(item.mode)
-                        .map(|(_, program)| program)
-                        .unwrap_or(&[]),
-                };
+                let program = item.program().map(|(_, program)| program).unwrap_or(&[]);
                 target_score(program, *target)
             }
             Action::FinishTargets => 0,

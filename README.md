@@ -5,17 +5,18 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,303 have executable rules so far.
+knows all 5,164 pinned Standard identities; 1,315 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
-The latest [targeted bounce, tap and stun programs](docs/targeted-bounce-tap.md)
-add eighteen complete bodies using existing native rules, including precise
-target restrictions, Renew costs, Ring mana, and private scry/search tails.
-[Public-state source predicates](docs/source-state-predicates.md) and
-[conditional source keywords](docs/conditional-source-keywords.md) share evaluation
-between concrete rules and mana-funding search. [Firebending](docs/firebending.md)
-and [poison](docs/poison.md) also retain exact cost timing and native replay.
+The latest [modal triggered abilities](docs/modal-triggers.md) add twelve complete
+bodies and 27 modes, with legal mode selection before targets, shared native
+announcements, source independence and full private-choice rollback.
+[Targeted bounce/tap/stun](docs/targeted-bounce-tap.md),
+[public-state predicates](docs/source-state-predicates.md) and
+[conditional keywords](docs/conditional-source-keywords.md) retain precise
+costs, targets and shared funding rules. [Firebending](docs/firebending.md) and
+[poison](docs/poison.md) also support deterministic native replay.
 Full Standard rules remain in progress.
 
 ## Build and use
@@ -30,6 +31,7 @@ PYTHONPATH=python python3 -m unittest discover -s python -p 'test_*.py' -v
 cargo run --release --bin benchmark -- 1000
 cargo run --release --example branch
 cargo run --release --example standard
+cargo run --release --example standard_modal_triggers -- 100
 cargo run --release --example standard_targeted_bounce_tap -- 100
 cargo run --release --example standard_source_predicates -- 100
 cargo run --release --example standard_conditional_keywords -- 100

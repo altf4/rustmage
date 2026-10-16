@@ -9,6 +9,68 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def test_twelve_modal_trigger_bodies_choose_before_targets_and_replay_private_programs(self):
+        names=['Apothecary Stomper', 'Coliseum Behemoth', 'Cosmogrand Zenith', 'Divining Duelist', 'Downwind Ambusher', 'Elven Raft-Steerer', 'Ferocification', 'Gaius van Baelsar', 'Giant-Sized Flying Ant', 'Glamermite', "Lord Skitter's Butcher", 'Wardens of the Cycle'];preferred=[0,1,0,2,0,1,1,1,1,1,1,1]
+        for i,wanted in enumerate(names):
+            helper='Reckless Lackey' if i==11 else 'Opt';lands=sum(([n]*6 for n in ['Plains','Island','Swamp','Mountain','Forest']),[])
+            with self.subTest(card=wanted),Game([lands+[wanted]*12+['Bear Cub']*10+[helper]*8,['Forest']*36+['Bear Cub']*24],seed=7,deck_rules='Freeform') as game:
+                pending={};replayed=0;chosen=0;finished=False
+                for _ in range(16000):
+                    obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor']);objects={o['id']:o for o in obs['objects']};board=[o for o in objects.values() if o['owner']=='P0' and o['zone']=='Battlefield'];sources=[o for o in board if o['card']==wanted];bears=[o for o in board if o['card']=='Bear Cub'];helpers=[o for o in board if o['card']==helper]
+                    def score(a):
+                        k=a['kind']
+                        if k in ('Cast','AnnounceCast'):
+                            n=objects[a['card']]['card']
+                            if n==wanted:return 250 if bears and not sources else -100
+                            if n=='Bear Cub':return 240 if not any(o['card']==n and o['zone']=='Battlefield' and o['owner']==obs['actor'] for o in objects.values()) else -100
+                            if n==helper:return 230 if sources and (n=='Opt' or not helpers) else -100
+                            return -100
+                        if k=='ChooseMode':return 300 if a['mode']==preferred[i] else -100
+                        if k=='ChooseTarget' and 'Card' in a['target']:
+                            o=objects[a['target']['Card']];return 290 if (i in (0,5,6) and o['owner']=='P0' and o['card']=='Bear Cub') or (i in (4,8,9) and o['owner']=='P1') else 100
+                        if k=='AnnounceActivate':return 240 if i==11 and sources and objects[a['card']]['card']==helper and not obs['stack'] else -100
+                        if k in ('Activate','BeginActivate','ActivateMana','AnnounceMana'):return -100
+                        if k=='TapMana':return 180 if obs['decision']=='pay_costs' else -100
+                        if k in ('ChooseSpellCost','ChooseActivationCost'):return 220
+                        if k=='ChooseOptional':return 220 if a['accept'] else -100
+                        if k=='Sacrifice':return 260 if objects[a['object']['card']]['card']=='Bear Cub' else 240
+                        return self.professor_score(obs,a)
+                    choice=max(range(len(obs['actions'])),key=lambda j:score(obs['actions'][j]));a=obs['actions'][choice];private=obs['library_choice'] or obs['decision']=='effect_discard'
+                    if obs['mode_choices']:
+                        self.assertEqual(obs['announcing']['source_card'],wanted);self.assertNotEqual(obs['announcing']['kind'],'Spell');self.assertIsNone(obs['announcing']['mode']);self.assertIsNone(obs['payment_request']);self.assertFalse(any(v['kind']=='ChooseTarget' for v in obs['actions']));other=game.observe('P1' if obs['actor']=='P0' else 'P0');self.assertEqual(other['mode_choices'],[]);self.assertEqual(other['actions'],[]);self.assertEqual(a['kind'],'ChooseMode');self.assertEqual(a['mode'],preferred[i]);chosen+=1
+                    if private:
+                        other=game.observe('P1' if obs['actor']=='P0' else 'P0');self.assertIsNone(other['library_choice']);self.assertEqual(other['effect_discards'],[]);self.assertEqual(other['actions'],[])
+                    if obs['announcing'] or obs['resolving'] or obs['stack'] or private:
+                        saved=game.snapshot()
+                        with game.clone() as fork:after=fork.step(fork.observe(obs['actor']),choice)
+                        self.assertEqual(game.step(obs,choice),after);game.restore(saved)
+                        with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,choice)
+                        again=game.step(game.observe(obs['actor']),choice);after['revision']=again['revision'];self.assertEqual(after,again);game.drop_snapshot(saved);replayed+=1
+                    else:after=game.step(obs,choice)
+                    live={v['id'] for v in after['stack']}
+                    if after['resolving']:live.add(after['resolving']['id'])
+                    if obs['stack'] and a['kind']=='Pass':
+                        root=obs['stack'][-1]
+                        if root['source_card']==wanted and root['kind']!='Spell' and root['id'] not in {v['id'] for v in after['stack']}:
+                            self.assertEqual(root['mode'],preferred[i]);pending[root['id']]=(root,obs)
+                    for root_id in list(pending):
+                        if root_id in live:continue
+                        root,before=pending.pop(root_id);public=game.observe('P0');before_objects={v['id']:v for v in before['objects']};after_objects={v['id']:v for v in public['objects']};player_before=before['players'][0];player_after=public['players'][0]
+                        if i in (1,3,10,11):self.assertEqual(player_after['library_count'],player_before['library_count']-1)
+                        if i==11:self.assertEqual(player_after['life'],player_before['life']-1)
+                        if i==7:self.assertGreater(public['creatures_died_this_turn'],before['creatures_died_this_turn'])
+                        if i==2:self.assertEqual(sum(1 for v in public['objects'] if v['owner']=='P0' and v['zone']=='Battlefield' and v['token'] and v['token']['subtypes']=='Human Soldier'),2)
+                        for bound in root['targets']:
+                            ref=bound['object'];old=before_objects[ref['card']];new=after_objects[ref['card']]
+                            if i==0:self.assertEqual(new['counters']['plus_one'],old['counters']['plus_one']+2)
+                            if i in (5,8,9):self.assertFalse(new['tapped'])
+                            if i==6:self.assertEqual(new['keywords'],old['keywords']|32768|4)
+                            if i==4:self.assertEqual((new['power'],new['toughness']),(old['power']-1,old['toughness']-1))
+                        finished=True
+                    if finished:break
+                else:self.fail('modal trigger body not finished')
+                self.assertGreater(chosen,0);self.assertGreater(replayed,0);self.assertEqual(after['schema'],51)
+
     def test_eighteen_targeted_bodies_resolve_exact_effects_with_private_payment_replay(self):
         names=['Bigfin Bouncer', 'Bounce Off', 'Constrictor Sage', 'Exclusion Mage', 'Exosuit Savior', 'Freeze in Place', 'Grappling Kraken', 'Iceridge Serpent', 'Mental Modulation', 'Mischievous Pup', 'Peerless Ropemaster', "Proctor's Gaze", 'Rimekin Recluse', 'Ring of the Lucii', 'Rowdy Snowballers', 'Spider-Byte, Web Warden', 'Stickytongue Sentinel', 'Tidecaller Mentor']
         bounce={0,1,3,4,7,9,10,11,12,15,16,17};spells={1,5,8,11}
