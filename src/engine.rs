@@ -3575,3 +3575,7 @@ mod graveyard_activation_tests;
 #[cfg(test)]
 #[path = "engine_source_return_tests.rs"]
 mod source_return_tests;
+
+#[cfg(test)]
+#[path = "engine_public_hand_tests.rs"]
+mod public_hand_tests;

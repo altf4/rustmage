@@ -60,6 +60,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .parse()?;
     let decks = [deck(0), deck(1)];
     let (mut decisions, mut replays, mut private, mut checks, mut max_bytes) = (0, 0, 0, 0, 0);
+    let mut hand_checks = 0;
     let (mut commits, mut resolutions) = ([0; 16], [0; 16]);
     for seed in 0..games {
         let mut g = Game::new(Config {
@@ -97,6 +98,40 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 f.apply(p, action.clone())?;
             }
             let after = g.observe(p);
+            // Public-to-hand identities survive in a memoryless opponent view.
+            // Validate every real public departure, including targeted recovery,
+            // while rejecting duplicate and stale ledger entries.
+            let opponent = g.observe(p.other());
+            assert_eq!(after.known_hand, opponent.known_hand);
+            for (i, reference) in after.known_hand.iter().enumerate() {
+                assert!(!after.known_hand[..i].contains(reference));
+                assert!(
+                    after
+                        .objects
+                        .iter()
+                        .any(|o| o.reference == *reference && o.zone == Zone::Hand)
+                );
+                assert!(
+                    opponent
+                        .objects
+                        .iter()
+                        .any(|o| o.reference == *reference && o.zone == Zone::Hand)
+                );
+            }
+            for old in &before.objects {
+                if matches!(
+                    old.zone,
+                    Zone::Battlefield | Zone::Graveyard | Zone::Stack | Zone::Exile
+                ) && !old.card.is_token()
+                    && !old.card.is_emblem()
+                    && let Some(new) = after.objects.iter().find(|o| {
+                        o.id == old.id && o.zone == Zone::Hand && o.reference != old.reference
+                    })
+                {
+                    assert!(after.known_hand.contains(&new.reference));
+                    hand_checks += 1;
+                }
+            }
             for old in &before.objects {
                 if old.zone != Zone::Graveyard {
                     continue;
@@ -155,9 +190,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             "resolutions {resolutions:?}"
         );
         assert!(private > 0);
+        assert!(hand_checks > 0);
     }
     println!(
-        "Completed {games} Standard graveyard activation games, {decisions} decisions, commits {commits:?}, resolutions {resolutions:?}, {checks} exact cost/source checks, {private} private library choices, {replays} cloned/replayed boundaries, {max_bytes} maximum initialized state bytes; catalogue {}",
+        "Completed {games} Standard graveyard activation games, {decisions} decisions, commits {commits:?}, resolutions {resolutions:?}, {checks} exact cost/source checks, {hand_checks} public-to-hand checks, {private} private library choices, {replays} cloned/replayed boundaries, {max_bytes} maximum initialized state bytes; catalogue {}",
         rustmage::CATALOGUE_VERSION
     );
     Ok(())

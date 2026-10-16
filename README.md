@@ -11,7 +11,9 @@ migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
 The latest [exact source returns](docs/source-returns.md) add eleven complete
 bodies with graveyard activation, independent stack effects, tapped entry and
-public hand knowledge. Full Standard rules remain in progress.
+public hand knowledge. [Public hand knowledge](docs/public-hand-knowledge.md)
+also covers shared targeted and batch returns while preserving private draws.
+Full Standard rules remain in progress.
 
 ## Build and use
 

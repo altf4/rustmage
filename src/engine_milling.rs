@@ -59,7 +59,6 @@ impl Game {
         // ownership and quality. Declining consumes this choice, without targeting.
         if let Some(object) = object {
             self.move_object(object.card, Zone::Hand);
-            self.state.known_hand.push(self.object_ref(object.card));
         }
         self.run_program();
     }

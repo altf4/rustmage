@@ -9,6 +9,22 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def test_targeted_graveyard_returns_publish_new_hand_refs_and_replay_owned_payment(self):
+        for wanted in ['Bonebind Orator', 'Theoretical Necromancer']:
+            deck=['Swamp']*18+['Forest']*6+[wanted]*12+['Deathcap Marionette']*12+['Grizzly Bears']*12
+            with self.subTest(card=wanted),Game([deck,['Forest']*24+['Grizzly Bears']*36],seed=7,deck_rules='Freeform') as game:
+                obs=self.reach_graveyard_activation_payment(game,wanted);root=obs['announcing'];target=root['targets'][0]['object'];action=next(a for a in obs['actions'] if a['kind']=='PayCosts');saved=game.snapshot()
+                def finish(handle):
+                    handle.act(handle.observe('P0'),action)
+                    after=self.finish_self_target(handle,'P0',root['id']);now=next(o for o in after['objects'] if o['id']==target['card']);self.assertEqual(now['zone'],'Hand');self.assertNotEqual(now['reference'],target)
+                    public=handle.observe('P1');self.assertEqual(public['known_hand'].count(now['reference']),1);self.assertTrue(any(o['reference']==now['reference'] for o in public['objects']))
+                    private=[o for o in after['objects'] if o['owner']=='P0' and o['zone']=='Hand' and o['reference'] not in public['known_hand']];self.assertTrue(private);self.assertTrue(all(o['id'] not in {x['id'] for x in public['objects']} for o in private))
+                    return after
+                with game.clone() as fork:expected=finish(fork)
+                after=finish(game);self.assertEqual(after,expected);game.restore(saved)
+                with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,0)
+                again=finish(game);after['revision']=again['revision'];self.assertEqual(after,again);game.drop_snapshot(saved)
+
     def test_nine_graveyard_returns_pay_before_moving_and_replay_known_hand_or_tapped_entry(self):
         names=['Abzan Devotee','Bestial Bloodline','Blessed Ghoul','Merchant of Many Hats','Project Deathlok Soldier','Reassembling Skeleton','Summoned Dromedary',"Teacher's Pest",'Tunnel Rats']
         for wanted in names:
@@ -341,13 +357,21 @@ class BindingTests(unittest.TestCase):
                 if obs['decision']=='priority' and obs['stack'] and obs['stack'][-1]['source_card']=='Unsummon':break
                 game.step(obs,self.exhaust_index(obs,wanted,0,bounce=True))
             else:self.fail('return spell not reached')
-            root=obs['stack'][-1];after=self.finish_self_target(game,'P0',root['id']);hand=next(o for o in after['objects'] if o['id']==source['id']);self.assertEqual(hand['zone'],'Hand');self.assertNotEqual(hand['reference'],source['reference']);self.assertEqual(hand['exhausted_abilities'],0)
+            root=obs['stack'][-1];saved=game.snapshot()
+            with game.clone() as fork:expected=self.finish_self_target(fork,'P0',root['id'])
+            after=self.finish_self_target(game,'P0',root['id']);self.assertEqual(after,expected);hand=next(o for o in after['objects'] if o['id']==source['id']);self.assertEqual(hand['zone'],'Hand');self.assertNotEqual(hand['reference'],source['reference']);self.assertEqual(hand['exhausted_abilities'],0)
+            public=game.observe('P1');self.assertEqual(public['known_hand'].count(hand['reference']),1);self.assertTrue(any(o['reference']==hand['reference'] for o in public['objects']))
+            private=[o for o in after['objects'] if o['owner']=='P0' and o['zone']=='Hand' and o['reference'] not in public['known_hand']];self.assertTrue(private);self.assertTrue(all(o['id'] not in {x['id'] for x in public['objects']} for o in private))
+            game.restore(saved)
+            with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,0)
+            again=self.finish_self_target(game,'P0',root['id']);after['revision']=again['revision'];self.assertEqual(after,again);game.drop_snapshot(saved)
             for _ in range(6000):
                 obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor']);b=next((o for o in obs['objects'] if o['id']==source['id'] and o['zone']=='Battlefield'),None)
                 if b:break
                 game.step(obs,self.exhaust_index(obs,wanted,0,prefer_card=source['id']))
             else:self.fail('recast not reached')
             self.assertNotEqual(b['reference'],source['reference']);self.assertEqual(b['exhausted_abilities'],0);self.assertEqual(b['counters']['plus_one'],0)
+            self.assertNotIn(hand['reference'],game.observe('P1')['known_hand'])
             obs=self.reach_exhaust_payment(game,wanted,0);after=self.finish_exhaust(game,obs,wanted,0);self.assertEqual(next(o for o in after['objects'] if o['reference']==b['reference'])['exhausted_abilities'],1)
 
 
