@@ -244,6 +244,8 @@ impl Game {
                 // The base rule validates the object index and zone before this lookup.
                 let object = &self.state.objects[id as usize];
                 return match *predicate {
+                    TargetPredicate::Blocking => self.state.blocking.contains(&id),
+                    TargetPredicate::Nontoken => !object.card.is_token(),
                     TargetPredicate::Attacking => self.state.attackers.iter().any(|a| a.card == id),
                     TargetPredicate::AttackingOrBlocking => {
                         self.state.attackers.iter().any(|a| a.card == id)
@@ -528,10 +530,11 @@ impl Game {
         {
             if announcement.item.kind == StackKind::Spell && announcement.total_cost.is_none() {
                 let base = Self::announcement_base_cost(announcement);
-                let total = self.reduced_spell_cost(
+                let total = self.target_spell_cost(
                     announcement.item.controller,
                     announcement.item.card,
                     base,
+                    &announcement.item.targets,
                 );
                 self.state.announcing.as_mut().unwrap().total_cost = Some(total);
             }

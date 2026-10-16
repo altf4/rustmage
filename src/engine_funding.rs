@@ -693,6 +693,9 @@ impl Game {
         })
     }
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
+        if a.item.source_card.target_cost_reduction().is_some() && a.item.kind == StackKind::Spell {
+            return self.announcement_target_fundable(a, None, Some(cost), None, None, false);
+        }
         match a.item.kind {
             StackKind::Spell => self.spell_can_fund(
                 a.item.controller,
@@ -725,9 +728,8 @@ impl Game {
         match announcement.item.kind {
             StackKind::Spell => {
                 let cost = announcement.total_cost.unwrap_or_else(|| {
-                    self.reduced_spell_cost(
-                        announcement.item.controller,
-                        announcement.item.card,
+                    self.provisional_target_cost(
+                        announcement,
                         Self::announcement_base_cost(announcement),
                     )
                 });

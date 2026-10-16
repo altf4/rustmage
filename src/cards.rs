@@ -66,6 +66,8 @@ pub(crate) enum TargetRule {
 /// Immutable live constraints; indirection keeps target plans compact in checkpoints.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetPredicate {
+    Blocking,
+    Nontoken,
     Permanent,
     Attacking,
     AttackingOrBlocking,
@@ -298,6 +300,12 @@ pub(crate) enum MillAmount {
 pub struct ManaCost {
     pub colored: Mana,
     pub generic: u32,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct TargetSpellReduction {
+    pub rule: TargetRule,
+    pub discount: ManaCost,
 }
 
 pub(crate) type ManaCostOptions = std::iter::Chain<
@@ -1456,6 +1464,9 @@ impl Card {
     pub(crate) fn cost(self) -> (Mana, u32) {
         let definition = &generated::DEFINITIONS[self.0 as usize];
         (definition.colored, definition.generic)
+    }
+    pub(crate) fn target_cost_reduction(self) -> Option<&'static TargetSpellReduction> {
+        generated::target_cost_reduction(self)
     }
     pub(crate) fn cost_reductions(self) -> &'static [SpellReduction] {
         generated::cost_reductions(self)

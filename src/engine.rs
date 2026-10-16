@@ -26,6 +26,8 @@ pub use forage::{ForageRoute, ForageView};
 pub use target_library::{TargetLibraryMovement, TargetLibraryView};
 #[path = "engine_spell_costs.rs"]
 mod spell_costs;
+#[path = "engine_target_costs.rs"]
+mod target_costs;
 pub use additional_costs::AdditionalCostView;
 #[path = "engine_activations.rs"]
 mod activations;
@@ -1664,6 +1666,7 @@ impl Game {
                         }
                         _ => true,
                     };
+                    let target_cost = obj.card.target_cost_reduction().is_some();
                     let has_generic = if flashback {
                         obj.card.flashback_cost().unwrap().generic > 0
                     } else {
@@ -1682,6 +1685,9 @@ impl Game {
                             obj.card.cost_options()
                         };
                         let can_fund = costs.into_iter().any(|cost| {
+                            if target_cost {
+                                return self.initial_target_cost_fundable(actor, card, cost);
+                            }
                             if obj.card.additional_cost().is_some() {
                                 return self.spell_can_fund(actor, card, cost);
                             }
@@ -1724,8 +1730,61 @@ impl Game {
                             return true;
                         }
                     }
+                    if target_cost
+                        && !flashback
+                        && !exile
+                        && obj.card.offspring_cost().is_none()
+                        && obj.card.additional_cost().is_none()
+                    {
+                        let plan = match obj.card.effect() {
+                            Effect::Spell(plan, _) | Effect::Aura(plan) => Some(plan),
+                            _ => None,
+                        };
+                        if let Some(spec) = plan.and_then(|p| p.single()).filter(|s| s.max <= 1) {
+                            let mut done = false;
+                            let mut offer = |target: Option<Target>| {
+                                let bound = target.map(|t| self.bind_target(t));
+                                let targets = bound.as_slice();
+                                for base in obj.card.cost_options() {
+                                    let total = self.target_spell_cost(actor, card, base, targets);
+                                    payments(
+                                        s.players[actor.index()].mana,
+                                        total.colored,
+                                        total.generic,
+                                        |payment| {
+                                            if !done {
+                                                done = emit(Action::Cast {
+                                                    card,
+                                                    target,
+                                                    payment,
+                                                });
+                                            }
+                                        },
+                                    );
+                                    if done {
+                                        break;
+                                    }
+                                }
+                                done
+                            };
+                            if spec.min == 0 && offer(None) {
+                                return true;
+                            }
+                            if spec.max > 0
+                                && self.visit_targets(
+                                    spec.rule,
+                                    actor,
+                                    self.object_ref(card),
+                                    |t| offer(Some(t)),
+                                )
+                            {
+                                return true;
+                            }
+                        }
+                    }
                     if flashback
                         || exile
+                        || target_cost
                         || obj.card.offspring_cost().is_some()
                         || obj.card.additional_cost().is_some()
                         || matches!(obj.card.effect(), Effect::Modal(_))
@@ -1910,6 +1969,14 @@ impl Game {
                 let modes = item.modes().expect("modal announcement");
                 for (index, mode) in modes.iter().enumerate() {
                     if self.targets_available(mode.targets, player, item.object)
+                        && self.announcement_target_fundable(
+                            s.announcing.as_ref().unwrap(),
+                            Some(mode.targets),
+                            None,
+                            None,
+                            None,
+                            false,
+                        )
                         && emit(Action::ChooseMode { mode: index as u16 })
                     {
                         return true;
@@ -1924,7 +1991,10 @@ impl Game {
                     .iter()
                     .filter(|bound| bound.group == announcement.group)
                     .count();
-                if count >= usize::from(announcement.spec.min) && emit(Action::FinishTargets) {
+                if count >= usize::from(announcement.spec.min)
+                    && self.announcement_target_fundable(announcement, None, None, None, None, true)
+                    && emit(Action::FinishTargets)
+                {
                     return true;
                 }
                 if count < usize::from(announcement.spec.max) {
@@ -1935,7 +2005,14 @@ impl Game {
                         |target| {
                             !announcement.item.targets.iter().any(|bound| {
                                 bound.group == announcement.group && bound.target == target
-                            }) && emit(Action::ChooseTarget { target })
+                            }) && self.announcement_target_fundable(
+                                announcement,
+                                None,
+                                None,
+                                None,
+                                Some(target),
+                                false,
+                            ) && emit(Action::ChooseTarget { target })
                         },
                     );
                 }
@@ -3446,6 +3523,14 @@ impl Game {
                     .enumerate()
                     .filter(|(_, mode)| {
                         self.targets_available(mode.targets, item.controller, item.object)
+                            && self.announcement_target_fundable(
+                                s.announcing.as_ref().unwrap(),
+                                Some(mode.targets),
+                                None,
+                                None,
+                                None,
+                                false,
+                            )
                     })
                     .map(|(index, mode)| ModeChoiceView {
                         mode: index as u16,
@@ -4046,3 +4131,7 @@ mod exile_play_tests;
 #[cfg(test)]
 #[path = "engine_target_library_tests.rs"]
 mod target_library_tests;
+
+#[cfg(test)]
+#[path = "engine_target_cost_tests.rs"]
+mod target_cost_tests;
