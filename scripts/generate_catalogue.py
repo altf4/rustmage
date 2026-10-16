@@ -243,6 +243,109 @@ def grow_instruction(subject, power, toughness):
     return f'Grow {{ subject: Subject::{subject}, power: {power}, toughness: {toughness} }}'
 
 
+# Count expressions never inspect derived power/toughness, avoiding layer recursion.
+def stat_count_filter(text):
+    text=text.casefold()
+    other=text.startswith('other ')
+    if other:text=text[6:]
+    zone,cards='Battlefield',False
+    if text.endswith(' you control'): noun=text[:-12]
+    elif text.endswith(' in your graveyard'): noun=text[:-18];zone,cards='Graveyard',True
+    elif text=='cards you own in exile': noun='cards';zone,cards='Exile',True
+    else:return None
+    kinds={'creature':1,'creatures':1,'land':2,'lands':2,'artifact':16,'artifacts':16,
+           'enchantment':32,'enchantments':32,'permanent':1|2|16|32|64|256,'permanents':1|2|16|32|64|256,
+           'instant and sorcery':4|8,'creature and planeswalker':1|64}
+    kind,exclude,basic,subtype=0,0,False,None
+    if cards:
+        if noun.endswith(' cards'):noun=noun[:-6]
+        elif noun.endswith(' card'):noun=noun[:-5]
+        elif noun!='cards':return None
+    if noun=='cards' and zone=='Battlefield':return None
+    if noun in ('cards','permanents'):pass
+    elif noun=='nonland permanents':exclude=2
+    elif noun=='noncreature, nonland':exclude=1|2
+    elif noun in kinds:kind=kinds[noun]
+    else:
+        if noun.startswith('basic '):basic=True;noun=noun[6:]
+        singular={word.casefold():word for word in [*SUBTYPE_PLURALS.values(),'Plains','Island','Swamp','Mountain','Forest','Equipment','Desert','Gate','Treasure']}
+        subtype=SUBTYPE_PLURALS.get(noun,singular.get(noun))
+        if subtype is None:return None
+        if basic and subtype not in ('Plains','Island','Swamp','Mountain','Forest'):return None
+    return f'CountFilter {{ zone: CountZone::{zone}, relation: 0, kind: {kind}, exclude: {exclude}, subtype: {"None" if subtype is None else "Some("+json.dumps(subtype)+")"}, basic: {str(basic).lower()}, other: {str(other).lower()}, cards_only: {str(cards).lower()} }}'
+
+
+def stat_value(text):
+    if text=='card types among cards in all graveyards':return 'StatValue::GraveyardCardTypes'
+    if text.startswith('greatest mana value among '):
+        filt=stat_count_filter(text[len('greatest mana value among '):])
+        return f'StatValue::GreatestManaValue({filt})' if filt else None
+    if ' and each ' in text:
+        values=[stat_value(part) for part in text.split(' and each ')]
+        return 'StatValue::Sum(&['+', '.join(values)+'])' if all(values) else None
+    filt=stat_count_filter(text)
+    return f'StatValue::Count({filt})' if filt else None
+
+
+def extract_stat_rules(card):
+    """Extract exact source/attached scaling and characteristic clauses only.
+    The residual card must still compile in full before any rule is emitted.
+    """
+    if card.get('layout')!='normal' or not isinstance(card.get('oracle_text'),str):return card,None,[]
+    body,scales=[],[]
+    base=None
+    name=card.get('name','')
+    names=[name] if name else []
+    if name and card.get('type_line','').startswith('Legendary '):names.append(name.split(',')[0])
+    types=card.get('type_line','').split(' — ')[0].split()
+    attached=card.get('type_line','').split(' — ')[-1] in ('Aura','Equipment')
+    for original in re.sub(r'\([^()]*\)', '',card['oracle_text']).strip().split('\n'):
+        line=original.strip()
+        # Ability words have no rules meaning; only strip for a recognized CDA.
+        cda=re.sub(r'^[A-Za-z][A-Za-z\x27 -]+ — ', '',line)
+        for alias in names:
+            if cda.startswith(alias+"'s "):cda="This creature's "+cda[len(alias+"'s "):]
+            if line.startswith(alias+' gets '):line='This creature gets '+line[len(alias+' gets '):]
+        m=re.fullmatch(r"This creature's (power and toughness are each|power is) equal to (.+)\.",cda)
+        if m and 'Creature' in types:
+            if base is not None:return card,None,[]
+            axes,value=m.groups();offset=0
+            if value.endswith(' and its toughness is equal to that number plus 1'):
+                if axes!='power is':return card,None,[]
+                axes='both_offset';offset=1;value=value[:-len(' and its toughness is equal to that number plus 1')]
+            multiplier=1
+            if value.startswith('twice the number of '):multiplier=2;value=value[len('twice the number of '):]
+            elif value.startswith('the number of '):value=value[len('the number of '):]
+            elif value.startswith('the greatest mana value among '):value=value[len('the '):]
+            else:body.append(original);continue
+            parsed=stat_value(value)
+            if parsed is None:body.append(original);continue
+            expected_t='1+*' if offset else '*' if axes!='power is' else card.get('toughness')
+            if card.get('power')!='*' or card.get('toughness')!=expected_t:return card,None,[]
+            expr=lambda add:f'Some(StatExpr {{ value: {parsed}, multiplier: {multiplier}, offset: {add} }})'
+            base=f'DynamicStats {{ power: {expr(0)}, toughness: {expr(offset) if axes!="power is" else "None"} }}'
+            continue
+        m=re.fullmatch(r'(This creature|Enchanted creature|Equipped creature) gets ([+-][0-9]+)/([+-][0-9]+) for each (.+?)(?: and has (.+))?\.',line)
+        if m:
+            subject,power,toughness,value,keywords=m.groups()
+            if subject=='This creature' and 'Creature' not in types:body.append(original);continue
+            if subject!='This creature' and not attached:body.append(original);continue
+            if max(abs(int(power)),abs(int(toughness)))>32767:body.append(original);continue
+            parsed=stat_value(value)
+            if parsed is None:body.append(original);continue
+            if keywords:
+                if subject=='This creature' or keyword_list(keywords) is None:body.append(original);continue
+                body.append(subject+' has '+keywords+'.')
+            scales.append(f'ScalingModifier {{ subject: Subject::{"Source" if subject=="This creature" else "Attached"}, value: {parsed}, stats: Stats {{ power: {int(power)}, toughness: {int(toughness)} }} }}')
+        else:body.append(original)
+    if base is None and not scales:return card,None,[]
+    proxy=dict(card,oracle_text='\n'.join(body).strip())
+    if base is not None:
+        proxy['power']='0'
+        if '*' in card.get('toughness',''):proxy['toughness']='0'
+    return proxy,base,scales
+
+
 def static_permanent_template(card):
     if not isinstance(card.get('oracle_text'), str): return None
     body, modifiers, grants = [], [], []
@@ -1489,11 +1592,14 @@ def compile_catalogue(snapshot, target):
     coverage = []
     static_rows = []
     grant_rows = []
+    dynamic_rows = []
+    scaling_rows = []
     hybrid_rows = []
     equipment_rows = []
     aura_rows = []
     for index, name in enumerate(names):
         card, cycling = cycling_abilities(cards.get(name, {}))
+        card, dynamic, scaling = extract_stat_rules(card)
         cost = card.get('mana_cost', '')
         keywords = sum(INTRINSIC_KEYWORDS[word] for word in {keyword.casefold() for keyword in card.get('keywords', [])} & INTRINSIC_KEYWORDS.keys())
         effect = 'Unsupported'
@@ -1517,7 +1623,7 @@ def compile_catalogue(snapshot, target):
             kind = 2 if effect == 'Land' else 1 if effect.startswith('Creature') else 4 if effect in ('Draw',) else 8
         else:
             types = card.get('type_line', '').split(' — ')[0].split()
-            kind = (1 if 'Creature' in types else 0) | (2 if 'Land' in types else 0) | (4 if 'Sorcery' in types else 0) | (8 if 'Instant' in types else 0) | (16 if 'Artifact' in types else 0) | (32 if 'Enchantment' in types else 0) | (64 if 'Planeswalker' in types else 0)
+            kind = (1 if 'Creature' in types else 0) | (2 if 'Land' in types else 0) | (4 if 'Sorcery' in types else 0) | (8 if 'Instant' in types else 0) | (16 if 'Artifact' in types else 0) | (32 if 'Enchantment' in types else 0) | (64 if 'Planeswalker' in types else 0) | (128 if 'Kindred' in types else 0) | (256 if 'Battle' in types else 0)
             if land is not None:
                 effect, keywords, abilities, activations, enters, entry = land
             elif template is not None:
@@ -1572,6 +1678,9 @@ def compile_catalogue(snapshot, target):
         oracle_id = f"Some({quote(card['oracle_id'])})" if card else 'None'
         type_line = card.get('type_line', 'Basic Land' if basic else 'Creature' if kind & 1 else 'Instant' if kind & 8 else 'Sorcery' if kind & 4 else '')
         oracle_keywords = '&[' + ', '.join(quote(word) for word in card.get('keywords', [])) + ']'
+        if effect != 'Unsupported':
+            if dynamic is not None:dynamic_rows.append(f'        {index} => Some({dynamic}),')
+            if scaling:scaling_rows.append(f'        {index} => &['+', '.join(scaling)+'],')
         definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(name)}, oracle_id: {oracle_id}, mana_cost: {quote(cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in cards).lower()}, legendary: {str(card.get('type_line', '').startswith('Legendary ')).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, activated: {rust_activations(activations)}, enters: Counters {{ plus_one: {enters[0]}, minus_one: {enters[1]}, stun: {enters[2]} }}, entry: EntryTapped::{entry}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
         coverage.append({'name': name, 'standard_legal': name in cards, 'implemented': effect != 'Unsupported',
                          'implementation': 'explicit' if name in legacy else 'land_template' if land else 'creature_template' if template else 'trigger_template' if trigger_template else 'modal_template' if modal else 'spell_template' if spell else 'aura_template' if aura else 'equipment_template' if equipment else 'permanent_template' if permanent else 'static_template' if static else None})
@@ -1620,6 +1729,7 @@ def compile_catalogue(snapshot, target):
     for index, (name, _, _, _) in enumerate(LEGACY):
         lines.append(f'    pub const {name.replace(" ", "")}: Card = Card({index});')
     lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn equipment(card: Card) -> Option<EquipmentSpec> {', '    match card.0 {', *equipment_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn aura(card: Card) -> Option<AuraSpec> {', '    match card.0 {', *aura_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn dynamic_stats(card: Card) -> Option<DynamicStats> {', '    match card.0 {', *dynamic_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', "pub(super) fn scaling_modifiers(card: Card) -> &'static [ScalingModifier] {", '    match card.0 {', *scaling_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn keyword_grants(card: Card) -> &'static [KeywordGrant] {", '    match card.0 {', *grant_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub const CREATURE_TYPES: &[&str] = &[', *('    '+json.dumps(name)+',' for name in creature_types), '];', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn cost_alternatives(card: Card) -> &'static [Mana] {", '    match card.0 {', *hybrid_rows, '        _ => &[],', '    }', '}', '']

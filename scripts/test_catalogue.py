@@ -1349,6 +1349,61 @@ class CatalogueCompilerTests(unittest.TestCase):
         for name in ['Baxter Building','Bloom Tender','Springleaf Drum','Supportive Parents','Uncharted Haven']:
             self.assertNotIn(name,supported)
 
+    def test_dynamic_stat_extraction_preserves_unrelated_text_and_exact_formulas(self):
+        source=self.card(name='Creature',oracle_text='Flying',power='2',toughness='1')
+        proxy,base,scales=generate.extract_stat_rules(source)
+        self.assertIs(proxy,source);self.assertIsNone(base);self.assertEqual(scales,[])
+        source=self.card(name='Tester',power='*',toughness='1+*',oracle_text="Tester's power is equal to the number of cards you own in exile and its toughness is equal to that number plus 1.")
+        proxy,base,scales=generate.extract_stat_rules(source)
+        self.assertEqual(proxy['power'],'0');self.assertEqual(proxy['toughness'],'0')
+        self.assertIn('CountZone::Exile',base);self.assertIn('offset: 1',base);self.assertEqual(scales,[])
+        source=self.card(oracle_text='This creature gets +2/+0 for each other Goblin you control.')
+        proxy,base,scales=generate.extract_stat_rules(source)
+        self.assertEqual(proxy['oracle_text'],'');self.assertIn('other: true',scales[0]);self.assertIn('power: 2, toughness: 0',scales[0])
+        source=self.card(type_line='Enchantment — Aura',oracle_text='Enchant creature\nEnchanted creature gets +1/+1 for each enchantment you control and has first strike.')
+        proxy,base,scales=generate.extract_stat_rules(source)
+        self.assertIn('Enchanted creature has first strike.',proxy['oracle_text'])
+        self.assertIn('Subject::Attached',scales[0]);self.assertIsNotNone(generate.aura_template(proxy))
+        for text in ['This creature gets +1/+1 for each creature you control with power 4 or greater.',
+                     'This creature gets +1/+1 for each color among permanents you control.',
+                     'This creature gets +1/+1 for each Forest you control until end of turn.',
+                     'This creature gets +1/+1 for each creature you control if you control a Dragon.',
+                     'This creature gets +1/+1 for each opponent.',
+                     'During your turn, this creature gets +1/+1 for each Forest you control.']:
+            source=self.card(oracle_text=text)
+            proxy,base,scales=generate.extract_stat_rules(source)
+            self.assertIsNone(base);self.assertEqual(scales,[],text);self.assertIsNone(generate.permanent_program_template(proxy),text)
+        source=self.card(name='Tester',power='*',toughness='3',oracle_text="Tester's power and toughness are each equal to the number of lands you control.")
+        proxy,base,scales=generate.extract_stat_rules(source);self.assertIsNone(base)
+        self.assertIsNone(generate.creature_template(proxy))
+
+    def test_stat_count_predicates_reject_unimplemented_or_ambiguous_facts(self):
+        for text,expected in [('basic Island you control','basic: true'),('other Goblin you control','other: true'),
+                              ('instant and sorcery cards in your graveyard','kind: 12'),
+                              ('noncreature, nonland card in your graveyard','exclude: 3'),
+                              ('cards you own in exile','CountZone::Exile')]:
+            self.assertIn(expected,generate.stat_count_filter(text))
+        for text in ['creatures your opponents control with flying','artifact or creature you control',
+                     'cards in all graveyards','cards you control','basic Equipment you control','permanents you own','cards in your library']:
+            self.assertIsNone(generate.stat_count_filter(text),text)
+        self.assertIn('StatValue::Sum',generate.stat_value('creature you control and each creature card in your graveyard'))
+        self.assertEqual(generate.stat_value('card types among cards in all graveyards'),'StatValue::GraveyardCardTypes')
+
+    def test_dynamic_stat_admissions_are_complete_and_keep_previous_typed_lands(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,coverage=generate.compile_catalogue(rows,target)
+        supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for name in ['Adelbert Steiner','Blanchwood Armor','Boneclub Berserker','Burrowguard Mentor','Cosmogoyf',
+                     'Crusader of Odric','Enigma Drake','Ethereal Armor','Guidelight Synergist','Harmonious Grovestrider',
+                     'Kraven, Proud Predator','Mirkwood Pathmaker','Moon-Vigil Adherents','Regal Bunnicorn','Snow Villiers',
+                     'Tarmogoyf','Tempest Djinn','Xande, Dark Mage','Breeding Pool','Undercity Sewers','Hallowed Fountain']:
+            self.assertIn(name,supported)
+        for name in ['Squawkroaster','Diligent Zookeeper','Melek, Reforged Researcher','Namor the Sub-Mariner',
+                     'Improvised Arsenal','With Great Power . . .','Zell Dincht','Lumra, Bellow of the Woods']:
+            self.assertNotIn(name,supported)
+
 
 if __name__ == '__main__':
     unittest.main()

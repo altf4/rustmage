@@ -36,7 +36,7 @@ impl Game {
         let f = choice.filter;
         o.zone == Zone::Battlefield
             && self.keywords(object.card).contains(f.keywords)
-            && (f.kinds == 0 || o.card.kind_mask() & f.kinds != 0)
+            && (f.kinds == 0 || o.card.kind_mask() & u16::from(f.kinds) != 0)
             && (!f.source_only || object == choice.source)
             && (!f.nonland || !o.card.is_land())
             && (!f.other || object != choice.source)

@@ -168,8 +168,8 @@ impl Game {
                     && match rule {
                         TargetRule::Spell => true,
                         TargetRule::SpellKinds { kinds, excluded } => {
-                            (kinds == 0 || item.source_card.kind_mask() & kinds != 0)
-                                && item.source_card.kind_mask() & excluded == 0
+                            (kinds == 0 || item.source_card.kind_mask() & u16::from(kinds) != 0)
+                                && item.source_card.kind_mask() & u16::from(excluded) == 0
                         }
                         _ => false,
                     }
@@ -209,7 +209,7 @@ impl Game {
                         };
                         obj.zone == expected
                             && (expected != Zone::Graveyard || !obj.card.is_token())
-                            && (kinds == 0 || obj.card.kind_mask() & kinds != 0)
+                            && (kinds == 0 || obj.card.kind_mask() & u16::from(kinds) != 0)
                             && (relation == -1 || (obj.owner == controller) == (relation == 0))
                             && (!other || self.object_ref(id) != source)
                             && (!nonland || !obj.card.is_land())

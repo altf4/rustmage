@@ -83,6 +83,10 @@ impl Game {
                 .card
                 .keyword_grants()
                 .is_empty()
+            || !self.state.objects[id as usize]
+                .card
+                .scaling_modifiers()
+                .is_empty()
         {
             self.state.static_sources.push(id);
         }
@@ -113,6 +117,37 @@ impl Game {
             power: object.local_power(),
             toughness: object.local_toughness(),
         };
+        // Characteristic-defining abilities apply in every zone (layer 7a).
+        if let Some(base) = object.card.dynamic_stats() {
+            let reference = self.object_ref(id);
+            let power = base
+                .power
+                .map(|expr| self.stat_expression(expr, reference, object.owner));
+            if let Some(power) = power {
+                stats.power = power
+                    .checked_add(object.growth.power)
+                    .and_then(|p| p.checked_add(object.counter_delta()))
+                    .expect("power exhausted");
+            }
+            if let Some(expr) = base.toughness {
+                // Most CDAs share a count for both axes; query that count once.
+                let value = if let Some(p) = base.power
+                    && p.value == expr.value
+                    && p.multiplier == expr.multiplier
+                {
+                    i32::try_from(
+                        i64::from(power.unwrap()) + i64::from(expr.offset) - i64::from(p.offset),
+                    )
+                    .expect("toughness exhausted")
+                } else {
+                    self.stat_expression(expr, reference, object.owner)
+                };
+                stats.toughness = value
+                    .checked_add(object.growth.toughness)
+                    .and_then(|t| t.checked_add(object.counter_delta()))
+                    .expect("toughness exhausted");
+            }
+        }
         if object.zone != Zone::Battlefield || !object.card.is_creature() {
             return stats;
         }
@@ -121,6 +156,32 @@ impl Game {
         // maintain it, and snapshots own it; no derived stat cache needs invalidation.
         for &source in &self.state.static_sources {
             let object = &self.state.objects[source as usize];
+            for modifier in object.card.scaling_modifiers() {
+                let applies = match modifier.subject {
+                    Subject::Source => source == id,
+                    Subject::Attached => {
+                        !object.card.is_creature()
+                            && object.attached_to == Some(self.object_ref(id))
+                    }
+                    Subject::Targets => unreachable!("targeted scaling static modifier"),
+                };
+                if applies {
+                    let value =
+                        self.stat_value(modifier.value, self.object_ref(source), object.owner);
+                    stats += Stats {
+                        power: modifier
+                            .stats
+                            .power
+                            .checked_mul(value)
+                            .expect("power exhausted"),
+                        toughness: modifier
+                            .stats
+                            .toughness
+                            .checked_mul(value)
+                            .expect("toughness exhausted"),
+                    };
+                }
+            }
             for modifier in object.card.static_modifiers() {
                 if self.creature_matches(modifier.filter, object.owner, self.object_ref(source), id)
                 {
