@@ -28,15 +28,15 @@ impl Game {
             && filter.subtype.is_none_or(|s| o.card.has_subtype(s))
             && (!filter.basic || o.card.is_basic_land())
     }
-    pub(super) fn stat_value(&self, value: StatValue, source: ObjectRef, owner: Player) -> i32 {
+    pub(super) fn stat_value(&self, value: StatValue, source: ObjectRef, owner: Player) -> i128 {
         match value {
-            StatValue::Count(filter) => i32::try_from(
+            StatValue::Count(filter) => i128::try_from(
                 (0..self.state.objects.len())
                     .filter(|&id| self.count_matches(filter, source, owner, id as CardId))
                     .count(),
             )
             .expect("stat count exhausted"),
-            StatValue::GreatestManaValue(filter) => i32::try_from(
+            StatValue::GreatestManaValue(filter) => i128::from(
                 self.state
                     .objects
                     .iter()
@@ -45,23 +45,22 @@ impl Game {
                     .map(|(_, o)| o.card.fixed_mana_value())
                     .max()
                     .unwrap_or(0),
-            )
-            .expect("stat mana value exhausted"),
+            ),
             StatValue::GraveyardCardTypes => self
                 .state
                 .objects
                 .iter()
                 .filter(|o| o.zone == Zone::Graveyard && !o.card.is_token())
                 .fold(0u16, |mask, o| mask | o.card.kind_mask())
-                .count_ones() as i32,
+                .count_ones() as i128,
             StatValue::Sum(values) => values
                 .iter()
                 .map(|&value| self.stat_value(value, source, owner))
-                .try_fold(0i32, i32::checked_add)
+                .try_fold(0i128, i128::checked_add)
                 .expect("stat sum exhausted"),
         }
     }
-    pub(super) fn stat_expression(&self, expr: StatExpr, source: ObjectRef, owner: Player) -> i32 {
+    pub(super) fn stat_expression(&self, expr: StatExpr, source: ObjectRef, owner: Player) -> i128 {
         self.stat_value(expr.value, source, owner)
             .checked_mul(expr.multiplier)
             .and_then(|v| v.checked_add(expr.offset))

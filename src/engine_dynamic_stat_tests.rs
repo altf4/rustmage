@@ -5,7 +5,7 @@ fn named(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
     assert!(card.is_supported(), "{name}");
     spawn(g, owner, card, zone)
 }
-fn pt(g: &Game, id: CardId) -> (i32, i32) {
+fn pt(g: &Game, id: CardId) -> (i128, i128) {
     let view = g.object_view(id);
     (view.power, view.toughness)
 }
@@ -50,7 +50,7 @@ fn creature_count_characteristics_work_in_every_zone_and_include_self_only_on_ba
             named(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
             named(&mut g, Player::P1, "Grizzly Bears", Zone::Battlefield);
             let id = named(&mut g, Player::P0, name, zone);
-            let value = 1 + i32::from(zone == Zone::Battlefield);
+            let value = 1 + i128::from(zone == Zone::Battlefield);
             assert_eq!(
                 pt(&g, id),
                 (value, if name == "Snow Villiers" { 3 } else { value }),

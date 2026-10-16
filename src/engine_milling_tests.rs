@@ -337,7 +337,7 @@ fn targeted_mill_uses_selected_player_and_life_at_resolution() {
 
 #[test]
 fn dynamic_mill_nonpositive_life_and_extreme_life_are_bounded_by_library() {
-    for life in [-3, 0, i64::MAX] {
+    for life in [-3, 0, i128::MAX] {
         let mut g = scenario();
         let spell = named(&mut g, Player::P0, "Space-Time Anomaly", Zone::Hand);
         g.state.players[0].mana = [20; 6];

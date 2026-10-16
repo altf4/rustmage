@@ -135,10 +135,11 @@ impl Game {
                     && p.value == expr.value
                     && p.multiplier == expr.multiplier
                 {
-                    i32::try_from(
-                        i64::from(power.unwrap()) + i64::from(expr.offset) - i64::from(p.offset),
-                    )
-                    .expect("toughness exhausted")
+                    power
+                        .unwrap()
+                        .checked_add(expr.offset)
+                        .and_then(|v| v.checked_sub(p.offset))
+                        .expect("toughness exhausted")
                 } else {
                     self.stat_expression(expr, reference, object.owner)
                 };

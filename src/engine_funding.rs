@@ -21,7 +21,7 @@ struct Resource {
 struct FundingState {
     active: Player,
     mana: Mana,
-    life: i64,
+    life: i128,
     resources: Vec<Resource>,
 }
 #[derive(Clone)]
@@ -51,7 +51,7 @@ struct ResourceKey {
 #[derive(Hash, PartialEq, Eq)]
 struct FundingKey {
     mana: Mana,
-    life: i64,
+    life: i128,
     // Equivalent sources are interchangeable for feasibility. Protect the
     // enclosing ability's source separately, even if its printed card matches.
     resources: Vec<ResourceKey>,
@@ -79,13 +79,13 @@ fn source_obligations(
     goal: FundingGoal,
     object: Option<&Object>,
     keywords: Keywords,
-    life: i64,
+    life: i128,
 ) -> bool {
     let Some((source, index, counters, definition)) = goal.source else {
         return true;
     };
     let ability = &definition.activations()[index as usize];
-    if i64::from(ability.cost.life) > life {
+    if i128::from(ability.cost.life) > life {
         return false;
     }
     let current = object.filter(|object| {
@@ -336,7 +336,7 @@ impl FundingState {
         let object = &mut self.resources[step.resource].object;
         if let Some(index) = step.ability {
             let cost = object.card.activations()[index as usize].cost;
-            self.life -= i64::from(cost.life);
+            self.life -= i128::from(cost.life);
             object.used_abilities |= 1u64 << index;
             if cost.tap {
                 object.tapped = true;
@@ -450,20 +450,22 @@ impl FundingState {
                     u64::MAX
                 };
                 if cost.life > 0 {
-                    uses = uses.min(self.life.max(0) as u64 / u64::from(cost.life));
+                    uses = uses.min(
+                        u64::try_from(self.life.max(0) / i128::from(cost.life)).unwrap_or(u64::MAX),
+                    );
                 }
                 if let Some((kind, amount)) = cost.remove {
                     let count = match kind {
-                        Some(CounterKind::PlusOne) => u64::from(object.counters.plus_one),
-                        Some(CounterKind::MinusOne) => u64::from(object.counters.minus_one),
-                        Some(CounterKind::Stun) => u64::from(object.counters.stun),
+                        Some(CounterKind::PlusOne) => u128::from(object.counters.plus_one),
+                        Some(CounterKind::MinusOne) => u128::from(object.counters.minus_one),
+                        Some(CounterKind::Stun) => u128::from(object.counters.stun),
                         None => {
-                            u64::from(object.counters.plus_one)
-                                + u64::from(object.counters.minus_one)
-                                + u64::from(object.counters.stun)
+                            u128::from(object.counters.plus_one)
+                                + u128::from(object.counters.minus_one)
+                                + u128::from(object.counters.stun)
                         }
                     };
-                    uses = uses.min(count / u64::from(amount));
+                    uses = uses.min(u64::try_from(count / u128::from(amount)).unwrap_or(u64::MAX));
                 }
                 let mut maximum = [0u32; 6];
                 production.visit(|mana| {

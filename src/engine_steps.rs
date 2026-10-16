@@ -81,13 +81,11 @@ impl Game {
         };
         let value = match value {
             StepValue::Life => Some(p.life),
-            StepValue::Hand => Some(self.hand_count(player) as i64),
-            StepValue::SpellsCast => {
-                Some(i64::try_from(p.spells_cast_this_turn).unwrap_or(i64::MAX))
-            }
-            StepValue::Creatures => Some(creatures().count() as i64),
+            StepValue::Hand => Some(self.hand_count(player) as i128),
+            StepValue::SpellsCast => Some(i128::from(p.spells_cast_this_turn)),
+            StepValue::Creatures => Some(creatures().count() as i128),
             StepValue::TappedCreatures => {
-                Some(creatures().filter(|(_, o)| o.tapped).count() as i64)
+                Some(creatures().filter(|(_, o)| o.tapped).count() as i128)
             }
             StepValue::Lands => Some(
                 self.state
@@ -95,20 +93,20 @@ impl Game {
                     .iter()
                     .enumerate()
                     .filter(|(id, o)| owned(*id) && o.card.is_land())
-                    .count() as i64,
+                    .count() as i128,
             ),
             StepValue::GreatestCreaturePower => creatures()
-                .map(|(id, _)| i64::from(self.stats(id as CardId).power))
+                .map(|(id, _)| self.stats(id as CardId).power)
                 .max(),
             StepValue::TotalCreaturePower => Some(
                 creatures()
-                    .map(|(id, _)| i64::from(self.stats(id as CardId).power))
-                    .sum::<i64>(),
+                    .map(|(id, _)| self.stats(id as CardId).power)
+                    .sum::<i128>(),
             ),
             StepValue::TotalCreatureToughness => Some(
                 creatures()
-                    .map(|(id, _)| i64::from(self.stats(id as CardId).toughness))
-                    .sum::<i64>(),
+                    .map(|(id, _)| self.stats(id as CardId).toughness)
+                    .sum::<i128>(),
             ),
         };
         value.is_some_and(|value| {

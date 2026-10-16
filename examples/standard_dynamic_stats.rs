@@ -91,7 +91,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 .iter()
                                 .filter(own)
                                 .filter(|o| o.card.is_creature())
-                                .count() as i32,
+                                .count() as i128,
                         ),
                         "Mirkwood Pathmaker" | "Harmonious Grovestrider" => Some(
                             before
@@ -99,7 +99,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 .iter()
                                 .filter(own)
                                 .filter(|o| o.card.is_land())
-                                .count() as i32,
+                                .count() as i128,
                         ),
                         "Regal Bunnicorn" => Some(
                             before
@@ -107,7 +107,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 .iter()
                                 .filter(own)
                                 .filter(|o| !o.card.is_land())
-                                .count() as i32,
+                                .count() as i128,
                         ),
                         "Tarmogoyf" => {
                             let mut types = std::collections::BTreeSet::new();
@@ -140,7 +140,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                     }
                                 }
                             }
-                            Some(types.len() as i32)
+                            Some(types.len() as i128)
                         }
                         _ => None,
                     };
@@ -148,7 +148,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     assert_eq!(object.power, expected, "{}", object.card.name());
                     assert_eq!(
                         object.toughness,
-                        expected + i32::from(object.card.name() == "Tarmogoyf")
+                        expected + i128::from(object.card.name() == "Tarmogoyf")
                     );
                     verified_stats += 1;
                 }

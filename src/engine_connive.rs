@@ -94,7 +94,7 @@ impl Game {
         let current = sequence.remaining.remove(index);
         sequence.current = Some(current);
         let amount = sequence.amount;
-        self.draw_many(current.controller, u64::from(amount));
+        self.draw_many(current.controller, u128::from(amount));
         self.state.resolving.as_mut().unwrap().discards[current.controller.index()] =
             usize::from(amount);
     }
@@ -135,7 +135,7 @@ impl Game {
                 {
                     self.state.objects[current.object.card as usize]
                         .counters
-                        .add(CounterKind::PlusOne, nonlands);
+                        .add(CounterKind::PlusOne, u64::from(nonlands));
                 }
                 self.state
                     .resolving

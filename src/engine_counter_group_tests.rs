@@ -465,3 +465,116 @@ fn darkness_deaths_are_simultaneous_and_dying_reaper_sees_the_whole_batch() {
     assert_eq!(g.state.players[0].cards_drawn_this_turn, 3);
     assert_eq!(g.state.players[0].life, 17);
 }
+#[test]
+fn doubling_crosses_old_signed_stat_and_unsigned_counter_limits_without_false_death() {
+    let mut g = scenario();
+    let z = named(
+        &mut g,
+        Player::P0,
+        "Zimone, Paradox Sculptor",
+        Zone::Battlefield,
+    );
+    g.state.objects[z as usize].counters.plus_one = 1_073_741_823;
+    for expected in [2_147_483_646u64, 4_294_967_292, 8_589_934_584] {
+        g.state.objects[z as usize].tapped = false;
+        g.state.players[0].mana = [0, 1, 0, 0, 1, 0];
+        activate(&mut g, z);
+        choose(&mut g, z);
+        replay(&mut g, Action::FinishTargets);
+        pay(&mut g);
+        replay(&mut g, Action::Pass);
+        replay(&mut g, Action::Pass);
+        let view = g.object_view(z);
+        assert_eq!(view.zone, Zone::Battlefield);
+        assert_eq!(view.counters.plus_one, expected);
+        assert_eq!(view.power, i128::from(expected) + 1);
+        assert_eq!(view.toughness, i128::from(expected) + 4);
+    }
+}
+#[test]
+fn huge_counter_stats_damage_lifelink_trigger_amounts_and_json_remain_exact() {
+    let mut g = scenario();
+    let fear = named(
+        &mut g,
+        Player::P0,
+        "Fear of Failed Tests",
+        Zone::Battlefield,
+    );
+    g.state.objects[fear as usize].counters.plus_one = u64::MAX - 1;
+    g.state.objects[fear as usize].growth = Stats {
+        power: 5,
+        toughness: 5,
+    };
+    g.state.objects[fear as usize].gained_keywords = Keywords::LIFELINK;
+    for player in &mut g.state.players {
+        player.life = 1i128 << 100;
+    }
+    let power = g.stats(fear).power;
+    assert!(power > i128::from(u64::MAX));
+    let event = DamageEvent {
+        source: g.damage_source(fear),
+        target: Target::Player(Player::P1),
+        amount: power,
+        combat: true,
+    };
+    g.apply_damage_batch(&[event]);
+    assert_eq!(g.state.players[0].life, (1i128 << 100) + power);
+    assert_eq!(g.state.players[1].life, (1i128 << 100) - power);
+    g.prepare_triggers();
+    assert_eq!(g.state.stack[0].damage_event.unwrap().amount, power as u128);
+    let value = serde_json::to_value(g.observe(Player::P0)).unwrap();
+    assert_eq!(
+        value["players"][0]["life"].to_string(),
+        g.state.players[0].life.to_string()
+    );
+    assert_eq!(
+        value["stack"][0]["damage_event"]["amount"].to_string(),
+        power.to_string()
+    );
+    let saved = g.snapshot();
+    let mut fork = g.clone();
+    pass_pair(&mut g);
+    pass_pair(&mut fork);
+    assert_eq!(g.snapshot(), fork.snapshot());
+    assert_eq!(g.state.players[0].cards_drawn_this_turn, 20);
+    assert!(g.state.players[0].attempted_empty_draw);
+    let expected = g.snapshot();
+    g.restore(&saved);
+    pass_pair(&mut g);
+    assert_eq!(g.snapshot(), expected);
+}
+#[test]
+fn wide_damage_action_round_trips_through_the_json_control_interface() {
+    for amount in [
+        0,
+        42,
+        i128::from(i32::MAX) + 1,
+        i128::from(u64::MAX) + 17,
+        (1i128 << 100) + 123,
+    ] {
+        let action = Action::AssignDamage {
+            target: Target::Player(Player::P1),
+            amount,
+        };
+        let text = serde_json::to_string(&action).unwrap();
+        assert_eq!(serde_json::from_str::<Action>(&text).unwrap(), action);
+        assert_eq!(
+            serde_json::from_value::<Action>(serde_json::to_value(&action).unwrap()).unwrap(),
+            action
+        );
+        let request =
+            format!(r#"{{"op":"act","actor":"P0","revision":7,"action":{text},"viewer":"P0"}}"#);
+        let crate::protocol::Request::Act {
+            action: decoded, ..
+        } = serde_json::from_str(&request).unwrap()
+        else {
+            panic!("act request")
+        };
+        assert_eq!(decoded, action);
+    }
+    for amount in ["1.0", "170141183460469231731687303715884105728"] {
+        let text =
+            format!(r#"{{"kind":"AssignDamage","target":{{"Player":"P1"}},"amount":{amount}}}"#);
+        assert!(serde_json::from_str::<Action>(&text).is_err());
+    }
+}

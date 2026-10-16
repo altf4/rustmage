@@ -52,7 +52,7 @@ impl Game {
     pub(super) fn object_activation_available(
         object: &Object,
         keywords: Keywords,
-        life: i64,
+        life: i128,
         ability: &ActivatedAbility,
         index: usize,
         actor: Player,
@@ -62,7 +62,7 @@ impl Game {
             || object.owner != actor
             || (ability.sorcery && !sorcery)
             || (ability.once_per_turn && object.used_abilities & (1u64 << index) != 0)
-            || i64::from(ability.cost.life) > life
+            || i128::from(ability.cost.life) > life
         {
             return false;
         }
@@ -76,16 +76,16 @@ impl Game {
         }
         if let Some((kind, amount)) = ability.cost.remove {
             let count = match kind {
-                Some(CounterKind::PlusOne) => u64::from(object.counters.plus_one),
-                Some(CounterKind::MinusOne) => u64::from(object.counters.minus_one),
-                Some(CounterKind::Stun) => u64::from(object.counters.stun),
+                Some(CounterKind::PlusOne) => u128::from(object.counters.plus_one),
+                Some(CounterKind::MinusOne) => u128::from(object.counters.minus_one),
+                Some(CounterKind::Stun) => u128::from(object.counters.stun),
                 None => {
-                    u64::from(object.counters.plus_one)
-                        + u64::from(object.counters.minus_one)
-                        + u64::from(object.counters.stun)
+                    u128::from(object.counters.plus_one)
+                        + u128::from(object.counters.minus_one)
+                        + u128::from(object.counters.stun)
                 }
             };
-            if count < u64::from(amount) {
+            if count < u128::from(amount) {
                 return false;
             }
         }
@@ -270,7 +270,7 @@ impl Game {
         {
             *pool -= cost;
         }
-        self.state.players[item.controller.index()].life -= i64::from(cost.life);
+        self.state.players[item.controller.index()].life -= i128::from(cost.life);
         let object = &mut self.state.objects[item.card as usize];
         if object.generation != item.object.generation || object.zone != definition.source_zone() {
             assert!(
@@ -303,6 +303,7 @@ pub(super) fn counter_payments(
     let Some((kind, amount)) = cost.remove else {
         return emit(Counters::default());
     };
+    let amount = u64::from(amount);
     for plus in 0..=amount.min(available.plus_one) {
         if kind.is_some_and(|kind| kind != CounterKind::PlusOne) && plus != 0 {
             continue;

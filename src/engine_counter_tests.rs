@@ -129,7 +129,7 @@ fn cleanup_death_from_counter_preserves_active_player_for_extra_priority() {
     let boggart = named(&mut game, "Bile-Vial Boggart", Zone::Battlefield);
     let target = spawn(&mut game, Player::P1, Card::HillGiant, Zone::Battlefield);
     let toughness = game.object_view(boggart).toughness;
-    game.state.objects[boggart as usize].counters.minus_one = toughness as u32;
+    game.state.objects[boggart as usize].counters.minus_one = toughness as u64;
     game.state.objects[boggart as usize].growth = (1).into();
     game.state.step = Step::Cleanup;
     game.finish_cleanup();

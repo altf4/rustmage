@@ -342,11 +342,11 @@ pub(crate) enum Instruction {
 /// Fixed additive layer-7c values, including asymmetric temporary modifiers.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub(crate) struct Stats {
-    pub power: i32,
-    pub toughness: i32,
+    pub power: i128,
+    pub toughness: i128,
 }
-impl From<i32> for Stats {
-    fn from(value: i32) -> Self {
+impl From<i128> for Stats {
+    fn from(value: i128) -> Self {
         Self {
             power: value,
             toughness: value,
@@ -393,8 +393,8 @@ pub(crate) enum StatValue {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct StatExpr {
     pub value: StatValue,
-    pub multiplier: i32,
-    pub offset: i32,
+    pub multiplier: i128,
+    pub offset: i128,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct DynamicStats {
@@ -506,12 +506,12 @@ pub enum CounterKind {
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct Counters {
-    pub plus_one: u32,
-    pub minus_one: u32,
-    pub stun: u32,
+    pub plus_one: u64,
+    pub minus_one: u64,
+    pub stun: u64,
 }
 impl Counters {
-    pub(crate) fn add(&mut self, kind: CounterKind, amount: u32) {
+    pub(crate) fn add(&mut self, kind: CounterKind, amount: u64) {
         let counter = match kind {
             CounterKind::PlusOne => &mut self.plus_one,
             CounterKind::MinusOne => &mut self.minus_one,
@@ -578,8 +578,8 @@ pub(crate) enum StepGuard {
     SourceTapped,
     Threshold {
         value: StepValue,
-        minimum: Option<i64>,
-        maximum: Option<i64>,
+        minimum: Option<i128>,
+        maximum: Option<i128>,
     },
 }
 #[allow(dead_code)]

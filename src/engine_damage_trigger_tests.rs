@@ -19,7 +19,7 @@ fn replay(g: &mut Game, a: Action) {
     act(g, a);
     assert_eq!(after, g.snapshot());
 }
-fn hit(g: &Game, source: CardId, player: Player, amount: i32, combat: bool) -> DamageEvent {
+fn hit(g: &Game, source: CardId, player: Player, amount: i128, combat: bool) -> DamageEvent {
     DamageEvent {
         source: g.damage_source(source),
         target: Target::Player(player),
@@ -435,9 +435,9 @@ fn huge_damage_draw_only_attempts_existing_cards_and_one_empty_draw() {
     let mut g = scenario();
     let fear = permanent(&mut g, Player::P0, "Fear of Failed Tests");
     // A synthetic damage batch checks bounded work for a huge captured amount.
-    let event = hit(&g, fear, Player::P1, i32::MAX, true);
+    let event = hit(&g, fear, Player::P1, i128::MAX, true);
     g.apply_damage_batch(&[event]);
-    g.state.players[1].life = i64::MAX;
+    g.state.players[1].life = i128::MAX;
     order(&mut g);
     pass_pair(&mut g);
     assert_eq!(g.hand_count(Player::P0), 20);

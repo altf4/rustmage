@@ -36,8 +36,24 @@ The Crystal's Chosen; Web-Warriors; and Zimone, Paradox Sculptor. The Angel/Cler
 noun support also unlocks Lyra Dawnbringer's existing continuous rules. The
 Crystal's Chosen composes unconditional `Then` sentences in printed order.
 Residual conditions, unknown counter kinds and other missing mechanics still
-reject the whole card. No mutable state or observation-schema field is added;
-existing schema 34 exposes all counter values and choices in Rust/C/Python.
+reject the whole card. Observation schema 35 retains the same fields with widened exact integer ranges:
+64-bit unsigned counter storage, signed 128-bit derived stats/damage/life and
+128-bit captured damage totals. Printed instruction constants stay compact.
+Checked arithmetic prevents release-mode wrapping from turning a large positive
+toughness into a false death. JSON integers remain numbers with exact digits;
+Python receives ordinary arbitrary-precision integers. The control decoder also
+handles signed 128-bit damage through nested requests and generic JSON values.
+The optional JSON control layer enables serde_json's arbitrary_precision feature;
+native Rust rollouts perform no JSON conversion.
+
+This widening follows an independent reviewer finding in repeated legal Zimone
+play. Tests cross the old signed-stat and unsigned-counter boundaries, complete
+40 public self-targeted doublings, and preserve huge damage/lifelink/captured
+event quantities. It increases fixed state size; the 100-game fixture reaches
+18,764 initialized state bytes. Counter storage and stat arithmetic still have
+finite checked representation limits; arbitrary native precision and a fallible
+capacity-exhaustion interface remain outstanding rather than being approximated
+by saturation or false game outcomes.
 
 Regression tests exercise every admission, legality/privacy of target selection,
 source changes, live sets/changeling matching, exact mana/tap/additional costs,

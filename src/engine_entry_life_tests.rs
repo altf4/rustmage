@@ -85,7 +85,7 @@ fn all_shock_lands_offer_a_pre_entry_choice_then_exact_intrinsic_mana() {
             assert!(!card.is_basic_land());
             replay(&mut g, Action::PlayLand { card: id });
             let obs = g.observe(Player::P0);
-            assert_eq!(obs.schema, 34);
+            assert_eq!(obs.schema, 35);
             assert_eq!(obs.decision, "entry_life");
             let choice = obs.entry_life.unwrap();
             assert_eq!(choice.object, reference);

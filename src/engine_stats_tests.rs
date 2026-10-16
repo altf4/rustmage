@@ -4,7 +4,7 @@ use super::*;
 fn named(game: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
     spawn(game, owner, Card::from_name(name).unwrap(), zone)
 }
-fn pt(game: &Game, id: CardId) -> (i32, i32) {
+fn pt(game: &Game, id: CardId) -> (i128, i128) {
     let obj = game.object_view(id);
     (obj.power, obj.toughness)
 }
