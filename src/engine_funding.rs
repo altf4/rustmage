@@ -683,6 +683,7 @@ impl Game {
             || !a.pay_window
             || a.needs_offspring()
             || a.needs_kicker()
+            || a.needs_bargain()
             || a.additional_cost().is_some_and(forage::is_forage_cost) && a.forage.is_none()
             || a.needs_mana_cost()
             || (a
@@ -704,6 +705,9 @@ impl Game {
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
         if a.item.source_card.target_cost_reduction().is_some() && a.item.kind == StackKind::Spell {
             return self.announcement_target_fundable(a, None, Some(cost), None, None, false);
+        }
+        if a.item.kind == StackKind::Spell && a.item.source_card.has_bargain() {
+            return self.bargain_cost_fundable(a.item.controller, a.item.card, cost, a.additional);
         }
         match a.item.kind {
             StackKind::Spell => self.spell_can_fund(

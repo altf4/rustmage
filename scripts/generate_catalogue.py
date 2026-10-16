@@ -901,9 +901,46 @@ def sacrifice_spec(text):
     if subject in ('food','clue','treasure','lander'):
         subtype,subject='Some('+json.dumps(subject.capitalize())+')','artifact'
     if subject not in kinds: return None
-    filt=(f'SacrificeFilter {{ keywords: Keywords({keyword}), source_only: {str(source_only).lower()}, kinds: {kinds[subject]}, nonland: {str(nonland).lower()}, '
+    filt=(f'SacrificeFilter {{ artifact_enchantment_or_token: false, keywords: Keywords({keyword}), source_only: {str(source_only).lower()}, kinds: {kinds[subject]}, nonland: {str(nonland).lower()}, '
           f'other: {str(other).lower()}, tokens: {tokens}, subtype: {subtype} }}')
     return amount,filt
+
+
+def extract_bargain(card):
+    lines=card.get('oracle_text','').splitlines()
+    declaration='Bargain (You may sacrifice an artifact, enchantment, or token as you cast this spell.)'
+    if lines.count(declaration)!=1 or card.get('layout')!='normal':return card,False
+    return dict(card,oracle_text='\n'.join(line for line in lines if line!=declaration)),True
+
+
+def fixed_bargain_body(card):
+    """Ten closed complete bodies; no partial parsing of unknown bargain tails."""
+    text=card.get('oracle_text','')
+    branch=lambda yes,no:['IfBargained { skip: '+str(len(yes)+1)+' }',*yes,'Skip('+str(len(no))+')',*no]
+    selection=lambda n:['SelectLibrary(LibrarySelectionSpec { look: '+str(n)+', count: LibrarySelectionCount::Fixed(2), filter: LibrarySelectionFilter::Any, optional: false, reveal: false, remainder: LibraryRemainder::BottomRandom })']
+    spells={
+      'Target creature gets +2/+2 until end of turn. If this spell was bargained, that creature also gains flying and lifelink until end of turn.':('Creature',[grow_instruction('Targets',2,2),'IfBargained { skip: 1 }',f'GrantKeywords {{ subject: Subject::Targets, keywords: Keywords({KEYWORDS["flying"]|KEYWORDS["lifelink"]}) }}'],0),
+      'Target creature gets -3/-3 until end of turn. If this spell was bargained, that creature gets -5/-5 until end of turn instead.':('Creature',branch([grow_instruction('Targets',-5,-5)],[grow_instruction('Targets',-3,-3)]),0),
+      'Look at the top four cards of your library. If this spell was bargained, look at the top eight cards of your library instead. Put two of them into your hand and the rest on the bottom of your library in a random order.':('None',branch(selection(8),selection(4)),0),
+      "This spell costs {1} less to cast if it's bargained.\nCounter target spell.":('Spell',['Counter'],1),
+      "This spell costs {2} less to cast if it's bargained.\nReturn target nonland permanent to its owner's hand. Draw a card.":('Nonland',['ReturnToHand','Draw(PlayerSet::Controller, 1)'],2),
+      card.get('name','')+' deals 3 damage to target attacking or blocking creature. If this spell was bargained, destroy that creature instead.':('CreatureAttackingBlocking',branch(['Destroy'],['Damage(3)']),0),
+    }
+    if text in spells and card.get('type_line','').split(' — ')[0] in ('Instant','Sorcery'):
+        target,program,reduction=spells[text]
+        return 'Spell',0,[],(target,program),reduction
+    base=creature_template(dict(card,oracle_text=''))
+    if base is None:return None
+    effect,_=base
+    creatures={
+      "This spell costs {2} less to cast if it's bargained.\nTrample\nWhen this creature enters, you gain 3 life.":(KEYWORDS['trample'],[('SelfEnters',['GainLife(PlayerSet::Controller, 3)'],'None')],2),
+      'Flying\nWhen this creature enters, if it was bargained, each opponent loses 3 life and you gain 3 life.':(KEYWORDS['flying'],[('SelfBargained',['LoseLife(PlayerSet::Opponent, 3)','GainLife(PlayerSet::Controller, 3)'],'None')],0),
+      'When this creature enters, if it was bargained, return target instant or sorcery card from your graveyard to your hand.':(0,[('SelfBargained',['ReturnToHand'],'InstantSorceryGraveYou')],0),
+      'When this creature enters, if it was bargained, exile target artifact or enchantment an opponent controls.':(0,[('SelfBargained',['Exile'],'ArtifactEnchantmentOpponent')],0),
+    }
+    if text not in creatures:return None
+    keywords,triggers,reduction=creatures[text]
+    return effect,keywords,triggers,None,reduction
 
 
 def extract_kicker(card):
@@ -1421,6 +1458,7 @@ for _name, _zone, _kinds, _relation, _other, _nonland in [
     ('ArtifactCreatureYou', 'Battlefield', 17, 0, False, False),
     ('Enchantment', 'Battlefield', 32, -1, False, False),
     ('ArtifactEnchantment', 'Battlefield', 48, -1, False, False),
+    ('ArtifactEnchantmentOpponent', 'Battlefield', 48, 1, False, False),
     ('PermanentGraveYou', 'Graveyard', 0, 0, False, False),
     ('CreatureGraveYou', 'Graveyard', 1, 0, False, False),
     ('OtherCreatureGraveYou', 'Graveyard', 1, 0, True, False),
@@ -3014,6 +3052,7 @@ def compile_catalogue(snapshot, target):
     additional_rows = []
     flashback_rows = []
     kicker_rows = []
+    bargain_rows = []
     kicked_entry_rows = []
     counter_grant_rows = []
     offspring_rows = []
@@ -3033,6 +3072,7 @@ def compile_catalogue(snapshot, target):
         card, flashback = extract_flashback(card)
         card, offspring = extract_offspring(card)
         card, kicker = extract_kicker(card)
+        card, bargain = extract_bargain(card)
         card, additional = extract_additional_cost(card)
         card, target_reduction = extract_target_cost_reduction(card)
         card, reductions = extract_cost_reductions(card)
@@ -3095,6 +3135,12 @@ def compile_catalogue(snapshot, target):
             else:
                 effect,keywords,abilities,spell,kicked_counters,counter_grants=kicker_body
                 activations=[];enters=[0,0,0]
+        if bargain:
+            bargain_body=fixed_bargain_body(card) if offspring is None and kicker is None and additional is None and flashback is None and target_reduction is None else None
+            if bargain_body is None:effect='Unsupported'
+            else:
+                effect,keywords,abilities,spell,bargain_reduction=bargain_body
+                activations=[];enters=[0,0,0]
         if effect != 'Unsupported':
             if creature_entry != 'Never':entry=creature_entry
             activations = [*activations, *cycling]
@@ -3133,6 +3179,7 @@ def compile_catalogue(snapshot, target):
             loyalty_rows.append(f'        {index} => {int(value)},')
         if effect != 'Unsupported':
             supported.append(index)
+            if bargain: bargain_rows.append(f'        {index} => Some({bargain_reduction}),')
             if kicker is not None:
                 kicker_rows.append(f'        {index} => Some({kicker}),')
                 if kicked_counters:kicked_entry_rows.append(f'        {index} => {kicked_counters},')
@@ -3183,7 +3230,7 @@ def compile_catalogue(snapshot, target):
         exhaust_mask=sum(1<<i for i,a in enumerate(activations) if a[0].get('exhaust',False))
         if exhaust_mask and effect!='Unsupported':exhaust_rows.append(f'        {index} => {exhaust_mask},')
         coverage.append({'name': name, 'standard_legal': name in cards, 'implemented': effect != 'Unsupported',
-                         'implementation': 'explicit' if name in legacy else 'land_template' if land else 'creature_template' if template else 'trigger_template' if trigger_template else 'modal_template' if modal else 'spell_template' if spell else 'aura_template' if aura else 'equipment_template' if equipment else 'permanent_template' if permanent else 'static_template' if static else None})
+                         'implementation': 'bargain_template' if bargain and effect != 'Unsupported' else 'explicit' if name in legacy else 'land_template' if land else 'creature_template' if template else 'trigger_template' if trigger_template else 'modal_template' if modal else 'spell_template' if spell else 'aura_template' if aura else 'equipment_template' if equipment else 'permanent_template' if permanent else 'static_template' if static else None})
 
     # Only factories referenced by wholly accepted cards enter the executable catalogue.
     used_tokens = sorted(set(re.findall(r'__TOKEN_([0-9a-f]+)__', '\n'.join(definitions))))
@@ -3274,6 +3321,7 @@ def compile_catalogue(snapshot, target):
     lines += ['#[rustfmt::skip]', 'pub(super) fn opponent_entry_tapped(card: Card) -> u16 {', '    match card.0 {', *opponent_entry_tapped_rows, '        _ => 0,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn keyword_grants(card: Card) -> &'static [KeywordGrant] {", '    match card.0 {', *grant_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn additional_cost(card: Card) -> Option<AdditionalCost> {', '    match card.0 {', *additional_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn bargain_reduction(card: Card) -> Option<u32> {', '    match card.0 {', *bargain_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn kicker_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *kicker_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn kicked_entry_counters(card: Card) -> u16 {', '    match card.0 {', *kicked_entry_rows, '        _ => 0,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn counter_keyword_grants(card: Card) -> &'static [(CounterKind, Keywords)] {", '    match card.0 {', *counter_grant_rows, '        _ => &[],', '    }', '}', '']

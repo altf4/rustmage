@@ -559,7 +559,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             g.apply(actor, a.clone())?;
             assert_eq!(g.snapshot(), expected);
             let after = g.observe(actor);
-            assert_eq!(after.schema, 62);
+            assert_eq!(after.schema, 63);
             decisions += 1;
             replays += 1;
             max_bytes = max_bytes.max(g.state_bytes());

@@ -204,6 +204,7 @@ fn reserved_treasure_cannot_be_spent_twice_and_prefunded_reservations_are_valida
     let spec = AdditionalCost {
         kind: EffectChoiceKind::Sacrifice,
         filter: SacrificeFilter {
+            artifact_enchantment_or_token: false,
             keywords: Keywords::NONE,
             source_only: false,
             kinds: 16,

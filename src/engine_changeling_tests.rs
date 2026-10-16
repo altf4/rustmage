@@ -309,6 +309,7 @@ fn subtype_sacrifice_choice_accepts_owned_changeling_and_rejects_unrelated_cards
         kind: EffectChoiceKind::Sacrifice,
         players: PlayerSet::Controller,
         filter: SacrificeFilter {
+            artifact_enchantment_or_token: false,
             keywords: Keywords::NONE,
             source_only: false,
             kinds: 1,

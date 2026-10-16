@@ -277,6 +277,8 @@ pub(crate) struct SacrificeFilter {
     pub nonland: bool,
     pub other: bool,
     pub tokens: Option<bool>,
+    /// Bargain disjunction; unlike ordinary kind/token constraints these are ORed.
+    pub artifact_enchantment_or_token: bool,
     pub subtype: Option<&'static str>,
 }
 
@@ -371,6 +373,9 @@ pub(crate) enum Instruction {
         amount: u16,
     },
     IfKicked {
+        skip: usize,
+    },
+    IfBargained {
         skip: usize,
     },
     /// Live predicate on an exact resolving object, never on a reincarnation.
@@ -1021,6 +1026,7 @@ pub(crate) enum TriggerCondition {
     SelfOffspring,
     SelfKicked,
     CreatureExploresYou,
+    SelfBargained,
     SelfDies,
     SelfEntersOrDies,
     SelfAttacks,
@@ -1507,6 +1513,12 @@ impl Card {
     }
     pub(crate) fn has_hybrid_cost(self) -> bool {
         !generated::cost_alternatives(self).is_empty()
+    }
+    pub fn has_bargain(self) -> bool {
+        generated::bargain_reduction(self).is_some()
+    }
+    pub(crate) fn bargain_reduction(self) -> u32 {
+        generated::bargain_reduction(self).unwrap_or(0)
     }
     /// Fixed optional kicker surcharge for this immutable whole-card definition.
     pub fn kicker_cost(self) -> Option<ManaCost> {

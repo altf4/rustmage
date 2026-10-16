@@ -121,6 +121,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     0
                 }
             }
+            Action::ChooseBargain { sacrifice } => {
+                if sacrifice.is_some() {
+                    60
+                } else {
+                    0
+                }
+            }
             Action::ChooseAdditionalCost { .. } => 60,
             Action::ChooseForageRoute { .. } | Action::ChooseForage { .. } => 60,
             Action::DeclineForage => -10,

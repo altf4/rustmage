@@ -22,6 +22,9 @@ pub(super) struct Announcement {
 impl Announcement {
     pub(super) fn additional_cost(&self) -> Option<AdditionalCost> {
         match self.item.kind {
+            StackKind::Spell if self.item.cast.is_some_and(|c| c.bargain == Some(true)) => {
+                Some(bargain::COST)
+            }
             StackKind::Spell => self.item.source_card.additional_cost(),
             StackKind::ActivatedAbility { ability } => {
                 self.item.source_card.activations()[ability as usize]
@@ -52,6 +55,12 @@ impl Announcement {
                 unreachable!("triggered ability has no activation cost")
             }
         }
+    }
+    pub(super) fn needs_bargain(&self) -> bool {
+        self.pay_window
+            && self.item.kind == StackKind::Spell
+            && self.item.source_card.has_bargain()
+            && self.item.cast.is_some_and(|c| c.bargain.is_none())
     }
     pub(super) fn needs_kicker(&self) -> bool {
         self.pay_window
@@ -177,6 +186,8 @@ impl Game {
             self.state.pending = Pending::Modes { player };
         } else if a.needs_offspring() {
             self.state.pending = Pending::Offspring { player };
+        } else if a.needs_bargain() {
+            self.state.pending = Pending::Bargain { player };
         } else if a.needs_kicker() {
             self.state.pending = Pending::Kicker { player };
         } else if a.needs_mana_cost() {
@@ -424,6 +435,7 @@ impl Game {
                 method: CastMethod::Normal,
                 offspring: None,
                 kicker: None,
+                bargain: None,
             }),
             id,
             kind: StackKind::Spell,
