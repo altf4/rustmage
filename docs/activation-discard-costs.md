@@ -17,7 +17,7 @@ Seven complete Standard bodies are admitted:
 Full Oracle text and seven Java SHA-256 hashes are in
 [activation-discard-admissions.json](activation-discard-admissions.json), pinned
 to XMage revision `492369c7844b8d76479f0393ff9eb6b0b0cf30d7`.
-Catalogue fingerprint: `719f19e1c65c6c887e1d39768a8814de2b51aaad6fe5556dc1672b5e740477df`.
+Catalogue fingerprint: `ec260f7f622bf935aeaa47b86b51738f876188bec68e203e5c9f749ef9b9a990`.
 Coverage is 1,112/5,164 Standard identities, plus six regression definitions,
 49 token factories and one emblem; 4,052 identities remain unsupported.
 
