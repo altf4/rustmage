@@ -211,7 +211,7 @@ fn all_nine_whole_bodies_cast_and_keep_intrinsic_keywords_draw_loot_and_search()
                     1
                 );
             }
-            assert_eq!(g.observe(p).schema, 51);
+            assert_eq!(g.observe(p).schema, crate::engine::OBSERVATION_SCHEMA);
         }
     }
 }

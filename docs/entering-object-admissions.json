@@ -1,0 +1,161 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Good-Fortune Unicorn",
+      "oracle_text": "Whenever another creature you control enters, put a +1/+1 counter on that creature.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+          "java_sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+          "java_sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SetTargetPointer.java",
+          "java_sha256": "a8f2e34b69d3cf460248cf90b28dbea3bb31fa6c912d89a6fdb32b0fd46ad4e6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+          "java_sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+          "java_sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GoodFortuneUnicorn.java",
+          "java_sha256": "488647c6ff3e57d830e2f697d22bb910eb5b1358581e6bf80e93a9d726b36e91"
+        }
+      ]
+    },
+    {
+      "name": "Serra Redeemer",
+      "oracle_text": "Flying\nWhenever another creature you control with power 2 or less enters, put two +1/+1 counters on that creature.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+          "java_sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SetTargetPointer.java",
+          "java_sha256": "a8f2e34b69d3cf460248cf90b28dbea3bb31fa6c912d89a6fdb32b0fd46ad4e6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+          "java_sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+          "java_sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+          "java_sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/PowerPredicate.java",
+          "java_sha256": "909b9038e02c0653920408059e987b6ee3cfad717900e62e78c597285f137dde"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+          "java_sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SerraRedeemer.java",
+          "java_sha256": "72a50e7328fd2307d98094d657ae48a8c74ce49d11f461df0e640112f43c28b4"
+        }
+      ]
+    },
+    {
+      "name": "Wartime Protestors",
+      "oracle_text": "Haste\nWhenever another Ally you control enters, put a +1/+1 counter on that creature and it gains haste until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+          "java_sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+          "java_sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+          "java_sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SetTargetPointer.java",
+          "java_sha256": "a8f2e34b69d3cf460248cf90b28dbea3bb31fa6c912d89a6fdb32b0fd46ad4e6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+          "java_sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+          "java_sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+          "java_sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WartimeProtestors.java",
+          "java_sha256": "f0de8008cf17fd1b0975ab81c369fd0b173a60b4c1277ea7135f5ea4d85e0658"
+        }
+      ]
+    }
+  ]
+}

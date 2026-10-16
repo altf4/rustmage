@@ -1880,6 +1880,18 @@ def trigger_mode_lines(card, text):
     return body,modal
 
 
+def entering_object_program(text, condition):
+    """Bind only the whole explicit event-object counter clause; never a target."""
+    events=('SelfEnters','OtherCreatureEntersYou','CreatureEntersYou','ArtifactEntersYou','OtherArtifactEntersYou','EnchantmentEntersYou','LandEntersYou')
+    if condition not in events and not condition.startswith(('OtherSubtypeEntersYou(','SubtypeEntersYou(','PermanentEntersYou {','OtherFilteredEntersYou(')):
+        return None
+    m=re.fullmatch(r'[Pp]ut (a|one|two|three|four|five|six) \+1/\+1 counters? on that creature(?: and it gains haste until end of turn)?\.',text)
+    if m is None:return None
+    program=[f'PutCounters {{ subject: Subject::Entering, kind: CounterKind::PlusOne, amount: {COUNT_WORDS[m[1]]} }}']
+    if ' gains haste ' in text:program.append(f'GrantKeywords {{ subject: Subject::Entering, keywords: Keywords({KEYWORDS["haste"]}) }}')
+    return 'None',program
+
+
 def entry_predicate_prefix(line):
     """Exact singular events; power is tested at entry, unions count once."""
     if m:=re.match(r'Whenever another creature you control with power ([0-9]+) or less enters, ',line):
@@ -2102,7 +2114,10 @@ def trigger_creature_template(card):
                     # Only this whole source-counter sentence proves its antecedent.
                     # A later 'it' can refer to an earlier target or another object.
                     effect_text=effect_text.replace(' on it.',' on this creature.')
-                if condition.startswith('CardDrawn {'):
+                entering_program=entering_object_program(effect_text,condition)
+                if entering_program is not None:
+                    targets,program=entering_program
+                elif condition.startswith('CardDrawn {'):
                     result=draw_event_program(effect_text)
                     targets,program=result if result else ('None',None)
                 elif prefix == 'Whenever one or more players discard one or more cards, ':

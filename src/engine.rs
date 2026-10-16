@@ -8,6 +8,9 @@ use crate::cards::{
     SpellMode, StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetPlan,
     TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
+/// Version of the public observation structure, including owned trigger context.
+pub const OBSERVATION_SCHEMA: u32 = 52;
+
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
 mod additional_costs;
@@ -492,6 +495,8 @@ struct PlayerState {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
+    /// The exact event object; this is a non-targeted reference, never rebound.
+    pub entering_object: Option<ObjectRef>,
     pub id: u64,
     pub kind: StackKind,
     pub source_card: Card,
@@ -3038,7 +3043,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 51,
+            schema: OBSERVATION_SCHEMA,
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
             creatures_died_this_turn: s.creatures_died_this_turn,
             catalogue: crate::CATALOGUE_VERSION,
@@ -3733,3 +3738,7 @@ mod entry_suppression_tests;
 #[cfg(test)]
 #[path = "engine_entry_predicate_tests.rs"]
 mod entry_predicate_tests;
+
+#[cfg(test)]
+#[path = "engine_entering_object_tests.rs"]
+mod entering_object_tests;

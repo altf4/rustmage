@@ -169,7 +169,7 @@ fn staged_hybrid_choice_precedes_mana_window_and_commit_is_exact() {
     replay(&mut g, Action::AnnounceCast { card: c });
     assert_eq!(g.state.pending, Pending::SpellCost { player: Player::P0 });
     let view = g.observe(Player::P0);
-    assert_eq!(view.schema, 51);
+    assert_eq!(view.schema, crate::engine::OBSERVATION_SCHEMA);
     assert_eq!(view.cost_choices.len(), 3);
     assert!(view.payment_request.is_none());
     assert!(

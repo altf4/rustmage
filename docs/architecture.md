@@ -110,3 +110,7 @@ The user selected **current Standard first**. The
 [Standard target](standard-target.md) pins the initial format date and describes
 the next acceptance gates. Prioritize #3/#4 around that card pool. The initial
 Freeform benchmark is not a Standard acceptance test.
+
+Entry-trigger packets also own an exact non-targeted entrant reference. See
+[entering-object-context.md](entering-object-context.md) for the current schema,
+incarnation checks and inline memory accounting.

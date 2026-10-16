@@ -8,6 +8,27 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_entering_object_effects_bind_only_complete_explicit_entry_clauses(self):
+        for count,n in [('a',1),('two',2),('six',6)]:
+            for haste in [False,True]:
+                text='put '+count+' +1/+1 '+('counter' if n==1 else 'counters')+' on that creature'+(' and it gains haste until end of turn' if haste else '')+'.'
+                result=generate.entering_object_program(text,'OtherCreatureEntersYou');self.assertIsNotNone(result);self.assertEqual(result[0],'None');self.assertIn('Subject::Entering',result[1][0]);self.assertIn('amount: '+str(n),result[1][0]);self.assertEqual(len(result[1]),2 if haste else 1)
+                self.assertIsNone(generate.statement_program(text));self.assertIsNone(generate.targeted_program(text))
+                for event in ['SelfDies','SelfAttacks','SelfEntersOrAttacks','SelfEntersOrDies','SpellCast {','AtStep {']:
+                    self.assertIsNone(generate.entering_object_program(text,event),(event,text))
+        for text in ['put a +1/+1 counter on it.','put a +1/+1 counter on target creature.','put a -1/-1 counter on that creature.','put a +1/+1 counter on that creature. It gains haste until end of turn.','put a +1/+1 counter on that creature and you gain 1 life.','put a +1/+1 counter on that creature and it gains flying until end of turn.','put a +1/+1 counter on that creature. Then discover 3.']:
+            self.assertIsNone(generate.entering_object_program(text,'OtherCreatureEntersYou'),text)
+        guarded=generate.trigger_creature_template(self.card(oracle_text='Whenever another creature you control enters, if you gained life this turn, put a +1/+1 counter on that creature. This ability triggers only once each turn.'));self.assertIsNotNone(guarded);self.assertIn('OncePerTurn',guarded[2][0][0]);self.assertIn('InterveningIf',guarded[2][0][0]);self.assertIn('Subject::Entering',guarded[2][0][1][0])
+
+    def test_entering_object_admissions_require_the_three_complete_bodies(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text());manifest=json.loads((generate.ROOT/'docs/entering-object-admissions.json').read_text());_,coverage=generate.compile_catalogue(rows,target);supported={c['name'] for c in coverage['cards'] if c['implemented']};self.assertEqual(len(manifest['cards']),3)
+        for row in manifest['cards']:
+            self.assertIn(row['name'],supported);card=next(c for c in rows['cards'] if c['name']==row['name']);self.assertEqual(card['oracle_text'],row['oracle_text']);result=generate.trigger_creature_template(card);self.assertIsNotNone(result);self.assertIn('Subject::Entering',' '.join(result[2][0][1]));self.assertEqual(result[2][0][2],'None')
+            for tail in ['Whenever you attack, discover 3.','Creatures you control lose flying.','As this creature enters, choose a color.']:
+                bad=dict(card,oracle_text=card['oracle_text']+'\n'+tail)
+                for compiler in [generate.creature_template,generate.trigger_creature_template,generate.permanent_program_template,generate.static_permanent_template]:self.assertIsNone(compiler(bad),(row['name'],tail))
+
     def test_entry_predicate_prefixes_preserve_entry_time_thresholds_and_singular_unions(self):
         cases=[('another creature you control with power 2 or less','CreaturePowerAtMost(2)'),('another outlaw you control','SubtypeAny(&["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"])'),('another Villain and/or artifact you control','KindOrSubtype { kinds: 16, subtype: "Villain" }'),('another Frog, Rabbit, Raccoon, or Squirrel you control','SubtypeAny(&["Frog", "Rabbit", "Raccoon", "Squirrel"])'),('another Frog or Rabbit you control','SubtypeAny(&["Frog", "Rabbit"])')]
         for subject,predicate in cases:
@@ -18,7 +39,7 @@ class CatalogueCompilerTests(unittest.TestCase):
     def test_entry_predicate_unknown_relations_multiplicity_bounds_and_antecedents_stay_gated(self):
         for subject in ['another creature you control with power 32768 or less','another creature you control with power -1 or less','another creature you control with toughness 2 or less','another Frog, Rabbit or Squirrel you control','another Frog or Unknown you control','another Frog or Frog you control','another Villain or artifact you control','one or more outlaws you control','a creature an opponent controls','another outlaw with flying you control']:
             self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='Whenever '+subject+' enters, draw a card.')),subject)
-        for effect in ['put a +1/+1 counter on that creature.','it gets +1/+1 until end of turn.','draw a card. Then discover 3.']:
+        for effect in ['put a +1/+1 counter on that creature. Then discover 3.','it gets +1/+1 until end of turn.','draw a card. Then discover 3.']:
             self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='Whenever another creature you control with power 2 or less enters, '+effect)))
 
     def test_entry_predicate_nine_admissions_are_whole_cards_with_unknown_tails_rejected(self):
@@ -27,7 +48,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         for row in manifest['cards']:
             self.assertIn(row['name'],supported);card=next(c for c in rows['cards'] if c['name']==row['name']);self.assertEqual(row['oracle_text'],card['oracle_text']);bad=dict(card,oracle_text=card['oracle_text']+'\nWhenever you attack, discover 3.')
             for compiler in [generate.creature_template,generate.trigger_creature_template,generate.permanent_program_template,generate.static_permanent_template]:self.assertIsNone(compiler(bad),row['name'])
-        for name in ['Good-Fortune Unicorn','Serra Redeemer','Wartime Protestors','Authority of the Consuls','Terror of the Peaks']:self.assertNotIn(name,supported)
+        for name in ['Authority of the Consuls','Terror of the Peaks']:self.assertNotIn(name,supported)
 
     def test_entry_suppression_extraction_is_closed_and_preserves_residual_rules(self):
         for subject,mask in [('Creatures',1),('Artifacts and creatures',17)]:
@@ -117,7 +138,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         for row in manifest['cards']:
             self.assertIn(row['name'],supported);card=next(c for c in rows['cards'] if c['name']==row['name']);self.assertEqual(card['oracle_text'],row['oracle_text']);bad=dict(card,oracle_text=card['oracle_text']+'\nWhenever you attack, discover 3.')
             for compiler in [generate.permanent_program_template,generate.trigger_creature_template,generate.static_permanent_template]:self.assertIsNone(compiler(bad),row['name'])
-        for name in ['Ultron, Artificial Malevolence','Wartime Protestors','Harvestrite Host','Giott, King of the Dwarves']:
+        for name in ['Ultron, Artificial Malevolence','Harvestrite Host','Giott, King of the Dwarves']:
             self.assertNotIn(name,supported)
 
     def test_alliance_is_cosmetic_and_preserves_exact_full_event_and_program(self):
@@ -141,7 +162,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertEqual(generate.trigger_creature_template(card),generate.trigger_creature_template(plain))
             bad=dict(card,oracle_text=card['oracle_text']+'\nWhenever you attack, discover 3.')
             for compiler in [generate.permanent_program_template,generate.trigger_creature_template,generate.static_permanent_template]:self.assertIsNone(compiler(bad),row['name'])
-        for name in ['Wartime Protestors','Harvestrite Host']:
+        for name in ['Harvestrite Host']:
             self.assertNotIn(name,supported)
 
     def test_modal_trigger_metadata_preserves_every_mode_event_and_target_plan(self):

@@ -176,7 +176,9 @@ impl Game {
                         !object.card.is_creature()
                             && object.attached_to == Some(self.object_ref(id))
                     }
-                    Subject::Targets => unreachable!("targeted scaling static modifier"),
+                    Subject::Targets | Subject::Entering => {
+                        unreachable!("event or targeted scaling static modifier")
+                    }
                 };
                 if applies {
                     let value =
