@@ -568,7 +568,9 @@ impl Game {
         let a = self.state.announcing.as_ref()?;
         // A hybrid equivalent may still be pending during mode selection too.
         // Project a fixed payment only after that cost has been committed.
-        if !a.pay_window
+        if viewer != a.item.controller
+            || a.additional_paid
+            || !a.pay_window
             || a.needs_spell_cost()
             || (a.item.kind == StackKind::Spell
                 && a.item.source_card.additional_cost().is_some()

@@ -253,6 +253,8 @@ fn paying_cost_can_suspend_for_returned_land_entry_before_cast_completion() {
     choose(&mut g, light);
     pay(&mut g);
     assert_eq!(g.observe(Player::P0).decision, "entry_life");
+    assert!(g.observe(Player::P0).payment_request.is_none());
+    assert!(g.observe(Player::P1).payment_request.is_none());
     assert!(g.state.stack.is_empty());
     assert!(g.state.announcing.as_ref().unwrap().additional_paid);
     assert_eq!(g.state.players[0].mana[2], 0);
@@ -331,6 +333,8 @@ fn returned_aura_finishes_entry_before_completed_cast_observers() {
     choose(&mut g, light);
     pay(&mut g);
     assert_eq!(g.observe(Player::P0).decision, "aura_entry");
+    assert!(g.observe(Player::P0).payment_request.is_none());
+    assert!(g.observe(Player::P1).payment_request.is_none());
     assert_eq!(g.state.players[0].spells_cast_this_turn, 0);
     assert!(g.state.stack.is_empty());
     let object = g.object_ref(bear);
@@ -338,4 +342,38 @@ fn returned_aura_finishes_entry_before_completed_cast_observers() {
     assert_eq!(g.state.players[0].spells_cast_this_turn, 1);
     assert_eq!(g.object_view(aura).attached_to, Some(g.object_ref(bear)));
     assert!(g.state.announcing.is_none());
+}
+
+#[test]
+fn opponent_entry_chooser_never_receives_the_casters_paid_payment_request() {
+    let mut g = scenario();
+    let spell = named(&mut g, Player::P0, "Final Vengeance", Zone::Hand);
+    let light = named(&mut g, Player::P0, "Banishing Light", Zone::Battlefield);
+    let held = named(&mut g, Player::P1, "Temple Garden", Zone::Exile);
+    let target = named(&mut g, Player::P1, "Grizzly Bears", Zone::Battlefield);
+    g.state.exile_links.push(ExileLink {
+        source: g.object_ref(light),
+        exiled: g.object_ref(held),
+        return_zone: Zone::Battlefield,
+    });
+    g.state.players[0].mana[2] = 1;
+    replay(&mut g, Action::AnnounceCast { card: spell });
+    replay(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(target),
+        },
+    );
+    choose(&mut g, light);
+    pay(&mut g);
+    assert_eq!(g.actor(), Some(Player::P1));
+    assert_eq!(g.observe(Player::P1).decision, "entry_life");
+    assert!(g.observe(Player::P0).payment_request.is_none());
+    assert!(g.observe(Player::P1).payment_request.is_none());
+    assert!(g.observe(Player::P1).additional_cost.is_none());
+    replay(&mut g, Action::ChooseEntryLife { pay: true });
+    assert_eq!(g.state.players[1].life, 18);
+    assert_eq!(g.state.players[0].mana[2], 0);
+    assert_eq!(g.actor(), Some(Player::P0));
+    assert_eq!(g.state.stack.len(), 1);
 }
