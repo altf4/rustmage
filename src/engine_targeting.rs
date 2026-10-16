@@ -36,7 +36,7 @@ impl Announcement {
                     .cost
                     .additional
             }
-            StackKind::TriggeredAbility { .. } => None,
+            StackKind::TriggeredAbility { .. } | StackKind::DelayedSacrifice => None,
         }
     }
 
@@ -56,7 +56,7 @@ impl Announcement {
                 [ability as usize]
                 .cost
                 .mana_options(),
-            StackKind::TriggeredAbility { .. } => {
+            StackKind::TriggeredAbility { .. } | StackKind::DelayedSacrifice => {
                 unreachable!("triggered ability has no activation cost")
             }
         }
@@ -100,7 +100,7 @@ impl Announcement {
                     .cost
                     .alternatives
                     .is_empty(),
-                StackKind::TriggeredAbility { .. } => false,
+                StackKind::TriggeredAbility { .. } | StackKind::DelayedSacrifice => false,
             }
     }
 }
@@ -447,6 +447,7 @@ impl Game {
         let object = self.move_object(card, Zone::Stack).after;
         let id = self.next_stack_id();
         SpellView {
+            delayed_sacrifice: None,
             x: None,
             attachment_trigger: None,
             cast: Some(CastInfo {

@@ -12,7 +12,10 @@ use crate::cards::{
 mod saddle;
 pub use saddle::SaddleChoiceView;
 /// Version of the public observation structure, including private Saddle costs.
-pub const OBSERVATION_SCHEMA: u32 = 68;
+pub const OBSERVATION_SCHEMA: u32 = 69;
+#[path = "engine_mobilize.rs"]
+mod mobilize;
+pub use mobilize::{DelayedSacrificeView, MobilizeChoiceView};
 
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
@@ -255,6 +258,7 @@ define_actions! {
     DeclineEvidence,
     BeginConvoke,
     ChooseConvoker { object: ObjectRef, contribution: ConvokeContribution },
+    ChooseMobilizeDefender { defender: CombatDefender },
     ChooseSaddler { object: ObjectRef },
     FinishSaddle,
     ChooseLibraryDestination { object: ObjectRef, destination: LibraryDestination },
@@ -589,6 +593,7 @@ pub struct AttachmentTriggerView {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
+    pub delayed_sacrifice: Option<Box<DelayedSacrificeView>>,
     /// Chosen X, retained independently by a spell and its own entry-trigger packets.
     pub x: Option<u32>,
     pub attachment_trigger: Option<Box<AttachmentTriggerView>>,
@@ -647,7 +652,7 @@ impl SpellView {
                 Some(Instruction::Modal(modes)) => Some(modes),
                 _ => None,
             },
-            StackKind::ActivatedAbility { .. } => None,
+            StackKind::ActivatedAbility { .. } | StackKind::DelayedSacrifice => None,
         }
     }
     pub(crate) fn program(&self) -> Option<(TargetPlan, &'static [Instruction])> {
@@ -689,6 +694,9 @@ impl SpellView {
                 Some((a.targets, a.program))
             }
             StackKind::Spell => self.source_card.spell_program(self.mode),
+            StackKind::DelayedSacrifice => {
+                Some((TargetPlan::NONE, &[Instruction::SacrificeDelayedTokens]))
+            }
         }
     }
 }
@@ -715,6 +723,7 @@ pub enum StackKind {
     Spell,
     TriggeredAbility { ability: u16 },
     ActivatedAbility { ability: u16 },
+    DelayedSacrifice,
 }
 
 /// The object being attacked; this is not a spell/ability target.
@@ -810,6 +819,9 @@ enum Pending {
         player: Player,
     },
     Evidence {
+        player: Player,
+    },
+    Mobilize {
         player: Player,
     },
     Saddle {
@@ -920,6 +932,8 @@ enum Pending {
 /// Card definitions are enum/static data, never cloned object graphs or trait objects.
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
+    delayed_sacrifices: Option<Box<Vec<mobilize::DelayedBatch>>>,
+    mobilize: Option<Box<mobilize::MobilizePlan>>,
     saddled: Vec<ObjectRef>,
     saddle_payment: Option<Box<saddle::SaddlePayment>>,
     objects: SharedVec<Object>,
@@ -1184,6 +1198,8 @@ pub struct LegalActionSpace {
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
     pub convoke_choice: Option<ConvokeChoiceView>,
+    pub delayed_sacrifices: Vec<DelayedSacrificeView>,
+    pub mobilize_choice: Option<MobilizeChoiceView>,
     pub saddle_choice: Option<SaddleChoiceView>,
     /// Complete scalar domain, visible only to its choosing actor.
     pub x_choice: Option<XChoiceView>,
@@ -1369,6 +1385,8 @@ impl Game {
                 known_hand: Vec::new(),
                 explore_data: None,
                 evidence_data: None,
+                delayed_sacrifices: None,
+                mobilize: None,
                 saddled: Vec::new(),
                 saddle_payment: None,
                 last_target_library_move: None,
@@ -1438,6 +1456,7 @@ impl Game {
             Pending::EvidenceIntent { player }
             | Pending::Evidence { player }
             | Pending::Convoke { player }
+            | Pending::Mobilize { player }
             | Pending::Saddle { player }
             | Pending::Explore { player }
             | Pending::Bargain { player }
@@ -1659,6 +1678,11 @@ impl Game {
         match s.pending {
             Pending::Convoke { .. } => {
                 if self.visit_convoke_actions(&mut emit) {
+                    return true;
+                }
+            }
+            Pending::Mobilize { .. } => {
+                if self.visit_mobilize_actions(&mut emit) {
                     return true;
                 }
             }
@@ -2638,6 +2662,7 @@ impl Game {
                 a.additional = sacrifice;
                 self.continue_announcement_choices(false);
             }
+            Action::ChooseMobilizeDefender { defender } => self.choose_mobilize_defender(defender),
             Action::ChooseSaddler { object } => self
                 .state
                 .saddle_payment
@@ -3738,6 +3763,16 @@ impl Game {
             } else {
                 None
             },
+            delayed_sacrifices: self
+                .state
+                .delayed_sacrifices
+                .as_ref()
+                .map_or_else(Vec::new, |b| b.iter().map(|d| d.view.clone()).collect()),
+            mobilize_choice: if owns_choice {
+                self.mobilize_choice()
+            } else {
+                None
+            },
             saddle_choice: if owns_choice {
                 self.saddle_choice()
             } else {
@@ -3766,6 +3801,7 @@ impl Game {
                 Pending::Bargain { .. } => "bargain",
                 Pending::Kicker { .. } => "kicker",
                 Pending::Convoke { .. } => "convoke",
+                Pending::Mobilize { .. } => "mobilize",
                 Pending::Saddle { .. } => "saddle",
                 Pending::Explore { .. } => "explore",
                 Pending::X { .. } => "x",
@@ -4081,6 +4117,7 @@ impl Game {
     pub fn state_bytes(&self) -> usize {
         let s = &self.state;
         std::mem::size_of::<State>()
+            + self.mobilize_bytes()
             + std::mem::size_of::<Vec<Object>>()
             + std::mem::size_of::<Vec<ObjectRef>>()
             + (s.attacked_this_turn.len() + s.saddled.len()) * std::mem::size_of::<ObjectRef>()
@@ -4187,7 +4224,8 @@ impl Game {
                 .chain(s.resolving.iter().map(|resolution| &resolution.item))
                 .chain(s.announcing.iter().map(|announcement| &announcement.item))
                 .map(|item| {
-                    item.targets.len() * std::mem::size_of::<BoundTarget>()
+                    item.delayed_sacrifice.as_ref().map_or(0, |d| d.bytes())
+                        + item.targets.len() * std::mem::size_of::<BoundTarget>()
                         + item
                             .attachment_trigger
                             .as_ref()
@@ -4617,3 +4655,7 @@ mod evidence_tests;
 #[cfg(test)]
 #[path = "engine_celebration_tests.rs"]
 mod celebration_tests;
+
+#[cfg(test)]
+#[path = "engine_mobilize_tests.rs"]
+mod mobilize_tests;

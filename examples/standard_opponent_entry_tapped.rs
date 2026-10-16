@@ -288,6 +288,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     continue;
                 }
                 match s.kind {
+                    StackKind::DelayedSacrifice => panic!("no delayed producer in this fixture"),
                     StackKind::Spell => {
                         assert!(s.entering_object.is_none());
                         if let Some(i) = NAMES.iter().position(|n| *n == s.source_card.name()) {

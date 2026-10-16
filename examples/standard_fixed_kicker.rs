@@ -285,6 +285,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             for packet in packets(&before) {
                 if let Some(k) = index(packet.source_card) {
                     match packet.kind {
+                        StackKind::DelayedSacrifice => {
+                            panic!("no delayed producer in this fixture")
+                        }
                         StackKind::Spell => {
                             let c = packet.cast.unwrap();
                             assert_eq!(c.origin, Zone::Hand);

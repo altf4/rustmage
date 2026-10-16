@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "4111de2b9e0e408e56e879d2ae13d997da732ba05f683b51008f57275c1e3b82",
+  "catalogue_version": "5e3af3c6a717088a2616d32b5f5111dd3cbb982346e99ea19031227b964c3f59",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1648,
-  "implemented_total": 1654,
-  "token_definitions": 77,
+  "implemented_standard_cards": 1656,
+  "implemented_total": 1662,
+  "token_definitions": 78,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -1696,7 +1696,7 @@
     {
       "name": "Avenger of the Fallen",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -5716,7 +5716,7 @@
     {
       "name": "Dalkovan Packbeasts",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -6958,7 +6958,7 @@
     {
       "name": "Dragonback Lancer",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -17626,7 +17626,7 @@
     {
       "name": "Nightblade Brigade",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -20698,7 +20698,7 @@
     {
       "name": "Reigning Victor",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -23044,7 +23044,7 @@
     {
       "name": "Shock Brigade",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -24514,7 +24514,7 @@
     {
       "name": "Stadium Headliner",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -31090,7 +31090,7 @@
     {
       "name": "Zurgo's Vanguard",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
