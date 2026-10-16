@@ -46,6 +46,7 @@ impl Game {
 
     pub(super) fn spell_can_fund(&self, actor: Player, card: CardId, cost: ManaCost) -> bool {
         let definition = self.state.objects[card as usize].card;
+        let cost = self.reduced_spell_cost(actor, card, cost);
         let base = FundingGoal {
             actor,
             required: cost.colored,

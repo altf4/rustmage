@@ -14,6 +14,67 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_reductions_preserve_exact_scope_filters_timing_and_unsupported_clauses(self):
+        for text,needles in [
+            ('Dragon spells you cast cost {1} less to cast.',['source_only: false','Subtype("Dragon")','amount: 1']),
+            ('Kithkin spells and Soldier spells you cast cost {1} less to cast.',['AnyOf','Subtype("Kithkin")','Subtype("Soldier")']),
+            ('During turns other than yours, spells you cast cost {1} less to cast.',['CostTurn::Other']),
+            ('The second spell you cast each turn costs {2} less to cast.',['StepValue::SpellsCast','minimum: Some(1)','maximum: Some(1)']),
+            ('This spell costs {3} less to cast if creatures you control have total toughness 10 or greater.',['source_only: true','TotalCreatureToughness']),
+            ("This spell costs {2} less to cast if you've cast another spell this turn.",['minimum: Some(1)','maximum: None']),
+            ('This spell costs {1} less to cast during your turn.',['CostTurn::Own']),
+        ]:
+            proxy,rules=generate.extract_cost_reductions(self.card(oracle_text=text+'\nFlying'))
+            self.assertEqual(proxy['oracle_text'],'Flying');self.assertEqual(len(rules),1)
+            for needle in needles:self.assertIn(needle,rules[0],text)
+        for text in ['This spell costs {2} less to cast if it targets a tapped creature.',
+                     'This spell costs {1}{U} less to cast if it targets an instant or sorcery spell.',
+                     'This spell costs {X} less to cast, where X is the number of differently named lands you control.',
+                     'The first creature spell you cast each turn costs {2} less to cast.',
+                     'Noncreature spells your opponents cast cost {1} more to cast.',
+                     'Dragon spells you cast cost {65536} less to cast.',
+                     'Artifact spells you cast cost {1} less to cast. Activate only once each turn.']:
+            proxy,rules=generate.extract_cost_reductions(self.card(oracle_text=text))
+            self.assertEqual(proxy['oracle_text'],text);self.assertEqual(rules,[],text)
+
+    def test_hand_count_reductions_remain_gated_until_cast_zone_is_modeled(self):
+        import hashlib
+        import json
+        clause='This spell costs {1} less to cast if you have fewer than 3 cards in hand.'
+        # The predicate is valid for resolution/step programs, but cost queries
+        # need the proposed casting state (three cards becomes two in hand).
+        self.assertIn('StepValue::Hand',generate.step_guard('you have fewer than 3 cards in hand'))
+        card=self.card(name='Hand Reduction Regression',oracle_id='hand-reduction-regression',
+                       type_line='Sorcery',mana_cost='{1}{U}',
+                       colors=['U'],oracle_text=clause+'\nDraw two cards.')
+        proxy,rules=generate.extract_cost_reductions(card)
+        self.assertEqual(proxy,card);self.assertEqual(rules,[])
+        cards=[card]
+        canonical=json.dumps(cards,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()
+        snapshot=dict(cards=cards,card_count=1,cards_sha256=hashlib.sha256(canonical).hexdigest())
+        _,report=generate.compile_catalogue(snapshot,dict(banned_card_names=[]))
+        row=next(row for row in report['cards'] if row['name']==card['name'])
+        self.assertFalse(row['implemented'])
+
+    def test_twenty_reduction_admissions_require_every_residual_body_clause(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,report=generate.compile_catalogue(rows,target);supported={r['name'] for r in report['cards'] if r['implemented']}
+        names=['Arcane Epiphany','Archmage of Runes','Ballyrush Banneret',"Dragonlord's Servant",'Focus the Mind',
+               'Geist of Saint Thalia','Geyser Drake','Gigastorm Titan','Highspire Bell-Ringer','Honest Rutstein',
+               'Mistmeadow Council','Mocking Sprite','Orysa, Tide Choreographer','Pearl of Wisdom','Saved by the Shell',
+               'Stormcatch Mentor','Uthros Psionicist',"Venom's Hunger",'Visions of Villainy','Voyager Quickwelder']
+        for name in names:
+            self.assertIn(name,supported)
+            card=next(c for c in rows['cards'] if c['name']==name)
+            proxy,rules=generate.extract_cost_reductions(dict(card,oracle_text=card['oracle_text']+'\nWhenever you cast a spell, discover 3.'))
+            self.assertTrue(rules,name)
+            self.assertIsNone(generate.spell_program_template(proxy),name);self.assertIsNone(generate.permanent_program_template(proxy),name)
+            self.assertIsNone(generate.static_permanent_template(proxy),name);self.assertIsNone(generate.modal_spell_template(proxy),name)
+        for name in ['Thalia, the Survivor','Out of Air',"Dragon's Prey",'Quicksand Whirlpool','Memory Guardian',
+                     'Wildvine Pummeler','Inquisitive Glimmer','Mental Modulation','Traxos, Academy Guardian']:
+            self.assertNotIn(name,supported)
+
     def test_restricted_counter_targets_compile_exact_unions_colors_and_mana_ranges(self):
         for phrase,rule in [('artifact or enchantment spell','SpellArtifactEnchantment'),
                             ('artifact or creature spell','SpellArtifactCreature'),

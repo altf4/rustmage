@@ -184,6 +184,9 @@ fn reserved_creature_can_tap_for_mana_then_be_sacrificed() {
         colored: [0, 0, 0, 0, 1, 0],
         generic: 0,
     });
+    // Replace the synthetic locked total too; changing an equivalent after
+    // declaration no longer changes the already locked payment requirement.
+    a.total_cost = a.cost;
     g.state.announcing = Some(a);
     g.state.players[0].mana = [0; 6];
     replay(&mut g, Action::TapMana { card: elf });

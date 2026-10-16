@@ -1,0 +1,207 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Arcane Epiphany",
+      "oracle_text": "This spell costs {1} less to cast if you control a Wizard.\nDraw three cards.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/ArcaneEpiphany.java",
+          "java_sha256": "54fe5d9d2a5609fdd633465de5badcc374247cb5474be91e04d72fb449efa93c"
+        }
+      ]
+    },
+    {
+      "name": "Archmage of Runes",
+      "oracle_text": "Instant and sorcery spells you cast cost {1} less to cast.\nWhenever you cast an instant or sorcery spell, draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/ArchmageOfRunes.java",
+          "java_sha256": "56082302cdfe98da3734423374461650b3fc278601e5eec82c4540244e62b51c"
+        }
+      ]
+    },
+    {
+      "name": "Ballyrush Banneret",
+      "oracle_text": "Kithkin spells and Soldier spells you cast cost {1} less to cast.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BallyrushBanneret.java",
+          "java_sha256": "b1fe897b397e7879c8b59761002579d59516ef5a985ed20c6297471848db9aea"
+        }
+      ]
+    },
+    {
+      "name": "Dragonlord's Servant",
+      "oracle_text": "Dragon spells you cast cost {1} less to cast.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DragonlordsServant.java",
+          "java_sha256": "f045c371a66153d838e5d2b8a00910a8ef90642d783797d3d643047cf35ce0b6"
+        }
+      ]
+    },
+    {
+      "name": "Focus the Mind",
+      "oracle_text": "This spell costs {2} less to cast if you've cast another spell this turn.\nDraw three cards, then discard a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FocusTheMind.java",
+          "java_sha256": "b68b1431d5d032eebd3043d11bc8266ca3fe210b10bf82a81b6ecf938f2ebe38"
+        }
+      ]
+    },
+    {
+      "name": "Geist of Saint Thalia",
+      "oracle_text": "Flying\nNoncreature spells you cast cost {1} less to cast.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GeistOfSaintThalia.java",
+          "java_sha256": "25648761cd3486da79de2558e191d67396ec7d046d5bcbdcd04432a6c5622062"
+        }
+      ]
+    },
+    {
+      "name": "Geyser Drake",
+      "oracle_text": "Flying\nDuring turns other than yours, spells you cast cost {1} less to cast.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GeyserDrake.java",
+          "java_sha256": "5cfd4fb7e57c6acfc3882dac3815b8109d4f3c9fd98bdfad9c384948239927b6"
+        }
+      ]
+    },
+    {
+      "name": "Gigastorm Titan",
+      "oracle_text": "This spell costs {3} less to cast if you've cast another spell this turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GigastormTitan.java",
+          "java_sha256": "cea34891438291eab676857fb7f2fac5e01af493ffb1bfaed614034931c8309a"
+        }
+      ]
+    },
+    {
+      "name": "Highspire Bell-Ringer",
+      "oracle_text": "Flying\nThe second spell you cast each turn costs {1} less to cast.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HighspireBellRinger.java",
+          "java_sha256": "9f2da655a38d33e03cb6a3e4ea038fa668224c46342c65f1d2790070fcc45ba1"
+        }
+      ]
+    },
+    {
+      "name": "Honest Rutstein",
+      "oracle_text": "When Honest Rutstein enters, return target creature card from your graveyard to your hand.\nCreature spells you cast cost {1} less to cast.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HonestRutstein.java",
+          "java_sha256": "a9482c41301fece6f68b346d1b9eda751cd0f4faf7cdef6ed03876b6c42044c7"
+        }
+      ]
+    },
+    {
+      "name": "Mistmeadow Council",
+      "oracle_text": "This spell costs {1} less to cast if you control a Kithkin.\nWhen this creature enters, draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MistmeadowCouncil.java",
+          "java_sha256": "1b237fe646754fe9959e972b53b4cf0ee0abd2064d351fe07b987b1a27e6bda5"
+        }
+      ]
+    },
+    {
+      "name": "Mocking Sprite",
+      "oracle_text": "Flying\nInstant and sorcery spells you cast cost {1} less to cast.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MockingSprite.java",
+          "java_sha256": "a5374c9d9cd3326e31bd91ffb0de28a87d3a31e255d4d6a755c596e43f95e772"
+        }
+      ]
+    },
+    {
+      "name": "Orysa, Tide Choreographer",
+      "oracle_text": "This spell costs {3} less to cast if creatures you control have total toughness 10 or greater.\nWhen Orysa enters, draw two cards.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/o/OrysaTideChoreographer.java",
+          "java_sha256": "8e29f2f8b5280d3cd29fed9b1fdbf9034c80cc848179aa7318c791d09a9e58f4"
+        }
+      ]
+    },
+    {
+      "name": "Pearl of Wisdom",
+      "oracle_text": "This spell costs {1} less to cast if you control an Otter.\nDraw two cards.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PearlOfWisdom.java",
+          "java_sha256": "3d0d7b46104836a075866742100f55bb33ed6d8d96125114e0062dc95393eeb2"
+        }
+      ]
+    },
+    {
+      "name": "Saved by the Shell",
+      "oracle_text": "This spell costs {1} less to cast if you control a Turtle.\nPut a +1/+1 counter on target creature you control. It gains trample, hexproof, and indestructible until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SavedByTheShell.java",
+          "java_sha256": "d4e917f325e55ba9dddbe0893ac8c01f6b1168ed943e02978d59f5b0824ed41b"
+        }
+      ]
+    },
+    {
+      "name": "Stormcatch Mentor",
+      "oracle_text": "Haste\nProwess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)\nInstant and sorcery spells you cast cost {1} less to cast.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StormcatchMentor.java",
+          "java_sha256": "1db446c0e9e7419b36a9a058f7a9a185a4b064218ce1d741cc111530030f158a"
+        }
+      ]
+    },
+    {
+      "name": "Uthros Psionicist",
+      "oracle_text": "The second spell you cast each turn costs {2} less to cast.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/u/UthrosPsionicist.java",
+          "java_sha256": "bbdcbde862f8e4ff372ebe1d5bc04c32ff60a6bf25f1eb500e4d930923745438"
+        }
+      ]
+    },
+    {
+      "name": "Venom's Hunger",
+      "oracle_text": "This spell costs {2} less to cast if you control a Villain.\nDestroy target creature. You gain 2 life.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VenomsHunger.java",
+          "java_sha256": "f17fa43ff74b004b6d2f1ef3ff6be0a6109b2012056248bd3b4c1ab8d24fdfde"
+        }
+      ]
+    },
+    {
+      "name": "Visions of Villainy",
+      "oracle_text": "This spell costs {1} less to cast if you control a Villain.\nYou draw two cards and lose 2 life.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VisionsOfVillainy.java",
+          "java_sha256": "b077c9cc8e41f18baf81ed3617e471f11bde7e422c3423ef7f4f2f5a0307ac01"
+        }
+      ]
+    },
+    {
+      "name": "Voyager Quickwelder",
+      "oracle_text": "Artifact spells you cast cost {1} less to cast.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VoyagerQuickwelder.java",
+          "java_sha256": "37e987004eaba6823ce9398353b1e0f8b55c8fac256c6f89a936b1fb8661b22a"
+        }
+      ]
+    }
+  ]
+}

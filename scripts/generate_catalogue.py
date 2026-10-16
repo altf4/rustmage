@@ -69,6 +69,45 @@ def spell_cost_options(cost):
     # side of every two-brid symbol. Its total remains the printed mana value.
     return [(list(row[:6]),row[6]) for row in sorted(variants)]
 
+def reduction_filter(noun):
+    words={'': 'Any','creature':'Creature','noncreature':'Noncreature','artifact':'Artifact',
+           'enchantment':'Enchantment','instant and sorcery':'InstantSorcery'}
+    if noun.casefold() in words:return 'CastFilter::'+words[noun.casefold()]
+    subtypes={word.casefold():word for word in CREATURE_TYPE_NAMES}
+    if ' spells and ' in noun:
+        nouns=noun.split(' spells and ')
+        if len(nouns)!=2 or any(n.casefold() not in subtypes for n in nouns):return None
+        return 'CastFilter::AnyOf(&['+', '.join('CastFilter::Subtype('+json.dumps(subtypes[n.casefold()])+')' for n in nouns)+'])'
+    if noun.casefold() in subtypes:return 'CastFilter::Subtype('+json.dumps(subtypes[noun.casefold()])+')'
+    return None
+
+def extract_cost_reductions(card):
+    text=card.get('oracle_text')
+    if not isinstance(text,str) or card.get('layout')!='normal':return card,[]
+    body,rules=[],[]
+    for original in text.split('\n'):
+        line=original.strip();turn='Any';guard='StepGuard::Always';source_only=False;filt=None;amount=None
+        for prefix,timing in [('During turns other than yours, ','Other'),('During your turn, ','Own')]:
+            if line.startswith(prefix):turn=timing;line=line[len(prefix):];break
+        if m:=re.fullmatch(r'(?:([A-Za-z -]+) )?[Ss]pells you cast cost \{([0-9]+)\} less to cast\.',line):
+            filt=reduction_filter(m[1] or '');amount=int(m[2])
+        elif m:=re.fullmatch(r'The second spell you cast each turn costs \{([0-9]+)\} less to cast\.',line):
+            filt='CastFilter::Any';amount=int(m[1]);guard='StepGuard::Threshold { value: StepValue::SpellsCast, minimum: Some(1), maximum: Some(1) }'
+        elif m:=re.fullmatch(r'This spell costs \{([0-9]+)\} less to cast(?: if (.+)| during your turn)?\.',line):
+            source_only=True;filt='CastFilter::Any';amount=int(m[1])
+            if m[2]:
+                guard=('StepGuard::Threshold { value: StepValue::SpellsCast, minimum: Some(1), maximum: None }'
+                       if m[2]=="you've cast another spell this turn" else step_guard(m[2]))
+                # CR 601.2a moves the proposed spell out of hand before costs
+                # are determined. Affordability currently queries the original
+                # hand, so retain this clause until proposed-state checks exist.
+                if guard and 'StepValue::Hand' in guard:guard=None
+            elif line.endswith(' during your turn.'):turn='Own'
+        if filt is None or guard is None or amount is None or amount>65535:
+            body.append(original);continue
+        rules.append(f'SpellReduction {{ source_only: {str(source_only).lower()}, filter: {filt}, amount: {amount}, turn: CostTurn::{turn}, guard: {guard} }}')
+    return dict(card,oracle_text='\n'.join(body)),rules
+
 def permanent_type(card):
     typ = card.get('type_line', '').split(' — ')[0]
     return typ.removeprefix('Legendary ').removeprefix('Kindred ')
@@ -1996,11 +2035,13 @@ def compile_catalogue(snapshot, target):
     scaling_rows = []
     additional_rows = []
     hybrid_rows = []
+    reduction_rows = []
     equipment_rows = []
     aura_rows = []
     for index, name in enumerate(names):
         card, cycling = cycling_abilities(cards.get(name, {}))
         card, additional = extract_additional_cost(card)
+        card, reductions = extract_cost_reductions(card)
         card, dynamic, scaling = extract_stat_rules(card)
         cost = card.get('mana_cost', '')
         keywords = sum(INTRINSIC_KEYWORDS[word] for word in {keyword.casefold() for keyword in card.get('keywords', [])} & INTRINSIC_KEYWORDS.keys())
@@ -2079,6 +2120,7 @@ def compile_catalogue(snapshot, target):
             loyalty_rows.append(f'        {index} => {int(value)},')
         if effect != 'Unsupported':
             supported.append(index)
+            if reductions: reduction_rows.append(f'        {index} => &[{", ".join(reductions)}],')
             if additional is not None: additional_rows.append(f'        {index} => Some({additional}),')
         basic = name in {'Plains', 'Island', 'Swamp', 'Mountain', 'Forest'} or card.get('type_line', '').split(' — ')[0] == 'Basic Land'
         costs = spell_cost_options(cost) or [([0] * 6, 0)]
@@ -2173,6 +2215,7 @@ def compile_catalogue(snapshot, target):
     lines += ['#[rustfmt::skip]', "pub(super) fn keyword_grants(card: Card) -> &'static [KeywordGrant] {", '    match card.0 {', *grant_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn additional_cost(card: Card) -> Option<AdditionalCost> {', '    match card.0 {', *additional_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub const CREATURE_TYPES: &[&str] = &[', *('    '+json.dumps(name)+',' for name in creature_types), '];', '']
+    lines += ['#[rustfmt::skip]', "pub(super) fn cost_reductions(card: Card) -> &'static [SpellReduction] {", '    match card.0 {', *reduction_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn cost_alternatives(card: Card) -> &'static [ManaCost] {", '    match card.0 {', *hybrid_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn starting_loyalty(card: Card) -> u64 {', '    match card.0 {', *loyalty_rows, '        _ => 0,', '    }', '}', '']
     return '\n'.join(lines), {'schema': 1, 'catalogue_version': version, 'standard_legal_cards': len(cards),

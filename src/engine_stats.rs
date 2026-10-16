@@ -87,6 +87,11 @@ impl Game {
                 .card
                 .scaling_modifiers()
                 .is_empty()
+            || self.state.objects[id as usize]
+                .card
+                .cost_reductions()
+                .iter()
+                .any(|rule| !rule.source_only)
         {
             self.state.static_sources.push(id);
         }
