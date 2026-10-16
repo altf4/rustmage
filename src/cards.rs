@@ -354,6 +354,48 @@ impl std::ops::AddAssign for Stats {
     }
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum CountZone {
+    Battlefield,
+    Graveyard,
+    Exile,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct CountFilter {
+    pub zone: CountZone,
+    pub relation: i8,
+    pub kind: u16,
+    pub exclude: u16,
+    pub subtype: Option<&'static str>,
+    pub basic: bool,
+    pub other: bool,
+    pub cards_only: bool,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum StatValue {
+    Count(CountFilter),
+    GreatestManaValue(CountFilter),
+    GraveyardCardTypes,
+    Sum(&'static [StatValue]),
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct StatExpr {
+    pub value: StatValue,
+    pub multiplier: i32,
+    pub offset: i32,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct DynamicStats {
+    pub power: Option<StatExpr>,
+    pub toughness: Option<StatExpr>,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct ScalingModifier {
+    pub subject: Subject,
+    pub value: StatValue,
+    pub stats: Stats,
+}
+
 /// Predicates depend only on earlier-layer characteristics and combat membership.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct CreatureFilter {
@@ -763,7 +805,7 @@ struct Definition {
     activated: &'static [ActivatedAbility],
     enters: Counters,
     entry: EntryTapped,
-    kind: u8,
+    kind: u16,
     basic: bool,
     mana_color: Option<usize>,
     colored: Mana,
@@ -854,6 +896,12 @@ impl Card {
     pub fn is_token(self) -> bool {
         self.token_info().is_some()
     }
+    pub(crate) fn dynamic_stats(self) -> Option<DynamicStats> {
+        generated::dynamic_stats(self)
+    }
+    pub(crate) fn scaling_modifiers(self) -> &'static [ScalingModifier] {
+        generated::scaling_modifiers(self)
+    }
     pub(crate) fn static_modifiers(self) -> &'static [StaticModifier] {
         generated::static_modifiers(self)
     }
@@ -878,7 +926,7 @@ impl Card {
     pub fn is_artifact(self) -> bool {
         generated::DEFINITIONS[self.0 as usize].kind & 16 != 0
     }
-    pub(crate) fn kind_mask(self) -> u8 {
+    pub(crate) fn kind_mask(self) -> u16 {
         generated::DEFINITIONS[self.0 as usize].kind
     }
     pub fn is_basic_land(self) -> bool {

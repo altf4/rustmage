@@ -1,9 +1,10 @@
 use crate::cards::{
-    ActivatedAbility, ActivationCost, ActivationGuard, ActivationOrigin, CastRelation, CounterKind,
-    CounterSubject, Counters, CreatureFilter, DamageQualification, DamageSubject, Effect,
-    EffectChoiceKind, EntryTapped, Instruction, ManaCost, ManaProduction, MillAmount, PlayerSet,
-    RecoveryFilter, SacrificeFilter, SearchSpec, Stats, StepGuard, StepValue, Subject, TargetPlan,
-    TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
+    ActivatedAbility, ActivationCost, ActivationGuard, ActivationOrigin, CastRelation, CountFilter,
+    CountZone, CounterKind, CounterSubject, Counters, CreatureFilter, DamageQualification,
+    DamageSubject, Effect, EffectChoiceKind, EntryTapped, Instruction, ManaCost, ManaProduction,
+    MillAmount, PlayerSet, RecoveryFilter, SacrificeFilter, SearchSpec, StatExpr, StatValue, Stats,
+    StepGuard, StepValue, Subject, TargetPlan, TargetRule, TargetSpec, TargetZone,
+    TriggerCondition, TriggerStep, payments,
 };
 #[path = "engine_activations.rs"]
 mod activations;
@@ -34,6 +35,8 @@ mod milling;
 mod sba;
 #[path = "engine_search.rs"]
 mod search;
+#[path = "engine_stat_values.rs"]
+mod stat_values;
 #[path = "engine_stats.rs"]
 mod stats;
 #[path = "engine_steps.rs"]
@@ -80,6 +83,9 @@ mod activation_guard_tests;
 #[cfg(test)]
 #[path = "engine_damage_tests.rs"]
 mod damage_tests;
+#[cfg(test)]
+#[path = "engine_dynamic_stat_tests.rs"]
+mod dynamic_stat_tests;
 #[cfg(test)]
 #[path = "engine_entry_life_tests.rs"]
 mod entry_life_tests;

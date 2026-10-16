@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "a0e1363f88f945ea2c3397c1853ed95d70d9fad8aa7a7a5b87b2426882182cd1",
+  "catalogue_version": "5434baf14ef073e225090567940f9090dbfd6bfec1c09499d48dc56b27af9f7c",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 889,
-  "implemented_total": 895,
+  "implemented_standard_cards": 907,
+  "implemented_total": 913,
   "token_definitions": 41,
   "cards": [
     {
@@ -357,8 +357,8 @@
     {
       "name": "Adelbert Steiner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Adept Watershaper",
@@ -2637,8 +2637,8 @@
     {
       "name": "Blanchwood Armor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Blasphemous Edict",
@@ -2985,8 +2985,8 @@
     {
       "name": "Boneclub Berserker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Bonehoard Dracosaur",
@@ -3603,8 +3603,8 @@
     {
       "name": "Burrowguard Mentor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Burst Lightning",
@@ -5187,8 +5187,8 @@
     {
       "name": "Cosmogoyf",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Cosmogrand Zenith",
@@ -5451,8 +5451,8 @@
     {
       "name": "Crusader of Odric",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Crustacean Commando",
@@ -8049,8 +8049,8 @@
     {
       "name": "Enigma Drake",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Enlightened Confidant",
@@ -8295,8 +8295,8 @@
     {
       "name": "Ethereal Armor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Etrata, Deadly Fugitive",
@@ -11445,8 +11445,8 @@
     {
       "name": "Guidelight Synergist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Guiding Hydra",
@@ -11703,8 +11703,8 @@
     {
       "name": "Harmonious Grovestrider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Harmonized Crescendo",
@@ -14475,8 +14475,8 @@
     {
       "name": "Kraven, Proud Predator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Kree Commandos",
@@ -16707,8 +16707,8 @@
     {
       "name": "Mirkwood Pathmaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Mirror Room // Fractured Realm",
@@ -17055,8 +17055,8 @@
     {
       "name": "Moon-Vigil Adherents",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Moonglove Extractor",
@@ -20673,8 +20673,8 @@
     {
       "name": "Regal Bunnicorn",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Regal Caracal",
@@ -23685,8 +23685,8 @@
     {
       "name": "Snow Villiers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Snowmelt Stag",
@@ -26037,8 +26037,8 @@
     {
       "name": "Tarmogoyf",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Tarnation Vista",
@@ -26157,8 +26157,8 @@
     {
       "name": "Tempest Djinn",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Tempest Hart // Scan the Clouds",
@@ -30777,8 +30777,8 @@
     {
       "name": "Xande, Dark Mage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Xu-Ifit, Osteoharmonist",

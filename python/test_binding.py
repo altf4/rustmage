@@ -12,6 +12,45 @@ class BindingTests(unittest.TestCase):
     def game(self):
         return Game([["Mountain"] * 24 + ["LightningBolt"] * 36] * 2, seed=17, deck_rules="Freeform")
 
+    def test_dynamic_creature_count_stats_are_native_and_snapshot_owned(self):
+        deck=['Plains']*12+['Forest']*12+['Burrowguard Mentor']*12+['Crusader of Odric']*12+['Savannah Lions']*12
+        with Game([deck,['Forest']*60],seed=6,deck_rules='Freeform') as game:
+            obs=game.observe('P0')
+            for _ in range(1800):
+                self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor'])
+                own=[o for o in obs['objects'] if o['zone']=='Battlefield' and o['owner']=='P0' and o['power']!=0]
+                source=next((o for o in own if o['card'] in ('Burrowguard Mentor','Crusader of Odric')),None)
+                if source and len(own)>=2:
+                    self.assertEqual((source['power'],source['toughness']),(len(own),len(own)))
+                    saved=game.snapshot();actor=obs['actor'];index=self.discard_index(obs)
+                    with game.clone() as fork:expected=fork.step(fork.observe(actor),index)
+                    self.assertEqual(game.step(obs,index),expected);game.restore(saved)
+                    with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,index)
+                    game.drop_snapshot(saved);return
+                obs=game.step(obs,self.discard_index(obs))
+            self.fail('scaled creature board not reached')
+
+    def test_tarmogoyf_power_and_toughness_follow_public_graveyard_card_types(self):
+        deck=['Forest']*12+['Mountain']*12+['Tarmogoyf']*12+['Shock']*12+['Giant Growth']*12
+        with Game([deck,['Forest']*60],seed=8,deck_rules='Freeform') as game:
+            obs=game.observe('P0')
+            for _ in range(2000):
+                self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor'])
+                goyfs=[o for o in obs['objects'] if o['card']=='Tarmogoyf' and o['zone']=='Battlefield']
+                # This fixture uses only instants, lands and Tarmogoyfs. Avoid
+                # temporary growth while checking its unmodified CDA value.
+                types=set()
+                for o in obs['objects']:
+                    if o['zone']=='Graveyard':
+                        types.add('Creature' if o['card']=='Tarmogoyf' else 'Land' if o['card'] in ('Forest','Mountain') else 'Instant')
+                if goyfs and types:
+                    source=goyfs[0]
+                    if source['power']==len(types) and source['toughness']==len(types)+1:
+                        other=game.observe('P1')
+                        self.assertEqual(next(o for o in other['objects'] if o['reference']==source['reference'])['power'],len(types));return
+                obs=game.step(obs,self.discard_index(obs))
+            self.fail('public graveyard-scaled Tarmogoyf not reached')
+
     def test_verge_secondary_color_requires_a_live_owned_land_type(self):
         deck=['Blazemire Verge']*16+['Swamp']*8+['Shock']*36
         with Game([deck,['Forest']*60],seed=7,deck_rules='Freeform') as game:
