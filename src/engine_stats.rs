@@ -97,6 +97,10 @@ impl Game {
                 .is_empty()
             || !self.state.objects[id as usize]
                 .card
+                .counter_keyword_grants()
+                .is_empty()
+            || !self.state.objects[id as usize]
+                .card
                 .scaling_modifiers()
                 .is_empty()
             || self.state.objects[id as usize]

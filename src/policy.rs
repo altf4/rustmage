@@ -107,7 +107,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             return -10;
         }
         match action {
-            Action::ChooseOffspring { pay } => {
+            Action::ChooseOffspring { pay } | Action::ChooseKicker { pay } => {
                 if *pay {
                     100
                 } else {

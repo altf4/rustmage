@@ -295,6 +295,7 @@ impl Game {
                         unreachable!("unwrapped event")
                     }
                     TriggerCondition::SelfOffspring => same && event.offspring_paid,
+                    TriggerCondition::SelfKicked => same && event.kicked,
                     TriggerCondition::SelfEnters
                     | TriggerCondition::SelfEntersOrAttacks
                     | TriggerCondition::SelfEntersOrDies => same,
@@ -820,13 +821,18 @@ impl Game {
                     return;
                 }
                 Effect::Creature(..) | Effect::Permanent => {
-                    if item.cast.is_some_and(|c| c.offspring == Some(true)) {
+                    if item
+                        .cast
+                        .is_some_and(|c| c.offspring == Some(true) || c.kicker == Some(true))
+                    {
                         let mut movement = self.entry_move(
                             item.card,
                             Zone::Battlefield,
                             self.enters_tapped(item.card),
                         );
-                        movement.offspring_paid = true;
+                        movement.offspring_paid =
+                            item.cast.is_some_and(|c| c.offspring == Some(true));
+                        movement.kicked = item.cast.is_some_and(|c| c.kicker == Some(true));
                         self.stage_entries(vec![movement], None);
                     } else {
                         self.move_object(item.card, Zone::Battlefield);
@@ -996,6 +1002,12 @@ impl Game {
                     self.state.pending_triggers.push(reflexive);
                 }
                 Instruction::Modal(_) => unreachable!("unselected modal trigger executed"),
+                Instruction::IfKicked { skip } => {
+                    if !item.cast.is_some_and(|c| c.kicker == Some(true)) {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
+
                 Instruction::IfSubject {
                     subject,
                     filter,

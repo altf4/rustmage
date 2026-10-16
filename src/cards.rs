@@ -364,6 +364,10 @@ pub(crate) enum Instruction {
         guard: StepGuard,
         skip: usize,
     },
+    /// Historical paid qualification of the exact cast.
+    IfKicked {
+        skip: usize,
+    },
     /// Live predicate on an exact resolving object, never on a reincarnation.
     IfSubject {
         subject: Subject,
@@ -1010,6 +1014,7 @@ pub(crate) enum TriggerCondition {
     },
     SelfEnters,
     SelfOffspring,
+    SelfKicked,
     SelfDies,
     SelfEntersOrDies,
     SelfAttacks,
@@ -1496,6 +1501,16 @@ impl Card {
     }
     pub(crate) fn has_hybrid_cost(self) -> bool {
         !generated::cost_alternatives(self).is_empty()
+    }
+    /// Fixed optional kicker surcharge for this immutable whole-card definition.
+    pub fn kicker_cost(self) -> Option<ManaCost> {
+        generated::kicker_cost(self)
+    }
+    pub(crate) fn kicked_entry_counters(self) -> u16 {
+        generated::kicked_entry_counters(self)
+    }
+    pub(crate) fn counter_keyword_grants(self) -> &'static [(CounterKind, Keywords)] {
+        generated::counter_keyword_grants(self)
     }
     /// Optional additional mana cost for the immutable offspring recipe.
     pub fn offspring_cost(self) -> Option<ManaCost> {

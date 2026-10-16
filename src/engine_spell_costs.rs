@@ -24,11 +24,37 @@ impl Game {
                 .checked_add(1)
                 .capacity("forage alternative mana cost exhausted");
         }
-        Self::with_offspring_cost(
-            base,
+        Self::with_kicker_cost(
+            Self::with_offspring_cost(
+                base,
+                a.item.source_card,
+                a.item.cast.is_some_and(|c| c.offspring == Some(true)),
+            ),
             a.item.source_card,
-            a.item.cast.is_some_and(|c| c.offspring == Some(true)),
+            a.item.cast.is_some_and(|c| c.kicker == Some(true)),
         )
+    }
+    pub(super) fn with_kicker_cost(mut base: ManaCost, card: Card, pay: bool) -> ManaCost {
+        if pay {
+            let extra = card.kicker_cost().expect("kicker recipe");
+            base.generic = base
+                .generic
+                .checked_add(extra.generic)
+                .capacity("kicker mana cost exhausted");
+            for (amount, extra) in base.colored.iter_mut().zip(extra.colored) {
+                *amount = amount
+                    .checked_add(extra)
+                    .capacity("kicker mana cost exhausted");
+            }
+        }
+        base
+    }
+    pub(super) fn kicker_choice_fundable(&self, a: &Announcement, pay: bool) -> bool {
+        let mut proposal = a.clone();
+        proposal.item.cast.as_mut().unwrap().kicker = Some(pay);
+        proposal
+            .cost_options()
+            .any(|cost| self.announcement_cost_fundable(&proposal, cost))
     }
     pub(super) fn with_offspring_cost(mut base: ManaCost, card: Card, pay: bool) -> ManaCost {
         if pay {

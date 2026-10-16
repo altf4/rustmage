@@ -255,7 +255,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             assert_eq!(g.snapshot(), expected);
             replays += 1;
             let a = g.observe(p);
-            assert_eq!(a.schema, 60);
+            assert_eq!(a.schema, 61);
             assert_eq!(a.exile_permissions, g.observe(p.other()).exile_permissions);
             for r in &a.exile_permissions {
                 let v = obj(&a, r.object).expect("exact public exile object");

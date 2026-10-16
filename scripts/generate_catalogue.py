@@ -905,6 +905,51 @@ def sacrifice_spec(text):
     return amount,filt
 
 
+def extract_kicker(card):
+    """One fixed additional mana cost; no multikicker, variables or duplicate declarations."""
+    lines=card.get('oracle_text','').splitlines()
+    found=[line for line in lines if line.startswith('Kicker ')]
+    if len(found)!=1 or card.get('layout')!='normal':return card,None
+    match=re.fullmatch(r'Kicker (?P<cost>(?:\{(?:[0-9]+|[WUBRGC])\})+)(?: \(You may pay an additional (?P=cost) as you cast this spell\.\))?',found[0])
+    if not match:return card,None
+    choices=spell_cost_options(match['cost']);base=spell_cost_options(card.get('mana_cost',''))
+    if choices is None or len(choices)!=1 or base is None:return card,None
+    colored,generic=choices[0]
+    if any(generic+n>4294967295 or any(a+b>4294967295 for a,b in zip(colored,mana)) for mana,n in base):return card,None
+    return dict(card,oracle_text='\n'.join(line for line in lines if line!=found[0])),f'ManaCost {{ colored: {colored}, generic: {generic} }}'
+
+
+def fixed_kicker_body(card):
+    """Complete closed bodies. Replacement branches execute a single real operation."""
+    text=card.get('oracle_text','')
+    for reminder in [" (Damage dealt by this creature also causes you to gain that much life.)", " (This creature can't be blocked except by two or more creatures.)", " (It can deal excess combat damage to the player or planeswalker it's attacking.)"]:
+        text=text.replace(reminder,'')
+    text=text.replace(card.get('name','')+' deals ','this spell deals ')
+    branch=lambda yes,no:['IfKicked { skip: '+str(len(yes)+1)+' }',*yes,'Skip('+str(len(no))+')',*no]
+    spells={
+        'this spell deals 2 damage to any target. If this spell was kicked, it deals 4 damage instead.':('Any',branch(['Damage(4)'],['Damage(2)'])),
+        'this spell deals 2 damage to target creature. If this spell was kicked, it deals 5 damage to that creature instead.':('Creature',branch(['Damage(5)'],['Damage(2)'])),
+        "Return target nonland permanent to its owner's hand. If this spell was kicked, draw a card.":('Nonland',['ReturnToHand','IfKicked { skip: 1 }','Draw(PlayerSet::Controller, 1)']),
+        'Return target creature card from your graveyard to your hand. If this spell was kicked, instead put that card onto the battlefield tapped.':('CreatureGraveYou',branch(['ReturnToBattlefieldTapped'],['ReturnToHand'])),
+        'Search your library for a basic land card, put it onto the battlefield, then shuffle. If this spell was kicked, instead search your library for two basic land cards, put them onto the battlefield, then shuffle.':('None',branch(search_program('search your library for up to two basic land cards, put them onto the battlefield, then shuffle.'),search_program('search your library for a basic land card, put it onto the battlefield, then shuffle.'))),
+    }
+    if text in spells and card.get('type_line','').split(' — ')[0] in ('Instant','Sorcery'):
+        return 'Spell',0,[],spells[text],0,False
+    base=creature_template(dict(card,oracle_text=''))
+    if base is None:return None
+    effect,_=base
+    if text=='When this creature enters, if it was kicked, target player sacrifices a creature of their choice.':
+        target,program=sacrifice_program('target player sacrifices a creature of their choice.')
+        return effect,0,[('SelfKicked',program,target)],None,0,False
+    if text=='Lifelink\nMenace\nWhen this creature enters, if it was kicked, return target creature card from your graveyard to the battlefield.':
+        return effect,KEYWORDS['lifelink']|KEYWORDS['menace'],[('SelfKicked',['ReturnToBattlefield'],'CreatureGraveYou')],None,0,False
+    if text=='Lifelink\nWhen this creature enters, if it was kicked, return target nonland permanent card with mana value 2 or less from your graveyard to the battlefield.':
+        return effect,KEYWORDS['lifelink'],[('SelfKicked',['ReturnToBattlefield'],'NonlandPermanentGraveYouMaxTwo')],None,0,False
+    if text=='If this creature was kicked, it enters with two +1/+1 counters on it.\nEach creature you control with a +1/+1 counter on it has trample.':
+        return effect,0,[],None,2,True
+    return None
+
+
 def extract_offspring(card):
     lines=card.get('oracle_text','').splitlines()
     found=[line for line in lines if line.startswith('Offspring ')]
@@ -1384,6 +1429,7 @@ for _name, _zone, _kinds, _relation, _other, _nonland in [
 
 
 TARGET_RULES['PermanentGraveYou']='TargetRule::Filtered { base: &'+TARGET_RULES['PermanentGraveYou']+', predicate: &TargetPredicate::Permanent }'
+TARGET_RULES['NonlandPermanentGraveYouMaxTwo']='TargetRule::Filtered { base: &TargetRule::Object { zone: TargetZone::Graveyard, kinds: 0, relation: 0, other: false, nonland: true, tapped: false, min_mana: 0, max_mana: 2 }, predicate: &TargetPredicate::Permanent }'
 
 for _name, _kinds, _relation, _nonland, _tapped, _minimum, _maximum in [
     ('CreatureOpponentTapped', 1, 1, False, True, 0, 4294967295),
@@ -2955,6 +3001,9 @@ def compile_catalogue(snapshot, target):
     scaling_rows = []
     additional_rows = []
     flashback_rows = []
+    kicker_rows = []
+    kicked_entry_rows = []
+    counter_grant_rows = []
     offspring_rows = []
     offspring_copy_rows = []
     offspring_factories = {}
@@ -2971,6 +3020,7 @@ def compile_catalogue(snapshot, target):
         card, cycling = cycling_abilities(card)
         card, flashback = extract_flashback(card)
         card, offspring = extract_offspring(card)
+        card, kicker = extract_kicker(card)
         card, additional = extract_additional_cost(card)
         card, target_reduction = extract_target_cost_reduction(card)
         card, reductions = extract_cost_reductions(card)
@@ -3025,6 +3075,14 @@ def compile_catalogue(snapshot, target):
                 effect, keywords, abilities, activations, enters, modifiers, grants = static
                 if modifiers: static_rows.append(f'        {index} => &[{", ".join(modifiers)}],')
                 if grants: grant_rows.append(f'        {index} => &[{", ".join(grants)}],')
+        # Offspring copies do not yet clone kicker/counter-grant recipes. Such a
+        # combined body must stay gated rather than admit an incomplete copy.
+        kicker_body=fixed_kicker_body(card) if kicker is not None and offspring is None else None
+        if kicker is not None:
+            if kicker_body is None:effect='Unsupported'
+            else:
+                effect,keywords,abilities,spell,kicked_counters,counter_grants=kicker_body
+                activations=[];enters=[0,0,0]
         if effect != 'Unsupported':
             if creature_entry != 'Never':entry=creature_entry
             activations = [*activations, *cycling]
@@ -3063,6 +3121,10 @@ def compile_catalogue(snapshot, target):
             loyalty_rows.append(f'        {index} => {int(value)},')
         if effect != 'Unsupported':
             supported.append(index)
+            if kicker is not None:
+                kicker_rows.append(f'        {index} => Some({kicker}),')
+                if kicked_counters:kicked_entry_rows.append(f'        {index} => {kicked_counters},')
+                if counter_grants:counter_grant_rows.append(f'        {index} => &[(CounterKind::PlusOne, Keywords(256))],')
             if offspring is not None:
                 offspring_rows.append(f'        {index} => Some({offspring}),')
                 offspring_copy_rows.append(f'        {index} => Some(__TOKEN_{offspring_key}__),')
@@ -3200,6 +3262,9 @@ def compile_catalogue(snapshot, target):
     lines += ['#[rustfmt::skip]', 'pub(super) fn opponent_entry_tapped(card: Card) -> u16 {', '    match card.0 {', *opponent_entry_tapped_rows, '        _ => 0,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn keyword_grants(card: Card) -> &'static [KeywordGrant] {", '    match card.0 {', *grant_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn additional_cost(card: Card) -> Option<AdditionalCost> {', '    match card.0 {', *additional_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn kicker_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *kicker_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn kicked_entry_counters(card: Card) -> u16 {', '    match card.0 {', *kicked_entry_rows, '        _ => 0,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', "pub(super) fn counter_keyword_grants(card: Card) -> &'static [(CounterKind, Keywords)] {", '    match card.0 {', *counter_grant_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn offspring_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *offspring_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn offspring_copy(card: Card) -> Option<Card> {', '    match card.0 {', *offspring_copy_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn flashback_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *flashback_rows, '        _ => None,', '    }', '}', '']

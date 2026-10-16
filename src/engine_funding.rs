@@ -207,6 +207,7 @@ impl<'g> FundingState<'g> {
                     || object.zone == Zone::Battlefield
                         && (object.card.attachment_bonus().is_some()
                             || !object.card.keyword_grants().is_empty()
+                            || !object.card.counter_keyword_grants().is_empty()
                             || object.owner == goal.actor
                                 && subtypes
                                     .iter()
@@ -316,6 +317,13 @@ impl<'g> FundingState<'g> {
             for source in &self.resources {
                 if source.object.zone != Zone::Battlefield {
                     continue;
+                }
+                if target.object.card.is_creature() && target.object.owner == source.object.owner {
+                    for &(kind, grant) in source.object.card.counter_keyword_grants() {
+                        if target.object.counters.get(kind) > 0 {
+                            keywords = keywords.union(grant);
+                        }
+                    }
                 }
                 for grant in source.object.card.keyword_grants() {
                     if grant
@@ -674,6 +682,7 @@ impl Game {
             || a.additional_paid
             || !a.pay_window
             || a.needs_offspring()
+            || a.needs_kicker()
             || a.additional_cost().is_some_and(forage::is_forage_cost) && a.forage.is_none()
             || a.needs_mana_cost()
             || (a
@@ -700,10 +709,14 @@ impl Game {
             StackKind::Spell => self.spell_can_fund(
                 a.item.controller,
                 a.item.card,
-                Self::with_offspring_cost(
-                    cost,
+                Self::with_kicker_cost(
+                    Self::with_offspring_cost(
+                        cost,
+                        a.item.source_card,
+                        a.item.cast.is_some_and(|c| c.offspring == Some(true)),
+                    ),
                     a.item.source_card,
-                    a.item.cast.is_some_and(|c| c.offspring == Some(true)),
+                    a.item.cast.is_some_and(|c| c.kicker == Some(true)),
                 ),
             ),
             StackKind::ActivatedAbility { ability } => self.activation_can_fund(
