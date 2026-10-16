@@ -646,8 +646,28 @@ pub(crate) enum ActivationOrigin {
     Battlefield,
     Hand,
 }
+/// Starting restrictions, not costs that must still hold during payment.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum ActivationGuard {
+    Always,
+    ControlSubtypeAny(&'static [&'static str]),
+}
+impl ActivationGuard {
+    pub(crate) fn subtypes(self) -> &'static [&'static str] {
+        match self {
+            Self::Always => &[],
+            Self::ControlSubtypeAny(types) => types,
+        }
+    }
+    pub(crate) fn matches_card(self, card: Card) -> bool {
+        self.subtypes()
+            .iter()
+            .any(|subtype| card.has_subtype(subtype))
+    }
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct ActivatedAbility {
+    pub guard: ActivationGuard,
     pub origin: ActivationOrigin,
     pub cycling: bool,
     pub cost: ActivationCost,

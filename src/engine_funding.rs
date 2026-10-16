@@ -106,6 +106,23 @@ fn source_obligations(
 
 impl FundingState {
     fn from_game(game: &Game, goal: FundingGoal) -> Self {
+        // A prerequisite need not itself produce mana (e.g. a changeling for
+        // Mox Jasper). Keep only relevant owned witnesses, including removable
+        // mana sources, so virtual sacrifices invalidate later guarded moves.
+        let mut subtypes = Vec::new();
+        for object in &game.state.objects {
+            if object.zone == Zone::Battlefield && object.owner == goal.actor {
+                for ability in object.card.activations() {
+                    if ability.mana_production().is_some() {
+                        for subtype in ability.guard.subtypes() {
+                            if !subtypes.contains(subtype) {
+                                subtypes.push(*subtype);
+                            }
+                        }
+                    }
+                }
+            }
+        }
         let resources = game
             .state
             .objects
@@ -117,6 +134,10 @@ impl FundingState {
                     || object.zone == Zone::Battlefield
                         && (object.card.attachment_bonus().is_some()
                             || !object.card.keyword_grants().is_empty()
+                            || object.owner == goal.actor
+                                && subtypes
+                                    .iter()
+                                    .any(|subtype| object.card.has_subtype(subtype))
                             || (object.owner == goal.actor
                                 && (object.card.mana_color().is_some()
                                     || object
@@ -189,6 +210,14 @@ impl FundingState {
         }
         keywords
     }
+    fn guard_available(&self, guard: ActivationGuard, actor: Player) -> bool {
+        guard == ActivationGuard::Always
+            || self.resources.iter().any(|r| {
+                r.object.zone == Zone::Battlefield
+                    && r.object.owner == actor
+                    && guard.matches_card(r.object.card)
+            })
+    }
     fn moves(&self, goal: FundingGoal) -> Vec<FundingMove> {
         let mut moves = Vec::new();
         for (resource, entry) in self.resources.iter().enumerate() {
@@ -226,15 +255,17 @@ impl FundingState {
                 }) {
                     continue;
                 }
-                if !Game::object_activation_available(
-                    object,
-                    self.keywords(entry),
-                    self.life,
-                    ability,
-                    index,
-                    goal.actor,
-                    false,
-                ) {
+                if !self.guard_available(ability.guard, goal.actor)
+                    || !Game::object_activation_available(
+                        object,
+                        self.keywords(entry),
+                        self.life,
+                        ability,
+                        index,
+                        goal.actor,
+                        false,
+                    )
+                {
                     continue;
                 }
                 activations::counter_payments(ability.cost, object.counters, |counters| {
@@ -372,15 +403,17 @@ impl FundingState {
                         && source.card == resource.id
                         && object.generation == source.generation
                         && pending as usize == index
-                }) || !Game::object_activation_available(
-                    object,
-                    self.keywords(resource),
-                    self.life,
-                    ability,
-                    index,
-                    goal.actor,
-                    false,
-                ) {
+                }) || !self.guard_available(ability.guard, goal.actor)
+                    || !Game::object_activation_available(
+                        object,
+                        self.keywords(resource),
+                        self.life,
+                        ability,
+                        index,
+                        goal.actor,
+                        false,
+                    )
+                {
                     continue;
                 }
                 let cost = ability.cost;
@@ -626,6 +659,82 @@ impl Game {
 mod equipment_tests {
     use super::super::tests::{scenario, spawn};
     use super::*;
+    #[test]
+    fn guarded_mana_retains_nonmana_witnesses_and_recomputes_after_virtual_departure() {
+        let mut g = scenario();
+        let mox = spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Mox Jasper").unwrap(),
+            Zone::Battlefield,
+        );
+        let dragon = spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Rooftop Percher").unwrap(),
+            Zone::Battlefield,
+        );
+        let goal = FundingGoal {
+            actor: Player::P0,
+            required: [1, 0, 0, 0, 0, 0],
+            generic: 0,
+            source: None,
+        };
+        let mut state = FundingState::from_game(&g, goal);
+        assert!(state.resources.iter().any(|r| r.id == dragon));
+        assert!(state.reachable(goal, &mut HashSet::new()));
+        let key = state.key(goal);
+        state
+            .resources
+            .iter_mut()
+            .find(|r| r.id == dragon)
+            .unwrap()
+            .object
+            .zone = Zone::Graveyard;
+        assert!(key != state.key(goal));
+        assert!(!state.reachable(goal, &mut HashSet::new()));
+        assert!(state.moves(goal).is_empty());
+        // Starting restrictions are not rechecked as source-cost obligations
+        // after an ability has already legally been announced.
+        let declared = FundingGoal {
+            actor: Player::P0,
+            required: [0; 6],
+            generic: 0,
+            source: Some((
+                g.object_ref(mox),
+                0,
+                Counters::default(),
+                g.state.objects[mox as usize].card,
+            )),
+        };
+        assert!(state.obligations(declared));
+        assert!(!state.guard_available(
+            g.state.objects[mox as usize].card.activations()[0].guard,
+            Player::P0
+        ));
+    }
+    #[test]
+    fn unguarded_plans_do_not_retain_nonmana_subtype_witnesses() {
+        let mut g = scenario();
+        let dragon = spawn(
+            &mut g,
+            Player::P0,
+            Card::from_name("Rooftop Percher").unwrap(),
+            Zone::Battlefield,
+        );
+        let goal = FundingGoal {
+            actor: Player::P0,
+            required: [0; 6],
+            generic: 0,
+            source: None,
+        };
+        assert!(
+            !FundingState::from_game(&g, goal)
+                .resources
+                .iter()
+                .any(|r| r.id == dragon)
+        );
+    }
     #[test]
     fn planning_recomputes_continuous_haste_when_source_leaves() {
         let mut g = scenario();

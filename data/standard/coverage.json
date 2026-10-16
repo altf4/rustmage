@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "fb20405a4f4c56ae3446ac2e3ac66c7ba5bdd892390458417cc5edb6b256f2f6",
+  "catalogue_version": "a0e1363f88f945ea2c3397c1853ed95d70d9fad8aa7a7a5b87b2426882182cd1",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 878,
-  "implemented_total": 884,
+  "implemented_standard_cards": 889,
+  "implemented_total": 895,
   "token_definitions": 41,
   "cards": [
     {
@@ -2649,8 +2649,8 @@
     {
       "name": "Blazemire Verge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Blazing Bomb",
@@ -2673,8 +2673,8 @@
     {
       "name": "Bleachbone Verge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Blech, Loafing Pest",
@@ -9387,8 +9387,8 @@
     {
       "name": "Floodfarm Verge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Floodpits Drowner",
@@ -10731,8 +10731,8 @@
     {
       "name": "Gloomlake Verge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Glorifier of Suffering",
@@ -12657,8 +12657,8 @@
     {
       "name": "Hushwood Verge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Huskburster Swarm",
@@ -17217,8 +17217,8 @@
     {
       "name": "Mox Jasper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Ms. Marvel, Kamala Khan",
@@ -21327,8 +21327,8 @@
     {
       "name": "Riverpyre Verge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Riverwalk Technique",
@@ -25419,8 +25419,8 @@
     {
       "name": "Sunbillow Verge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Sunbird Standard // Sunbird Effigy",
@@ -27273,8 +27273,8 @@
     {
       "name": "Thornspire Verge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Thornvault Forager",
@@ -29961,8 +29961,8 @@
     {
       "name": "Wastewood Verge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Watcher of the Wayside",
@@ -30441,8 +30441,8 @@
     {
       "name": "Willowrush Verge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Wilt in the Heat",

@@ -1219,7 +1219,7 @@ def modal_spell_template(card):
 
 
 def activation_cost(text):
-    cost = dict(colored=[0] * 6, generic=0, mana_component=False, tap=False, sacrifice=False, life=0, remove=None)
+    cost = dict(colored=[0] * 6, generic=0, mana_component=False, tap=False, sacrifice=False, life=0, remove=None, guard="Always")
     seen = set()
     for component in text.split(', '):
         mana = fixed_cost(component)
@@ -1338,6 +1338,12 @@ def permanent_program_template(card):
         cost_text, effect_text = line.split(': ', 1)
         cost = activation_cost(cost_text)
         if cost is None: return None
+        if guard:=re.fullmatch(r'(.+) Activate only if you control (?:a|an) ([A-Z][A-Za-z ]+?)(?: or (?:a|an) ([A-Z][A-Za-z ]+?))?\.',effect_text):
+            subtypes=[word for word in guard.groups()[1:] if word is not None]
+            vocabulary={'Plains','Island','Swamp','Mountain','Forest',*SUBTYPE_PLURALS.values()}
+            if any(word not in vocabulary for word in subtypes): return None
+            cost['guard']='ControlSubtypeAny(&['+', '.join(json.dumps(word) for word in sorted(set(subtypes)))+'])'
+            effect_text=guard[1]
         sorcery = effect_text.endswith(' Activate only as a sorcery.')
         once = effect_text.endswith(' Activate only once each turn.')
         if sorcery: effect_text = effect_text[:-len(' Activate only as a sorcery.')]
@@ -1449,7 +1455,7 @@ def rust_activations(abilities):
     rows = []
     for cost, targets, program, sorcery, once in abilities:
         remove = 'None' if cost['remove'] is None else f"Some(({'None' if cost['remove'][0] is None else 'Some(CounterKind::' + cost['remove'][0] + ')'}, {cost['remove'][1]}))"
-        rows.append(f"ActivatedAbility {{ cycling: {str(cost.get('cycling',False)).lower()}, origin: ActivationOrigin::{cost.get('origin','Battlefield')}, cost: ActivationCost {{ colored: {cost['colored']}, generic: {cost['generic']}, mana_component: {str(cost['mana_component']).lower()}, tap: {str(cost['tap']).lower()}, sacrifice: {str(cost['sacrifice']).lower()}, discard: {str(cost.get('discard',False)).lower()}, life: {cost['life']}, remove: {remove} }}, targets: {rust_targets(targets)}, program: {rust_program(program)}, sorcery: {str(sorcery).lower()}, once_per_turn: {str(once).lower()} }}")
+        rows.append(f"ActivatedAbility {{ guard: ActivationGuard::{cost.get('guard','Always')}, cycling: {str(cost.get('cycling',False)).lower()}, origin: ActivationOrigin::{cost.get('origin','Battlefield')}, cost: ActivationCost {{ colored: {cost['colored']}, generic: {cost['generic']}, mana_component: {str(cost['mana_component']).lower()}, tap: {str(cost['tap']).lower()}, sacrifice: {str(cost['sacrifice']).lower()}, discard: {str(cost.get('discard',False)).lower()}, life: {cost['life']}, remove: {remove} }}, targets: {rust_targets(targets)}, program: {rust_program(program)}, sorcery: {str(sorcery).lower()}, once_per_turn: {str(once).lower()} }}")
     return '&[' + ', '.join(rows) + ']'
 
 

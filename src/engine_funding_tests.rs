@@ -328,6 +328,49 @@ fn compact_funding_search_matches_native_exhaustive_mana_sequences_on_small_boar
         }
         false
     }
+    // Controlled-subtype guards share card facts, but the oracle still executes
+    // real engine actions and never consults compact resources or search keys.
+    for witness in [
+        None,
+        Some((Player::P0, "Swamp")),
+        Some((Player::P1, "Swamp")),
+        Some((Player::P0, "Rooftop Percher")),
+        Some((Player::P1, "Rooftop Percher")),
+    ] {
+        let mut game = scenario();
+        named(&mut game, "Blazemire Verge", Zone::Battlefield);
+        named(&mut game, "Mox Jasper", Zone::Battlefield);
+        if let Some((owner, name)) = witness {
+            spawn(
+                &mut game,
+                owner,
+                Card::from_name(name).unwrap(),
+                Zone::Battlefield,
+            );
+        }
+        for red in 0..=2 {
+            for blue in 0..=1 {
+                for generic in 0..=2 {
+                    let required = [0, blue, 0, red, 0, 0];
+                    assert_eq!(
+                        game.can_fund(FundingGoal {
+                            actor: Player::P0,
+                            required,
+                            generic,
+                            source: None
+                        }),
+                        brute(
+                            &game,
+                            required,
+                            generic,
+                            &mut std::collections::HashSet::new()
+                        ),
+                        "witness={witness:?} required={required:?} generic={generic}"
+                    );
+                }
+            }
+        }
+    }
     // The oracle executes native mana actions; it does not consult the compact
     // funding graph. Cover new positive haste grants, opposing ownership, both
     // active players, source departure, attachments and summoning sickness.
