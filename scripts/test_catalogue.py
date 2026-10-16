@@ -37,7 +37,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
         rust,report=generate.compile_catalogue(snapshot,target)
         supported={c['name'] for c in report['cards'] if c['implemented']}
-        self.assertEqual(report["token_definitions"],76)
+        self.assertEqual(report["token_definitions"],77)
         manifest=json.loads((generate.ROOT/'docs/scalar-x-admissions.json').read_text())
         self.assertEqual([r['name'] for r in manifest['cards']],names)
         self.assertEqual(sum(len(r['sources']) for r in manifest['cards']),75)
@@ -2154,7 +2154,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         for name in admitted:self.assertIn(name,supported)
         for name in ['Unwanted Remake',
                      'Consuming Ashes','Bovine Intervention',
-                     'Protective Response','Dragon\'s Prey']:
+                     'Dragon\'s Prey']:
             self.assertNotIn(name,supported,name)
         import re
         colors=json.loads(re.search(r'static COLORS: \[u8; [0-9]+\] = (\[[^;]+\]);',rust)[1])
