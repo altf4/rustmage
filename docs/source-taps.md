@@ -93,4 +93,8 @@ The 1,000-game native smoke benchmark measured 571,049 decisions, approximately
 Timing includes policy and observation construction, excludes model inference,
 tensor encoding and JSON, and varies with concurrent host work.
 
-Final validation results are recorded after the acceptance changes are integrated.
+Full checks passed: **1,197 Rust tests**, **228 compiler/data tests**, **150 fresh
+release Python tests**, catalogue consistency, formatting, all-target Clippy with
+warnings denied and diff checks. The integrated optimized runtime also reproduced
+the complete 100-game workload above. Independent review results are recorded in
+the pull request review record.
