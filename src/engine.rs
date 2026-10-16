@@ -3662,3 +3662,7 @@ mod firebending_tests;
 #[cfg(test)]
 #[path = "engine_count_threshold_tests.rs"]
 mod count_threshold_tests;
+
+#[cfg(test)]
+#[path = "engine_conditional_source_keyword_tests.rs"]
+mod conditional_source_keyword_tests;

@@ -2,14 +2,13 @@
 use super::*;
 
 impl Game {
-    fn count_matches(
-        &self,
+    fn count_object_matches(
         filter: CountFilter,
         source: ObjectRef,
         owner: Player,
         id: CardId,
+        o: &Object,
     ) -> bool {
-        let o = &self.state.objects[id as usize];
         let zone = match filter.zone {
             CountZone::Battlefield => Zone::Battlefield,
             CountZone::Graveyard => Zone::Graveyard,
@@ -21,7 +20,11 @@ impl Game {
                 1 => o.owner != owner,
                 _ => true,
             }
-            && (!filter.other || self.object_ref(id) != source)
+            && (!filter.other
+                || ObjectRef {
+                    card: id,
+                    generation: o.generation,
+                } != source)
             && (!filter.cards_only || !o.card.is_token())
             && (filter.kind == 0 || o.card.kind_mask() & filter.kind != 0)
             && o.card.kind_mask() & filter.exclude == 0
@@ -29,45 +32,65 @@ impl Game {
             && (!filter.basic || o.card.is_basic_land())
     }
     pub(super) fn stat_value(&self, value: StatValue, source: ObjectRef, owner: Player) -> i128 {
+        self.stat_value_with(
+            value,
+            source,
+            owner,
+            &|| {
+                self.state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .map(|(id, o)| (id as CardId, o))
+            },
+            self.state.players[owner.index()].life,
+        )
+    }
+    /// The same earlier-layer evaluator serves concrete state and a borrowed
+    /// counterfactual object overlay. No derived keywords or stats are queried.
+    pub(super) fn stat_value_with<'a, F, I>(
+        &self,
+        value: StatValue,
+        source: ObjectRef,
+        owner: Player,
+        objects: &F,
+        life: i128,
+    ) -> i128
+    where
+        F: Fn() -> I,
+        I: Iterator<Item = (CardId, &'a Object)>,
+    {
         match value {
-            StatValue::AtLeast { value, minimum } => {
-                i128::from(self.stat_value(*value, source, owner) >= i128::from(minimum))
-            }
+            StatValue::AtLeast { value, minimum } => i128::from(
+                self.stat_value_with(*value, source, owner, objects, life) >= i128::from(minimum),
+            ),
             StatValue::SpellsCastThisTurn => {
                 i128::from(self.state.players[owner.index()].spells_cast_this_turn)
             }
             StatValue::LifeGainOccurredThisTurn => {
                 i128::from(self.state.players[owner.index()].life_gained_this_turn > 0)
             }
-            StatValue::ControllerLife => self.state.players[owner.index()].life,
-            StatValue::Colors(filter) | StatValue::CardTypes(filter) => {
-                self.state
-                    .objects
-                    .iter()
-                    .enumerate()
-                    .filter(|&(id, _)| self.count_matches(filter, source, owner, id as CardId))
-                    .fold(0u16, |mask, (_, object)| {
-                        mask | if matches!(value, StatValue::Colors(_)) {
-                            u16::from(object.card.colors())
-                        } else {
-                            object.card.kind_mask()
-                        }
-                    })
-                    .count_ones() as i128
-            }
+            StatValue::ControllerLife => life,
+            StatValue::Colors(filter) | StatValue::CardTypes(filter) => objects()
+                .filter(|&(id, o)| Self::count_object_matches(filter, source, owner, id, o))
+                .fold(0u16, |mask, (_, object)| {
+                    mask | if matches!(value, StatValue::Colors(_)) {
+                        u16::from(object.card.colors())
+                    } else {
+                        object.card.kind_mask()
+                    }
+                })
+                .count_ones()
+                as i128,
             StatValue::Count(filter) => i128::try_from(
-                (0..self.state.objects.len())
-                    .filter(|&id| self.count_matches(filter, source, owner, id as CardId))
+                objects()
+                    .filter(|&(id, o)| Self::count_object_matches(filter, source, owner, id, o))
                     .count(),
             )
             .capacity("stat count exhausted"),
             StatValue::DistinctNames(filter) => {
-                let mut names: Vec<_> = self
-                    .state
-                    .objects
-                    .iter()
-                    .enumerate()
-                    .filter(|&(id, _)| self.count_matches(filter, source, owner, id as CardId))
+                let mut names: Vec<_> = objects()
+                    .filter(|&(id, o)| Self::count_object_matches(filter, source, owner, id, o))
                     .map(|(_, object)| {
                         object
                             .card
@@ -79,33 +102,27 @@ impl Game {
                 names.dedup();
                 names.len() as i128
             }
-            StatValue::CountUnion(filters) => (0..self.state.objects.len())
-                .filter(|&id| {
+            StatValue::CountUnion(filters) => objects()
+                .filter(|&(id, o)| {
                     filters
                         .iter()
-                        .any(|&filter| self.count_matches(filter, source, owner, id as CardId))
+                        .any(|&filter| Self::count_object_matches(filter, source, owner, id, o))
                 })
                 .count() as i128,
             StatValue::GreatestManaValue(filter) => i128::from(
-                self.state
-                    .objects
-                    .iter()
-                    .enumerate()
-                    .filter(|&(id, _)| self.count_matches(filter, source, owner, id as CardId))
+                objects()
+                    .filter(|&(id, o)| Self::count_object_matches(filter, source, owner, id, o))
                     .map(|(_, o)| o.card.fixed_mana_value())
                     .max()
                     .unwrap_or(0),
             ),
-            StatValue::GraveyardCardTypes => self
-                .state
-                .objects
-                .iter()
-                .filter(|o| o.zone == Zone::Graveyard && !o.card.is_token())
-                .fold(0u16, |mask, o| mask | o.card.kind_mask())
+            StatValue::GraveyardCardTypes => objects()
+                .filter(|(_, o)| o.zone == Zone::Graveyard && !o.card.is_token())
+                .fold(0u16, |mask, (_, o)| mask | o.card.kind_mask())
                 .count_ones() as i128,
             StatValue::Sum(values) => values
                 .iter()
-                .map(|&value| self.stat_value(value, source, owner))
+                .map(|&value| self.stat_value_with(value, source, owner, objects, life))
                 .try_fold(0i128, i128::checked_add)
                 .capacity("stat sum exhausted"),
         }

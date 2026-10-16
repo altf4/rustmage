@@ -5,15 +5,15 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,263 have executable rules so far.
+knows all 5,164 pinned Standard identities; 1,272 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
-The latest [count-threshold stat rules](docs/count-threshold-stats.md) add nine
-complete bodies with live bonuses derived from owned counts and turn history.
-[Firebending](docs/firebending.md), [poison](docs/poison.md) and
-[explicit sacrifice events](docs/sacrifice-events.md) also retain exact cost
-timing, private choices and native replay.
+The latest [conditional source keywords](docs/conditional-source-keywords.md) add
+nine complete bodies, with shared predicate evaluation for actual state and
+mana-funding search. [Count-threshold stats](docs/count-threshold-stats.md),
+[Firebending](docs/firebending.md) and [poison](docs/poison.md) also retain exact
+cost timing, private choices and native replay.
 Full Standard rules remain in progress.
 
 ## Build and use
@@ -28,6 +28,7 @@ PYTHONPATH=python python3 -m unittest discover -s python -p 'test_*.py' -v
 cargo run --release --bin benchmark -- 1000
 cargo run --release --example branch
 cargo run --release --example standard
+cargo run --release --example standard_conditional_keywords -- 100
 cargo run --release --example standard_count_thresholds -- 100
 cargo run --release --example standard_firebending -- 100
 cargo run --release --example standard_poison -- 100

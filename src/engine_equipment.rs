@@ -43,7 +43,9 @@ impl Game {
         for &source in &self.state.static_sources {
             let object = &self.state.objects[source as usize];
             for grant in object.card.keyword_grants() {
-                if (!grant.requires_life_gain
+                if grant.condition.is_none_or(|value| {
+                    self.stat_value(value, self.object_ref(source), object.owner) != 0
+                }) && (!grant.requires_life_gain
                     || self.state.players[object.owner.index()].life_gained_this_turn > 0)
                     && grant.matches(
                         target.card,
