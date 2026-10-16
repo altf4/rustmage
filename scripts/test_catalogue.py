@@ -14,6 +14,36 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_restricted_counter_targets_compile_exact_unions_colors_and_mana_ranges(self):
+        for phrase,rule in [('artifact or enchantment spell','SpellArtifactEnchantment'),
+                            ('artifact or creature spell','SpellArtifactCreature'),
+                            ('red or green spell','SpellRedGreen'),('white or black spell','SpellWhiteBlack'),
+                            ('spell with mana value 2','SpellMana2'),('spell with mana value 4 or greater','SpellManaMin4')]:
+            self.assertEqual(generate.targeted_program('Counter target '+phrase+'.'),(rule,['Counter']))
+            result=generate.targeted_program('Counter target '+phrase+' unless its controller pays {4}.')
+            self.assertEqual(result[0],rule);self.assertIn('CounterUnlessPay',result[1][0])
+            self.assertIn('generic: 4',result[1][0])
+        for text in ['Counter target blue or red spell.','Counter target spell with mana value X.',
+                     'Counter target spell unless its controller pays {X}.',
+                     'Counter target artifact or enchantment spell you control.',
+                     'Counter target spell with mana value 2 or less.']:
+            self.assertIsNone(generate.targeted_program(text),text)
+
+    def test_seven_restricted_counter_admissions_require_complete_bodies(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,report=generate.compile_catalogue(rows,target)
+        supported={r['name'] for r in report['cards'] if r['implemented']}
+        for name in ['Annul','Flashfreeze','Precise Redaction','Spell Snare','Disdainful Stroke','Spectral Interference','Voracious Greatshark']:
+            self.assertIn(name,supported)
+            card=next(c for c in rows['cards'] if c['name']==name)
+            extra=dict(card,oracle_text=card['oracle_text']+'\nWhenever you cast a spell, discover 3.')
+            self.assertIsNone(generate.spell_program_template(extra),name)
+            self.assertIsNone(generate.permanent_program_template(extra),name)
+        for name in ['Dazzling Denial','Spell Stutter','Syncopate','An Offer You Can\'t Refuse','Unravel']:
+            self.assertNotIn(name,supported)
+
     def test_guarded_blocks_keep_only_the_first_sentence_conditional_and_else_offsets_exact(self):
         p=generate.statement_program('If you control an Elf, draw a card. You gain 2 life.')
         self.assertEqual(len(p),3);self.assertIn('If {',p[0]);self.assertIn('skip: 1',p[0]);self.assertEqual(p[1:],[ 'Draw(PlayerSet::Controller, 1)','GainLife(PlayerSet::Controller, 2)'])

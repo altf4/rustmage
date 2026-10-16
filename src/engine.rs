@@ -3306,6 +3306,9 @@ mod milling_tests;
 mod damage_trigger_tests;
 
 #[cfg(test)]
+#[path = "engine_spell_filter_tests.rs"]
+mod spell_filter_tests;
+#[cfg(test)]
 #[path = "engine_ward_tests.rs"]
 mod ward_tests;
 pub use resolution_mana::ResolutionPaymentView;

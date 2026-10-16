@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "ed80deda5e2f4f5b0c220e712d59e7f692e9679b6cefcc7e183c645c96596330",
+  "catalogue_version": "286968062d99acd637b9c3d8d9767a3e0308b27299bcd0bce7c0fdaeb5cb68ed",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1033,
-  "implemented_total": 1039,
+  "implemented_standard_cards": 1040,
+  "implemented_total": 1046,
   "token_definitions": 48,
   "emblem_definitions": 1,
   "cards": [
@@ -1036,8 +1036,8 @@
     {
       "name": "Annul",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Another Chance",
@@ -6562,8 +6562,8 @@
     {
       "name": "Disdainful Stroke",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Disenchant",
@@ -9310,8 +9310,8 @@
     {
       "name": "Flashfreeze",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Fleeting Distraction",
@@ -19324,8 +19324,8 @@
     {
       "name": "Precise Redaction",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Predator Ooze",
@@ -24010,8 +24010,8 @@
     {
       "name": "Spectral Interference",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Spectral Sailor",
@@ -24046,8 +24046,8 @@
     {
       "name": "Spell Snare",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Spell Stutter",
@@ -29620,8 +29620,8 @@
     {
       "name": "Voracious Greatshark",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Voracious Tome-Skimmer",

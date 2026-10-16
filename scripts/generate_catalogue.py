@@ -917,8 +917,10 @@ TARGET_RULES = {
     'Player': 'TargetRule::Player { opponent_only: false }',
     'Opponent': 'TargetRule::Player { opponent_only: true }',
 }
-for _name,_kinds,_excluded in [('SpellCreature',1,0),('SpellNoncreature',0,1),('SpellInstantSorcery',12,0),('SpellArtifact',16,0),('SpellEnchantment',32,0)]:
+for _name,_kinds,_excluded in [('SpellCreature',1,0),('SpellNoncreature',0,1),('SpellInstantSorcery',12,0),('SpellArtifact',16,0),('SpellEnchantment',32,0),('SpellArtifactEnchantment',48,0),('SpellArtifactCreature',17,0)]:
     TARGET_RULES[_name]=f'TargetRule::SpellKinds {{ kinds: {_kinds}, excluded: {_excluded} }}'
+for _name,_colors,_minimum,_maximum in [('SpellRedGreen',24,0,'u64::MAX'),('SpellWhiteBlack',5,0,'u64::MAX'),('SpellMana2',0,2,2),('SpellManaMin4',0,4,'u64::MAX')]:
+    TARGET_RULES[_name]=f'TargetRule::SpellCharacteristics {{ colors: {_colors}, min_mana: {_minimum}, max_mana: {_maximum} }}'
 
 
 for _name, _zone, _kinds, _relation, _other, _nonland in [
@@ -1086,6 +1088,10 @@ COUNTER_TARGETS = {
     'target spell':'Spell','target creature spell':'SpellCreature',
     'target noncreature spell':'SpellNoncreature','target instant or sorcery spell':'SpellInstantSorcery',
     'target artifact spell':'SpellArtifact','target enchantment spell':'SpellEnchantment',
+    'target artifact or enchantment spell':'SpellArtifactEnchantment',
+    'target artifact or creature spell':'SpellArtifactCreature',
+    'target red or green spell':'SpellRedGreen','target white or black spell':'SpellWhiteBlack',
+    'target spell with mana value 2':'SpellMana2','target spell with mana value 4 or greater':'SpellManaMin4',
 }
 
 

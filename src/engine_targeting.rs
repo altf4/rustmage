@@ -218,6 +218,15 @@ impl Game {
                             (kinds == 0 || item.source_card.kind_mask() & u16::from(kinds) != 0)
                                 && item.source_card.kind_mask() & u16::from(excluded) == 0
                         }
+                        TargetRule::SpellCharacteristics {
+                            colors,
+                            min_mana,
+                            max_mana,
+                        } => {
+                            (colors == 0 || item.source_card.colors() & colors != 0)
+                                && (min_mana..=max_mana)
+                                    .contains(&item.source_card.fixed_mana_value())
+                        }
                         _ => false,
                     }
             }),

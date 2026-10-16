@@ -43,6 +43,11 @@ pub(crate) enum TargetRule {
         kinds: u8,
         excluded: u8,
     },
+    SpellCharacteristics {
+        colors: u8,
+        min_mana: u64,
+        max_mana: u64,
+    },
     Player {
         opponent_only: bool,
     },
