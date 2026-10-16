@@ -1,0 +1,135 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Brambleback Brute",
+      "oracle_text": "This creature enters with two -1/-1 counters on it.\n{1}{R}, Remove a counter from this creature: Target creature can't block this turn. Activate only as a sorcery.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BramblebackBrute.java",
+          "java_sha256": "ea61656ea79cd31ed8d4e86ae6e4342b70ae492934fb64f88edb0045395cd51f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockTargetEffect.java",
+          "java_sha256": "a8b1a9a047746f0ea70d42f8847828d3334cfe9c33dfb6af870717e1aec0ae5f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "java_sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldWithCountersAbility.java",
+          "java_sha256": "b34c7e6346705407d2a8519d8afdebd93b393745b995bbbce928753c35eacd59"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/RemoveCountersSourceCost.java",
+          "java_sha256": "6d8c1b5ff39cc2cd02e982807a027f4ff81fcce1cdeef232603904b26640a09c"
+        }
+      ]
+    },
+    {
+      "name": "Sandstorm Verge",
+      "oracle_text": "{T}: Add {C}.\n{3}, {T}: Target creature can't block this turn. Activate only as a sorcery.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SandstormVerge.java",
+          "java_sha256": "46d79da40a25c7c88a495282c2bdeba5ad43c045daff0d7b5024d630b69f4aeb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockTargetEffect.java",
+          "java_sha256": "a8b1a9a047746f0ea70d42f8847828d3334cfe9c33dfb6af870717e1aec0ae5f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "java_sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "java_sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/mana/ColorlessManaAbility.java",
+          "java_sha256": "4987cb71ee89f496075de0f3a30824281e53300d701d9c7442230e7a7ec2e03a"
+        }
+      ]
+    },
+    {
+      "name": "Sower of Chaos",
+      "oracle_text": "{2}{R}: Target creature can't block this turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SowerOfChaos.java",
+          "java_sha256": "cddf99a5c29dcd9b5388e9589ac924a8649454757f0fdf6c78677edd6bef365a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockTargetEffect.java",
+          "java_sha256": "a8b1a9a047746f0ea70d42f8847828d3334cfe9c33dfb6af870717e1aec0ae5f"
+        }
+      ]
+    },
+    {
+      "name": "Summit Intimidator",
+      "oracle_text": "Reach\nWhen this creature enters, target creature can't block this turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SummitIntimidator.java",
+          "java_sha256": "f6be918b5186107394e55d2e7437332a22004f33adf57d1e84452836b3f393f0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockTargetEffect.java",
+          "java_sha256": "a8b1a9a047746f0ea70d42f8847828d3334cfe9c33dfb6af870717e1aec0ae5f"
+        }
+      ]
+    },
+    {
+      "name": "War Squeak",
+      "oracle_text": "Enchant creature\nWhen this Aura enters, target creature an opponent controls can't block this turn.\nEnchanted creature gets +1/+1 and has haste.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WarSqueak.java",
+          "java_sha256": "12b2a341b93a2979f1a7737b751e2154fe0d5da7734ed62821e55250abafe82a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockTargetEffect.java",
+          "java_sha256": "a8b1a9a047746f0ea70d42f8847828d3334cfe9c33dfb6af870717e1aec0ae5f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEnchantedEffect.java",
+          "java_sha256": "c390aae1354b298fc7d8b379f73583e2bbee3bdd13d88a082553dce6c75e1303"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+          "java_sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+          "java_sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+        }
+      ]
+    },
+    {
+      "name": "Zog, Triceraton Castaway",
+      "oracle_text": "Reach, trample\nWhen Zog enters, target creature can't block this turn.\nMountaincycling {2} ({2}, Discard this card: Search your library for a Mountain card, reveal it, put it into your hand, then shuffle.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/z/ZogTriceratonCastaway.java",
+          "java_sha256": "2f6a9642c809dac56a1925275e792a27b7f45148217f66409d7609e785254605"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockTargetEffect.java",
+          "java_sha256": "a8b1a9a047746f0ea70d42f8847828d3334cfe9c33dfb6af870717e1aec0ae5f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MountaincyclingAbility.java",
+          "java_sha256": "dc2e67b4832257f91bcc790fdb3e2a355d287795326787699230bf0876e55b2c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+          "java_sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+        }
+      ]
+    }
+  ]
+}

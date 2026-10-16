@@ -1399,6 +1399,11 @@ def targeted_program(text):
     if sacrifice := sacrifice_program(text):
         if sacrifice[0] != 'None': return sacrifice
     if result := power_damage_program(text): return result
+    if m := re.fullmatch(r'(target creature|target creature you control|another target creature you control|target creature an opponent controls) can\'t block this turn\.', text):
+        rule = {'target creature': 'Creature', 'target creature you control': 'CreatureYou',
+                'another target creature you control': 'OtherCreatureYou',
+                'target creature an opponent controls': 'CreatureOpponent'}[m[1]]
+        return rule, ['GrantKeywords { subject: Subject::Targets, keywords: Keywords(2048) }']
     if m := re.fullmatch(r'(another target creature you control|target creature you control|target creature) (.+)', text):
         rule = {'target creature': 'Creature', 'target creature you control': 'CreatureYou', 'another target creature you control': 'OtherCreatureYou', 'target creature an opponent controls':'CreatureOpponent'}[m[1]]
         if program := keyword_effect(m[2], 'Targets'): return rule, program

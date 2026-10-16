@@ -8,6 +8,29 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_temporary_blocking_prohibition_has_exact_target_and_duration(self):
+        instruction=['GrantKeywords { subject: Subject::Targets, keywords: Keywords(2048) }']
+        for phrase,rule in [('Target creature','Creature'),('Target creature you control','CreatureYou'),
+                            ('Another target creature you control','OtherCreatureYou'),('Target creature an opponent controls','CreatureOpponent')]:
+            self.assertEqual(generate.targeted_program(phrase+" can't block this turn."),(rule,instruction))
+        for text in ["Target creature can't block.","Target creature can't attack this turn.",
+                     "Target creature can't block next turn.","Target creature can't block this turn unless its controller pays {1}.",
+                     "Target creatures can't block this turn.","Target creature can't block this turn. It becomes a Frog.",
+                     "That creature can't block this turn.","Target land can't block this turn."]:
+            self.assertIsNone(generate.targeted_program(text),text)
+
+    def test_temporary_blocking_admits_only_complete_six_bodies(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,coverage=generate.compile_catalogue(rows,target);supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for name in ['Brambleback Brute','Sandstorm Verge','Sower of Chaos','Summit Intimidator','War Squeak','Zog, Triceraton Castaway']:
+            self.assertIn(name,supported)
+            c=next(c for c in rows['cards'] if c['name']==name);bad=dict(c,oracle_text=c['oracle_text']+'\nWhenever you cast a spell, discover 3.')
+            for compiler in [generate.permanent_program_template,generate.aura_template,generate.land_template,generate.trigger_creature_template]:
+                self.assertIsNone(compiler(bad),name)
+        for name in ['Duel Tactics','Shriek, Treblemaker','Ty Lee, Artful Acrobat','Untimely Malfunction']:
+            self.assertNotIn(name,supported)
+
     def test_source_returns_compile_only_exact_activated_zone_bindings(self):
         cases=[('Return this card from your graveyard to your hand.','Graveyard','ReturnSourceToHand(TargetZone::Graveyard)'),
                ('Return this card from your graveyard to the battlefield tapped.','Graveyard','ReturnSourceToBattlefield { tapped: true }'),
