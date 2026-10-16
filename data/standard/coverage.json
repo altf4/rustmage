@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "00c8ac72617d97cd6291181f5fb0120b031a69e6b680c8641117cce296b8e682",
+  "catalogue_version": "7237057fde969a23706ee77f2913131bf607c50a021f7b18984622e738d613e5",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 910,
-  "implemented_total": 916,
+  "implemented_standard_cards": 922,
+  "implemented_total": 928,
   "token_definitions": 41,
   "cards": [
     {
@@ -171,8 +171,8 @@
     {
       "name": "Abandoned Air Temple",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "Abandoned Campground",
@@ -537,8 +537,8 @@
     {
       "name": "Agent Bishop, Man in Black",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Agent Maria Hill",
@@ -549,8 +549,8 @@
     {
       "name": "Agent Phil Coulson",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Agent Venom",
@@ -5835,8 +5835,8 @@
     {
       "name": "Darkness Descends",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Darkstar Augur",
@@ -7275,8 +7275,8 @@
     {
       "name": "Duty Beyond Death",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Dwalin, Weaponmaster",
@@ -7425,8 +7425,8 @@
     {
       "name": "Earth Kingdom Soldier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Earth Rumble",
@@ -15555,14 +15555,14 @@
     {
       "name": "Lyra Dawnbringer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Lyra, Archangel of Dawn",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Lyra, Tolarian Archangel",
@@ -16671,8 +16671,8 @@
     {
       "name": "Minwu, White Mage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Mirage Mesa",
@@ -26595,8 +26595,8 @@
     {
       "name": "The Crystal's Chosen",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "The Darkness Crystal",
@@ -30171,8 +30171,8 @@
     {
       "name": "Web-Warriors",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Webstrike Elite",
@@ -30999,8 +30999,8 @@
     {
       "name": "Zimone, Paradox Sculptor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Zodiark, Umbral God",

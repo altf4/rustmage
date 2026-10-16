@@ -313,6 +313,12 @@ pub(crate) enum Instruction {
     Destroy,
     Tap,
     Untap,
+    PutCreatureCounters {
+        filter: CreatureFilter,
+        kind: CounterKind,
+        amount: u32,
+    },
+    DoubleCounters,
     PutCounters {
         subject: Subject,
         kind: CounterKind,

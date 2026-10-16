@@ -14,6 +14,50 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_counter_groups_match_whole_non_targeted_sets_and_distinct_target_ranges(self):
+        cases=[('Put a +1/+1 counter on each creature you control.','relation: 0','PlusOne'),
+               ('Put two -1/-1 counters on each creature.','relation: -1','MinusOne'),
+               ('Put a stun counter on each creature token your opponents control.','tokens: Some(true)','Stun'),
+               ('Put a +1/+1 counter on each other Hero you control.','other: true','PlusOne')]
+        for text,predicate,kind in cases:
+            result=generate.statement_program(text)
+            self.assertEqual(len(result),1);self.assertIn('PutCreatureCounters',result[0]);self.assertIn(predicate,result[0]);self.assertIn('CounterKind::'+kind,result[0])
+        for phrase,minimum,maximum in [('up to two',0,2),('up to three',0,3),('one or two',1,2),('two',2,2)]:
+            for suffix,rule in [('', 'Creature'),(' you control','CreatureYou')]:
+                result=generate.targeted_program('Put a +1/+1 counter on each of '+phrase+' target creatures'+suffix+'.')
+                self.assertEqual(result[0],(rule,minimum,maximum));self.assertEqual(result[1],[generate.counter_instruction('Targets','a','+1/+1')])
+        for text in ['Put a +1/+1 counter on each creature that entered this turn.',
+                     'Put a +1/+1 counter on each creature with a +1/+1 counter on it.',
+                     'Put a +1/+1 counter on each Hero and Villain you control.',
+                     'Put a loyalty counter on each creature you control.',
+                     'Put a +1/+1 counter on each of up to two target creatures with total power 4 or less.']:
+            self.assertIsNone(generate.statement_program(text));self.assertIsNone(generate.targeted_program(text))
+        self.assertEqual(generate.targeted_program('Double the number of each kind of counter on up to two target creatures and/or artifacts you control.'),(('ArtifactCreatureYou',0,2),['DoubleCounters']))
+        for text in ['Double the number of +1/+1 counters on up to two target creatures and/or artifacts you control.',
+                     'Double the number of each kind of counter on target permanent.',
+                     'Put a +1/+1 counter on each other Hero you control. They gain flying.']:
+            self.assertIsNone(generate.targeted_program(text));self.assertIsNone(generate.statement_program(text))
+
+    def test_counter_group_complete_admissions_preserve_missing_mechanics(self):
+        import json
+        rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
+        target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,coverage=generate.compile_catalogue(rows,target)
+        supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        for name in ['Abandoned Air Temple','Agent Bishop, Man in Black','Agent Phil Coulson','Darkness Descends',
+                     'Duty Beyond Death','Earth Kingdom Soldier','Lyra Dawnbringer','Lyra, Archangel of Dawn',
+                     'Minwu, White Mage',"The Crystal's Chosen",'Web-Warriors','Zimone, Paradox Sculptor']:
+            self.assertIn(name,supported)
+        for name in ['Action News Crew','Atmospheric Greenhouse','Byrke, Long Ear of the Law',
+                     'Sandstorm Salvager','Iron Spider, Stark Upgrade','Stirring Hopesinger',
+                     'Vraska Joins Up','Wilderland Scrounger','Raucous Entertainer']:
+            self.assertNotIn(name,supported)
+        for noun in ['each Angel you control','Angels you control','each Cleric you control','Clerics you control']:
+            self.assertIsNotNone(generate.creature_filter(noun))
+        program=generate.statement_program('Create four 1/1 colorless Hero creature tokens. Then put a +1/+1 counter on each creature you control.')
+        self.assertEqual(len(program),2);self.assertIn('CreateTokens',program[0]);self.assertIn('PutCreatureCounters',program[1])
+        self.assertIsNone(generate.statement_program('Create four 1/1 colorless Hero creature tokens. Then if you attacked, put a +1/+1 counter on each creature you control.'))
+
     def test_mandatory_additional_costs_are_exact_and_complete(self):
         import json
         rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text())
@@ -24,7 +68,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIn(name,supported)
         for name in ['Grab the Prize','Laughing Mad','Pumpkin Bombardment','Souls Lost','Fear of Isolation']:
             self.assertNotIn(name,supported)
-        self.assertEqual(rust.count('=> Some(AdditionalCost {'),3)
+        self.assertEqual(rust.count('=> Some(AdditionalCost {'),4)
         prefix='As an additional cost to cast this spell, '
         for cost in ['discard two cards.','you may discard a card.','sacrifice two creatures.',
                      'discard a card or pay {2}.','sacrifice an artifact or pay {2}.',

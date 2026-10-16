@@ -209,12 +209,12 @@ SUBTYPE_PLURALS = {'elves': 'Elf', 'goblins': 'Goblin', 'dinosaurs': 'Dinosaur',
                    'kithkin': 'Kithkin', 'knights': 'Knight', 'warriors': 'Warrior', 'spirits': 'Spirit',
                    'giants': 'Giant', 'heroes': 'Hero', 'villains': 'Villain', 'faeries': 'Faerie',
                    'spiders': 'Spider', 'otters': 'Otter', 'squirrels': 'Squirrel', 'mounts': 'Mount',
-                   'insects': 'Insect', 'rats': 'Rat', 'snakes': 'Snake', 'wizards': 'Wizard'}
+                   'insects': 'Insect', 'rats': 'Rat', 'snakes': 'Snake', 'wizards': 'Wizard', 'clerics':'Cleric', 'angels':'Angel'}
 
 
 def creature_filter(text):
     text = text.casefold()
-    if text.startswith('each '): text = text[5:].replace('creature', 'creatures', 1)
+    if text.startswith('each '): text = text[5:]
     if text.startswith('all '): text = text[4:]
     other = text.startswith('other ')
     if other: text = text[6:]
@@ -228,6 +228,9 @@ def creature_filter(text):
     relation = -1
     if text.endswith(' you control'): relation, text = 0, text[:-12]
     elif text.endswith(' your opponents control'): relation, text = 1, text[:-23]
+    singulars={name.casefold():plural for plural,name in SUBTYPE_PLURALS.items()}
+    singulars.update({'creature':'creatures','creature token':'creature tokens','nontoken creature':'nontoken creatures','artifact creature':'artifact creatures'})
+    text=singulars.get(text,text)
     subtype, tokens, artifact = 'None', 'None', False
     if text == 'creatures': pass
     elif text == 'creature tokens': tokens = 'Some(true)'
@@ -573,6 +576,14 @@ def mill_program(text):
     return None
 
 
+def counter_group_program(text):
+    """Non-targeted simultaneous recipients, using only existing creature facts."""
+    m=re.fullmatch(r'put (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on each (.+)\.',text)
+    if not m: return None
+    if (filt:=creature_filter(m[3])) is None: return None
+    return [f'PutCreatureCounters {{ filter: {filt}, kind: CounterKind::{COUNTER_KINDS[m[2]]}, amount: {COUNT_WORDS[m[1]]} }}']
+
+
 def statement_program(text):
     """Compile only these complete sentences; residual text never gets ignored."""
     if not isinstance(text, str) or not text:
@@ -581,6 +592,7 @@ def statement_program(text):
     if m:=re.fullmatch(r'this creature connives(?: ([0-9]+))?\.',text):
         amount=int(m[1]) if m[1] else 1
         return [f'Connive {{ subject: Subject::Source, amount: {amount} }}'] if amount<=65535 else None
+    if counters := counter_group_program(text): return counters
     if mill := mill_program(text): return mill
     if choice := optional_payment_program(text, False): return choice
     if sacrifice := sacrifice_program(text):
@@ -676,6 +688,7 @@ def statement_program(text):
     if '. ' in text:
         instructions = []
         for sentence in text.split('. '):
+            if sentence.startswith('Then '): sentence=sentence[5:]
             result = statement_program(sentence if sentence.endswith('.') else sentence + '.')
             if result is None:
                 return None
@@ -711,6 +724,7 @@ for _name, _zone, _kinds, _relation, _other, _nonland in [
     ('Land', 'Battlefield', 2, -1, False, False),
     ('Artifact', 'Battlefield', 16, -1, False, False),
     ('ArtifactCreature', 'Battlefield', 17, -1, False, False),
+    ('ArtifactCreatureYou', 'Battlefield', 17, 0, False, False),
     ('Enchantment', 'Battlefield', 32, -1, False, False),
     ('ArtifactEnchantment', 'Battlefield', 48, -1, False, False),
     ('CreatureGraveYou', 'Graveyard', 1, 0, False, False),
@@ -828,6 +842,11 @@ def targeted_program(text):
     if not isinstance(text, str) or not text.endswith('.'):
         return None
     text = normalize_duration(text[0].lower() + text[1:])
+    if m:=re.fullmatch(r'put (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on each of (up to two|up to three|one or two|two) target creatures( you control)?\.',text):
+        spec=('CreatureYou' if m[4] else 'Creature',0 if m[3].startswith('up to') else 1 if m[3]=='one or two' else 2,3 if m[3]=='up to three' else 2)
+        return spec,[counter_instruction('Targets',m[1],m[2])]
+    if text=='double the number of each kind of counter on up to two target creatures and/or artifacts you control.':
+        return ('ArtifactCreatureYou',0,2),['DoubleCounters']
     if counter:=counter_program(text): return counter
     if text=='exile up to one target card from a graveyard.': return ('CardGrave',0,1),['Exile']
     if text=='exile up to two target cards from graveyards.': return ('CardGrave',0,2),['Exile']

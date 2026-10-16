@@ -3018,3 +3018,7 @@ mod changeling_tests;
 #[cfg(test)]
 #[path = "engine_additional_cost_tests.rs"]
 mod additional_cost_tests;
+
+#[cfg(test)]
+#[path = "engine_counter_group_tests.rs"]
+mod counter_group_tests;

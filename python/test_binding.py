@@ -12,6 +12,53 @@ class BindingTests(unittest.TestCase):
     def game(self):
         return Game([["Mountain"] * 24 + ["LightningBolt"] * 36] * 2, seed=17, deck_rules="Freeform")
 
+    def test_mass_negative_counters_resolve_natively_and_replay(self):
+        with Game([['Swamp']*24+['Darkness Descends']*36,['Forest']*24+['Bear Cub']*36],seed=6,deck_rules='Freeform') as game:
+            obs=game.observe('P0')
+            for _ in range(2500):
+                self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor'])
+                if obs['decision']=='priority' and obs['stack'] and obs['stack'][-1]['source_card']=='Darkness Descends' and any(o['zone']=='Battlefield' and o['card']=='Bear Cub' for o in obs['objects']):
+                    saved=game.snapshot();actor=obs['actor'];index=next(i for i,a in enumerate(obs['actions']) if a['kind']=='Pass')
+                    with game.clone() as fork:expected=fork.step(fork.observe(actor),index)
+                    self.assertEqual(game.step(obs,index),expected);game.restore(saved)
+                    with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,index)
+                    game.drop_snapshot(saved);after=game.step(game.observe(actor),index);after=game.observe(after['actor'])
+                    if after['stack'] and after['stack'][-1]['source_card']=='Darkness Descends':after=game.step(after,next(i for i,a in enumerate(after['actions']) if a['kind']=='Pass'))
+                    self.assertTrue(any(o['card']=='Bear Cub' and o['zone']=='Graveyard' for o in after['objects']));self.assertFalse(any(o['card']=='Bear Cub' and o['zone']=='Battlefield' for o in after['objects']));return
+                obs=game.step(obs,self.discard_index(obs))
+            self.fail('mass counter resolution not reached')
+
+    def test_zimone_counter_doubling_uses_owned_native_targets_and_snapshots(self):
+        deck=['Forest']*10+['Island']*10+['Breeding Pool']*4+['Zimone, Paradox Sculptor']*18+['Earth Kingdom Soldier']*18
+        with Game([deck,['Forest']*60],seed=6,deck_rules='Freeform') as game:
+            obs=game.observe('P0');activated=False
+            for _ in range(3000):
+                self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor'])
+                if obs['decision']=='priority' and obs['stack'] and isinstance(obs['stack'][-1]['kind'],dict) and 'ActivatedAbility' in obs['stack'][-1]['kind'] and obs['stack'][-1]['source_card']=='Zimone, Paradox Sculptor':
+                    item=obs['stack'][-1];refs=[t['object'] for t in item['targets']];old=[o for o in obs['objects'] if o['reference'] in refs]
+                    if old and any(o['counters']['plus_one'] for o in old):
+                        saved=game.snapshot();actor=obs['actor'];index=next(i for i,a in enumerate(obs['actions']) if a['kind']=='Pass')
+                        with game.clone() as fork:expected=fork.step(fork.observe(actor),index)
+                        after=game.step(obs,index);self.assertEqual(after,expected);game.restore(saved)
+                        with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,index)
+                        game.drop_snapshot(saved);after=game.step(game.observe(actor),index);after=game.observe(after['actor'])
+                        if any(s['id']==item['id'] for s in after['stack']):after=game.step(after,next(i for i,a in enumerate(after['actions']) if a['kind']=='Pass'))
+                        for source in old:
+                            current=next(o for o in after['objects'] if o['reference']==source['reference'])
+                            self.assertEqual(current['counters']['plus_one'],2*source['counters']['plus_one'])
+                        return
+                index=None
+                if obs['actor']=='P0' and obs['decision']=='priority' and not obs['stack']:
+                    sources={o['id'] for o in obs['objects'] if o['zone']=='Battlefield' and o['card']=='Zimone, Paradox Sculptor' and o['counters']['plus_one']>0}
+                    index=next((i for i,a in enumerate(obs['actions']) if a['kind']=='AnnounceActivate' and a['card'] in sources),None)
+                    activated=activated or index is not None
+                if obs['decision']=='targets' and activated:
+                    candidates={o['id']:o['counters']['plus_one'] for o in obs['objects']}
+                    target_actions=[(i,a) for i,a in enumerate(obs['actions']) if a['kind']=='ChooseTarget']
+                    if target_actions:index=max(target_actions,key=lambda pair:candidates.get(pair[1]['target'].get('Card'),0))[0]
+                obs=game.step(obs,self.discard_index(obs) if index is None else index)
+            self.fail('counter doubling not reached')
+
     def test_mandatory_cost_selection_is_private_and_native_replayable(self):
         for spell,deck in [('Thrill of Possibility',['Mountain']*24+['Thrill of Possibility']*36),
                            ('Corrupted Conviction',['Swamp']*20+['Savannah Lions']*20+['Plains']*10+['Corrupted Conviction']*10)]:

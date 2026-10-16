@@ -904,6 +904,43 @@ impl Game {
                         );
                     }
                 }
+                Instruction::PutCreatureCounters {
+                    filter,
+                    kind,
+                    amount,
+                } => {
+                    // One instruction fixes the entire affected set before any counters change.
+                    let affected: Vec<_> = (0..self.state.objects.len())
+                        .map(|id| id as CardId)
+                        .filter(|&id| {
+                            self.creature_matches(filter, item.controller, item.object, id)
+                        })
+                        .collect();
+                    for id in affected {
+                        self.state.objects[id as usize].counters.add(kind, amount);
+                    }
+                }
+                Instruction::DoubleCounters => {
+                    for bound in &item.targets {
+                        if self.same_target_object(*bound)
+                            && let Target::Card(id) = bound.target
+                        {
+                            let counters = &mut self.state.objects[id as usize].counters;
+                            counters.plus_one = counters
+                                .plus_one
+                                .checked_mul(2)
+                                .expect("counter representation exhausted");
+                            counters.minus_one = counters
+                                .minus_one
+                                .checked_mul(2)
+                                .expect("counter representation exhausted");
+                            counters.stun = counters
+                                .stun
+                                .checked_mul(2)
+                                .expect("counter representation exhausted");
+                        }
+                    }
+                }
                 Instruction::PutCounters {
                     subject,
                     kind,
