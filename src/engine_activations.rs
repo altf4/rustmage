@@ -281,6 +281,7 @@ impl Game {
     ) -> SpellView {
         self.state.passes = 0;
         SpellView {
+            attachment_trigger: None,
             cast: None,
             id: self.next_stack_id(),
             kind: StackKind::ActivatedAbility { ability },

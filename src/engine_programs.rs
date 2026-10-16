@@ -316,6 +316,8 @@ impl Game {
                     | TriggerCondition::LifeGained { .. }
                     | TriggerCondition::AttackDeclared { .. }
                     | TriggerCondition::SelfAttacks
+                    | TriggerCondition::EquippedAttacks
+                    | TriggerCondition::GrantedAttacks
                     | TriggerCondition::SelfBecomesTapped
                     | TriggerCondition::SpellCast { .. }
                     | TriggerCondition::AtStep { .. } => false,
@@ -391,7 +393,20 @@ impl Game {
     }
 
     pub(super) fn queue_trigger(&mut self, source: &ObjectView, index: usize) -> bool {
-        let condition = source.card.triggers()[index].condition;
+        self.queue_trigger_from(source, index, None)
+    }
+
+    fn queue_trigger_from(
+        &mut self,
+        source: &ObjectView,
+        index: usize,
+        event: Option<Box<AttachmentTriggerView>>,
+    ) -> bool {
+        let definition = event
+            .as_ref()
+            .filter(|event| event.granted)
+            .map_or(source.card, |event| event.granting_card);
+        let condition = definition.triggers()[index].condition;
         if !self.trigger_guards_hold(condition, source.owner, source.reference, source.tapped) {
             return false;
         }
@@ -409,6 +424,7 @@ impl Game {
         }
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
+            attachment_trigger: event,
             cast: None,
             id,
             kind: StackKind::TriggeredAbility {
@@ -607,6 +623,7 @@ impl Game {
 
     /// One event per completed declaration, irrespective of whether its observer attacked.
     pub(super) fn declaration_triggers(&mut self, actor: Player) {
+        self.attachment_attack_triggers(actor);
         let sources: Vec<_> = self
             .state
             .attack_sources
@@ -643,6 +660,58 @@ impl Game {
                         self.queue_trigger(&source, index);
                     }
                 }
+            }
+        }
+    }
+
+    /// Reuse the live attachment index once per completed declaration. No arena scan
+    /// or mutable granted-ability graph; every queued packet owns its provenance.
+    fn attachment_attack_triggers(&mut self, actor: Player) {
+        let grants: Vec<_> = self
+            .state
+            .attachment_sources
+            .iter()
+            .filter_map(|&id| {
+                let grantor = &self.state.objects[id as usize];
+                let recipient = grantor.attached_to?;
+                if !self.on_battlefield(id)
+                    || !self.on_battlefield(recipient.card)
+                    || self.object_ref(recipient.card) != recipient
+                    || self.state.objects[recipient.card as usize].owner != actor
+                    || !self
+                        .state
+                        .attackers
+                        .iter()
+                        .any(|a| a.card == recipient.card)
+                {
+                    return None;
+                }
+                Some((id, recipient))
+            })
+            .collect();
+        for (id, recipient) in grants {
+            let giver = self.object_view(id);
+            for (index, ability) in giver.card.triggers().iter().enumerate() {
+                let granted = match ability.condition.event() {
+                    TriggerCondition::EquippedAttacks => false,
+                    TriggerCondition::GrantedAttacks => true,
+                    _ => continue,
+                };
+                // Supported games have two players, owner==controller, and only
+                // opposing player/planeswalker defenders. Both share this player.
+                let event = Box::new(AttachmentTriggerView {
+                    grantor: giver.reference,
+                    granting_card: giver.card,
+                    attacker: recipient,
+                    defender: actor.other(),
+                    granted,
+                });
+                let source = if granted {
+                    self.object_view(recipient.card)
+                } else {
+                    giver.clone()
+                };
+                self.queue_trigger_from(&source, index, Some(event));
             }
         }
     }
@@ -705,7 +774,7 @@ impl Game {
         let mut item = self.state.stack.pop().unwrap();
         if let StackKind::TriggeredAbility { ability } = item.kind
             && !self.trigger_guards_hold(
-                item.source_card.triggers()[ability as usize].condition,
+                item.trigger_definition().triggers()[ability as usize].condition,
                 item.controller,
                 item.object,
                 item.source_tapped,
