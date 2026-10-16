@@ -11,6 +11,7 @@ migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
 [Explore and Map](docs/explore.md) add fifteen complete bodies with public exploration,
 exact source incarnations, completed-event observers and the full paid Map activation.
+[Collect evidence](docs/evidence.md) adds ten complete bodies with owned graveyard subsets, actual collection observers, payer-owned ward and historical entry qualification.
 [Bargain](docs/bargain.md) adds ten complete bodies with exact optional sacrifice costs, joint mana reservations and historical entry qualification.
 [Scalar X casting](docs/scalar-x.md) adds twelve complete bodies with actor-private complete
 interval domains, contextual stack mana values and exact entry amounts.
