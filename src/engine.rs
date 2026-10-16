@@ -1965,10 +1965,9 @@ impl Game {
                 self.state.passes = 0;
             }
             Action::TapMana { card } => {
-                let obj = &mut self.state.objects[card as usize];
-                obj.tapped = true;
-                let pool =
-                    &mut self.state.players[actor.index()].mana[obj.card.mana_color().unwrap()];
+                self.tap_objects(&[card]);
+                let color = self.state.objects[card as usize].card.mana_color().unwrap();
+                let pool = &mut self.state.players[actor.index()].mana[color];
                 *pool = pool
                     .checked_add(1)
                     .capacity("mana representation exhausted");
@@ -2638,10 +2637,8 @@ impl Game {
                 self.state.attacked_this_turn.push(reference);
             }
         }
-        for card in to_tap {
-            self.state.objects[card as usize].tapped = true;
-        }
         self.state.attackers.extend(declared.iter().cloned());
+        self.tap_objects(&to_tap);
         for attack in declared {
             event(self, attack.card);
         }

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "67869794cc9a2221fe60246a8836b8ba03423f94e13d4f8dfc95dbf088d9a1b8",
+  "catalogue_version": "afb997cc5a85525b5622b5b64281fdd8bbbc7a787a8f742b697ded928b0870e2",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1358,
-  "implemented_total": 1364,
+  "implemented_standard_cards": 1371,
+  "implemented_total": 1377,
   "token_definitions": 57,
   "emblem_definitions": 1,
   "cards": [
@@ -1558,8 +1558,8 @@
     {
       "name": "Attentive Sunscribe",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Attercop",
@@ -16192,8 +16192,8 @@
     {
       "name": "Mechan Navigator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Mechan Shieldmate",
@@ -18844,8 +18844,8 @@
     {
       "name": "Pestered Wellguard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Pests of Honor",
@@ -20860,8 +20860,8 @@
     {
       "name": "Rescue Leopard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Rescue Skiff",
@@ -22600,8 +22600,8 @@
     {
       "name": "Seedship Agrarian",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Seedship Broodtender",
@@ -23248,8 +23248,8 @@
     {
       "name": "Silvergill Peddler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Silverquill Charm",
@@ -24148,8 +24148,8 @@
     {
       "name": "Spider-Gwen, Free Spirit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Spider-Ham, Peter Porker",
@@ -24610,8 +24610,8 @@
     {
       "name": "Starfighter Pilot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Starforged Sword",
@@ -25726,8 +25726,8 @@
     {
       "name": "Swarm Culler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Swarm, Being of Bees",
@@ -29602,8 +29602,8 @@
     {
       "name": "Volatile Wanderglyph",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Volcanic Villain",
@@ -29788,8 +29788,8 @@
     {
       "name": "Wanderbrine Preacher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Wanderbrine Trapper",
@@ -29812,8 +29812,8 @@
     {
       "name": "Wanderwine Distracter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Wanderwine Farewell",
@@ -30772,8 +30772,8 @@
     {
       "name": "Wylie Duke, Atiin Hero",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Xande, Dark Mage",

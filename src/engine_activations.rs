@@ -329,9 +329,6 @@ impl Game {
             return;
         }
         object.used_abilities |= 1u64 << ability;
-        if cost.tap {
-            object.tapped = true;
-        }
         object.counters.plus_one -= counter_payment.plus_one;
         object.counters.minus_one -= counter_payment.minus_one;
         object.counters.stun -= counter_payment.stun;
@@ -342,6 +339,11 @@ impl Game {
             } else {
                 object.counters.add(CounterKind::Loyalty, change as u64);
             }
+        }
+        // Capture the tap event before a subsequent sacrifice/discard/exile
+        // changes the source incarnation. All other paid source costs are set.
+        if cost.tap {
+            self.tap_objects(&[item.card]);
         }
         if cost.exile_self {
             self.move_object(item.card, Zone::Exile);
