@@ -1367,6 +1367,26 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::MayPayMana { cost, skip } => {
+                    self.start_optional_resolution_payment(&item, cost, skip);
+                    return;
+                }
+                Instruction::Endure { amount, token } => {
+                    if amount != 0 {
+                        if self.on_battlefield(item.card)
+                            && self.object_ref(item.card) == item.object
+                        {
+                            self.state.pending = Pending::Endure {
+                                player: item.controller,
+                                source: item.object,
+                                amount,
+                                token,
+                            };
+                            return;
+                        }
+                        self.create_tokens(item.controller, token, 1, false);
+                    }
+                }
                 Instruction::CreateTokensScaled {
                     token,
                     amount,

@@ -350,6 +350,14 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    MayPayMana {
+        cost: ManaCost,
+        skip: usize,
+    },
+    Endure {
+        amount: u16,
+        token: Card,
+    },
     BecomeSaddled {
         minimum: u16,
     },

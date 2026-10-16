@@ -3131,6 +3131,56 @@ def cycling_abilities(card):
     return dict(card,oracle_text='\n'.join(body)),abilities
 
 
+def endure_body(card):
+    """Closed fixed endure bodies; no discarded variable or entering-subject tail."""
+    if not isinstance(card.get('oracle_text'), str): return None
+    text = re.sub(r'\([^()]*\)', '', card['oracle_text']).strip()
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    base = creature_template(dict(card, oracle_text=''))
+    if base is None: return None
+    name = card.get('name', '')
+    aliases = [name]
+    if name and card.get('type_line', '').startswith('Legendary '): aliases.append(name.split(',')[0])
+    triggers, residual = [], []
+    prefixes = {
+        'When this creature enters, ': 'SelfEnters',
+        'Whenever this creature attacks, ': 'SelfAttacks',
+        'Whenever this creature enters or attacks, ': 'SelfEntersOrAttacks',
+        'Whenever another nontoken creature you control dies, ': 'CreatureDiesFiltered { filter: CreatureFilter { relation: 0, other: true, subtype: None, keyword: Keywords(0), attacking: false, tokens: Some(false), artifact: false } }',
+    }
+    for line in lines:
+        prefix = next((prefix for prefix in prefixes if line.startswith(prefix)), None)
+        if prefix is None:
+            residual.append(line)
+            continue
+        condition, tail = prefixes[prefix], line[len(prefix):]
+        for alias in aliases:
+            if alias and tail.startswith(alias + ' endures '): tail = 'this creature endures ' + tail[len(alias) + len(' endures '):]
+        self_event = condition in ('SelfEnters', 'SelfAttacks', 'SelfEntersOrAttacks')
+        if self_event and tail.startswith('it endures '): tail = 'this creature endures ' + tail[len('it endures '):]
+        program = []
+        if self_event and (m := re.fullmatch(r'you may pay ((?:\{[0-9WUBRGC]+\})+)\. If you do, it endures ([123])\.', tail)):
+            cost = mana_cost_spec(m[1])
+            if cost is None or spell_cost_options(m[1]) is None: return None
+            program.append(f'MayPayMana {{ cost: {cost}, skip: 1 }}')
+            tail = 'this creature endures ' + m[2] + '.'
+        if self_event and (m := re.fullmatch(r'you lose 1 life and this creature endures ([123])\.', tail)):
+            program.append('LoseLife(PlayerSet::Controller, 1)')
+            tail = 'this creature endures ' + m[1] + '.'
+        m = re.fullmatch(r'this creature endures ([123])\.', tail)
+        if m is None: return None
+        amount = int(m[1])
+        token = token_program(f'create a {amount}/{amount} white Spirit creature token.')
+        if token is None: return None
+        marker = re.search(r'token: (__TOKEN_[0-9a-f]+__)', token[0])[1]
+        program.append(f'Endure {{ amount: {amount}, token: {marker} }}')
+        triggers.append((condition, program, 'None'))
+    # Every non-trigger line must be a complete existing intrinsic creature body.
+    intrinsic = creature_template(dict(card, oracle_text='\n'.join(residual)))
+    if intrinsic is None or not triggers: return None
+    return intrinsic[0], intrinsic[1], triggers, [], [0, 0, 0]
+
+
 def saddle_body(card):
     """Closed whole-body Saddle grammar; contribution histories stay gated."""
     if not isinstance(card.get('oracle_text'),str): return None
@@ -3352,6 +3402,10 @@ def compile_catalogue(snapshot, target):
             saddle=saddle_body(card) if evidence is None and not cycling and all(v is None for v in (flashback,offspring,kicker,additional,target_reduction)) and not bargain and not reductions and not dynamic and not scaling else None
             if saddle is None:effect='Unsupported'
             else:effect,keywords,abilities,activations,enters=saddle
+        if any('endures ' in line for line in card.get('oracle_text', '').splitlines()):
+            endure=endure_body(card) if not convoke and not cycling and not bargain and evidence is None and all(v is None for v in (flashback,offspring,kicker,additional,target_reduction)) and not reductions and not dynamic and not scaling else None
+            if endure is None:effect='Unsupported'
+            else:effect,keywords,abilities,activations,enters=endure
         # Convoke applies only to complete fixed intrinsic bodies. No selector may
         # silently combine an unimplemented additional/alternative payment recipe.
         if convoke and (bargain or evidence is not None or cycling or any(v is not None for v in (flashback,offspring,kicker,additional,target_reduction)) or '{X}' in card.get('mana_cost','') or any(line.startswith('Saddle ') for line in card.get('oracle_text','').splitlines())):

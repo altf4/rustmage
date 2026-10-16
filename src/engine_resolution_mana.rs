@@ -4,7 +4,7 @@ use super::*;
 pub(super) struct ResolutionPayment {
     pub payer: Player,
     pub cost: ManaCost,
-    pub victim: u64,
+    pub victim: Option<u64>,
     pub exile: bool,
     pub unpaid_pc: usize,
 }
@@ -12,7 +12,7 @@ pub(super) struct ResolutionPayment {
 pub struct ResolutionPaymentView {
     pub payer: Player,
     pub cost: ManaCost,
-    pub victim: u64,
+    pub victim: Option<u64>,
     pub exile: bool,
 }
 impl Game {
@@ -118,7 +118,7 @@ impl Game {
         resolution.mana_payment = Some(Box::new(ResolutionPayment {
             payer: victim.controller,
             cost,
-            victim: victim.id,
+            victim: Some(victim.id),
             exile,
             unpaid_pc,
         }));
@@ -126,6 +126,26 @@ impl Game {
             player: victim.controller,
         };
         true
+    }
+    pub(super) fn start_optional_resolution_payment(
+        &mut self,
+        item: &SpellView,
+        cost: ManaCost,
+        skip: usize,
+    ) {
+        let resolution = self.state.resolving.as_mut().unwrap();
+        let unpaid_pc = resolution.pc.checked_add(skip).expect("program offset");
+        assert!(unpaid_pc <= resolution.program.len());
+        resolution.mana_payment = Some(Box::new(ResolutionPayment {
+            payer: item.controller,
+            cost,
+            victim: None,
+            exile: false,
+            unpaid_pc,
+        }));
+        self.state.pending = Pending::ResolutionMana {
+            player: item.controller,
+        };
     }
     pub(super) fn finish_resolution_payment(&mut self, payment: Option<Mana>) {
         let request = self
@@ -140,7 +160,9 @@ impl Game {
             self.spend_mana(request.payer, payment);
         } else {
             self.state.resolving.as_mut().unwrap().pc = request.unpaid_pc;
-            self.counter_stack_item(request.victim, request.exile);
+            if let Some(victim) = request.victim {
+                self.counter_stack_item(victim, request.exile);
+            }
         }
         self.run_program();
     }

@@ -114,6 +114,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     400
                 }
             }
+            Action::ChooseEndure { put_counters } => {
+                if *put_counters {
+                    40
+                } else {
+                    35
+                }
+            }
             Action::BeginConvoke => 40,
             Action::ChooseConvoker { .. } => 50,
             Action::ChooseSaddler { .. } => 50,

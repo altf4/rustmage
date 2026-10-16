@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "4111de2b9e0e408e56e879d2ae13d997da732ba05f683b51008f57275c1e3b82",
+  "catalogue_version": "48c2461a82b19c4ac6759fb0e61c6edba00da5ad4aabda9da8fa15f2ff6bdfd9",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1648,
-  "implemented_total": 1654,
-  "token_definitions": 77,
+  "implemented_standard_cards": 1656,
+  "implemented_total": 1662,
+  "token_definitions": 80,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -922,7 +922,7 @@
     {
       "name": "Anafenza, Unyielding Lineage",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -6298,7 +6298,7 @@
     {
       "name": "Descendant of Storms",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -7264,7 +7264,7 @@
     {
       "name": "Dusyut Earthcarver",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -9616,7 +9616,7 @@
     {
       "name": "Fortress Kin-Guard",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -13156,7 +13156,7 @@
     {
       "name": "Inspirited Vanguard",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -14128,7 +14128,7 @@
     {
       "name": "Kin-Tree Nurturer",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -22078,7 +22078,7 @@
     {
       "name": "Sandskitter Outrider",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -23314,7 +23314,7 @@
     {
       "name": "Sinkhole Surveyor",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
