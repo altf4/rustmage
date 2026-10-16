@@ -342,6 +342,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         triggers[i] += 1;
                     }
                     StackKind::ActivatedAbility { .. } => assert!(s.source_card.is_token()),
+                    StackKind::DelayedSacrifice => panic!("no delayed producer in this fixture"),
                 }
             }
             // A mandatory targeted attack trigger with zero legal targets is removed during preparation.

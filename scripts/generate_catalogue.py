@@ -3121,6 +3121,39 @@ def cycling_abilities(card):
     return dict(card,oracle_text='\n'.join(body)),abilities
 
 
+def mobilize_body(card):
+    """Intrinsic mobilize, fixed or the exact creature-card graveyard expression.
+    The complete residual still must compile; no contributor/copy/restriction gates
+    are bypassed and unknown dynamic amounts never become a fixed approximation.
+    """
+    if not isinstance(card.get('oracle_text'),str):return None
+    lines=[line.strip() for line in re.sub(r'\([^()]*\)','',card['oracle_text']).strip().split('\n')]
+    declarations=[line for line in lines if line.startswith('Mobilize ')]
+    if len(declarations)!=1:return None
+    declaration=declarations[0]
+    if m:=re.fullmatch(r'Mobilize ([0-9]+)',declaration):
+        if int(m[1])>65535:return None
+        amount=f'AmountValue::Fixed({int(m[1])})'
+    elif declaration=='Mobilize X, where X is the number of creature cards in your graveyard.':
+        amount=amount_value('the number of creature cards in your graveyard')
+    else:return None
+    proxy=dict(card,oracle_text='\n'.join(line for line in lines if line!=declaration),keywords=[k for k in card.get('keywords',[]) if k!='Mobilize'])
+    body=permanent_program_template(proxy)
+    if body is None:
+        triggered=trigger_creature_template(proxy)
+        if triggered is not None:body=(*triggered,[],[0,0,0])
+    if body is None:
+        base=creature_template(proxy)
+        if base is None:return None
+        body=(*base,[],[],[0,0,0])
+    effect,keywords,abilities,activations,enters=body
+    token=token_program('create a 1/1 red Warrior creature token.')
+    assert token and len(token)==1
+    factory=re.search(r'token: (__TOKEN_[a-f0-9]+__)',token[0])[1]
+    trigger=('SelfAttacks',[f'Mobilize {{ token: {factory}, amount: {amount} }}'],'None')
+    return effect,keywords,[*abilities,trigger],activations,enters
+
+
 def saddle_body(card):
     """Closed whole-body Saddle grammar; contribution histories stay gated."""
     if not isinstance(card.get('oracle_text'),str): return None
@@ -3340,6 +3373,10 @@ def compile_catalogue(snapshot, target):
             saddle=saddle_body(card) if evidence is None and not cycling and all(v is None for v in (flashback,offspring,kicker,additional,target_reduction)) and not bargain and not reductions and not dynamic and not scaling else None
             if saddle is None:effect='Unsupported'
             else:effect,keywords,abilities,activations,enters=saddle
+        if any(line.startswith('Mobilize ') for line in card.get('oracle_text','').split('\n')):
+            mobilize=mobilize_body(card) if evidence is None and not cycling and all(v is None for v in (flashback,offspring,kicker,additional,target_reduction)) and not bargain and not reductions else None
+            if mobilize is None:effect='Unsupported'
+            else:effect,keywords,abilities,activations,enters=mobilize
         # Later fixed-cost selectors must never revive a rejected variable-cost body.
         if '{X}' in card.get('mana_cost', '') and scalar is None:
             effect = 'Unsupported'
