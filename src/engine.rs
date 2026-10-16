@@ -3382,3 +3382,7 @@ mod loyalty_activation_tests;
 #[cfg(test)]
 #[path = "engine_scaled_token_tests.rs"]
 mod scaled_token_tests;
+
+#[cfg(test)]
+#[path = "engine_scaled_effect_tests.rs"]
+mod scaled_effect_tests;

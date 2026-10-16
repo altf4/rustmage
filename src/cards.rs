@@ -331,6 +331,7 @@ pub(crate) enum Instruction {
     Surveil(u16),
     Search(SearchSpec),
     Damage(i32),
+    DamageScaled(AmountValue),
     DamagePlayers(PlayerSet, i32),
     UntapSource,
     TapSource,
@@ -386,6 +387,7 @@ pub(crate) enum Instruction {
     Draw(PlayerSet, u16),
     Discard(PlayerSet, u16),
     GainLife(PlayerSet, u16),
+    GainLifeScaled(PlayerSet, AmountValue),
     LoseLife(PlayerSet, u16),
     /// Optional block containing the following `skip` instructions.
     May {
@@ -441,6 +443,10 @@ pub(crate) struct CountFilter {
 pub(crate) enum AmountValue {
     Stat(StatValue),
     LifeGainedThisTurn,
+    Multiple {
+        value: &'static AmountValue,
+        factor: u16,
+    },
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StatValue {
