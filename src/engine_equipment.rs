@@ -43,13 +43,16 @@ impl Game {
         for &source in &self.state.static_sources {
             let object = &self.state.objects[source as usize];
             for grant in object.card.keyword_grants() {
-                if grant.matches(
-                    target.card,
-                    target.owner == object.owner,
-                    reference == self.object_ref(source),
-                    attacking,
-                    object.owner == self.state.active,
-                ) {
+                if (!grant.requires_life_gain
+                    || self.state.players[object.owner.index()].life_gained_this_turn > 0)
+                    && grant.matches(
+                        target.card,
+                        target.owner == object.owner,
+                        reference == self.object_ref(source),
+                        attacking,
+                        object.owner == self.state.active,
+                    )
+                {
                     keywords = keywords.union(grant.keywords);
                 }
             }

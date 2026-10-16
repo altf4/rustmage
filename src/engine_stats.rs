@@ -189,7 +189,14 @@ impl Game {
                 }
             }
             for modifier in object.card.static_modifiers() {
-                if self.creature_matches(modifier.filter, object.owner, self.object_ref(source), id)
+                if (!modifier.requires_life_gain
+                    || self.state.players[object.owner.index()].life_gained_this_turn > 0)
+                    && self.creature_matches(
+                        modifier.filter,
+                        object.owner,
+                        self.object_ref(source),
+                        id,
+                    )
                 {
                     stats += modifier.stats;
                 }

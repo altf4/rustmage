@@ -19,6 +19,7 @@ struct Resource {
 }
 #[derive(Clone)]
 struct FundingState {
+    life_gained: [bool; 2],
     active: Player,
     mana: [u128; 6],
     life: i128,
@@ -222,6 +223,11 @@ impl FundingState {
             })
             .collect();
         Self {
+            life_gained: game
+                .state
+                .players
+                .each_ref()
+                .map(|p| p.life_gained_this_turn > 0),
             active: game.state.active,
             mana: game.state.players[goal.actor.index()].mana.map(u128::from),
             life: game.state.players[goal.actor.index()].life,
@@ -275,14 +281,16 @@ impl FundingState {
                     continue;
                 }
                 for grant in source.object.card.keyword_grants() {
-                    if grant.matches(
-                        target.object.card,
-                        target.object.owner == source.object.owner,
-                        target.id == source.id
-                            && target.object.generation == source.object.generation,
-                        target.attacking,
-                        source.object.owner == self.active,
-                    ) {
+                    if (!grant.requires_life_gain || self.life_gained[source.object.owner.index()])
+                        && grant.matches(
+                            target.object.card,
+                            target.object.owner == source.object.owner,
+                            target.id == source.id
+                                && target.object.generation == source.object.generation,
+                            target.attacking,
+                            source.object.owner == self.active,
+                        )
+                    {
                         keywords = keywords.union(grant.keywords);
                     }
                 }
@@ -1060,6 +1068,7 @@ mod own_turn_guard_tests {
         // ability in this stage produces mana.
         for active in [Player::P0, Player::P1] {
             let state = FundingState {
+                life_gained: [false; 2],
                 active,
                 mana: [0; 6],
                 life: 20,
@@ -1071,6 +1080,51 @@ mod own_turn_guard_tests {
             assert!(
                 !state.guard_available(ActivationGuard::ControlSubtypeAny(&["Dragon"]), active)
             );
+        }
+    }
+}
+
+#[cfg(test)]
+mod life_gain_grant_tests {
+    use super::*;
+    use crate::engine::tests::{scenario, spawn};
+    #[test]
+    fn virtual_keyword_queries_share_the_live_controller_history_condition() {
+        for gained in [false, true] {
+            let mut g = scenario();
+            let elf = spawn(
+                &mut g,
+                Player::P0,
+                Card::from_name("Llanowar Elves").unwrap(),
+                Zone::Battlefield,
+            );
+            spawn(
+                &mut g,
+                Player::P0,
+                Card::from_name("Thornfist Striker").unwrap(),
+                Zone::Battlefield,
+            );
+            spawn(
+                &mut g,
+                Player::P1,
+                Card::from_name("Thornfist Striker").unwrap(),
+                Zone::Battlefield,
+            );
+            g.state.players[0].life_gained_this_turn = if gained { u128::MAX } else { 0 };
+            g.state.players[1].life_gained_this_turn = 1;
+            let state = FundingState::from_game(
+                &g,
+                FundingGoal {
+                    actor: Player::P0,
+                    required: [0; 6],
+                    generic: 1,
+                    reserve: None,
+                    source: None,
+                },
+            );
+            let target = state.resources.iter().find(|r| r.id == elf).unwrap();
+            assert_eq!(state.keywords(target), g.keywords(elf));
+            assert_eq!(state.keywords(target).contains(Keywords::TRAMPLE), gained);
         }
     }
 }

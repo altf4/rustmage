@@ -1236,7 +1236,17 @@ impl Game {
                 && (!self.state.objects.ptr_eq(&checkpoint.objects)
                     || self.state.active != checkpoint.active
                     || self.state.attackers != checkpoint.attackers
-                    || self.state.static_sources != checkpoint.static_sources)
+                    || self.state.static_sources != checkpoint.static_sources
+                    || self
+                        .state
+                        .players
+                        .iter()
+                        .zip(&checkpoint.players)
+                        .any(|(now, old)| {
+                            now.life != old.life
+                                || (now.life_gained_this_turn > 0)
+                                    != (old.life_gained_this_turn > 0)
+                        }))
             {
                 for (id, object) in self.state.objects.iter().enumerate() {
                     if object.zone == Zone::Battlefield {
@@ -3531,3 +3541,7 @@ mod power_blocking_tests;
 #[cfg(test)]
 #[path = "engine_self_target_tests.rs"]
 mod self_target_tests;
+
+#[cfg(test)]
+#[path = "engine_life_gain_condition_tests.rs"]
+mod life_gain_condition_tests;

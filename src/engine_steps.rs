@@ -81,6 +81,7 @@ impl Game {
                 return minimum.is_none_or(|min| value >= min)
                     && maximum.is_none_or(|max| value <= max);
             }
+            StepGuard::GainedLife => return p.life_gained_this_turn > 0,
             StepGuard::Attacked => return p.attacked_this_turn,
             StepGuard::CreatureDied => return self.state.creatures_died_this_turn > 0,
             StepGuard::OpponentLostLife => {

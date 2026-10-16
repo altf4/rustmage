@@ -9,8 +9,84 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def life_condition_index(self,obs,wanted,spell=None,gain=False,enemy_needed=False):
+        objects={o['id']:o for o in obs['objects']};own=next((o for o in objects.values() if o['card']==wanted and o['owner']=='P0' and o['zone']=='Battlefield'),None);enemy=next((o for o in objects.values() if o['owner']=='P1' and o['zone']=='Battlefield' and o['card']=='Hill Giant'),None)
+        def score(a):
+            k=a['kind']
+            if k in ('Cast','AnnounceCast'):
+                b=objects[a['card']];name=b['card']
+                if b['owner']=='P1':return 200 if name=='Hill Giant' and enemy is None else 190 if name=='Shock' and wanted=='Front Porch Sentries' and own else -100
+                if name==wanted:return 220 if own is None and (not enemy_needed or enemy) else -100
+                if name=='Moment of Triumph':
+                    ready=spell is None or (any(o['card']==spell and o['zone']=='Hand' and o['owner']=='P0' for o in objects.values()) and obs['active']=='P0' and obs['step'] in ('Main1','Main2') and sum(o['zone']=='Battlefield' and o['owner']=='P0' and o['card'] in ('Plains','Swamp','Forest') and not o['tapped'] for o in objects.values())>=4)
+                    return 210 if own and gain and ready and obs['players'][0]['life_gained_this_turn']==0 else -100
+                if name==spell:return 200 if own and (not gain or obs['players'][0]['life_gained_this_turn']>0) and (not enemy_needed or enemy) else -100
+                return -100
+            if k in ('Activate','AnnounceActivate','BeginActivate','ActivateMana','AnnounceMana'):return -100
+            if k=='TapMana':return 140 if obs['decision']=='pay_costs' else -100
+            if k=='ChooseTarget':
+                b=objects.get(a['target'].get('Card'));root=obs['announcing']
+                if root['source_card']=='Moment of Triumph' or root['source_card']=='Efflorescence':return 250 if b and own and b['id']==own['id'] else -100
+                if root['source_card']=='Shock':return 250 if b and own and b['id']==own['id'] else -100
+                return 240 if b and b['owner']!=root['controller'] else -100
+            return self.professor_score(obs,a)
+        return max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i]))
+
+    def test_continuous_life_gain_bonuses_in_native_library_replay(self):
+        for wanted,extra in [('Tenured Concocter',2),('Ulna Alley Shopkeep',2),('Thornfist Striker',1)]:
+            deck=['Plains']*12+['Swamp']*12+['Forest']*12+[wanted]*12+['Moment of Triumph']*12
+            with self.subTest(card=wanted),Game([deck,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+                for _ in range(12000):
+                    obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor'])
+                    if obs['decision']=='priority' and obs['stack'] and obs['stack'][-1]['source_card']=='Moment of Triumph':break
+                    game.step(obs,self.life_condition_index(obs,wanted,gain=True))
+                else:self.fail('life gain spell not reached')
+                root=obs['stack'][-1];source=next(o for o in obs['objects'] if o['card']==wanted and o['zone']=='Battlefield');self.assertEqual(obs['players'][0]['life_gained_this_turn'],0);saved=game.snapshot()
+                with game.clone() as fork:expected=self.finish_self_target(fork,'P0',root['id'])
+                after=self.finish_self_target(game,'P0',root['id']);self.assertEqual(after,expected);now=next(o for o in after['objects'] if o['reference']==source['reference']);self.assertEqual(now['power'],source['power']+2+extra);self.assertEqual(after['players'][0]['life_gained_this_turn'],2)
+                if wanted=='Thornfist Striker':self.assertTrue(now['keywords']&256)
+                game.restore(saved)
+                with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,0)
+                again=self.finish_self_target(game,'P0',root['id']);after['revision']=again['revision'];self.assertEqual(after,again);game.drop_snapshot(saved)
+
+    def test_life_gain_spell_branches_and_counters_in_native_library_replay(self):
+        for spell in ['Efflorescence','Withering Curse']:
+            for gain in [False,True]:
+                deck=['Plains']*10+['Swamp']*10+['Forest']*10+['Bear Cub']*10+['Moment of Triumph']*8+[spell]*12
+                with self.subTest(card=spell,gain=gain),Game([deck,['Mountain']*36+['Hill Giant']*24],seed=7,deck_rules='Freeform') as game:
+                    for _ in range(15000):
+                        obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor'])
+                        if obs['decision']=='priority' and obs['stack'] and obs['stack'][-1]['source_card']==spell:break
+                        game.step(obs,self.life_condition_index(obs,'Bear Cub',spell,gain,enemy_needed=True))
+                    else:self.fail('conditional spell not reached')
+                    root=obs['stack'][-1];self.assertEqual(obs['players'][0]['life_gained_this_turn']>0,gain);bear=next(o for o in obs['objects'] if o['card']=='Bear Cub' and o['zone']=='Battlefield');enemy=next(o for o in obs['objects'] if o['card']=='Hill Giant' and o['zone']=='Battlefield');saved=game.snapshot()
+                    with game.clone() as fork:expected=self.finish_self_target(fork,'P0',root['id'])
+                    after=self.finish_self_target(game,'P0',root['id']);self.assertEqual(after,expected)
+                    if spell=='Efflorescence':
+                        b=next(o for o in after['objects'] if o['reference']==bear['reference']);self.assertEqual(b['counters']['plus_one'],bear['counters']['plus_one']+2);self.assertEqual(bool(b['keywords']&8192),gain);self.assertEqual(bool(b['keywords']&256),gain)
+                    else:
+                        b=next(o for o in after['objects'] if o['id']==enemy['id']);self.assertEqual(b['zone'],'Graveyard' if gain else 'Battlefield')
+                        if not gain:self.assertEqual(b['toughness'],enemy['toughness']-2)
+                    game.restore(saved);again=self.finish_self_target(game,'P0',root['id']);after['revision']=again['revision'];self.assertEqual(after,again);game.drop_snapshot(saved)
+
+    def test_opposing_debuff_and_conditional_entry_bodies_native_replay(self):
+        for wanted,p,t in [('Ambush Gigapede',-2,-2),('Burrog Befuddler',-1,0),('Cogwork Wrestler',-2,0),('Front Porch Sentries',-1,-1),('Grim Bauble',-2,-2),('Humbling Elder',-2,0),("Poisoner's Apprentice",0,0),('Old-Growth Educator',0,0)]:
+            deck=['Island']*12+['Swamp']*12+['Forest']*12+[wanted]*24;other=['Mountain']*24+['Hill Giant']*24+['Shock']*12
+            with self.subTest(card=wanted),Game([deck,other],seed=7,deck_rules='Freeform') as game:
+                for _ in range(15000):
+                    obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor'])
+                    if obs['decision']=='priority' and obs['stack'] and obs['stack'][-1]['source_card']==wanted and isinstance(obs['stack'][-1]['kind'],dict) and 'TriggeredAbility' in obs['stack'][-1]['kind']:break
+                    game.step(obs,self.life_condition_index(obs,wanted,enemy_needed=True))
+                else:self.fail('entry/death trigger not reached')
+                root=obs['stack'][-1];enemy=next(o for o in obs['objects'] if o['card']=='Hill Giant' and o['zone']=='Battlefield');saved=game.snapshot()
+                if wanted!='Old-Growth Educator':self.assertEqual(root['targets'][0]['object'],enemy['reference'])
+                with game.clone() as fork:expected=self.finish_self_target(fork,'P0',root['id'])
+                after=self.finish_self_target(game,'P0',root['id']);self.assertEqual(after,expected);b=next(o for o in after['objects'] if o['reference']==enemy['reference']);self.assertEqual((b['power'],b['toughness']),(enemy['power']+p,enemy['toughness']+t))
+                game.restore(saved);again=self.finish_self_target(game,'P0',root['id']);after['revision']=again['revision'];self.assertEqual(after,again);game.drop_snapshot(saved)
+
+
     def self_target_index(self,obs,wanted):
-        objects={o['id']:o for o in obs['objects']};valiant=wanted not in ('Cactarantula','Old Fat Spider','Ruric Thar, Biomagus');owner='P0' if valiant else 'P1'
+        objects={o['id']:o for o in obs['objects']};valiant=wanted not in ('Cactarantula','Old Fat Spider','Ruric Thar, Biomagus','Tenured Concocter');owner='P0' if valiant else 'P1'
         source=next((o for o in objects.values() if o['card']==wanted and o['zone']=='Battlefield'),None)
         def score(a):
             k=a['kind']
@@ -46,8 +122,8 @@ class BindingTests(unittest.TestCase):
         self.fail('self-target trigger did not complete')
 
     def test_eight_complete_self_target_triggers_use_native_library_and_replay(self):
-        for wanted in ('Cactarantula','Old Fat Spider','Ruric Thar, Biomagus','Mouse Trapper','Nettle Guard','Seedglaive Mentor','Veteran Guardmouse','Whiskerquill Scribe'):
-            valiant=wanted not in ('Cactarantula','Old Fat Spider','Ruric Thar, Biomagus');owner='P0' if valiant else 'P1';p=0 if valiant else 1
+        for wanted in ('Cactarantula','Old Fat Spider','Ruric Thar, Biomagus','Tenured Concocter','Mouse Trapper','Nettle Guard','Seedglaive Mentor','Veteran Guardmouse','Whiskerquill Scribe'):
+            valiant=wanted not in ('Cactarantula','Old Fat Spider','Ruric Thar, Biomagus','Tenured Concocter');owner='P0' if valiant else 'P1';p=0 if valiant else 1
             lands=['Plains']*10+['Island']*10+['Mountain']*10+['Forest']*10
             decks=[lands+[wanted]*12+['Giant Growth']*8,['Forest']*48+['Bear Cub']*12] if valiant else [['Forest']*48+['Giant Growth']*12,lands+['Forest']*8+[wanted]*12]
             with self.subTest(card=wanted),Game(decks,seed=7,deck_rules='Freeform') as game:
