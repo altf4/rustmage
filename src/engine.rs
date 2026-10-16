@@ -3531,3 +3531,7 @@ mod power_blocking_tests;
 #[cfg(test)]
 #[path = "engine_self_target_tests.rs"]
 mod self_target_tests;
+
+#[cfg(test)]
+#[path = "engine_life_gain_condition_tests.rs"]
+mod life_gain_condition_tests;

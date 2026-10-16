@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "6333afb39123174e776ef61f05ab7e25c71ca0c950d79712426a4abfa4a9e789",
+  "catalogue_version": "cfdbad1eeca9d474d627b67b67423bbf364cf70b9710c8381b7352f5207f7f57",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1130,
-  "implemented_total": 1136,
+  "implemented_standard_cards": 1143,
+  "implemented_total": 1149,
   "token_definitions": 49,
   "emblem_definitions": 1,
   "cards": [
@@ -892,8 +892,8 @@
     {
       "name": "Ambush Gigapede",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Ambush Wolf",
@@ -3598,8 +3598,8 @@
     {
       "name": "Burrog Befuddler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Burrowguard Mentor",
@@ -4756,8 +4756,8 @@
     {
       "name": "Cogwork Wrestler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Coiling Rebirth",
@@ -7630,8 +7630,8 @@
     {
       "name": "Efflorescence",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Effortless Master",
@@ -9802,8 +9802,8 @@
     {
       "name": "Front Porch Sentries",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Frontier Bivouac",
@@ -11284,8 +11284,8 @@
     {
       "name": "Grim Bauble",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Grim Javelineer",
@@ -12598,8 +12598,8 @@
     {
       "name": "Humbling Elder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Hundred-Battle Veteran",
@@ -18058,8 +18058,8 @@
     {
       "name": "Old-Growth Educator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Oltec Archaeologists",
@@ -19186,8 +19186,8 @@
     {
       "name": "Poisoner's Apprentice",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Political Triumph",
@@ -26314,8 +26314,8 @@
     {
       "name": "Tenured Concocter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Tenured Tethermage",
@@ -27262,8 +27262,8 @@
     {
       "name": "Thornfist Striker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Thornplate Intimidator",
@@ -28450,8 +28450,8 @@
     {
       "name": "Ulna Alley Shopkeep",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Ultima",
@@ -30610,8 +30610,8 @@
     {
       "name": "Withering Curse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Withering Torment",

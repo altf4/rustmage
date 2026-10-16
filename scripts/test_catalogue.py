@@ -14,6 +14,42 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_life_gain_history_guards_preserve_effect_timing_targets_and_branching(self):
+        self.assertEqual(generate.step_guard('you gained life this turn'),'StepGuard::GainedLife')
+        self.assertIsNone(generate.step_guard('an opponent gained life this turn'))
+        self.assertEqual(generate.statement_program('Draw a card if you gained life this turn.'),['If { guard: StepGuard::GainedLife, skip: 1 }','Draw(PlayerSet::Controller, 1)'])
+        got=generate.targeted_program('Target creature an opponent controls gets -4/-4 until end of turn if you gained life this turn.')
+        self.assertEqual(got,('CreatureOpponent',['If { guard: StepGuard::GainedLife, skip: 1 }','Grow { subject: Subject::Targets, power: -4, toughness: -4 }']))
+        prefix='Infusion — When this creature enters, '
+        body=generate.trigger_creature_template(self.card(oracle_text=prefix+'put two +1/+1 counters on it if you gained life this turn.'))
+        self.assertEqual(body[2][0][0],'SelfEnters');self.assertIn('If { guard: StepGuard::GainedLife',body[2][0][1][0])
+        self.assertIn('GainedLife',generate.trigger_creature_template(self.card(oracle_text='At the beginning of your end step, if you gained life this turn, draw a card.'))[2][0][0])
+        branch=generate.statement_program('All creatures get -2/-2 until end of turn. Infusion — If you gained life this turn, destroy all creatures instead.')
+        self.assertEqual(len(branch),4);self.assertIn('skip: 2',branch[0]);self.assertTrue(branch[1].startswith('MoveBattlefield'));self.assertEqual(branch[2],'Skip(1)');self.assertTrue(branch[3].startswith('GrowCreatures'))
+        for text in ['Draw a card if an opponent gained life this turn.','Draw a card if you gained life last turn.','Draw a card. Scry 1. If you gained life this turn, destroy all creatures instead.']:
+            self.assertIsNone(generate.statement_program(text),text)
+        self.assertIsNone(generate.trigger_creature_template(self.card(oracle_text='Whenever another creature enters, put two +1/+1 counters on it if you gained life this turn.')))
+
+    def test_thirteen_life_gain_and_opponent_debuff_bodies_remain_complete(self):
+        import json
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,coverage=generate.compile_catalogue(snapshot,target);supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        admitted=json.loads((generate.ROOT/'docs/life-gain-condition-admissions.json').read_text())['cards'];self.assertEqual(len(admitted),13)
+        for a in admitted:
+            c=next(c for c in snapshot['cards'] if c['name']==a['name']);self.assertEqual(c['oracle_text'],a['oracle_text']);self.assertIn(c['name'],supported)
+            changed=dict(c,oracle_text=c['oracle_text']+'\nDiscover 4.')
+            self.assertIsNone(generate.permanent_program_template(changed));self.assertIsNone(generate.trigger_creature_template(changed));self.assertIsNone(generate.static_permanent_template(changed))
+            proxy,base,scales=generate.extract_stat_rules(changed);self.assertIsNone(generate.trigger_creature_template(proxy));self.assertIsNone(generate.permanent_program_template(proxy))
+        own=generate.extract_stat_rules(self.card(oracle_text='Infusion — This creature gets +2/+0 as long as you gained life this turn.'))
+        self.assertIn('LifeGainOccurredThisTurn',own[2][0])
+        global_=generate.static_permanent_template(self.card(oracle_text='Infusion — Creatures you control get +1/+0 and have trample as long as you gained life this turn.'))
+        self.assertIn('requires_life_gain: true',global_[5][0]);self.assertIn('requires_life_gain: true',global_[6][0])
+        for text in ['This creature gets +2/+0 as long as an opponent gained life this turn.','Creatures you control get +1/+0 as long as you gained life last turn.']:
+            self.assertIsNone(generate.static_permanent_template(self.card(oracle_text=text)))
+            self.assertEqual(generate.extract_stat_rules(self.card(oracle_text=text))[2],[])
+        for name in ['Lumaret\'s Favor','Enlightened Confidant','Follow the Lumarets','Foolish Fate','Lunar Convocation','Moseo, Vein\'s New Dean','Ragost, Deft Gastronaut','Tragedy Feaster']:
+            self.assertNotIn(name,supported)
+
     def test_self_target_events_keep_controller_kind_first_event_and_pronouns_exact(self):
         for noun,spells_only in [('a spell or ability',False),('a spell',True)]:
             for who,relation in [(' you control','You'),(' an opponent controls','Opponent'),('','Any')]:
@@ -45,7 +81,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIsNone(generate.permanent_program_template(changed));self.assertIsNone(generate.trigger_creature_template(changed));self.assertIsNone(generate.creature_template(changed))
         cactus=next(c for c in snapshot['cards'] if c['name']=='Cactarantula');_,rules=generate.extract_cost_reductions(cactus)
         self.assertEqual(len(rules),1);self.assertIn('subtype: Some("Desert")',rules[0]);self.assertIn('source_only: true',rules[0])
-        for name in ['Altanak, the Thrice-Called','Tenured Concocter','Pawpatch Recruit','Surrak, Elusive Hunter','Emberheart Challenger','Flowerfoot Swordmaster','Whiskervale Forerunner']:
+        for name in ['Altanak, the Thrice-Called','Pawpatch Recruit','Surrak, Elusive Hunter','Emberheart Challenger','Flowerfoot Swordmaster','Whiskervale Forerunner']:
             self.assertNotIn(name,supported)
 
     def test_power_blocking_flags_and_temporary_grants_keep_skulk_distinct(self):
@@ -812,7 +848,7 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Fuel the Flames','Fumigate','Pest Control','Pyroclasm','Ruinous Rampage',
                      'Seismic Rupture','Slagstorm','Split Up','Tectonic Hazard']:
             self.assertIn(name,supported,name)
-        for name in ['No Witnesses','Withering Curse',
+        for name in ['No Witnesses',
                      'Kindred Judgment','Villainous Wrath','Expel the Interlopers','Settle the Wreckage',
                      'Spectacular Pileup','Singularity Rupture','Desolation of Smaug']:
             self.assertNotIn(name,supported,name)
@@ -1644,7 +1680,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             result=generate.trigger_creature_template(self.card(oracle_text=text))
             self.assertIn(generate.step_guard(guard),result[2][0][0])
         for text in [
-            'At the beginning of your end step, if you gained life this turn, draw a card.',
+            'At the beginning of your end step, if an opponent gained life this turn, draw a card.',
             'At the beginning of your end step, if you control two or more tapped creatures and a Dragon, draw a card.',
             'At the beginning of your upkeep, draw a card if you control a Dragon.',
             'At the beginning of your upkeep, if you have 40 or more life, you win the game.',

@@ -1,0 +1,193 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Ambush Gigapede",
+      "oracle_text": "Flash\nWhen this creature enters, target creature an opponent controls gets -2/-2 until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AmbushGigapede.java",
+          "java_sha256": "8f793ca95edfd7dae6468b5d2e3b9a797f193407120ac012205ddef8a7632778"
+        }
+      ]
+    },
+    {
+      "name": "Burrog Befuddler",
+      "oracle_text": "Flash (You may cast this spell any time you could cast an instant.)\nWhen this creature enters, target creature an opponent controls gets -1/-0 until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BurrogBefuddler.java",
+          "java_sha256": "c995200cc131535d68154bcc32d4b641e7382ac64c0515c62df62690f43e4de8"
+        }
+      ]
+    },
+    {
+      "name": "Cogwork Wrestler",
+      "oracle_text": "Flash\nWhen this creature enters, target creature an opponent controls gets -2/-0 until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CogworkWrestler.java",
+          "java_sha256": "2de347cfbfab73cef0c4918c24310a89ea5670d8db3a903c095d584812289857"
+        }
+      ]
+    },
+    {
+      "name": "Efflorescence",
+      "oracle_text": "Put two +1/+1 counters on target creature.\nInfusion \u2014 If you gained life this turn, that creature also gains trample and indestructible until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/Efflorescence.java",
+          "java_sha256": "0715239fdfcd236fca4a4d0ad0bcaa0a1a1d037a66d30781f3d2504a90c083f7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/YouGainedLifeCondition.java",
+          "java_sha256": "06cb6119ec0f7d00b3abe52e2b8df92be8c337fe2ce31ca0d213e9d04fbb89d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/watchers/common/PlayerGainedLifeWatcher.java",
+          "java_sha256": "675bf357c7d4ac2070d458899c0ff10c5dac7a6301b3ebd9e904b499453cc4b5"
+        }
+      ]
+    },
+    {
+      "name": "Front Porch Sentries",
+      "oracle_text": "When this creature dies, target creature an opponent controls gets -1/-1 until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FrontPorchSentries.java",
+          "java_sha256": "a804073ddcbe82993462bf5e5cafe8743876e2b0e1d1b6d3232a23024962e4f4"
+        }
+      ]
+    },
+    {
+      "name": "Grim Bauble",
+      "oracle_text": "When this artifact enters, target creature an opponent controls gets -2/-2 until end of turn.\n{2}{B}, {T}, Sacrifice this artifact: Surveil 2. (Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GrimBauble.java",
+          "java_sha256": "09b1f4130192585da886d7b44b6ef5e6530e576a91614fe49e45f35b3372def1"
+        }
+      ]
+    },
+    {
+      "name": "Humbling Elder",
+      "oracle_text": "Flash\nWhen this creature enters, target creature an opponent controls gets -2/-0 until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HumblingElder.java",
+          "java_sha256": "68e23fd64c48123ff317716048dfbae53793bd6ab7b7128dc62d6ec4e6d82760"
+        }
+      ]
+    },
+    {
+      "name": "Old-Growth Educator",
+      "oracle_text": "Reach, vigilance\nInfusion \u2014 When this creature enters, put two +1/+1 counters on it if you gained life this turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/o/OldGrowthEducator.java",
+          "java_sha256": "832d9fa23302a0ba4a723bd94ecceb011e5c613a948ca01027077852d585ed4f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/YouGainedLifeCondition.java",
+          "java_sha256": "06cb6119ec0f7d00b3abe52e2b8df92be8c337fe2ce31ca0d213e9d04fbb89d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/watchers/common/PlayerGainedLifeWatcher.java",
+          "java_sha256": "675bf357c7d4ac2070d458899c0ff10c5dac7a6301b3ebd9e904b499453cc4b5"
+        }
+      ]
+    },
+    {
+      "name": "Poisoner's Apprentice",
+      "oracle_text": "Infusion \u2014 When this creature enters, target creature an opponent controls gets -4/-4 until end of turn if you gained life this turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PoisonersApprentice.java",
+          "java_sha256": "411168f9a34bc50c7c5cb8fa48406caf0f07e2f3b0c536922137b568f7238fbc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/YouGainedLifeCondition.java",
+          "java_sha256": "06cb6119ec0f7d00b3abe52e2b8df92be8c337fe2ce31ca0d213e9d04fbb89d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/watchers/common/PlayerGainedLifeWatcher.java",
+          "java_sha256": "675bf357c7d4ac2070d458899c0ff10c5dac7a6301b3ebd9e904b499453cc4b5"
+        }
+      ]
+    },
+    {
+      "name": "Tenured Concocter",
+      "oracle_text": "Vigilance\nWhenever this creature becomes the target of a spell or ability an opponent controls, you may draw a card.\nInfusion \u2014 This creature gets +2/+0 as long as you gained life this turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TenuredConcocter.java",
+          "java_sha256": "0d15ab996973cc19e32157d1760a919f432f28252e2ad9a157ae3790979fb900"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/YouGainedLifeCondition.java",
+          "java_sha256": "06cb6119ec0f7d00b3abe52e2b8df92be8c337fe2ce31ca0d213e9d04fbb89d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/watchers/common/PlayerGainedLifeWatcher.java",
+          "java_sha256": "675bf357c7d4ac2070d458899c0ff10c5dac7a6301b3ebd9e904b499453cc4b5"
+        }
+      ]
+    },
+    {
+      "name": "Thornfist Striker",
+      "oracle_text": "Ward {1} (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {1}.)\nInfusion \u2014 Creatures you control get +1/+0 and have trample as long as you gained life this turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/ThornfistStriker.java",
+          "java_sha256": "20bf1342043abff6d09e063d12020df586e19b53cd8fbcec514ce97a4ffa670d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/YouGainedLifeCondition.java",
+          "java_sha256": "06cb6119ec0f7d00b3abe52e2b8df92be8c337fe2ce31ca0d213e9d04fbb89d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/watchers/common/PlayerGainedLifeWatcher.java",
+          "java_sha256": "675bf357c7d4ac2070d458899c0ff10c5dac7a6301b3ebd9e904b499453cc4b5"
+        }
+      ]
+    },
+    {
+      "name": "Ulna Alley Shopkeep",
+      "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)\nInfusion \u2014 This creature gets +2/+0 as long as you gained life this turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/u/UlnaAlleyShopkeep.java",
+          "java_sha256": "80b3c71f6bf53478d00a88c4704d3c1231c1ae9c6233cab6c74fab3f8fd65b99"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/YouGainedLifeCondition.java",
+          "java_sha256": "06cb6119ec0f7d00b3abe52e2b8df92be8c337fe2ce31ca0d213e9d04fbb89d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/watchers/common/PlayerGainedLifeWatcher.java",
+          "java_sha256": "675bf357c7d4ac2070d458899c0ff10c5dac7a6301b3ebd9e904b499453cc4b5"
+        }
+      ]
+    },
+    {
+      "name": "Withering Curse",
+      "oracle_text": "All creatures get -2/-2 until end of turn.\nInfusion \u2014 If you gained life this turn, destroy all creatures instead.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WitheringCurse.java",
+          "java_sha256": "c4032e2476b88407eab8dc26d04b18124941fe425fd83597f1758ebb4a44c3de"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/YouGainedLifeCondition.java",
+          "java_sha256": "06cb6119ec0f7d00b3abe52e2b8df92be8c337fe2ce31ca0d213e9d04fbb89d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/watchers/common/PlayerGainedLifeWatcher.java",
+          "java_sha256": "675bf357c7d4ac2070d458899c0ff10c5dac7a6301b3ebd9e904b499453cc4b5"
+        }
+      ]
+    }
+  ]
+}

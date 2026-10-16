@@ -30,6 +30,9 @@ impl Game {
     }
     pub(super) fn stat_value(&self, value: StatValue, source: ObjectRef, owner: Player) -> i128 {
         match value {
+            StatValue::LifeGainOccurredThisTurn => {
+                i128::from(self.state.players[owner.index()].life_gained_this_turn > 0)
+            }
             StatValue::ControllerLife => self.state.players[owner.index()].life,
             StatValue::Colors(filter) | StatValue::CardTypes(filter) => {
                 self.state

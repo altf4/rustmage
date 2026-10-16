@@ -477,6 +477,7 @@ pub(crate) enum AmountValue {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StatValue {
+    LifeGainOccurredThisTurn,
     ControllerLife,
     Count(CountFilter),
     GreatestManaValue(CountFilter),
@@ -542,6 +543,7 @@ impl CreatureFilter {
 /// removal/prohibition remain unsupported; no recursive dependency solver is implied.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct KeywordGrant {
+    pub requires_life_gain: bool,
     pub filter: CreatureFilter,
     pub source_only: bool,
     pub own_turn: bool,
@@ -571,6 +573,7 @@ impl KeywordGrant {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct StaticModifier {
+    pub requires_life_gain: bool,
     pub filter: CreatureFilter,
     pub stats: Stats,
 }
@@ -757,6 +760,7 @@ pub(crate) enum StepGuard {
     Attacked,
     CreatureDied,
     OpponentLostLife,
+    GainedLife,
     SourceTapped,
     Expression {
         value: StatValue,

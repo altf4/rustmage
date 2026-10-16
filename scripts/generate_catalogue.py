@@ -511,6 +511,11 @@ def extract_stat_rules(card):
             expr=lambda add:f'Some(StatExpr {{ value: {parsed}, multiplier: {multiplier}, offset: {add} }})'
             base=f'DynamicStats {{ power: {expr(0)}, toughness: {expr(offset) if axes!="power is" else "None"} }}'
             continue
+        conditional=strip_rule_label(line)
+        if m:=re.fullmatch(r'This creature gets ([+-][0-9]+)/([+-][0-9]+) as long as you gained life this turn\.',conditional):
+            if 'Creature' not in types or max(abs(int(m[1])),abs(int(m[2])))>32767:body.append(original);continue
+            scales.append(f'ScalingModifier {{ subject: Subject::Source, value: StatValue::LifeGainOccurredThisTurn, stats: Stats {{ power: {int(m[1])}, toughness: {int(m[2])} }} }}')
+            continue
         m=re.fullmatch(r'(This creature|Enchanted creature|Equipped creature) gets ([+-][0-9]+)/([+-][0-9]+) for each (.+?)(?: and has (.+))?\.',line)
         if m:
             subject,power,toughness,value,keywords=m.groups()
@@ -538,7 +543,7 @@ def static_permanent_template(card):
     name=card.get('name','')
     names=[name] if name else []
     if name and card.get('type_line','').startswith('Legendary '): names.append(name.split(',')[0])
-    def grant(subject,words,own_turn):
+    def grant(subject,words,own_turn,requires_life_gain=False):
         source_only=subject.casefold()=='this creature'
         if source_only and 'Creature' not in card.get('type_line','').split(' — ')[0].split(): return None
         filt=creature_filter('creatures you control' if source_only else subject)
@@ -546,9 +551,12 @@ def static_permanent_template(card):
         # Positive grants commute only when recipient selection does not depend
         # on another layer-6 ability. Dependency/removal machinery stays gated.
         if filt is None or keywords is None or 'keyword: Keywords(0)' not in filt: return None
-        return f'KeywordGrant {{ filter: {filt}, source_only: {str(source_only).lower()}, own_turn: {str(own_turn).lower()}, keywords: Keywords({keywords}) }}'
+        return f'KeywordGrant {{ requires_life_gain: {str(requires_life_gain).lower()}, filter: {filt}, source_only: {str(source_only).lower()}, own_turn: {str(own_turn).lower()}, keywords: Keywords({keywords}) }}'
     for original in re.sub(r'\([^()]*\)', '', card['oracle_text']).strip().split('\n'):
         line=original.strip()
+        line=strip_rule_label(line)
+        requires_life_gain=line.endswith(' as long as you gained life this turn.')
+        if requires_life_gain:line=line[:-len(' as long as you gained life this turn.')]+'.'
         own_turn=line.startswith('During your turn, ')
         if own_turn: line=line[len('During your turn, '):]
         for alias in names:
@@ -559,12 +567,12 @@ def static_permanent_template(card):
             filt = creature_filter(m[1])
             if filt is None or max(abs(int(m[2])), abs(int(m[3]))) > 32767: return None
             if m[4]:
-                extra=grant(m[1],m[4],False)
+                extra=grant(m[1],m[4],False,requires_life_gain)
                 if extra is None: return None
                 grants.append(extra)
-            modifiers.append(f'StaticModifier {{ filter: {filt}, stats: Stats {{ power: {int(m[2])}, toughness: {int(m[3])} }} }}')
+            modifiers.append(f'StaticModifier {{ requires_life_gain: {str(requires_life_gain).lower()}, filter: {filt}, stats: Stats {{ power: {int(m[2])}, toughness: {int(m[3])} }} }}')
         elif m:=re.fullmatch(r'(.+) (?:have|has) (.+)\.',line):
-            extra=grant(m[1],m[2],own_turn)
+            extra=grant(m[1],m[2],own_turn,requires_life_gain)
             if extra is None: return None
             grants.append(extra)
         else: body.append(original)
@@ -608,7 +616,7 @@ def normalize_duration(text):
     return text
 
 
-RULE_LABELS = ('Delirium — ', 'Threshold — ', 'Descend 4 — ', 'Descend 8 — ', 'Ferocious — ')
+RULE_LABELS = ('Infusion — ', 'Delirium — ', 'Threshold — ', 'Descend 4 — ', 'Descend 8 — ', 'Ferocious — ')
 
 def strip_rule_label(text):
     for label in RULE_LABELS:
@@ -678,7 +686,7 @@ def unchecked_focused_creature_program(text):
     if not text:return None
     text=text[0].lower()+text[1:]
     if result:=guarded_program(text,focused_creature_program):return result
-    if m:=re.fullmatch(r'(?:it|that creature) (.+)',text):
+    if m:=re.fullmatch(r'(?:it|that creature) (?:also )?(.+)',text):
         if grow:=re.fullmatch(r'gets ([+-][0-9]+)/([+-][0-9]+) until end of turn\.',m[1]):
             p,t=map(int,grow.groups())
             return [grow_instruction('Targets',p,t)] if max(abs(p),abs(t))<=32767 else None
@@ -906,6 +914,17 @@ def statement_program(text):
         # On raid, execute the forward skip; otherwise bypass it and discard.
         return ['Draw(PlayerSet::Controller, 2)', 'If { guard: StepGuard::Attacked, skip: 1 }',
                 'Skip(1)', 'Discard(PlayerSet::Controller, 1)']
+    if m:=re.fullmatch(r'([^.]+) if you gained life this turn\.',text):
+        program=statement_program(m[1]+'.')
+        return [f'If {{ guard: StepGuard::GainedLife, skip: {len(program)} }}',*program] if program and not any('AddMana(' in p for p in program) else None
+    first,tail=split_sentence(text)
+    tail=strip_rule_label(tail)
+    if tail and (clause:=guarded_clause(tail[0].lower()+tail[1:])):
+        guard,alternative=clause
+        if alternative.endswith(' instead.'):
+            normal=statement_program(first);other=statement_program(alternative.removesuffix(' instead.')+'.')
+            if normal and other and not any('AddMana(' in p for p in normal+other):
+                return [f'If {{ guard: {guard}, skip: {len(other)+1} }}',*other,f'Skip({len(normal)})',*normal]
     if program:=guarded_program(text,statement_program):return program
     if m:=re.fullmatch(r'(?:you )?draw (?:cards equal to (.+)|X cards, where X is (.+))\.',text):
         value=amount_value(m[1] or m[2])
@@ -1272,6 +1291,9 @@ def targeted_program(text):
         return None
     text = strip_rule_label(text)
     text = normalize_duration(text[0].lower() + text[1:])
+    if m:=re.fullmatch(r'([^.]+) if you gained life this turn\.',text):
+        result=targeted_program(m[1]+'.')
+        return (result[0],[f'If {{ guard: StepGuard::GainedLife, skip: {len(result[1])} }}',*result[1]]) if result else None
     if m:=re.fullmatch(r'(target creature|target creature you control|another target creature you control) gets ([+-])X/([+-])X until end of turn, where X is (.+)\.',text):
         value=amount_value(m[4])
         target={'target creature':'Creature','target creature you control':'CreatureYou','another target creature you control':'OtherCreatureYou'}[m[1]]
@@ -1322,10 +1344,10 @@ def targeted_program(text):
         if sacrifice[0] != 'None': return sacrifice
     if result := power_damage_program(text): return result
     if m := re.fullmatch(r'(another target creature you control|target creature you control|target creature) (.+)', text):
-        rule = {'target creature': 'Creature', 'target creature you control': 'CreatureYou', 'another target creature you control': 'OtherCreatureYou'}[m[1]]
+        rule = {'target creature': 'Creature', 'target creature you control': 'CreatureYou', 'another target creature you control': 'OtherCreatureYou', 'target creature an opponent controls':'CreatureOpponent'}[m[1]]
         if program := keyword_effect(m[2], 'Targets'): return rule, program
     if m := re.fullmatch(r'(another target creature you control|target creature you control|target creature) (.+)', text):
-        rule = {'target creature': 'Creature', 'target creature you control': 'CreatureYou', 'another target creature you control': 'OtherCreatureYou'}[m[1]]
+        rule = {'target creature': 'Creature', 'target creature you control': 'CreatureYou', 'another target creature you control': 'OtherCreatureYou', 'target creature an opponent controls':'CreatureOpponent'}[m[1]]
         if m[2] == "can't be blocked this turn.":
             return rule, ['GrantKeywords { subject: Subject::Targets, keywords: Keywords(16384) }']
         if m[2].endswith(" and can't be blocked this turn."):
@@ -1416,9 +1438,9 @@ def targeted_program(text):
     if m := re.fullmatch(r'this (?:creature|artifact|enchantment|permanent|spell) deals ([0-9]+) damage to (any target|target creature or planeswalker|target creature|target opponent|target player)\.', text):
         if int(m[1]) > 32767: return None
         return {'any target': 'Any', 'target creature': 'Creature', 'target creature or planeswalker': 'CreaturePlaneswalker', 'target opponent': 'Opponent', 'target player': 'Player'}[m[2]], [f'Damage({int(m[1])})']
-    if m := re.fullmatch(r'(target creature|target creature you control|another target creature you control) gets ([+-][0-9]+)/([+-][0-9]+) until end of turn\.', text):
+    if m := re.fullmatch(r'(target creature|target creature you control|another target creature you control|target creature an opponent controls) gets ([+-][0-9]+)/([+-][0-9]+) until end of turn\.', text):
         if max(abs(int(m[2])), abs(int(m[3]))) > 32767: return None
-        rule = {'target creature': 'Creature', 'target creature you control': 'CreatureYou', 'another target creature you control': 'OtherCreatureYou'}[m[1]]
+        rule = {'target creature': 'Creature', 'target creature you control': 'CreatureYou', 'another target creature you control': 'OtherCreatureYou', 'target creature an opponent controls':'CreatureOpponent'}[m[1]]
         return rule, [grow_instruction('Targets', int(m[2]), int(m[3]))]
     # A targeted clause followed by wholly non-targeted instructions is supported.
     if '. ' in text:
@@ -1466,6 +1488,7 @@ def cast_condition(relation='You', filter_='Any', ordinal=None):
 
 
 def step_guard(text):
+    if text == 'you gained life this turn': return 'StepGuard::GainedLife'
     if text == 'you attacked this turn': return 'StepGuard::Attacked'
     if text == 'a creature died this turn': return 'StepGuard::CreatureDied'
     if text == 'an opponent lost life this turn': return 'StepGuard::OpponentLostLife'
@@ -1773,6 +1796,8 @@ def trigger_creature_template(card):
                     effect_text = re.sub(r'^(?:[Ii]t|[Hh]e|[Ss]he) deals ', 'this creature deals ', effect_text)
                     if m:=re.fullmatch(r'(?:it|he|she) connives(?: ([0-9]+))?\.',effect_text):
                         effect_text='this creature connives'+(' '+m[1] if m[1] else '')+'.'
+                if condition in ('SelfEnters','SelfAttacks','SelfEntersOrAttacks') and re.fullmatch(r'[Pp]ut (?:a|one|two|three|four|five|six) (?:\+1/\+1|-1/-1|stun) counters? on it if you gained life this turn\.',effect_text):
+                    effect_text=effect_text.replace(' on it if ',' on this creature if ')
                 if condition.startswith('SelfTargeted {'):
                     # Initial growth and a whole counter sentence have this
                     # self-event as their sole antecedent. Do not bind later it.

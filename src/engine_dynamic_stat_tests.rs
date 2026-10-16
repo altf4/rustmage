@@ -337,7 +337,7 @@ fn all_scaling_sources_are_indexed_and_round_trip_source_removal() {
     let cards: Vec<_> = Card::catalogue()
         .filter(|c| !c.scaling_modifiers().is_empty())
         .collect();
-    assert_eq!(cards.len(), 8);
+    assert_eq!(cards.len(), 10);
     for card in cards {
         let id = spawn(&mut g, Player::P0, card, Zone::Hand);
         assert!(!g.state.static_sources.contains(&id));

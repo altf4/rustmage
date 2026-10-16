@@ -5,12 +5,12 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,130 have executable rules so far.
+knows all 5,164 pinned Standard identities; 1,143 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
-The latest [self-target events and Valiant](docs/self-target-events.md) add eight complete
-bodies with exact target timing, per-turn identity and private choices under schema 48. Full Standard rules remain in progress.
+The latest [life-gain conditions](docs/life-gain-conditions.md) add thirteen complete
+bodies with exact continuous and resolution-time checks under schema 48. Full Standard rules remain in progress.
 
 ## Build and use
 
@@ -74,6 +74,7 @@ cargo run --release --example standard_hybrid_activations -- 100
 cargo run --release --example standard_activation_discard -- 100
 cargo run --release --example standard_discard_history -- 100
 cargo run --release --example standard_own_turn -- 100
+cargo run --release --example standard_life_gain_conditions -- 100
 cargo run --release --example standard_self_target -- 100
 cargo run --release --example standard_power_blocking -- 100
 cargo run --release --example standard_tokens -- 100
