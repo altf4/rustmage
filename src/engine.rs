@@ -3559,3 +3559,7 @@ mod exhaust_tests;
 #[cfg(test)]
 #[path = "engine_tapped_entry_tests.rs"]
 mod tapped_entry_tests;
+
+#[cfg(test)]
+#[path = "engine_activation_sacrifice_tests.rs"]
+mod activation_sacrifice_tests;

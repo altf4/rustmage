@@ -9,6 +9,50 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def reach_activation_sacrifice_payment(self,game,wanted):
+        for _ in range(15000):
+            obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor']);root=obs['announcing']
+            if obs['decision']=='pay_costs' and root['source_card']==wanted and obs['additional_cost'] is not None and any(a['kind']=='PayCosts' for a in obs['actions']):return obs
+            objects={o['id']:o for o in obs['objects']};sources=[o for o in objects.values() if o['card']==wanted and o['owner']=='P0' and o['zone']=='Battlefield'];bears=[o for o in objects.values() if o['card']=='Grizzly Bears' and o['owner']=='P0' and o['zone']=='Battlefield'];grave=any(o['card']=='Grizzly Bears' and o['owner']=='P0' and o['zone']=='Graveyard' for o in objects.values())
+            def score(a):
+                k=a['kind']
+                if k=='PlayLand' and objects[a['card']]['card']==wanted:return 200 if not sources else -100
+                if k in ('Cast','AnnounceCast'):
+                    name=objects[a['card']]['card']
+                    if obs['actor']=='P1':return 200 if wanted=='Cauldron of Essence' and bears and not grave and (k=='AnnounceCast' or a['target'].get('Card')==bears[0]['id']) else -100
+                    if name==wanted:return 180 if not sources else -100
+                    return 100 if name in ('Grizzly Bears','Sweettooth Witch') else -100
+                if k=='AnnounceActivate':return 220 if sources and a['card']==sources[0]['id'] and a['ability']==(1 if wanted=='Fountainport' else 0) else -100
+                if k in ('Activate','ActivateMana','BeginActivate','AnnounceMana'):return -100
+                if k=='ChooseAdditionalCost':return 230 if wanted=="Kingpin's Enforcers" and sources and a['object']==sources[0]['reference'] else 200
+                if k=='ChooseTarget':
+                    if obs['actor']=='P1':return 200 if bears and a['target'].get('Card')==bears[0]['id'] else -100
+                    if wanted=='Cauldron of Essence' and root and root['source_card']==wanted:return 200 if 'Card' in a['target'] and objects[a['target']['Card']]['zone']=='Graveyard' else -100
+                    return 180 if a['target'].get('Player')=='P1' else -100
+                if k=='TapMana':return 140 if obs['decision']=='pay_costs' else -100
+                return self.professor_score(obs,a)
+            game.step(obs,max(range(len(obs['actions'])),key=lambda i:score(obs['actions'][i])))
+        self.fail('external sacrifice payment not reached')
+
+    def test_nineteen_sacrifice_activations_pay_exact_owned_resource_and_replay_native_bodies(self):
+        names=['Acolyte of Aclazotz','Ahriman','Cauldron of Essence','Fountainport','Hardened Tactician','Hungry Ghoul',"Kingpin's Enforcers",'Legion Extruder','Marwyn, the Clearcutter','Ripchain Razorkin','Seismic Monstrosaur','Slagdrill Scrapper','Sweettooth Witch','Umbral Collar Zealot','Unburied Earthcarver','Unrooted Ancestor','Vampiric Rites','Vanguard of the Rose',"Vito's Inquisitor"]
+        for wanted in names:
+            deck=['Plains']*6+['Swamp']*8+['Forest']*4+['Mountain']*6+[wanted]*12+['Grizzly Bears']*12+['Sweettooth Witch']*12
+            with self.subTest(card=wanted),Game([deck,['Mountain']*24+['Shock']*24+['Grizzly Bears']*12],seed=7,deck_rules='Freeform') as game:
+                obs=self.reach_activation_sacrifice_payment(game,wanted);root=obs['announcing'];selected=obs['additional_cost']['selected'];self.assertIsNotNone(selected);self.assertEqual(obs['additional_cost']['kind'],'Sacrifice');self.assertIsNone(game.observe('P1')['additional_cost'])
+                self.assertTrue(any(o['reference']==selected and o['zone']=='Battlefield' for o in obs['objects']));action=next(a for a in obs['actions'] if a['kind']=='PayCosts');saved=game.snapshot()
+                def finish(handle):
+                    paid=handle.act(handle.observe('P0'),action);self.assertFalse(any(o['reference']==selected and o['zone']=='Battlefield' for o in paid['objects']));self.assertEqual(paid['players'][0]['mana'],[n-c for n,c in zip(obs['players'][0]['mana'],action['payment'])])
+                    return self.finish_self_target(handle,'P0',root['id'])
+                with game.clone() as fork:expected=finish(fork)
+                after=finish(game);self.assertEqual(after,expected)
+                if wanted=="Kingpin's Enforcers":self.assertEqual(selected,root['object']);self.assertEqual(next(o for o in after['objects'] if o['id']==root['card'])['zone'],'Graveyard')
+                if wanted in ('Hungry Ghoul','Unburied Earthcarver',"Vito's Inquisitor"):
+                    body=next(o for o in after['objects'] if o['reference']==root['object']);self.assertEqual(body['counters']['plus_one'],1)
+                game.restore(saved)
+                with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,0)
+                again=finish(game);after['revision']=again['revision'];self.assertEqual(after,again);game.drop_snapshot(saved)
+
     def reach_tapped_creature_payment(self,game,wanted,opposing=False):
         for _ in range(12000):
             obs=game.observe('P0');self.assertIsNone(obs['outcome']);obs=game.observe(obs['actor'])

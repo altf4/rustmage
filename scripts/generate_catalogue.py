@@ -749,6 +749,7 @@ def sacrifice_spec(text):
     kinds={'creature':1,'artifact':16,'enchantment':32,'land':2,'permanent':0,
            'creature or planeswalker':65,'artifact or creature':17,'creature or artifact':17,
            'creature or enchantment':33,'enchantment or creature':33,
+           'artifact or land':18,'land or artifact':18,
            'artifact or enchantment':48,'enchantment or artifact':48}
     # Only entire homogeneous qualifiers are supported; e.g. 'artifact or creature
     # token' cannot use a union mask with a shared token restriction.
@@ -1947,6 +1948,7 @@ def modal_spell_template(card):
 def activation_cost(text):
     cost = dict(colored=[0] * 6, generic=0, alternatives=[], additional=None, mana_component=False, tap=False, sacrifice=False, life=0, remove=None, loyalty=None, guard="Always")
     seen = set()
+    external_sacrifice=False
     for component in text.split(', '):
         mana = spell_cost_options(component)
         if mana:
@@ -1964,6 +1966,10 @@ def activation_cost(text):
         elif component in ('Sacrifice this creature', 'Sacrifice this artifact', 'Sacrifice this enchantment', 'Sacrifice this permanent'):
             if cost['sacrifice']: return None
             cost['sacrifice'] = True
+        elif component.startswith('Sacrifice ') and (spec:=sacrifice_spec(component[len('Sacrifice '):])) is not None:
+            if cost['additional'] is not None or spec[0]!=1:return None
+            cost['additional']='AdditionalCost { kind: EffectChoiceKind::Sacrifice, filter: '+spec[1]+' }'
+            external_sacrifice=True
         elif m := re.fullmatch(r'Pay ([0-9]+) life', component):
             if cost['life'] or int(m[1]) > 65535: return None
             cost['life'] = int(m[1])
@@ -1974,6 +1980,7 @@ def activation_cost(text):
             return None
     # Wider composite costs need payment-order choices before admission.
     if cost['additional'] is not None and (cost['life'] or cost['remove'] or cost['loyalty'] is not None): return None
+    if external_sacrifice and cost['sacrifice']:return None
     return cost
 
 

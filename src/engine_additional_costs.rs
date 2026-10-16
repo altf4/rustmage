@@ -19,7 +19,11 @@ impl Game {
         let Some(o) = self.state.objects.get(object.card as usize) else {
             return false;
         };
-        if o.owner != actor || self.object_ref(object.card) != object || object == source {
+        if o.owner != actor
+            || self.object_ref(object.card) != object
+            || object == source && (spec.kind == EffectChoiceKind::Discard || spec.filter.other)
+            || spec.filter.source_only && object != source
+        {
             return false;
         }
         Self::additional_object_matches(spec, actor, o, self.keywords(object.card))

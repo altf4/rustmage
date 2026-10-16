@@ -8,6 +8,34 @@ spec.loader.exec_module(generate)
 
 
 class CatalogueCompilerTests(unittest.TestCase):
+    def test_external_sacrifice_activation_cost_filters_are_exact_and_mana_remains_gated(self):
+        for subject,kind,other,token in [('a creature',1,False,'None'),('another creature or artifact',17,True,'None'),
+                                       ('an artifact or land',18,False,'None'),('another artifact or land',18,True,'None'),
+                                       ('a land',2,False,'None'),('a token',0,False,'Some(true)'),('a Food',16,False,'None')]:
+            cost=generate.activation_cost('{2}, {T}, Sacrifice '+subject)
+            self.assertTrue(cost['tap']);self.assertFalse(cost['sacrifice']);self.assertIn('EffectChoiceKind::Sacrifice',cost['additional'])
+            self.assertIn(f'kinds: {kind}',cost['additional']);self.assertIn('other: '+str(other).lower(),cost['additional']);self.assertIn('tokens: '+token,cost['additional'])
+        for text in ['Sacrifice two creatures','Sacrifice thirteen creatures','Sacrifice a creature or token','Sacrifice a suspected creature',
+                     'Sacrifice another creature, Sacrifice this creature','Sacrifice this creature, Sacrifice another creature',
+                     'Sacrifice a creature, Pay 1 life','Sacrifice a creature, Remove a counter from this creature','Sacrifice a creature, Discard a card']:
+            self.assertIsNone(generate.activation_cost(text),text)
+        self.assertTrue(generate.activation_cost('Sacrifice this creature')['sacrifice'])
+        self.assertIsNone(generate.activation_cost('Sacrifice this creature')['additional'])
+        self.assertIsNone(generate.permanent_program_template(self.card(oracle_text='Sacrifice another creature: Add {G}.')))
+        self.assertIsNotNone(generate.permanent_program_template(self.card(oracle_text='{T}, Sacrifice a creature: Draw a card.')))
+
+    def test_nineteen_external_sacrifice_bodies_match_pinned_text_and_reject_residuals(self):
+        import json
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        rust,coverage=generate.compile_catalogue(snapshot,target);supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        rows=json.loads((generate.ROOT/'docs/activation-sacrifice-admissions.json').read_text())['cards'];self.assertEqual(len(rows),19)
+        for a in rows:
+            c=next(c for c in snapshot['cards'] if c['name']==a['name']);self.assertEqual(c['oracle_text'],a['oracle_text']);self.assertIn(c['name'],supported)
+            c=dict(c,oracle_text=c['oracle_text']+'\nDiscover 4.')
+            self.assertIsNone(generate.permanent_program_template(c));self.assertIsNone(generate.land_template(c))
+        for name in ['Ice Cream Kitty','Agency Coroner','Intruding Soulrager',"Bolg's Company",'Jolene, Plundering Pugilist','Technodrome','Memorial Vault','Quina, Qu Gourmet','Diversion Specialist','Sidisi, Regent of the Mire','Metalhead','Alquist Proft, Master Sleuth','Boneyard Desecrator','Rune-Brand Juggler']:
+            self.assertNotIn(name,supported)
+
     def test_creature_tapped_entry_extraction_is_exact_and_retains_counter_clause(self):
         cases=[('This creature enters tapped.','Always',''),("This creature enters tapped if it's not your turn.",'OpponentsTurn',''),
                ('This creature enters tapped with three stun counters on it. (Reminder.)','Always','This creature enters with three stun counters on it.')]
@@ -2295,7 +2323,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertEqual(generate.activation_cost('Remove a stun counter from this artifact')['remove'], ('Stun', 1))
         self.assertEqual(generate.activation_cost('{T}, Pay 2 life')['life'], 2)
         for line in ['{X}: Draw a card.', '{1}, Discard two cards: Draw a card.',
-                     '{1}, Sacrifice another creature: Draw a card.',
+                     '{1}, Sacrifice two creatures: Draw a card.',
                      '{1}: Draw a card. Activate only if you control a Hero with power 4 or greater.',
                      'Power-up — {1}: Draw a card.', '{1}: Add {U}. Draw a card.',
                      '{1}: Draw a card. Unknown instruction.',
