@@ -68,6 +68,7 @@ fn pick(g: &mut Game) {
             } => 0,
             Action::FinishTargets => 2,
             Action::Pass => 3,
+            Action::Concede => 10000,
             _ => 100,
         })
         .unwrap();
@@ -404,5 +405,332 @@ fn late_delayed_registration_failure_restores_complete_token_attack_entry_batch(
         assert_eq!(g.snapshot(), before);
         assert_eq!(g.revision(), rev);
         assert!(g.observe(p).delayed_sacrifices.is_empty());
+    }
+}
+
+#[test]
+fn real_combat_tokens_damage_each_chosen_defender_and_stop_attacking_before_sacrifice() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let s = paid(&mut g, p, "Dalkovan Packbeasts");
+        let a = named(
+            &mut g,
+            p.other(),
+            "Ajani, Caller of the Pride",
+            Zone::Battlefield,
+        );
+        let b = named(
+            &mut g,
+            p.other(),
+            "Professor Dellian Fel",
+            Zone::Battlefield,
+        );
+        for id in [a, b] {
+            g.state.objects[id as usize].counters.loyalty = 10;
+        }
+        attack(&mut g, s);
+        while !matches!(g.state.pending, Pending::Mobilize { .. }) {
+            pick(&mut g);
+        }
+        for d in [
+            CombatDefender::Player(p.other()),
+            CombatDefender::Planeswalker(g.object_ref(a)),
+            CombatDefender::Planeswalker(g.object_ref(b)),
+        ] {
+            replay(&mut g, Action::ChooseMobilizeDefender { defender: d });
+        }
+        let tokens = g.observe(p).delayed_sacrifices[0].tokens.clone();
+        replay(&mut g, Action::Pass);
+        replay(&mut g, Action::Pass);
+        assert!(matches!(g.state.pending, Pending::Blockers));
+        replay(&mut g, Action::FinishBlockers);
+        replay(&mut g, Action::Pass);
+        replay(&mut g, Action::Pass);
+        while !matches!(g.state.pending, Pending::Priority) {
+            pick(&mut g);
+        }
+        assert_eq!(g.state.players[p.other().index()].life, 19);
+        assert_eq!(g.object_view(a).counters.loyalty, 9);
+        assert_eq!(g.object_view(b).counters.loyalty, 9);
+        for _ in 0..8 {
+            if g.state.step == Step::Main2 {
+                break;
+            }
+            replay(&mut g, Action::Pass);
+        }
+        assert_eq!(g.state.step, Step::Main2);
+        assert!(tokens.iter().all(|r| !g.object_view(r.card).attacking));
+        assert_eq!(g.observe(p).delayed_sacrifices.len(), 1);
+        replay(&mut g, Action::Pass);
+        replay(&mut g, Action::Pass);
+        assert_eq!(g.state.step, Step::End);
+        assert!(tokens.iter().all(|r| g.on_battlefield(r.card)));
+        settle(&mut g);
+        assert!(
+            tokens
+                .iter()
+                .all(|r| g.object_view(r.card).zone == Zone::Outside)
+        );
+    }
+}
+#[test]
+fn departed_token_slots_never_rebind_and_each_creation_batch_owns_its_own_sacrifice() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let s = paid(&mut g, p, "Dalkovan Packbeasts");
+        attack(&mut g, s);
+        settle(&mut g);
+        let old = g.observe(p).delayed_sacrifices[0].tokens.clone();
+        let factory = g.state.objects[old[0].card as usize].card;
+        g.move_object(old[0].card, Zone::Graveyard);
+        g.state_based_actions();
+        assert_eq!(g.object_view(old[0].card).zone, Zone::Outside);
+        g.create_tokens(p, factory, 1, false);
+        let new = g.object_ref(old[0].card);
+        assert_ne!(new, old[0]);
+        assert!(!g.object_view(new.card).attacking);
+        to_end(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_ref(new.card), new);
+        assert!(g.on_battlefield(new.card));
+        assert!(
+            old[1..]
+                .iter()
+                .all(|r| g.object_view(r.card).zone == Zone::Outside)
+        );
+    }
+}
+#[test]
+fn multiple_batches_queue_once_in_controller_order_and_countering_one_keeps_only_its_tokens() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let a = paid(&mut g, p, "Dalkovan Packbeasts");
+        let b = paid(&mut g, p, "Dragonback Lancer");
+        for id in [a, b] {
+            g.state.objects[id as usize].summoning_sick = false;
+        }
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        replay(&mut g, Action::Attack { card: a });
+        replay(&mut g, Action::Attack { card: b });
+        replay(&mut g, Action::FinishAttackers);
+        settle(&mut g);
+        let batches = g.observe(p).delayed_sacrifices;
+        assert_eq!(batches.len(), 2);
+        assert_ne!(batches[0].id, batches[1].id);
+        to_end(&mut g);
+        assert!(g.observe(p).delayed_sacrifices.is_empty());
+        while matches!(g.state.pending, Pending::OrderTriggers { .. }) {
+            pick(&mut g);
+        }
+        assert_eq!(g.state.stack.len(), 2);
+        let canceled = g.state.stack.last().unwrap().clone();
+        let kept = canceled.delayed_sacrifice.as_ref().unwrap().tokens.clone();
+        assert!(g.counter_stack_item(canceled.id, false));
+        settle(&mut g);
+        assert!(
+            kept.iter()
+                .all(|r| g.object_ref(r.card) == *r && g.on_battlefield(r.card))
+        );
+        assert!(
+            batches
+                .iter()
+                .flat_map(|b| &b.tokens)
+                .filter(|r| !kept.contains(r))
+                .all(|r| g.object_view(r.card).zone == Zone::Outside)
+        );
+        g.begin_step(Step::End);
+        g.prepare_triggers();
+        assert!(g.state.stack.is_empty());
+    }
+}
+#[test]
+fn later_end_step_queue_and_second_sacrifice_failure_roll_back_only_current_action() {
+    for p in [Player::P0, Player::P1] {
+        for queue in [true, false] {
+            let mut g = setup(p);
+            let a = paid(&mut g, p, "Dalkovan Packbeasts");
+            attack(&mut g, a);
+            settle(&mut g);
+            if queue {
+                // A second separately owned batch, not a merged obligation.
+                let source = g.object_view(a);
+                let i = source
+                    .card
+                    .triggers()
+                    .iter()
+                    .position(|t| matches!(t.program, [Instruction::Mobilize { .. }]))
+                    .unwrap();
+                g.queue_trigger(&source, i);
+                settle(&mut g);
+                assert_eq!(g.observe(p).delayed_sacrifices.len(), 2);
+                g.state.step = Step::Main2;
+                g.state.pending = Pending::Priority;
+                g.state.priority = p;
+                g.state.passes = 0;
+                replay(&mut g, Action::Pass);
+                g.state.next_stack_id = u64::MAX - 1;
+            } else {
+                let r = g.state.delayed_sacrifices.as_ref().unwrap()[0].view.tokens[1];
+                g.state.objects[r.card as usize].generation = u64::MAX;
+                g.state.delayed_sacrifices.as_mut().unwrap()[0].view.tokens[1].generation =
+                    u64::MAX;
+                to_end(&mut g);
+                replay(&mut g, Action::Pass);
+            }
+            let before = g.snapshot();
+            let rev = g.revision();
+            let actor = g.actor().unwrap();
+            assert!(matches!(
+                g.apply(actor, Action::Pass),
+                Err(Error::CapacityExceeded(_))
+            ));
+            assert_eq!(g.snapshot(), before);
+            assert_eq!(g.revision(), rev);
+            assert_eq!(
+                g.state
+                    .objects
+                    .iter()
+                    .filter(|o| o.zone == Zone::Battlefield && o.card.is_token())
+                    .count(),
+                if queue { 6 } else { 3 }
+            );
+            assert_eq!(
+                g.observe(p).delayed_sacrifices.len(),
+                if queue { 2 } else { 0 }
+            );
+        }
+    }
+}
+#[test]
+fn partial_creation_nonland_history_overflow_restores_arena_attack_and_delayed_state() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let s = paid(&mut g, p, "Dalkovan Packbeasts");
+        attack(&mut g, s);
+        replay(&mut g, Action::Pass);
+        g.state.players[p.index()].nonland_permanents_entered_this_turn = u64::MAX - 1;
+        let before = g.snapshot();
+        let rev = g.revision();
+        assert!(matches!(
+            g.apply(p.other(), Action::Pass),
+            Err(Error::CapacityExceeded(_))
+        ));
+        assert_eq!(g.snapshot(), before);
+        assert_eq!(g.revision(), rev);
+        assert_eq!(g.state.attackers.len(), 1);
+        assert!(g.state.delayed_sacrifices.is_none());
+    }
+}
+#[test]
+fn stadium_pays_real_sacrifice_and_damage_counts_live_creatures_after_payment_and_responses() {
+    for p in [Player::P0, Player::P1] {
+        for remove_warrior in [false, true] {
+            let mut g = setup(p);
+            let source = paid(&mut g, p, "Stadium Headliner");
+            named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let target = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            g.state.objects[target as usize].growth.toughness = 20;
+            attack(&mut g, source);
+            settle(&mut g);
+            let r = g.observe(p).delayed_sacrifices[0].tokens[0];
+            replay(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: source,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            replay(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            while g.state.announcing.is_some() {
+                pick(&mut g);
+            }
+            assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+            if remove_warrior {
+                g.move_object(r.card, Zone::Graveyard);
+                g.state_based_actions();
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(target).damage,
+                if remove_warrior { 1 } else { 2 }
+            );
+            to_end(&mut g);
+            settle(&mut g);
+            assert!(g.observe(p).delayed_sacrifices.is_empty());
+        }
+    }
+}
+#[test]
+fn nightblade_actual_surveil_and_vanguard_characteristic_apply_outside_battlefield() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let before = g.state.players[p.index()].library.len();
+        paid(&mut g, p, "Nightblade Brigade");
+        assert_eq!(g.state.players[p.index()].library.len(), before - 1);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 0);
+        assert!(
+            g.state
+                .objects
+                .iter()
+                .any(|o| o.owner == p && o.zone == Zone::Graveyard && o.card == Card::Forest)
+        );
+        let source = named(&mut g, p, "Zurgo's Vanguard", Zone::Hand);
+        assert_eq!(g.object_view(source).power, 1);
+        g.move_object(source, Zone::Battlefield);
+        assert_eq!(g.object_view(source).power, 2);
+        attack(&mut g, source);
+        settle(&mut g);
+        assert_eq!(g.object_view(source).power, 3);
+        g.move_object(source, Zone::Graveyard);
+        assert_eq!(g.object_view(source).power, 2);
+        to_end(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(source).power, 1);
+    }
+}
+#[test]
+fn shock_brigade_requires_real_two_blockers_while_new_warrior_remains_unblocked() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let s = paid(&mut g, p, "Shock Brigade");
+        let a = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let b = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        attack(&mut g, s);
+        settle(&mut g);
+        replay(&mut g, Action::Pass);
+        replay(&mut g, Action::Pass);
+        replay(
+            &mut g,
+            Action::Block {
+                blocker: a,
+                attacker: s,
+            },
+        );
+        reject(&mut g, Action::FinishBlockers);
+        replay(
+            &mut g,
+            Action::Block {
+                blocker: b,
+                attacker: s,
+            },
+        );
+        replay(&mut g, Action::FinishBlockers);
+        for _ in 0..20 {
+            if g.state.step == Step::Main2 {
+                break;
+            }
+            pick(&mut g);
+        }
+        assert_eq!(g.state.players[p.other().index()].life, 19);
+        assert_eq!(g.object_view(s).zone, Zone::Graveyard);
+        to_end(&mut g);
+        settle(&mut g);
     }
 }
