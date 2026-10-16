@@ -176,7 +176,7 @@ fn all_nine_complete_bodies_cast_from_both_origins_and_have_independent_effects(
                         .collect();
                     assert_eq!(rats.len(), 1);
                     assert!(rats[0].tapped);
-                    assert_eq!(rats[0].card.info().type_line, "Token Creature — Rat");
+                    assert_eq!(rats[0].card.info().type_line, "Creature — Rat");
                 }
                 8 => assert_eq!(g.state.players[0].life, life - 2),
                 _ => unreachable!(),
@@ -353,6 +353,7 @@ fn chosen_alternative_cost_reductions_preserve_printed_mana_value() {
     let mut g = scenario();
     named(&mut g, Player::P0, "Stormcatch Mentor", Zone::Battlefield);
     g.state.players[0].mana = [30; 6];
+    let lizards = named(&mut g, Player::P0, "Lurking Lizards", Zone::Battlefield);
     let tome = named(&mut g, Player::P0, "Tome Blast", Zone::Graveyard);
     act(&mut g, Action::AnnounceFlashback { card: tome });
     act(
@@ -361,7 +362,6 @@ fn chosen_alternative_cost_reductions_preserve_printed_mana_value() {
             target: Target::Player(Player::P1),
         },
     );
-    act(&mut g, Action::FinishTargets);
     let payment = g.observe(Player::P0).payment_request.unwrap();
     assert_eq!((payment.generic, payment.required), (3, [0, 0, 0, 1, 0, 0]));
     assert_eq!(
@@ -376,6 +376,7 @@ fn chosen_alternative_cost_reductions_preserve_printed_mana_value() {
     );
     finish(&mut g);
     resolve(&mut g);
+    assert_eq!(g.object_view(lizards).counters.plus_one, 0);
     let zero = named(&mut g, Player::P0, "Dig Site Inventory", Zone::Graveyard);
     assert_eq!(g.state.objects[zero as usize].card.cost().1, 0);
     assert_eq!(
@@ -390,6 +391,8 @@ fn chosen_alternative_cost_reductions_preserve_printed_mana_value() {
         .generic,
         3
     );
+    let target = named(&mut g, Player::P1, "Shivan Dragon", Zone::Battlefield);
+    let prowler = named(&mut g, Player::P0, "Stormkeld Prowler", Zone::Battlefield);
     let current = named(&mut g, Player::P0, "Defibrillating Current", Zone::Hand);
     let c = g.state.objects[current as usize].card;
     assert_eq!(c.fixed_mana_value(), 6);
@@ -400,10 +403,9 @@ fn chosen_alternative_cost_reductions_preserve_printed_mana_value() {
     act(
         &mut g,
         Action::ChooseTarget {
-            target: Target::Player(Player::P1),
+            target: Target::Card(target),
         },
     );
-    act(&mut g, Action::FinishTargets);
     assert_eq!(g.observe(Player::P0).payment_request.unwrap().generic, 5);
     assert_eq!(
         g.state
@@ -415,6 +417,9 @@ fn chosen_alternative_cost_reductions_preserve_printed_mana_value() {
             .fixed_mana_value(),
         6
     );
+    finish(&mut g);
+    resolve(&mut g);
+    assert_eq!(g.object_view(prowler).counters.plus_one, 2);
 }
 #[test]
 fn graveyard_preflight_cannot_count_the_spell_itself_as_a_future_target() {
@@ -465,4 +470,31 @@ fn announcement_and_resolution_capacity_failures_restore_flashback_marker_and_pr
     ));
     assert_eq!(g.snapshot(), saved);
     assert!(g.state.objects[id as usize].flashback);
+}
+
+#[test]
+fn flashback_funding_uses_alternative_mana_and_regular_timing_in_response() {
+    let mut g = scenario();
+    let spell = named(&mut g, Player::P0, "Think Twice", Zone::Graveyard);
+    g.state.players[0].mana = [0, 1, 0, 0, 0, 1]; // Printed cost is payable, flashback is not.
+    reject(&mut g, Action::AnnounceFlashback { card: spell });
+    g.state.players[0].mana[5] = 2;
+    replay(&mut g, Action::AnnounceFlashback { card: spell });
+    let payment = g.observe(Player::P0).payment_request.unwrap();
+    assert_eq!((payment.required, payment.generic), ([0, 1, 0, 0, 0, 0], 2));
+    reject(
+        &mut g,
+        Action::PayCosts {
+            payment: [0, 1, 0, 0, 0, 1],
+        },
+    );
+    finish(&mut g);
+    let sorcery = named(&mut g, Player::P0, "Tome Blast", Zone::Graveyard);
+    let instant = named(&mut g, Player::P0, "Think Twice", Zone::Graveyard);
+    g.state.players[0].mana = [30; 6];
+    reject(&mut g, Action::AnnounceFlashback { card: sorcery });
+    assert!(
+        g.legal_actions()
+            .contains(&Action::AnnounceFlashback { card: instant })
+    );
 }

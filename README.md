@@ -5,11 +5,13 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,415 have executable rules so far.
+knows all 5,164 pinned Standard identities; 1,424 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
-The latest [contextual cast qualifications](docs/contextual-casts.md) add seventeen
+The latest [flashback casting](docs/flashback.md) adds nine complete bodies with
+explicit graveyard casting, alternative costs, all-departure exile and owned cast metadata.
+[Contextual cast qualifications](docs/contextual-casts.md) add seventeen
 complete bodies with exact target incarnations, Repartee, subtype unions and first-spell events.
 [Attack-declaration events](docs/attack-declaration-events.md) add fourteen
 complete bodies with aggregate events, attacking targets, live counts and both hybrid payments.

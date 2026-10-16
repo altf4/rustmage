@@ -1580,7 +1580,12 @@ impl Game {
                         }
                         _ => true,
                     };
-                    let reduction = if completable {
+                    let has_generic = if flashback {
+                        obj.card.flashback_cost().unwrap().generic > 0
+                    } else {
+                        obj.card.cost().1 > 0
+                    };
+                    let reduction = if completable && has_generic {
                         self.spell_reduction(actor, card)
                     } else {
                         0

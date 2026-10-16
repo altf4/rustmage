@@ -42,6 +42,30 @@ class CatalogueCompilerTests(unittest.TestCase):
         self.assertNotIn('Storyteller Pixie',supported)
         changed=dict(rows,cards=[dict(c,oracle_text=c['oracle_text']+'\nWhenever you cast a spell, discover 3.') if c['name'] in names else c for c in rows['cards']]);changed['cards_sha256']=hashlib.sha256(json.dumps(changed['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();_,cov=generate.compile_catalogue(changed,target);self.assertTrue(all(not c['implemented'] for c in cov['cards'] if c['name'] in names))
 
+    def test_flashback_fixed_mana_is_exact_and_does_not_swallow_extra_qualifications(self):
+        for suffix in ['', ' (You may cast this card from your graveyard for its flashback cost. Then exile it.)', ' (You may cast this card from your graveyard for its flashback cost and any additional costs. Then exile it.)']:
+            card=self.card(type_line='Instant',oracle_text='Draw a card.\nFlashback {2}{U}'+suffix)
+            residual,cost=generate.extract_flashback(card)
+            self.assertEqual(residual['oracle_text'],'Draw a card.');self.assertEqual(cost,'ManaCost { colored: [0, 1, 0, 0, 0, 0], generic: 2 }')
+        for line in ['Flashback {X}{U}','Flashback {U/P}','Flashback {2/U}','Flashback {2}{U}, discard a card.','Flashback {2}{U}. Activate only as a sorcery.','Flashback {2}{U} (Draw a card.)','Flashback {2}{U}\nFlashback {3}{U}']:
+            card=self.card(type_line='Instant',oracle_text='Draw a card.\n'+line);self.assertEqual(generate.extract_flashback(card),(card,None),line)
+        card=self.card(oracle_text='Flashback {2}{U}');self.assertEqual(generate.extract_flashback(card),(card,None))
+
+    def test_flashback_admits_exact_whole_bodies_and_hashes_alternative_costs(self):
+        import json,hashlib
+        manifest=json.loads((generate.ROOT/'docs/flashback-admissions.json').read_text());rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        rust,cov=generate.compile_catalogue(rows,target);accepted={c['name'] for c in cov['cards'] if c['implemented']};names={c['name'] for c in manifest['cards']}
+        self.assertEqual(len(names),9);self.assertTrue(names<=accepted)
+        flashback_rows=rust.split('pub(super) fn flashback_cost',1)[1].split('pub const CREATURE_TYPES',1)[0]
+        self.assertEqual(flashback_rows.count('=> Some(ManaCost {'),9)
+        for c in rows['cards']:
+            if c['name'] not in names:continue
+            residual,cost=generate.extract_flashback(c);residual,_=generate.extract_additional_cost(residual);self.assertIsNotNone(generate.spell_program_template(residual),c['name'])
+        altered=dict(rows,cards=[dict(c,oracle_text=c['oracle_text']+'\nThen discover 3.') if c['name'] in names else c for c in rows['cards']]);altered['cards_sha256']=hashlib.sha256(json.dumps(altered['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();_,bad=generate.compile_catalogue(altered,target);self.assertFalse(names&{c['name'] for c in bad['cards'] if c['implemented']})
+        # Identical executable body, different alternative mana requirement.
+        altered=dict(rows,cards=[dict(c,oracle_text=c['oracle_text'].replace('Flashback {2}{U}','Flashback {3}{U}')) if c['name']=='Think Twice' else c for c in rows['cards']]);altered['cards_sha256']=hashlib.sha256(json.dumps(altered['cards'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();new,newcov=generate.compile_catalogue(altered,target)
+        self.assertNotEqual(cov['catalogue_version'],newcov['catalogue_version']);self.assertNotEqual(rust,new);self.assertEqual(cov['implemented_standard_cards'],newcov['implemented_standard_cards'])
+
     def test_qualified_cast_headers_keep_closed_bounds_colors_and_event_turn(self):
         cases=[('you cast a spell with mana value 4 or greater','ManaValueMinimum','minimum: 4','CastRelation::You'),('an opponent casts a spell with mana value 2 or less','ManaValueMaximum','maximum: 2','CastRelation::Opponent'),('you cast a multicolored spell','Multicolored','','CastRelation::You')]
         for header,kind,bound,relation in cases:
@@ -1543,7 +1567,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
         rust,report=generate.compile_catalogue(rows,target);supported={r['name'] for r in report['cards'] if r['implemented']}
         for name in ['Aatchik, Emerald Radian','Ajani, Caller of the Pride',"Brass's Bounty",'Clachan Festival','Gather the White Lotus','Germinate Recruits','Krenko, Mob Boss',"Moogles' Valor", "Morcant's Eyes",'Sally Pride, Lioness Leader','The Unbeatable Squirrel Girl']:self.assertIn(name,supported,name)
-        for name in ['Anim Pakal, Thousandth Moon','Rise of the Varmints','Revenge of the Rats','Smaug, Wicked Worm','Twitching Doll','Kithkeeper']:self.assertNotIn(name,supported,name)
+        for name in ['Anim Pakal, Thousandth Moon','Rise of the Varmints','Smaug, Wicked Worm','Twitching Doll','Kithkeeper']:self.assertNotIn(name,supported,name)
         self.assertEqual(generate.permanent_type(self.card(type_line='Kindred Enchantment — Elf')),'Enchantment')
         line=next(line for line in rust.splitlines() if 'name: "Morcant' in line)
         self.assertIn('type_line: "Kindred Enchantment — Elf"',line);self.assertIn('kind: 160',line)
@@ -1792,9 +1816,9 @@ class CatalogueCompilerTests(unittest.TestCase):
         supported={c['name'] for c in coverage['cards'] if c['implemented']}
         for name in ['Corrupted Conviction','Final Vengeance','Thrill of Possibility']:
             self.assertIn(name,supported)
-        for name in ['Grab the Prize','Laughing Mad','Pumpkin Bombardment','Souls Lost','Fear of Isolation']:
+        for name in ['Grab the Prize','Pumpkin Bombardment','Souls Lost','Fear of Isolation']:
             self.assertNotIn(name,supported)
-        self.assertEqual(rust.count('=> Some(AdditionalCost {'),7)
+        self.assertEqual(rust.count('=> Some(AdditionalCost {'),8)
         prefix='As an additional cost to cast this spell, '
         for cost in ['discard two cards.','you may discard a card.','sacrifice two creatures.',
                      'discard a card or pay {2}.','sacrifice an artifact or pay {2}.',
