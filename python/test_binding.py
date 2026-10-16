@@ -9,6 +9,105 @@ from rustmage import CapacityError, EngineError, Game
 
 
 class BindingTests(unittest.TestCase):
+    def test_twelve_filtered_selection_bodies_all_hybrids_and_trainer_copies(self):
+        names=['Ashe, Princess of Dalmasca','Casey Jones, Jury-Rig Justiciar','Cowabunga!','Eclipsed Boggart','Eclipsed Elf','Eclipsed Flamekin','Eclipsed Kithkin','Eclipsed Merrow','Frontier Seeker','Master Piandao','Staunch Crewmate','Thundertrap Trainer']
+        facts={c['name']:c for c in json.loads((Path(__file__).resolve().parents[1]/'data/standard/cards.json').read_text())['cards']}
+        creature_types={'Mutant','Ninja','Turtle','Goblin','Elf','Elemental','Kithkin','Merfolk','Mount','Ally','Pirate'}
+        def subtype(n,t):
+            c=facts[n];printed=c['type_line'].split(' — ')[1].split() if ' — ' in c['type_line'] else []
+            return t in printed or 'Changeling' in c.get('keywords',[]) and t in creature_types
+        def eligible(i,n):
+            kinds=facts[n]['type_line'].split(' — ')[0].split()
+            if i in (0,1):return 'Artifact' in kinds
+            if i==2:return 'Land' in kinds or any(subtype(n,t) for t in ['Mutant','Ninja','Turtle'])
+            if i in (3,4,5,6,7):return any(subtype(n,t) for t in {3:['Goblin','Swamp','Mountain'],4:['Elf','Swamp','Forest'],5:['Elemental','Island','Mountain'],6:['Kithkin','Forest','Plains'],7:['Merfolk','Plains','Island']}[i])
+            if i==8:return 'Creature' in kinds and subtype(n,'Mount') or subtype(n,'Plains')
+            if i==9:return any(subtype(n,t) for t in ['Ally','Equipment','Lesson'])
+            if i==10:return 'Artifact' in kinds or subtype(n,'Pirate')
+            return 'Creature' not in kinds and 'Land' not in kinds
+        def cost(i,k):
+            c=[0]*6
+            if i==3:c[2],c[3]=k,3-k
+            if i==4:c[2],c[4]=k,3-k
+            if i==5:c[1],c[3]=k,2-k
+            if i==6:c[0],c[4]=k,2-k
+            if i==7:c[0],c[1]=k,3-k
+            return c,int(i==5)
+        cases=[(i,k,False) for i in range(12) for k in range(4 if i in (3,4,7) else 3 if i in (5,6) else 1)]+[(11,0,True)]
+        for i,alternative,pay in cases:
+            wanted=names[i];lands=sum(([n]*6 for n in ['Plains','Island','Swamp','Mountain','Forest']),[]) if i not in (3,4,5,6,7) else sum(([n]*13 for n in {3:['Swamp','Mountain'],4:['Swamp','Forest'],5:['Island','Mountain'],6:['Forest','Plains'],7:['Plains','Island']}[i]),[])+[{3:'Forest',4:'Island',5:'Plains',6:'Swamp',7:'Mountain'}[i]]*4
+            support=sum(([n]*4 for n in ['Three Tree Mascot','Mischievous Sneakling','Goldvein Pick','Abandon Attachments','Bear Cub','Prophetic Prism']),[])
+            with self.subTest(card=wanted,alternative=alternative,pay=pay),Game([lands+[wanted]*8+support+['Corrupted Conviction']*2,['Forest']*60],seed=7,deck_rules='Freeform') as game:
+                chosen=None;committed=set();frames=set();replayed=0;hybrid=False;source_left=False;sacrificed_source=False
+                for _ in range(18000):
+                    obs=game.observe('P0');self.assertIsNone(obs['outcome'],wanted);obs=game.observe(obs['actor']);objects={v['id']:v for v in obs['objects']};mana=list(obs['players'][0]['mana']);basic={'Plains':0,'Island':1,'Swamp':2,'Mountain':3,'Forest':4}
+                    for v in objects.values():
+                        if v['owner']=='P0' and v['zone']=='Battlefield' and v['card'] in basic and not v['tapped']:mana[basic[v['card']]]+=1
+                    ready=True
+                    if i in (3,4,5,6,7):required,generic=cost(i,alternative);ready=all(a>=b for a,b in zip(mana,required)) and sum(mana)>=sum(required)+generic
+                    if i==11 and pay:ready=mana[1]>=1 and sum(mana)>=6
+                    attack_root=next((s for s in obs['stack'] if s['source_card']==wanted and s['kind']=={'TriggeredAbility':{'ability':0}} and i in (0,9) and s['card'] in objects and objects[s['card']]['reference']==s['object'] and objects[s['card']]['zone']=='Battlefield'),None)
+                    def score(a):
+                        k=a['kind']
+                        if k in ('Cast','AnnounceCast'):
+                            if obs['actor']!='P0':return -100
+                            n=objects[a['card']]['card']
+                            if n==wanted:return 400 if k=='AnnounceCast' and chosen is None and ready else -100
+                            if n=='Corrupted Conviction':return 600 if attack_root else -100
+                            return -100
+                        if k=='ChooseAdditionalCost':return 600 if attack_root and a['object']==attack_root['object'] else -100
+                        if k=='ChooseSpellCost':return 600 if a['cost']==alternative else -100
+                        if k=='ChooseOffspring':return 600 if a['pay']==pay else -100
+                        if k=='SelectLibrary':return 600
+                        if k=='FinishLibrarySelection':return 500
+                        if k=='PayCosts':return 700
+                        if k=='TapMana':return 250 if obs['decision']=='pay_costs' else -100
+                        if k=='Attack':return 400 if i in (0,9) and a['card']==chosen else -100
+                        if k in ('Block','Activate','BeginActivate','AnnounceActivate','ActivateMana','AnnounceMana'):return -100
+                        if k=='PlayLand' and i in (3,4,5,6,7):return 400 if required[basic[objects[a['card']]['card']]]>mana[basic[objects[a['card']]['card']]] else 300
+                        return self.professor_score(obs,a)
+                    f=obs['library_selection'];root=obs['resolving']
+                    if f:
+                        self.assertIsNone(game.observe('P1')['library_selection']);self.assertEqual(game.observe('P1')['actions'],[])
+                        if root['id'] not in frames:
+                            frames.add(root['id']);window=f['remaining']+f['selected'];expected=[v['reference'] for v in f['remaining'] if eligible(i,v['card'])];self.assertEqual(f['candidates'],expected);self.assertEqual((f['minimum'],f['maximum'],f['reveal'],f['remainder'],f['ordering']),(0,int(bool(expected)),True,'bottom_random',False));self.assertEqual(len(window),min(5 if i in (0,8) else 4,obs['players'][0]['library_count']))
+                            if i in (0,9) and objects[root['card']]['reference']!=root['object']:source_left=True
+                            bad=[{'kind':'SelectLibrary','card':4294967295},{'kind':'Pass'}]+[{'kind':'SelectLibrary','card':v['id']} for v in f['remaining'] if v['reference'] not in expected]
+                            for action in bad:
+                                with self.assertRaisesRegex(EngineError,'IllegalAction'):game.act(obs,action)
+                                self.assertEqual(game.observe(obs['actor']),obs)
+                    choice=max(range(len(obs['actions'])),key=lambda j:score(obs['actions'][j]));action=obs['actions'][choice]
+                    if action['kind']=='AnnounceCast' and objects[action['card']]['card']==wanted:chosen=action['card']
+                    if action['kind']=='ChooseAdditionalCost' and attack_root and action['object']==attack_root['object']:sacrificed_source=True
+                    if action['kind']=='ChooseSpellCost':
+                        self.assertEqual(action['cost'],alternative)
+                        for c in obs['cost_choices']:required_,generic_=cost(i,c['index']);self.assertEqual((c['cost']['colored'],c['cost']['generic']),(required_,generic_))
+                        hybrid=True
+                    if obs['announcing'] or obs['stack'] or f:
+                        saved=game.snapshot()
+                        with game.clone() as fork:expected=fork.step(fork.observe(obs['actor']),choice)
+                        self.assertEqual(game.step(obs,choice),expected);game.restore(saved)
+                        with self.assertRaisesRegex(EngineError,'StaleRevision'):game.step(obs,choice)
+                        after=game.step(game.observe(obs['actor']),choice);expected['revision']=after['revision'];self.assertEqual(after,expected);game.drop_snapshot(saved);replayed+=1
+                    else:after=game.step(obs,choice)
+                    if f:
+                        if after['library_selection']:
+                            self.assertEqual((after['players'][0]['hand_count'],after['players'][0]['library_count'],after['players'][0]['cards_drawn_this_turn']),(obs['players'][0]['hand_count'],obs['players'][0]['library_count'],obs['players'][0]['cards_drawn_this_turn']));self.assertEqual(after['known_hand'],obs['known_hand']);before={v['id']:v['reference'] for v in f['remaining']+f['selected']}
+                            for v in after['library_selection']['remaining']+after['library_selection']['selected']:self.assertEqual((v['reference'],v['zone']),(before[v['id']],'Library'))
+                        else:
+                            self.assertEqual(after['players'][0]['library_count'],obs['players'][0]['library_count']-len(f['selected']));self.assertEqual(after['players'][0]['hand_count'],obs['players'][0]['hand_count']+len(f['selected']));self.assertEqual(after['players'][0]['cards_drawn_this_turn'],obs['players'][0]['cards_drawn_this_turn'])
+                            for v in f['selected']:
+                                new=next(x for x in after['objects'] if x['id']==v['id']);self.assertEqual((new['reference']['generation'],new['zone']),(v['reference']['generation']+1,'Hand'));self.assertIn(new['reference'],game.observe('P1')['known_hand'])
+                            committed.add(bool(objects[root['card']]['token']))
+                            if i!=11 or not pay or committed=={False,True}:break
+                else:self.fail('filtered body did not finish '+wanted)
+                self.assertGreater(replayed,0);self.assertEqual(after['schema'],56)
+                if sacrificed_source:self.assertTrue(source_left)
+                if i in (3,4,5,6,7):self.assertTrue(hybrid)
+                if i==11:
+                    copies=[v for v in after['objects'] if v['owner']=='P0' and v['zone']=='Battlefield' and v['token'] and v['token']['name']==wanted];self.assertEqual(len(copies),int(pay))
+                    for v in copies:self.assertEqual((v['power'],v['toughness'],v['card']),(1,1,v['token']['factory_identity']))
+
     def test_seventeen_contextual_cast_bodies_targets_effects_private_choices_and_replay(self):
         names=['Colleen Wing, Street Samurai','Danitha, Spear of Agony','Danitha, Sword of Hope','Firespitter Whelp','Forum Necroscribe','Gnarlback Rhino','Graduation Day','Informed Inkwright','Inkling Mascot','Inkshape Demonstrator','Lecturing Scornmage','Madame Hydra','Melancholic Poet','Mockingbird, Ace Agent','Rehearsed Debater','Rodeo Pyromancers','Stirring Hopesinger']
         for i,name in enumerate(names):

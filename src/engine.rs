@@ -3962,3 +3962,7 @@ mod library_selection_tests;
 #[cfg(test)]
 #[path = "engine_forage_tests.rs"]
 mod forage_tests;
+
+#[cfg(test)]
+#[path = "engine_filtered_library_selection_tests.rs"]
+mod filtered_library_selection_tests;

@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "e5819641011ac8befea007a7907ce34529bdec14d5b7d95c2eba00eeecbb3a43",
+  "catalogue_version": "5186eeda9090b172445c8aa4b4716bd19949922e5e23258dba74db4b5490bf2e",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1455,
-  "implemented_total": 1461,
-  "token_definitions": 71,
+  "implemented_standard_cards": 1467,
+  "implemented_total": 1473,
+  "token_definitions": 72,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -1444,8 +1444,8 @@
     {
       "name": "Ashe, Princess of Dalmasca",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Ashiok's Reaper",
@@ -4048,8 +4048,8 @@
     {
       "name": "Casey Jones, Jury-Rig Justiciar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Casey Jones, Vigilante",
@@ -5254,8 +5254,8 @@
     {
       "name": "Cowabunga!",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Cracked Skull",
@@ -7528,32 +7528,32 @@
     {
       "name": "Eclipsed Boggart",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Eclipsed Elf",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Eclipsed Flamekin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Eclipsed Kithkin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Eclipsed Merrow",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Eclipsed Realms",
@@ -9814,8 +9814,8 @@
     {
       "name": "Frontier Seeker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Frontline Rush",
@@ -16090,8 +16090,8 @@
     {
       "name": "Master Piandao",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Master of Barbs",
@@ -24736,8 +24736,8 @@
     {
       "name": "Staunch Crewmate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Stay Hidden, Stay Silent",
@@ -27544,8 +27544,8 @@
     {
       "name": "Thundertrap Trainer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Thwip!",
