@@ -3670,3 +3670,7 @@ mod conditional_source_keyword_tests;
 #[cfg(test)]
 #[path = "engine_source_predicate_tests.rs"]
 mod source_predicate_tests;
+
+#[cfg(test)]
+#[path = "engine_targeted_bounce_tap_tests.rs"]
+mod targeted_bounce_tap_tests;
