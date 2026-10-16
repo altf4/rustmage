@@ -1,4 +1,4 @@
-//! Owned mandatory spell costs, chosen after targets and paid before cast completion.
+//! Owned mandatory spell and activation costs, chosen after targets and paid before cast completion.
 use super::*;
 
 #[derive(Clone, Debug, Serialize)]
@@ -66,9 +66,27 @@ impl Game {
                 })
         })
     }
+    pub(super) fn activation_can_fund(
+        &self,
+        goal: FundingGoal,
+        spec: Option<AdditionalCost>,
+    ) -> bool {
+        let Some(spec) = spec else {
+            return self.can_fund(goal);
+        };
+        let source = goal.source.expect("activation source").0;
+        self.state.objects.iter().enumerate().any(|(id, _)| {
+            let object = self.object_ref(id as CardId);
+            self.additional_candidate(spec, goal.actor, source, object)
+                && self.can_fund(FundingGoal {
+                    reserve: Some((object, spec)),
+                    ..goal
+                })
+        })
+    }
     pub(super) fn additional_choice_available(&self, object: ObjectRef) -> bool {
         let a = self.state.announcing.as_ref().unwrap();
-        let Some(spec) = a.item.source_card.additional_cost() else {
+        let Some(spec) = a.additional_cost() else {
             return false;
         };
         if !self.additional_candidate(spec, a.item.controller, a.item.object, object) {
@@ -86,7 +104,7 @@ impl Game {
         };
     }
     pub(super) fn pay_additional_cost(&mut self, a: &mut Announcement) {
-        let Some(spec) = a.item.source_card.additional_cost() else {
+        let Some(spec) = a.additional_cost() else {
             return;
         };
         let object = a.additional.expect("additional cost selected");
@@ -104,10 +122,10 @@ impl Game {
     }
     pub(super) fn additional_cost_view(&self, viewer: Player) -> Option<AdditionalCostView> {
         let a = self.state.announcing.as_ref()?;
-        if a.item.kind != StackKind::Spell || viewer != a.item.controller {
+        if viewer != a.item.controller {
             return None;
         }
-        let spec = a.item.source_card.additional_cost()?;
+        let spec = a.additional_cost()?;
         let candidates = if matches!(self.state.pending, Pending::AdditionalCost { .. }) {
             (0..self.state.objects.len())
                 .map(|id| self.object_ref(id as CardId))

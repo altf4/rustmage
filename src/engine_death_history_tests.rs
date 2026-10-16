@@ -32,7 +32,7 @@ fn history(g: &Game, n: u64) {
     assert_eq!(g.state.creatures_died_this_turn, n);
     for p in [Player::P0, Player::P1] {
         let obs = g.observe(p);
-        assert_eq!(obs.schema, 45);
+        assert_eq!(obs.schema, 46);
         assert_eq!(obs.creatures_died_this_turn, n);
     }
 }

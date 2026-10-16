@@ -2927,7 +2927,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            schema: 45,
+            schema: 46,
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
             creatures_died_this_turn: s.creatures_died_this_turn,
             catalogue: crate::CATALOGUE_VERSION,
@@ -3506,3 +3506,7 @@ mod life_loss_tests;
 #[cfg(test)]
 #[path = "engine_hybrid_activation_tests.rs"]
 mod hybrid_activation_tests;
+
+#[cfg(test)]
+#[path = "engine_activation_discard_tests.rs"]
+mod activation_discard_tests;
