@@ -2,8 +2,8 @@
 
 Issue: https://github.com/altf4/rustmage/issues/190
 
-Thirteen complete bodies bring executable coverage to **1,371/5,164** pinned
-Standard identities, with **3,793 unsupported**. Six regression identities,
+After the source-tap stage, thirteen complete bodies bring executable coverage
+to **1,384/5,164** pinned Standard identities, with **3,780 unsupported**. Six regression identities,
 57 token factories and one emblem remain separate. Full Standard migration
 remains incomplete; the target is pinned to October 15, 2026.
 
@@ -103,8 +103,9 @@ Two release Standard100 runs reproduce:
 Terminal-producing programs are excluded from verified-effect counts. Native
 full-body tests separately exercise the supplemental activated abilities.
 
-Full validation passed: **1,191 Rust tests** (1,179 unit and 12 integration),
-**227 compiler/data tests**, **150 fresh release Python tests**, catalogue
+Before integration, standalone validation passed **1,191 Rust tests**
+(1,179 unit and 12 integration), **227 compiler/data tests**,
+**150 fresh release Python tests**, catalogue
 consistency, formatting, all-target Clippy with warnings denied, diff checks
 and unchanged-definition checks. The unpinned 1,000-game smoke benchmark measured 571,049 decisions at
 approximately 96,863 decisions/s and 170 games/s, clone 255 ns and restore 244 ns
@@ -114,5 +115,18 @@ excludes model inference/tensors/JSON, and is not an XMage comparison. Logical
 bytes exclude spare capacity, allocator overhead, immutable definitions,
 observations and external snapshots.
 
-Catalogue fingerprint:
+Standalone catalogue fingerprint:
 `60eb08f53e1629a2700b497ef2bac07def952ca2648aca464841f06f40678eb7`.
+
+The final branch incorporates the independently reviewed source-tap stage.
+Combined validation passed **1,211 Rust tests** (1,199 unit and 12 integration),
+**230 compiler/data tests**, **151 fresh release Python tests**, all-target
+Clippy, formatting and catalogue consistency. The qualified-cast Standard100
+reproduced every vector above; the source-tap Standard100 separately reproduced
+70,443 decisions and 57,094 replays with all thirteen tap effects. Provenance
+was reverified against pinned blobs and checkout. Exactly thirteen previously
+unsupported immutable definitions change relative to the source-tap base;
+all earlier executable definitions remain byte-identical.
+
+Final catalogue fingerprint:
+`43304f0d919fe89ac4d50a4a699fd02ecb9f8d88b2b920ea1ec030b5c279a1d2`.
