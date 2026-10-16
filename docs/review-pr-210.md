@@ -24,7 +24,7 @@ Verified **149 provenance hashes across 52 Java files**, exactly **fifteen chang
 
 Additional public instrumentation passed **10,190 observations**, **2,086 permission checks**, **896 wrong-owner exclusions**, **356 land-timing / 610 noninstant-timing exclusions**, **952 atomic hand-path bypass rejections** and twenty proper exile announcements.
 
-Evidence: `/tmp/pr210-rules-review-{verdict,rust,compiler,standard100,python,audit,negative,provenance,public-probe}.log`; supplementary scripts share that prefix. Both reviewers rechecked frozen HEAD and clean tracked status.
+Evidence: `/tmp/pr210-rules-review-{verdict,native,compiler,standard100,python,audit,negative,provenance,public-probe}.log`; supplementary scripts share that prefix. Both reviewers rechecked frozen HEAD and clean tracked status.
 
 ## Integration
 
