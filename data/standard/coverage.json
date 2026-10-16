@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "f53f514bcff942b217c133db63adadaf8d27d59da2fbe171ba3f19cef1d68618",
+  "catalogue_version": "15109682262b5ce6413f0af1c6d77d7da8120a81eb4aa7853483e42f3c44d2b4",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1099,
-  "implemented_total": 1105,
+  "implemented_standard_cards": 1102,
+  "implemented_total": 1108,
   "token_definitions": 49,
   "emblem_definitions": 1,
   "cards": [
@@ -2782,8 +2782,8 @@
     {
       "name": "Bloodtithe Collector",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Bloom Tender",
@@ -9778,8 +9778,8 @@
     {
       "name": "Frilled Sparkshooter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Frog Butler",
@@ -25156,8 +25156,8 @@
     {
       "name": "Stromkirk Bloodthief",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Stromkirk Noble",

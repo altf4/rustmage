@@ -313,12 +313,13 @@ impl Game {
         let EntryTapped::PayLife(cost) = movement.before.card.entry_tapped() else {
             unreachable!()
         };
-        if pay {
-            self.state.players[movement.before.owner.index()].life -= i128::from(cost);
-        }
+        let player = movement.before.owner;
         movement.life_paid = Some(pay);
         movement.tapped |= !pay;
         batch.next += 1;
+        if pay {
+            self.lose_life(player, i128::from(cost));
+        }
     }
     pub(super) fn entry_life_view(&self, viewer: Player) -> Option<EntryLifeView> {
         if !matches!(self.state.pending, Pending::EntryLife { .. }) {

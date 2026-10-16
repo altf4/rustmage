@@ -81,6 +81,21 @@ impl Game {
         id
     }
 
+    pub(super) fn lose_life(&mut self, player: Player, amount: i128) {
+        if amount <= 0 {
+            return;
+        }
+        let state = &mut self.state.players[player.index()];
+        state.life = state
+            .life
+            .checked_sub(amount)
+            .capacity("life representation exhausted");
+        state.life_lost_this_turn = state
+            .life_lost_this_turn
+            .checked_add(amount as u128)
+            .capacity("life lost this turn representation exhausted");
+    }
+
     pub(super) fn gain_life(&mut self, player: Player, amount: i128) {
         if amount <= 0 {
             return;
@@ -776,10 +791,7 @@ impl Game {
                     let amount =
                         i128::try_from(self.amount_value(value, item.object, item.controller))
                             .capacity("life drain amount representation exhausted");
-                    let life = &mut self.state.players[item.controller.other().index()].life;
-                    *life = life
-                        .checked_sub(amount)
-                        .capacity("life representation exhausted");
+                    self.lose_life(item.controller.other(), amount);
                     self.gain_life(item.controller, amount);
                 }
                 Instruction::Discard(set, amount) => {
@@ -795,10 +807,7 @@ impl Game {
                         .expect("life-event program requires context")
                         .amount;
                     for player in self.program_players(set, &item) {
-                        let life = &mut self.state.players[player.index()].life;
-                        *life = life
-                            .checked_sub(amount)
-                            .capacity("life representation exhausted");
+                        self.lose_life(player, amount);
                     }
                 }
                 Instruction::GainLife(set, _) | Instruction::GainLifeScaled(set, _) => {
@@ -817,10 +826,7 @@ impl Game {
                 }
                 Instruction::LoseLife(set, amount) => {
                     for player in self.program_players(set, &item) {
-                        let life = &mut self.state.players[player.index()].life;
-                        *life = life
-                            .checked_sub(i128::from(amount))
-                            .capacity("life representation exhausted");
+                        self.lose_life(player, i128::from(amount));
                     }
                 }
                 Instruction::UntapCreatures(filter) | Instruction::TapCreatures(filter) => {

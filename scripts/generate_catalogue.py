@@ -453,6 +453,8 @@ def extract_entry_counters(card):
     for line in card['oracle_text'].split('\n'):
         if line == 'Raid — This creature enters with a +1/+1 counter on it if you attacked this turn.':
             rules.append('EntryCounterRule { guard: StepGuard::Attacked, amount: EntryCounterAmount::Fixed(1) }')
+        elif line == 'This creature enters with a +1/+1 counter on it if an opponent lost life this turn.':
+            rules.append('EntryCounterRule { guard: StepGuard::OpponentLostLife, amount: EntryCounterAmount::Fixed(1) }')
         elif line == 'This creature enters with a +1/+1 counter on it if a creature died this turn.':
             rules.append('EntryCounterRule { guard: StepGuard::CreatureDied, amount: EntryCounterAmount::Fixed(1) }')
         elif line == "This creature enters with two +1/+1 counters on it if you've cast two or more spells this turn.":
@@ -1104,6 +1106,8 @@ for _name, _kinds, _relation, _tapped, _minimum, _maximum in [
     TARGET_RULES[_name] = (f'TargetRule::Object {{ zone: TargetZone::{_zone}, kinds: {_kinds}, '
                           f'relation: {_relation}, other: false, nonland: false, '
                           f'tapped: {str(_tapped).lower()}, min_mana: {_minimum}, max_mana: {_maximum} }}')
+TARGET_RULES['VampireYou'] = ('TargetRule::Filtered { base: &TargetRule::Object { zone: TargetZone::Battlefield, kinds: 0, relation: 0, other: false, nonland: false, tapped: false, min_mana: 0, max_mana: 4294967295 }, predicate: &TargetPredicate::Subtype("Vampire") }')
+
 for _name, _base, _predicate in [
     ('CreatureAttacking', 'Creature', 'Attacking'),
     ('CreatureAttackingBlocking', 'Creature', 'AttackingOrBlocking'),
@@ -1332,6 +1336,8 @@ def targeted_program(text):
         if result:
             spec, program = result
             return spec, [f'May {{ skip: {len(program)} }}', *program]
+    if m := re.fullmatch(r'put (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on target Vampire you control\.', text):
+        return 'VampireYou', [counter_instruction('Targets', m[1], m[2])]
     if m := re.fullmatch(r'put (a|one|two|three|four|five|six) (\+1/\+1|-1/-1|stun) counters? on (target creature|target creature you control|another target creature you control|up to one target creature|up to one target creature you control)\.', text):
         rules = {'target creature': 'Creature', 'target creature you control': 'CreatureYou',
                  'another target creature you control': 'OtherCreatureYou',
@@ -1445,6 +1451,7 @@ def cast_condition(relation='You', filter_='Any', ordinal=None):
 def step_guard(text):
     if text == 'you attacked this turn': return 'StepGuard::Attacked'
     if text == 'a creature died this turn': return 'StepGuard::CreatureDied'
+    if text == 'an opponent lost life this turn': return 'StepGuard::OpponentLostLife'
     if text == 'this creature is tapped': return 'StepGuard::SourceTapped'
     def threshold(value, minimum=None, maximum=None):
         lo = 'None' if minimum is None else f'Some({minimum})'

@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Bloodtithe Collector",
+      "oracle_text": "Flying\nWhen this creature enters, if an opponent lost life this turn, each opponent discards a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BloodtitheCollector.java",
+          "java_sha256": "d3bbb1e1a71d2714d6e2ffc74fe36c16f383dfb3636fcd965def2c888e755888"
+        }
+      ]
+    },
+    {
+      "name": "Frilled Sparkshooter",
+      "oracle_text": "Reach, menace\nThis creature enters with a +1/+1 counter on it if an opponent lost life this turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FrilledSparkshooter.java",
+          "java_sha256": "f9fd4e05ab21da4e6c4f0f1eeb71ab1771c9ac982d38e6e47d7fa17fd8e44eb1"
+        }
+      ]
+    },
+    {
+      "name": "Stromkirk Bloodthief",
+      "oracle_text": "At the beginning of your end step, if an opponent lost life this turn, put a +1/+1 counter on target Vampire you control.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StromkirkBloodthief.java",
+          "java_sha256": "b3084319d5498292769c146a30bf40a4a2746fdce31a61a2335726fddd39e55f"
+        }
+      ]
+    }
+  ],
+  "supporting_sources": [
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/condition/common/OpponentsLostLifeCondition.java",
+      "java_sha256": "e6e580749e62910b7a3d7eb5ed1aad71ea925393b017be31701e76f50bd00141"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/OpponentsLostLifeCount.java",
+      "java_sha256": "3d5ad2a0a3be557bb39f166941377f5b264d6fc26173b9f4772cfa5b9a8f3b2b"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/watchers/common/PlayerLostLifeWatcher.java",
+      "java_sha256": "7160a3262461d170943a6e08b4eb4c594c0c99d1c86524b2477c762bf97d54b6"
+    }
+  ]
+}

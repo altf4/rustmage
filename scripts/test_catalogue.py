@@ -37,6 +37,28 @@ class CatalogueCompilerTests(unittest.TestCase):
             proxy,rules=generate.extract_cost_reductions(self.card(oracle_text=text))
             self.assertEqual(proxy['oracle_text'],text);self.assertEqual(rules,[],text)
 
+    def test_opponent_life_loss_predicate_and_vampire_target_scope_are_exact(self):
+        self.assertEqual(generate.step_guard('an opponent lost life this turn'),'StepGuard::OpponentLostLife')
+        proxy,rules=generate.extract_entry_counters(self.card(oracle_text='This creature enters with a +1/+1 counter on it if an opponent lost life this turn.'))
+        self.assertEqual(proxy['oracle_text'],'');self.assertIn('OpponentLostLife',rules[0])
+        result=generate.targeted_program('Put a +1/+1 counter on target Vampire you control.')
+        self.assertEqual(result[0],'VampireYou');rule=generate.TARGET_RULES[result[0]]
+        self.assertIn('kinds: 0',rule);self.assertIn('relation: 0',rule);self.assertIn('Subtype("Vampire")',rule)
+        for text in ['you lost life this turn','an opponent was dealt damage this turn','an opponent lost life last turn']:
+            self.assertIsNone(generate.step_guard(text))
+
+    def test_three_life_loss_bodies_and_unsupported_residual_gates(self):
+        import json
+        admissions=json.loads((generate.ROOT/'docs/life-loss-admissions.json').read_text())['cards'];self.assertEqual(len(admissions),3)
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,report=generate.compile_catalogue(snapshot,target);supported={c['name'] for c in report['cards'] if c['implemented']}
+        for admitted in admissions:
+            card=next(c for c in snapshot['cards'] if c['name']==admitted['name']);self.assertEqual(card['oracle_text'],admitted['oracle_text']);self.assertIn(admitted['name'],supported)
+            proxy,_=generate.extract_entry_counters(dict(card,oracle_text=card['oracle_text']+'\nWhenever you cast a spell, discover 3.'))
+            self.assertIsNone(generate.creature_template(proxy));self.assertIsNone(generate.trigger_creature_template(proxy));self.assertIsNone(generate.permanent_program_template(proxy));self.assertIsNone(generate.static_permanent_template(proxy))
+        for name in ['Cindering Cutthroat','Flamecache Gecko','Hired Claw','Fireglass Mentor','Gev, Scaled Scorch']:
+            self.assertNotIn(name,supported)
+
     def test_morbid_predicate_is_shared_by_entry_cost_and_intervening_step_rules(self):
         guard='StepGuard::CreatureDied'
         self.assertEqual(generate.step_guard('a creature died this turn'),guard)
@@ -99,7 +121,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             proxy,rules=generate.extract_entry_counters(altered);self.assertTrue(rules)
             self.assertIsNone(generate.creature_template(proxy));self.assertIsNone(generate.trigger_creature_template(proxy))
             self.assertIsNone(generate.permanent_program_template(proxy));self.assertIsNone(generate.static_permanent_template(proxy))
-        for name in ['Cruel Administrator','Blacksnag Buzzard','Patched Plaything','Putrid Pals','Frilled Sparkshooter']:
+        for name in ['Cruel Administrator','Blacksnag Buzzard','Patched Plaything','Putrid Pals','Cindering Cutthroat']:
             self.assertNotIn(name,supported)
 
     def test_attack_intervening_guards_require_the_complete_tapped_declaration(self):
