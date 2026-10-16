@@ -290,6 +290,22 @@ class ExploreTests(unittest.TestCase):
                 if obs['explore_choice']:
                     self.choice(game, obs)
                 ann = obs['announcing']
+                if activated and ann and ann['object'] == activated:
+                    if obs['decision'] == 'targets':
+                        offered = [a['target']['Card'] for a in obs['actions'] if a['kind'] == 'ChooseTarget' and 'Card' in a['target']]
+                        self.assertTrue(offered)
+                        self.assertTrue(all(objects[c]['owner'] == map_seat and 'Creature' in FACTS[objects[c]['card']]['type_line'].split(' — ')[0] for c in offered))
+                        forbidden = next((v for v in objects.values() if v['owner'] != map_seat and v['zone'] == 'Battlefield' and v['card'] == 'Bear Cub'), None)
+                        if forbidden:
+                            before = game.observe(actor)
+                            with self.assertRaises(EngineError):
+                                game.act(obs, {'kind': 'ChooseTarget', 'target': {'Card': forbidden['id']}})
+                            self.assertEqual(game.observe(actor), before)
+                    if obs['decision'] == 'pay_costs':
+                        self.assertEqual(obs['payment_request']['required'], [0] * 6)
+                        self.assertEqual(obs['payment_request']['generic'], 1)
+                        self.assertEqual(objects[activated['card']]['reference'], activated)
+                        self.assertFalse(objects[activated['card']]['tapped'])
                 def score(a):
                     k = a['kind']
                     if k in ('AnnounceCast', 'Cast'):
@@ -317,6 +333,8 @@ class ExploreTests(unittest.TestCase):
                     return {'Keep': 2000, 'PayCosts': 1500, 'PutTrigger': 1400, 'FinishTargets': 1100, 'FinishAttackers': 500, 'FinishBlockers': 500, 'Pass': 0}.get(k, -1000)
                 j = max(range(len(obs['actions'])), key=lambda j: score(obs['actions'][j]))
                 a = obs['actions'][j]
+                if activated and a['kind'] == 'PayCosts' and ann and ann['object'] == activated:
+                    self.assertEqual(sum(a['payment']), 1)
                 if a['kind'] == 'ChooseAdditionalCost': sacrificed = a['object']
                 if a['kind'] == 'ChooseTarget' and ann and ann['source_card'] == 'Get Lost':
                     destroyed = objects[a['target']['Card']]['reference']
