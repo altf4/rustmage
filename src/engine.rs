@@ -3519,3 +3519,7 @@ mod activation_discard_tests;
 #[cfg(test)]
 #[path = "engine_discard_history_tests.rs"]
 mod discard_history_tests;
+
+#[cfg(test)]
+#[path = "engine_own_turn_tests.rs"]
+mod own_turn_tests;

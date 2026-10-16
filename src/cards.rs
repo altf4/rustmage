@@ -914,12 +914,13 @@ pub(crate) enum ActivationOrigin {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ActivationGuard {
     Always,
+    OwnTurn,
     ControlSubtypeAny(&'static [&'static str]),
 }
 impl ActivationGuard {
     pub(crate) fn subtypes(self) -> &'static [&'static str] {
         match self {
-            Self::Always => &[],
+            Self::Always | Self::OwnTurn => &[],
             Self::ControlSubtypeAny(types) => types,
         }
     }

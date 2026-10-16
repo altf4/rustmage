@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "Professor Zei, Anthropologist",
+      "oracle_text": "{T}, Discard a card: Draw a card.\n{1}, {T}, Sacrifice Professor Zei: Return target instant or sorcery card from your graveyard to your hand. Activate only during your turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/ProfessorZeiAnthropologist.java",
+          "java_sha256": "34899da026e8e094665e0306cc2af743dfdec88eaf69130e155866e92bb3e453"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/MyTurnCondition.java",
+          "java_sha256": "a6c7cf96d2fdec34c9c999ad4b486627d257eeac9b7e7de139f104ac1ef45d90"
+        }
+      ]
+    },
+    {
+      "name": "Rescue Girl, First Responder",
+      "oracle_text": "Flying\n{T}: Return another target permanent you control to its owner's hand. Activate only during your turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RescueGirlFirstResponder.java",
+          "java_sha256": "8a83e89c5cbc39cf7cc6dc3257a7b0d463672bf7f06f1252219e93c657b2a446"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/MyTurnCondition.java",
+          "java_sha256": "a6c7cf96d2fdec34c9c999ad4b486627d257eeac9b7e7de139f104ac1ef45d90"
+        }
+      ]
+    },
+    {
+      "name": "Shipwreck Dowser",
+      "oracle_text": "Prowess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)\nWhen this creature enters, return target instant or sorcery card from your graveyard to your hand.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/ShipwreckDowser.java",
+          "java_sha256": "c69b260f2662eea112578099270f0414070701d0d0a910a47b80811d7922d4e2"
+        }
+      ]
+    },
+    {
+      "name": "Zealous Lorecaster",
+      "oracle_text": "When this creature enters, return target instant or sorcery card from your graveyard to your hand.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/z/ZealousLorecaster.java",
+          "java_sha256": "2a94f17cd7ad5e0cd3c115f6390f272ffed11d1d1e9473a60e67adda04ae8b55"
+        }
+      ]
+    }
+  ]
+}

@@ -14,6 +14,34 @@ class CatalogueCompilerTests(unittest.TestCase):
         row.update(overrides)
         return row
 
+    def test_own_turn_guard_and_authenticated_sacrifice_cost_names(self):
+        for alias in ['Professor Zei','Professor Zei, Anthropologist']:
+            card=self.card(name='Professor Zei, Anthropologist',type_line='Legendary Creature — Human Advisor Ally',oracle_text='{1}, {T}, Sacrifice '+alias+': Draw a card. Activate only during your turn.')
+            result=generate.permanent_program_template(card);self.assertIsNotNone(result)
+            cost,_,_,sorcery,_=result[3][0];self.assertEqual(cost['guard'],'OwnTurn');self.assertFalse(sorcery);self.assertTrue(cost['tap']);self.assertTrue(cost['sacrifice'])
+        for clause in ['Sacrifice Professor Z','Sacrifice another Professor Zei','Sacrifice Professor Zei Jr.']:
+            self.assertIsNone(generate.permanent_program_template(self.card(name='Professor Zei, Anthropologist',oracle_text=clause+': Draw a card.')))
+        self.assertIsNone(generate.permanent_program_template(self.card(name='Unrelated',oracle_text='Sacrifice Professor Zei: Draw a card.')))
+        for text in ['{T}: Draw a card. Activate only during an opponent’s turn.',
+                     '{T}: Draw a card. Activate only during your turn and only once.',
+                     '{T}: Draw a card. Activate only if you control a Dragon. Activate only during your turn.']:
+            self.assertIsNone(generate.permanent_program_template(self.card(oracle_text=text)),text)
+
+    def test_four_own_turn_and_recovery_bodies_keep_exact_targets_and_residuals(self):
+        import json
+        for text,rule in [("Return another target permanent you control to its owner's hand.",'OtherPermanentYou'),('Return target instant or sorcery card from your graveyard to your hand.','InstantSorceryGraveYou')]:
+            self.assertEqual(generate.targeted_program(text),(rule,['ReturnToHand']))
+        self.assertIn('kinds: 12',generate.TARGET_RULES['InstantSorceryGraveYou']);self.assertIn('relation: 0',generate.TARGET_RULES['InstantSorceryGraveYou']);self.assertIn('other: true',generate.TARGET_RULES['OtherPermanentYou']);self.assertIn('nonland: false',generate.TARGET_RULES['OtherPermanentYou'])
+        snapshot=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
+        _,coverage=generate.compile_catalogue(snapshot,target);supported={c['name'] for c in coverage['cards'] if c['implemented']}
+        admitted=json.loads((generate.ROOT/'docs/own-turn-admissions.json').read_text())['cards'];self.assertEqual(len(admitted),4)
+        for a in admitted:
+            c=next(c for c in snapshot['cards'] if c['name']==a['name']);self.assertEqual(c['oracle_text'],a['oracle_text']);self.assertIn(c['name'],supported)
+            self.assertIsNone(generate.permanent_program_template(dict(c,oracle_text=c['oracle_text']+'\nDiscover 4.')))
+            self.assertIsNone(generate.trigger_creature_template(dict(c,oracle_text=c['oracle_text']+'\nDiscover 4.')))
+        for name in ['Prehistoric Pet','Wishclaw Talisman','Path to Redemption','M.O.D.O.K.','Scour for Scrap','Oltec Archaeologists']:
+            self.assertNotIn(name,supported)
+
     def test_discard_history_amount_and_two_complete_bodies(self):
         import json
         self.assertEqual(generate.amount_value("the number of cards you've discarded this turn"),'AmountValue::CardsDiscardedThisTurn')
@@ -69,7 +97,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         _,coverage=generate.compile_catalogue(json.loads((generate.ROOT/'data/standard/cards.json').read_text()),json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text()))
         supported={c['name'] for c in coverage['cards'] if c['implemented']}
         self.assertTrue(names<=supported)
-        for name in ['Hardened Academic','Liliana the Faultless','Possessed Goat','Professor Zei, Anthropologist','Avishkar Raceway','Fomori Vault']:
+        for name in ['Hardened Academic','Liliana the Faultless','Possessed Goat','Avishkar Raceway','Fomori Vault']:
             self.assertNotIn(name,supported)
 
     def test_reductions_preserve_exact_scope_filters_timing_and_unsupported_clauses(self):
