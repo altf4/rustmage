@@ -39,5 +39,23 @@ caster-owned creature makes the intended source-return case legal. Neither
 failure required a production runtime change. All terminal prototype targets
 were cleaned immediately with shared-library paths/hashes preserved.
 
-Fresh full native/Clippy, compiler, public/natural Standard workloads and two
-independent complete-batch PR reviews remain pending.
+Frozen baseline `dc3ec3511c7ce545fedf1f334a5dc311c143abb0`, on the stated
+8108a6f parent, passes 1,785 native tests, all-target Clippy and formatting,
+452 unique compiler methods (830.079 seconds), and 269 unique public API methods
+(1,483.921 seconds), without failures, errors or skips. Four focused public
+body/seat cells pass in 18.136 seconds. The fixed, unretried 100-game natural
+Standard workload passes in 302.306 seconds with 82,844 owned frames and
+165,688 denial checks. All 826 frozen execution files and the immutable library
+hash remain unchanged for every gate.
+
+The baseline optimized library is
+`returns306-dc3ec35-3f71-schema86-020003f66419.so`, SHA-256
+`020003f66419d89669d15681413004a44b61ac6bd4674f32d9bdb09a20725531`.
+Its catalogue fingerprint is
+`3f7109af57d830b6395d73d987868854f50c4473635b61b6fa5c8e6cdbe955e0`.
+Both independent preliminary complete-batch reviews report no findings; their
+novel paid interaction checks and raw-rule mutation controls are retained.
+
+Composition with the newer main parent, fresh integration checks, and two
+independent approvals at the final published head remain required. The broad
+baseline results above do not claim validation of that future composition.
