@@ -370,12 +370,15 @@ fn every_admitted_step_source_is_indexed_removed_and_restored_by_zone_changes() 
         } else {
             g.move_object(id, Zone::Battlefield);
         }
-        let expected = card.triggers().iter().any(|a| {
-            matches!(
-                a.condition.event(),
-                TriggerCondition::AtStep { .. } | TriggerCondition::Chapter { .. }
-            )
-        });
+        let indexed_in = |zone| {
+            card.triggers().iter().any(|a| {
+                matches!(
+                    a.condition.event(),
+                    TriggerCondition::AtStep { .. } | TriggerCondition::Chapter { .. }
+                ) && a.condition.origin().unwrap_or(TargetZone::Battlefield) == zone
+            })
+        };
+        let expected = indexed_in(TargetZone::Battlefield);
         assert_eq!(
             g.state.step_sources.contains(&id),
             expected,
@@ -386,6 +389,21 @@ fn every_admitted_step_source_is_indexed_removed_and_restored_by_zone_changes() 
         g.move_object(id, Zone::Exile);
         assert!(!g.state.step_sources.contains(&id));
         g.restore(&before).unwrap();
+        assert_eq!(g.state.step_sources.contains(&id), expected);
+        // Explicit graveyard triggers are indexed there, while ordinary
+        // battlefield step abilities must cease observing after departure.
+        g.move_object(id, Zone::Graveyard);
+        let expected = indexed_in(TargetZone::Graveyard);
+        assert_eq!(
+            g.state.step_sources.contains(&id),
+            expected,
+            "{} in graveyard",
+            card.name()
+        );
+        let graveyard = g.snapshot();
+        g.move_object(id, Zone::Exile);
+        assert!(!g.state.step_sources.contains(&id));
+        g.restore(&graveyard).unwrap();
         assert_eq!(g.state.step_sources.contains(&id), expected);
         g.move_object(id, Zone::Exile);
     }
