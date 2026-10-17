@@ -99,6 +99,8 @@ use funding::FundingGoal;
 mod battlefield_groups;
 #[path = "engine_blocking.rs"]
 mod blocking;
+#[path = "engine_combat_restrictions.rs"]
+mod combat_restrictions;
 #[path = "engine_effect_choices.rs"]
 mod effect_choices;
 #[path = "engine_exile.rs"]
@@ -2506,6 +2508,7 @@ impl Game {
                         || obj.tapped
                         || (obj.summoning_sick && !self.keywords(card).contains(Keywords::HASTE))
                         || self.keywords(card).contains(Keywords::DEFENDER)
+                        || self.combat_restricted(card, true)
                         || s.selected_attackers.iter().any(|a| a.card == card)
                     {
                         continue;
@@ -5438,3 +5441,7 @@ mod target_exclusion_tests;
 #[cfg(test)]
 #[path = "engine_battlefield_return_tests.rs"]
 mod battlefield_return_tests;
+
+#[cfg(test)]
+#[path = "engine_combat_restriction_tests.rs"]
+mod combat_restriction_tests;

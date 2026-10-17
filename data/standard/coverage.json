@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "47ef06451233ccf6e22f6e2e09bdc8cfb63fce96c87c52942e81d291a8efdf98",
+  "catalogue_version": "995c10d2b1e8c94c6d014d4cfb3e083ee681433bb8b246d1833f648539c0fb92",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1898,
-  "implemented_total": 1904,
+  "implemented_standard_cards": 1903,
+  "implemented_total": 1909,
   "token_definitions": 94,
   "emblem_definitions": 1,
   "cards": [
@@ -17206,8 +17206,8 @@
     {
       "name": "Mouser Mark III",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Mouth of the Storm",
@@ -18526,8 +18526,8 @@
     {
       "name": "Pacifism",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Pactdoll Terror",
@@ -26128,8 +26128,8 @@
     {
       "name": "Technodrome",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Tectonic Hazard",
@@ -26812,8 +26812,8 @@
     {
       "name": "The Lion-Turtle",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "The Lonely Mountain",
@@ -27598,8 +27598,8 @@
     {
       "name": "Tiger-Dillo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Tiger-Seal",
