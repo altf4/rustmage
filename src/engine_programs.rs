@@ -1310,6 +1310,35 @@ impl Game {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
+                Instruction::FightSource => self.source_fight(&item),
+                Instruction::IfTargetPlayerLife { life, skip } => {
+                    let holds = item.targets.iter().any(|bound| {
+                        matches!(bound.target, Target::Player(player)
+                            if self.state.players[player.index()].life == life)
+                    });
+                    if !holds {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
+                Instruction::CounterAndCreateForController { token, amount } => {
+                    for bound in &item.targets {
+                        if let Target::Spell(card) = bound.target
+                            && let Some((id, controller)) = self
+                                .state
+                                .stack
+                                .iter()
+                                .find(|v| {
+                                    v.kind == StackKind::Spell
+                                        && v.card == card
+                                        && Some(v.object) == bound.object
+                                })
+                                .map(|v| (v.id, v.controller))
+                        {
+                            self.counter_stack_item(id, false);
+                            self.create_tokens(controller, token, u128::from(amount), false);
+                        }
+                    }
+                }
                 Instruction::CounterThenDrawIfDiscounted => {
                     for bound in &item.targets {
                         if let Target::Spell(card) = bound.target

@@ -3,10 +3,20 @@
   "catalogue_id": 2034,
   "oracle_id": "749683c9-8cc0-4e8e-8d90-adda5e5f4e93",
   "facts_sha256": "d8f6e0d37ac8237f6e418b3a3b9389cde6e84e4b3a2ea903a4a5f655937f1ec0",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "690e1c97e8d042a27728469f8d7590587f0ea55e647de539aef6c28a1475165b"
   },
-  "physical_metadata_sha256": "2ee905334387bfbda8a56010329ef7b6a34b9c5b32cd68fcee05fc0d3f1484f1"
+  "physical_metadata_sha256": "2ee905334387bfbda8a56010329ef7b6a34b9c5b32cd68fcee05fc0d3f1484f1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HidetsugusSecondRite.java",
+  "java_sha256": "4d42a627715c4493cde9b7afb7db686748e8fae0b8a86aa80cd09116f0743c63",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPlayer.java",
+      "sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba"
+    }
+  ]
 }

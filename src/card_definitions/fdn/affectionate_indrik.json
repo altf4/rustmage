@@ -3,10 +3,30 @@
   "catalogue_id": 76,
   "oracle_id": "88aa032d-dc11-4cae-81f3-ce66353963e0",
   "facts_sha256": "539376af6f1ec6ad54c7bae793d4b4b64fa1b1e9a27cb2d865865ff91cf9f56f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "02d945f04f949cc3debe2185120cb587ceacdf2955926dbe24a2d06ee11efa40"
   },
-  "physical_metadata_sha256": "d896487ca046cf317aa78bc5aec496e0e44f4c47e32a3d4c72153d0aa2d26596"
+  "physical_metadata_sha256": "d896487ca046cf317aa78bc5aec496e0e44f4c47e32a3d4c72153d0aa2d26596",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AffectionateIndrik.java",
+  "java_sha256": "6fd7a6a5fe08b54963ab76a90cb4c22371074b5468707578a0fb56f0d6820b64",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/FightTargetSourceEffect.java",
+      "sha256": "b802e4848e87fcc9bfdf1cbcf6f1c333051aba5139e0a69f556a8015f215fd6f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ]
 }

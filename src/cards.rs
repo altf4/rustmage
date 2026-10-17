@@ -483,6 +483,18 @@ pub(crate) enum Instruction {
         skip: usize,
     },
     CounterThenDrawIfDiscounted,
+    /// Countering may fail; the spell's captured current controller still creates tokens.
+    CounterAndCreateForController {
+        token: Card,
+        amount: u16,
+    },
+    /// Resolution-time life condition on the targeted player.
+    IfTargetPlayerLife {
+        life: i128,
+        skip: usize,
+    },
+    /// The exact source permanent fights its targeted creature without targeting itself.
+    FightSource,
     DiscardScaled(PlayerSet, AmountValue),
     DiscardManaValueLifeLoss,
     PutLandCards {

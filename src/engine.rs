@@ -5741,3 +5741,7 @@ mod fdn_lords_six_tests;
 #[cfg(test)]
 #[path = "engine_fdn_attachments_six_tests.rs"]
 mod fdn_attachments_six_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_targeted_seven_tests.rs"]
+mod fdn_targeted_seven_tests;
