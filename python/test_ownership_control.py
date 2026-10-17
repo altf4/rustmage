@@ -45,7 +45,7 @@ class OwnershipControlTests(unittest.TestCase):
                 if head['outcome'] is not None:
                     self.assertEqual(stage,'finish',(player,seed,mode,stage,name,iteration))
                     self.assertTrue(any({1,2,3} <= seen for seen in chapters.values()),chapters)
-                    self.assertTrue(route=='Omen' or mana_witness if name==MIDGAR else route=='Omen' or attacked,(player,seed,name,route))
+                    self.assertTrue(route=='Omen' or (mana_witness if name==MIDGAR or name in BASICS else attacked),(player,seed,name,route))
                     return dict(frames=frames,player=player,name=name,route=route,private=private,distributions=distributions)
                 o=g.observe(head['actor']); actor=o['actor']; objects={v['id']:v for v in o['objects']}
                 mine=g.observe(player); hand=[v for v in mine['objects'] if v['zone']=='Hand' and v['owner']==player]
@@ -94,14 +94,20 @@ class OwnershipControlTests(unittest.TestCase):
                 if actor==player and stage=='setup' and len([v for v in ours if v['card'] in BASICS])>=8:
                     for action in o['actions']:
                         card=objects.get(action.get('card'),{})
-                        if card.get('id') not in eligible or card.get('owner')!=opponent or card.get('card') not in PAIRS: continue
+                        if card.get('id') not in eligible or card.get('owner')!=opponent: continue
+                        if card.get('card') in BASICS:
+                            if mode=='auto' and action['kind']=='PlayLand':candidates.append(action)
+                            continue
+                        if card.get('card') not in PAIRS:continue
                         wanted='Omen' if card['card']==BLOOM else 'Adventure'
                         if mode!='auto' and wanted!=mode: continue
                         if action['kind']=='Announce'+wanted: candidates.append(action)
                 preferred=None
                 if candidates:
-                    preferred=min(candidates,key=lambda a:(coverage or {}).get((objects[a['card']]['card'],'Omen' if objects[a['card']]['card']==BLOOM else 'Adventure',player),0))
-                finishing = stage=='finish' and (name!=MIDGAR or mana_witness)
+                    insets=[a for a in candidates if a['kind']!='PlayLand']
+                    if insets:candidates=insets
+                    preferred=min(candidates,key=lambda a:(coverage or {}).get((objects[a['card']]['card'],'Land' if a['kind']=='PlayLand' else 'Omen' if objects[a['card']]['card']==BLOOM else 'Adventure',player),0))
+                finishing = stage=='finish' and (name!=MIDGAR and name not in BASICS or mana_witness)
                 def score(a):
                     k=a['kind']; card=objects.get(a.get('card'),{}); n=card.get('card','')
                     if preferred is not None and a==preferred:return 3100
@@ -130,7 +136,7 @@ class OwnershipControlTests(unittest.TestCase):
                     if k in ['AnnounceActivate','Activate','BeginActivate']:
                         return 2800 if actor==player and a.get('card')==source and name in [GIANT,HOLLOW] and stage=='finish' and not activated else -1000
                     if k in ['TapMana','ActivateMana','AnnounceMana']:
-                        if actor==player and a.get('card')==source and name==MIDGAR and stage=='finish':return 2900
+                        if actor==player and a.get('card')==source and (name==MIDGAR or name in BASICS) and stage=='finish':return 2900
                         return 2500 if o['decision'] in ['pay_costs','resolution_mana','additional_cost'] else -1000
                     if k in ['Discard','Bottom']:
                         if actor==player and stage=='setup' and n==SAGA:return -500
@@ -147,7 +153,7 @@ class OwnershipControlTests(unittest.TestCase):
                 self.assertGreaterEqual(score(action),0,(player,seed,mode,stage,name,o['decision'],o['actions']))
                 ann=o['announcing']
                 if action==preferred and preferred is not None:
-                    source=action['card'];name=objects[source]['card'];route=action['kind'].removeprefix('Announce')
+                    source=action['card'];name=objects[source]['card'];route='Land' if action['kind']=='PlayLand' else action['kind'].removeprefix('Announce')
                     base=dict(library=o['players'][pi]['library_count'],owner_library=o['players'][qi]['library_count'])
                     stage='wait_inset'
                 if action['kind']=='AnnounceExile' and actor==player:stage='wait_normal'
