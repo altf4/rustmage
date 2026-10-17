@@ -25,6 +25,9 @@ pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
 #[path = "engine_gift.rs"]
 mod gift;
+#[cfg(test)]
+#[path = "engine_gift_tests.rs"]
+mod gift_tests;
 pub use gift::{GiftContext, GiftDeclaration};
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
 pub const OBSERVATION_SCHEMA: u32 = 90;
@@ -695,6 +698,8 @@ pub struct TriggerSourceMoveView {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gift: Option<Box<GiftContext>>,
     pub source_move: Option<Box<TriggerSourceMoveView>>,
     pub crew: Option<Box<CrewContext>>,
     pub cast_event: Option<Box<CastPaymentEvent>>,
@@ -1224,6 +1229,7 @@ pub struct ObjectView {
 /// Engine internals consume this value; observations do not expose hidden transitions.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ZoneChange {
+    pub gift: Option<Box<GiftContext>>,
     pub before: ObjectView,
     pub after: ObjectRef,
     pub destination: Zone,
@@ -2262,6 +2268,13 @@ impl Game {
                         }),
                         Effect::Spell(spec, _) | Effect::Aura(spec) => {
                             self.cast_targets_available(spec, actor, self.object_ref(card))
+                                || obj.card.gift().is_some_and(|gift| {
+                                    self.cast_targets_available(
+                                        gift.promised_targets,
+                                        actor,
+                                        self.object_ref(card),
+                                    )
+                                })
                         }
                         _ => true,
                     };
@@ -2353,6 +2366,7 @@ impl Game {
                         && obj.zone == Zone::Hand
                         && obj.card.offspring_cost().is_none()
                         && obj.card.kicker_cost().is_none()
+                        && obj.card.gift().is_none()
                         && obj.card.collect_evidence_cost().is_none()
                         && !obj.card.has_bargain()
                         && obj.card.additional_cost().is_none()
@@ -2408,6 +2422,7 @@ impl Game {
                         || target_cost
                         || obj.card.offspring_cost().is_some()
                         || obj.card.kicker_cost().is_some()
+                        || obj.card.gift().is_some()
                         || obj.card.collect_evidence_cost().is_some()
                         || obj.card.has_convoke()
                         || obj.card.has_bargain()
@@ -3681,6 +3696,7 @@ impl Game {
         // CR111.8: after leaving the battlefield, a token cannot move again.
         if before.card.is_emblem() || (before.card.is_token() && before.zone != Zone::Battlefield) {
             return ZoneChange {
+                gift: None,
                 after: before.reference,
                 destination: before.zone,
                 before,
@@ -3846,6 +3862,7 @@ impl Game {
             }
         }
         ZoneChange {
+            gift: None,
             before,
             after: self.object_ref(id),
             destination,
@@ -4898,9 +4915,13 @@ impl Game {
                 .chain(s.resolving.iter().map(|resolution| &resolution.item))
                 .chain(s.announcing.iter().map(|announcement| &announcement.item))
                 .map(|item| {
-                    item.source_move
+                    item.gift
                         .as_ref()
-                        .map_or(0, |_| std::mem::size_of::<TriggerSourceMoveView>())
+                        .map_or(0, |_| std::mem::size_of::<GiftContext>())
+                        + item
+                            .source_move
+                            .as_ref()
+                            .map_or(0, |_| std::mem::size_of::<TriggerSourceMoveView>())
                         + item
                             .cast_event
                             .as_ref()

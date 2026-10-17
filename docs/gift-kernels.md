@@ -43,3 +43,28 @@ correct keyword-removal ordering. Existing primitives will be checked before
 recording any of these as missing dependencies. No supported prefix alone admits
 a whole card. Complete additional consumers unlocked by the generic primitives
 will be included explicitly in the final canonical inventory.
+
+## Compiling prototype checkpoint
+
+The current prototype compiles thirteen complete bodies: Blooming Blast, Consumed
+by Greed, Crumb and Get It, Dewdrop Cure, Into the Flood Maw, Long River's Pull,
+Longstalk Brawl, Mind Spiral, Nocturnal Hunger, Peerless Recycling, Sazacap's Brew,
+Scrapshooter and Wear Down. It changes exactly those thirteen definitions,
+retaining5318 other definitions and all94 existing token recipes. It adds typed
+Gift recipe helpers and Sazacap's mandatory discard-cost helper. Candidate coverage
+is1908; this is an in-progress implementation, with full acceptance still pending.
+
+Two focused native groups pass20 paid foreign-owned both-seat cases covering all
+four payloads, promise/decline, exact beneficiary/controller/token characteristics,
+pre-target illegal-action rejection, paid permanent entry, separate inherent and
+printed entry triggers, and no inherited promise after a synthetic blink. Every
+applied action checks independent owned branches, parent destruction, restore,
+both views and wrong-actor/stale-revision denials. Nine compiler methods pass,
+including three new Gift methods and six inherited metadata controls; the new
+checks cover39 whole-body positives/309 raw negatives, exact parent preservation,
+and every pinned full source. The first raw matrix exposed a prototype intrinsic
+parenthetical escape on Scrapshooter; strict intrinsic-line reminder validation
+closed it before this checkpoint. Earlier generated target plans failed Rust's
+static-lifetime check and were corrected using constant recipes. These historical
+failures are not reported as passes. Remaining planned consumers and broad native,
+public self-play, compiler and independent review gates remain required.

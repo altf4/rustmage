@@ -200,6 +200,7 @@ impl Game {
             let controller = b.view.controller;
             self.state.pending_triggers.push(SpellView {
                 source_move: None,
+                gift: None,
                 crew: None,
                 cast_event: None,
                 delayed_sacrifice: Some(Box::new(b.view)),

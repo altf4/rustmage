@@ -616,6 +616,7 @@ impl Game {
         let object = event.after;
         let id = self.next_stack_id();
         SpellView {
+            gift: None,
             source_move: None,
             crew: None,
             cast_event: None,

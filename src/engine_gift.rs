@@ -15,9 +15,45 @@ pub struct GiftContext {
     pub caster: Player,
     pub beneficiary: Player,
     pub kind: GiftKind,
+    pub entry: Option<ObjectRef>,
+}
+
+impl SpellView {
+    pub(super) fn gift_context(&self) -> Option<GiftContext> {
+        if let Some(context) = &self.gift {
+            return Some(**context);
+        }
+        let Some(GiftDeclaration::Promised { beneficiary }) = self.cast?.gift else {
+            return None;
+        };
+        Some(GiftContext {
+            source: self.object,
+            caster: self.controller,
+            beneficiary,
+            kind: self.source_card.gift()?.kind,
+            entry: None,
+        })
+    }
 }
 
 impl Game {
+    pub(super) fn give_gift(&mut self, item: &SpellView) {
+        let Some(context) = item.gift_context() else {
+            return;
+        };
+        match context.kind {
+            GiftKind::Card => self.draw_many(context.beneficiary, 1),
+            GiftKind::Food | GiftKind::Treasure | GiftKind::TappedFish => {
+                let spec = item.source_card.gift().expect("complete Gift recipe");
+                self.create_tokens(
+                    context.beneficiary,
+                    spec.token.expect("Gift token factory"),
+                    1,
+                    context.kind == GiftKind::TappedFish,
+                );
+            }
+        }
+    }
     pub(super) fn gift_choice_fundable(
         &self,
         announcement: &Announcement,
@@ -32,13 +68,12 @@ impl Game {
             Some(beneficiary) => GiftDeclaration::Promised { beneficiary },
         });
         let plan = self.target_spec(&proposal.item);
+        proposal.plan = plan;
         self.targets_available(
             plan,
             proposal.item.controller,
             proposal.item.target_source(),
-        ) && proposal
-            .cost_options()
-            .any(|cost| self.announcement_cost_fundable(&proposal, cost))
+        ) && self.announcement_target_fundable(&proposal, Some(plan), None, None, None, false)
     }
 
     pub(super) fn choose_gift(&mut self, beneficiary: Option<Player>) {

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "b95fb9206930389735d0a072eaaf83034dfacc948d4e8c45a500b009c506e2c3",
+  "catalogue_version": "9bd9e7baf9cddaddbb88386849a57f7989f06888154266dbae4a086e0e8316a4",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1895,
-  "implemented_total": 1901,
+  "implemented_standard_cards": 1908,
+  "implemented_total": 1914,
   "token_definitions": 94,
   "emblem_definitions": 1,
   "cards": [
@@ -2800,8 +2800,8 @@
     {
       "name": "Blooming Blast",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Blooming Marsh",
@@ -5032,8 +5032,8 @@
     {
       "name": "Consumed by Greed",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Consuming Aberration",
@@ -5446,8 +5446,8 @@
     {
       "name": "Crumb and Get It",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Crusader of Odric",
@@ -6412,8 +6412,8 @@
     {
       "name": "Dewdrop Cure",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Diamond Mare",
@@ -13216,8 +13216,8 @@
     {
       "name": "Into the Flood Maw",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Into the Roil",
@@ -15280,8 +15280,8 @@
     {
       "name": "Long River's Pull",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Long-Bodied Grey Dog",
@@ -15298,8 +15298,8 @@
     {
       "name": "Longstalk Brawl",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Loot, Exuberant Explorer",
@@ -16588,8 +16588,8 @@
     {
       "name": "Mind Spiral",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Mind Spring",
@@ -17746,8 +17746,8 @@
     {
       "name": "Nocturnal Hunger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Noggle Robber",
@@ -18736,8 +18736,8 @@
     {
       "name": "Peerless Recycling",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Peerless Ropemaster",
@@ -22234,8 +22234,8 @@
     {
       "name": "Sazacap's Brew",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Sazh Katzroy",
@@ -22426,7 +22426,7 @@
     {
       "name": "Scrapshooter",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -30142,8 +30142,8 @@
     {
       "name": "Wear Down",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Weather Maker",

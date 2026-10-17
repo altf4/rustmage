@@ -409,6 +409,15 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    GiveGift,
+    DamageWithController {
+        damage: i32,
+        controller_damage: i32,
+    },
+    IfGift {
+        promised: bool,
+        skip: usize,
+    },
     CreateRolesMatching {
         token: Card,
         filter: CreatureFilter,
@@ -1202,6 +1211,8 @@ pub(crate) enum TriggerCondition {
     SelfAttacksWhileSaddled,
     SelfEntersOrAttacksWhileSaddled,
     SelfSaddledFirst,
+    /// A paid promise belongs to this actual cast-to-battlefield entry event.
+    SelfGiftEnters,
     Foraged,
     FoodsSacrificed,
     Reflexive,
