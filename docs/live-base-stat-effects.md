@@ -81,3 +81,24 @@ exiled Role token cannot reenter under CR111.8. The latter is now an explicit
 rejection test, and impossible token/emblem entries do not acquire timestamps or
 create ordering choices. A source with both self and live clauses also verifies
 that it shares one timestamp.
+
+## Prototype runtime and full-body lowering
+
+At ebacd75 the five primitive tests PASS0.01s; all-target Clippy, fmt and generator
+check PASS. A direct audit-file command failed on Python module lookup; the same
+source audit passes through `python3 -m unittest scripts.test_live_base_stats`
+(0.098s). The immutable-export full native suite passes24.501s with885 tracked
+inputs unchanged; both target and expanded source were cleaned after terminal
+completion, preserving all SOs and a verified compressed source archive.
+
+Generic full-line continuous clauses now produce immutable typed recipes, with
+normal residual creature, Equipment/Equip and Aura/Flash compilation. Four bodies
+compile at this old-parent prototype:1,954/5,164, schema100. All5,328 other
+definitions and911 inherited helpers remain identical, with four new live recipe
+helpers plus normal Aettir Equipment/Burden Aura recipes. All four compiler/audit
+methods pass0.442s, including raw/infix/nested/cost/layout negatives and a
+preservation mutant. Multiple overlapping live clauses and timing/type-grant
+keyword tails remain unsupported pending their shared semantics. This is not
+main coverage or final paid acceptance; real paid native groups and actual-parent
+composition are next. The initial generator attempt found a keyword-mask lookup
+error before writing outputs; it was corrected before generating this catalogue.

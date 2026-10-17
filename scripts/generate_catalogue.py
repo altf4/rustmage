@@ -101,6 +101,67 @@ def base_stat_program(text):
     return ('None' if subject=='Source' else 'CreatureYou' if who.endswith('you control') else 'Creature'),program
 
 
+def extract_live_static_stats(card):
+    """Typed, whole continuous clauses; every residual ability must still compile."""
+    kind=permanent_type(card)
+    if (card.get('layout')!='normal' or not isinstance(card.get('oracle_text'),str)
+            or spell_cost_options(card.get('mana_cost','')) is None
+            or kind not in ('Creature','Artifact Creature','Enchantment Creature','Artifact','Enchantment')):
+        return card,[]
+    is_creature='Creature' in kind.split()
+    is_aura=kind=='Enchantment' and card.get('type_line','').endswith(' — Aura')
+    is_equipment=kind=='Artifact' and 'Equipment' in card.get('type_line','').split(' — ')[-1].split()
+    residual=[];effects=[];clauses=0
+    def number(value):
+        n=int(value)
+        return n if -(2**127)<=n<2**127 else None
+    def opt(value):return 'None' if value is None else 'Some(LiveStatValue::'+value+')'
+    def effect(recipients,condition=None,power=None,toughness=None,bonus=(0,0),keywords=0,block=None):
+        return ('LiveStaticEffect { recipients: LiveStatRecipients::'+recipients+
+            ', condition: '+('None' if condition is None else 'Some('+condition+')')+
+            ', power: '+opt(power)+', toughness: '+opt(toughness)+
+            ', bonus_power: '+str(bonus[0])+', bonus_toughness: '+str(bonus[1])+
+            ', keywords: Keywords('+str(keywords)+'), cannot_block_subtype: '+
+            ('None' if block is None else 'Some('+json.dumps(block)+')')+' }')
+    for raw in card['oracle_text'].splitlines():
+        if is_equipment and raw=='Equipped creature has base power and toughness X/X, where X is your life total.':
+            effects.append(effect('Attached',power='ControllerLife',toughness='ControllerLife'));clauses+=1;continue
+        m=re.fullmatch(r"Enchanted creature gets ([+-][0-9]+)/([+-][0-9]+) as long as it's a ([A-Z][A-Za-z]+) you control\. Otherwise, it has base power and toughness (-?[0-9]+)/(-?[0-9]+) and can't block ([A-Z][A-Za-z]+)s\.",raw)
+        if m and is_aura and m[3] in CREATURE_TYPE_NAMES and m[6] in CREATURE_TYPE_NAMES:
+            values=[number(m[i])for i in (1,2,4,5)]
+            if all(v is not None for v in values):
+                cond='LiveStatCondition { subtype: '+json.dumps(m[3])+', negated: '
+                effects.extend([effect('Attached',condition=cond+'false }',bonus=values[:2]),
+                    effect('Attached',condition=cond+'true }',power='Fixed('+str(values[2])+')',toughness='Fixed('+str(values[3])+')',block=m[6])]);clauses+=1;continue
+        m=re.fullmatch(r'(Other creatures|Creatures)( you control| your opponents control)?( that are enchanted by Auras you control)? have base (power and toughness|power|toughness) (-?[0-9]+)(?:/(-?[0-9]+))?(?: and have (.+))?\.',raw)
+        if m and is_creature and (m[4]=='power and toughness')==(m[6] is not None):
+            first=number(m[5]);second=number(m[6])if m[6] is not None else None
+            words=keyword_list(m[7])if m[7] is not None else 0
+            if first is not None and (m[6] is None or second is not None) and words is not None and not words&KEYWORDS['flash']:
+                relation={' you control':0,' your opponents control':1,None:-1}[m[2]]
+                recipients='Creatures { relation: '+str(relation)+', other: '+str(m[1].startswith('Other')).lower()+', enchanted_by_controller: '+str(m[3] is not None).lower()+' }'
+                power='Fixed('+str(first)+')'if m[4]!='toughness'else None
+                toughness='Fixed('+str(second if m[4]=='power and toughness'else first)+')'if m[4]!='power'else None
+                effects.append(effect(recipients,power=power,toughness=toughness,keywords=words));clauses+=1;continue
+        residual.append(raw)
+    if clauses!=1:return card,[]
+    return dict(card,oracle_text='\n'.join(residual)),effects
+
+
+def live_static_reminders_valid(card):
+    # Detect both literal and erased routes. An erased phrase never authenticates
+    # its own raw clause; complete intrinsic reminder slots are the only exception.
+    raw=card.get('oracle_text','')
+    if not isinstance(raw,str):return True
+    surface=raw;seen=False
+    while True:
+        seen |= bool(re.search(r'creatures.*have base|equipped creature has base|otherwise, it has base',' '.join(surface.casefold().split())))
+        erased=re.sub(r'\([^()]*\)','',surface)
+        if erased==surface:break
+        surface=erased
+    return not seen or all(intrinsic_reminder_line_valid(line) for line in raw.splitlines()if '(' in line or ')' in line)
+
+
 def extract_base_stat_setter(card):
     if (card.get('layout')!='normal' or not isinstance(card.get('oracle_text'),str)
             or 'Creature' not in card.get('type_line','').split(' — ')[0].split()):return card,None
@@ -5023,6 +5084,7 @@ def compile_catalogue(snapshot, target):
     enchanted_rows = []
     flash_surcharge_rows = []
     base_set_rows = []
+    live_static_rows = []
     combat_rows = []
     grant_rows = []
     dynamic_rows = []
@@ -5089,6 +5151,7 @@ def compile_catalogue(snapshot, target):
         # Detection never authenticates or changes the raw validation body.
         gift_card, gift_kind = extract_gift(original)
         card, timing_grants = extract_cast_timing_grants(gift_card)
+        card, live_static = extract_live_static_stats(card)
         card, base_set = extract_base_stat_setter(card)
         card, combat = extract_combat_restriction(card)
         card, uncounterable = extract_uncounterable(card)
@@ -5314,6 +5377,8 @@ def compile_catalogue(snapshot, target):
             effect = 'Unsupported'
         if not intrinsic_reminders_valid(dict(original, oracle_text=suspect_proxy)):
             effect = 'Unsupported'
+        if not live_static_reminders_valid(original):
+            effect='Unsupported'
         if not base_stat_reminders_valid(original):
             effect='Unsupported'
         if not battlefield_return_reminders_valid(original):
@@ -5402,6 +5467,7 @@ def compile_catalogue(snapshot, target):
                 raise ValueError(f'invalid or missing starting loyalty: {name}')
             loyalty_rows.append(f'        {index} => {int(value)},')
         if effect != 'Unsupported':
+            if live_static:live_static_rows.append(f'        {index} => &[{", ".join(live_static)}],')
             if base_set:base_set_rows.append(f'        {index} => Some({base_set}),')
             if gift_body is not None or gift_permanent is not None:
                 token='None'
@@ -5510,7 +5576,7 @@ def compile_catalogue(snapshot, target):
             color_masks.append(color)
             # Clone every compiled property table for the immutable copy; no
             # mutable copy/type-changing engine or runtime card-name dispatch.
-            for table in [base_set_rows,combat_rows,static_rows,grant_rows,dynamic_rows,scaling_rows,additional_rows,hybrid_rows,reduction_rows,cast_timing_rows,target_reduction_rows,entry_counter_rows,entry_suppression_rows,opponent_entry_tapped_rows,offspring_rows]:
+            for table in [live_static_rows,base_set_rows,combat_rows,static_rows,grant_rows,dynamic_rows,scaling_rows,additional_rows,hybrid_rows,reduction_rows,cast_timing_rows,target_reduction_rows,entry_counter_rows,entry_suppression_rows,opponent_entry_tapped_rows,offspring_rows]:
                 prefix=f'        {source_index} =>'
                 table.extend(row.replace(prefix,f'        {index} =>',1) for row in list(table) if row.startswith(prefix))
             offspring_copy_rows.append(f'        {index} => Some(__TOKEN_{key}__),')
@@ -5597,6 +5663,7 @@ def compile_catalogue(snapshot, target):
     for index, (name, _, _, _) in enumerate(LEGACY):
         lines.append(f'    pub const {name.replace(" ", "")}: Card = Card({index});')
     lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn equipment(card: Card) -> Option<EquipmentSpec> {', '    match card.0 {', *equipment_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn aura(card: Card) -> Option<AuraSpec> {', '    match card.0 {', *aura_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', "pub(super) fn live_static_effects(card: Card) -> &'static [LiveStaticEffect] {", '    match card.0 {', *live_static_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn base_stat_setter(card: Card) -> Option<BaseStatSetter> {', '    match card.0 {', *base_set_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn combat_restriction(card: Card) -> Option<CombatRestriction> {', '    match card.0 {', *combat_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn role(card: Card) -> Option<RoleKind> {', '    match card.0 {', *role_rows, '        _ => None,', '    }', '}', '']

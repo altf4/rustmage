@@ -1,4 +1,4 @@
-//! Sparse live source clauses. Admission waits for complete compiler/timestamp support.
+//! Sparse live source clauses use current earlier-layer facts and a shared timestamp clock.
 use super::*;
 use crate::cards::{LiveStatRecipients, LiveStatValue, LiveStaticEffect};
 

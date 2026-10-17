@@ -1808,7 +1808,7 @@ impl Card {
     }
     /// No new body is admitted until complete lowering and timestamp batching exist.
     pub(crate) fn live_static_effects(self) -> &'static [LiveStaticEffect] {
-        &[]
+        generated::live_static_effects(self)
     }
     pub(crate) fn base_stat_setter(self) -> Option<BaseStatSetter> {
         generated::base_stat_setter(self)
