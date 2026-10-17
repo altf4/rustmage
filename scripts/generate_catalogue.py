@@ -1511,6 +1511,8 @@ def statement_program(text):
     text = strip_rule_label(text)
     if not text:return None
     text = normalize_duration(text[0].lower() + text[1:])
+    if text=='you may play an additional land this turn.':
+        return ['AdditionalLandPlays(1)']
     if text=='discard a card. If you do, draw two cards.':
         # Resolution is mandatory if a card exists. The guard skips both the
         # discard and dependent draw when the hand is empty; no optional decline.
@@ -1748,6 +1750,7 @@ for _name, _zone, _kinds, _relation, _other, _nonland in [
     ('CreatureGraveYou', 'Graveyard', 1, 0, False, False),
     ('OtherCreatureGraveYou', 'Graveyard', 1, 0, True, False),
     ('InstantSorceryGraveYou', 'Graveyard', 12, 0, False, False),
+    ('ArtifactEnchantmentGraveYou', 'Graveyard', 48, 0, False, False),
     ('CreatureGrave', 'Graveyard', 1, -1, False, False),
 ]:
     TARGET_RULES[_name] = (f'TargetRule::Object {{ zone: TargetZone::{_zone}, kinds: {_kinds}, '
@@ -2057,6 +2060,18 @@ def targeted_program(text):
         return ('OtherNonland',0,2),['ReturnToHand']
     if text=='remove all counters from up to one target creature.':
         return ('Creature',0,1),['RemoveAllCounters']
+    if m:=re.fullmatch(r"put target (permanent|instant or sorcery) card from your graveyard on top of your library\.",text):
+        return ('PermanentGraveYou' if m[1]=='permanent' else 'InstantSorceryGraveYou'),['TopLibrary']
+    if text=="return target creature you don't control with mana value 3 or less to its owner's hand.":
+        return 'CreatureOpponentMax3',['ReturnToHand']
+    if text=='tap one or two target creatures.':
+        return ('Creature',1,2),['Tap']
+    if text=="up to two target creatures can't block this turn.":
+        return ('Creature',0,2),['GrantKeywords { subject: Subject::Targets, keywords: Keywords(2048) }']
+    if text=='return up to two target artifact and/or enchantment cards from your graveyard to your hand.':
+        return ('ArtifactEnchantmentGraveYou',0,2),['ReturnToHand']
+    if m:=re.fullmatch(r'target artifact or creature you control (.+)',text):
+        if program:=keyword_effect(m[1], 'Targets'):return 'ArtifactCreatureYou',program
     # Exact single target moves. Owner choice never denotes a spell target.
     library_subjects={'target creature':'Creature','target artifact or creature':'ArtifactCreature','target nonland permanent':'Nonland'}
     if m:=re.fullmatch(r"(?:(target creature|target artifact or creature|target nonland permanent)'s owner|the owner of (target nonland permanent)) puts it on their choice of the top or bottom of their library\.",text):
@@ -2074,6 +2089,7 @@ def targeted_program(text):
         'other target permanent you control':'OtherPermanentYou',
         'other target nonland permanent you control':'OtherNonlandYou',
         'target tapped creature':'CreatureTapped','target artifact or creature':'ArtifactCreature',
+        'target artifact or creature you control':'ArtifactCreatureYou',
         'target nonland permanent an opponent controls':'NonlandOpponent','target land':'Land',
     }
     if m:=re.fullmatch(r"return (up to one |)(.+) to its owner's hand\.",text):

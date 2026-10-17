@@ -565,6 +565,8 @@ pub(crate) enum Instruction {
     ExileGraveyard(PlayerSet),
     ReturnToHand,
     BottomLibrary,
+    TopLibrary,
+    AdditionalLandPlays(u64),
     OwnerLibrary,
     ReturnToBattlefield,
     ReturnToBattlefieldTapped,

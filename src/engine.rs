@@ -21,7 +21,7 @@ pub use adventure::{AdventurePermission, SpellCharacteristicsView};
 pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 80;
+pub const OBSERVATION_SCHEMA: u32 = 81;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
 #[path = "engine_mobilize.rs"]
@@ -592,6 +592,7 @@ impl Object {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct PlayerState {
+    extra_land_plays_remaining: u64,
     nonland_permanents_entered_this_turn: u64,
     spells_cast_this_turn: u64,
     cards_drawn_this_turn: u64,
@@ -1167,6 +1168,8 @@ pub struct ZoneChange {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct PlayerView {
+    /// Additional land plays granted until the current turn ends.
+    pub extra_land_plays_remaining: u64,
     /// Historical actual entries this turn; departures do not remove them.
     pub nonland_permanents_entered_this_turn: u64,
     pub spells_cast_this_turn: u64,
@@ -1464,6 +1467,7 @@ impl Game {
         }
         let mut objects = Vec::with_capacity(config.decks.iter().map(Vec::len).sum());
         let mut players = std::array::from_fn(|_| PlayerState {
+            extra_land_plays_remaining: 0,
             nonland_permanents_entered_this_turn: 0,
             spells_cast_this_turn: 0,
             cards_drawn_this_turn: 0,
@@ -2126,7 +2130,11 @@ impl Game {
                         continue;
                     }
                     if obj.card.is_land() {
-                        if sorcery && !s.land_played && emit(Action::PlayLand { card }) {
+                        if sorcery
+                            && (!s.land_played
+                                || s.players[actor.index()].extra_land_plays_remaining > 0)
+                            && emit(Action::PlayLand { card })
+                        {
                             return true;
                         }
                         continue;
@@ -2799,7 +2807,11 @@ impl Game {
                 } else {
                     self.move_object(card, Zone::Battlefield);
                 }
-                self.state.land_played = true;
+                if self.state.land_played {
+                    self.state.players[actor.index()].extra_land_plays_remaining -= 1;
+                } else {
+                    self.state.land_played = true;
+                }
                 self.state.passes = 0;
             }
             Action::TapMana { card } => {
@@ -3849,6 +3861,9 @@ impl Game {
     }
 
     fn finish_cleanup(&mut self) {
+        for player in &mut self.state.players {
+            player.extra_land_plays_remaining = 0;
+        }
         let expired_vehicles = self.expire_vehicle_animation();
         self.state.saddled.clear();
         self.state
@@ -4234,6 +4249,7 @@ impl Game {
                 Pending::Terminal => "terminal",
             },
             players: std::array::from_fn(|i| PlayerView {
+                extra_land_plays_remaining: s.players[i].extra_land_plays_remaining,
                 nonland_permanents_entered_this_turn: s.players[i]
                     .nonland_permanents_entered_this_turn,
                 spells_cast_this_turn: s.players[i].spells_cast_this_turn,
@@ -5193,3 +5209,7 @@ mod selected_x_tests;
 #[cfg(test)]
 #[path = "engine_split_search_tests.rs"]
 mod split_search_tests;
+
+#[cfg(test)]
+#[path = "engine_adventure_land_targets_tests.rs"]
+mod adventure_land_targets_tests;
