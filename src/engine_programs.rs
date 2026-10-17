@@ -1126,6 +1126,26 @@ impl Game {
         players.into_iter().flatten()
     }
 
+    /// Selected players own a resolution-time recipient set; creatures are not targets.
+    pub(super) fn player_creature_recipients(
+        &self,
+        players: PlayerSet,
+        item: &SpellView,
+    ) -> Vec<CardId> {
+        let controllers: Vec<_> = self.program_players(players, item).collect();
+        self.state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(id, object)| {
+                self.on_battlefield(*id as CardId)
+                    && self.is_creature(*id as CardId)
+                    && controllers.contains(&object.controller)
+            })
+            .map(|(id, _)| id as CardId)
+            .collect()
+    }
+
     pub(super) fn run_program(&mut self) {
         loop {
             if self.advance_replacements(false) {
@@ -1830,6 +1850,28 @@ impl Game {
                     for player in self.program_players(set, &item) {
                         self.lose_life(player, i128::from(amount));
                     }
+                }
+                Instruction::UntapPlayerCreatures(players) => {
+                    let recipients = self.player_creature_recipients(players, &item);
+                    for id in recipients {
+                        self.state.objects[id as usize].untap();
+                    }
+                }
+                Instruction::PutPlayerCreatureCounters {
+                    players,
+                    kind,
+                    amount,
+                } => {
+                    let changes = self
+                        .player_creature_recipients(players, &item)
+                        .into_iter()
+                        .map(|id| {
+                            let mut counters = Counters::default();
+                            counters.add(kind, u64::from(amount));
+                            (self.object_ref(id), counters)
+                        })
+                        .collect();
+                    self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
                 Instruction::UntapCreatures(filter) | Instruction::TapCreatures(filter) => {
                     let ids: Vec<_> = self
