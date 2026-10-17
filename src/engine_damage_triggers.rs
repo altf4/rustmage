@@ -28,11 +28,7 @@ impl Game {
         attachments: impl Iterator<Item = &'a Object>,
     ) -> bool {
         object.zone == Zone::Battlefield
-            && (object.counters.plus_one > 0
-                || object.counters.minus_one > 0
-                || object.counters.stun > 0
-                || object.counters.loyalty > 0
-                || object.counters.lore > 0
+            && (object.counters.total() > 0
                 || attachments.into_iter().any(|attachment| {
                     attachment.zone == Zone::Battlefield
                         && attachment.attached_to == Some(source)
@@ -62,11 +58,7 @@ impl Game {
                 object.card
             },
             battlefield: object.zone == Zone::Battlefield,
-            counter: object.counters.plus_one > 0
-                || object.counters.minus_one > 0
-                || object.counters.stun > 0
-                || object.counters.loyalty > 0
-                || object.counters.lore > 0,
+            counter: object.counters.total() > 0,
             plus_one: object.counters.plus_one > 0,
             modified: self.is_modified(id),
             attacking: self.state.attackers.iter().any(|a| a.card == id),

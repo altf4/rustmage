@@ -53,6 +53,11 @@ impl EntryBatch {
         std::mem::size_of::<Self>()
             + self.moves.len() * std::mem::size_of::<EntryMove>()
             + self
+                .moves
+                .iter()
+                .map(|m| m.counters.owned_bytes() + m.before.counters.owned_bytes())
+                .sum::<usize>()
+            + self
                 .tap_events
                 .iter()
                 .map(EntryTapEvent::bytes)
@@ -409,7 +414,7 @@ impl Game {
             .map(|m| {
                 // Impossible Aura entry can redirect an already staged move.
                 let counters = if m.destination == Zone::Battlefield {
-                    m.counters
+                    m.counters.clone()
                 } else {
                     Counters::default()
                 };
@@ -604,7 +609,7 @@ impl Game {
                     controller: m.controller,
                     subtypes: GrantedSubtypes::default(),
                     kind: m.before.card.kind_mask(),
-                    amount: m.counters,
+                    amount: m.counters.clone(),
                     effect: true,
                     entry_index: Some(index),
                     private: !visible(m, m.before.owner.other(), &self.state.known_hand),

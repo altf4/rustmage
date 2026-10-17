@@ -2687,7 +2687,7 @@ impl Game {
                             };
                             Some((
                                 self.object_ref(id),
-                                self.state.objects[id as usize].counters,
+                                self.state.objects[id as usize].counters.clone(),
                             ))
                         })
                         .collect();

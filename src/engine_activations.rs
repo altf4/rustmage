@@ -234,7 +234,7 @@ impl Game {
                 }
                 continue;
             }
-            let done = counter_payments(ability.cost, object.counters, |counter_payment| {
+            let done = counter_payments(ability.cost, &object.counters, |counter_payment| {
                 let fundable = || {
                     ability.cost.mana_options().any(|cost| {
                         self.activation_can_fund(
@@ -246,7 +246,7 @@ impl Game {
                                 source: Some((
                                     self.object_ref(card),
                                     index as u16,
-                                    counter_payment,
+                                    counter_payment.clone(),
                                     object.card,
                                 )),
                             },
@@ -272,7 +272,7 @@ impl Game {
                             emit(Action::AnnounceMana {
                                 card,
                                 ability: index as u16,
-                                counter_payment,
+                                counter_payment: counter_payment.clone(),
                                 production,
                             })
                         })
@@ -280,7 +280,7 @@ impl Game {
                         emit(Action::AnnounceActivate {
                             card,
                             ability: index as u16,
-                            counter_payment,
+                            counter_payment: counter_payment.clone(),
                         })
                     };
                     if done {
@@ -315,7 +315,7 @@ impl Game {
                                         card,
                                         ability: index as u16,
                                         payment,
-                                        counter_payment,
+                                        counter_payment: counter_payment.clone(),
                                         production,
                                     })
                                 });
@@ -328,7 +328,7 @@ impl Game {
                                         card,
                                         ability: index as u16,
                                         payment,
-                                        counter_payment,
+                                        counter_payment: counter_payment.clone(),
                                     });
                                 }
                                 return;
@@ -344,7 +344,7 @@ impl Game {
                                         card,
                                         ability: index as u16,
                                         payment,
-                                        counter_payment,
+                                        counter_payment: counter_payment.clone(),
                                     });
                                 }
                             } else {
@@ -354,7 +354,7 @@ impl Game {
                                         ability: index as u16,
                                         target: None,
                                         payment,
-                                        counter_payment,
+                                        counter_payment: counter_payment.clone(),
                                     });
                                 }
                                 if !done && spec.max > 0 {
@@ -368,7 +368,7 @@ impl Game {
                                                 ability: index as u16,
                                                 target: Some(target),
                                                 payment,
-                                                counter_payment,
+                                                counter_payment: counter_payment.clone(),
                                             })
                                         },
                                     );
@@ -458,11 +458,7 @@ impl Game {
             return;
         }
         object.used_abilities |= 1u64 << ability;
-        object.counters.plus_one -= counter_payment.plus_one;
-        object.counters.minus_one -= counter_payment.minus_one;
-        object.counters.stun -= counter_payment.stun;
-        object.counters.loyalty -= counter_payment.loyalty;
-        object.counters.lore -= counter_payment.lore;
+        object.counters.pay(&counter_payment);
         if let Some(change) = cost.loyalty {
             if change < 0 {
                 object.counters.loyalty -= u64::from(change.unsigned_abs());
@@ -488,7 +484,7 @@ impl Game {
 /// Fixed small counter costs enumerate allocations, not subsets of individual counters.
 pub(super) fn counter_payments(
     cost: ActivationCost,
-    available: Counters,
+    available: &Counters,
     mut emit: impl FnMut(Counters) -> bool,
 ) -> bool {
     let Some((kind, amount)) = cost.remove else {
@@ -506,8 +502,8 @@ pub(super) fn counter_payments(
     fn visit(
         index: usize,
         left: u64,
-        available: Counters,
-        paid: Counters,
+        available: &Counters,
+        paid: &mut Counters,
         emit: &mut impl FnMut(Counters) -> bool,
     ) -> bool {
         let kind = CounterKind::ALL[index];
@@ -515,18 +511,20 @@ pub(super) fn counter_payments(
             if left > available.get(kind) {
                 return false;
             }
-            let mut paid = paid;
             paid.add(kind, left);
-            return emit(paid);
+            let done = emit(paid.clone());
+            paid.remove(kind, left);
+            return done;
         }
         for count in 0..=left.min(available.get(kind)) {
-            let mut paid = paid;
             paid.add(kind, count);
-            if visit(index + 1, left - count, available, paid, emit) {
+            let done = visit(index + 1, left - count, available, paid, emit);
+            paid.remove(kind, count);
+            if done {
                 return true;
             }
         }
         false
     }
-    visit(0, amount, available, Counters::default(), &mut emit)
+    visit(0, amount, available, &mut Counters::default(), &mut emit)
 }

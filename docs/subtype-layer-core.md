@@ -25,7 +25,7 @@ this resolved overlay for observations and last-known information. Public
 `has_subtype` methods query the entire effective characteristic; overlay
 `contains` reports only explicit overlay types.
 
-Observation schema 115 serializes `granted_subtypes` as an object with `added`
+Observation schema 116 serializes `granted_subtypes` as an object with `added`
 and `creature_types` fields. `null` preserves intrinsic creature types; an empty
 replacement list removes them all. Intrinsic `Card::has_subtype` remains an
 immutable catalogue query.

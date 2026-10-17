@@ -17,7 +17,7 @@ fn fdn_six_scaled_mana_overlay_counts_noncreature_elves_and_removes_witnesses() 
             reserve: None,
             source: None,
         };
-        let mut world = FundingState::from_game(&g, goal);
+        let mut world = FundingState::from_game(&g, &goal);
         let production = g.state.objects[arch as usize].card.activations()[0]
             .mana_production()
             .unwrap();
@@ -27,7 +27,7 @@ fn fdn_six_scaled_mana_overlay_counts_noncreature_elves_and_removes_witnesses() 
         );
         assert!(
             world
-                .moves(goal)
+                .moves(&goal)
                 .iter()
                 .any(|m| world.resources[m.resource].id == arch && m.production[4] == 3)
         );

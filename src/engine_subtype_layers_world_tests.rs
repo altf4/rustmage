@@ -34,8 +34,8 @@ fn subtype_layers_funding_uses_virtual_counters_exact_incarnations_and_replaceme
             reserve: Some((g.object_ref(squire), spec("Knight"))),
         };
         let original = g.snapshot();
-        let mut world = FundingState::from_game(&g, goal);
-        assert!(world.obligations(goal));
+        let mut world = FundingState::from_game(&g, &goal);
+        assert!(world.obligations(&goal));
         let index = world.resources.iter().position(|r| r.id == squire).unwrap();
         assert!(
             world
@@ -43,7 +43,7 @@ fn subtype_layers_funding_uses_virtual_counters_exact_incarnations_and_replaceme
                 .contains(Keywords::FLYING)
         );
         world.resources[index].object.counters.plus_one = 2;
-        assert!(!world.obligations(goal));
+        assert!(!world.obligations(&goal));
         assert!(
             !world
                 .keywords(&world.resources[index])
@@ -70,8 +70,8 @@ fn subtype_layers_funding_uses_virtual_counters_exact_incarnations_and_replaceme
             ..goal
         };
         let original = g.snapshot();
-        let mut world = FundingState::from_game(&g, goal);
-        assert!(world.obligations(goal));
+        let mut world = FundingState::from_game(&g, &goal);
+        assert!(world.obligations(&goal));
         assert!(
             !world
                 .granted_subtypes(squire)
@@ -91,7 +91,7 @@ fn subtype_layers_funding_uses_virtual_counters_exact_incarnations_and_replaceme
         );
         world.resources[index].object.generation -= 1;
         world.resources[index].object.zone = Zone::Graveyard;
-        assert!(!world.obligations(goal));
+        assert!(!world.obligations(&goal));
         assert!(
             !world
                 .granted_subtypes(squire)

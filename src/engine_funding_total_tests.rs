@@ -24,10 +24,10 @@ fn neutral_filter_impossible_total_prunes_before_search() {
         Zone::Battlefield,
     );
     let target = goal(17);
-    let state = FundingState::from_game(&g, target);
+    let state = FundingState::from_game(&g, &target);
     let mut visited = HashSet::new();
     let start = std::time::Instant::now();
-    assert!(!state.reachable(target, &mut visited));
+    assert!(!state.reachable(&target, &mut visited));
     eprintln!(
         "neutral-filter impossible total: {} visited states in {:?}",
         visited.len(),
@@ -44,7 +44,7 @@ fn net_gain_handles_choices_alternative_costs_and_finite_or_repeatable_productio
     let mut a = Card::from_name("Three Tree Mascot").unwrap().activations()[0];
     a.once_per_turn = false;
     assert_eq!(
-        activation_gain_upper(&a, a.mana_production().unwrap(), Counters::default(), 20),
+        activation_gain_upper(&a, a.mana_production().unwrap(), &Counters::default(), 20),
         0
     ); // Neutral even if repeatable.
     a.program = &[Instruction::AddMana(ManaProduction::Choice {
@@ -52,12 +52,12 @@ fn net_gain_handles_choices_alternative_costs_and_finite_or_repeatable_productio
         amount: 3,
     })];
     assert_eq!(
-        activation_gain_upper(&a, a.mana_production().unwrap(), Counters::default(), 20),
+        activation_gain_upper(&a, a.mana_production().unwrap(), &Counters::default(), 20),
         u128::MAX
     );
     a.cost.life = 2;
     assert_eq!(
-        activation_gain_upper(&a, a.mana_production().unwrap(), Counters::default(), 5),
+        activation_gain_upper(&a, a.mana_production().unwrap(), &Counters::default(), 5),
         4
     ); // Two uses; three colors are not fifteen mana.
     a.cost.remove = Some((Some(CounterKind::PlusOne), 2));
@@ -66,7 +66,7 @@ fn net_gain_handles_choices_alternative_costs_and_finite_or_repeatable_productio
         ..Counters::default()
     };
     assert_eq!(
-        activation_gain_upper(&a, a.mana_production().unwrap(), counters, 5),
+        activation_gain_upper(&a, a.mana_production().unwrap(), &counters, 5),
         2
     );
     a.cost.life = 0;
@@ -74,7 +74,7 @@ fn net_gain_handles_choices_alternative_costs_and_finite_or_repeatable_productio
     a.once_per_turn = true;
     a.cost.generic = 3;
     assert_eq!(
-        activation_gain_upper(&a, a.mana_production().unwrap(), counters, 20),
+        activation_gain_upper(&a, a.mana_production().unwrap(), &counters, 20),
         0
     );
     a.cost.alternatives = &[ManaCost {
@@ -82,19 +82,19 @@ fn net_gain_handles_choices_alternative_costs_and_finite_or_repeatable_productio
         generic: 1,
     }];
     assert_eq!(
-        activation_gain_upper(&a, a.mana_production().unwrap(), counters, 20),
+        activation_gain_upper(&a, a.mana_production().unwrap(), &counters, 20),
         2
     ); // Cheapest equivalent, not primary cost.
     a.once_per_turn = false;
     a.cost.tap = true;
     assert_eq!(
-        activation_gain_upper(&a, a.mana_production().unwrap(), counters, 20),
+        activation_gain_upper(&a, a.mana_production().unwrap(), &counters, 20),
         2
     );
     a.cost.tap = false;
     a.cost.sacrifice = true;
     assert_eq!(
-        activation_gain_upper(&a, a.mana_production().unwrap(), counters, 20),
+        activation_gain_upper(&a, a.mana_production().unwrap(), &counters, 20),
         2
     );
 }
@@ -135,11 +135,11 @@ fn positive_tap_production_and_enclosing_source_reservation_remain_exact() {
         source: Some((g.object_ref(id), 1, Counters::default(), card)),
         ..goal(2)
     };
-    assert!(!g.can_fund(reserved)); // Archive must remain untapped for its own tap/sac cost.
+    assert!(!g.can_fund(reserved.clone())); // Archive must remain untapped for its own tap/sac cost.
     for _ in 0..2 {
         spawn(&mut g, Player::P0, Card::Forest, Zone::Battlefield);
     }
-    assert!(g.can_fund(reserved));
+    assert!(g.can_fund(reserved.clone()));
     assert!(g.can_fund(goal(4)));
     assert!(!g.can_fund(goal(5)));
 }
@@ -148,7 +148,7 @@ fn positive_tap_production_and_enclosing_source_reservation_remain_exact() {
 // bound. All fixtures have finite uses, so exhaustive enumeration terminates.
 fn exhaustive(
     state: &FundingState<'_>,
-    target: FundingGoal,
+    target: &FundingGoal,
     seen: &mut HashSet<FundingKey>,
 ) -> bool {
     if !state.obligations(target) {
@@ -211,10 +211,10 @@ fn aggregate_bound_preserves_exhaustive_small_funding_domains() {
                                     ..goal(generic)
                                 };
                                 let state =
-                                    FundingState::from_game_with_convoke(&g, target, convoke);
+                                    FundingState::from_game_with_convoke(&g, &target, convoke);
                                 assert_eq!(
-                                    state.reachable(target, &mut HashSet::new()),
-                                    exhaustive(&state, target, &mut HashSet::new()),
+                                    state.reachable(&target, &mut HashSet::new()),
+                                    exhaustive(&state, &target, &mut HashSet::new()),
                                     "pool{pool}lands{lands}archive{archive}filter{filter}convoke{convoke}generic{generic}black{black}"
                                 );
                             }
@@ -229,10 +229,10 @@ fn aggregate_bound_preserves_exhaustive_small_funding_domains() {
 #[test]
 fn counterfactual_total_saturates_instead_of_overflowing() {
     let g = scenario();
-    let mut state = FundingState::from_game(&g, goal(u32::MAX));
+    let mut state = FundingState::from_game(&g, &goal(u32::MAX));
     state.mana = [u128::MAX; 6];
     assert_eq!(state.total_mana_upper(), u128::MAX);
-    assert!(state.optimistic(goal(u32::MAX)));
+    assert!(state.optimistic(&goal(u32::MAX)));
 }
 
 #[test]
@@ -275,7 +275,11 @@ fn foreign_owned_sources_fund_only_their_controller_without_mutation() {
 
 // These sources each sacrifice themselves, so the full physical search tree is
 // finite. Deliberately use neither canonical keys nor the optimistic bounds.
-fn exhaustive_owned_evidence(state: &FundingState<'_>, target: FundingGoal, evidence: u16) -> bool {
+fn exhaustive_owned_evidence(
+    state: &FundingState<'_>,
+    target: &FundingGoal,
+    evidence: u16,
+) -> bool {
     if !state.obligations(target) {
         return false;
     }
@@ -346,15 +350,15 @@ fn mixed_owner_sacrifices_preserve_exact_evidence_reachability() {
                             ..goal(generic)
                         };
                         for evidence in [0, value, 2 * value, 2 * value + 4] {
-                            let mut state = FundingState::from_game(&g, target);
-                            let expected = exhaustive_owned_evidence(&state, target, evidence);
+                            let mut state = FundingState::from_game(&g, &target);
+                            let expected = exhaustive_owned_evidence(&state, &target, evidence);
                             for reverse in [false, true] {
                                 if reverse {
                                     state.resources.reverse();
                                 }
                                 assert_eq!(
                                     state.reachable_with_evidence(
-                                        target,
+                                        &target,
                                         Some(evidence),
                                         &mut HashSet::new()
                                     ),

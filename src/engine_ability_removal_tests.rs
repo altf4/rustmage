@@ -56,6 +56,7 @@ fn ability_removal_paid_all_four_complete_bodies_counters_untap_and_real_activat
                     stun: 3,
                     lore: 4,
                     loyalty: 5,
+                    ..Counters::default()
                 };
             } else if name == "Frozen in Ice" {
                 g.state.objects[elf as usize].counters.stun = 3;

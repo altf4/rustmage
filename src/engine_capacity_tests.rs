@@ -76,6 +76,7 @@ fn later_counter_field_failure_restores_earlier_writes_and_suspended_resolution(
         plus_one: 1,
         minus_one: 0,
         stun: u64::MAX,
+        ..Counters::default()
     };
     g.state.players[0].mana = [0, 1, 0, 0, 1, 0];
     let action = g

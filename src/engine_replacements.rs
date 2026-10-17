@@ -124,6 +124,10 @@ impl ReplacementState {
     pub fn bytes(&self) -> usize {
         let counter_bytes = |b: &CounterBatch| {
             b.placements.len() * std::mem::size_of::<CounterPlacement>()
+                + b.placements
+                    .iter()
+                    .map(|p| p.amount.owned_bytes())
+                    .sum::<usize>()
                 + b.used.len() * std::mem::size_of::<(ObjectRef, u16)>()
         };
         let token_bytes = |b: &TokenBatch| {
@@ -394,7 +398,7 @@ impl Game {
                     .as_mut()
                     .expect("owned entry counter batch")
                     .moves[index]
-                    .counters = p.amount;
+                    .counters = p.amount.clone();
             } else if self.on_battlefield(p.object.card)
                 && self.object_ref(p.object.card) == p.object
             {
@@ -1071,7 +1075,7 @@ impl Game {
                     damage: None,
                     kind: "Counters",
                     object: Some(p.object),
-                    counters: Some(p.amount),
+                    counters: Some(p.amount.clone()),
                     tokens: Vec::new(),
                     role_attachments: Vec::new(),
                     effects: self.counter_replacements(p, &batch.used),

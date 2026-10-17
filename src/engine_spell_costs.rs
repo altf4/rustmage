@@ -343,7 +343,7 @@ impl Game {
             } else {
                 base.generic.saturating_sub(self.spell_reduction(actor, id))
             },
-            ..base
+            ..base.clone()
         }
     }
 }

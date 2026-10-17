@@ -728,7 +728,7 @@ mod tests {
                 .cost;
             super::super::activations::counter_payments(
                 cost,
-                g.state.objects[source as usize].counters,
+                &g.state.objects[source as usize].counters,
                 |p| {
                     payments.push(p);
                     false

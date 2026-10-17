@@ -646,7 +646,7 @@ impl CharacteristicQuery<'_> {
             damage: obj.damage,
             damaged_this_turn: obj.damaged_this_turn,
             dealt_damage_this_turn: obj.dealt_damage_this_turn,
-            counters: obj.counters,
+            counters: obj.counters.clone(),
             used_abilities: obj.used_abilities,
             exhausted_abilities: obj.used_abilities & obj.card.exhaust_mask(),
             attached_to: obj.attached_to,
