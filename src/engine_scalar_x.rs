@@ -158,6 +158,12 @@ impl Game {
             AmountValue::ColorsSpent => (0..5)
                 .filter(|&i| self.item_cast_payment(item)[i] > 0)
                 .count() as u128,
+            AmountValue::SacrificedToughness => item
+                .sacrificed_toughness
+                .as_deref()
+                .copied()
+                .unwrap_or(0)
+                .max(0) as u128,
             AmountValue::SourcePower => {
                 if self.on_battlefield(item.card) && self.object_ref(item.card) == item.object {
                     self.stats(item.card).power.max(0) as u128

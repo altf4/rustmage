@@ -203,6 +203,16 @@ impl Game {
             | EffectChoiceKind::ForageOrBlack => unreachable!(),
             EffectChoiceKind::Discard => self.discard_batch(&[object.card], None),
             EffectChoiceKind::Sacrifice => {
+                if a.item.program().is_some_and(|(_, program)| {
+                    program.iter().any(|i| {
+                        matches!(
+                            i,
+                            Instruction::GainLifeScaled(_, AmountValue::SacrificedToughness)
+                        )
+                    })
+                }) {
+                    a.item.sacrificed_toughness = Some(Box::new(self.stats(object.card).toughness));
+                }
                 self.sacrifice_batch(&[(a.item.controller, object.card)]);
             }
         }

@@ -3,10 +3,50 @@
   "catalogue_id": 292,
   "oracle_id": "e6a35729-edee-4a8c-9aa1-041114d66c69",
   "facts_sha256": "2e1c0af315a218a3147609139320bb168ad564fc8feef270080a57bfe8e374ab",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1521108534b39009876e8181a42b2c26ef09596ea6df65cfbec773261aa5fc48"
   },
-  "physical_metadata_sha256": "9747904766b599cf853d7c53f59498da625687a0d8b57d8dc69b3090dfb6800b"
+  "physical_metadata_sha256": "9747904766b599cf853d7c53f59498da625687a0d8b57d8dc69b3090dfb6800b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AyliEternalPilgrim.java",
+  "java_sha256": "f37b84f049505a5fac12059a92a6311d5433a650b0dd468923b4c9fc684ed310",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SacrificeCostCreaturesToughness.java",
+      "sha256": "88cf4734b4b9e1f09fa0cf452c909e4bad6edb2d3bc7153963135ec101413293"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/MoreThanStartingLifeTotalCondition.java",
+      "sha256": "ab1c23fe9abbc57de0859ca76b80c4e982cb2af4399e8e2eb84270da2de6a0f7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateIfConditionActivatedAbility.java",
+      "sha256": "9f9d45f4e624eaa78c99f720c00a3302f6936e7b5246bf76ae15f9e75ba327b0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetNonlandPermanent.java",
+      "sha256": "6e4720e1386bdaa8f84eaf97cc8d6646845307f0be8697190c25cd1285ba598a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+      "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756"
+    }
+  ]
 }

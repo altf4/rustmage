@@ -16,6 +16,14 @@ impl Game {
             self.state.attachment_sources.push(id);
         }
         let triggers = self.state.objects[id as usize].card.triggers();
+        if triggers.iter().any(|a| {
+            matches!(
+                a.condition.event(),
+                TriggerCondition::OtherCreatureCountersAdded { .. }
+            )
+        }) {
+            self.state.counter_sources.push(id);
+        }
         if triggers
             .iter()
             .any(|a| a.condition.event() == TriggerCondition::EvidenceCollected)

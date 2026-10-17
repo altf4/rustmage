@@ -464,6 +464,13 @@ impl<'g> FundingState<'g> {
     fn guard_available(&self, guard: ActivationGuard, actor: Player) -> bool {
         match guard {
             ActivationGuard::Always => true,
+            ActivationGuard::LifeAboveStarting(extra) => {
+                (if actor == self.actor {
+                    self.life
+                } else {
+                    self.game.state.players[actor.index()].life
+                }) >= STARTING_LIFE + i128::from(extra)
+            }
             ActivationGuard::OwnTurn => self.active == actor,
             ActivationGuard::ControlLandsAtLeast(minimum) => {
                 self.resources

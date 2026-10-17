@@ -201,6 +201,17 @@ impl Game {
                     .count(),
             )
             .capacity("stat count exhausted"),
+            StatValue::DistinctManaValues(filter) => {
+                let mut values: Vec<_> = objects()
+                    .filter(|&(id, o)| {
+                        Self::count_object_matches(filter, source, owner, id, o, subtypes, kinds)
+                    })
+                    .map(|(_, o)| o.card.fixed_mana_value())
+                    .collect();
+                values.sort_unstable();
+                values.dedup();
+                values.len() as i128
+            }
             StatValue::DistinctNames(filter) => {
                 let mut names: Vec<_> = objects()
                     .filter(|&(id, o)| {
@@ -261,6 +272,7 @@ impl Game {
             | AmountValue::ManaSpent
             | AmountValue::SpellColors
             | AmountValue::ColorsSpent
+            | AmountValue::SacrificedToughness
             | AmountValue::SourcePower
             | AmountValue::LifeEventAmount => 0, // Off-stack expressions have no cast parameter.
             AmountValue::Stat(value) => self.stat_value(value, source, owner).max(0) as u128,

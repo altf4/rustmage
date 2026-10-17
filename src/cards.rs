@@ -780,6 +780,14 @@ pub(crate) enum Instruction {
         amount: u32,
     },
     DoubleCounters,
+    DoubleCounterKind {
+        subject: Subject,
+        kind: CounterKind,
+    },
+    ExileGraveTargets,
+    IfExiledCreature {
+        skip: usize,
+    },
     RemoveAllCounters,
     RemoveAllCountersFrom(Subject),
     SnapshotDoubleCreatures(CreatureFilter),
@@ -896,6 +904,7 @@ pub(crate) enum AmountValue {
     ColorsSpent,
     SpellColors,
     SourcePower,
+    SacrificedToughness,
     Fixed(u16),
     /// Explicit immutable parameter of the resolving spell or its exact ETB packet.
     ChosenX,
@@ -950,6 +959,7 @@ pub(crate) enum StatValue {
     Count(CountFilter),
     GreatestManaValue(CountFilter),
     DistinctNames(CountFilter),
+    DistinctManaValues(CountFilter),
     CountUnion(&'static [CountFilter]),
     Colors(CountFilter),
     CardTypes(CountFilter),
@@ -1093,6 +1103,7 @@ pub(crate) enum Subject {
 /// Immutable +1/+1 counter replacements evaluated against the pre-entry world.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum EntryCounterAmount {
+    GreatestOtherCreaturePower,
     ColorsSpent,
     IfNotCastOrZero(u16),
     Fixed(u16),
@@ -1460,6 +1471,10 @@ pub(crate) enum TriggerCondition {
     LifeLost {
         relation: CastRelation,
     },
+    OtherCreatureCountersAdded {
+        kind: CounterKind,
+        excluded_subtype: &'static str,
+    },
     SelfCountersAdded {
         kind: CounterKind,
         controller_only: bool,
@@ -1652,11 +1667,15 @@ pub(crate) enum ActivationGuard {
     OwnTurn,
     ControlSubtypeAny(&'static [&'static str]),
     ControlLandsAtLeast(u16),
+    LifeAboveStarting(u16),
 }
 impl ActivationGuard {
     pub(crate) fn subtypes(self) -> &'static [&'static str] {
         match self {
-            Self::Always | Self::OwnTurn | Self::ControlLandsAtLeast(_) => &[],
+            Self::Always
+            | Self::OwnTurn
+            | Self::ControlLandsAtLeast(_)
+            | Self::LifeAboveStarting(_) => &[],
             Self::ControlSubtypeAny(types) => types,
         }
     }

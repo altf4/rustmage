@@ -3,10 +3,25 @@
   "catalogue_id": 3719,
   "oracle_id": "1ff25f67-36a7-4cfa-a2b1-2135b5b6fb67",
   "facts_sha256": "c829654b26b9f52ef27a19a766d6779c3bdabcb80882c9f3371703cc6501dccb",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "72f8cae3ecfaef0faf1056053d64d06d92722154f330161bc174363619f47dc6"
   },
-  "physical_metadata_sha256": "f3ddf0f8495f6bd3b7355232a2a8787ff9acf4a4305da639e499679459ed1474"
+  "physical_metadata_sha256": "f3ddf0f8495f6bd3b7355232a2a8787ff9acf4a4305da639e499679459ed1474",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ScavengingOoze.java",
+  "java_sha256": "87797491824b2e3f735f84247b6095f70205730427e5c7e06e7c2f10327a4f1e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInGraveyard.java",
+      "sha256": "906e86825eed8b6d1a0e9e72c0761aa181aabdc61abbf99fd526f2d3531020b7"
+    }
+  ]
 }
