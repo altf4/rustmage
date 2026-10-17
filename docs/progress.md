@@ -57,4 +57,4 @@ choice's restore/replay, hidden information, native/Python integration and full
 workload performance. A zero unsupported-card counter alone will not prove rules
 correctness.
 
-The [eight-pair Adventure candidate](adventure-land-targets.md) adds accumulating turn-bound land allowances and complete typed target movement/protection variants. Its combined coverage is 1,825/5,164, with 3,339 still gated. Public and combined validation remain pending.
+The [eight-pair Adventure candidate](adventure-land-targets.md) adds accumulating turn-bound land allowances and complete typed target movement/protection variants. Its combined coverage is 1,825/5,164, with 3,339 still gated. Validation passes: 1,710 native tests, all-target Clippy, all 388 unique compiler/data/provenance checks, 247 unique fresh public API methods and 100 natural Standard games with 79,608 owned frames / 159,216 denials. Two independent nonauthor final-head reviews remain required.
