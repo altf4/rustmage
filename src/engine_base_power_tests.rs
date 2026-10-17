@@ -206,6 +206,7 @@ fn power_excess_paid_kutzil_actual_combat_aggregates_only_qualified_creatures_an
                 assert_eq!(g.object_view(id).power_above_base, qualified);
             }
             let before = g.state.players[p.index()].library.len();
+            let island = named(&mut g, p, "Island", Zone::Battlefield);
             attack(&mut g, &[source, a, b]);
             finish_damage(&mut g);
             let packets = g
@@ -218,6 +219,7 @@ fn power_excess_paid_kutzil_actual_combat_aggregates_only_qualified_creatures_an
                 .count();
             assert_eq!(packets, usize::from(qualified));
             if qualified {
+                checked(&mut g, Action::TapMana { card: island });
                 let bounce = named(&mut g, p, "Unsummon", Zone::Hand);
                 cast(&mut g, bounce, None, &[Target::Card(source)]);
                 settle(&mut g);
