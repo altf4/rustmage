@@ -335,7 +335,7 @@ impl Game {
                     TargetPredicate::Colors(mask) => object.card.colors() & mask != 0,
                     TargetPredicate::Keyword(keyword) => self.keywords(id).contains(keyword),
                     TargetPredicate::Token => object.card.is_token(),
-                    TargetPredicate::Subtype(subtype) => object.card.has_subtype(subtype),
+                    TargetPredicate::Subtype(subtype) => self.has_subtype(id, subtype),
                     TargetPredicate::Permanent => {
                         object.card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256) != 0
                     }
@@ -343,7 +343,7 @@ impl Game {
                     TargetPredicate::NonOutlaw => {
                         !["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"]
                             .iter()
-                            .any(|subtype| object.card.has_subtype(subtype))
+                            .any(|subtype| self.has_subtype(id, subtype))
                     }
                 };
             }

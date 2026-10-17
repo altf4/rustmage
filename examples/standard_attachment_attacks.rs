@@ -204,7 +204,7 @@ fn score(
                 if let Some(event) = &ann.attachment_trigger {
                     if i == 0 && round.is_multiple_of(4) {
                         -1000
-                    } else if v.owner == event.defender {
+                    } else if Some(v.owner) == event.defender {
                         1300
                     } else {
                         100
@@ -366,11 +366,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if let Some(event) = &packet.attachment_trigger {
                     let k = index(event.granting_card).unwrap();
                     assert_eq!(event.granted, k >= 5);
-                    assert_eq!(event.defender, packet.controller.other());
+                    assert_eq!(event.defender, Some(packet.controller.other()));
                     assert_eq!(
                         packet.object,
                         if event.granted {
-                            event.attacker
+                            event.recipient
                         } else {
                             event.grantor
                         }
@@ -382,7 +382,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     } else if let Some(v) = before
                         .objects
                         .iter()
-                        .find(|v| v.reference == event.attacker)
+                        .find(|v| v.reference == event.recipient)
                     {
                         assert_eq!(packet.source_card, v.card);
                     }

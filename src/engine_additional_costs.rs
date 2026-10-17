@@ -26,13 +26,20 @@ impl Game {
         {
             return false;
         }
-        Self::additional_object_matches(spec, actor, o, self.keywords(object.card))
+        Self::additional_object_matches(
+            spec,
+            actor,
+            o,
+            self.keywords(object.card),
+            self.granted_subtypes(object.card),
+        )
     }
     pub(super) fn additional_object_matches(
         spec: AdditionalCost,
         actor: Player,
         o: &Object,
         keywords: Keywords,
+        subtypes: GrantedSubtypes,
     ) -> bool {
         let zone = match spec.kind {
             EffectChoiceKind::Discard => Zone::Hand,
@@ -49,7 +56,8 @@ impl Game {
             && (!f.nonland || !o.card.is_land())
             && keywords.contains(f.keywords)
             && f.tokens.is_none_or(|token| o.card.is_token() == token)
-            && f.subtype.is_none_or(|subtype| o.card.has_subtype(subtype))
+            && f.subtype
+                .is_none_or(|subtype| o.card.has_subtype(subtype) || subtypes.contains(subtype))
     }
 
     pub(super) fn spell_can_fund(&self, actor: Player, card: CardId, cost: ManaCost) -> bool {
@@ -163,7 +171,8 @@ impl Game {
         );
         a.additional_paid = true;
         match spec.kind {
-            EffectChoiceKind::CollectEvidence(_)
+            EffectChoiceKind::HandCreature
+            | EffectChoiceKind::CollectEvidence(_)
             | EffectChoiceKind::Forage
             | EffectChoiceKind::ForageOrBlack => unreachable!(),
             EffectChoiceKind::Discard => self.discard_batch(&[object.card], None),

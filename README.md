@@ -5,10 +5,12 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,677 have executable rules so far.
+knows all 5,164 pinned Standard identities; 1,693 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
+[Job Select](docs/job-select.md) adds all sixteen complete Equipment bodies with live subtype grants,
+recipient-owned abilities and private Ninja/Summoner continuations.
 [Plot](docs/plot.md) adds thirteen complete bodies with paid special actions and exact later-turn free casting.
 [Mobilize](docs/mobilize.md) adds eight complete bodies with real attacking-token entry,
 per-token non-target defender choices and owned next-end-step sacrifice abilities.
@@ -60,7 +62,7 @@ pre-event replacement timing, token entry and opponent-entry life triggers.
 [Owned entering-object context](docs/entering-object-context.md) adds
 Good-Fortune Unicorn, Serra Redeemer and Wartime Protestors with exact
 non-targeted references and snapshot-safe counters/haste. Observations use schema
-71 (`rustmage::OBSERVATION_SCHEMA`); earlier milestone pages retain their original
+72 (`rustmage::OBSERVATION_SCHEMA`); earlier milestone pages retain their original
 schema and measurements. [Entry predicates](docs/entry-predicates.md) add nine complete bodies
 with entry-time power thresholds, subtype unions, outlaw and kind-or-subtype
 conditions, including Impact Tremors and Warleader's Call.
@@ -96,6 +98,7 @@ PYTHONPATH=python python3 -m unittest discover -s python -p 'test_*.py' -v
 cargo run --release --bin benchmark -- 1000
 cargo run --release --example branch
 cargo run --release --example standard
+cargo run --release --example standard_job_select -- 100
 cargo run --release --example standard_library_selection -- 100
 cargo run --release --example standard_flashback -- 100
 cargo run --release --example standard_attack_declarations -- 100
