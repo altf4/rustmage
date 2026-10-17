@@ -437,3 +437,53 @@ fn fdn_library_eight_spinner_decline_and_excluded_deaths_do_not_reveal() {
         assert!(g.state.pending_triggers.is_empty());
     }
 }
+#[test]
+fn fdn_library_eight_vivien_destroys_own_or_enemy_artifact_or_enchantment() {
+    for p in [Player::P0, Player::P1] {
+        for owner in [p, p.other()] {
+            for name in ["Swiftfoot Boots", "Impact Tremors"] {
+                let mut g = setup(p);
+                let vivien = named(&mut g, p, "Vivien Reid", Zone::Hand);
+                cast(&mut g, vivien, None, &[]);
+                settle(&mut g);
+                let victim = named(&mut g, owner, name, Zone::Battlefield);
+                let bear = named(&mut g, owner, "Bear Cub", Zone::Battlefield);
+                checked(
+                    &mut g,
+                    Action::AnnounceActivate {
+                        card: vivien,
+                        ability: 1,
+                        counter_payment: Counters::default(),
+                    },
+                );
+                reject(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(bear),
+                    },
+                );
+                checked(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(victim),
+                    },
+                );
+                while g.state.announcing.is_some() {
+                    let action = g
+                        .legal_actions()
+                        .into_iter()
+                        .find(|a| matches!(a, Action::PayCosts { .. } | Action::FinishTargets))
+                        .unwrap();
+                    checked(&mut g, action);
+                }
+                settle(&mut g);
+                assert_eq!(
+                    g.state.objects[victim as usize].zone,
+                    Zone::Graveyard,
+                    "{p:?} {owner:?} {name}"
+                );
+                assert_eq!(g.state.objects[vivien as usize].counters.loyalty, 2);
+            }
+        }
+    }
+}
