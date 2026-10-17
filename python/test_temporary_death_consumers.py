@@ -23,11 +23,12 @@ class TemporaryDeathConsumerTests(unittest.TestCase):
   lands=60-4*len(spells);deck=sum(([n]*(lands//5+(i<lands%5)) for i,n in enumerate(BASICS)),[])+sum(([n]*4 for n in spells),[])
   self.assertEqual(len(deck),60)
   with Game([deck,deck],seed=seed,starting_player=p,deck_rules='Standard',library=library) as g:
-   stage='setup';recipient=source=old=counter_source=None;paid=complete=attacked=False;frames=0;draw_before=life_before=0;first_person=None;observed_warp=False
+   stage='setup';recipient=source=old=counter_source=None;paid=complete=attacked=False;frames=0;draw_before=life_before=0;first_person=None;observed_warp=False;warp_exiled_turn=None;warp_recast_paid=False
    for iteration in range(40000):
     head=g.observe('P0');self.assertEqual((head['schema'],head['catalogue']),(91,FP))
     if head['outcome'] is not None:
      self.assertTrue(complete and paid,(name,p,seed,stage,iteration,paid));self.assertEqual(stage,'finish');self.assertTrue(attacked,(name,p,'no natural attack'))
+     if warp:self.assertTrue(observed_warp and warp_recast_paid)
      return dict(frames=frames,card=name,seat=p,warp=warp,outcome=head['outcome'])
     o=g.observe(head['actor']);actor=o['actor'];objects={x['id']:x for x in o['objects']};quiet=o['decision']=='priority' and not o['stack'] and not o['announcing'] and not o['resolving']
     def own(player):return [x for x in objects.values() if x['zone']=='Battlefield' and x['controller']==player]
@@ -46,7 +47,7 @@ class TemporaryDeathConsumerTests(unittest.TestCase):
      v=objects[recipient];self.assertEqual(v['zone'],'Battlefield');self.assertNotEqual(v['reference'],old);self.assertEqual(v['controller'],p)
      self.assertEqual(v['tapped'],name=='Perigee Beckoner');self.assertEqual(v['power'],2)
      if name in ['Presumed Dead',"It Doesn't Add Up"]:self.assertIn(recipient,suspected)
-     complete=True;stage='finish'
+     complete=not warp;stage='wait_warp_exile' if warp else 'finish'
     if stage=='wait_galuf' and quiet:
      self.assertEqual(objects[recipient]['zone'],'Graveyard');self.assertTrue(any(x['counters']['plus_one']==3 for x in own(p) if x['card']=='Bear Cub'));complete=True;stage='finish'
     if stage=='wait_draw' and quiet:
@@ -69,6 +70,10 @@ class TemporaryDeathConsumerTests(unittest.TestCase):
      self.assertEqual(objects[source]['zone'],'Graveyard');self.assertEqual(objects[recipient]['power'],2);self.assertIn(recipient,suspected);stage='activate_aura'
     if stage=='wait_aura_hand' and quiet:
      self.assertTrue(any(x['id']==source for x in hand(p)));self.assertIn(recipient,suspected);complete=True;stage='finish'
+    if stage=='wait_warp_exile' and objects[source]['zone']=='Exile':
+     permission=next(x for x in o['warped_cards'] if x['object']==objects[source]['reference']);self.assertEqual(permission['owner'],p);warp_exiled_turn=permission['exiled_turn'];stage='wait_warp_later'
+    if stage=='wait_recast_grant' and quiet:
+     self.assertTrue(any(x['recipient']==objects[recipient]['reference'] and x['granting_card']==name for x in o['temporary_abilities']));self.assertEqual(objects[recipient]['power'],4);self.assertFalse(any(x['object']['card']==source for x in o['warped_cards']));self.assertFalse(any(x['source']['card']==source for x in o['delayed_warp_exiles']));complete=True;stage='finish'
     available=ready_mana(p);required=[holding(name),bool(bears),available[2]>=2,sum(available)>=7,holding('Murder')]
     if name=="Galuf's Final Act":required.append(len(bears)>=2)
     if name=='Absolving Lammasu':required.extend([first_person is not None,bool(foes)])
@@ -80,6 +85,7 @@ class TemporaryDeathConsumerTests(unittest.TestCase):
     ready=quiet and all(required)
     def score(a):
      k=a['kind'];n=objects.get(a.get('card'),{}).get('card','')
+     if k=='AnnounceExile':return 4600 if actor==p and stage=='wait_warp_later' and a['card']==source and o['turn']>warp_exiled_turn and sum(ready_mana(p))>=5 and ready_mana(p)[2]>=1 else -2000
      if k in ['Concede','Mulligan','Cast','BeginCast','Activate','BeginActivate','AnnounceActivate','AnnounceAdventure','AnnounceOmen','AnnounceFlashback','AnnouncePlot','AnnounceExile','AnnounceWarp']:return 4500 if k=='AnnounceWarp' and actor==p and name=='Perigee Beckoner' and warp and stage=='setup' and ready and n==name else 4500 if k=='AnnounceActivate' and actor==p and stage=='activate_aura' and a['card']==source else -2000
      if k=='AnnounceCast':
       if actor==p:
@@ -133,10 +139,13 @@ class TemporaryDeathConsumerTests(unittest.TestCase):
        else:recipient=bears[0]['id'];old=bears[0]['reference'];stage='wait_aura' if name=='Convenient Target' else 'wait_grant'
       elif n=='Murder':stage='wait_galuf' if name=="Galuf's Final Act" else 'wait_draw' if name=='Rabid Attack' else 'wait_lammasu_death' if name=='Absolving Lammasu' else 'wait_grave' if name=="It Doesn't Add Up" else 'wait_return'
       elif n=='Disenchant' and stage=='remove_aura':stage='wait_remove_aura'
+    if a['kind']=='AnnounceExile':stage='wait_recast_grant'
     if a['kind']=='AnnounceWarp':source=a['card'];recipient=bears[0]['id'];old=bears[0]['reference'];stage='wait_grant';observed_warp=True
     if a['kind']=='AnnounceActivate' and stage=='activate_aura':stage='wait_aura_hand'
-    if a['kind']=='PayCosts' and (o['announcing']or{}).get('card')==source:paid=True
-    if a['kind']=='Attack':attacked=True
+    if a['kind']=='PayCosts' and (o['announcing']or{}).get('card')==source:
+     paid=True
+     if warp and stage=='wait_recast_grant':self.assertEqual((o['announcing']['cast']['origin'],o['announcing']['cast']['method']),('Exile','Normal'));warp_recast_paid=True
+    if a['kind']=='Attack' and actor==p:attacked=True
     self.frame(g,o,index);frames+=1
    self.fail((name,p,seed,stage,'no natural terminal game'))
 if __name__=='__main__':unittest.main()
