@@ -5699,3 +5699,7 @@ mod untapped_entry_tests;
 #[cfg(test)]
 #[path = "engine_query_tests.rs"]
 mod query_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_power_damage_tests.rs"]
+mod fdn_power_damage_tests;

@@ -25,13 +25,14 @@ impl Game {
         recipient: u16,
         fight: bool,
     ) {
-        let creature = |group| {
+        let permanent = |group, creature_only| {
             item.targets.iter().find_map(|bound| {
                 if bound.group == group
                     && self.same_target_object(*bound)
                     && let Target::Card(id) = bound.target
                     && self.on_battlefield(id)
-                    && self.is_creature(id)
+                    && (self.is_creature(id)
+                        || (!creature_only && self.object_view(id).kinds & 8 != 0))
                 {
                     Some(id)
                 } else {
@@ -39,7 +40,9 @@ impl Game {
                 }
             })
         };
-        let (Some(source), Some(recipient)) = (creature(source), creature(recipient)) else {
+        let (Some(source), Some(recipient)) =
+            (permanent(source, true), permanent(recipient, fight))
+        else {
             return;
         };
         let power = self.stats(source).power.max(0);
