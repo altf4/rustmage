@@ -3,10 +3,40 @@
   "catalogue_id": 3361,
   "oracle_id": "3ed41d2d-211b-4013-8562-8c64d54cc43a",
   "facts_sha256": "ea773cc94d5a2afeecc3e0a359e67d28841428a1c3831709ab4ba0a97f46ead5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "928123af6153e97ea575e05c6004436a946276c51d9ca027d89b7b852f538842"
   },
-  "physical_metadata_sha256": "4b2b32fa2a5c976851182b7c591ed4bf7fdbcc117ab3e244dc6cf045e4faf9ad"
+  "physical_metadata_sha256": "4b2b32fa2a5c976851182b7c591ed4bf7fdbcc117ab3e244dc6cf045e4faf9ad",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RamosDragonEngine.java",
+  "java_sha256": "0718e5eef258e11eb07ecf82811f8c94e47057bfbdc028d08a7079b595989bbe",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/RemoveCountersSourceCost.java",
+      "sha256": "6d8c1b5ff39cc2cd02e982807a027f4ff81fcce1cdeef232603904b26640a09c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+      "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/LimitedTimesPerTurnActivatedManaAbility.java",
+      "sha256": "277f02f44bf32ea4d389b21f74227491808e3fb0c30fbdb911a88918d550af23"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ]
 }

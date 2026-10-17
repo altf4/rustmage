@@ -438,6 +438,7 @@ impl Game {
                     | TriggerCondition::LifeGained { .. }
                     | TriggerCondition::LifeLost { .. }
                     | TriggerCondition::SelfCountersAdded { .. }
+                    | TriggerCondition::CreatureAttacksYou { .. }
                     | TriggerCondition::AttackDeclared { .. }
                     | TriggerCondition::SelfAttacks
                     | TriggerCondition::SelfAttacksAlone
@@ -722,6 +723,12 @@ impl Game {
                 CastFilter::InstantSorcery.matches(card)
                     && self.state.players[caster.index()].instant_sorcery_cast_this_turn == wanted
             }
+            CastFilter::Colors { filter, mask } => {
+                card.colors() & mask != 0
+                    && self.cast_filter_matches_value(
+                        *filter, card, mana_value, caster, source, targets,
+                    )
+            }
             CastFilter::AnyOf(filters) => filters.iter().any(|f| {
                 self.cast_filter_matches_value(*f, card, mana_value, caster, source, targets)
             }),
@@ -839,6 +846,10 @@ impl Game {
                                 matches!(
                                     instruction,
                                     Instruction::DamagePlayers(PlayerSet::CastingPlayer, _)
+                                        | Instruction::PutCountersScaled {
+                                            amount: AmountValue::SpellColors,
+                                            ..
+                                        }
                                 )
                             }))
                     {
@@ -921,6 +932,21 @@ impl Game {
             .collect();
         for source in sources {
             for (index, ability) in source.card.triggers().iter().enumerate() {
+                if let TriggerCondition::CreatureAttacksYou { colors } = ability.condition.event() {
+                    let count = self
+                        .state
+                        .attackers
+                        .iter()
+                        .filter(|attacker| {
+                            self.state.objects[attacker.card as usize].controller == actor
+                                && self.state.objects[attacker.card as usize].card.colors() & colors
+                                    != 0
+                        })
+                        .count();
+                    for _ in 0..count {
+                        self.queue_trigger(&source, index);
+                    }
+                }
                 if let TriggerCondition::AttackDeclared {
                     minimum,
                     power_min,

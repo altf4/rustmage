@@ -34,7 +34,8 @@ impl Game {
         if triggers.iter().any(|ability| {
             matches!(
                 ability.condition.event(),
-                TriggerCondition::AttackDeclared { .. }
+                TriggerCondition::CreatureAttacksYou { .. }
+                    | TriggerCondition::AttackDeclared { .. }
             )
         }) {
             self.state.attack_sources.push(id);
@@ -119,7 +120,8 @@ impl Game {
                 group.fragments.iter().any(|fragment| {
                     matches!(
                         fragment,
-                        crate::cards::StaticAbilityFragment::LifeGainAdditional(_)
+                        crate::cards::StaticAbilityFragment::SelfUntap(_)
+                            | crate::cards::StaticAbilityFragment::LifeGainAdditional(_)
                             | crate::cards::StaticAbilityFragment::CantGainLife
                             | crate::cards::StaticAbilityFragment::DeathBaronLord
                             | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..)

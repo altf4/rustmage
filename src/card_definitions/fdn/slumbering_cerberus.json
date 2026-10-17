@@ -3,10 +3,45 @@
   "catalogue_id": 3929,
   "oracle_id": "39cae244-96e1-4ea3-899a-3aa871cca31c",
   "facts_sha256": "61c2e622dc9c8eec036a6ed8926669a4f660b02cb6b7fc5bddd29bb0252717ac",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2f6ceed4d7680d8351b7c434f54db5c8d6a75e989f5e87f781c06259bffa7827"
   },
-  "physical_metadata_sha256": "3f58723dcce96d037f55aa6db0bf9732de1cde718f50d08c13113e72c7c39178"
+  "physical_metadata_sha256": "3f58723dcce96d037f55aa6db0bf9732de1cde718f50d08c13113e72c7c39178",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SlumberingCerberus.java",
+  "java_sha256": "6f0b6795fb7f2b829638d6616046442bcacefbc8b833fb8078cc0e9fd59fae85",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DontUntapInControllersUntapStepSourceEffect.java",
+      "sha256": "afff3901e3135ea4fa0a22eb75914fc88050eb0f03ce876c74b666564c213ad8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapSourceEffect.java",
+      "sha256": "8c7620af194cc7b4085783cc6bc7d8644e670a0c96931c087ecb4a3b7bd6ac71"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/AtStepTriggeredAbility.java",
+      "sha256": "acaebe5709a15b181c6f315684db3969eb622d6dcc45f2994bf54c05b00d22af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/MorbidCondition.java",
+      "sha256": "21adfb30d2aa5202e5d00f11e73480be8f0af2557cd5e03e05864b15a8485126"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/CreaturesDiedWatcher.java",
+      "sha256": "c54597f69b5487c4714868ce642f8fc78464db0bb508ed154206096a74ae1ab1"
+    }
+  ]
 }

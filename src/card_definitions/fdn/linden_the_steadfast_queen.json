@@ -3,10 +3,35 @@
   "catalogue_id": 2513,
   "oracle_id": "dbc56f3b-83b3-41c8-a8ae-d3774fe6ee01",
   "facts_sha256": "c2486af0d0e70e3d12a4dfc2aa4b388ead038747d8b0f96e599cba58becb0c45",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9598086033c8df1be89fa6ec00b05419a7309bb0959bc0102cbd719f4490cae4"
   },
-  "physical_metadata_sha256": "8060afd0b02420770e7afae249e1a9ae7a801b56fdf5792139906c618801fddc"
+  "physical_metadata_sha256": "8060afd0b02420770e7afae249e1a9ae7a801b56fdf5792139906c618801fddc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LindenTheSteadfastQueen.java",
+  "java_sha256": "3a30e0ac445809c1d732f5f73a9afe3083f6b19c52f98d822e46ea8615c4b2bb",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksCreatureYouControlTriggeredAbility.java",
+      "sha256": "b03dbd90dc22641d1cac1b87c8a8f044c2b2a5e667f9389fcf0fecfd4e35a6d9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ColorPredicate.java",
+      "sha256": "b62ced1f121575b7737a20875425334d7bf61e018a809548805d14f38d71e82b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    }
+  ]
 }

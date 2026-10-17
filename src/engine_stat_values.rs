@@ -259,6 +259,7 @@ impl Game {
             AmountValue::MilledCreatures
             | AmountValue::ChosenX
             | AmountValue::ManaSpent
+            | AmountValue::SpellColors
             | AmountValue::ColorsSpent
             | AmountValue::SourcePower
             | AmountValue::LifeEventAmount => 0, // Off-stack expressions have no cast parameter.
