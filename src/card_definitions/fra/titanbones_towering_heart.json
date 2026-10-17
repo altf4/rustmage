@@ -1,0 +1,12 @@
+{
+  "name": "Titanbones, Towering Heart",
+  "catalogue_id": 4612,
+  "oracle_id": "510bccb1-61cd-49f1-a54a-80352653d1e3",
+  "facts_sha256": "f5aa89673c5386f31ed409f5eb882b8a1e62fddc2b689f085293842e9d0b8b9b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "42826156de15192ee2eba1790a58e2feade957b81d6958aae274c4db0d3fd6a8"
+  },
+  "physical_metadata_sha256": "761d9f8abac0c5912f2fe2106cff15147202ba9fe9aa2bad8a6ff4b91f417b15"
+}

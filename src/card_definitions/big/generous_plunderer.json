@@ -1,0 +1,12 @@
+{
+  "name": "Generous Plunderer",
+  "catalogue_id": 1707,
+  "oracle_id": "91c835d1-22ca-4c90-9ba6-c8e01bbc0347",
+  "facts_sha256": "f46b679316fdd43aa984da670b3c56b17a3dadebcfac6a9be04016395d8cbc36",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a7fc1590f81138928f5b6ae6eb516bcfc7b707f2be70a778d23994b4192d489f"
+  },
+  "physical_metadata_sha256": "2eff9a816f072183d405a3fb0269d4254ec77046ddef5852ab2ed17cb23ee5e2"
+}

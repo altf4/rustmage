@@ -1,0 +1,12 @@
+{
+  "name": "Fire Nation Engineer",
+  "catalogue_id": 1521,
+  "oracle_id": "9a983666-376b-48a8-9f82-8d041d32ae93",
+  "facts_sha256": "2246fec15aafd24640b057622ec04977a012a96de7832129386460cb3b8af6e6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7c000300183a4c830a375aabcf80c7c68917fe64611b2b02b7a208a4fbc179d8"
+  },
+  "physical_metadata_sha256": "052b6994c3709a954c777ba7b7e31dceff83fdaf64164a5ebd945520f88bdb29"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "High-Society Hunter",
+  "catalogue_id": 2041,
+  "oracle_id": "0dc158ba-7ec8-4558-91f5-0a87ef8380d4",
+  "facts_sha256": "11e7d5a28c8fcd95ad9a3ed212b8bd8134f28314132e7fcf2094cf01e38a1c06",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a2f5509a98ccb45a77f3cc852a720372b5db5f02526377bc5e09b15941497a05"
+  },
+  "physical_metadata_sha256": "04b16add24e575a3714c6ffbcbe6322ee1df1dbe027eda00da4e2adcc18e70d9"
+}

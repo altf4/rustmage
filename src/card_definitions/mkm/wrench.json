@@ -1,0 +1,12 @@
+{
+  "name": "Wrench",
+  "catalogue_id": 5124,
+  "oracle_id": "fdbac0a7-18c0-48a5-a174-0d4d1473fd9c",
+  "facts_sha256": "acc3bfd9c58f5eb50c4ca9e206ffe4284c56d2ae5e7d72231a29684add94bff5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e75f43813d24fc54b46c9d8c434ae1dc4f8e7187120ac4ec42cf58efadef25ba"
+  },
+  "physical_metadata_sha256": "b4125443d92c2fd4900d9c4d116e50c33c7e4cd9d11db670817ddf90f4879adf"
+}

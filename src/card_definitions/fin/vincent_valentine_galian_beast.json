@@ -1,0 +1,12 @@
+{
+  "name": "Vincent Valentine // Galian Beast",
+  "catalogue_id": 4896,
+  "oracle_id": "f40e6bbf-1fed-4ec5-869d-18c2dd396d14",
+  "facts_sha256": "a4823d15b16a6738733272af50ce7dc755a2fa4e65c066a485255efa4c31a4c9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e3daa007916712a07c8a0b9d9828ec44a0c18badf71eb857327cf44d97295327"
+  },
+  "physical_metadata_sha256": "cd81c4abdfd40cad1e35838b6213d98505e4a12b2603aa3a8f22d53782f3e55a"
+}

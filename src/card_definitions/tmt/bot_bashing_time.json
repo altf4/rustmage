@@ -1,0 +1,12 @@
+{
+  "name": "Bot Bashing Time",
+  "catalogue_id": 509,
+  "oracle_id": "14079f05-fbc1-401c-9008-da678656b4c6",
+  "facts_sha256": "61e62646f9f4811849caeadc73fdd70e88ae0a5f435de86679765db02e8dfe97",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b386916ac2ad532f4c61648e1e8c69b05d1ed3bf71df9451ced051607c198747"
+  },
+  "physical_metadata_sha256": "7885fc3d7eb139fe13ea496d5a37a71f6e72d3cbd652366839cde5693a2bde6b"
+}

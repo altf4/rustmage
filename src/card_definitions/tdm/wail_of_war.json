@@ -1,0 +1,12 @@
+{
+  "name": "Wail of War",
+  "catalogue_id": 4951,
+  "oracle_id": "fc0abdf3-3a88-4cb2-ba79-35fcaebbf7d2",
+  "facts_sha256": "8a6797e9c3b67c85051273b966530e72197953d6e914f416d89c4be660204d3c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c8ab1e0d551dd03b6fc62f5a89d8c6303ce4be5c1152e2bf9dece09d85f0aaf6"
+  },
+  "physical_metadata_sha256": "f29420179d619bad91606eed4273afe13a762251ebafd2a439b846a1361b24aa"
+}

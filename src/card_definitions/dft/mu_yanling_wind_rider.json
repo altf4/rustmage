@@ -1,0 +1,12 @@
+{
+  "name": "Mu Yanling, Wind Rider",
+  "catalogue_id": 2870,
+  "oracle_id": "aaafcd69-6295-4d79-8e67-98df0c9bae88",
+  "facts_sha256": "1106dde51cbbf1710e42589f5d9c0153f9c7ab5e53d18af53ba037e830bd8c61",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "09ce02e0fea6be9be736e9c1ec68dc948804e20503ff0ce815c37ceb7b075136"
+  },
+  "physical_metadata_sha256": "febc59f304def6fe6913ea9f8507dc837995204205be59b36fb293d414f778fa"
+}

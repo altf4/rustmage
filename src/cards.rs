@@ -1691,6 +1691,7 @@ pub(crate) enum EntryTapped {
     PayLife(u32),
 }
 
+#[derive(Debug)]
 struct Definition {
     info: CardInfo,
     effect: Effect,
@@ -2241,3 +2242,7 @@ pub(crate) enum RoleKind {
     Wicked,
     YoungHero,
 }
+
+#[cfg(test)]
+#[path = "catalogue_snapshot_tests.rs"]
+mod catalogue_snapshot_tests;

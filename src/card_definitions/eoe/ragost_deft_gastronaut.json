@@ -1,0 +1,12 @@
+{
+  "name": "Ragost, Deft Gastronaut",
+  "catalogue_id": 3345,
+  "oracle_id": "76f5445a-5193-4794-8593-b44f961334b6",
+  "facts_sha256": "4d202c5bbe0a25634d9f7bbdee460f5b82a35bffc06d6d55f4b41d9a9abf67b8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "46013ba8240012bb24af4095a08e2991640629a9fa2c0f907dcf4b812d9a4a77"
+  },
+  "physical_metadata_sha256": "e4c4b318196de061f1e1b1d7a280a474f204965ff479e83d0cdaed4a4c9683e3"
+}

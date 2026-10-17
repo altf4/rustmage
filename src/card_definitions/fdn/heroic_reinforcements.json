@@ -1,0 +1,12 @@
+{
+  "name": "Heroic Reinforcements",
+  "catalogue_id": 2019,
+  "oracle_id": "c442e8b0-a0a4-4839-8049-125b91b15c99",
+  "facts_sha256": "94f5b37c6bd3b14471b25958dbaaa0fc3e9f5d5a28c31804ed96613ba7ffe5c5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c0778f0f3dbe801d53f6ad4a237d7a1203deba612c078583c6b0d5fee3b7f46a"
+  },
+  "physical_metadata_sha256": "cae36d882af3a036cae7d1b17d0c7e95b212d8da7e2d0596f355133df9925363"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Spectral Denial",
+  "catalogue_id": 3999,
+  "oracle_id": "f8536726-993b-4100-918c-e3c7177d4c65",
+  "facts_sha256": "a2669891c70ff93c29da880c9bb5bef7e468cb51ab04ffce501849609a60d510",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3062bb7818fc53ddff79bdf3974685cb1cec1f2216b543458e6a188a79703f91"
+  },
+  "physical_metadata_sha256": "10d0a5a1f027d2b623b9564bf88fb3210534651abc6b9d9c0896e160ac2ff7aa"
+}

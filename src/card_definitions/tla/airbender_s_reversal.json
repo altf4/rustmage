@@ -1,0 +1,12 @@
+{
+  "name": "Airbender's Reversal",
+  "catalogue_id": 106,
+  "oracle_id": "64e3791b-de99-4eed-af49-cbec218c28aa",
+  "facts_sha256": "daae5874d03132389c15493a0861c23c6ae660eed19ba7e894a3a3b3ba7cb6d6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a258666fc1d1bdabbb6fd71049d1a550378446233ef1e901aebe6ad12f1359f1"
+  },
+  "physical_metadata_sha256": "f531ef104b3219ea83e8921228120c0bd704f1e78754058a4839ff45d7222e5d"
+}

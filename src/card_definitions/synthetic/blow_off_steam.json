@@ -1,0 +1,12 @@
+{
+  "name": "Blow Off Steam",
+  "catalogue_id": 5210,
+  "oracle_id": "bbb6867f-7186-41de-9828-21be469178c1",
+  "facts_sha256": "611f5df7d11e1569dc5abe645d929025510dc39545d1571d5a6142348bbd0e8c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ed016b3bcbfa34622ce144e9f63c79d0b822b7807564d3c821dadbdb0fa3d2b4"
+  },
+  "physical_metadata_sha256": "95f2cad88d13e6c91e7aa47b6955b7544c16d59e38075a217dafadf80e1908ab"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Faebloom Trick",
+  "catalogue_id": 1425,
+  "oracle_id": "903d114b-1899-4e67-bee3-af0673850388",
+  "facts_sha256": "9ba023a706a9f076742cc76c30bc8e173a648ed53b053f2e1a2640304b176cb9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "10305a762cbf60fbcd27493618b716ee7edc58cb49348db52782fd58f2365c86"
+  },
+  "physical_metadata_sha256": "7ceac997a79ca5b1292548098762a336dbac4d0915b52e55f630740bfcb2af18"
+}

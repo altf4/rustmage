@@ -1,0 +1,12 @@
+{
+  "name": "Explosive Getaway",
+  "catalogue_id": 1407,
+  "oracle_id": "c844cc98-b8b9-447d-92ee-64f4a4906e7c",
+  "facts_sha256": "568233bbc1a4a97d6e09c788fe6a23132323466bd976c4cdf9780b2b0fee0cfa",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "05661db61e5865fd008393f42eb25951c000eb956aac28eed9bdd98ad92f1ee2"
+  },
+  "physical_metadata_sha256": "2ba29b3ab3ccf90591f76edf0b48a79ce5d8b254716a4d0e2de2c7e10438fc9f"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Summoner's Grimoire",
+  "catalogue_id": 4229,
+  "oracle_id": "d4453b3e-733e-4038-81da-135a6a03079c",
+  "facts_sha256": "f489ac390b93685afdc34357dba04efe23321df1c8bf335c9eb22046ac604413",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1215cccabcee427705827ba04cf8bcaf414c51de82a5db2c759969c6ea68774b"
+  },
+  "physical_metadata_sha256": "edf8ad770918da9dbcd54b1bcf9149166fa29c1b73e5d52adbb9ef658f64da1d"
+}

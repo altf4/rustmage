@@ -1,0 +1,12 @@
+{
+  "name": "Inside Information",
+  "catalogue_id": 2180,
+  "oracle_id": "66961bcb-f588-47a7-b3f3-12f4ac674477",
+  "facts_sha256": "1a31173084076fbfdc1ebef811952fd3e197602838d6c25749cda8b71cc3c12a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "af77152327a97420b5ae5cb3ce9fdff48e09a481d543144aec026d3d9296dd7c"
+  },
+  "physical_metadata_sha256": "9d1c0d9e8ef24ec0e2d3e0f370f1b9db0e420916184ab76c05b5f0719b82d049"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Raging Redcap",
+  "catalogue_id": 3343,
+  "oracle_id": "679841ad-f3ac-48e2-ba11-2cf6d78642b4",
+  "facts_sha256": "9cd9ae742209cb6d63c025d5211d88b377d7b444d1bf253e1c7ccfdfbf424475",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9c7c6903320b197d6cea4e50acebd79e3ab6de580085cb46c46f10db728e90ad"
+  },
+  "physical_metadata_sha256": "c20260f5f986c8ded154bfbcc11e437e5322ebedba4fbd4ff5cb708dd552cdc6"
+}

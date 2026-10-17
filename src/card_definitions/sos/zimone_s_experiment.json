@@ -1,0 +1,12 @@
+{
+  "name": "Zimone's Experiment",
+  "catalogue_id": 5163,
+  "oracle_id": "5faa9e54-1cc4-48c0-bbfa-a495087c36d6",
+  "facts_sha256": "0678c5dde2f49f03a78b5b86c36a02e2d081d3f3eeae2641b835e687a28bc6ce",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f74a99b01504f572fefb41ee212529fbbd139f9e77c3b3fcbee1c62ee0e2ce6c"
+  },
+  "physical_metadata_sha256": "45abcedd28ed85a9469efb4d31ad2b374d98d08e6e5d33b3c2d4618f765891d2"
+}

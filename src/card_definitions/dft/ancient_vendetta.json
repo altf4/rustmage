@@ -1,0 +1,12 @@
+{
+  "name": "Ancient Vendetta",
+  "catalogue_id": 161,
+  "oracle_id": "6f053f0d-c9c7-4fcd-b218-a29d1d080104",
+  "facts_sha256": "bb9387c72306ca93a33d346db93b1efbfc6b874f832177a25e90b79fc140ede4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0c439700e1994ddbf73794c2ceec89309f2c9da5c159a9adfdd43566adff67ba"
+  },
+  "physical_metadata_sha256": "265f4a6010f9ad584e0a0f009a38f78a1a4491af9b0b9c93c6530620e983f5e8"
+}

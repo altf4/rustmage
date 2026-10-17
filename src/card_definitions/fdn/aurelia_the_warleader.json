@@ -1,0 +1,12 @@
+{
+  "name": "Aurelia, the Warleader",
+  "catalogue_id": 267,
+  "oracle_id": "0f5a3a09-2f07-4774-9e0f-e99d9a444166",
+  "facts_sha256": "d88c2a5fd9f4b0fa8b52d0ce1aff21ae3a42ed65c6e198fea6a134dd4c318419",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ac43cbf26af861e2eac0db7b5c1c8cdf3b0dc2d804df5a159ef1af0219a66df5"
+  },
+  "physical_metadata_sha256": "248543c33bb1429a011a07846baaf60136bd621998f480ec89a6281989d9c205"
+}

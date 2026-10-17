@@ -1,0 +1,12 @@
+{
+  "name": "Shuri, Wakandan Inventor",
+  "catalogue_id": 3857,
+  "oracle_id": "a8c047fc-20a9-4c62-b8a6-9ead56d60ad0",
+  "facts_sha256": "1b1a01aa93f76b274780a05339bc540a20699318a6f15728097d3e5f1ee8b92c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d0b2a96d04d082665274171588364b92d9b41ce69cb12810e3001e8ca0360fa8"
+  },
+  "physical_metadata_sha256": "2c3d011a32770355410020eb03758c753702f805870946e6d7682e38bdd0ddca"
+}

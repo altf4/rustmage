@@ -1,0 +1,12 @@
+{
+  "name": "Flamehold Grappler",
+  "catalogue_id": 1544,
+  "oracle_id": "e2d21635-182f-4ebf-a6f5-d4c1fd7f9705",
+  "facts_sha256": "909e38641dbfd77c4a2bd8383bc6fb0c66a12a6e00f4157131ea6252d65fec8f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a3f8e780643ec4c7f45816c467c46fb837b96b6a7d8bd3a3f24124467871e466"
+  },
+  "physical_metadata_sha256": "2566093e3d11d7d344e826eb8080428ac1d17e6c157d5e60fa6268ebe26f2d45"
+}

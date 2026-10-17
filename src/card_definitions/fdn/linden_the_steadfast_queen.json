@@ -1,0 +1,12 @@
+{
+  "name": "Linden, the Steadfast Queen",
+  "catalogue_id": 2513,
+  "oracle_id": "dbc56f3b-83b3-41c8-a8ae-d3774fe6ee01",
+  "facts_sha256": "c2486af0d0e70e3d12a4dfc2aa4b388ead038747d8b0f96e599cba58becb0c45",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9598086033c8df1be89fa6ec00b05419a7309bb0959bc0102cbd719f4490cae4"
+  },
+  "physical_metadata_sha256": "8060afd0b02420770e7afae249e1a9ae7a801b56fdf5792139906c618801fddc"
+}

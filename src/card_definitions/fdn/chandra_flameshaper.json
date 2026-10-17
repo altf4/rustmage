@@ -1,0 +1,12 @@
+{
+  "name": "Chandra, Flameshaper",
+  "catalogue_id": 715,
+  "oracle_id": "818f908c-9af6-4edc-bb0e-193bc830e2e4",
+  "facts_sha256": "94666c70f4989990826e4e11bb5321d9fce7682f56d93b8a5c7552477981fa78",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "98b64159ffef016ef57db6dcc15e64468678c7d956a2c5abd088471b65d72d73"
+  },
+  "physical_metadata_sha256": "bda8df2af14027912389d4174269a78f6d89c38f1b888bcf74bd2a201e201ee3"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "River Herald Guide",
+  "catalogue_id": 3548,
+  "oracle_id": "b9687fef-4cb2-4bf1-91ad-49dada07f4d6",
+  "facts_sha256": "75d417591e54971720dede9afd83b47b61d308f7d8e3b568cba035df5b078de6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d734859fdd5b6e510a5454302587689f108f6a81b42e6bcdec1778f05c2af14b"
+  },
+  "physical_metadata_sha256": "e676a73d55de5932d7ed263cf207404fc04057292f9d9d95bb726de3fb2c6823"
+}

@@ -1,0 +1,72 @@
+// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+pub(in crate::cards) const RULES: CardRules = CardRules {
+    effect: Effect::Permanent,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::CreatureDies {
+            relation: CastRelation::You,
+            other: false,
+            nontoken: false,
+            subtype: None,
+        },
+        targets: TargetPlan::Single(TargetSpec::NONE),
+        program: &[
+            Instruction::LoseLife(PlayerSet::Opponent, 1),
+            Instruction::GainLife(PlayerSet::Controller, 1),
+        ],
+    }],
+    activated: &[ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        cycling: false,
+        origin: ActivationOrigin::Battlefield,
+        cost: ActivationCost {
+            colored: [0, 0, 1, 0, 1, 0],
+            generic: 1,
+            alternatives: &[],
+            additional: Some(AdditionalCost {
+                kind: EffectChoiceKind::Sacrifice,
+                filter: SacrificeFilter {
+                    artifact_enchantment_or_token: false,
+                    keywords: Keywords(0),
+                    source_only: false,
+                    kinds: 1,
+                    nonland: false,
+                    other: false,
+                    tokens: None,
+                    subtype: None,
+                },
+            }),
+            mana_component: true,
+            tap: true,
+            sacrifice: false,
+            exile_self: false,
+            discard: false,
+            life: 0,
+            remove: None,
+            loyalty: None,
+        },
+        targets: TargetPlan::Single(TargetSpec::one(TargetRule::Object {
+            zone: TargetZone::Graveyard,
+            kinds: 1,
+            relation: 0,
+            other: false,
+            nonland: false,
+            tapped: false,
+            min_mana: 0,
+            max_mana: u32::MAX,
+        })),
+        program: &[Instruction::ReturnToBattlefield],
+        sorcery: true,
+        once_per_turn: false,
+    }],
+    enters: Counters {
+        plus_one: 0,
+        minus_one: 0,
+        stun: 0,
+        loyalty: 0,
+        lore: 0,
+    },
+    entry: EntryTapped::Never,
+    keywords: Keywords(0),
+    ..CardRules::EMPTY
+};

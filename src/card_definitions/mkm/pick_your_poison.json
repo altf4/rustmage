@@ -1,0 +1,12 @@
+{
+  "name": "Pick Your Poison",
+  "catalogue_id": 3154,
+  "oracle_id": "9af4a832-d634-47aa-91ed-79d44fe08864",
+  "facts_sha256": "675a0e34b31d1a43004dfa6be0f27d50e77b4c1aafe4b833acd501bacbc316b8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c60903170125ba3a551bcb3552742507feed7ce9a7ce53d67d5a8d720ee1bfd6"
+  },
+  "physical_metadata_sha256": "3dd54758d042783093df2fc05cbfa9240680d0e67282528cd0030492ed354e59"
+}

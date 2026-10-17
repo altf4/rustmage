@@ -1,0 +1,12 @@
+{
+  "name": "Three Steps Ahead",
+  "catalogue_id": 4566,
+  "oracle_id": "282dfeaa-6243-4f92-838a-5cb54fa85184",
+  "facts_sha256": "24edef449ec6346291bbcd29fcb6faa0952372eaa13d3d0fb13cef3f437f2698",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7cd9408e48bba9d4512da3bc815e81cde7b06f661a9c27f4269f06013b02900e"
+  },
+  "physical_metadata_sha256": "49dcbcded235b971bee37c4ac0f6e2b463dfabb155be61fd14c60a89c52b0111"
+}

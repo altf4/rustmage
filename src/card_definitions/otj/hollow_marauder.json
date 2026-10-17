@@ -1,0 +1,12 @@
+{
+  "name": "Hollow Marauder",
+  "catalogue_id": 2056,
+  "oracle_id": "1a4075f3-6c18-4cbe-99e0-f403dd78a7b0",
+  "facts_sha256": "a0c892d055203cb5cd7aaf68f681b6259edc45c8de878a3c362e0c5d5be8bbef",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "af60187c5bd30a660c884dd7704b75017400b41792f880c31c52cd4cc055c9ca"
+  },
+  "physical_metadata_sha256": "3e9694caaf8422244bcea024be9ec74145f7c92d29e432eb9390d59f6b2bedba"
+}

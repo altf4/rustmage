@@ -1,0 +1,12 @@
+{
+  "name": "Summon: Fat Chocobo",
+  "catalogue_id": 4218,
+  "oracle_id": "b5d2f8e7-89d3-4015-ab99-ba4d66918e37",
+  "facts_sha256": "58f73f96059b94551c7b1a7ebe7eca202a47de6f2fe1e5e26330f7e52bbc7c1f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bf8ce7c1eeb49855703b9f2c03e44bf28fd178972922214b505b61071d06f1ed"
+  },
+  "physical_metadata_sha256": "c9e00954f2ad0eb36a15cad12cac58e212740693529adb66a2cb271ea4a36ade"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Skirmish Rhino",
+  "catalogue_id": 3893,
+  "oracle_id": "40eb7f43-7cee-41a1-a4d1-f34ee125ccd1",
+  "facts_sha256": "fe4fb2e7dfb7e00d50336c2d159c367a3a946b8b18c5f68970e0ef9f756484d0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5ac69e0bc53b8b89a03a316c4c927ec3e1f143eb5a6393d9619570b77922468e"
+  },
+  "physical_metadata_sha256": "d92313730abda58f12a0fbe67e02cc582dce38508a7394e64cdb78bcd8d7a23f"
+}

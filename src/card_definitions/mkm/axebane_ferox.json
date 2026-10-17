@@ -1,0 +1,12 @@
+{
+  "name": "Axebane Ferox",
+  "catalogue_id": 290,
+  "oracle_id": "35b3ae1c-4116-49b0-89a9-7332fe9bbff0",
+  "facts_sha256": "4531c2450acd2e008c868e4546d139a9b2640bc91cd3eb09b872c62b105bb0b6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "389fcf47c485788233d2f801d873bae83bc96d573e51f5735729ee50bcb1632a"
+  },
+  "physical_metadata_sha256": "e8299ec32d939a101b230bb3216ca3654513c61b7377fc8a949a7be0caf347f6"
+}

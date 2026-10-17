@@ -1,0 +1,12 @@
+{
+  "name": "Koma, World-Eater",
+  "catalogue_id": 2393,
+  "oracle_id": "1ebf2142-f171-40cd-8143-15f50084b707",
+  "facts_sha256": "92c8c40b3e4cddbbd24d0ebc5b9f3dfc57f9e78e17d894ebb1c3e7d0d8a814d0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "328cce6c1556f9c99e3fa8e74c7f155a56cc692cb2b56d64e45060c3766222f5"
+  },
+  "physical_metadata_sha256": "9d02ceb864b5bc2b2ad39df1a1040a5e0247e3f40d3b0c5d51723e7a0375d9ab"
+}

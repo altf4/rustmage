@@ -1,0 +1,44 @@
+{
+  "baseline_commit": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+  "equal": true,
+  "rows": 5334,
+  "fields_per_row": 54,
+  "sha256": "3689d6e9f22b4f538c646b4fefdc00cf7e4d008c35cfbed4871f2bc97744c484",
+  "global_fields": [
+    "aliases",
+    "all",
+    "colors",
+    "creature_types",
+    "emblem_base",
+    "emblems",
+    "token_base",
+    "tokens"
+  ],
+  "complete_standard_cards": 1987,
+  "total_standard_cards": 5164,
+  "schema": 106,
+  "note": "Structural relocation of existing typed semantics; no new card admission. Set directories identify definition ownership, not full reprint membership.",
+  "memory_validation": {
+    "aggregate_memory_peak_bytes": 2454523904,
+    "compiler_max_rss_kib": 2174236,
+    "memory_cap_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "oom_events": 0,
+    "swap": false,
+    "compiled_snapshot_unchanged": true,
+    "source_fix": "Fixed-size shared imports replace quadratic sibling globs",
+    "report": "/home/altf4/.cache/rustmage-memory-proof-7ayqrul1/report/summary.json",
+    "scope": "Compiled catalogue snapshot test; full post-migration rules/release validation remains pending"
+  },
+  "validation": {
+    "full_validation_head": "d19ad6ab4ea973eec134a7a0fb4d217d7e9d8d61",
+    "native_unit_tests": 1941,
+    "integration_tests": 12,
+    "clippy": "all-targets warnings denied PASS",
+    "validation_seconds": 179.75287205100017,
+    "report": "/home/altf4/.cache/rustmage-validation-qxdu5ing/report/result.json",
+    "physical_pin_change": "Metadata/provenance validation only; rendered definitions/helper links unchanged except catalogue fingerprint",
+    "remaining": "Final metadata tests, independent final-head reviews"
+  }
+}

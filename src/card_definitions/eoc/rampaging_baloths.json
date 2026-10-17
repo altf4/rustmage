@@ -1,0 +1,12 @@
+{
+  "name": "Rampaging Baloths",
+  "catalogue_id": 3362,
+  "oracle_id": "2d3e6549-6cc6-434f-a189-ba3b55e64c34",
+  "facts_sha256": "e48c8aca0a558bd5ab03808232d5bd66a9bffc25685b463d9aa18bafba49a311",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b67c361419485d769ee8e11ab5fc352dfe50bafaa18106508d0dfbbfa6732ecc"
+  },
+  "physical_metadata_sha256": "69aebc7bc107ccdbe0db5bac577dd5577618e43537ee0845d244d4a2df99843b"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "The Last Agni Kai",
+  "catalogue_id": 4459,
+  "oracle_id": "fd1998c0-c18e-4310-82de-b6320be5fe10",
+  "facts_sha256": "3b23fa2a96c800acf20221170da093cb0d416bafb0f1ccb03cc0ac6afd92d98d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8365691abc34d798c89ef465c4e82cb34a38c71c33eb66d52de5ef4ddd7a79fe"
+  },
+  "physical_metadata_sha256": "0c18b60e2709000d8e57c042307158c1c29bd673d47cd9db76b1b90dd6339b27"
+}

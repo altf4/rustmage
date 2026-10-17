@@ -1,0 +1,12 @@
+{
+  "name": "Synchronized Charge",
+  "catalogue_id": 4303,
+  "oracle_id": "faa0055b-c1d2-4ce7-875f-41b4be8030bd",
+  "facts_sha256": "b2158873a8abf4f850141cfb88d80cda076e8ea4022572863d82e9c107bb41a4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "06fe1b1697207c6b93912642ee5f62c7826a25ccfb019cb4939c666582521f50"
+  },
+  "physical_metadata_sha256": "16f99e27047bad3aec390534a373df80117064310ce2fdc3c35b46166261f3e0"
+}

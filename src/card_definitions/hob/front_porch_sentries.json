@@ -1,0 +1,12 @@
+{
+  "name": "Front Porch Sentries",
+  "catalogue_id": 1632,
+  "oracle_id": "b39f03cf-3d1a-42ad-903f-e3b3542878b0",
+  "facts_sha256": "a644c5674501df2ef6d5f924e8fbeb9dc5220f3943e21571af013b70c7128a31",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6381404bffc9244a50f6a29817d5789b64396cc2cbbf004a6ae4859b71e9da9c"
+  },
+  "physical_metadata_sha256": "26d19e46a363f44f815adf5148ddfce6d0e11fa75b5df9aea6548d7dbfcced6e"
+}

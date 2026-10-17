@@ -1,0 +1,12 @@
+{
+  "name": "Repeat Offender",
+  "catalogue_id": 3461,
+  "oracle_id": "4d1885d1-212e-47ae-865f-e6dc4148ddf2",
+  "facts_sha256": "0b1aeea940b7b2b5f16bab62fbef7239b3727009250efa073311cea0f9adc602",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ece92cd6112a4db371708d426ab502ade08f1e0c85f148e0fd06e7053bab7a7b"
+  },
+  "physical_metadata_sha256": "965d326110451d0c18d8c70e3d87a0cca7738c3f78facde821456b44759b28ad"
+}

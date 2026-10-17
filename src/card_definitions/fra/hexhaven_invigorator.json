@@ -1,0 +1,12 @@
+{
+  "name": "Hexhaven Invigorator",
+  "catalogue_id": 2023,
+  "oracle_id": "12d617b1-c95b-4b1c-a586-ccfdf5898b03",
+  "facts_sha256": "bd7886aa064fd4ce7d0b5488880bbbac7ece7e9889c15283cf5030bf2d855d43",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7936cfb959ad046d74bb481abda5c4a4a6c1d96431868995f3708d03b505f46f"
+  },
+  "physical_metadata_sha256": "c2e96d045aa89d20f126137a93fd7e93024a7f4838139bf50025258933763c55"
+}

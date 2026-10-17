@@ -1,0 +1,12 @@
+{
+  "name": "Hungry Graffalon",
+  "catalogue_id": 2102,
+  "oracle_id": "9494c499-6ead-491f-aeb0-6dbfac4d960c",
+  "facts_sha256": "72bdae9959778a7b41aab333a2e3e00a6511203c365ae0f39a98cac896eab193",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c6bafedde404e9559e394c3b12df6837890c053a120d7cd5467e082de5a7ad1c"
+  },
+  "physical_metadata_sha256": "b016926c5764933a0b5141396f191c9ee9220b1d75f52da797995b9d36b0decb"
+}

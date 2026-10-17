@@ -1,0 +1,12 @@
+{
+  "name": "Braided Net // Braided Quipu",
+  "catalogue_id": 521,
+  "oracle_id": "86ef06b3-2049-494d-9ecb-ca14766d3b68",
+  "facts_sha256": "7d28fb16c99aef4e581a9708e5be5386607e2977e4a9d578f4dd396cfba1a65d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "999430ef436ebafc0dccfe6193ce49bb3bdccf9057f0728bd88b09792ba50dda"
+  },
+  "physical_metadata_sha256": "d86cb57a04fa2b128c885bc9dccc76589ec03e80b2403ed289524331ec341927"
+}

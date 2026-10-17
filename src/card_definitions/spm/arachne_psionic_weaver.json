@@ -1,0 +1,12 @@
+{
+  "name": "Arachne, Psionic Weaver",
+  "catalogue_id": 197,
+  "oracle_id": "28d500ea-720f-4332-891e-404fb03acb5c",
+  "facts_sha256": "2c94591f3667e582a3eb88a6d905acb8923bde1e4484f562db80036d49857bcb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b9d6d5d268b28e3143ec33d573464c1c1394e4ed08bac4229ba1fc1ea1267765"
+  },
+  "physical_metadata_sha256": "d93085fe75b059f8bd728d689541e8d3e8b28376a14ba2164da20b762e1d83dc"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Avatar Enthusiasts",
+  "catalogue_id": 277,
+  "oracle_id": "7b0d9d79-2e86-4079-8db3-500483c8807e",
+  "facts_sha256": "50a9ef649822218979d9b4cd816583665381674d9fb3fd15d5efb43fbc9ab64a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2979b58e958690f9b7674c4f699757a27f431cf92bbdf620aa8d0ed930a4d18d"
+  },
+  "physical_metadata_sha256": "cb3cd8aeb7df76492928c05826609644efd550484e44e982f8bdfe99cc4a27de"
+}

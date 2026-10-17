@@ -1,0 +1,12 @@
+{
+  "name": "Greenhouse // Rickety Gazebo",
+  "catalogue_id": 1873,
+  "oracle_id": "a341eb75-e6a0-468b-8c83-61102249c648",
+  "facts_sha256": "0be0e93fc62fc0abe81e658ce3295368541162b7949b0a921380f494fa69b11a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2a0b14a18ddc76738023da9efe7be045a959edc7c7bee471446c8f8c685bf4ca"
+  },
+  "physical_metadata_sha256": "c1ab119a3c0fb612da962570c174c1fa0d6624c17aa841c361b06c45e4023c1b"
+}

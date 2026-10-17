@@ -1,0 +1,12 @@
+{
+  "name": "Gandalf, Goblins' Bane // Flameshape",
+  "catalogue_id": 1676,
+  "oracle_id": "f48f2a9b-4ba5-4984-8180-3950889bba65",
+  "facts_sha256": "93c5f9e8d6590b9f9ceb15e61b17de7a1825ddfd20923f7546d881756d8ab160",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "023b1c3a32c0d38eefb8d5573d5f5f644cdf9cf30fb48c02766f93b37e08de18"
+  },
+  "physical_metadata_sha256": "e9c2dc97e1bca10b1205afd6c2ba38bcbabaee1e26d21db84e0ad6b2f7527be0"
+}

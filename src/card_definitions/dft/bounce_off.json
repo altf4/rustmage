@@ -1,0 +1,12 @@
+{
+  "name": "Bounce Off",
+  "catalogue_id": 516,
+  "oracle_id": "d9c29e6e-5949-4599-bf74-b9539e753f76",
+  "facts_sha256": "e610a2e45deddc6cf93600de4f5410434c63d25bd96bcdd0f9744a6ea78452e6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "895af6cb51ae899b65a81835b41cc4b8b8bc486ce72d7d045d314f60c4ba682e"
+  },
+  "physical_metadata_sha256": "4e9a6a47d4f5825a893a9ff62772c522a4797d3d41b3c83fc4014cc5414a9f17"
+}

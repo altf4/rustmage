@@ -1,0 +1,12 @@
+{
+  "name": "Scout for Survivors",
+  "catalogue_id": 3732,
+  "oracle_id": "5a367c9c-9a7f-4587-aa05-c0fba46ed838",
+  "facts_sha256": "48583a4d02ba05a8220dfc2429b0928d60b5f7ec900a409a44b2d41758a667f4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "103023ec4476d9439b9143c0a246468a03c78ddad8db0515757f82a7b6130201"
+  },
+  "physical_metadata_sha256": "8846ecd131e5d09cba0f4d092362e4a565400773c2f6ccddf43cc4a6e429d798"
+}

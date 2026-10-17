@@ -1,0 +1,12 @@
+{
+  "name": "Marwyn, the Preserver",
+  "catalogue_id": 2673,
+  "oracle_id": "eb03f6c1-c94f-4f09-b2e9-a55ce5533653",
+  "facts_sha256": "47a400e316c00a51c73226a1e002e16c745dbf82a3fb867b694f95aa1ccf0f72",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c6e1464a6d0696c23961872f5fb228710c05157c17c516c2ba6f602b32e1914c"
+  },
+  "physical_metadata_sha256": "d0d48c35d49e2e78348362a80df6bc0c8e7dce09b5a5b4b74cf3ddeedd480fa7"
+}

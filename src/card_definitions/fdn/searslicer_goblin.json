@@ -1,0 +1,12 @@
+{
+  "name": "Searslicer Goblin",
+  "catalogue_id": 3748,
+  "oracle_id": "86ec0b56-497f-481c-a03a-c4e64e8e7404",
+  "facts_sha256": "d63fbdc3a2114d8cace537148c1ae6605ed61e3e84939560e2799969348df2d5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1282d1abdfece0572feca06791934dc571e13695fc79d3ca93bdd344a21b7118"
+  },
+  "physical_metadata_sha256": "132cfb13193364aedac4302064c4348abee6466f6f21d45bb9153e7c84cc583c"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Vibrance",
+  "catalogue_id": 4882,
+  "oracle_id": "52867cdd-8bf2-4cae-bb8d-0f16a18a455b",
+  "facts_sha256": "f1f006044200e4f8f834721c5c44eec14c6bbbfa68fd55644b839ff74ffac223",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d3c91cd2017d00eab751a5625a26cd784da80e318a313a5da1eb286dd5ca0710"
+  },
+  "physical_metadata_sha256": "6b414c7d0fed0050468eadda41c9237ebe39919536fe353d00dd11f9e8e5d972"
+}

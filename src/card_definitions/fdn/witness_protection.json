@@ -1,0 +1,12 @@
+{
+  "name": "Witness Protection",
+  "catalogue_id": 5102,
+  "oracle_id": "a5f5e71e-83a7-468d-829a-6392b764c76e",
+  "facts_sha256": "231671ddbb0b63f65bcc093225ce588e6f03f4b1bb40f815ef5ffde7e61d25ce",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6ef453c39399ab58e884cdf15fcfb5146d49bfe65af2284162bdb73332bc8394"
+  },
+  "physical_metadata_sha256": "a53281bc092a9f9c35a3efd9f1328a7064ebc5c28c20cd07289c105a9468b226"
+}

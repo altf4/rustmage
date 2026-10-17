@@ -1,0 +1,12 @@
+{
+  "name": "Dimension X",
+  "catalogue_id": 1077,
+  "oracle_id": "8683341a-e836-41e5-9034-4da09eb0ab42",
+  "facts_sha256": "e02cadb1389c46c6311b8dd227fdfda92d3b4a3df0a281727a9653c8d6a54ff9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "358004d3607f8c1cc219fc90f1f42a8a581689ee59112c1e864e68fc7a34925c"
+  },
+  "physical_metadata_sha256": "1398e82046aebfbab8abd2a8d85780d7bd6b3bd27db31b2404ab869852e06c53"
+}

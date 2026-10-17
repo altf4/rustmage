@@ -1,0 +1,12 @@
+{
+  "name": "Cactarantula",
+  "catalogue_id": 612,
+  "oracle_id": "18a5fe34-0c97-486c-b09a-80535a99e982",
+  "facts_sha256": "8e2529a61980451faf6bd03eff2da5d1092562d00ef222a5f6d6894bddfdc627",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c7a242e2c2d30a6278e5595904d85ffed1b0cf8ae9bc56c88af917495eadca9e"
+  },
+  "physical_metadata_sha256": "f6b201d3f30d9aaf58862c1fcea7efe6822b3f469988c689c5b2089b988a2242"
+}

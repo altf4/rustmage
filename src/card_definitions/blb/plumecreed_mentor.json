@@ -1,0 +1,12 @@
+{
+  "name": "Plumecreed Mentor",
+  "catalogue_id": 3187,
+  "oracle_id": "0eb8983e-4e44-4bfe-81dd-ddb41007a166",
+  "facts_sha256": "1e59a802c82e33aba0a6b78f6349eb55a619a18891e99f79439ddebfcd38dad5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1dde8d67800e622b2b314b6dad095936f9b61d9bfa5c6c89472c8c5d61485eb2"
+  },
+  "physical_metadata_sha256": "441d9025dd78c14836b284bc7cc4eee026b8648a7cf66c910d8a9cd618e8d28e"
+}

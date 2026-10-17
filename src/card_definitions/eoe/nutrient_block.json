@@ -1,0 +1,12 @@
+{
+  "name": "Nutrient Block",
+  "catalogue_id": 2980,
+  "oracle_id": "04a0382f-7e4e-4450-ae70-18999379d875",
+  "facts_sha256": "61c377b98162c50abe4cc98e89ae1bab377c5088a577c61ff8bf2fd40ee37c39",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c6a3aff8506b7fcb5706241e18c590e340d062078e8f8be001598cc662ee0032"
+  },
+  "physical_metadata_sha256": "7e9f8883de05b5ddc81433d0b1cbffd828bd1517fcfc2b3ac3318ee93cb6e9f5"
+}

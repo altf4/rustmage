@@ -1,0 +1,12 @@
+{
+  "name": "Frog Butler",
+  "catalogue_id": 1629,
+  "oracle_id": "5b865275-4114-44d0-9832-ae5d3b4efba4",
+  "facts_sha256": "1c2549b89da972f15f6450ed8a9e981b3a91723b90d34b1b01c05667956c6ff2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0a0e9fece2ec20938d0dc8d0cf0f316f8a1f740cff6f7b659107053957cfd6aa"
+  },
+  "physical_metadata_sha256": "8bcc321589615a097e09c0b78b2085f37e6e619b1d7744566d95c90541b5629b"
+}

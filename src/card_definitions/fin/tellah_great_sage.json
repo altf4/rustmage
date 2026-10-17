@@ -1,0 +1,12 @@
+{
+  "name": "Tellah, Great Sage",
+  "catalogue_id": 4356,
+  "oracle_id": "1a080b26-c766-4f7c-9198-4974d2133f75",
+  "facts_sha256": "95876ab400de87e546edf1540c7bf0bdd58413f3c8381a4be355253be6936476",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "313944dbaf4f3b41dbb4ed8ddf67a16432f3e170d0505457534aa36aa6d7c897"
+  },
+  "physical_metadata_sha256": "89b9751cd73ec163c3e4187831d1ceee481b4d0fd56ae9354a318c61e30589a7"
+}

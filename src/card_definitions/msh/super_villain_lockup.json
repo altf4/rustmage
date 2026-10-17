@@ -1,0 +1,12 @@
+{
+  "name": "Super Villain Lockup",
+  "catalogue_id": 4257,
+  "oracle_id": "192e150a-96b0-42d6-9d39-03d0bed61f41",
+  "facts_sha256": "19075c28bf77e9d36fbef7a0b2301de0536800a2bde5cf164aab8c0e57a99bce",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5a2e2050bd8db003dda2c492c79a3cdc79d739f2f02d1933da17a0bee1597dcd"
+  },
+  "physical_metadata_sha256": "64b86a63c083df83cfac99066b7ea51a29b1697c31fc3603a621dad9435e2c69"
+}

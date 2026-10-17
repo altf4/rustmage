@@ -1,0 +1,12 @@
+{
+  "name": "Steamcore Scholar",
+  "catalogue_id": 4125,
+  "oracle_id": "0fb9a928-9adb-4dc1-9761-857df7e6c643",
+  "facts_sha256": "cf38385ac0e7c031ba2cb90bcd4d4cc0c7c74fbd2fa26a825e600130c54083d6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "45cf161e0349e3924d875c4762b1489f13a2093058f48f19b0ec2dc754577006"
+  },
+  "physical_metadata_sha256": "f43dcc93e0bbd99803e09a8586db92f3fc0f34275b213d93677cca55253ede0e"
+}

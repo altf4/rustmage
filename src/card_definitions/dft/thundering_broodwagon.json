@@ -1,0 +1,12 @@
+{
+  "name": "Thundering Broodwagon",
+  "catalogue_id": 4585,
+  "oracle_id": "817464d8-1e2d-4e12-96f8-5c7ec9b3e681",
+  "facts_sha256": "bf9fa74d581ae087e7e6b3b88e99165a77fc9770b85cc55d836f040e42e3d6ca",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d35658f6dfe4106e784eb81494ff0b45506516685cf4e593aa0574775c2e6a62"
+  },
+  "physical_metadata_sha256": "34cd00224eb30876fa3e5e45cb36cbdf86b3aae5830bd1c536593baee1ae306d"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Think Twice",
+  "catalogue_id": 4530,
+  "oracle_id": "fa85c5a2-8e83-4624-a35a-a0bbf17ecbb4",
+  "facts_sha256": "2f10faae86bf8a5bf95a9301e761663872413f61dd1218dc5323419f8baa8cd6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0b249234763dff2fc481958ed9c52f71431277f9bf881f93dd9500fd55036966"
+  },
+  "physical_metadata_sha256": "a6076199d2577f3b54e6e2a83ba21660af368897e1b8b55cf49d3cb85cec1db7"
+}

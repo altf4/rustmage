@@ -1,0 +1,12 @@
+{
+  "name": "Bake into a Pie",
+  "catalogue_id": 307,
+  "oracle_id": "1b9ec782-0ba1-41f1-bc39-d3302494ecb3",
+  "facts_sha256": "8ed74864e742599755d344f9c62d5f6f2c18e1579170a5a8efb259ddcb15a1dc",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7c3bdf326083a15a40304f65204d1180bef0e6dcb4e7879aa5435e5d0025e1e8"
+  },
+  "physical_metadata_sha256": "141e862a55498c349bc47c4b856fa9a48eb61305d1909187fc4b4aaf94f25465"
+}

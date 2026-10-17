@@ -1,0 +1,12 @@
+{
+  "name": "Emberheart Challenger",
+  "catalogue_id": 1306,
+  "oracle_id": "5b4b21ed-c24e-4038-83fb-bd7f3c3426cd",
+  "facts_sha256": "a8f21e9c85d2362c099587175c26297206572874902ab9fa46aada61998d428b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2f6d0212e02ad9513e589988342f3a4f0ef3f4eebbbffe6b737b331bc76e8590"
+  },
+  "physical_metadata_sha256": "2db1eef94a4694a152a80bb46b884c0ca10d586de125cd597400a6983aa08e76"
+}

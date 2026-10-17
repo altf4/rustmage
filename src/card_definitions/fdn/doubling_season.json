@@ -1,0 +1,12 @@
+{
+  "name": "Doubling Season",
+  "catalogue_id": 1140,
+  "oracle_id": "01546b7d-a233-4176-8843-d732074dc5b6",
+  "facts_sha256": "6e611011a2bba30150c0f2c7dcfa81d66d3ace01f2af0b1889451eb2c4efe786",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cb02cc399b63e2dd0e93bca5ba25626340d76577984853d6ee6ee3b2c0539713"
+  },
+  "physical_metadata_sha256": "6bcad6243f8289700e0675098f9306f59e7924054cddbfb33ef13d4b001d008e"
+}

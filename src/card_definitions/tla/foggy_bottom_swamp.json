@@ -1,0 +1,12 @@
+{
+  "name": "Foggy Bottom Swamp",
+  "catalogue_id": 1575,
+  "oracle_id": "b56bb8cb-457e-4b85-9bf9-5e891e79f1dd",
+  "facts_sha256": "43fe43a3dc119fa8b38cd6b012be37032eb66bdfff7ed0362a952c48d32edd9e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a5872ac59a747a63c865da6d35338dda2f39d1e16146cb0dc00439f08abceeb5"
+  },
+  "physical_metadata_sha256": "f3d089e704e144871c91a6b66a36d84fcabd9446e1889e7285baa0e71a90308f"
+}

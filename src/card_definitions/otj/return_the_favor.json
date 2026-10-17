@@ -1,0 +1,12 @@
+{
+  "name": "Return the Favor",
+  "catalogue_id": 3504,
+  "oracle_id": "30377bd5-99ab-4888-9ea7-e5a069b527e8",
+  "facts_sha256": "da07da6851bbdc1ee2b9db94348870a401e4ebe4b2fc023cb7e00eac146f4ff6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cd0fa3cfb773748bb782d7775b3fe0ce3fcbb7e11ba3414e32cd12e6dfb92f15"
+  },
+  "physical_metadata_sha256": "48bca7e600f1667f64f2fcb5626acd17ff5e5ce9bc325cb575977aeb770ef54d"
+}

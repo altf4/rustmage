@@ -1,0 +1,12 @@
+{
+  "name": "Golbez, Crystal Collector",
+  "catalogue_id": 1818,
+  "oracle_id": "533d5bf9-0912-451f-a3f4-3842b0a75b1d",
+  "facts_sha256": "8b0a21e109918d60cdbb891ac99b7a51e8fe710cea2ad45bf52fb18a90325c8c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5ea38f8b55034c124a788cae298da82d3d706fba202c4fca148ca1ca0e965371"
+  },
+  "physical_metadata_sha256": "a467f182fcc37e241d26c8ea8adc1d2f8ba40be08c2c8ae236bfda4f2cb0b494"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Flashback",
+  "catalogue_id": 1549,
+  "oracle_id": "02070488-9203-4304-9392-a111d20218c5",
+  "facts_sha256": "54b0e25311c83f42bc069f3c13f6f7ab5b235581e40778465af5b944a0850a77",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a3516d41321e66980d94f771dee5abaad5115662fde781f7a7739d52d97dde9b"
+  },
+  "physical_metadata_sha256": "a587a6b9ccf1e98d9c37e7689401dcbb23721a341ff46b310707f78539e8ede6"
+}

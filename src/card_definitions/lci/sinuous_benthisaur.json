@@ -1,0 +1,12 @@
+{
+  "name": "Sinuous Benthisaur",
+  "catalogue_id": 3885,
+  "oracle_id": "d3cad867-142c-4e9d-bcd8-0e7ed1fd2f77",
+  "facts_sha256": "e6761e88eb45e2a98e381f08529be788c82aa742a75b530c61d9ae40c538bb07",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5fa5a2867b7aef87cbe22a850a1f51e172f25c5173f563dc5be0a5052a18379b"
+  },
+  "physical_metadata_sha256": "379ec4698ea7bb7cb2b58edf78a396bf78577e291270120a9a73e62bf7bb70f6"
+}

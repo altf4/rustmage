@@ -1,0 +1,12 @@
+{
+  "name": "Museum Nightwatch",
+  "catalogue_id": 2885,
+  "oracle_id": "3891a914-e597-4126-846f-39bf8534eb92",
+  "facts_sha256": "8576e8df03602b67408e38154ff17e6a32e07915647ae38ff7a647f8d9fee4e0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e9ea4eef6f41ab25f00fcaa9c3ae79ee73fefefd2635171d1e140002a7100b49"
+  },
+  "physical_metadata_sha256": "3e0d1021d77eb55e624bc0d83ea6aabc8684da969ef5e807889ffde5ecdcbf63"
+}

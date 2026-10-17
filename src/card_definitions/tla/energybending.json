@@ -1,0 +1,12 @@
+{
+  "name": "Energybending",
+  "catalogue_id": 1338,
+  "oracle_id": "c4c1e49d-5f14-486c-acf2-1952512b12b2",
+  "facts_sha256": "3ef273d00aafab044c13d0f85004e9e27a8b43d037c8793ebff20058faf92455",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1f587a7f631cad360f623e8d0b97936a8c19b576aa4cf16edb41ab7895c0ce22"
+  },
+  "physical_metadata_sha256": "c03458d03b35061b72879de07cb4e3f4aac189d6990b4aac98edc23cdcc87e89"
+}

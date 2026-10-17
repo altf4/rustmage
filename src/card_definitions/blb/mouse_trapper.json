@@ -1,0 +1,12 @@
+{
+  "name": "Mouse Trapper",
+  "catalogue_id": 2863,
+  "oracle_id": "5b0a4530-6e19-41a2-9ea6-e4c8cf85b6c4",
+  "facts_sha256": "cca0212d6f5972bce4be3026f4ca2504d64b55599bfb029af11db40f69724138",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "89e92b316ea431d938149e11908171ae7d5d9111409b10a96e99b35b18a23dc7"
+  },
+  "physical_metadata_sha256": "7d401acfb41efc7c4ccac2fd73b0696f508d5bce6ff0ca18e7cba46bd7f3d5ce"
+}

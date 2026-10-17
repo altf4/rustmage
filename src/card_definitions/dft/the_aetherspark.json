@@ -1,0 +1,12 @@
+{
+  "name": "The Aetherspark",
+  "catalogue_id": 4417,
+  "oracle_id": "483c747a-b602-4747-95bc-72c2c17ed509",
+  "facts_sha256": "acb50a009f6688a1dcdbec3a47fdfdfa83f083579bec6521e0abe70f4997dd98",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "56a40fa8e707c1792941982bb8c1c6451f8808c95c6d57bd84a3421b09aa0f03"
+  },
+  "physical_metadata_sha256": "77f81d7e69c50da97d9b6736954c7adaa574d5ba4f029abb865c5b42e603a9c5"
+}

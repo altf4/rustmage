@@ -1,0 +1,12 @@
+{
+  "name": "Desolation of Smaug",
+  "catalogue_id": 1056,
+  "oracle_id": "c9634afc-4a5b-4cf6-b63d-0ff9909dd5a7",
+  "facts_sha256": "8f83f4c2c87e3be4e84258bb930a22ce953077f9587eb9cfd30fac8999b635db",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2518aa7f306dbff770c3aa50ac7d9a47787de01244d869001d54b5cb62fa6335"
+  },
+  "physical_metadata_sha256": "325841474e5b51c22ee571ae963ccab5e8d83e61378274572c27e5d1edc51526"
+}

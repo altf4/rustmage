@@ -1,0 +1,12 @@
+{
+  "name": "Guardian of the Halls",
+  "catalogue_id": 1901,
+  "oracle_id": "c3fb2829-64f2-4795-b815-edcc5bbbc360",
+  "facts_sha256": "ce44765652baf30ae88c55bdffc42321dae1974b718827e5943b7449cb0dc560",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f84d267e6ca880e04b035454e3b01ae2ef1d5f7db56fe5242cc2ef1de35776b4"
+  },
+  "physical_metadata_sha256": "60729f78abba9179bf84046c5c4f2258b0b9412b9572b11421db87bb21c919c9"
+}

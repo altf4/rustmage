@@ -1,0 +1,12 @@
+{
+  "name": "Whoosh!",
+  "catalogue_id": 5049,
+  "oracle_id": "855353e2-b686-482a-b987-c6ae456f088c",
+  "facts_sha256": "918081c95e5ff98a5182d21ab7d993301cc7a5fa8366d87970689bc257fdb358",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "879988c4de437b53f9efed9b1aa950861d7bf086548e603c61639b87a5febb72"
+  },
+  "physical_metadata_sha256": "b5daf0d90ac7bcc9bc2e7038fc9641bfd245ecd8859015f1dff1dda8925874c3"
+}

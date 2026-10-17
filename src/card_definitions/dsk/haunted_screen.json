@@ -1,0 +1,12 @@
+{
+  "name": "Haunted Screen",
+  "catalogue_id": 1964,
+  "oracle_id": "49f92c0b-16ac-4cf0-8ec3-e3638990ee75",
+  "facts_sha256": "4de43f956411bd4d9cd86e47c69452f994c22248d34d27bac15991b7acf9ce81",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8ec2650a8b302f3d70a6b4a42fde89a144aba066bd019741b0b2e9d48cc12479"
+  },
+  "physical_metadata_sha256": "722a9c8b6fbe2a4c18c2b2664dd113883fc019f7d854c3c813f420a0ebed6f85"
+}

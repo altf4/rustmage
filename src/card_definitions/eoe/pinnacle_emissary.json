@@ -1,0 +1,12 @@
+{
+  "name": "Pinnacle Emissary",
+  "catalogue_id": 3166,
+  "oracle_id": "522e8db5-857e-492f-afed-d60cd2ce3dcd",
+  "facts_sha256": "955d0a7fe2968a57157b40f89be3617194b1a89917a8b93712eece5a5e629070",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5332571cdb89c88b7615936e7374f2fb346996a2cfc980e18cd96fc373ab1cdc"
+  },
+  "physical_metadata_sha256": "6d9ffbca9bc69aa37b317bc7e5ec67c63e97bb81bc84ef6c14f0dbb8db8da131"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Meathook Massacre II",
+  "catalogue_id": 2695,
+  "oracle_id": "68957dca-df5c-4051-af22-407cb7e47200",
+  "facts_sha256": "34c366646ac0c8a0af0cf9793d7525b223b34c563a8831b0d86c7e18777cec9a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4da5e4c81533690acb0a8ad88b842807f6442a0611f4c2589f71aba794c37052"
+  },
+  "physical_metadata_sha256": "aed0a4c9006a3c55c28944d102f8531baa15496262136683d63d2056b8cb2f51"
+}

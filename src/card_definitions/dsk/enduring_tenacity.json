@@ -1,0 +1,12 @@
+{
+  "name": "Enduring Tenacity",
+  "catalogue_id": 1336,
+  "oracle_id": "98e698ae-1a69-469c-9cfb-0e3fedeb71d4",
+  "facts_sha256": "35af5267096d920a6154065ca03ee8337916227b94bfe5a8cf67f6408a6d40ec",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c16e72b83d1b4726c0b75704193038f1b1769c519958aa4672c91b65b3283abf"
+  },
+  "physical_metadata_sha256": "76cfb25437b918fe4194d8499b2214ce10d1da84923140b884fdde3aeffc1564"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Mystical Teachings",
+  "catalogue_id": 2900,
+  "oracle_id": "81d72511-88b4-45ec-a5a9-e722caf55577",
+  "facts_sha256": "f1850b86aef641361c2a0e837f226c22d7579af1074dd63fb3ab2a1b86aa7605",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4116243993346fcce9e2062fc43d236be2e4ef2d7bc290588353f01baeff22c1"
+  },
+  "physical_metadata_sha256": "8196cbe27c8b82b8468da5d3cac8e0ca2e864756cb7d310d77c145046621a6ef"
+}

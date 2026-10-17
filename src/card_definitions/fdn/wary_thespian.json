@@ -1,0 +1,12 @@
+{
+  "name": "Wary Thespian",
+  "catalogue_id": 4989,
+  "oracle_id": "448cc829-1596-4aec-b180-c0c1e0566f6b",
+  "facts_sha256": "2b5b9da33b8efe686888d6366bf98e4ad964041554806b0b83fe610cde45b508",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "25352b12e371e6b13fec7515a7b86d414d7a4f97f73acc133c606ce35c24c755"
+  },
+  "physical_metadata_sha256": "8bb62e9d6f3eb991adac10d4d9f607e5587ec8ac122c9e5a2d8f22ca50aa6bc0"
+}

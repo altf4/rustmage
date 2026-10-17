@@ -1,0 +1,12 @@
+{
+  "name": "Whiskerquill Scribe",
+  "catalogue_id": 5040,
+  "oracle_id": "cb1e1acc-3805-418b-bed1-65838ddb1d62",
+  "facts_sha256": "2a38173e9ccd7febf34a3f972a5244b0e684e523fb117a44b48cf34a23609939",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "75c6999897c4b45857a125ea4bf7e4c60e7435baebc07488c84de423ca9e4048"
+  },
+  "physical_metadata_sha256": "12981f989a416f8a2747e9b171e83045badccb1660c16d4f710b50cfa86863ea"
+}

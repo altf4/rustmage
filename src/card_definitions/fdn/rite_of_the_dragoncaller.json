@@ -1,0 +1,12 @@
+{
+  "name": "Rite of the Dragoncaller",
+  "catalogue_id": 3546,
+  "oracle_id": "5097f4e6-50af-4641-909f-db44abf0ce32",
+  "facts_sha256": "7e47456b5f1820fcc72db156ae662baf3c4d88ee2d6682ab9abbdb47eff92150",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9dfd0ea9b6b1e6e14f39bcd92f2acb2ef1bbb287fc4b72f0f2dcdb026f52bbb8"
+  },
+  "physical_metadata_sha256": "8301a412c98223c2b3ffcbee85b34a7531dfcd93c30e8d142a9a1deaef58b11f"
+}

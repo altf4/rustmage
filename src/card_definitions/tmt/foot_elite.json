@@ -1,0 +1,12 @@
+{
+  "name": "Foot Elite",
+  "catalogue_id": 1585,
+  "oracle_id": "b6244b6c-664d-417a-bd58-ace5c7a995a2",
+  "facts_sha256": "bec8cdec9fd22c09eb8485bce3d9029cf57853cccee1e0ff148b53e41b7dc859",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7b55956abf539d1c736c87a71a2d9e3f71b99022bc18463c7223a0988e581e2c"
+  },
+  "physical_metadata_sha256": "defad0a7c1d612ba17076fb96e2a6ac42f44450e4da8a965ea3d59ac2bea14a5"
+}

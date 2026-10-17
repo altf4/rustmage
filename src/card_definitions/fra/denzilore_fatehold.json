@@ -1,0 +1,12 @@
+{
+  "name": "Denzilore Fatehold",
+  "catalogue_id": 1043,
+  "oracle_id": "0f8de7f0-c61d-415d-b4db-4959374343da",
+  "facts_sha256": "5a7ad92af5f9d222a37086cb8f3136ac62a193674f354a669364f9b2b8f84431",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "02dd604d035187eceb6001fc08c6738a9ad250a16a86bb369b052cc10ac04f53"
+  },
+  "physical_metadata_sha256": "790c1ae53571c8242abe9f1303f8353de96903fa5a7477cb9c4bf9cb26cb9c2c"
+}

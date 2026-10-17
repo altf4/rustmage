@@ -1,0 +1,12 @@
+{
+  "name": "Nasty Little Rabbit",
+  "catalogue_id": 2910,
+  "oracle_id": "ee86cce6-c7c1-40a6-896b-cde9b86bb532",
+  "facts_sha256": "26d8fb0889895217bfc6a24b17789deda9f953731f93a1550ee744030f625b2c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "848db667b8dcba903a2070d1d554ecae5f77bd92e36f6f6e1eb5ccc999b2d536"
+  },
+  "physical_metadata_sha256": "59a7d6d7a698794b5a749c3d4ea0fbfe3ab8b95c91b88f10bed2bbb02eb1430c"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Lakeshore Apothecary",
+  "catalogue_id": 2441,
+  "oracle_id": "80bcb154-b4be-4bbd-bbc1-b116a59045b7",
+  "facts_sha256": "082e2ba6562382e185eda9867e16727d070517cc58f73c634d0477e691f31b94",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5c64ce7384f543a909e697498f27d56412c91f7abb61a9e8507c3f8bcf7a1d84"
+  },
+  "physical_metadata_sha256": "48ec92fbb7581c636c9bcc28fff4d74952652d7d60c48ab74d058152d3821e3d"
+}

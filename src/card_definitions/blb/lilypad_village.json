@@ -1,0 +1,12 @@
+{
+  "name": "Lilypad Village",
+  "catalogue_id": 2509,
+  "oracle_id": "5bb06e6f-e3af-4caa-b66d-77248ad46b61",
+  "facts_sha256": "a82a376ca23ca85d870e0dc88b7be3fdafe663a92abe0bd194155779884cbbc9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3bf1d6cf0ef081e0de536cf390e05bcf219fd58e5bed94ba7f82e8fc17435969"
+  },
+  "physical_metadata_sha256": "f6c717f5e40732c4d95f15011eb6085aa3785f890bd97c1665c7e99eaadd6e2d"
+}

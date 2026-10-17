@@ -1,0 +1,12 @@
+{
+  "name": "Corrupted Conviction",
+  "catalogue_id": 856,
+  "oracle_id": "b45e35df-9032-4482-89a6-c7c50c6d0a79",
+  "facts_sha256": "770cc4ece6e7cbd83b67121c8f9a18f2b411d521069a0c5bec7fdb121bf49582",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ed393f8e53f0b17d4acec6b4f0c672770e49cf37158bee8a6bc7c761de9bdbee"
+  },
+  "physical_metadata_sha256": "b6e0215028dd373f4e6e160e1c37daa311afb13ec92cb008e1fc52ae4a3beefd"
+}

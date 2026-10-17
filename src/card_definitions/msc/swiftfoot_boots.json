@@ -1,0 +1,12 @@
+{
+  "name": "Swiftfoot Boots",
+  "catalogue_id": 4292,
+  "oracle_id": "c8b143ad-43ec-4e0d-a440-e348daa31391",
+  "facts_sha256": "97c2532968c85a9910123b02d1a553258d4c79fe3b4da11bd29ed2234c9edb3a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "60437cc6e76ef711e7dce731657702fc0e45ec29f5d94b859b381a2da6541781"
+  },
+  "physical_metadata_sha256": "cd6a615ae79ab4da80fcb9fa3d8fffb7ca5b54157a5f3afdf3530df3ece87d31"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Coordinated Maneuver",
+  "catalogue_id": 845,
+  "oracle_id": "6ff39311-565e-4414-b32b-eb24c70b3090",
+  "facts_sha256": "c6f9465f74c56057b790e78bfe26d419dc2cc35d91cd1e6487675f66bb86e600",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "70a6b919049605a8e72b5856c6a5ba0305a9f30a0b427af83e0f2139168101ed"
+  },
+  "physical_metadata_sha256": "f0cddf6b7245dac7e7b1a4a6bd70890789dbac2b769b6711fb175eea454a31b3"
+}

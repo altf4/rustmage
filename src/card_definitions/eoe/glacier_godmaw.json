@@ -1,0 +1,12 @@
+{
+  "name": "Glacier Godmaw",
+  "catalogue_id": 1761,
+  "oracle_id": "300e48df-7f7f-47ff-b450-8ba7bd1b1c67",
+  "facts_sha256": "d4e0ee448d93e2fc36f79a2c99d7bef02dc7a34a34f3dafd6d1b5d74071fee61",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7d2a2defb93c05ffd533fd1278564d1b7a344c8b92d97e69a910f5ba8632a0d4"
+  },
+  "physical_metadata_sha256": "87598cfb5fad6a6a16f7adfdd164b8ef67e158495ef65f6bb65159a7b534529c"
+}

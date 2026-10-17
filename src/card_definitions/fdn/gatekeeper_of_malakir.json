@@ -1,0 +1,12 @@
+{
+  "name": "Gatekeeper of Malakir",
+  "catalogue_id": 1695,
+  "oracle_id": "6781f8ae-2a86-4e3d-bc43-48809c9d6c26",
+  "facts_sha256": "f4fc805a26057c76f9cc6ebb17697761c1442351a5f1d249312919ad81feae87",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3bd218353f35e4d8b8e3c4982c6151158007ee6b1cbdc2906b7a5c6509c669ab"
+  },
+  "physical_metadata_sha256": "f5122047d7b42c1eaed29fcc8d41a2c42c685c0a8ec254f60ffbab0e692153dd"
+}

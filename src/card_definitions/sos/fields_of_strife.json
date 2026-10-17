@@ -1,0 +1,12 @@
+{
+  "name": "Fields of Strife",
+  "catalogue_id": 1502,
+  "oracle_id": "a32e08fa-bea4-4ba9-a126-9bf0a91f67e2",
+  "facts_sha256": "885d5f44471788c36795e089a4174fd91fdcf771ef44e76951cb9ac144a314e8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e7177f87b6f9a9492023c9f33ac58cb01e50a8b20326348d217595ecf7fb0bb3"
+  },
+  "physical_metadata_sha256": "1df9fa266661d800a857962033ca4c89662fbe1a2574f682e5b7432405580497"
+}

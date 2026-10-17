@@ -1,0 +1,12 @@
+{
+  "name": "Render Speechless",
+  "catalogue_id": 3457,
+  "oracle_id": "6fdddab4-fcc9-4622-9c17-c69f9d4bca08",
+  "facts_sha256": "caf0db88f23f754b1be0613fdf0b3ac1e6a0a42c2131dd572a5ffd98a20066ab",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d055d1d8dffdd3b8a1045dc39e9ab6ab94f6811db845a5745af420bfa9b0d65e"
+  },
+  "physical_metadata_sha256": "f9918159797b66fcc701f5ef89383807a9af218cdc4bce7b0aac10d9bad84a58"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Aegis Turtle",
+  "catalogue_id": 67,
+  "oracle_id": "f84c30e7-2ea8-43ff-9356-1f907558cfd9",
+  "facts_sha256": "de4a05547a0c12646a4d69bfd9d62e08384345f393f57b3b238fe1f8836522e7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4476cb3c0aa4892b9dd4be8883a8d32b0bb96920b39a77a00ed73339cf991989"
+  },
+  "physical_metadata_sha256": "17538ce3df4519f2b36107fe5b27eda56e7b719664551a49af1d8cb6ab5a2b93"
+}

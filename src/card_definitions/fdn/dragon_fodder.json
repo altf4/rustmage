@@ -1,0 +1,12 @@
+{
+  "name": "Dragon Fodder",
+  "catalogue_id": 1152,
+  "oracle_id": "d0d2c45b-b6e3-4999-bdab-976e8f0d6617",
+  "facts_sha256": "9cfc6841b12153f715c39e2c212907e5cee3c2ef37c023e03685a53e82e234ae",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cbe808c874786bc40712920bda3b74fe6fdfcc9df6a87f8432f80e67c851c6b0"
+  },
+  "physical_metadata_sha256": "5b45fa7224f3d914aa03533aaaa36a4f03ed4f21cae6101f0fb34481a5a97018"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Blazemire Verge",
+  "catalogue_id": 440,
+  "oracle_id": "977c2f33-b622-4172-9efb-7f523becd32b",
+  "facts_sha256": "abfae06f5ebe80000d5ce0d471204cf7a2c48301bc42797df2b0085390dcb00a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "08c965850cc7b897f731e036432a8439d7b86be01d1c99043a7a19d158d8c412"
+  },
+  "physical_metadata_sha256": "77fe3db5a0f132bf09fb435e010bd431ddd82db4154e7b5d612a043731e44c53"
+}

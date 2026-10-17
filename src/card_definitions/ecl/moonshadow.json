@@ -1,0 +1,12 @@
+{
+  "name": "Moonshadow",
+  "catalogue_id": 2846,
+  "oracle_id": "a3635b3f-839c-4fe5-83a5-7c70e8630184",
+  "facts_sha256": "03cd1392239e5665743924df6dbd88514d196bbb3b8722d6a20fe9e1830fb8f4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "11740c2b1ecfbd8597337a090743f4ddeb85ce6640ffdab21dacb8a11c66a076"
+  },
+  "physical_metadata_sha256": "11688b2f6724e9f7c60e20e59aaba55bd6e47c7b78368c3205fe550c9c356bf7"
+}

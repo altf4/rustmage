@@ -1,0 +1,12 @@
+{
+  "name": "Rescue Leopard",
+  "catalogue_id": 3475,
+  "oracle_id": "d70ad04a-b940-4bb1-bcdc-408166e91723",
+  "facts_sha256": "dc38da2e3f9ab96e0a49297f2eedb3d4fa62ea73897d9b97431f278a4c641fb6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "68a0d30f511c95c5029620c2bde11de69b0e78acec28886e07e3af08aabbcf21"
+  },
+  "physical_metadata_sha256": "74f7ed9cc570bb8228910b3e7d228be6200abb33a867b60c24168a32fa7b5619"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Cloud, Planet's Champion",
+  "catalogue_id": 778,
+  "oracle_id": "8512bd08-ecba-4e0e-b65c-8209764a65e5",
+  "facts_sha256": "205ed6ee774f8d66d786ef7812ad92eb13e5efc505d2e845c5a0b089f0ee6027",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2be065db9491a1963723a520e6e12c1c9a826c01b474cbae991f8e277858d08c"
+  },
+  "physical_metadata_sha256": "13fbcab0dec3dd3ee423b59e8dd39f67eeaf9a4d5b87fa47eb56e5fedcc6b665"
+}

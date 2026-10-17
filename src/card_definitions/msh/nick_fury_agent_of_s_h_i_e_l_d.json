@@ -1,0 +1,12 @@
+{
+  "name": "Nick Fury, Agent of S.H.I.E.L.D.",
+  "catalogue_id": 2932,
+  "oracle_id": "62916107-14c0-4516-9fed-a032b1a80e5d",
+  "facts_sha256": "84307acf93fa4fd42feaec005723c3485c80c55b6e027611d23614bad329b1f4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "77c692715910750943992465bba1cfc424fe41a114ecb34d7b61d9dc83807e37"
+  },
+  "physical_metadata_sha256": "d00f980a12b3f6bcefbf8ad3de18d4824e48c674b7f5e6c33af0e77c00a7d185"
+}

@@ -1,9 +1,0 @@
-{
-  "name": "Enchanted River's Grasp",
-  "oracle_id": "fcc9f3bc-0bc3-4189-a4d0-9698594b99a8",
-  "facts_sha256": "cc4012ed18b50d734fde05e7ff4fbb40a9b3a6f8c03ecec6e9a4eda836967030",
-  "complete": true,
-  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-  "java_source": "Mage.Sets/src/mage/cards/e/EnchantedRiversGrasp.java",
-  "java_sha256": "4a24857b5f390110fa9e97a4714d8ffd1059b50f05845ad8c18e9ed2d87963be"
-}

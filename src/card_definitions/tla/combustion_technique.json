@@ -1,0 +1,12 @@
+{
+  "name": "Combustion Technique",
+  "catalogue_id": 807,
+  "oracle_id": "522a04ff-cbfe-47b0-bd29-ef6fc27a6905",
+  "facts_sha256": "adcf40b4c469e8494e8383ef2695a71db2e70bb597dd38884177a2d04a7f2b3b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "93cdd51b23a9f2aafd5fca58843d6da45c7098d8d7c75cbbc4c43f7d6c557669"
+  },
+  "physical_metadata_sha256": "267a427a4605f4a5e6bcaa785961a99cb2095f1e21692ec2dd6187e17e61a575"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Iceridge Serpent",
+  "catalogue_id": 2124,
+  "oracle_id": "53f07529-c212-43e4-b5b6-086efeadda39",
+  "facts_sha256": "33bbf56d79ff82e35d01f5fdd327c1deb12e13cfab26b282539a9e2d4086295a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a01ffba19374858ac6533484d053d005dde1380d684eb2e160e4adb80eca209e"
+  },
+  "physical_metadata_sha256": "2160c43b9fa4847d1cf209ed70deac65dfdb66e8263901b3fb0c4809590fef7e"
+}

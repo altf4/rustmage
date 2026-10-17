@@ -1,0 +1,12 @@
+{
+  "name": "North Pole Patrol",
+  "catalogue_id": 2964,
+  "oracle_id": "a1230e78-0bfa-489e-a1b9-3c227bceb6fb",
+  "facts_sha256": "e6060ae4dc9b51cee42062ed56ec7ccb8e08379e5a7d0c8262799a476ece0a0e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dbbf41573358f2fb569cbb2d49df28fc68087080f122f8fdf272fab56a0065db"
+  },
+  "physical_metadata_sha256": "0df1eae9223f269181706341fcd234d5b80ec5153350b162bf6e4bd0a2cf10cd"
+}

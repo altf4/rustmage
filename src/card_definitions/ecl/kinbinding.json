@@ -1,0 +1,12 @@
+{
+  "name": "Kinbinding",
+  "catalogue_id": 2355,
+  "oracle_id": "da35de40-6fde-4018-bda8-b0ae91ed872a",
+  "facts_sha256": "88fcf82c97f725daca24a02810fdda64972cf9b86a8ec2f08122e6c1233f42d3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3a9e802d8b0fe69fe757c99c9463db4c5d7934e0df344d3e33c2d60989ac200d"
+  },
+  "physical_metadata_sha256": "0d99a9a814926beeba6679ea9f74b95397e31d51aa43daa315face16a13bcb2f"
+}

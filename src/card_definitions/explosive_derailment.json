@@ -1,9 +1,0 @@
-{
-  "name": "Explosive Derailment",
-  "oracle_id": "b23dc81d-01bb-4bf0-9932-5d32a6b22cf7",
-  "facts_sha256": "ecbd95344a311da6776187de57a4f8fb7be02f448f71237b65861874910b6fde",
-  "complete": true,
-  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-  "java_source": "Mage.Sets/src/mage/cards/e/ExplosiveDerailment.java",
-  "java_sha256": "76077169a8a85ad758838ea12df6d519f66e6c47a8e765cd339efed168b34a8d"
-}

@@ -1,0 +1,12 @@
+{
+  "name": "Ajani Resolute",
+  "catalogue_id": 111,
+  "oracle_id": "0d60c095-4c6c-4618-8ef3-508f3d454efa",
+  "facts_sha256": "d2ced91f0198ac971cfd9c87cd9021f164bb8fcee5e73130c43904c555e7a51b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "002f166966a1baa6d2d298c0dd13518bbbfdcd9d9100ae70fe308481bff55691"
+  },
+  "physical_metadata_sha256": "a8c3548f60ba860f7b647615224b22435932969a181654fd27e23fc24979f806"
+}

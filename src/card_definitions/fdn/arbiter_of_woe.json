@@ -1,0 +1,12 @@
+{
+  "name": "Arbiter of Woe",
+  "catalogue_id": 201,
+  "oracle_id": "540693f3-985c-4a4a-945c-c957c5aad395",
+  "facts_sha256": "6182eefc5a659618d9734a44ab260b08efcf31d24db67715de45e6ca522d1ece",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b40c764edbada0ce6d10815074768c1a0e769c7c6ea5fb47319ca19b069e340b"
+  },
+  "physical_metadata_sha256": "98592bc006a56f9ca17551cc6e712148e497cb50161743fe897fdd745c072627"
+}

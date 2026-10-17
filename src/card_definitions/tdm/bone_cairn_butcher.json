@@ -1,0 +1,12 @@
+{
+  "name": "Bone-Cairn Butcher",
+  "catalogue_id": 493,
+  "oracle_id": "449db6bf-d766-4d09-a7bd-9c45b3d4c4c3",
+  "facts_sha256": "21c45bd322485a650c3b553332f8eb2a5f67e691a37482a06b8eda5c386dc744",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c328de9b2e1eb7485c70ccdc9fc567ad5189f3a3f0915e924a5f133541822c82"
+  },
+  "physical_metadata_sha256": "c608a4808a895c7def5286ebac75ef7131d63dba808d114bdf60d088300913d2"
+}

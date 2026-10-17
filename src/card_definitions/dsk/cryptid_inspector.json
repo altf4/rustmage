@@ -1,0 +1,12 @@
+{
+  "name": "Cryptid Inspector",
+  "catalogue_id": 917,
+  "oracle_id": "c36f787e-d8d4-4bd5-9790-64766878fe46",
+  "facts_sha256": "249009dcf2a30bc85c0090b1ad5f1cec057b5c8b10f6a5a27aea769b49bdf1b4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a6cd83ec5583373dcc02d2479170d849689ef3989f195b57548672f27fe521c7"
+  },
+  "physical_metadata_sha256": "baed657a511d505b63918e1039d1ed9c890bbeb0e18fde8745cf51f317d2e0c0"
+}

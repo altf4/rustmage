@@ -1,0 +1,12 @@
+{
+  "name": "Lyra, Tolarian Archangel",
+  "catalogue_id": 2593,
+  "oracle_id": "d9060fff-0b65-4b3d-930d-6e36315b802c",
+  "facts_sha256": "726f6ed309de70db1d4cfda9bab60b8462f0bfcc05cfccbf9a75999dde0b3c1c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "66f6fc20406aaa9c20b60126878e0a70090310c20786d2cdd8c0fdb74e2acc36"
+  },
+  "physical_metadata_sha256": "e2d9a943e32b83748280f7ade985ebba11c7b38ba42d29e6c4b033b6b9c2280f"
+}

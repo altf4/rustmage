@@ -1,0 +1,12 @@
+{
+  "name": "Razorkin Needlehead",
+  "catalogue_id": 3407,
+  "oracle_id": "a78f981a-bf8a-42a4-b171-d655cc2cc1a2",
+  "facts_sha256": "61e65ade6040118422d82dd3f9588c9525dba6d96b4cddc1fad8efa4a2578101",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0596fdb8f6dad1bb59e9c1d05e1c114a8d98ca5601c598f3f86ebca6f5a9901d"
+  },
+  "physical_metadata_sha256": "145486867bea6685168ae6ac5b335a8fa6afa58e122fe1e1f0926aab81d31511"
+}

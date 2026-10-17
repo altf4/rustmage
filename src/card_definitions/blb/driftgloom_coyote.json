@@ -1,0 +1,12 @@
+{
+  "name": "Driftgloom Coyote",
+  "catalogue_id": 1186,
+  "oracle_id": "f76a86f3-568a-40b3-8e2c-f84db4141293",
+  "facts_sha256": "f4544bfdaf0dfbf7a85615f71797c9ea7a4abe4f3c2540b5681ac6dcb4027b81",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e28bb0848186c899f8414af0ff9844cf178c08dba7ce5dee136cda68a9069195"
+  },
+  "physical_metadata_sha256": "8c7c1b150e3c070f8f64bfab8a476c9da6681884d0a2addcf7f8649761049f9e"
+}

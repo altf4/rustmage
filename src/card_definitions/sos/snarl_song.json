@@ -1,0 +1,12 @@
+{
+  "name": "Snarl Song",
+  "catalogue_id": 3942,
+  "oracle_id": "3b6fb13b-f126-4697-90a1-64b14ffcecd6",
+  "facts_sha256": "fa6d49094579d7b71b1c2fe4185122fc39ad2548ca77eaf3bff2b8e37297da70",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f206a20df3a44df6b0f35fb46561b6054e710e4815551a0cde0ff5ae14379688"
+  },
+  "physical_metadata_sha256": "c052a57a7de957a2cd92d231feb0e9e0bc389e9765afbb4c1ff412ed1d9837f1"
+}

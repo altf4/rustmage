@@ -1,0 +1,12 @@
+{
+  "name": "Sami's Curiosity",
+  "catalogue_id": 3662,
+  "oracle_id": "5f532b7f-cb76-4be7-b361-0106c561dcb2",
+  "facts_sha256": "f1da48d691ecca2bdff520ff3152b1732d293bfb578aaab7f53138d4e81004b2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "96bb4e0e46abcb261e17c2dec13c2ae37b59cd8eeba50846bbf1e877904dbe54"
+  },
+  "physical_metadata_sha256": "73dfb0a584be213e78ffc9a23640ef977a5a5078a6eab9554de3600019055490"
+}

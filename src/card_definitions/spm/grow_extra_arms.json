@@ -1,0 +1,12 @@
+{
+  "name": "Grow Extra Arms",
+  "catalogue_id": 1887,
+  "oracle_id": "52f03e73-3dba-44c2-b256-10e7e208b961",
+  "facts_sha256": "a860cb35a72bd2b27837965b41ac3a972810cfba68275bed1b1b625594b53613",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "df64517ffa5ce0fec9ea5645894c76b4511787a69eb2a1999d9a36cc1c0ced88"
+  },
+  "physical_metadata_sha256": "4d0168c834707d3672775317c2185367a88b78a03e54f41566f1a238ea5b5cc6"
+}

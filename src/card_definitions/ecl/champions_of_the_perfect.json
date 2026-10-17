@@ -1,0 +1,12 @@
+{
+  "name": "Champions of the Perfect",
+  "catalogue_id": 710,
+  "oracle_id": "9cb7f23f-322d-4a87-b6c6-15b9d446aef3",
+  "facts_sha256": "b070aefa4cbfb029b2178cd2230de70fba597c5a19386c5b13c0b7495586202d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "869769cbff2fe2afd1b387ec075c3625cebaa335b90ae64113e5e3631891ab1c"
+  },
+  "physical_metadata_sha256": "cabaf8b7e047e1d13aa8ce2f1016c9b6a0bb4e43a038092a0acd8b15c7352dec"
+}

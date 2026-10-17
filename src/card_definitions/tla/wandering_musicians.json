@@ -1,0 +1,12 @@
+{
+  "name": "Wandering Musicians",
+  "catalogue_id": 4965,
+  "oracle_id": "7166bf81-05c2-457d-a0bb-a175175b8e79",
+  "facts_sha256": "33077933171ad099c92b0c0cb7cb43b54b0d68aac6af5be13e110562af9ab262",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b64f010aa4569a35b7d59348e6c45a830ed1611bb526a976eb05e16cb85135a5"
+  },
+  "physical_metadata_sha256": "04591ab154d6aeaaf2ebbd89966bc390ed2f32bbf342e5c20bd85709eae89f4e"
+}

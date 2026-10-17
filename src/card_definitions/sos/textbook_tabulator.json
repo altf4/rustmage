@@ -1,0 +1,12 @@
+{
+  "name": "Textbook Tabulator",
+  "catalogue_id": 4408,
+  "oracle_id": "ebb40a50-cfbc-4ec1-9c54-26a1bc2e7a6e",
+  "facts_sha256": "8429f5e629e4032b83b84133c2bcfabe1c0411134cf10b62c307e38e3d9998f0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d8b15be5d504a7e03bf1eab2d8b71fe8f831d64e1d154ea9dc66a160996cf2eb"
+  },
+  "physical_metadata_sha256": "630653a384f2192db90df4a0e22c3ca2d3297147670363e2cb4f2cbdfd049e05"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Annie Joins Up",
+  "catalogue_id": 170,
+  "oracle_id": "4c3ad545-b375-44a7-a24e-58baacc4e4b6",
+  "facts_sha256": "30a8545ef68dc554710f3df749b3c3f7339325a4aa5f2116c0043b43995ae340",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c431afa63c692dfdb39b334461ca614619eae24ef3726c0c2bd81855be0ab144"
+  },
+  "physical_metadata_sha256": "7471a32908060bead751176c9f28caa46ccbf0c63c2653acb4aaeabc86aeea9b"
+}

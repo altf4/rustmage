@@ -1,0 +1,12 @@
+{
+  "name": "Sundown Pass",
+  "catalogue_id": 4240,
+  "oracle_id": "5ad0b405-cca4-475e-985c-4d7e3599d87e",
+  "facts_sha256": "3487c8901cbbf90df1f05efb66d392184030452a8c525e210a38cdd31eae7e0d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "09dfec076f0778c050ca7117fecc165b4b1508684430184be129f9dcc0443dba"
+  },
+  "physical_metadata_sha256": "71975127a6320a999a6684a85e5e0076aef647f7a6729562e2a6139897ad1906"
+}

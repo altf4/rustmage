@@ -1,0 +1,12 @@
+{
+  "name": "Free the Fae",
+  "catalogue_id": 5189,
+  "oracle_id": "22d82f4c-2896-477e-8d20-8fe43acd4ba2",
+  "facts_sha256": "81768513cc98ce9a396d6221272d8e4bf4fe74b7f0dcb9b4d90b8268f4b365a1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c3141749679fe2f99c3c878e56f1c0ddad212628d76f60c0b395bf7c25c27961"
+  },
+  "physical_metadata_sha256": "65400069c0dea23f80306ab29efae6bfe826424ea6fd8848629cb66edb5eab59"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Champions of the Shoal",
+  "catalogue_id": 711,
+  "oracle_id": "fc76ec95-f001-44df-89b2-b0f1b10c8e11",
+  "facts_sha256": "7bbfb4870c6dccbb9581f629a093a014a395c2dec5d1c9fe3a934e78dc0d40ab",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ceb405d63d584068c2052f4294701a8a8cedb334c8df35134d7a9dca43a763e6"
+  },
+  "physical_metadata_sha256": "e86ec4d1b0a45706e641b794bc26f06a1a7c6d6d4f0d03ae5c3a34de953a57b0"
+}

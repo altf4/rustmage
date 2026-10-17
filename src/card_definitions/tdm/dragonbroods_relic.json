@@ -1,0 +1,12 @@
+{
+  "name": "Dragonbroods' Relic",
+  "catalogue_id": 1159,
+  "oracle_id": "61822bbe-0407-4425-b8d7-0263a8c521ec",
+  "facts_sha256": "54c317157cd371d965f6d9bf855cd4c4f1ffdc5d8315a723400badffadd9ada3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b404dedba78899e6c73ce2d9cc2632f04dfa1b184cea3d7c7f6c6af6cdab6b9a"
+  },
+  "physical_metadata_sha256": "10bab3b3bc74556cd4913775e0bc5c172c17decd5d78ae1874a1a02baf4d2cd2"
+}

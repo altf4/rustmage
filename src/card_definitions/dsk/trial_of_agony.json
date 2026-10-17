@@ -1,0 +1,12 @@
+{
+  "name": "Trial of Agony",
+  "catalogue_id": 4677,
+  "oracle_id": "4ef07e5a-3dc3-41dd-a3a9-e8812b4d40d3",
+  "facts_sha256": "5451d95ba2440dea57a1996c3826b46d494ee42b53bfe15e7c4734642bd5c740",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f2be850aea6485f5fefcfecc160f8b64ecb447451195e45a24acc237372d90f3"
+  },
+  "physical_metadata_sha256": "46dbc29d5106e4896769e0a874d0be95b85b27abee8ff5b871d0bb33105f0cbe"
+}

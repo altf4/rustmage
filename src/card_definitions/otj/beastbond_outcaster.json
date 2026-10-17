@@ -1,0 +1,12 @@
+{
+  "name": "Beastbond Outcaster",
+  "catalogue_id": 362,
+  "oracle_id": "19a32e29-45ec-433e-9cb4-b2c32cac8f80",
+  "facts_sha256": "50863b80fd81229524c9a1ae7563db71d4bc9908c23275aee340b2ee00c66fd6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "28ba8f3cb9d725f294ad0c722d2c76a7d6dcbc9aa68ef52307902bc49a64c5da"
+  },
+  "physical_metadata_sha256": "f9dcb390496668a9e45bcf7577780e7f54b246159c7f3e4707fbce3621525075"
+}

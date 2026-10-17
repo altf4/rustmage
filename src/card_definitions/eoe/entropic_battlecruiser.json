@@ -1,0 +1,12 @@
+{
+  "name": "Entropic Battlecruiser",
+  "catalogue_id": 1348,
+  "oracle_id": "90c5ea2b-d004-4219-b60c-d51bc1a5ee6b",
+  "facts_sha256": "1dfd95fbc7eced3985bcd0688d647e44b1ec51e85590a98227d5d6f1501ec71b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a8cef4ed22ec974a380476f1899e53891949d05e0e60fdb53e651706c37c25a2"
+  },
+  "physical_metadata_sha256": "77b704c67b76e4897aad8079a257ee839f0f2ed1ac0995d4499ab4b66c101eda"
+}

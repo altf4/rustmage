@@ -1,0 +1,12 @@
+{
+  "name": "Surly Farrier",
+  "catalogue_id": 4270,
+  "oracle_id": "ef67c170-68aa-4ada-8cee-261a4dbb1b5d",
+  "facts_sha256": "52e8213d6c29ba9a6b02a05ec9f3ad5fe6ea2b9b5eb6563b5cd1f8cea776ebd1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5f1e4fb9d7e30888b056f68befff45a9b635de70d5f3c8eaab7374e631483f8a"
+  },
+  "physical_metadata_sha256": "09bf4ad79a6e037e9b7948d98ecb501aedcce547793879835f45baa53776479b"
+}

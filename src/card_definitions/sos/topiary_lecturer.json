@@ -1,0 +1,12 @@
+{
+  "name": "Topiary Lecturer",
+  "catalogue_id": 4636,
+  "oracle_id": "5f5fe039-4be4-42ae-9fa4-4392328aa665",
+  "facts_sha256": "dda58017c88f3dbab67ba258bd41aec6a6d46be007f2fd35181ad45c8ba04670",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a78e371e878d4536cfd4ee34253a3ace0169b6d78523dac863a3a1d8e4ddb07d"
+  },
+  "physical_metadata_sha256": "a7e121ee976103f41190d341d55aba2b1a8742e61547331fd392ae4bfd31ebf5"
+}

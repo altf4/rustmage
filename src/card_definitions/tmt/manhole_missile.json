@@ -1,0 +1,12 @@
+{
+  "name": "Manhole Missile",
+  "catalogue_id": 2649,
+  "oracle_id": "c596b847-4e05-4279-8675-b4e39cb3dc91",
+  "facts_sha256": "0adffb8ea4038955f36081a07e11c64637159bd6c9a3b1e6e9bf3cb838bc7557",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7a979b029759b13809753bd801b2d5c9328cf9f7f237deafc058955cf04b090d"
+  },
+  "physical_metadata_sha256": "efc33ad02b0ee10e2f4a22eb6d747c39cc3900d030915bf14014fd94d2236988"
+}

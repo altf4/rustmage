@@ -1,0 +1,12 @@
+{
+  "name": "Primary Research",
+  "catalogue_id": 3233,
+  "oracle_id": "51af3da5-0970-436e-baa6-3171889a40e0",
+  "facts_sha256": "1109090924e28082b28274bc80f1d26519bf4acdb25e21fae275d4f32bf78c66",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4c9bc2c766e82c32a74f35baeb0d447b173fa53e115a08c10d939038a9ed35ba"
+  },
+  "physical_metadata_sha256": "f87f98cb27ceb0bd74a94811a8778976bf1b995414faefb7dbc266f2d723e812"
+}

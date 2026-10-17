@@ -1,0 +1,12 @@
+{
+  "name": "Not on My Watch",
+  "catalogue_id": 2969,
+  "oracle_id": "2d400c01-d2d0-442a-bc3d-cf106a754dab",
+  "facts_sha256": "126fa724eda6a1baed791ce25f5648b5c905badca3cd8785458ffef3e665e218",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "48736b17d80d10d2f46e677e6b78358a85ae759601165390daa64ff25ab02e2f"
+  },
+  "physical_metadata_sha256": "0f13e730c8b39b34aa8e9fe0d42a7ed3ff1e7533fae69884e96200280a346765"
+}

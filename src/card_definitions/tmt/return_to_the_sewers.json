@@ -1,0 +1,12 @@
+{
+  "name": "Return to the Sewers",
+  "catalogue_id": 3506,
+  "oracle_id": "a3ee8565-f34c-4073-bc94-3fe9ec6bbe8a",
+  "facts_sha256": "34646c7458a579b36829f19de2b18a7f039b86e95a5edaeb05dcce5a5660bb9c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6e00a79ec02c4a672c2e2dfa3318d235c0be27e0ca308fbe4adaae28676e1cb8"
+  },
+  "physical_metadata_sha256": "892e5155c23feb78f4991d5e384eb7efe5be05fd972eaffa1bb4e36764493e0f"
+}

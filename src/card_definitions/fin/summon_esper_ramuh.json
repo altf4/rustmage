@@ -1,0 +1,12 @@
+{
+  "name": "Summon: Esper Ramuh",
+  "catalogue_id": 4217,
+  "oracle_id": "0d054301-8465-4a4c-91e7-9a28dda92e57",
+  "facts_sha256": "f0c8abf3ff4379716d7f86a8b390d0311304206b155872a99c4cb4ae138ca2a1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d229f02d64b12e84286c4e93718b22d26468cf05ec4da834c626ba598b042325"
+  },
+  "physical_metadata_sha256": "64f30ac6ecbbd25a4018beb6be66b7fa46a7258e8692bf40b997bb8087a6e44e"
+}

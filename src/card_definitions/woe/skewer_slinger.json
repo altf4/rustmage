@@ -1,0 +1,12 @@
+{
+  "name": "Skewer Slinger",
+  "catalogue_id": 3891,
+  "oracle_id": "2e8433a2-ad71-4d30-84fe-12b709197824",
+  "facts_sha256": "f6a4c200c5c50fe786a29de469037536d80afbb6fe069bc2a304d289c5cc26e3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6d6a3b6f91b5253beb0a727d8ccdf73353b402ee9e967d363197e6c3da044759"
+  },
+  "physical_metadata_sha256": "d2483775729065bf640f95e20c1b2f45d11f4fde25f0582b5151852843e57897"
+}

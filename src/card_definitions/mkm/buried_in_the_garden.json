@@ -1,0 +1,12 @@
+{
+  "name": "Buried in the Garden",
+  "catalogue_id": 589,
+  "oracle_id": "f1f0eab3-681b-4c2d-b590-555951920880",
+  "facts_sha256": "4af100498559648367d96b680d5f4c669a3a8952a501a21bec31d5814d53fa2f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7270ecc070791cebff4e0d90865cb45b43b62436702ffba1d0e0792240803ad5"
+  },
+  "physical_metadata_sha256": "a57b753f20aaba18dfcb79e154aa24883352cb8abf6964cee1b38b4aa0f9eb41"
+}

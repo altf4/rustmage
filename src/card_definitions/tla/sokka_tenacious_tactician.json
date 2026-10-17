@@ -1,0 +1,12 @@
+{
+  "name": "Sokka, Tenacious Tactician",
+  "catalogue_id": 3955,
+  "oracle_id": "6b68acc2-b9d5-495b-8054-c04bae1349f1",
+  "facts_sha256": "c81cb15805cd1c0aff7a1ffa48b658eab0275018be6d1e9cdaaee314e8fafb25",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f63c381a19269e80a599903c105675477de5c233cd31025efd871d3376565f4d"
+  },
+  "physical_metadata_sha256": "16c31c2ce5e37d87639ed90e36f56b45f16ab1bf4619321cf2eb7ccdc2c39cd8"
+}

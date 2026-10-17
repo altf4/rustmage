@@ -1,0 +1,12 @@
+{
+  "name": "Dalkovan Encampment",
+  "catalogue_id": 950,
+  "oracle_id": "33a90122-7280-4481-9b97-5879194cae40",
+  "facts_sha256": "ab96821e3b47cd5fcdf4cef3fde061aebaab35917dfe22b26967a202f3718956",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "78bc6c4deb8411ddb5d3e83da6fb577505a92a9f3d4578c0c93f7598461b13f8"
+  },
+  "physical_metadata_sha256": "1fc95210b23a8802dcd8c2f2342eb821cd0c53a64d3460cd0be208619c60ee1b"
+}

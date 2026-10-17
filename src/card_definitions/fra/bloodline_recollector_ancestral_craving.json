@@ -1,0 +1,12 @@
+{
+  "name": "Bloodline Recollector // Ancestral Craving",
+  "catalogue_id": 459,
+  "oracle_id": "c8e9a7e1-28ae-40e3-8715-1bb0aa2057c7",
+  "facts_sha256": "66452cba415f4d938b929ed5fdcc7b40384b4e85b797140434071d488a7e04eb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5caf651e78062425bfb42b76bf673829e04045ec1d85f6d7cb384b435262876a"
+  },
+  "physical_metadata_sha256": "e0b39f0276a5f2dea66e2f386a1b75d71bbc2b1e26efbbaddc5ce60f6d68d9e7"
+}

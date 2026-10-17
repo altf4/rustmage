@@ -1,0 +1,12 @@
+{
+  "name": "Blighted Blackthorn",
+  "catalogue_id": 449,
+  "oracle_id": "a294968e-9a7f-4d66-bde0-e775ae5f8197",
+  "facts_sha256": "6cf6dcc10bcee238782c92259bf380d7951308e9898754912bf4eef874078231",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e4015c4993f9a3b72f2ba9e536e7b6c5cdfb300236ef23621b74bee31cfd4f9e"
+  },
+  "physical_metadata_sha256": "5a08cc5a1cf4d3cd9a45dd92bbe4d1fc1bd7ae10570481cbcf51466f6779cd28"
+}

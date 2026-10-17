@@ -1,0 +1,12 @@
+{
+  "name": "Anthropede",
+  "catalogue_id": 177,
+  "oracle_id": "452d98ae-0fa2-4cff-9e18-eecd76ddb20b",
+  "facts_sha256": "0b34823294b22894476547455766a69cc780b53ba5aac4140eae66a0296474a6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cbdd38c6622d71612d15bebe0192272cc326462f92be36a2af813b6c048abdf2"
+  },
+  "physical_metadata_sha256": "27e9432e7517b0a4abe0fd3506bb17935ff5547793b7453bf2c9fa31ef6c75ad"
+}

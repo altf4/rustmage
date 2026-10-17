@@ -1,0 +1,12 @@
+{
+  "name": "Swab Goblin",
+  "catalogue_id": 4283,
+  "oracle_id": "343ecf2f-0bbc-4840-8fb3-f5f61b26e76f",
+  "facts_sha256": "757610dea463bf3b80970db28e250ec7c9a4598c5c60bbb9ace955a0282f9725",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "232778383ebfcb6bfb4c3db21ad514705183ed0baf7b94d3be2663ffc1f8a780"
+  },
+  "physical_metadata_sha256": "674bacf7e30d2f50e5bffe5a79923c9df3022dbf1a17b3bda09449b57d263d4e"
+}

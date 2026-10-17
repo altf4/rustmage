@@ -1,0 +1,12 @@
+{
+  "name": "Wildheart Invoker",
+  "catalogue_id": 5067,
+  "oracle_id": "ff8fb796-af5d-4d64-ab3c-7f2469dfa6bf",
+  "facts_sha256": "dffd512e67437371a1fd025b2762eba18bc396633619917862846381b9772c3c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "813a153399b854cb092a9be882895d7a607b271d6a8e020732aa1388ae394c9f"
+  },
+  "physical_metadata_sha256": "82955491db882100c8ad309cd6f3268bd5b784cac68f7e388170f33691684f52"
+}

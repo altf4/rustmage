@@ -1,0 +1,12 @@
+{
+  "name": "Planetarium of Wan Shi Tong",
+  "catalogue_id": 3181,
+  "oracle_id": "f89d093d-c815-4df7-a348-2005aa227586",
+  "facts_sha256": "20a9b37e712110e44233452874b0b7ec27fff097ef7fba48cc4d1c152a109a25",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bd2dbc199424f97fed59da4d290e5bf66e2aaa7cdc37f20c00845acdbf5631b1"
+  },
+  "physical_metadata_sha256": "6f874cd04dfd53673410ad6ac87767387d33f466fde905af71cf19158c83d8bf"
+}

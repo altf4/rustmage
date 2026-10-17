@@ -1,0 +1,12 @@
+{
+  "name": "Candy Trail",
+  "catalogue_id": 633,
+  "oracle_id": "7c8e4f29-53e0-4242-8ef8-7a9476dce178",
+  "facts_sha256": "e1b577f7fb3e87ebd4e443624af3efe07441204cddac75d374a20f283ed70c3c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "210ba754f6496c9a28cc0a49cbc97f64e3a247bae510be60c4242e0c53570484"
+  },
+  "physical_metadata_sha256": "e2996c9ec28053bed897bc100d432cfb4b2bd047f35a2cea49c539a3ac849b7a"
+}

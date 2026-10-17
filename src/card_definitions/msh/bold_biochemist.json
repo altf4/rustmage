@@ -1,0 +1,12 @@
+{
+  "name": "Bold Biochemist",
+  "catalogue_id": 484,
+  "oracle_id": "45ddfa35-7b3c-4916-b231-dc721b7b56d9",
+  "facts_sha256": "6520ddfd7f3227c133d4e317a11254a0bb492b8273692548621f50ba24a0be4c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2580b12474741d28028b80304551596c751b26ffa08b4c65784bf953884a1f65"
+  },
+  "physical_metadata_sha256": "b5885f7d9fae9be5c9dbc71efa55a90e79b007eaa6cc0282d662efe13b8be05d"
+}

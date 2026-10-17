@@ -1,0 +1,12 @@
+{
+  "name": "Panther Pounce",
+  "catalogue_id": 3096,
+  "oracle_id": "ead0820e-fc6b-4ab2-9110-048d6d53985d",
+  "facts_sha256": "b6cacb7c28289b4b3f499ee92395e6ba359e194ea37f91cf0ae5348f54c5693a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "60406e0948896688335eb441d5c3e37a2d07ce4ed1304fbe0215fc6a3f448191"
+  },
+  "physical_metadata_sha256": "12252be47b0309de25d6570c27f5edeedbb431b847fbc99322d12afe129eab3c"
+}

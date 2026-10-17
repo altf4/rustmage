@@ -1,0 +1,12 @@
+{
+  "name": "Kindlespark Duo",
+  "catalogue_id": 2359,
+  "oracle_id": "980cd7d5-a511-49ab-bc52-08b71c65db76",
+  "facts_sha256": "e04cfe60a6ac00de6cb9af0958b183081412a18fef08cee7091b3922af9f02ae",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4f5231c0e432b619e25e79b33ca30b10f4afff5e1c900d6aab8bf7f58ffea471"
+  },
+  "physical_metadata_sha256": "c3f77ab075ef47c91f04283f07a2ff895c0ab3a224247b93c0c448d1278e2ff9"
+}

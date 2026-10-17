@@ -1,0 +1,12 @@
+{
+  "name": "Galactic Wayfarer",
+  "catalogue_id": 1663,
+  "oracle_id": "86746a84-3e8a-44b4-8494-60cbee9816b5",
+  "facts_sha256": "99bba2d792397a505da52531c8b5f9751db4b982fb5a9cb93e0e4c69f756e31a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "da92421f169b834d4866a211cce8653f291fbb4e154c4db977ca98a61a908bbc"
+  },
+  "physical_metadata_sha256": "1aebf6d0f600bf1c3999233f3451e0e3326caa9a8fb1089854b74fdeb6960504"
+}

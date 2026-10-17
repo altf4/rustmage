@@ -1,0 +1,12 @@
+{
+  "name": "Defibrillating Current",
+  "catalogue_id": 1029,
+  "oracle_id": "5a96b93b-bae6-48fb-87f5-05f3ffcf7ba9",
+  "facts_sha256": "31b166236b406d24b482ca3b350b534debb2bd666beb3760360b11af858e9dd0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "163df242aecf9352ce361af13d2c0bbbe7ea6956a10cde915d13cac838f1c452"
+  },
+  "physical_metadata_sha256": "a98689518aa7c8b45cd06a6fcb0a67c8d47ae1ec702ba6acb65476eb7628a02c"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Twisted Sewer-Witch",
+  "catalogue_id": 4728,
+  "oracle_id": "99c9920a-f84b-4626-9fe5-d94cc62cd277",
+  "facts_sha256": "31e88810cffd63d1dbd1d8dc469ccf36904bd655d6023c8420dd3f925fc68eaf",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bfd4e8b324ed46b10a53d1d0a5a715fdcaef3763d0796462790acbf698759a8a"
+  },
+  "physical_metadata_sha256": "a7691034805e009e34a5a65c619260774ff194543478a3d9894f3eb98535e9d5"
+}

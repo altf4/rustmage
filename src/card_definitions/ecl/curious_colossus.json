@@ -1,0 +1,12 @@
+{
+  "name": "Curious Colossus",
+  "catalogue_id": 930,
+  "oracle_id": "c8de2e1b-f2fa-4b6a-a3c5-9811c7f5f051",
+  "facts_sha256": "f56eea5f70320b14024b73b6fcacd398ba54353fa25815baa4fd935992de3893",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c687868d2b243c623c63acfff814391ea6504d404307982da1370f14a3799dd3"
+  },
+  "physical_metadata_sha256": "be87e6cddb12258c8ac8938caeda954938aa84e0babcdc6a31b148df136e9574"
+}

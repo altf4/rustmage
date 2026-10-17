@@ -1,0 +1,12 @@
+{
+  "name": "Excalibur II",
+  "catalogue_id": 1393,
+  "oracle_id": "bfb6651c-e0b3-4dbd-b26a-3eeb690985fc",
+  "facts_sha256": "58c46b6c9a4804881851175381f183aeef46cd82612a61382f766b61e1b6308e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d3904ca5ce143e8ddd97e7384695db6b051aba34bd0d502ed63f8ba6d77cb638"
+  },
+  "physical_metadata_sha256": "ca797057677f34c1c093fae9ab2ab01bfe71270775ee936b03eb5404205fdb88"
+}

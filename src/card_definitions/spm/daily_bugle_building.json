@@ -1,0 +1,12 @@
+{
+  "name": "Daily Bugle Building",
+  "catalogue_id": 948,
+  "oracle_id": "483e0c6c-8131-486c-b482-cc3396c9786b",
+  "facts_sha256": "1383490e55d83a643527ca517d4e4f27148dc923a3ab29f3d16ff21ec1e2707e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1036a0185b6285fb482d71210bfc5828b0db7af0a3787f90960e95962b46225b"
+  },
+  "physical_metadata_sha256": "4607ed720729be7f3612c465cf7fbaaab2ee667fb8b696b19496d8c15065249a"
+}

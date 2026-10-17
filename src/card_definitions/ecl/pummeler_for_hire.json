@@ -1,0 +1,12 @@
+{
+  "name": "Pummeler for Hire",
+  "catalogue_id": 3279,
+  "oracle_id": "ffa23c3a-76a8-414f-aa3b-fc09aabd78c5",
+  "facts_sha256": "c9e6965511e9670cc3a40c4ae1f68e5b7d44cbbdef0191aec02c92efdbf6f796",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "18bb0c886838faffb983e6a550dece5da64dc21ea5c35a31c8c305f4d6f5f0ba"
+  },
+  "physical_metadata_sha256": "84ab680913c6c8d9dc3fefdd4bbff8efdf9f24e9a4b29838683351f62520679f"
+}

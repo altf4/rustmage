@@ -1,0 +1,12 @@
+{
+  "name": "Hardened Tactician",
+  "catalogue_id": 1945,
+  "oracle_id": "ca1dc6f0-3ec2-4f62-a08a-1395201bd93f",
+  "facts_sha256": "2869dea446bbab9ba822504bd370a81cf093ccd5faf14db799c3a99f30da6e23",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "78454eba6a81c8b8364a7fa07ee6f416386dc7097fe80f3531a60a6b105d2b6a"
+  },
+  "physical_metadata_sha256": "24eb41f3c9fdad7c02eb20364dfc7a8e1370b5bf980c7f8956f2ab4c8e3cf326"
+}

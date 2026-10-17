@@ -1,0 +1,12 @@
+{
+  "name": "Old Fat Spider Can't See Me",
+  "catalogue_id": 3004,
+  "oracle_id": "e4402d21-bb7f-4777-bc8d-b24bf2faccb0",
+  "facts_sha256": "f996438bb51942613c5b8bfc46f971f3659329391d0804c4de2237917816a9ef",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "21d2cba2d622c5c2fa75e4bc97a9f61db95cdcf88365e7fbdcd869464bcbcc3b"
+  },
+  "physical_metadata_sha256": "c100b6a28508768244de431866594753aef127a01a864c021ddf04440a23707a"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Nullpriest of Oblivion",
+  "catalogue_id": 2977,
+  "oracle_id": "c1111228-ef88-4b64-91e0-66ee32a1f5e4",
+  "facts_sha256": "6a87c66d059af06ed3f711abf923d580a33f372f815e3e0327407e3cc7cca4bd",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cdabf1eb0f9c08b30f6464f4dacd25c374d11a401ef18e4a5f800785c6e35a57"
+  },
+  "physical_metadata_sha256": "950328fad829380b9330bd38f3608ac2601d4e5ca1ec1f1b21245545751f36e3"
+}

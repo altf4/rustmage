@@ -1,0 +1,12 @@
+{
+  "name": "Monstrous Emergence",
+  "catalogue_id": 2836,
+  "oracle_id": "5542ea4d-34ab-4f89-8894-793a7038f501",
+  "facts_sha256": "e56b1ece1300aef5ddcc44c702088c0c0d2d8ebea4bb97daacc8009ff0d7d2da",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4a4b3ff61b864f65ab599d20b0fff9c216316c616e5161aebda779244b7247e9"
+  },
+  "physical_metadata_sha256": "4e4bad238070abd3d13284c06121413f68cb1e723005abce6690c8c44e13ee91"
+}

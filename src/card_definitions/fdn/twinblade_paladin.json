@@ -1,0 +1,12 @@
+{
+  "name": "Twinblade Paladin",
+  "catalogue_id": 4719,
+  "oracle_id": "d373dc71-5196-43a0-8cc5-67e2a591aad0",
+  "facts_sha256": "92188b982501eb4a4887695034309cd250a0915301f8761a7b5352ec37d80285",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4c916116f653972e4edafde7e14c8b6a20873aabfa664e0216549c0c6d6b4f21"
+  },
+  "physical_metadata_sha256": "25c96281a35a02532c35afbdbd8445a5bbc971d795889d987da35f3ad90fe719"
+}

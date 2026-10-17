@@ -1,0 +1,12 @@
+{
+  "name": "Kulrath Mystic",
+  "catalogue_id": 2421,
+  "oracle_id": "ed428638-181b-47cb-92f4-379db020e634",
+  "facts_sha256": "e66dcb9a43b9409207306c2e05be3ee9e171086e5e621afc47c073fdaf933a55",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2f79df373a1e503b737922516fc64b25f4b03578830ac0315ac7c8eb7992500a"
+  },
+  "physical_metadata_sha256": "440e002d6e89bbbcdeab3c751246c8e8ca8ce49fbd8a49d0da5a6f7f2a7b7a90"
+}

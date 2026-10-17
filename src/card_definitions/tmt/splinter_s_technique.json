@@ -1,0 +1,12 @@
+{
+  "name": "Splinter's Technique",
+  "catalogue_id": 4064,
+  "oracle_id": "532ee9c3-391c-44db-8ed5-a1d28fd7f876",
+  "facts_sha256": "2edccf438ff9d29098f0b547fabb3a13ee5d2bf226bcc0602fa72fbb1bae771e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1c38e1fafe814c0aa8359abc7d045185d26f304b418f04bfde83397d01547eff"
+  },
+  "physical_metadata_sha256": "66e6885d90d3be2f3ef531db73e09ecf779e9411ef535a79581d9b3fdd690d45"
+}

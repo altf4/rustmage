@@ -1,0 +1,12 @@
+{
+  "name": "Traxos, Scourge Eternal",
+  "catalogue_id": 4668,
+  "oracle_id": "acf4abde-4034-4fcf-b531-78c935aecd8c",
+  "facts_sha256": "97c06eaab88fe19a1e7ed2c2f97ff335abb34b17895833c3fe891f34ec22b5c2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7859ad0971b4b0f855c2ca3203a138749a06eba7a52a3a15b08548e3d25a1417"
+  },
+  "physical_metadata_sha256": "cde6213de35ad663f436e10b9bc1db5c0ad3f3d4fdc9d01560ed031665fd6c2e"
+}

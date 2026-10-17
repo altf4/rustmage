@@ -1,0 +1,12 @@
+{
+  "name": "Traumatic Critique",
+  "catalogue_id": 4663,
+  "oracle_id": "06c1f8a4-4948-435b-ae98-b1276b57e958",
+  "facts_sha256": "7c277f36f55c9f859160ea77c1807c18093d7d433859cf0c4c0ea005bd7d71ed",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "350a270b4a203a4e010720bc64897e3688a640900ee23c365e24cc6f97c86445"
+  },
+  "physical_metadata_sha256": "f8d2559c4906925eeb19e945b04a7b8ce8206c7b497afc0d906cd9d0148c5545"
+}

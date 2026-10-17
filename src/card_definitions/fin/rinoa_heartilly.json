@@ -1,0 +1,12 @@
+{
+  "name": "Rinoa Heartilly",
+  "catalogue_id": 3532,
+  "oracle_id": "8896c74b-d466-4c25-94cf-82b5e2b1fdef",
+  "facts_sha256": "5e46f33c29a7103cfd9cd4e4f8c8c6d09b02e3e8e3882e85da21ffd7018a387b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "63d0d8ca1916e843f3c5bb142cf3e10a79c85757e37c55449d6adf206512cb5c"
+  },
+  "physical_metadata_sha256": "5f78984a9b59d03242abac37f140f4c88c12214c89b9910343e25268355bd1c0"
+}

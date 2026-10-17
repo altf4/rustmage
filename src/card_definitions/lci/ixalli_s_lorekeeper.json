@@ -1,0 +1,12 @@
+{
+  "name": "Ixalli's Lorekeeper",
+  "catalogue_id": 2243,
+  "oracle_id": "a3ce0fa9-8742-4e2c-a8a0-00fc009f998a",
+  "facts_sha256": "d378e3509c793dadd7bc7b431521b32a409d4cd42533cb9af5bf233d4089522e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b621bb3582400b5f76b55981e6b0722264eff517354b0778baabc5755cc8edda"
+  },
+  "physical_metadata_sha256": "9f5481581261bb67f8a797a2aa1d1be6e04ce342bb24d573e326524263f9c3e5"
+}

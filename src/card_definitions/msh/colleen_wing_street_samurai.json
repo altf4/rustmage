@@ -1,0 +1,12 @@
+{
+  "name": "Colleen Wing, Street Samurai",
+  "catalogue_id": 798,
+  "oracle_id": "685181dd-0124-4c76-9270-f9dd17e6a221",
+  "facts_sha256": "965eae5fcac8af21f659c1d2dcf736780f46e891abeddc4e14c719a57ae2688b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "648b236937a0e4f3b36390ce1f35a016763faba837c9c71038f89ee326d0ddc6"
+  },
+  "physical_metadata_sha256": "c4f6843bc0c4d4245d38bdf84f76df20ea131103852155366070316998df8ba5"
+}

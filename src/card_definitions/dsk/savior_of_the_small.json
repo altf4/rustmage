@@ -1,0 +1,12 @@
+{
+  "name": "Savior of the Small",
+  "catalogue_id": 3699,
+  "oracle_id": "15f2085f-d5e6-4bc6-870f-00fcaccd981b",
+  "facts_sha256": "f060d783abb11247be836cde4aae7e04f63036335a362cb7e45d7903bf166d4b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "805595e077fd7ac4f58164abcbce5c32572be9663c51062068d1eb13ff539fa0"
+  },
+  "physical_metadata_sha256": "1986fcd9922a36bbb6a7d889aaa6875bedcf5de3536667bb2a53e93750856541"
+}

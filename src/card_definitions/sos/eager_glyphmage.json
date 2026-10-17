@@ -1,0 +1,12 @@
+{
+  "name": "Eager Glyphmage",
+  "catalogue_id": 1226,
+  "oracle_id": "070aa6c7-4741-47de-b68a-629aa4201ac0",
+  "facts_sha256": "6a8166ccb71b13b10e35222a8ba86349435b2f631554a840282507f3511cec45",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "334a43c90e8f2923f496817641f2e79b63efe6a91d8709b2f9a8e874171c6d90"
+  },
+  "physical_metadata_sha256": "bb7f6b3856228bb26ca9852ede4786d5c2883039a4d2b596f055dfffdd4d21d0"
+}

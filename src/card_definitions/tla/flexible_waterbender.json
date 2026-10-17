@@ -1,0 +1,12 @@
+{
+  "name": "Flexible Waterbender",
+  "catalogue_id": 1556,
+  "oracle_id": "8cf88fa8-2f47-4125-a59d-9c2b2d4765a7",
+  "facts_sha256": "a6bc155101a4771e501abd2658a1d679d2056e780a848e2da7f03dd30c60275a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3cd7e463c2f5155062e6b3499f481ff263b097259ef12d3390120a7190a01bb4"
+  },
+  "physical_metadata_sha256": "0fd45098ffb617f349f5d9cfbc6c530942e41b004c57a041ffea9fa514b8dfbb"
+}

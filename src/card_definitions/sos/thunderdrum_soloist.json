@@ -1,0 +1,12 @@
+{
+  "name": "Thunderdrum Soloist",
+  "catalogue_id": 4583,
+  "oracle_id": "43b5794a-4ed6-471d-bc45-22fac486895d",
+  "facts_sha256": "b9afa89233f8f2384821a89ec51aff859d98cbb3e896f2c07225159e018ac408",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d1cd56e8203886b081e35d518906a8ef8ef05258cd5e5e6dcdcab3a4b472b210"
+  },
+  "physical_metadata_sha256": "bed10e64cbb6c8780a05dfc863af7928b1fb6441e0ef2ae59d544ab8dcdc6701"
+}

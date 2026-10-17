@@ -1,0 +1,12 @@
+{
+  "name": "Adventuring Gear",
+  "catalogue_id": 64,
+  "oracle_id": "17042684-7af4-43a6-88c7-885032cfb27c",
+  "facts_sha256": "f4d88489c15007eb2721918c576d1c01d36639c38bd1956214e06f2e4f3407d3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8b7743895def3ec80ae55328835da7c43d502c3c25b24b72358c394f1dd5a5c5"
+  },
+  "physical_metadata_sha256": "fa90565fc35a102d28dd1b49ac699567d9fe494b64b580b6af9f6bb5279cbe24"
+}

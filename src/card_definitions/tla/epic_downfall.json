@@ -1,0 +1,12 @@
+{
+  "name": "Epic Downfall",
+  "catalogue_id": 1352,
+  "oracle_id": "ed5d6aba-0b8d-48b3-a84c-618f45fb67b1",
+  "facts_sha256": "d0a1317133e5a9f430d15f68089ef2aab85f559fc6ab98091ffc17616f2dabe9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5e42d0f0e70bbbdffddc7fbb9316737051079015ae314943ef306fc28596664a"
+  },
+  "physical_metadata_sha256": "70419afc3484608fcbf38b4026d312a4bdbb6a784afc52bd6e612320aebc4966"
+}

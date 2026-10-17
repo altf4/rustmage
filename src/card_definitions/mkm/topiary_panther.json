@@ -1,0 +1,12 @@
+{
+  "name": "Topiary Panther",
+  "catalogue_id": 4637,
+  "oracle_id": "efddf972-94c4-49d1-a844-b4aba70c93aa",
+  "facts_sha256": "f03a434716c6fc5e51c1ba81959b733b188cb2d1d832371f1392e4245d0cfc81",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "91955d0434ea28e94dbdff4ddd6d2b82e7b661f6b79d5bdf92213fdc99cd4ed0"
+  },
+  "physical_metadata_sha256": "5117425f31f49d5a4f7efc1ffa1cf5fb13dcbe99329bcf0a2b09033321546342"
+}

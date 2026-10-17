@@ -1,0 +1,12 @@
+{
+  "name": "Riverpyre Verge",
+  "catalogue_id": 3553,
+  "oracle_id": "510a6ac5-f098-4145-ac07-771b1b6f7cdf",
+  "facts_sha256": "db184c8ab3c88a34a7f92125db99df9beaebc1ba02de3e3fae944fda055362f3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4f51bf990b84873bac009c11bfa47d5a06b994f5bccaccb3593489b39346c523"
+  },
+  "physical_metadata_sha256": "9eeb893621921033e272931c3575762715fb5f0b029090dc4fcf076242133502"
+}

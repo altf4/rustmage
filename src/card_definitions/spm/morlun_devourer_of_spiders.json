@@ -1,0 +1,12 @@
+{
+  "name": "Morlun, Devourer of Spiders",
+  "catalogue_id": 2853,
+  "oracle_id": "273ad15c-366a-4691-978b-d6028b57005a",
+  "facts_sha256": "127577965aab988a163a0b1edc2c06da635bc5c541cdf4cb110d54a8ffbbae91",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e6400e1de48c2c58eb3eed3ae2af9480037a5f2fa06e8321a25aad32a06b5560"
+  },
+  "physical_metadata_sha256": "0eba4dcc862960a22b04aa16357effc81aaf73fd18f4f4cbbae22019a5dff48d"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Hobgoblin, Mantled Marauder",
+  "catalogue_id": 2054,
+  "oracle_id": "1d453331-6b8e-4d3d-b658-683eab2760da",
+  "facts_sha256": "bc8e7cca361f9a2c39da47f46b483cff6f7e76b5eaf50b4b43633bbc8dc2b8a3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f2429a37c0eef6b3f96600bb1a06561724f2a30abfcc81d53d63e535bd1c9b1a"
+  },
+  "physical_metadata_sha256": "13c11c4668fdaf7cc79ecec132d04bc779891dfc4d9f6b72b1513b0131112e52"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Outlaws' Fury",
+  "catalogue_id": 3062,
+  "oracle_id": "5b5ef88c-f863-4f55-91fc-a63f7f3c1b3f",
+  "facts_sha256": "68202849ee30bf4191353abf957d94e3d15c225b4c6c148df8b452d43856249c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "091a63de4c3735f121bf566a6e28c87955bfb2fe90dff92dfa2a4201603f46a3"
+  },
+  "physical_metadata_sha256": "e236d71d727b7eeff9980a2748c08da5356d9bbd79f942534cab09bda22e0ae9"
+}

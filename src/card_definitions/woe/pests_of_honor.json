@@ -1,0 +1,12 @@
+{
+  "name": "Pests of Honor",
+  "catalogue_id": 3140,
+  "oracle_id": "c2a4066a-f911-4622-beb2-683e7e10822f",
+  "facts_sha256": "aa9aa3bfe31df39c7fbda67c1951fb2acfc008da7c87c59a0101c1636bebca76",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "aaed2619d19d320bfc0085087abbb20ced17c6b5ac1f64b9102199049ebe7d54"
+  },
+  "physical_metadata_sha256": "ac367455290107e8ba61f16143d27a865bc7634ddf9b4591bdb335b52f0cd6d3"
+}

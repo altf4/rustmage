@@ -1,0 +1,12 @@
+{
+  "name": "Hakoda, Selfless Commander",
+  "catalogue_id": 1926,
+  "oracle_id": "de3a469a-e38b-456b-994d-abec1b010e42",
+  "facts_sha256": "f6d3c9df3b12dd59c3a31d6b67200028143e69a45f48d4eecf35997042fc0db9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4a06023478e31af7d158fe6d986538e91d2cf796532fb353417b198c9dc8c056"
+  },
+  "physical_metadata_sha256": "9a4c386feea2184a678e10146288c17cca1da3a2c2b427c653f7737d3d4fa657"
+}

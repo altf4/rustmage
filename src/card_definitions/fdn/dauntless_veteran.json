@@ -1,0 +1,12 @@
+{
+  "name": "Dauntless Veteran",
+  "catalogue_id": 977,
+  "oracle_id": "97b2fb8b-0c69-4ed2-b2d0-8a780f9b5b97",
+  "facts_sha256": "6a5cea104499d72d4c2e9c99e27974415c5fa757d4591269a82bcdca1f774381",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f71392322a3f4f0c6f6a4ed0830b72dfd403746501313df52efc84c2f4255717"
+  },
+  "physical_metadata_sha256": "20294b0ca4f247bea654640c2c87d59cf8b6ff9e76bf083bd180c7ba0adc6e0d"
+}

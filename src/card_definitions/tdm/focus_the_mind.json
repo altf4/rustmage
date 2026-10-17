@@ -1,0 +1,12 @@
+{
+  "name": "Focus the Mind",
+  "catalogue_id": 1573,
+  "oracle_id": "695a84b5-96b0-4e48-b615-15624efab3b7",
+  "facts_sha256": "46d52bf5ecef2c7b92d959953af9260cbba32cc1808dc16b0d37329566afedbb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b8568337df72b77a9aec4134de9e9e5508560c194f3fa1bb8935d732c159404b"
+  },
+  "physical_metadata_sha256": "44db58fe3492062ad2d0cd8b901a7b86fcda8195c044473c5b219571b64a2ffc"
+}

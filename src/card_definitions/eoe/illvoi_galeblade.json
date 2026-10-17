@@ -1,0 +1,12 @@
+{
+  "name": "Illvoi Galeblade",
+  "catalogue_id": 2138,
+  "oracle_id": "d6273621-c36c-491b-85ca-37445ed30097",
+  "facts_sha256": "1a3ce07c5bc1277a11b3c18dca19e003746f0085c071b1762e3364b45123bab4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c2d69bb540a91f8901d21c4caa63aa815bc1379aff14f9b3ff877b4b6e27f07d"
+  },
+  "physical_metadata_sha256": "aff8eae9892826c088f03fe24de82aee0fbe93ca5df53e4035458cfa61f4784c"
+}

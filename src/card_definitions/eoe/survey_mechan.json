@@ -1,0 +1,12 @@
+{
+  "name": "Survey Mechan",
+  "catalogue_id": 4276,
+  "oracle_id": "53745903-de8f-42cf-a949-842e5831de30",
+  "facts_sha256": "99439300a0aaeafa147944c69e298311928cf4b777f631a59d2127942fb88a1b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "140bde42c9a82b2f41fd6af1751bb132a78298ec2dabb7379f73bec771b99e4a"
+  },
+  "physical_metadata_sha256": "5d577e6463955a5e4ff6e4227d6d0cae3e008a76aeaec31e83f897108f8b98a6"
+}

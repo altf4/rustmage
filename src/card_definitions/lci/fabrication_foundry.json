@@ -1,0 +1,12 @@
+{
+  "name": "Fabrication Foundry",
+  "catalogue_id": 1422,
+  "oracle_id": "0bb20c36-689f-4a7c-80b5-a12bda821847",
+  "facts_sha256": "957507fbbb4e499991d78d5a0e760fbe8313c993ddebb66aed488f49a7875916",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7d110291ac07e17dc7fb5a541cebc94dd1036b096e37dd923570beb6b59c9bfd"
+  },
+  "physical_metadata_sha256": "bcc2a90fe55461f80aea55b4c0db5362205583ac51e1ab83eec86025cc29c16d"
+}

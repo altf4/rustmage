@@ -1,0 +1,12 @@
+{
+  "name": "Leyline of the Void",
+  "catalogue_id": 2487,
+  "oracle_id": "f4e32fc1-1b8d-441e-8e76-71f19f98e925",
+  "facts_sha256": "4ad5049c91ba4ade0408783835b9b44a13ca1763db746b226fa16223148f141f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d1254dc31c26d30c2df0ea64a02536683060a3085995fb46202ffa5214fb7361"
+  },
+  "physical_metadata_sha256": "f72a60b2c2ea7117fcacf87a678bc4807e4725588509856797fc9b9a15d868d3"
+}

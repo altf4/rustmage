@@ -1,0 +1,12 @@
+{
+  "name": "Lithobraking",
+  "catalogue_id": 2517,
+  "oracle_id": "118c4be1-2204-4133-a80e-990ef96c7e35",
+  "facts_sha256": "6837a2e7ed66b2b0b316bc175acaebe7f9ef97db2e24430b02522304aea40a41",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0b2d2dc51f7306ae5616e17fcc313ed98b477488210145881088e85b9788f66a"
+  },
+  "physical_metadata_sha256": "9328d5d514fe13caad7b53cc5babf8bda19211812d45c936698ef07ab2c6c32b"
+}

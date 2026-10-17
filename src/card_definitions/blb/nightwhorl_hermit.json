@@ -1,0 +1,12 @@
+{
+  "name": "Nightwhorl Hermit",
+  "catalogue_id": 2940,
+  "oracle_id": "99007c40-1eb5-4c3a-9889-6d12417d8191",
+  "facts_sha256": "06066a855cc5e701eddd8483d9333dc8e359910f3235bc9877c89cd88dedcb69",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e451e4fbc1761cf83154830197e1b78500644dc012d7fa1d725f810e9a59425e"
+  },
+  "physical_metadata_sha256": "3e39e95aa41928e357a0a8e294e4e6e8e7ed1aa7eb93f44ec327954586aa71a7"
+}

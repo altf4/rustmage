@@ -1,0 +1,12 @@
+{
+  "name": "Scavenger's Talent",
+  "catalogue_id": 3718,
+  "oracle_id": "aefea339-8a0d-4531-8a62-afaecc88d078",
+  "facts_sha256": "d182658fb98f28947e25c8bbcaea929f7c75f384d59bc45ff4dbabed948ee7cd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "52ae4d4c60ccb8c3a212d794f981f9e279a8a329bfa496e72dae4d4abfd60572"
+  },
+  "physical_metadata_sha256": "e5c2b7a1c3761d373d2bbcfc12558f94e4b47c08d7ba804e2a8c60f8a11af95c"
+}

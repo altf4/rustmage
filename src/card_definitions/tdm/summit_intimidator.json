@@ -1,0 +1,12 @@
+{
+  "name": "Summit Intimidator",
+  "catalogue_id": 4211,
+  "oracle_id": "b772d35a-d365-47ce-b1dd-a2ba574c74ea",
+  "facts_sha256": "689c309c7ae3c4be1049be1d9ad683fc3f8d21939530c38cb2848316d556feb6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4d75c968bc247731f5046a6ad1ab5d9434a8943a7a3fe0f394aac4ef04ef2ea8"
+  },
+  "physical_metadata_sha256": "e0a358ea71e34ea48c80e07a135af8aea77dc3e8f2671ea928f3194046046ff4"
+}

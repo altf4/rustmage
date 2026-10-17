@@ -1,0 +1,12 @@
+{
+  "name": "Kitesail Corsair",
+  "catalogue_id": 2374,
+  "oracle_id": "6103f294-f920-4307-af80-d44cc71167fd",
+  "facts_sha256": "a2f653bbaa0f8201188739030b4c6117383012f7cf7be92f068f36e69706a2f0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "202db64669deb2fe8fa3aaa200b013ac0541189a969ed13c52ea206c8b3802ee"
+  },
+  "physical_metadata_sha256": "a31e8ef1649cc4ab2d37230d835b9fc739be2bf29c3c385137414f79d4a17549"
+}

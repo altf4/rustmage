@@ -1,0 +1,12 @@
+{
+  "name": "Goddric, Cloaked Reveler",
+  "catalogue_id": 1814,
+  "oracle_id": "35b2b172-5fbc-4e4d-a011-390ee1b6c848",
+  "facts_sha256": "a4d78ac75a10ff6148ec944d96817da8124d427798bfcd52ce7308efefb0c7b8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1b0568ae1d71a371e0beacfc4408baee68c20a527bbbf133167602c27ccfce11"
+  },
+  "physical_metadata_sha256": "9d75e92f111bab9b43e22c6d3e9ac601603fa871a308e9bfd75f9824164c3374"
+}

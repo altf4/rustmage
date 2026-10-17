@@ -1,0 +1,12 @@
+{
+  "name": "Spider-Byte, Web Warden",
+  "catalogue_id": 4021,
+  "oracle_id": "845472ca-3fcb-4bcd-953c-96eb8d914af9",
+  "facts_sha256": "e85dd67c919b6a02f81bfe9320369b98415606a73feda6b7b2d5f166a0d7990e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "40c6d32fbc57c5495dffd5e5d63fc8c9ffe13a09ff237ea3762d51986b8e1c7c"
+  },
+  "physical_metadata_sha256": "5c0c2cdbe9c8077beec7bc1c3deda9080450e94770c644abb454cf65fdf499bf"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Aang, at the Crossroads // Aang, Destined Savior",
+  "catalogue_id": 23,
+  "oracle_id": "96e5d4a1-e59f-4140-823f-a17e15ee5d8d",
+  "facts_sha256": "49a22ee8e15845ae4b94e02aad834aba1656d125103c3c9e1a9413f2542d123f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3068586ee4ddb8bd6c8348624f9c41d149f248cd60d016b67c547123702a1f2a"
+  },
+  "physical_metadata_sha256": "bb44455853fab707410bdee1afafc30e164dc6025e70f48bbef3f626100cbfc9"
+}

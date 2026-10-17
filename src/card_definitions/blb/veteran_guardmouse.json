@@ -1,0 +1,12 @@
+{
+  "name": "Veteran Guardmouse",
+  "catalogue_id": 4877,
+  "oracle_id": "2313a3f9-3eac-4684-a25e-6a6ae445a723",
+  "facts_sha256": "25567881fcfb19987b86b0cbf9e4f0d2e8f965f34d5c507b68bc49bd87cfb1ce",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "798eaae56d3fdc79c36c074f4abaf2d156c922594a7756017900c90857226294"
+  },
+  "physical_metadata_sha256": "391a3bcfcff765ed65ae2218989a1e0c097d8549aacde3ba1de083ecaa54eebf"
+}

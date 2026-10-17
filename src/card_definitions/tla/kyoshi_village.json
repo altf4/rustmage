@@ -1,0 +1,12 @@
+{
+  "name": "Kyoshi Village",
+  "catalogue_id": 2431,
+  "oracle_id": "da81b78b-89fd-4fc1-9395-b5b01b96be70",
+  "facts_sha256": "8408536f7d5b42a87eff6b302a90260a4960b7bd84d24e384b02a2755f238f5e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1fe9a352703667d1b2781bc173926445073056e1b39eade0a85cb0bf55a61b5d"
+  },
+  "physical_metadata_sha256": "3d91c9058ea5d911d5bc0c8311d75f8e75a60938779279a3e2260da0ffa21648"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Broadside Barrage",
+  "catalogue_id": 565,
+  "oracle_id": "dbf9feb3-0751-47bd-a8dc-ed1c076cf8c7",
+  "facts_sha256": "9e736c17b128a73b2286f9f6b4908b0e968e7719976b3f81734c97b16b491e57",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4999fa51c677417d856c8d2a03f284704d682aaf370380616647136601ec1930"
+  },
+  "physical_metadata_sha256": "b16d5258b226d7e30b4e95610a7d6aa82be2deb4ef8d2bb528359ec7f96531a5"
+}

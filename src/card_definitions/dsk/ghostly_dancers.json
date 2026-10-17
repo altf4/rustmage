@@ -1,0 +1,12 @@
+{
+  "name": "Ghostly Dancers",
+  "catalogue_id": 1734,
+  "oracle_id": "c53d958a-f660-4d2e-87cd-87702f973b3a",
+  "facts_sha256": "f43c4c85de2651ee95e434ba353c958ac73ea0e5f8b15f69cae51cdf51af0954",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ae7051880a41f7ba8be322763210c7ac28776b32c9cee4d1323ec194b9ab7323"
+  },
+  "physical_metadata_sha256": "7a8f931029d42799fc57803e4a19d29c939f86d030a77e456dceed0de2cf5c57"
+}

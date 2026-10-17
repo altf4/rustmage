@@ -1,0 +1,12 @@
+{
+  "name": "Arni, Humble Scribe",
+  "catalogue_id": 229,
+  "oracle_id": "a680d1ab-99f2-43d0-b289-5fdba4083d03",
+  "facts_sha256": "f5036f39dac4736c2aa66b6bc0227d7b852ff67af735da718d59cb1726b64213",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "97dbc89eece83d2da2a9e3499760d26e21c433c75163eec126a7ae272fc9dfb8"
+  },
+  "physical_metadata_sha256": "03dee5aa0bb11fd33e0fd666c4599dba8969bf655ed655ce53691973e60d56b5"
+}

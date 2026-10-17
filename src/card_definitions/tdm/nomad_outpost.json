@@ -1,0 +1,12 @@
+{
+  "name": "Nomad Outpost",
+  "catalogue_id": 2959,
+  "oracle_id": "4619de7e-3d6e-4c6b-8e6e-e24db324839d",
+  "facts_sha256": "fc2a152b0da02ef329379a2425800b70fb53f6dc4fa93ffc2d4f116131e59d36",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cd837482546594ca79d3398771d912215cee6406dc5318488cb76c4aa1ece6b8"
+  },
+  "physical_metadata_sha256": "73ef2e993dec6bbee896c48705b74d2193fc4a97618251b95d8b066d7a96b37d"
+}

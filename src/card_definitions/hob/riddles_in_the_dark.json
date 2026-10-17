@@ -1,0 +1,12 @@
+{
+  "name": "Riddles in the Dark",
+  "catalogue_id": 3519,
+  "oracle_id": "78bed291-0ec7-466f-bc7a-9dae7d0b56ae",
+  "facts_sha256": "d2d7dd0d859d1690deb04d025bc5e2214d9a7ed98f2a4473d7c6a48eef95bfb8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "54ac0527121c69c23c6a11b7917b2cd111420647c652e669ca72b73a254a96ff"
+  },
+  "physical_metadata_sha256": "86d809f587ea9bc7a74aea28b7da2e2855148c89c91abed5c447031b27ac9bf2"
+}

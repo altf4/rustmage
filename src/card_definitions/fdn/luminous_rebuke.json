@@ -1,0 +1,12 @@
+{
+  "name": "Luminous Rebuke",
+  "catalogue_id": 2580,
+  "oracle_id": "d96141af-313f-4ea9-a249-d9eb22cd2431",
+  "facts_sha256": "8810d65258bc68fa967364ef183563ca3fba5b7d534a3bdd1e146e735324a4f0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d6b27e0fa71067a64e95e26cbb84cf43f728f67687b5bbbd16661422c2aba6f7"
+  },
+  "physical_metadata_sha256": "baa0d1078aef7bd776de36cb8328169abebf6523d5a385c1e6c4f07c9791a55e"
+}

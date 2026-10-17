@@ -1,0 +1,12 @@
+{
+  "name": "Teeming Dragonstorm",
+  "catalogue_id": 4355,
+  "oracle_id": "2154cc68-41a4-4e88-9fe0-e0150dc0be45",
+  "facts_sha256": "f6d97c75b29dffe180ebf143428ff4a7f882deb6afd11f7f41cfe31aeed04e31",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3b72f1c0ddec376319ece20f9caf8e3e71e593e249a01e958352495ecee7d31a"
+  },
+  "physical_metadata_sha256": "1d4ac9cc92b48f5797ffa11b8288c8f13e0205e3e257f96b91bdea880c8cf1d1"
+}

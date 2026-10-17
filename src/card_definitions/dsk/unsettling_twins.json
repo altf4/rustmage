@@ -1,0 +1,12 @@
+{
+  "name": "Unsettling Twins",
+  "catalogue_id": 4797,
+  "oracle_id": "b0b2ca8c-cb5a-45f8-ae7c-63ad9ebb4afd",
+  "facts_sha256": "88a6504f38f6f2b560515da0a8fddd298b144d1149058810d77c5ff148a17f7b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "584e382f9822ec68f3ef1541d1bb053601f361081bb609ced4553ca725a7f40d"
+  },
+  "physical_metadata_sha256": "4e25d71e5815e5e4bef415313656c0c97fe8d08e3aa8f7967ae996ff33a88b97"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Vampire Spawn",
+  "catalogue_id": 4842,
+  "oracle_id": "33cee4b4-3d80-46f1-9223-49ed785891a1",
+  "facts_sha256": "65b7920346cbfad06b732a9857405c105266a48383f9f851bf90f150d04f9d3d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "85719d234f7763481c1977636d10c6b375a0ba56948ee1645c3d3d07ca994dcf"
+  },
+  "physical_metadata_sha256": "a90d66d906490cacdd290e92d26c15f5645b562b99cee5a65f35f1709577525d"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Silvergill Mentor",
+  "catalogue_id": 3872,
+  "oracle_id": "dcf07f38-422f-46c3-aee9-50540b9c9115",
+  "facts_sha256": "b58729e66b3e8db68ae1a0c3605730b600ae7dd835565de4e42c1c3e5bd69606",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0e2fe978fbfb76ad78a76318c0a1b87af0b02c188febc5e8894c8c286c82b36a"
+  },
+  "physical_metadata_sha256": "5151197197f661c051341bee0a18a52f7ea6b7e401b4e2065a81b4de1d6b9769"
+}

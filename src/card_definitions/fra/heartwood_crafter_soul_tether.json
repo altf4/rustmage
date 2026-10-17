@@ -1,0 +1,12 @@
+{
+  "name": "Heartwood Crafter // Soul Tether",
+  "catalogue_id": 1984,
+  "oracle_id": "c8b3a070-408e-4a8f-8597-6476eeec0a5f",
+  "facts_sha256": "a8b4d3acab3e6df29273a473fbf5545bc6a63eecaed6da8d485a5c3e371a8266",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "389771fb799204c9b87c03e334274d0f9ac39b08d822947898080ae3dfe5ed0a"
+  },
+  "physical_metadata_sha256": "499b8d8a63d6a3392f896d23788e5809404436fa6dd133f280d12192be845004"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Cursecloth Wrappings",
+  "catalogue_id": 936,
+  "oracle_id": "d9c4996a-35eb-4d38-9680-57d9d039ed82",
+  "facts_sha256": "39965ad82e1200920ead12e06881e4660166c70697628fdc57454315ee6fef1f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "52c8535e6f1e2910c0921714dcac8045ff17708c54ed99fcd448e69e7f9a1328"
+  },
+  "physical_metadata_sha256": "5ebe14d55bcca38739c53731f797260d66cded41ffad7ee144747338602bb744"
+}

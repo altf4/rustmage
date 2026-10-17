@@ -1,0 +1,12 @@
+{
+  "name": "Scarblade Scout",
+  "catalogue_id": 3711,
+  "oracle_id": "f6758e8f-5462-48a7-96d3-60d07b1563fc",
+  "facts_sha256": "19d9c01f1fbffdd6e10104b50c16d8a65876c1d8e4e8921d64aa47431053679e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3162dcc7084446e29dcf36cae35daa247d18ad3f04b8fa15d473994f4f072ac4"
+  },
+  "physical_metadata_sha256": "7aea635de714de7f5522b87b53b399da13757b7e9a2b75de8e9e4be99efeccf2"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Campus Guide",
+  "catalogue_id": 629,
+  "oracle_id": "5b8e0913-47e9-4d56-971d-abd91b0f7587",
+  "facts_sha256": "3343a5314e6629dea45f8cc9c646a743e0cd4eb74dcc6aafbc1baacee68b1417",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9b9df21c0e3d5a48913b6bdb15131e64a6f4e21d2dab0e0cdc61d7cbd12270b3"
+  },
+  "physical_metadata_sha256": "8db20babec7269807c921a3cb58e2f15c49978b98ae97fb4a86ea7d7922cdc9b"
+}

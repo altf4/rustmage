@@ -1,0 +1,12 @@
+{
+  "name": "Prishe's Wanderings",
+  "catalogue_id": 3238,
+  "oracle_id": "bc92988c-d628-45ea-8606-516a1211cef3",
+  "facts_sha256": "d7a2e18e3e5c1b229b5dd79484fae03c48938e6d0106f938fff5b269860ede30",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ef11feac972e489cb6f3ed2e1787cde124949d2b09c3d84843fded035c883721"
+  },
+  "physical_metadata_sha256": "da22035122b8c184b26677aa2bb9e6e1e07cbdd9c2b6d33ada0da5b7ac193e87"
+}

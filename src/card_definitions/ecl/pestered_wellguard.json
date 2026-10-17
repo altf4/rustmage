@@ -1,0 +1,12 @@
+{
+  "name": "Pestered Wellguard",
+  "catalogue_id": 3139,
+  "oracle_id": "b0dbfd40-ecc5-493b-976b-bc3f62137fcf",
+  "facts_sha256": "78d5e7c7afb3ad7265ddac21b0dcae85f723c81bf034bc6e5ce6c288eec24f3f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ed04ef6966b1e1a7aaebfe5a930572035e475a995a2331ecccaf658c11ef5570"
+  },
+  "physical_metadata_sha256": "5f80ee2e5bab3802b66d49599ad547eff112f147cbb8a599780c14faed8e4257"
+}

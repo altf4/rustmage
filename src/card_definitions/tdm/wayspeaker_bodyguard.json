@@ -1,0 +1,12 @@
+{
+  "name": "Wayspeaker Bodyguard",
+  "catalogue_id": 5018,
+  "oracle_id": "b93eaf66-91b3-44da-851c-79810901be0c",
+  "facts_sha256": "9fc993d8bf6e3244fbd1d8491f8fc393d06960ba327cdc234531754a5f0b5cf0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7d44940d9d41cc3519250776f217a75ba8e476f912fdf599d3eaa20220af828b"
+  },
+  "physical_metadata_sha256": "b554d43a748577a301700d6c24dcc68dd803cb5357711df71e1c35f68b4dd066"
+}

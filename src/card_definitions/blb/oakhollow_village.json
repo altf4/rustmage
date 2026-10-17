@@ -1,0 +1,12 @@
+{
+  "name": "Oakhollow Village",
+  "catalogue_id": 2982,
+  "oracle_id": "177b7fe4-8565-4631-b4d9-8b2b4282f3ac",
+  "facts_sha256": "853933eb840466a61f007d808a66de29e73a9cfa1640b99c591937ebb963ea3d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "22a693265ce6c32a782aa6f29e45efc1eba06c32ae9b8de192f3035a1b131cdb"
+  },
+  "physical_metadata_sha256": "cabc53f990ea1dd0a30b0bbd56154869fc5667a9b17b488c38d8a9d924052af8"
+}

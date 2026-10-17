@@ -1,0 +1,12 @@
+{
+  "name": "Nesting Bot",
+  "catalogue_id": 2920,
+  "oracle_id": "7ffb8c2e-1737-4df3-b310-384a5000bfa5",
+  "facts_sha256": "486bfc3cb9fba29c6c387ccf96edd7f579b08c57aae2eeca5754e3454ff27761",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bedc3cb002de648f280098587f2813a5a15e00a4165daa971c6d0ae3d60b9c07"
+  },
+  "physical_metadata_sha256": "f46da2d214927f33c13d736bd5d939611249023c2b335957d3ff35f8499a46d6"
+}

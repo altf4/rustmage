@@ -1,0 +1,12 @@
+{
+  "name": "Summon: Fenrir",
+  "catalogue_id": 4219,
+  "oracle_id": "3509171e-8d7d-4e9e-97a1-58e6c7d225ed",
+  "facts_sha256": "3b1f9490631992935ebb8af1a36fa9c7cbd10eaed3231d5bd5ace2dedcf4e370",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0c6d0d57986ee6699091bf059ec244b3229ac7cbfd693028f70ae428fc60adf6"
+  },
+  "physical_metadata_sha256": "547720cc3161129a07573f7fef6f455f279f1e4a57cb7533eff77dbac525d342"
+}

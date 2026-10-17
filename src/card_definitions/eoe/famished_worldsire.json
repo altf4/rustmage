@@ -1,0 +1,12 @@
+{
+  "name": "Famished Worldsire",
+  "catalogue_id": 1436,
+  "oracle_id": "e7f53928-a4cc-41ed-877d-b72d786e77d9",
+  "facts_sha256": "29b780c67c63bce63ec523411db156bd3be049542e70f21648929784419c46fb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cfa21d668a99c59c1398deec2bb200d5f49a0f66082c4513cdf5a4fe3e95b00f"
+  },
+  "physical_metadata_sha256": "008f85b530fa3916ab37fa09a71ad88fb702b93fb046cb3a1e80e9841944f7e2"
+}

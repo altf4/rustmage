@@ -1,0 +1,12 @@
+{
+  "name": "Terrific Team-Up",
+  "catalogue_id": 4394,
+  "oracle_id": "431c5b04-7387-4724-adfa-d1eb7874e79e",
+  "facts_sha256": "1b90f3ff96543feae8b4eb555a90253de5659d17fa2ac98894517caa24b362f3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4fcc7ebd3faf9908f5853098a407a08753b05acbcba3b0ed0e301628dd260d4d"
+  },
+  "physical_metadata_sha256": "b3f5c044e97c8fa420a83a7bf209f60992e98709a529bd03bcffee6d52ddad36"
+}

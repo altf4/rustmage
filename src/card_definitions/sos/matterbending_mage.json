@@ -1,0 +1,12 @@
+{
+  "name": "Matterbending Mage",
+  "catalogue_id": 2687,
+  "oracle_id": "94688e25-28cb-45aa-95ea-0d6f547cae57",
+  "facts_sha256": "a9961dcfd5b1eba2dc2da091c407d345e2ba133fe15348ec1539d8250ec05ed5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f22abe25d084b95e4c65b57e6c861b5944a0d9c8dcb7e97f673ef20c0cc6f051"
+  },
+  "physical_metadata_sha256": "fa1415ef5916aa769e6e65367f7f197bf0e74d156016b5bbd3a407467e404f35"
+}

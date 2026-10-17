@@ -1,0 +1,12 @@
+{
+  "name": "Nightdrinker Moroii",
+  "catalogue_id": 2937,
+  "oracle_id": "07d830a7-f0a2-4d46-9a53-101dca681603",
+  "facts_sha256": "439ddb76b3b7d94e0ca148d5cc12bb50936a8a428248c2d1a9bd7b25e453b0c1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5c467b5511b3b4b7e3b6bfe7a7f9347d6dfc6b0fc3301c60a7b9d3b1aba92089"
+  },
+  "physical_metadata_sha256": "2b0c14f4ea957ad1088a533b90bce5b20a20122fb7b3e00d36a86343903ce45d"
+}

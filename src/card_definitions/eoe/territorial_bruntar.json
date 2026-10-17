@@ -1,0 +1,12 @@
+{
+  "name": "Territorial Bruntar",
+  "catalogue_id": 4395,
+  "oracle_id": "03f04c2c-1036-497e-8b13-06c61b0b0ba6",
+  "facts_sha256": "cf131da2509e2afec8574765d28deea0cc19bb5c48218589093deea84730275e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d9e8175d722f25b05599856d72f1488c9ad175a80630ee8a2d9d8486e6d3ad38"
+  },
+  "physical_metadata_sha256": "921d9d1d18da9e6e581a5f5995715e6c4c77e3db307a54381dd0e6178c518f47"
+}

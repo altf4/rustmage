@@ -1,0 +1,12 @@
+{
+  "name": "Undercover Crocodelf",
+  "catalogue_id": 4765,
+  "oracle_id": "3ba223b7-743f-4f99-836e-869778fb2e99",
+  "facts_sha256": "483877a37e1328a17ea50199882e76262c64734da0bc45c3058c9b0204c8c7aa",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c524028144713d3b7e4865b8abf893ddacfb19bdc35868b4c1acd1c8a45efa96"
+  },
+  "physical_metadata_sha256": "bb63dd40a750e6f694fbcba2bc6c0e569b0ad2f9da5a832fd33de113f7fbfcd1"
+}

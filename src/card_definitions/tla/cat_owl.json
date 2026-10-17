@@ -1,0 +1,12 @@
+{
+  "name": "Cat-Owl",
+  "catalogue_id": 679,
+  "oracle_id": "ba6840a6-b6fd-4b91-ac1a-a61b7b15849a",
+  "facts_sha256": "55baa894acccee17072662cdae0ce712a2a10b2a468226691e4dd79f1ad31d37",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "484d54128a9f40c8a058bdb9b0789a7451f8677c791229ee2bf988c1d483d82e"
+  },
+  "physical_metadata_sha256": "1798c8e09ea2bca8d392c7595a74827fc5e554ebc69023ff0258589f62280224"
+}

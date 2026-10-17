@@ -1,0 +1,12 @@
+{
+  "name": "Meltstrider's Gear",
+  "catalogue_id": 2710,
+  "oracle_id": "1d6742a3-592b-4e67-8cc6-56e2962ad7c7",
+  "facts_sha256": "c4f41c8ca5a323a47c49780799eb71b0d193d258017637849e9c5543ee6198b5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4299c6137d466831bf8f9ced0559ce144e7f770cab564464967ffa27d3b2c09a"
+  },
+  "physical_metadata_sha256": "3d7a0dc6a611f3054c530d00f0483b9b0245cf034b07046c05dc32ade32f5db3"
+}

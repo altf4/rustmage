@@ -1,0 +1,12 @@
+{
+  "name": "Kavaron, Memorial World",
+  "catalogue_id": 2330,
+  "oracle_id": "4fa826ca-d361-4391-ad0d-989ebcfa4a91",
+  "facts_sha256": "110d728bcc23058c14ee27fbb1a14724c5e82fc9b4e357233d0309dd25fdefb7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "820f9f44113429fcb68250310ffaf61cd27fddd52ce9b3d5bd793be9c3eb8046"
+  },
+  "physical_metadata_sha256": "241e18faa3ae0d0f5f82eb22bb1bd269938c8253926e18f9fcc8e1d8a42753f1"
+}

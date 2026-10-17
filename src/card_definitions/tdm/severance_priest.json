@@ -1,0 +1,12 @@
+{
+  "name": "Severance Priest",
+  "catalogue_id": 3801,
+  "oracle_id": "3a38bf69-511f-4851-870f-8a65641d832e",
+  "facts_sha256": "ff0929de9c2bfaa17a098ece86e76859988e6aa5e13b285eb403e0f4ead0729e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "122e498cfeee5124ddbec1d9fc2a28a5422c38cd1369a8cff22a20a0128d104a"
+  },
+  "physical_metadata_sha256": "2e12047bfb396321fa694846b8105bd5c8b6af9164d0c98bcb5b8040fc7d9f3e"
+}

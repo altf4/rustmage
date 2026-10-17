@@ -1,0 +1,12 @@
+{
+  "name": "Serpent's Pass",
+  "catalogue_id": 3796,
+  "oracle_id": "f715f701-a735-42ab-b31a-8e1bd04ac5ff",
+  "facts_sha256": "9d2b85c91e448a0fd781144a948a275c628fd215978f32c101a8df58f617cfdc",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "16e75f1a07b79fae04ed6f09bf5a1aacc95f778811f931ff6eb6c62a7dcce623"
+  },
+  "physical_metadata_sha256": "a1af783cca7bb5673bbf28d86cdc752c2b9bf66fc31da5c19017c3216ff0ca21"
+}

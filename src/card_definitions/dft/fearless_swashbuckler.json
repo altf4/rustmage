@@ -1,0 +1,12 @@
+{
+  "name": "Fearless Swashbuckler",
+  "catalogue_id": 1474,
+  "oracle_id": "6a6cdb3e-c850-4b3c-bf4b-c53dd4eaf56e",
+  "facts_sha256": "ba07ec41f85d9ebef2b0b1082e9f59b20fca4e5f5d1366d8be20a1809cc89888",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f774a40ab241e65ebeec6b674571f7b7e40a5f8a5ac5c360b81666f11bfc6f80"
+  },
+  "physical_metadata_sha256": "f9b96b6596ee02d64579a8d405f2fd726c70de2c72bdafa3939c74b22eabf149"
+}

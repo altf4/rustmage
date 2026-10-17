@@ -1,0 +1,12 @@
+{
+  "name": "Stoic Sphinx",
+  "catalogue_id": 4157,
+  "oracle_id": "d924c13e-f266-47b0-9711-ba9a9b9df1cb",
+  "facts_sha256": "f12457148d32b5efafd956ae238dd94facc0e7207fd18d0447de2f048015ff51",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b5fdee88faa3b2404fbfe394e1b300775ff7aa8ba9376686718b320492a1b320"
+  },
+  "physical_metadata_sha256": "5a798063b999682a86f7d9b91aaef1d3e1bf72e3e537c2ca024c4666cc2d45c3"
+}

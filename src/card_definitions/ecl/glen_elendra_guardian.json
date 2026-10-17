@@ -1,0 +1,12 @@
+{
+  "name": "Glen Elendra Guardian",
+  "catalogue_id": 1774,
+  "oracle_id": "97febf6b-302c-4c41-8838-eef7c7353bdc",
+  "facts_sha256": "6b905165f3264a60413a7f17f387bc3197607a83a9f77266ca497195076b8fc8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2b22639b33d9d3714bfcb2a5cd8f52cd11a29e95525027472b72eef5da247bcc"
+  },
+  "physical_metadata_sha256": "f0ad47bd6c36f392890cecf251af2eaa584e9db96500bafa8b9efbb3a51b6853"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Jolly Gerbils",
+  "catalogue_id": 2287,
+  "oracle_id": "8e22bf51-1b1b-459b-af78-91188b6e3f09",
+  "facts_sha256": "e53ab4d1f49a4a87356cf26fec5de139eeced6cfc22123a9a10f0472deade181",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ac7bfc36f484a6acaf607618ef3308c5004799c1a4d5a8af9e24b8b22697f5aa"
+  },
+  "physical_metadata_sha256": "cb69f434ff4e2af9ea15fb9c07e6bd7428955cf82c60b18502328f9798f13cf2"
+}

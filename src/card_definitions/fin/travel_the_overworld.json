@@ -1,0 +1,12 @@
+{
+  "name": "Travel the Overworld",
+  "catalogue_id": 4664,
+  "oracle_id": "61e3709e-7ecd-4a59-bca1-019d16795740",
+  "facts_sha256": "95db85eaa69523bb2a21f48757b9b8fab45db3a9ff965a434061768c1c236125",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8010e5ca434e04ca8a533f7e02d8814cb4166f3c0c7f2337167469c29d92436a"
+  },
+  "physical_metadata_sha256": "c31aec3c7c1149b10f13af814babcda7404f72a9d9a305f5d85d7a968ddfc546"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Icecave Crasher",
+  "catalogue_id": 2123,
+  "oracle_id": "b9650a0e-5795-42ff-84c6-6040e5cf4c90",
+  "facts_sha256": "d168376809891f9257746b313ad597ddc6ce5a8f06c55ff6bad6cebbf59b23de",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f6b7babc169355232df413e7ae891f515bff49588864e52427176f43d44a7fb4"
+  },
+  "physical_metadata_sha256": "eb3acf9d104670d2b11a6044dd63e59a8ba6e815f1b72eb9e853a4a8b31f0842"
+}

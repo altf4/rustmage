@@ -1,0 +1,12 @@
+{
+  "name": "Iron Spider, Stark Upgrade",
+  "catalogue_id": 2232,
+  "oracle_id": "e123fd7d-ace9-48a4-9510-eedcc837d8e8",
+  "facts_sha256": "daab2102c607168222e11d17c2f52671b87504372bcd5a2c3f996c27dd103383",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "abd4555154f719becb9faa64c73d53621949109f3e1852d30fc55f734b8aef38"
+  },
+  "physical_metadata_sha256": "df45bf63b8906d01c35958d484d9396fec22a6efea3da1d52f0c6ea8ef8691b1"
+}

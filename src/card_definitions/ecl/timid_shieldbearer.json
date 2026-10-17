@@ -1,0 +1,12 @@
+{
+  "name": "Timid Shieldbearer",
+  "catalogue_id": 4603,
+  "oracle_id": "8bef3511-ceeb-4d57-972a-ab363ecacd5b",
+  "facts_sha256": "e64d1103bcc35ee2bcb60ebff6bb09cca7adee1f42abee8c7765f07a338740fc",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e00b575d71e1b949932abdb227e906d1f5783c1b57937c0c742c9cf91e747e79"
+  },
+  "physical_metadata_sha256": "ac77b5eb2999a3f152c8c7b30bf02b1f573eab94e3720d650fc7d3ce94503817"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Angel of Vitality",
+  "catalogue_id": 163,
+  "oracle_id": "635fe908-6f58-4c9e-ac55-0775a7c6f278",
+  "facts_sha256": "86e2e5bda3c52f52e9f6dfc0b2f0cfa4ecb5ab397a2f9a11ccd8caa7705d6fda",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8f0e8b498e7277b11176604f8ce6fbe80d70eae25c3e802eea0924b678d64413"
+  },
+  "physical_metadata_sha256": "44c8913825b68238fb5f2b66c8250c5629236dcb42dea5373c2f0d2bc016c65a"
+}

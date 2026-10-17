@@ -1,0 +1,12 @@
+{
+  "name": "Katara, the Fearless",
+  "catalogue_id": 2325,
+  "oracle_id": "0972d46e-423b-454e-87c7-a2d40fb6fb6d",
+  "facts_sha256": "9c11c2a5a3f994654862af86541db37533627acd52a0048881da9a2f0309e899",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e38736e8b87d3dc919085cf2b5f1561804ed86e8437c99e2412d5c45eda53e12"
+  },
+  "physical_metadata_sha256": "1864f4368d78b3843dd9c5cf722347ffee4581a22e74c03ade3020f6b9bbb073"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Elusive Otter // Grove's Bounty",
+  "catalogue_id": 1294,
+  "oracle_id": "54175132-2c44-4749-8dfd-d08dcc63e4b3",
+  "facts_sha256": "d3553cb935d698a816dafdf1e9dae718754ec4730588df870f03c9bbad4c1b7f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d3cae15a3d83c9f7c409536aa464ac16afb6f2c6e86530decb437416d92c6c17"
+  },
+  "physical_metadata_sha256": "9726b53c771dcc4bc6753bb8a88ea084e74e4a192b163a37775d9ecf9102879b"
+}

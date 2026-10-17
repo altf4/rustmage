@@ -1,0 +1,12 @@
+{
+  "name": "Radioactive Spider",
+  "catalogue_id": 3335,
+  "oracle_id": "f15bd5c0-99ff-42c6-8eed-48de6df81b61",
+  "facts_sha256": "ff54a18c8414e136aed6486ee447925d4782e4ed4f9ef50d1bfdba7d2f5be75a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "aa3d90a03cf9ec8f5c22a9b808ce972068da03afce6020b8627993f4f8e61663"
+  },
+  "physical_metadata_sha256": "d318baaeb587480a8f6c3543be758ecac06b8d6d185fafc68a73c2febf1baa93"
+}

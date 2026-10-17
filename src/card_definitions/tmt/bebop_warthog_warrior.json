@@ -1,0 +1,12 @@
+{
+  "name": "Bebop, Warthog Warrior",
+  "catalogue_id": 367,
+  "oracle_id": "39c813e1-0e26-440a-b9bd-e781f7576b8b",
+  "facts_sha256": "0fdd1faa66b02f4119747d30dcb4c48b25f8d54631f7533a3d7e3940f4274e21",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "002c5f03d073f127f6bc01a76eb847cf28d060ffb539171959ea470220f0e4c9"
+  },
+  "physical_metadata_sha256": "4ec7c0a898da136037a3c5b159cf1ef1839e6bf60de98badaa280041d94aa616"
+}

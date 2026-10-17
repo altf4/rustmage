@@ -1,0 +1,12 @@
+{
+  "name": "Voracious Tome-Skimmer",
+  "catalogue_id": 4936,
+  "oracle_id": "25b0876e-c995-486e-8536-6e68b76b9c86",
+  "facts_sha256": "cf86544ded713a57386a2259fcf7a7223126e7c0f37e82726979acb5f943a3cf",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9e345d61f8c9b68b176e05019610c433979b408d578dbdfc406335cb5affa49a"
+  },
+  "physical_metadata_sha256": "f07e692de2247188776b1dc85c33d47e54df962e4bac2df531d7502489868096"
+}

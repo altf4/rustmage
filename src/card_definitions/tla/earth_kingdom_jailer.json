@@ -1,0 +1,12 @@
+{
+  "name": "Earth Kingdom Jailer",
+  "catalogue_id": 1234,
+  "oracle_id": "1b799c30-4a43-403d-b822-0555bd513913",
+  "facts_sha256": "c5a4c8fdb1e9e5660ba5bb8c82edabd59630b2d3a87f7d1155c39883c51195ee",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9e4cf4c48b239048b13bb8ae29542b1061e8015747e27ad993d13302a77f3644"
+  },
+  "physical_metadata_sha256": "29dfb0c61bead1f52a1cd0ef55199a387f1eff53ef4df9e982ac91cb21fe02c4"
+}

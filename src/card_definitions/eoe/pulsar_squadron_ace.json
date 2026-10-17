@@ -1,0 +1,12 @@
+{
+  "name": "Pulsar Squadron Ace",
+  "catalogue_id": 3277,
+  "oracle_id": "8019e879-cfea-40a2-ac0d-86b47ec02b48",
+  "facts_sha256": "7011c8773aac9c40df9367086fc35dc91442259e12ed30536e7aa4dcbc29ef32",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "314b8ee4407f58581e4de0d8b66d30b91676f5e868b4a0baf621da84c2106fbc"
+  },
+  "physical_metadata_sha256": "85aa95d0d37ef5ccad8b54aa75aff703d623977674a07405af8290ceef69e03d"
+}

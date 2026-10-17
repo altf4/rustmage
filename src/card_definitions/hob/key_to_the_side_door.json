@@ -1,0 +1,12 @@
+{
+  "name": "Key to the Side-Door",
+  "catalogue_id": 2345,
+  "oracle_id": "76c036df-44f5-4021-b7fc-656147351341",
+  "facts_sha256": "e05ac2042b93094b2092297392186d444764cec4a9854b4a7212276d05d66017",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e53afc933ec54dbdbac8f9d09825bd518b604b2ee24d38cf50b4c833c8fc52da"
+  },
+  "physical_metadata_sha256": "da35a4a35a78009fcad980807b377545304be102ac387e1311abb63d3a6fc34b"
+}

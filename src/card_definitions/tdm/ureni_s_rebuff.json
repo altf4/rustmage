@@ -1,0 +1,12 @@
+{
+  "name": "Ureni's Rebuff",
+  "catalogue_id": 4814,
+  "oracle_id": "c0b7e989-8194-484c-93aa-a44df0764a77",
+  "facts_sha256": "487e36fa37bbd78a73ab8bb1f5ce4b7920940ebeab417da05ad2a392ebe6981a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a51c2de1473603d7e5b86d5a819b28584b9fa7487cd0834cad0581910d716519"
+  },
+  "physical_metadata_sha256": "a42ccb36281f56e6d594b321c9d1024dc5e6d6b2c5a0e47cba360170347ef7f7"
+}

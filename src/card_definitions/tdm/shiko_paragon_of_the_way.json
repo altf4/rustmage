@@ -1,0 +1,12 @@
+{
+  "name": "Shiko, Paragon of the Way",
+  "catalogue_id": 3830,
+  "oracle_id": "d3bdd3f2-9e38-436a-93a3-f87d9f4d4f86",
+  "facts_sha256": "00b8b3a2e2aa2b9fe6e9d341b2bb54d708d80a2f6bda479c36967b10aaac5a16",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b07d77283ffcdf3d6c73c2e4117a6b6520628903414900d2cc4d2c8e73ba82dc"
+  },
+  "physical_metadata_sha256": "4c0c871206dbdec13c7e834c77c3da71ff5423f9d911d230666916880ccc6c17"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "The Skullspore Nexus",
+  "catalogue_id": 4499,
+  "oracle_id": "ba26ff0a-e714-44f2-95cf-1a5a6088edf9",
+  "facts_sha256": "43f0800901450529acd94ada648ee799a387d9b6fdf8be49f8e68dca7c7bbdad",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ef8c90db68713e004e09100634e2ae760f48d5ea5190d960f4789a90a91de3a5"
+  },
+  "physical_metadata_sha256": "958a0d0143804df67ebec40e25b8b3e1774a7f7400b755a3ac595e97e0a79dad"
+}

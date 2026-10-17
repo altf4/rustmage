@@ -1,0 +1,12 @@
+{
+  "name": "Stormscale Scion",
+  "catalogue_id": 4177,
+  "oracle_id": "cf37426d-b0ad-42c3-81be-79701aa4e0cf",
+  "facts_sha256": "4de7e9f7da40eb0007a35eb1e21ecfd0dd6a04544323c68ad4b149449cce4747",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "90a3830edab078ea3b08ccaf8942979de21cab6926e14deebb03f2277d114f8b"
+  },
+  "physical_metadata_sha256": "fc6794236583a2945637419a0411f19541e85635eee41e5eb36f6344a9c448a5"
+}

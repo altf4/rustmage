@@ -1,0 +1,12 @@
+{
+  "name": "Curator of Destinies",
+  "catalogue_id": 927,
+  "oracle_id": "9938d178-0ce6-45c0-b317-fd5c54231579",
+  "facts_sha256": "64320af45bfc6ee58d8316b5f196540977185ae967b086a617aeb6028b505510",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "52c9093d9b4d250533e43351c1e26e72011f23615d3c9ac8890ad05965d2d40f"
+  },
+  "physical_metadata_sha256": "37a6d10fc3d843d3f3d62c8e3b853247b166261fbcca3018bdaa2474ffc3ab13"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Flowerfoot Swordmaster",
+  "catalogue_id": 1570,
+  "oracle_id": "523d075d-b577-4f24-8c14-9a76761a2eaf",
+  "facts_sha256": "e8e0337fd829970b246f34d65708d0fe0521a6171093f7048fe062794f260380",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1684da066295539acda9e9b6c86718095917fd5ca6d7facda88c9c95fb6a2a86"
+  },
+  "physical_metadata_sha256": "bfc31ec689b4a26cf150ceefb42ce251781717c7a26e50ed2fcdcbdc1362dbfc"
+}

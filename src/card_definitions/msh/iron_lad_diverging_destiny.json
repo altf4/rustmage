@@ -1,0 +1,12 @@
+{
+  "name": "Iron Lad, Diverging Destiny",
+  "catalogue_id": 2229,
+  "oracle_id": "3e715032-0d21-441b-b2d4-c91084728718",
+  "facts_sha256": "119df31d253cbb1a8792bb1a0098df3325b61cd5a9f52cb2115124133f75e3dc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b837cbeb7f06667cdfb56b4f13b75ecf1d214ecb87a5954e9cf0d4fcf6c261da"
+  },
+  "physical_metadata_sha256": "30924595191cdfb7a61460fa9f6962ad72c5530e4c11c7a4bb818bd2096cec59"
+}

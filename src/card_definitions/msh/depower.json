@@ -1,0 +1,12 @@
+{
+  "name": "Depower",
+  "catalogue_id": 1045,
+  "oracle_id": "33f89437-885b-4850-88b7-239f5dfcc8b1",
+  "facts_sha256": "9272323f86c9e6e9ef8325e9d74bb8b51b2dcff4cfd0a177e57d01ff5c14a578",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "880944a298355535c94abc8f7fa9ed86c522e8742d0f3b0ed88a30ca62cfa641"
+  },
+  "physical_metadata_sha256": "2b24d41cb14de4a04f7e7e33804e49c3d2647722477295ad85ff14d51f77d5a3"
+}

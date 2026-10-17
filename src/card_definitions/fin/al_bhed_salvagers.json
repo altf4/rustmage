@@ -1,0 +1,12 @@
+{
+  "name": "Al Bhed Salvagers",
+  "catalogue_id": 121,
+  "oracle_id": "43f81514-e812-4e17-9b1a-704c136d8ffd",
+  "facts_sha256": "fc8845f65b8692a8236d032340713410d72e9c20d36c3e4fc81bdc7c2809f364",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2777699fa448530a5cb24ec7960b325471cea36e6813b60694661b696e8fb815"
+  },
+  "physical_metadata_sha256": "92806e4764af6cea25be533eb5d26ad0eabd31a0b4d76695a328536bc2683860"
+}

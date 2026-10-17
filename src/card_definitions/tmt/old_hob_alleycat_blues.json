@@ -1,0 +1,12 @@
+{
+  "name": "Old Hob, Alleycat Blues",
+  "catalogue_id": 3006,
+  "oracle_id": "e88b1520-aa9a-41ee-9036-4d4bebd1a0c0",
+  "facts_sha256": "ba49ce725684f0dc430cb24d1195d8538145a61fb86f04498492c6b0ddfb20e3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2a12a4d7ba1e817d99a66ae7bb4c0c244ed85ba194f5a6483738130b8b40fb22"
+  },
+  "physical_metadata_sha256": "b9f2783d1e1ca8a04b2f3f2feb7d6d8271382b4b823fb65f027999be5d4be94e"
+}

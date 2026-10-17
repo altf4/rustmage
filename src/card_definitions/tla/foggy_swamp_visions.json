@@ -1,0 +1,12 @@
+{
+  "name": "Foggy Swamp Visions",
+  "catalogue_id": 1579,
+  "oracle_id": "16af0a22-833e-47c6-ac27-002702194595",
+  "facts_sha256": "8353568de4012da7c2214297f583fbc55435cdfcf5be1e04d8eb4c65bf08438e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3572898b9b59a8a9ff07969e2be31f90c177035ab59eb7343a689a55c30cebca"
+  },
+  "physical_metadata_sha256": "17116f12923066b7a6bcac2add788dc790ca4a5e6cc6fb5a5994812ae747e456"
+}

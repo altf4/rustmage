@@ -1,0 +1,12 @@
+{
+  "name": "Panicked Altisaur",
+  "catalogue_id": 3095,
+  "oracle_id": "6de64e59-0a47-46c4-90bf-c56e63266f19",
+  "facts_sha256": "50bdf5f3da4b92fa9da0886818507778749031f702129914a18b9afa17291651",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2683fe5b8f82ced91a0e98c0a7ed0d502890bd2c53cd8ad3c2538d509bc0e8a0"
+  },
+  "physical_metadata_sha256": "5743241c26ea8cb77343dd2c9fdad1554a0f0c2348ea03c3ea21d906015fd328"
+}

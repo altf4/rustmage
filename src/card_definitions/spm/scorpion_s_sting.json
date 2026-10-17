@@ -1,0 +1,12 @@
+{
+  "name": "Scorpion's Sting",
+  "catalogue_id": 3728,
+  "oracle_id": "7f5e5aa8-3f15-45c9-bfc8-1f4b98d2be38",
+  "facts_sha256": "959bfeabd4707be179b528a63ade6cafc539122f86a0acea303e587e2b0f03d0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "deda6a0a0b964e1c73e7c340fa332d388215aaf9ff497455a0bd1f2c2e6b0f25"
+  },
+  "physical_metadata_sha256": "c189ca29d2f493a0ee84fb18671eb35cdd0776a727e4cc6703cb73858478b782"
+}

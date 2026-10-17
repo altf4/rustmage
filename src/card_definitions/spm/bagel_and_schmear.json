@@ -1,0 +1,12 @@
+{
+  "name": "Bagel and Schmear",
+  "catalogue_id": 306,
+  "oracle_id": "1389c9fa-fec2-4212-a7aa-6dfb318dc202",
+  "facts_sha256": "b156fa8203924d0c88f0900cfd7f2bdfb0c580d6e9baea903244d71bf28b422a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0dd05afdec45bb2d56f0de05354ff4ef0b1706e1ab5d0a79dee8e015eece87bf"
+  },
+  "physical_metadata_sha256": "4ec7e8e0fbc821db9b8ed022df09acf66b617a0c2ce581e72c7719fec231ea63"
+}

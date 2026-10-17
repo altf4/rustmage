@@ -1,0 +1,12 @@
+{
+  "name": "Spider-Mobile",
+  "catalogue_id": 4033,
+  "oracle_id": "3c322d99-2bc4-4618-aeb3-5583fce54f1b",
+  "facts_sha256": "26cbe9c8d6be66fb0a883113523768e1c1494eea1fe27e24ad57f736d2373b64",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3f69d71a7cdae17bacb57328fd3b9772a45834436616df7b54be9a0bd0ca537d"
+  },
+  "physical_metadata_sha256": "8fd68b897994e139b68e0e48d832521ba56cc0c04323c72c35e651f27b2a19f7"
+}

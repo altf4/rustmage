@@ -1,0 +1,12 @@
+{
+  "name": "Graduation Day",
+  "catalogue_id": 1839,
+  "oracle_id": "40e0665d-57b8-4c19-9fb8-b3155d7bbb94",
+  "facts_sha256": "fa2f7dec06295d26f1ef209e3ff8acde5a9bcbd2770bbd4958c7284d7f161dcb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6e70e8e2b554c0c1067bdbcbbd13660e5eb65025b50927537722ca464155fb20"
+  },
+  "physical_metadata_sha256": "4115b08b41712367ecfd5ff759b3220cb77206a15e0148b3114f137d39d678f9"
+}

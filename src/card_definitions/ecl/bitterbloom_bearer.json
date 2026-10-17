@@ -1,0 +1,12 @@
+{
+  "name": "Bitterbloom Bearer",
+  "catalogue_id": 428,
+  "oracle_id": "5effb651-f9e0-4c14-8192-bd0e132b8d5d",
+  "facts_sha256": "e9691d4569e358dae7dab2779d94c364f6a4fafb4faf78dd625bbc71cf7f8185",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b596de1bab23c86614e20dc671de844a353a48e41d8832250327d46ba7e6f020"
+  },
+  "physical_metadata_sha256": "27c7c8a1403732f5fe05f755d92fe536a6552e378e300124ea6ab766cdbe5f15"
+}

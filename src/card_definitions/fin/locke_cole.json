@@ -1,0 +1,12 @@
+{
+  "name": "Locke Cole",
+  "catalogue_id": 2534,
+  "oracle_id": "bdcb7aed-3595-4c7e-b9da-543e92de919a",
+  "facts_sha256": "50a0d1e8c8a07318466353a24be41363950a996ec02509a12282ca2073360d0d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d629f004b30965a71e2877e3497be2520bf27b1a2b69bfd5564c55fbc3b83712"
+  },
+  "physical_metadata_sha256": "9fffc13d1e1e72ce60524aadd47aed308ddb94ef989fd1ae7f21ca291a628f34"
+}

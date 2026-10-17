@@ -1,0 +1,12 @@
+{
+  "name": "Henchbots",
+  "catalogue_id": 2005,
+  "oracle_id": "1f097c91-6c2e-410f-8c8f-c021f39491af",
+  "facts_sha256": "dad1595bc8ccc59a32804281f379319fa5d39c16cb5b91288ec82b7f8ba3d750",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4fea976e7153862fc18bb5407b0dcd12d3175834560e7f8fd9b8e1c00218a9db"
+  },
+  "physical_metadata_sha256": "bf1adc643f24b5dfc86360627a92cc06c5a8dc02f8a90d16da0b5060134bf001"
+}

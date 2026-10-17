@@ -1,0 +1,12 @@
+{
+  "name": "Practiced Offense",
+  "catalogue_id": 3214,
+  "oracle_id": "99678cc9-59c8-4358-b847-8c38ffb4a050",
+  "facts_sha256": "4c477c6ccc02282890beb5d807df6949980e115f36b5db71664fe45739d8880d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "12a95799b89ec0265adc2bccb53eb161abd149a0a2740ce45848f36f8fd1099e"
+  },
+  "physical_metadata_sha256": "c2060f36c3dc3ceb1adfa2e02b66e17f011fc0525369b09072956ede05f2da1b"
+}

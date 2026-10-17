@@ -1,0 +1,12 @@
+{
+  "name": "Masked Meower",
+  "catalogue_id": 2675,
+  "oracle_id": "a0037ff8-64db-45dd-bba1-db5c49095083",
+  "facts_sha256": "220e9ea337095caf6ff1c314964b8a6ca854c04bd67ff4ea77ecfc9873f6d15d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "32ef823a376040f7556f07503c681ab08855cd3e90ae1a84545b1eee4afc2352"
+  },
+  "physical_metadata_sha256": "b9b260dd1576d2fc34170727b0d0a9c0ade9ce448cabc3a8ddf68befd80fb92c"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Miner's Guidewing",
+  "catalogue_id": 2774,
+  "oracle_id": "eb161d0b-e534-463c-b1d1-7210bfba5d28",
+  "facts_sha256": "bba51573c2f5113ee9acdbf3c82035b762b8a5497f66fae2b36536777aed3633",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "77e07b242dfa2cfa3a9963d5db8408497a3a963a3022a1eeb0209bdc9be323a5"
+  },
+  "physical_metadata_sha256": "6515c448757c5aa8b969223588602c7aea81b90ef0070cb5f479d1f02a694ba2"
+}

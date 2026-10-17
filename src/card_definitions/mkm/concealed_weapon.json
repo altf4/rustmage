@@ -1,0 +1,12 @@
+{
+  "name": "Concealed Weapon",
+  "catalogue_id": 822,
+  "oracle_id": "104565b1-2db8-4c01-ae3d-14087768be45",
+  "facts_sha256": "a9409e9e99693172fb47d4482758cbee30beca753ec3348b92e7e5f499741914",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3be44b3f2cfeb6fef355c1563439210f4dfe20d5f41398b862457d0c99df47ee"
+  },
+  "physical_metadata_sha256": "4442009897e90a787ca885cc5980a3266023769e56ad095ea0ad6ee49085c377"
+}

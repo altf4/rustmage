@@ -1,0 +1,12 @@
+{
+  "name": "Projektor Inspector",
+  "catalogue_id": 3256,
+  "oracle_id": "58b27a79-ba63-45d4-84ee-423ce0d91f6b",
+  "facts_sha256": "35d0a8a4b240953de74592401dcc7324b30e171ef2ca92f16591a19b65eca1d7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9af533a59c8cd0696895f23d5e249061f71d43849dd2eec8869d4fdfeb230e9f"
+  },
+  "physical_metadata_sha256": "3b83aa94421b26bdfe3f55aaac429b37b08a2b8bf78d3f06f72a09c886cdc708"
+}

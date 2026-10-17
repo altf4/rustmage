@@ -1,0 +1,12 @@
+{
+  "name": "Surveillance Monitor",
+  "catalogue_id": 4273,
+  "oracle_id": "9be5a350-c38e-425f-9d6a-8eb111132a89",
+  "facts_sha256": "b4bb368e85f5db798217585395f1f8aaa8182b8f712bdb5d4ee0dffd9f8c4d45",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f8a00e469734693771fe491f5f6bd588c16272650e047690293e6399e622c4c6"
+  },
+  "physical_metadata_sha256": "201d9b18633bd958d07f21fecc4bc2dd88067b632815a8e17a464c7f1707249a"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Nova Hellkite",
+  "catalogue_id": 2970,
+  "oracle_id": "9635d79e-62ec-4d80-ae37-2793489cc13b",
+  "facts_sha256": "81fe93322904c6b656c522a62dfadc971aa4ffc99bea41a8909c59ac0c6f062d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3fc6ae41cdb66b6666e4731d90656e35fb77bf05630f30b1de79edfe4b8f2580"
+  },
+  "physical_metadata_sha256": "96e815d40172314d6047ba51d9a7c992059c01a161d2e7d013ce4d7a475fa15d"
+}

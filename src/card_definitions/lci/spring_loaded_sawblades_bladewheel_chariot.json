@@ -1,0 +1,12 @@
+{
+  "name": "Spring-Loaded Sawblades // Bladewheel Chariot",
+  "catalogue_id": 4072,
+  "oracle_id": "fa1ed9fa-5f77-4f7d-bab0-47c719cdc5bc",
+  "facts_sha256": "8c8e471df4ea3ac1eedfff011b312deb6f149a9342a1f7b5066ffd5c93f8332c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "31ceecc355d06e13d32b746280a1ba3e1a96c7b626c983e0c3394108320c1106"
+  },
+  "physical_metadata_sha256": "72aebd03639c4e134063f88f90ffd5f277ff9bce230c316d25cd7e5886ca996a"
+}

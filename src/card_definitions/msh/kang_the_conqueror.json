@@ -1,0 +1,12 @@
+{
+  "name": "Kang the Conqueror",
+  "catalogue_id": 2311,
+  "oracle_id": "da6e24a4-8adc-41a1-b5eb-3e31dc1250c9",
+  "facts_sha256": "74935864dad224ea8a2ab79e5ae6cbad8ac48c95693806ec479ee0dad9b0c88a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f21bc45cc2bdf00b07a776cbe3eccc155155ba344517a5a806f15206f8a096a3"
+  },
+  "physical_metadata_sha256": "5878d51b4dfc11bb64be9ea359a7a7604465cd19796c508a7e75bde28c0721c0"
+}

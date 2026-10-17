@@ -1,0 +1,12 @@
+{
+  "name": "Iridescent Vinelasher",
+  "catalogue_id": 2220,
+  "oracle_id": "4f8c4927-46c2-4c18-b5af-c6288dbaff6d",
+  "facts_sha256": "bb30cf01a9b5a4637454ac09ab24c268a0fb13f3852e4148cff8f25fa8760513",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "46ae0857e41d1746367d836b2fb2b0e2f777ea3cd0f0d79e7f62b86d576aaf4f"
+  },
+  "physical_metadata_sha256": "e5520fa76d443cfc2cc38f16eae9e0e6de1e1f8d11f7669422c1a66b91b92afb"
+}

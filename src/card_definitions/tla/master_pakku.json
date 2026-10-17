@@ -1,0 +1,12 @@
+{
+  "name": "Master Pakku",
+  "catalogue_id": 2679,
+  "oracle_id": "b1727c07-c829-4d64-a1c5-8b53c743888a",
+  "facts_sha256": "a4b8058feb410f2d309821d962f45a1a6525d10c18e42c95cf666cc63d429fc1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "59fb6e47bfb2f477d3121b6df23ed848a942492cbcb963a3f611574061a882e6"
+  },
+  "physical_metadata_sha256": "57b7f7c2d16be8d50e135c3cd46f8f59d6e926685cd6bcc2347fd2b83df9c476"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Loan Shark",
+  "catalogue_id": 2532,
+  "oracle_id": "15030c1d-7c0a-4273-a022-eb98d6c7a1ce",
+  "facts_sha256": "7f3d7339653389ae2962d3167c2446979e90b995dff1ff2661f390bd76619e6f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "716a0075b0d152f6f3d486f0a50b43bfe3025ca8664d5bd958a25ca207d541e1"
+  },
+  "physical_metadata_sha256": "619badf99bde76d9439df828c6d33cb6cc3341d38305b45a3d6d2cceae15b4d0"
+}

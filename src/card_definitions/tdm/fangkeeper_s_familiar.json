@@ -1,0 +1,12 @@
+{
+  "name": "Fangkeeper's Familiar",
+  "catalogue_id": 1445,
+  "oracle_id": "06343800-b555-4a13-ad4d-19e37d200138",
+  "facts_sha256": "b01dbf76b53c2575293f93a9b2b0d4c9f3cd76daac8e66767c0922dcc6db00b9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d20f74be3e14183ac9344dfbe251b58ffe3888c3ec366118e1b25779646c6ded"
+  },
+  "physical_metadata_sha256": "46caa507b8dcf244fd10b225cb9b2b8cbed9a85925293753d6b5931af54083be"
+}

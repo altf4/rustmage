@@ -1,0 +1,12 @@
+{
+  "name": "Super Shredder",
+  "catalogue_id": 4253,
+  "oracle_id": "b7ee76bf-d15a-489e-8f05-414788f8f649",
+  "facts_sha256": "8ee1f22f66087083cf7ac190cb98bb0348446530e8ab025bb13d87507b3ffc15",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c0337a8de45a0fe9da742c7397af511805cdfd621c89f5cbbe39f4657448e0dd"
+  },
+  "physical_metadata_sha256": "21195f27c51550a38ddeb82f27a52ef5cbf2cf6a42548cbebd15763308247898"
+}

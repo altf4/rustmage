@@ -1,0 +1,12 @@
+{
+  "name": "Prismatic Undercurrents",
+  "catalogue_id": 3242,
+  "oracle_id": "27a3aa64-1de7-4b0c-af23-52886e7d258a",
+  "facts_sha256": "36e941d651f856db60d9d24b91df76cba8a9eb71081667093162ff2d1e07cc16",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7d17403038d5763aff92fd20b364ef7038e38f787d7b8760d06d41799d224fd4"
+  },
+  "physical_metadata_sha256": "8b350378d5a20f3a7d3c3b910a58092721ebbc448b7429401e9c3cfa7f644ead"
+}

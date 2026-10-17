@@ -1,0 +1,12 @@
+{
+  "name": "For the Common Good",
+  "catalogue_id": 1589,
+  "oracle_id": "de6e4aa2-23f1-46e5-a061-05522944e0c6",
+  "facts_sha256": "420b2860357e1d9df123ab84eaaa622a10b42a93d3bbf37abb3e9138fed200c4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "03e3d551abb976df03e66e6dd58c9c6c39ceb9d5ece78568e3d7f5475f14f50b"
+  },
+  "physical_metadata_sha256": "48b837514108d50661247a725bb15211537ecac8d5f16f1b73d14dfca67d4821"
+}

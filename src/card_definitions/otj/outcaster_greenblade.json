@@ -1,0 +1,12 @@
+{
+  "name": "Outcaster Greenblade",
+  "catalogue_id": 3058,
+  "oracle_id": "855a2579-8f78-46ce-a3a8-eddc808bd7b4",
+  "facts_sha256": "626354d5c40a5e8879add3566c5311f015cd16847905ddd6a1768b2c8e6686f3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3628d8f6639b0d57f12367585e6121ea3391059c28b6043bdbcdfc97076c21cc"
+  },
+  "physical_metadata_sha256": "8853f5583c647d1c7fc0cac0d8b2cd870c8fcf2df8cbf26b9df060d216d5617b"
+}

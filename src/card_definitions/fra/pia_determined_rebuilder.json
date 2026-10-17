@@ -1,0 +1,12 @@
+{
+  "name": "Pia, Determined Rebuilder",
+  "catalogue_id": 3153,
+  "oracle_id": "a49c0c64-ea87-44f4-9acf-e7181962aeb2",
+  "facts_sha256": "eb1f0e7647bd3484c04fb6fc28837705c1bb21e0e0ba2e5ed3e1a009284d6c11",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7036324f744e3bd39b73843b8f6e034d02ef72b2f54f7213fb0580bfc4f28a06"
+  },
+  "physical_metadata_sha256": "9bf8d6bfe4cdea461e0d3426d9de031c1584ec2cac7864a4d8501e634d961c44"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Silvan Rally",
+  "catalogue_id": 5218,
+  "oracle_id": "f6771d32-395e-4832-b33d-cbc12dff1516",
+  "facts_sha256": "df66f6fe7660a979db91b0441b06c11be274a1dce446340971b81774222959b0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b12a6679d731bf31d0a731e994a8bfe2760b561a20bb97b2dff542d1563e9f57"
+  },
+  "physical_metadata_sha256": "adc08eb555b26066be97e5aab8554560c48a2de1b7a119627bc144ac4229a1d3"
+}

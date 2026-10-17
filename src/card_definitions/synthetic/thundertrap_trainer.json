@@ -1,0 +1,12 @@
+{
+  "name": "Thundertrap Trainer",
+  "catalogue_id": 5300,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9fe5a91994a71548f62771b817ebf520f17e760a93243a73cd9bba9f9da35468"
+  },
+  "physical_metadata_sha256": "51784e5ccbee9a6be7423b63b34266f8c9f85f082958f297ca70920198339985"
+}

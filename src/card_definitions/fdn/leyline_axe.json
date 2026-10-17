@@ -1,0 +1,12 @@
+{
+  "name": "Leyline Axe",
+  "catalogue_id": 2481,
+  "oracle_id": "4f597675-0f6d-438c-990c-337171927a5e",
+  "facts_sha256": "7879da143279cca93c8c9b1ea6d02dc2d839f4d112697fea47b16b4b4098be80",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "be7d3f7d3902d6eec197833dc3bd44510bfe8cfb835f264fca7d263f37b48586"
+  },
+  "physical_metadata_sha256": "abdf283cc24913d05c597dc63028bca9e8298ee625712d1bc67bf4114938792b"
+}

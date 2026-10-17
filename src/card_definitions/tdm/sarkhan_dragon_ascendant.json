@@ -1,0 +1,12 @@
+{
+  "name": "Sarkhan, Dragon Ascendant",
+  "catalogue_id": 3690,
+  "oracle_id": "71cb48e2-2328-471c-a04a-7b6461f378f4",
+  "facts_sha256": "ccce9201d50b69451182088511dcda47db11a2c42b20deb560eef5c970a965dd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b21e42145cf3028068298207adbba533a63ebba75a1cc32ad1facb6707601607"
+  },
+  "physical_metadata_sha256": "b930a99e704d7147a07d9c7e82ee20a0b1efa4a81be5c02a62902c52e4749534"
+}

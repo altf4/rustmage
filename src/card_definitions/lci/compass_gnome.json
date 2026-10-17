@@ -1,0 +1,12 @@
+{
+  "name": "Compass Gnome",
+  "catalogue_id": 818,
+  "oracle_id": "b64051c0-e791-4fcb-b79f-4287e1b06468",
+  "facts_sha256": "5a81b63cbc3c13eaacfe107e52528f225c84e4362a8badaff1faff25db794791",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ea0b3fe4fa3e1ba8d8017e75aa4239f39b6f7f7b5e50a6185faaaf7715c07fb7"
+  },
+  "physical_metadata_sha256": "c6e3d3061d6bcf96bd24d029176a3e235f0271140299bb63902e510cc63015a5"
+}

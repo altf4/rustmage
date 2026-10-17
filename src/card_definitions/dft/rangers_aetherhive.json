@@ -1,0 +1,12 @@
+{
+  "name": "Rangers' Aetherhive",
+  "catalogue_id": 3370,
+  "oracle_id": "49d149d6-de94-48cf-974b-6bb4a37ce77c",
+  "facts_sha256": "96036e6b8b7f5614cea6c50e84dda81c262b23ad4ceb132ad31c34d9547b039b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eca6a7737ab6a7b68c7b3493d729c71c5e8db875af8eab5c1d2669bf238013c8"
+  },
+  "physical_metadata_sha256": "67cae9fdbe939f402ba34b5ad87287047c42865224785e95bf4ab4ec45411c68"
+}

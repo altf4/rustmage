@@ -1,0 +1,12 @@
+{
+  "name": "Nightmare Sower",
+  "catalogue_id": 2939,
+  "oracle_id": "4121b7d9-5fbe-40e2-a2a6-d7633f423b5f",
+  "facts_sha256": "f97130e19ab3f70f1e8a3f5d88e8dfa9ba08f71be337cdfef69bafd3b3ff11ac",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cb88b34472b50f56621c2fc4d3b1bbb5a0bb0baafebadd5e5ec3bade21f1b613"
+  },
+  "physical_metadata_sha256": "cdc52241420ce943de3cda2d8ee95c855111c5c6523a657de7fbfcbf93e68fa4"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Uncle Iroh",
+  "catalogue_id": 4758,
+  "oracle_id": "8a98ddac-7341-4118-b188-51d8d03afd1d",
+  "facts_sha256": "59f1ce9e332a9e77b57ad3f9931d9588245d20393fb81f4048cf20ca3b7ef233",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "69c40401c156434f84e1307e727f88e0da12d5b93644ee345920d7b4f788dd6f"
+  },
+  "physical_metadata_sha256": "6d9681e194832419581b8cecd87cb3d17f8efecb2c25b0d2a1d54ee70a5722de"
+}

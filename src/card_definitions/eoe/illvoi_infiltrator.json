@@ -1,0 +1,12 @@
+{
+  "name": "Illvoi Infiltrator",
+  "catalogue_id": 2139,
+  "oracle_id": "3084377f-73fb-4b00-9dd9-3844b1ecafc2",
+  "facts_sha256": "6f704412f3e6cd55c0cffa0ada7f54661decc96b66f583aacb33d8c96f5931c2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0f11731bd4f293a75c90617da36088eb52fa4b5822c7420b9eed22b6f3f09751"
+  },
+  "physical_metadata_sha256": "5c0f2e8a7ac8e90cee8217566886c98795532c08bcab409e4d0c4d9271e2490e"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Ferocification",
+  "catalogue_id": 1496,
+  "oracle_id": "814e06c0-9b61-4a64-8c67-73a8eb00a768",
+  "facts_sha256": "808833a60d37012a5cbd1358bf8ecf1315194bfe6778cc35094b304d43d686cf",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "05fb373feb5c88bd371b737bcd5bbb5c3be22d5d51bef3a3ff0ab83b6ed6dadc"
+  },
+  "physical_metadata_sha256": "a0023d62fb9b88964de5ad244c273c9cee9efe0c34e1245ddce8ffaf9f248129"
+}

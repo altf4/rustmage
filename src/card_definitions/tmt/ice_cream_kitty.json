@@ -1,0 +1,12 @@
+{
+  "name": "Ice Cream Kitty",
+  "catalogue_id": 2119,
+  "oracle_id": "f8131dca-ba6e-4ca4-943e-a3d26c75b8b8",
+  "facts_sha256": "15155a8b3b63ff3200a3a156e03e576d28e22c7176d56baf55fa3183a0a5ab5a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "069a1219e68b98469a5c45bb2d4b5851832664603e4b70edee62aab330460f4c"
+  },
+  "physical_metadata_sha256": "c8c19938221408558779ce5dc73e53b870879332e07d7047d1bdbde303a094a5"
+}

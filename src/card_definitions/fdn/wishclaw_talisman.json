@@ -1,0 +1,12 @@
+{
+  "name": "Wishclaw Talisman",
+  "catalogue_id": 5091,
+  "oracle_id": "81c70ae7-3c18-4c9b-8505-e4db9e0e6518",
+  "facts_sha256": "dc53f47c266f6103c8fd33f210b2a18fd34f76094e1aa96b15d066757714e3b6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e88eeaba0fd06649b40defba609b5d88519bf3beddf723f6fcc48f8a897d6257"
+  },
+  "physical_metadata_sha256": "9115fa0c64bf30b428f67a927fd1066aa930461cc632b6e5e76674b2c40f167e"
+}

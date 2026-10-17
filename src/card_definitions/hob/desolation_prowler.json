@@ -1,0 +1,12 @@
+{
+  "name": "Desolation Prowler",
+  "catalogue_id": 1055,
+  "oracle_id": "ed9d4bb1-7335-45fd-b2ea-97b1f6491d7a",
+  "facts_sha256": "b58e1395ad82995dd8e7db0ed57b0e3ad57131676225b6e27fabd4ef68c42fb5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fe8c98b2f1821669b342f92478c4896ec4d270d60c570e9b378c0451f9aa89d6"
+  },
+  "physical_metadata_sha256": "61844931fea7af1194b705968c716170134a98c941f337c1deeb1524a672eb09"
+}

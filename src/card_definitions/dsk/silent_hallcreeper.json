@@ -1,0 +1,12 @@
+{
+  "name": "Silent Hallcreeper",
+  "catalogue_id": 3866,
+  "oracle_id": "6aea681e-88d2-48df-a717-3ce0bc95205b",
+  "facts_sha256": "9ba4848ffeb7270a0451ec38f5d9b28201625696b1dbbbd8afc8b2eecb1a73e1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7fa47b6ae470e8cb1c1a257b5fe4c60c9cffb26a812a9af3e12283a40b1879d2"
+  },
+  "physical_metadata_sha256": "0c0decf586088a783d9fa403da2835e6c80f49ece7e333ed598325569f335956"
+}

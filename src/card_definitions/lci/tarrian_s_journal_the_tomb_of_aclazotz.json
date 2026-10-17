@@ -1,0 +1,12 @@
+{
+  "name": "Tarrian's Journal // The Tomb of Aclazotz",
+  "catalogue_id": 4340,
+  "oracle_id": "a75b02ba-b0c8-47e3-a05c-e9ba221a7578",
+  "facts_sha256": "63f553dec0e956f301544254040dfc07815fea65f9a2adaf7e8741958e45a128",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cce400b549d210e9d976d577bd862d0215ab541c801124cba009554cd846c1b5"
+  },
+  "physical_metadata_sha256": "dc2ff5b74fd3563b28ed53012b2affeb455d0fac63edf6c5006bf80941ae7c73"
+}

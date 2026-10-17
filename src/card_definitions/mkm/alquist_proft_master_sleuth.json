@@ -1,0 +1,12 @@
+{
+  "name": "Alquist Proft, Master Sleuth",
+  "catalogue_id": 140,
+  "oracle_id": "dd79a994-7dad-49d4-8d8f-62dbedde4a38",
+  "facts_sha256": "ca73d98da33e4ff7765690dbf7e608fbd8d058c26586d2b5701204293f946390",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "04a4681f06899cc43ca52337aee4415b2089d5cc485d0ff3d94dee2c5eec3352"
+  },
+  "physical_metadata_sha256": "3a1e88295b5cfa1ab8cc29a6c0482030689c4590105b07888bd1a48a145825b3"
+}

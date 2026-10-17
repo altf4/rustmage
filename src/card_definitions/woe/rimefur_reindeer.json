@@ -1,0 +1,12 @@
+{
+  "name": "Rimefur Reindeer",
+  "catalogue_id": 3528,
+  "oracle_id": "66dc3237-3543-4fc2-96f1-c8d1eff7c04c",
+  "facts_sha256": "e04c43675510f0c705eac96d30975f4e822136b8706442327f1f52a9fd0315df",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "184ef78fda84845d08ce4c072336e9279e5ee850823663e9cdcb3134134e75cb"
+  },
+  "physical_metadata_sha256": "e27d09f3d262e25773e228879768fd02eafb1cd0112248ee19df4c33134076c8"
+}

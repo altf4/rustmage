@@ -1,0 +1,12 @@
+{
+  "name": "Frenzied Baloth",
+  "catalogue_id": 1620,
+  "oracle_id": "6a4ef075-9254-4d36-9572-622833fae54e",
+  "facts_sha256": "e17a583fe38635a57c418c23f2d57522d2981474b22a835546515a3c94804db8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "117831abcfb0469950410d96094939d2cc44b55f59d9a1392d07f5bdb122f4b7"
+  },
+  "physical_metadata_sha256": "8c6536dc35b2b26e45edd483bcb53bb83309ab69dc16f4c0f8d9d6df8ae40ec6"
+}

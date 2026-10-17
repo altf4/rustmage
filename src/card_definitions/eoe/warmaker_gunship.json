@@ -1,0 +1,12 @@
+{
+  "name": "Warmaker Gunship",
+  "catalogue_id": 4981,
+  "oracle_id": "c947171b-ed9e-4b83-af45-bd595a8d84ee",
+  "facts_sha256": "057d8d0de32ef8ffc79571e293535155a32d452ab76d4b1d1ce79a356299adb9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e541d865cf8a9f3c7c081c58cec0269f88e600305a19641994b096723fe68ffd"
+  },
+  "physical_metadata_sha256": "c203c66a1ae1ddc3a02543e906f65754601a1eb16deb83c6dbf8fa404245591d"
+}

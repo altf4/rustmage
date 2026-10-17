@@ -1,0 +1,12 @@
+{
+  "name": "Borough Backup",
+  "catalogue_id": 507,
+  "oracle_id": "6effbf59-3933-4a77-9a6a-fd3bedf45c26",
+  "facts_sha256": "eff4b683859c6cd5154d5a85e9249b90b531512d101ecedcd16ded7ea94bc9f8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "17503c9edbcdc3c8bfa10006104f11fd39190e7e7ef3f39333e0f7f2c01275fd"
+  },
+  "physical_metadata_sha256": "d3ae21e1c207fd5046704faf3af3266845f54e5ab15b04bfc22c8b9d11e0d3ec"
+}

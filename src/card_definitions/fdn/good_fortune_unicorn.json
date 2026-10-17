@@ -1,0 +1,12 @@
+{
+  "name": "Good-Fortune Unicorn",
+  "catalogue_id": 1833,
+  "oracle_id": "1e0cdff3-3ec5-41fc-8053-f072bae156b3",
+  "facts_sha256": "de5bdacb17d9ca86daaf560667bef595bcbdc67e64ed81358ea29d4910928ea8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3375386acbd63887bd754d5beb852f525e590a6b233a7491e67a053b41446bd4"
+  },
+  "physical_metadata_sha256": "8d0c0b47fb71a40c76645e4eeff0fab444a7b8feacbdf679078ba8768d1aa25f"
+}

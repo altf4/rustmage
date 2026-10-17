@@ -1,0 +1,12 @@
+{
+  "name": "Spider-Man Noir",
+  "catalogue_id": 4029,
+  "oracle_id": "2efd6494-c5e1-41de-bc6e-8490ff046cd1",
+  "facts_sha256": "19c9108ec120f9c42558665c8c67d19f8fea227bc562b66833a66bb656d168d6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "01db6f98fe027d0f60b0501396cbae129fab3b023b2385ab838359cf54be465c"
+  },
+  "physical_metadata_sha256": "8144f50dbb93da28a22b1bf07ee58ddf260402e786f5b7b4be7c4de6dbc47886"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Torpor Orb",
+  "catalogue_id": 4641,
+  "oracle_id": "97326cad-b13c-4e52-82ce-850a39e5ff08",
+  "facts_sha256": "609b4989a6815722b9ed33b1578b025723a5c1f8e4cc511368ff8c55e214de43",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f159019d5ffcac53b4a07af4cb7902732ad82ea2f89f9c585cfabd7d0b592bba"
+  },
+  "physical_metadata_sha256": "6095992b37b959dc53de0100453e6eeca9d9594ae3fce423da65f4a25d392aaa"
+}

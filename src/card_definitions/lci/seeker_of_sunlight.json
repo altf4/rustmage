@@ -1,0 +1,12 @@
+{
+  "name": "Seeker of Sunlight",
+  "catalogue_id": 3768,
+  "oracle_id": "cba9d6a2-1772-42dc-9bfb-c933a092be19",
+  "facts_sha256": "075c450e0370020e65c254cd5fcd802513044f7a8c4dfc7847a2e46d9fbe9524",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b2352411594b9894fddaf3276402de7a5a9186c835fc6765c9d874f2f73efe6e"
+  },
+  "physical_metadata_sha256": "7fe05f8c32b8b5903bcc8095a05ee1f9f1c876032ecd6479222f5c54e46f9075"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Turtle Van",
+  "catalogue_id": 4710,
+  "oracle_id": "aeb9a2e6-ad11-4e2c-81d0-caf279d31ece",
+  "facts_sha256": "a2d2d1ffd846f030b142a6cb7f808730b280b3b4981a8445fc80fa67be834f7d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "542158c03330e4ab6061691123ee44705c1ad22633900112a8739622101a5e92"
+  },
+  "physical_metadata_sha256": "6ee783ef08ebbe7cb324c077bb9d09109f1e63020ad68efe5c8de2823fd3bbdd"
+}

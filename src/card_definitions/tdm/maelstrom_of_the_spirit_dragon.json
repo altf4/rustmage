@@ -1,0 +1,12 @@
+{
+  "name": "Maelstrom of the Spirit Dragon",
+  "catalogue_id": 2612,
+  "oracle_id": "49e9fba7-8465-4bbb-95db-73a7e149f494",
+  "facts_sha256": "9b0bd346726545e5ac640c85d8083e60116007d1a407a43f9d5a5e682e20c61b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b2150b83301249273e9105f0985f9541228c3309b9e50196c3768a626bedc4f4"
+  },
+  "physical_metadata_sha256": "ec2debb26f08217b30287b9b24f6440f0232d9594fe09c0c247ada544d16eefb"
+}

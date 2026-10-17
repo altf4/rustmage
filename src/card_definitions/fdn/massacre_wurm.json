@@ -1,0 +1,12 @@
+{
+  "name": "Massacre Wurm",
+  "catalogue_id": 2678,
+  "oracle_id": "93cf50cf-0ecc-4d3e-abea-778c1ebacec4",
+  "facts_sha256": "bb9907578b6677c3fb2d7d565c8c099bf6cf68c74b9041791d4f223c20cc6f27",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e6757d1d9416c5335f14c595833b4fc915639df826537372a0dc9a687606981d"
+  },
+  "physical_metadata_sha256": "e5be860c3941ae851bf159cc0b39dbfb196cb7ffe053af62e651848fa8058610"
+}

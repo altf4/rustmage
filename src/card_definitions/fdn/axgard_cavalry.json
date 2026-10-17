@@ -1,0 +1,12 @@
+{
+  "name": "Axgard Cavalry",
+  "catalogue_id": 291,
+  "oracle_id": "6a92b011-fd01-4b6a-a17c-73ac1967ff98",
+  "facts_sha256": "e2630b343f59c7c070a1b6bf5c59e8a72036ad42c73cc9aabfbd5f503e32ab6e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b764fb3fe99c4258175ce96fe0a917d7fec0ec88e6f794b8204c070b80688417"
+  },
+  "physical_metadata_sha256": "71f6245583dbc3317d98e041923a5bfe5b0c9eae8c9a25081a2b08eb014d9ca2"
+}

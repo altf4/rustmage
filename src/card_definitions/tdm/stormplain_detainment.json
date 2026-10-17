@@ -1,0 +1,12 @@
+{
+  "name": "Stormplain Detainment",
+  "catalogue_id": 4176,
+  "oracle_id": "4ad9c550-5605-4ffe-8e27-e9f2d9ada000",
+  "facts_sha256": "2d27fed13bbbdc5ffeba34da12220a65aa1b74645820360f140e452c25f23972",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "96e43358a28488a5a6e20b9827514251d016ad075b8bfe33bb25c4539b5184b2"
+  },
+  "physical_metadata_sha256": "856acd9aac6628a1a9cfacd66b79968a0b341d26d8b8dde6cd2ef7fe6bd2ea1f"
+}

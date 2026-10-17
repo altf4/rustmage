@@ -1,0 +1,12 @@
+{
+  "name": "Ezrim, Agency Chief",
+  "catalogue_id": 1420,
+  "oracle_id": "ddcd8a0a-7ac3-4400-a16f-8bb5aa50994e",
+  "facts_sha256": "f9f69a5dabd1e5d44a8ab7b338fcbe85310eff889b9864f1dcb8c10c58424f7a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "157314e8b51c29952c264b0d19f5a9c98e25bb838b8aef3ba46455918072be15"
+  },
+  "physical_metadata_sha256": "00e81e98c09ee0aa1d7ff428350b66d791eea06d75b226073875a79bd366d0b8"
+}

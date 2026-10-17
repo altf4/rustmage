@@ -1,0 +1,12 @@
+{
+  "name": "Aclazotz, Deepest Betrayal // Temple of the Dead",
+  "catalogue_id": 48,
+  "oracle_id": "fcdfe9d5-2743-4d3e-ab57-bf0f96beaa15",
+  "facts_sha256": "2223350e5100d949557a882ff7497917230256b527d6a2df54c0a8604d3d05f1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b007af86c00519c2595daae64819880d5ef6c4e5708248fe1445148deaff9c5e"
+  },
+  "physical_metadata_sha256": "6ba5f3b9c2ecb5ff0a1ee9dd8c77185cb2f24df1c05dcb279fb35cbcab7e136a"
+}

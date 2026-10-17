@@ -1,0 +1,12 @@
+{
+  "name": "Black Mage's Rod",
+  "catalogue_id": 430,
+  "oracle_id": "909b3d90-5762-461b-b49a-004a9e72733d",
+  "facts_sha256": "5da78fe49b897ec8a24d6bb5540a6664290e24191de8c319b8fafeb3e86896e6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b446e46e65d590f50798d23a8627ab0f582beca777354eef9413b69c1a697459"
+  },
+  "physical_metadata_sha256": "e976dbe473906bbcb479d214b0af6f6c08771c15243f4bfcf49ef278c84f1ee4"
+}

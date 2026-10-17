@@ -1,0 +1,12 @@
+{
+  "name": "Vector, Imperial Capital",
+  "catalogue_id": 4856,
+  "oracle_id": "8dcba63c-4701-4dc9-81f5-ca8e8933a3ba",
+  "facts_sha256": "a306c96e352f7bac2bcfebe038d39effe01856aac81fc069260e78bccba624ab",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "629a2e6f0cc6f4f225d46b43983e68955a276019ff7a5cab476b9f6356548c42"
+  },
+  "physical_metadata_sha256": "c9dc4c9e367dd10c1c2c4b73c6fc239564cfdefe2de6b5b3ca6e08aea97210d1"
+}

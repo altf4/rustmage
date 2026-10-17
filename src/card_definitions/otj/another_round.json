@@ -1,0 +1,12 @@
+{
+  "name": "Another Round",
+  "catalogue_id": 173,
+  "oracle_id": "8095ca78-db19-4724-a6ff-eacc85fa2274",
+  "facts_sha256": "35bf0aa272a6e7f1d8c4d19e5343fa1975dc0b5a386d438f256bef229e6c6c4f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a4a98f265bfc7b660c96ce64e6debf25de61ee8fad3ad5c0230ab90d68db89c2"
+  },
+  "physical_metadata_sha256": "90b659cf15d2783594f7e5baca650978b5495734d4ee3f3db83d125e7dbe1f10"
+}

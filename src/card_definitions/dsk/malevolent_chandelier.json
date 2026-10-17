@@ -1,0 +1,12 @@
+{
+  "name": "Malevolent Chandelier",
+  "catalogue_id": 2644,
+  "oracle_id": "437553c1-0aa4-4093-b6e5-c175ede5f278",
+  "facts_sha256": "80b081aafe1a2f0c651acb86e997b978881e32c4598b358182e8ca7155a4f336",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b25c590592201bf9f57714f135739507ef6629a1074b125888e641c6fd59b1d0"
+  },
+  "physical_metadata_sha256": "e3517a22ad41fded806bd315f8471e484a6694a41659074632c5ca563bd66850"
+}

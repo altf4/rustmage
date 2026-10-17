@@ -1,0 +1,12 @@
+{
+  "name": "Desert Were-Worm",
+  "catalogue_id": 1051,
+  "oracle_id": "81c2913f-42b7-4cfa-adc0-b3416fbe2ec6",
+  "facts_sha256": "221644ee8bf77b9c602a4de0f6bc3f2a2e5f78eecada9bc0e8fca590f68a569e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e24c9ae45cd77ff3d79d26e8354e66731278713daa62f4957cfd79b067f08196"
+  },
+  "physical_metadata_sha256": "a3b5e32836012b6975b34101c59369361fa4c2c8302fc7fea1e70de436f07af1"
+}

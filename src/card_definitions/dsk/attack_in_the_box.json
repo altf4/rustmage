@@ -1,0 +1,12 @@
+{
+  "name": "Attack-in-the-Box",
+  "catalogue_id": 257,
+  "oracle_id": "f0fd78bb-cb83-4dfa-a910-0334d225f87c",
+  "facts_sha256": "c5d182f106fe1d1817bde79741d0af459e9d26627f75e694ebd5033a66fe94fe",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3f42d9e0e6906f363d57089833f81ebb726cbfe305254dd5e74c0310ec1975d9"
+  },
+  "physical_metadata_sha256": "cb62d3c604c912ff253d0a28e7f39fba6ee252a304e1ba50277e411686dc162b"
+}

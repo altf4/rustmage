@@ -1,0 +1,12 @@
+{
+  "name": "Technodrome",
+  "catalogue_id": 4353,
+  "oracle_id": "51c0b46c-c379-420a-a4a4-d18724c759aa",
+  "facts_sha256": "c27500984f3c352de0698dc6e7c059d04c3b96dfdadc2ad471f0788698237b6a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "39bb65895096f7b27feac9264e9d13eb39ea4d763cbfbeaf4c53d2d0506c09a3"
+  },
+  "physical_metadata_sha256": "57f01cd799154960b854d5416ef61718f045235f92da861473cbfd190704bcb2"
+}

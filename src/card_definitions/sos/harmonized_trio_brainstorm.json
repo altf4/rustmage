@@ -1,0 +1,12 @@
+{
+  "name": "Harmonized Trio // Brainstorm",
+  "catalogue_id": 1951,
+  "oracle_id": "f6036065-7196-44d4-8a27-2199f0e1a03c",
+  "facts_sha256": "6b6048438e852a1034b6fe5b80b8b66535a54842d171b8bf043c7bb20a5689a1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "979e19d99167cf544ba1dd89beec184c7768320b4597f36c47ba1e281df42754"
+  },
+  "physical_metadata_sha256": "afc4c66cf9d59a43609047b996a23fb472a944b779e03e4a9b55cc3cdc3c636a"
+}

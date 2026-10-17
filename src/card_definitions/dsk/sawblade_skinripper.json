@@ -1,0 +1,12 @@
+{
+  "name": "Sawblade Skinripper",
+  "catalogue_id": 3702,
+  "oracle_id": "96fd3ee0-84fb-439b-9e2d-b55afe6850a7",
+  "facts_sha256": "60c83418cc77edbc266ea6f6608f7d3a4c8c330104dece25f6f4e03353eb7925",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a33a684c3ed3f33796f92f1ce0e594d2e0b0ebc4d7ff5a09b049610f218634d3"
+  },
+  "physical_metadata_sha256": "954710aa091bb8ab5a6c07e1e1427a940dd6f25f1b90b53d9a056a4a7c0ed922"
+}

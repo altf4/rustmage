@@ -1,0 +1,12 @@
+{
+  "name": "Ant-Man's Army",
+  "catalogue_id": 174,
+  "oracle_id": "34c0f75d-10a9-428d-b202-3defb3949090",
+  "facts_sha256": "4d4c833eec2c6846ee1991b3e16de28dd2a7e5fc88717480763ddcee29907b11",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6d052a8c999c2f1c25c2fff8669799bd7ed45548de64d6384ab0fffa6e506999"
+  },
+  "physical_metadata_sha256": "f1d376d6e499687190aa09b74bfbfe8a31033a008c421336a74a5d7fb0fe65fd"
+}

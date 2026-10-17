@@ -1,0 +1,12 @@
+{
+  "name": "PuPu UFO",
+  "catalogue_id": 3271,
+  "oracle_id": "b1412eda-e3a4-41b2-932e-795a0ba0f7f8",
+  "facts_sha256": "adfa1be62e8b2574b43942ce8b18ca4573bdfaec33a2626183541f9991d404cd",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d9f614aa7ed078e6ae4a48670dc86628ce00bd1be8ebcb1d2d83264345c50786"
+  },
+  "physical_metadata_sha256": "516b08e987571273398555701cc725348fcf48171adda980221caac06b923705"
+}

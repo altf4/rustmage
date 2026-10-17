@@ -1,0 +1,12 @@
+{
+  "name": "Thornfist Striker",
+  "catalogue_id": 4542,
+  "oracle_id": "d0d13d5d-677d-4e1a-9e58-2f9840581f6d",
+  "facts_sha256": "2bac05e3c71c55cadf8d9103eb355a7ddb883b494e2efb673d4b08aec54bd25c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1334732b96b7af9859b31830a9ee7f1e8b4bb5eb5f1be09aee0cf445592b180f"
+  },
+  "physical_metadata_sha256": "19f0146d111290904a991275a75e8ed7b6e28f93b2c1d3554fa49a70c945671f"
+}

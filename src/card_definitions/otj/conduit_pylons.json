@@ -1,0 +1,12 @@
+{
+  "name": "Conduit Pylons",
+  "catalogue_id": 827,
+  "oracle_id": "37f924e1-7c25-4f06-88bb-054693a21e5a",
+  "facts_sha256": "219265c02eab4dd7cb2a058f1f2c7bbb78b02f2a5b4622ddeb701e06951b5acc",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c93700aee752e3de96dcc65b91f0cfad37d6704aea6ffe952b7c015098e25623"
+  },
+  "physical_metadata_sha256": "2f4775a45c1f1f3b414f8613ac7927ffc7249889938c24b6f09707e302aeba5d"
+}

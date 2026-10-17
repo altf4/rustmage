@@ -1,0 +1,12 @@
+{
+  "name": "Savage Ventmaw",
+  "catalogue_id": 3694,
+  "oracle_id": "f743d85f-754e-4e70-9907-af54acb9e8d4",
+  "facts_sha256": "83e5b33bb086b95c1f26d1b85eea9cce122a4a7f2ed686edc8f1d16dfb15505a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "aff53471752ab3d0b29fd6e9c8ec65e8baa777e6ad457dc83734d2ca846ac17b"
+  },
+  "physical_metadata_sha256": "16846dffb91d018cd9c07ae095195ab6f0f2b9a6e201d9a627a61d1493151c78"
+}

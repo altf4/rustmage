@@ -1,0 +1,12 @@
+{
+  "name": "Lumbering Laundry",
+  "catalogue_id": 2576,
+  "oracle_id": "6afe9cc7-80e4-4607-8633-6013d96bd19c",
+  "facts_sha256": "10b55a9437c4966882eddc6946b45b6a8a927ece8372a58af8b9a37250e7beb3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "02b678b99f4333928d21ddb58e1eae11a625516d8f74678f6f845bf379d78f3c"
+  },
+  "physical_metadata_sha256": "061876ab2eb23f68016b6f8cc68d63debfdeaead6417745c695d89eddfe9e786"
+}

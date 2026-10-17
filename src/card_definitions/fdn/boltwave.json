@@ -1,0 +1,12 @@
+{
+  "name": "Boltwave",
+  "catalogue_id": 490,
+  "oracle_id": "bb8cccc8-e56f-42fa-a0d7-fc889b5e1c7b",
+  "facts_sha256": "df39abb163c70019266185a7be793bdeec4d14c9c3a917f6ad84e25c75d25050",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1bf51ba099f0be77865af2a313b5cb9ed4113cd5aceb6ceb62def3c1d4caba81"
+  },
+  "physical_metadata_sha256": "c6c4e96445eb1baf7d9f6b8db4576b9e4d11e102f676968242fd253b73007b7c"
+}

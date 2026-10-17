@@ -1,0 +1,12 @@
+{
+  "name": "Rune-Scarred Demon",
+  "catalogue_id": 3622,
+  "oracle_id": "14aefe99-fb60-4f1c-a71f-7ffbe94c8b13",
+  "facts_sha256": "c417c839fd909bd80d964fdd5c4531758225ffe2df1b38ced0e962de9924ef0b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "31c8e977de4616ee7c20e5e2aaa945032257d43590b702fc079ff1059686d526"
+  },
+  "physical_metadata_sha256": "bf6514cd01e7c4b69df8a836057b4d824463576c304d79ff38f2a355ba140515"
+}

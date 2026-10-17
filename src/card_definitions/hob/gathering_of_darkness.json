@@ -1,0 +1,12 @@
+{
+  "name": "Gathering of Darkness",
+  "catalogue_id": 1700,
+  "oracle_id": "85e1556d-c4da-4979-a5db-4ce3842c7797",
+  "facts_sha256": "bdfc564b74df668348293f5eed598c82beb057a2fbaf42e592c9082d22ae76f6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8f8fd98bfbe6f594c1acb8a2cc2e4ca8ef44a6fbb81393bc0ba3fee3d53c2800"
+  },
+  "physical_metadata_sha256": "1ff0e87a5cc88a82dcd0f411b14d72f2520e34489bf84e27dbbe6f0eac4ad4ef"
+}

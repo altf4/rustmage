@@ -1,0 +1,12 @@
+{
+  "name": "Paramecia Coloniex",
+  "catalogue_id": 3100,
+  "oracle_id": "9076a886-efe0-4c99-8661-f0fd7a7b3129",
+  "facts_sha256": "a7527682ee8168279b09eee9863fd60374705c45957bb6cbf2004055a3b3d055",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dd6f495b96075fd634d71870bc07763ba809faf798f9def653b2627606743439"
+  },
+  "physical_metadata_sha256": "1088f8d09c751fd1bb5d4364277834d2525799d4cea1837cde4a925b2b8bb781"
+}

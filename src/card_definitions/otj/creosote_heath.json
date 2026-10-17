@@ -1,0 +1,12 @@
+{
+  "name": "Creosote Heath",
+  "catalogue_id": 886,
+  "oracle_id": "c116b787-5f7e-47ef-a694-58709770dd32",
+  "facts_sha256": "95438298e3f7a104717b19cad5405785aac3710e4a8cfd85f2ffe02f16fca3c3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f0496a20ba21373d592c0179b2920bf504aef3b8cca889a932fa8865d08fbe75"
+  },
+  "physical_metadata_sha256": "5fea790e7b86da23c74f6eef24e53c546df8b7c2ca1d07e016d81a2a711ee362"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "General Traag, Heart of Stone",
+  "catalogue_id": 1706,
+  "oracle_id": "ade54bb7-3df8-4578-add8-1f85afee57ab",
+  "facts_sha256": "6d388dc9b1f9174e20cc46802e193a8ec7d76c68d008f62b04acf829becbe939",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "edd4bd02b7c20d102d647182524714aacc546cdb6427d3f842a7f9e2e1aa9a72"
+  },
+  "physical_metadata_sha256": "b0d13e8b32b815aadb8de45636733f935db5c504cbecc347309af3ca6160b413"
+}

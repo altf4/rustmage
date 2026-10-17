@@ -1,0 +1,12 @@
+{
+  "name": "Earth Kingdom General",
+  "catalogue_id": 1233,
+  "oracle_id": "e43c31ee-1bac-4f96-8b74-334b3238ab73",
+  "facts_sha256": "8c3875f0c7f55cb6eeab514698b4ceb0a14c0ddace02c8f5fcc76e58d740ef7d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "61d0102b4cf134bc27cb4404dd3e77809a2e4cd334b797dec7e52834803e56fe"
+  },
+  "physical_metadata_sha256": "da59206dda96e435f40a92cb81f3e736e48abe625488e0cf26edd278d7892563"
+}

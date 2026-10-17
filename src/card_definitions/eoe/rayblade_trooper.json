@@ -1,0 +1,12 @@
+{
+  "name": "Rayblade Trooper",
+  "catalogue_id": 3404,
+  "oracle_id": "792da586-a687-428c-a10e-75431249df5b",
+  "facts_sha256": "8b1e4285eff39950439d3d5143ed02f9bbc64b81b10679bfdc56c1226e96b41b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "24293d0431e1634636c2705d7aa72fcac62ac1544fd275270ba1c75868a276be"
+  },
+  "physical_metadata_sha256": "1d7b13b6d7e20fcdfecdd2869dfbd7a2feb8c16fc0ef4bf64905e80b67abd9ca"
+}

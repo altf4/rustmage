@@ -1,0 +1,12 @@
+{
+  "name": "South Pole Voyager",
+  "catalogue_id": 3984,
+  "oracle_id": "c5173332-68ad-456e-ad85-dd7475464d94",
+  "facts_sha256": "121fb99673d86675709fd9baeb38466ff3a679928002cd0e5d250706138d0165",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ab1f3e863da425fbfed17c5471be23e47531b6a39be391281112d8487ed6ac4b"
+  },
+  "physical_metadata_sha256": "ac0fa6b55e3c16b690be1f0359f67b1808ff32dc565129498ae9b6c6a0e34139"
+}

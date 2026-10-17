@@ -1,0 +1,12 @@
+{
+  "name": "Baseball Bat",
+  "catalogue_id": 342,
+  "oracle_id": "9b5a3765-943b-4925-b008-fc734b2934f7",
+  "facts_sha256": "dcb3a57f0077fc99c7fdb453f5a54af7f8b0cd399da0412300004b099c4905d8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "caa154a29fdc145e478bd71075311b95c3be5ce319d9b12b7d1d19b325f61e2c"
+  },
+  "physical_metadata_sha256": "da37ade3bf6398adcc76e850e59b52440e7cccdfa379a8c2dcaa67d21c2aeefe"
+}

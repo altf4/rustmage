@@ -1,0 +1,12 @@
+{
+  "name": "Coil and Catch",
+  "catalogue_id": 5223,
+  "oracle_id": "099b8d2c-b482-48dd-b6bc-dedf546d66c5",
+  "facts_sha256": "953cf9ea45b0bf86aa0797abfa2153f8f310d37f49632b58374ca6cefeff3926",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2a575cc1bedbbacaaab378ccd03430a710e11d5f49407e9aad54f3760a7bc165"
+  },
+  "physical_metadata_sha256": "5d738979cd1a9ed112f715a5896d2f9b2852422e3566eb9fe5f11ff27fd58e61"
+}

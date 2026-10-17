@@ -1,0 +1,12 @@
+{
+  "name": "The Eagles Are Coming!",
+  "catalogue_id": 4436,
+  "oracle_id": "169a4a77-12ff-4997-9550-bdcd456aa2f7",
+  "facts_sha256": "7fcc644d426e77d596b673e28f3935bef41ba6ca119f554e40239b6665f52b2e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1c3f67aabf401e543b59d2a508968cae985356a61f0e77b5df1282f3469293d0"
+  },
+  "physical_metadata_sha256": "b524cb6dfefd33aaef5529f8fff21ac1c2368104aadf22e56eee434b11f85176"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Harmless Offering",
+  "catalogue_id": 1948,
+  "oracle_id": "f5d32e5f-066b-42cf-8dd1-072a96275313",
+  "facts_sha256": "6d4b3c0fb469455c3ab163a7a0d84275a97c9947eabc1a859aa0ea0e33534225",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "12dcb49f93973ddbbe00020ecc9c6c8fb0b96954d3c6eb0ec325022db592a929"
+  },
+  "physical_metadata_sha256": "c744af5b108bac7f84d6c91826830a9ecd43052f15d98db189f18376b23f2054"
+}

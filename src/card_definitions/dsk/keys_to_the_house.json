@@ -1,0 +1,12 @@
+{
+  "name": "Keys to the House",
+  "catalogue_id": 2346,
+  "oracle_id": "62320290-ac8e-4f92-bb06-3368f66ae0a9",
+  "facts_sha256": "70e7b82dac9519c5956c197511c0a1b0a0e063e2f0e74bce750b016be1ee0c37",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9c04fc0f56980812bf9dd84612e6556fc3fe954455107d202c548142fc102591"
+  },
+  "physical_metadata_sha256": "4aac41d3cf1789e4a9e857e31cb988bd2c8f40e7cb04e7802fa4e6c5f09bcb7a"
+}

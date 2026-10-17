@@ -1,0 +1,12 @@
+{
+  "name": "Dual-Sun Adepts",
+  "catalogue_id": 1196,
+  "oracle_id": "155e01a1-5809-4be9-ad38-c11553a4a723",
+  "facts_sha256": "5fef113c10245a5155a59434f3876557ed4c0e8f8d5ee2af9572fe9b99a8be0a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e8a75d894fad30424fafcfab43ce1eb63e7c1898a372520f7a3b0b893f25ce5d"
+  },
+  "physical_metadata_sha256": "7677e3288ea17eee7c2f30fd6cb05600ec4deee3bce933a5edefb1fef9d88a17"
+}

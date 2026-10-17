@@ -1,0 +1,12 @@
+{
+  "name": "Iron Fist, Living Weapon",
+  "catalogue_id": 2224,
+  "oracle_id": "bbf873c2-94c1-46b8-912e-e29e48e0212c",
+  "facts_sha256": "72d49068561bc193e60092a082f109baf73be56fa5508337e97fb169d264ccab",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7f151bfb10817736e7519a3ea846a17f692bff02cf8a56d34dd31e329f109e3e"
+  },
+  "physical_metadata_sha256": "de579ca826685e200b4267ca9f866cecfbf719a5755e413629cbc5c38244daf1"
+}

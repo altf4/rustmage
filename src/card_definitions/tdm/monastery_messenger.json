@@ -1,0 +1,12 @@
+{
+  "name": "Monastery Messenger",
+  "catalogue_id": 2829,
+  "oracle_id": "325b88e1-ec7f-4d22-887c-a7f18a868bb0",
+  "facts_sha256": "0bbc0c9801c50a9a13d8f2ae261bca7854aaafc092db2e31e2db5a3f64cb1126",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b24ad4c8124b6af853ab4ddb4006c34265c1758b77a6e98a5fe2999f6a1855c1"
+  },
+  "physical_metadata_sha256": "bfc70be5f0bcb5f637aa54b3b1f9ab0305cf64ed198901b5b8d38c77c17e2f26"
+}

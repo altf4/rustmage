@@ -1,0 +1,12 @@
+{
+  "name": "Moment of Reckoning",
+  "catalogue_id": 2822,
+  "oracle_id": "8e9576c1-b0c2-4be5-9005-35b51164f78e",
+  "facts_sha256": "dca4658241078144ec5717f4ffb4243a2a79816035ee7c5a8f92b7b403708e74",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d782a3d053cfcbf96b08ffbccd758d4ff3b4a2739361797157534d439b435efb"
+  },
+  "physical_metadata_sha256": "24686783bb8522926746b74f3cba92c097a9744e73e9944b70f3b0844e0a88b0"
+}

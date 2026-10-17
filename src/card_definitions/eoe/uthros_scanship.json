@@ -1,0 +1,12 @@
+{
+  "name": "Uthros Scanship",
+  "catalogue_id": 4818,
+  "oracle_id": "7b4c37dc-8cb0-4870-929e-11c2a45952a2",
+  "facts_sha256": "87d8e87345a4bfe8618217f5048a6b402ca493d210da9dc9b37b6dee2b7dd917",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d1274feb26200b11c580bfe5a677991fbdf494cdcf4c77f27d9529c5f5b9abf7"
+  },
+  "physical_metadata_sha256": "124f9f888e4f43fc7aaa908212b4b89357d97ea77d0f8b116570874015d90d71"
+}

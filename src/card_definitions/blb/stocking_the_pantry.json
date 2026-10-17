@@ -1,0 +1,12 @@
+{
+  "name": "Stocking the Pantry",
+  "catalogue_id": 4153,
+  "oracle_id": "068b370f-a358-4244-8050-6c81680c55c7",
+  "facts_sha256": "4fa7d66b003aaf90d1f17240286c7f5a16abb9f77f8bab074fd5710211e4e601",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c98fff9b3bd3ec4ec2be91575d60ead3f85d75881897782c3651c05d1658f717"
+  },
+  "physical_metadata_sha256": "9dd81a717f7c3765c501784a979022a1188ae43dda1e3eb453c8ce1f96c3fb0b"
+}

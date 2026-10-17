@@ -1,0 +1,12 @@
+{
+  "name": "Chelonian Tackle",
+  "catalogue_id": 734,
+  "oracle_id": "8c1c519a-6edd-4204-b825-b0feca5afa42",
+  "facts_sha256": "7e7578b9cda7040dffe0323365831ae4c6ae56d63bff2bf596da4d8f334711e8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "50ba4bfce7f07d9cd8ef403b31b8df15ac3c0329a0d98c7826d48109f3be7556"
+  },
+  "physical_metadata_sha256": "5c9f4d97e8953184e32194399909647c5e16a293678ebb706e3282d0eb301ed1"
+}

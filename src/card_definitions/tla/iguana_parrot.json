@@ -1,0 +1,12 @@
+{
+  "name": "Iguana Parrot",
+  "catalogue_id": 2132,
+  "oracle_id": "edd3a3ea-6bde-408c-8b16-85ed3cc312b2",
+  "facts_sha256": "37e3a9daea921ab4372a49ab1a88444a37cac46be8df1a7055df5083050924ab",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c51c2ce6924b1c6732866df0abf8c7fc5e68539532263487b661614975229511"
+  },
+  "physical_metadata_sha256": "48f8b3e28b1dc4c497060ab428a6a2a75516a1c29f40f7304bb9d068a3b28fb5"
+}

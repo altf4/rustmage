@@ -1,0 +1,12 @@
+{
+  "name": "Thorin Oakenshield",
+  "catalogue_id": 4539,
+  "oracle_id": "bdd41af0-bbd1-4ecd-a699-99f006f5e5ce",
+  "facts_sha256": "24a2721ddce4b4f26b16be0e858857ff1c1918974d9b886d93dcc5838c1ee8de",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c53bb14190a62312334154e059a1252c090f8e648906b0f99ce82b9d3e25238f"
+  },
+  "physical_metadata_sha256": "be6f4d9dd00858531be615afa706de7469fe469596008224c65a5d9dbacda056"
+}

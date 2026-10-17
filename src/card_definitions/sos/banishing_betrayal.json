@@ -1,0 +1,12 @@
+{
+  "name": "Banishing Betrayal",
+  "catalogue_id": 320,
+  "oracle_id": "6b633e58-ea1b-4ed0-addb-6dfd93645ae4",
+  "facts_sha256": "1577f5370e421c758ccef8a62cbaecc5578a2897c881337676b21f95bd2fae01",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "43e642acb775f05bbff1b57cf11e288385ecee94a25f6e577ce233128ab62ef3"
+  },
+  "physical_metadata_sha256": "7defe0ef2e77c60f11a6afeac42b4fae8c36e7c48bae75a08f0677a10de1eed6"
+}

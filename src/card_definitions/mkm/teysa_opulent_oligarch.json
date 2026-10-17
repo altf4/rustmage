@@ -1,0 +1,12 @@
+{
+  "name": "Teysa, Opulent Oligarch",
+  "catalogue_id": 4411,
+  "oracle_id": "d4f5748f-bb0e-4c48-8802-45a7ad5a80a4",
+  "facts_sha256": "45f18780c03fc717918196f2bf8a239fc9319ca532ee7c71e6b9b93b30aceac3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "29e65d53bbc3bd45e25b3d44bc8620286f5d0bcccafb6ae40a53f374d52d1d24"
+  },
+  "physical_metadata_sha256": "ba6c200459e6e71971cf9398de811bf9986e8d608e5915a61950c1523ab9d9ca"
+}

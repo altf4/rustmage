@@ -1,0 +1,12 @@
+{
+  "name": "North Wind Avatar",
+  "catalogue_id": 2965,
+  "oracle_id": "b408c345-b308-4920-8494-4f204d856aa3",
+  "facts_sha256": "e5e1eddda81c28b0916e0f77dce6325c8c8f346f2dfd6e6bbc1fa3eb29ee9b30",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a138c24eed3482b76ed89545a646ce7afe10c3caaf63b65c5cb436ca141dafd2"
+  },
+  "physical_metadata_sha256": "5b16488f15b8830bf85cd9e5a5b84a77ee9d12279d4b0e94c5f28cc6a5a4ec28"
+}

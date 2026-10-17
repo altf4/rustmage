@@ -1,0 +1,12 @@
+{
+  "name": "Jibbirik Omnivore",
+  "catalogue_id": 2279,
+  "oracle_id": "9cda6cb8-c254-413a-babd-0e24e7b89cc4",
+  "facts_sha256": "9b36f1dac83b1e0a8ebfc9b8a21ad6260d5cb43ddb28c7c9a0e0ae4df0a3714a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4048794c2c95b59bfaee199e1e2b2e12ed22c829f6d2efa2053ceb296d0e59fc"
+  },
+  "physical_metadata_sha256": "1fce4f626e8314d371889e92ab7ca9400b5d2ce5a4456a2aa9c0b37489706620"
+}

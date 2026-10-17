@@ -1,0 +1,12 @@
+{
+  "name": "Pterafractyl",
+  "catalogue_id": 3270,
+  "oracle_id": "cca03b76-dd3c-4228-b97a-f7fa20819b2e",
+  "facts_sha256": "dd1145ca4c9c4f119ea18314589b7b07ef44a931bd6624ff7d259dd060778387",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2c67d79ff3f0c36a2b7bab8db5101a792bcef44a430258efa923620929ce522c"
+  },
+  "physical_metadata_sha256": "01efd2a8cc56928ad81b4b25042d453171a0af269566953236d66658432f70ca"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Moment of Glory",
+  "catalogue_id": 2821,
+  "oracle_id": "3d39db09-67b7-4a4e-9667-4e1b806f51a5",
+  "facts_sha256": "802bede2194e57beaaaed3586a34db640da8c916b5467eab01e13122ee8abb82",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "48e3ff423bcd490d7d8150e3bf3c4e7d1442cc83c4789eba16a84760aeb3c6a3"
+  },
+  "physical_metadata_sha256": "668c51c624857b502346b00149735a14a11a882f5ed729fc3bc617cdf51b7740"
+}

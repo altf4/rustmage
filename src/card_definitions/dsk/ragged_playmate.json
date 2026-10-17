@@ -1,0 +1,12 @@
+{
+  "name": "Ragged Playmate",
+  "catalogue_id": 3339,
+  "oracle_id": "d0732ebf-91ad-4e3c-a09a-f410d20587fc",
+  "facts_sha256": "fbc17b58f624427ce33964c8da58d00097e27345c4a9e9862f2f884628249eb5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b8e35cc570647a97f05fe713e8869a2835e5cd444e65887b2ed3eca7bcb4ae14"
+  },
+  "physical_metadata_sha256": "6d23d9889760644dd87ce94d3e88ba049ae036683b1bc43c21e5ec7490c9f8be"
+}

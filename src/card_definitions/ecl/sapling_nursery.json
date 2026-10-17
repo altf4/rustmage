@@ -1,0 +1,12 @@
+{
+  "name": "Sapling Nursery",
+  "catalogue_id": 3688,
+  "oracle_id": "8bcbae66-1854-480e-a449-33e5389610ab",
+  "facts_sha256": "16ad47469dad2303ccf9cdad23d6c126f775f2a9b0aced17ad30304ff9c4f0d3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e9680c1f248eb7c4cfba8dfc5a7baa8eb25913ef657fc834aff8e1fe069230e6"
+  },
+  "physical_metadata_sha256": "ab1fb6f5e3746108fff31744ac7a05ac26b73fd3ab7b1649046baf844304a165"
+}

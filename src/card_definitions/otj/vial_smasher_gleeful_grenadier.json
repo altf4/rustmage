@@ -1,0 +1,12 @@
+{
+  "name": "Vial Smasher, Gleeful Grenadier",
+  "catalogue_id": 4880,
+  "oracle_id": "a66d8dc6-ced4-4b24-b0c2-3557b2a851be",
+  "facts_sha256": "7095a2c19448f2c5f910b9de5c21312d561b80a27231e4d436e5620170cf0332",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5d8e14cadad1799ff2f319be3bc2473b6c2d179ba464b5cf587a26cf9817b9da"
+  },
+  "physical_metadata_sha256": "4575d8c6b84d5a56dd1004d8b544c961effab070322240ed3c5eba20250e0fc4"
+}

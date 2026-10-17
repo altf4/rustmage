@@ -1,0 +1,12 @@
+{
+  "name": "Armor Wars",
+  "catalogue_id": 225,
+  "oracle_id": "1ad83cac-2c85-477b-ab00-1369f9683db5",
+  "facts_sha256": "ebf5f4db2ee4a0d7c4bdb6c933c3b519ffd2dcbbe90cdae638d2cf91023de288",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "529f7eb9752a78a93ec423b13b153b9292c59b01e7edea00170422db10fc97fc"
+  },
+  "physical_metadata_sha256": "9af559f0ac0bf83c14b190f2d492fe490e2268a8c8b868b6e87f2501a0288855"
+}

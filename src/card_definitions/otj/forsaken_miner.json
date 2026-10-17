@@ -1,0 +1,12 @@
+{
+  "name": "Forsaken Miner",
+  "catalogue_id": 1600,
+  "oracle_id": "d37e0127-6f68-438e-8b9e-a71bb3c34733",
+  "facts_sha256": "0fad0b23fe129c98727044421fea2d90f00263438c07b81cbe75708e13fa32ef",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1c25044ee0b3c143f98bd85b8b5914e6fecfea34a12cd96d73e49507aff28759"
+  },
+  "physical_metadata_sha256": "6874282aa8e1845eddc36e0a1b9447bf7d3bf57f181e1a2669ff11866e3a4cd3"
+}

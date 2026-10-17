@@ -1,0 +1,12 @@
+{
+  "name": "Irascible Wolverine",
+  "catalogue_id": 2218,
+  "oracle_id": "445cd4bd-ba7c-42a2-a794-42aed823d0d3",
+  "facts_sha256": "e9f4235096abf3a7bda6b742deb1b078883b0bf6e16e51f53c112536b5558ba6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e9cb3dcca433fa4bd9524bd74a8ef228602a6d010cb8712057ac7f2f3c1e2071"
+  },
+  "physical_metadata_sha256": "84d169ef1c8d086ad18360fdb20b907dc8796eee673aec8afd82920c8f4084a8"
+}

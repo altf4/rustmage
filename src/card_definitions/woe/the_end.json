@@ -1,0 +1,12 @@
+{
+  "name": "The End",
+  "catalogue_id": 4441,
+  "oracle_id": "835c195a-8c35-4076-896d-8d2972cac270",
+  "facts_sha256": "4bba74b130bcbe48ba249e59f082369bac9bcca9da4bedd04b53ff96a251c575",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "48efc2617c8338114dbefb1d924eef705501d02e418733f23aa41ea032f4b51e"
+  },
+  "physical_metadata_sha256": "6d98aee8762cfce99d3501164a1ce2719244d7d92085f2901f4b4de1fc22503d"
+}

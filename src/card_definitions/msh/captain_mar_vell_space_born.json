@@ -1,0 +1,12 @@
+{
+  "name": "Captain Mar-Vell, Space-Born",
+  "catalogue_id": 646,
+  "oracle_id": "b74c072d-77ac-460d-9d9c-75b25874f58b",
+  "facts_sha256": "b89a1c92584868759b31c9a0ed87246955f0434034a07720065bc3db4b6b8fc3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e1e9b7e64364bd93e1dbb9a0e0a4c5a8eb763f598723f05ebe75e9deaddce981"
+  },
+  "physical_metadata_sha256": "45ab68d6d570720a8340ad85d58acd2d79a968d19815c29a4ed9ac286c2be381"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Tersa Lightshatter",
+  "catalogue_id": 4401,
+  "oracle_id": "9918eb7b-054e-4b1c-afc7-1163ab642d50",
+  "facts_sha256": "1f2cad003fbf54a126965a36a1fc6304dc0392623260b7c349ebbdd6afb112c6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f6a827c3dd27e4d736dbdef07088e178b2803549a37c45285b684160d3b580a8"
+  },
+  "physical_metadata_sha256": "1134f8bd2d908ec38c2877daa3cb27bf79c4495e25206ae43ec55f0bc9bf5b8e"
+}

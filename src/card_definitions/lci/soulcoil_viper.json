@@ -1,0 +1,12 @@
+{
+  "name": "Soulcoil Viper",
+  "catalogue_id": 3978,
+  "oracle_id": "24c3c505-ddaa-4adb-983e-7c78d9933cc7",
+  "facts_sha256": "947402d9d25301e9e8fa454efd9eee47382bd3364b5c99eb74e0dc1d7bff75d9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fabe252e3d2c5cabf203f52477066c359a1ac9a9fc85370b105015ea07e1408e"
+  },
+  "physical_metadata_sha256": "34c2d592bc9a276b4c6967d21fae72e4a8a9ab129a9941cb257b7605ba35679f"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Dinotomaton",
+  "catalogue_id": 1082,
+  "oracle_id": "443f2272-6475-4966-8ca2-717d4cf208ee",
+  "facts_sha256": "9958e91bab9f4fbdcad8c0f0d215325e51538e6c9188b0d8a30db5d9097b6c4b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "99741e1def1a40ca6cb27c0b1bd41f3c966f457a3ea9fa8088f2ec27322267b0"
+  },
+  "physical_metadata_sha256": "44bda536475eed6d867680d8311d0ca70ec480ffbba2076e56ad8d09c95b5d0c"
+}

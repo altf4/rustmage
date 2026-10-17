@@ -1,0 +1,12 @@
+{
+  "name": "Blitzball Shot",
+  "catalogue_id": 451,
+  "oracle_id": "c99779b7-a271-416e-bdc2-0f9ba6ceb144",
+  "facts_sha256": "45bb3c2e892fe3e3abe3cf94695bc8477db263a9c924a32c5f382b97b3f22da3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "31ae0cf14f5f569c188269f957004d77f75386eb60250ca6204bcf273db4d0d9"
+  },
+  "physical_metadata_sha256": "6da47d9344d131820b7ada05ca7dfe030e7cf5413d9276ada0f3673bcd73c6ec"
+}

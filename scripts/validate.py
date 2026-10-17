@@ -26,7 +26,7 @@ def main():
     env=dict(os.environ,CARGO_TARGET_DIR=str(target),PYTHONDONTWRITEBYTECODE='1')
     files={p.decode():sha(ROOT/p.decode()) for p in subprocess.check_output(['git','ls-files','-z']).split(b'\0')if p}
     head=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
-    commands=[['cargo','test','--all-targets'],['cargo','clippy','--all-targets','--','-D','warnings'],['cargo','fmt','--all','--check'],['rustfmt','--edition','2024','--check',*[str(p)for p in sorted((ROOT/'src/card_definitions').glob('*.rs'))]],['python3','scripts/generate_catalogue.py','--check'],['python3','-m','unittest','scripts.test_direct_cards']]
+    commands=[['cargo','test','--all-targets'],['cargo','clippy','--all-targets','--','-D','warnings'],['cargo','fmt','--all','--check'],['rustfmt','--edition','2024','--check',*[str(p)for p in sorted((ROOT/'src/card_definitions').rglob('*.rs'))]],['python3','scripts/link_catalogue.py','--check'],['python3','-m','unittest','discover','-s','scripts','-p','test_*.py']]
     if args.release:commands.extend([['cargo','build','--release','--lib','--bin','benchmark'],[str(target/'release/benchmark'),str(args.games)]])
     report=dict(head=head,terminal=False,target=str(target),phases=[]);start=time.monotonic();ok=False
     try:

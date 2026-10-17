@@ -1,0 +1,12 @@
+{
+  "name": "Time Stop",
+  "catalogue_id": 4601,
+  "oracle_id": "55bc6a7e-2356-48f0-a93a-8bf19044ee4b",
+  "facts_sha256": "010ae36f0c58be630844b72de72e6e3ff92a7b5bec8171a70903abed6399a7a1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "176c4e1153cf6619f905be8a4a0076ef21b8d867bf2ad10e733a6e89e20e18aa"
+  },
+  "physical_metadata_sha256": "610a96ebba950e93f0bdde27bee31651f46e72d0e6fcb8d42283426d83c51046"
+}

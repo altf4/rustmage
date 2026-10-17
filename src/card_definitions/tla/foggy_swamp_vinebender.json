@@ -1,0 +1,12 @@
+{
+  "name": "Foggy Swamp Vinebender",
+  "catalogue_id": 1578,
+  "oracle_id": "82fefb82-a436-488d-8ecd-594686117e34",
+  "facts_sha256": "c22e43d267f7c44782db85e5050dfcc944db87a3105cbbcecf290d78d8fe3aa2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d75418248c0b903104ff604ee480435b003abcd3b410c8f1539d4119a21ed10f"
+  },
+  "physical_metadata_sha256": "5345ab8b46a4702630b8c3dd7238651f9d84af7aff738fa45412c9b3786a59bb"
+}

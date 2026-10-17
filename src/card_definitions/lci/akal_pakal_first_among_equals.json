@@ -1,0 +1,12 @@
+{
+  "name": "Akal Pakal, First Among Equals",
+  "catalogue_id": 118,
+  "oracle_id": "53bfe54e-9b97-4113-97d9-3c5dbc85e7cf",
+  "facts_sha256": "f29631d440c62eae8cd997fc5acad6d65d1a4f12824360f8ef0b66d89d850f9a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e1d9be9ed0a7c18fe802880817157d2107708339e46c1f2c0540f0b62635c1eb"
+  },
+  "physical_metadata_sha256": "2608cc5dbe5ceffecc65965f89a5919ed816609bc4575283f3e067517b5784d1"
+}

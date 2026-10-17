@@ -1,0 +1,12 @@
+{
+  "name": "Spider-Woman, Stunning Savior",
+  "catalogue_id": 4042,
+  "oracle_id": "be2b9c6d-4ecb-49ec-b276-4aa93c5dfc00",
+  "facts_sha256": "66d0515529819d441fedaf61810fab525756234538a1aeb50251594cb6c3aec9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bcfd552660b5937b4470054700a334c4629fd43da92baeec1523b385534e2fa0"
+  },
+  "physical_metadata_sha256": "1f5cea49e84fba703b4743023a64051ce60d91ad6f087d70c8332a159639874d"
+}

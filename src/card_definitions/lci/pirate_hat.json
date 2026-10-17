@@ -1,0 +1,12 @@
+{
+  "name": "Pirate Hat",
+  "catalogue_id": 3170,
+  "oracle_id": "b9080653-87cb-4443-a4a3-36637d5ad165",
+  "facts_sha256": "d0ca2f558924431b7c02b751b0ab79ff4d7df6bae042d4c2390af5de91b2f287",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a130d497873d634af8c28d27fd0cca861018e01ad3ceab233fff0f75a457c6c9"
+  },
+  "physical_metadata_sha256": "8e1bb8a116f45b11846b244fe32313cbe8b1ea9b3dae4ddde25f393b794cf989"
+}

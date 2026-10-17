@@ -1,0 +1,12 @@
+{
+  "name": "Pileated Provisioner",
+  "catalogue_id": 3161,
+  "oracle_id": "0534e20d-8352-4d9f-a617-378070602673",
+  "facts_sha256": "e0a906e01d4f34e31d8202d845a0e544b3365c7c7cb5e197bb57d2f9afe45633",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ba087ace9220e398e7622ed140d19d50ce4a3270247464eb1bf3d42d810fc2bb"
+  },
+  "physical_metadata_sha256": "bbf39081ee2ea2240620cf51b6b7daf591d4bbf72f03d2b400103241aea295e9"
+}

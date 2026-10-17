@@ -1,0 +1,12 @@
+{
+  "name": "Windcrag Siege",
+  "catalogue_id": 5076,
+  "oracle_id": "64df560a-905f-45d1-bc70-14d99e3112d3",
+  "facts_sha256": "f5d9bd477332957388feb672212d65e0fc8b594680bf654e679ecca69100aa82",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "062a5a541675a39bc4788011d2370df0f876eef5b1e1b12c37feffbd5db71c2e"
+  },
+  "physical_metadata_sha256": "ad1cd10a7ff6abbbb3c9e9d8e12d9e786a2b146597bca9a03e7a0acd30ac9048"
+}

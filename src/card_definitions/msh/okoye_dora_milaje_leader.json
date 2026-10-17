@@ -1,0 +1,12 @@
+{
+  "name": "Okoye, Dora Milaje Leader",
+  "catalogue_id": 3002,
+  "oracle_id": "6d397d26-7e52-47b2-9880-2c10e90cfba4",
+  "facts_sha256": "7161dd0b85f8bc3cd2c8d39a1726137a549eb74615f3bd8377de33dc100629f2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9dd2fbc20feb07be0afc79e489265088a7b239f3ef5ad77bda5b8232478c6033"
+  },
+  "physical_metadata_sha256": "7dc20001c28f7b3465970d969c4f24c71055ec593a1961c86c5325295a7e7bd1"
+}

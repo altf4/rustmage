@@ -1,0 +1,12 @@
+{
+  "name": "Sharlayan, Nation of Scholars",
+  "catalogue_id": 3816,
+  "oracle_id": "564bdbdd-8392-4ee1-a132-1a17a67b2110",
+  "facts_sha256": "33ae8692ffe49e3551ad399784f828d1146bedafa0c732f0369bae3d8b0bf813",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "61002b75a30aa938035eb03ce553a11223c0f9e8e5b159306609d5ae88c1c96b"
+  },
+  "physical_metadata_sha256": "d5baf5f6bccb34bc866446a30ee46a2947cab82b5666ecfa6643c56ccadf8623"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Redirect Lightning",
+  "catalogue_id": 3434,
+  "oracle_id": "c62b5c22-e058-436f-9575-a01cb2112829",
+  "facts_sha256": "f8f60fd2626652c0bb70b9c8537f35fcdec9fb63ff6f3396180f96dafa3b5dfd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9df2415e60ba66424def52d8c30e4d0b58a9b09628b084cf2d112f558b25d200"
+  },
+  "physical_metadata_sha256": "5e8efee61d116eb44f3132dd93853071cc87b45513216e7a0d7c57f34688f1cb"
+}

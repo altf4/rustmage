@@ -1,0 +1,12 @@
+{
+  "name": "Prudent Fateseer // Peer Review",
+  "catalogue_id": 3268,
+  "oracle_id": "63f67baa-3f37-41b8-9ee6-3c37f828917d",
+  "facts_sha256": "5fc4997b8e6b22a00450095fe70395bf44b5423c82327d2de344804333646dee",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7e1e33699b613441fb27437f520a7ddf27ac640df45101c161e8db000999c73a"
+  },
+  "physical_metadata_sha256": "ed33b304486981165334a172d6175f059be1cc84e9e1219f1ab70978ca682b32"
+}

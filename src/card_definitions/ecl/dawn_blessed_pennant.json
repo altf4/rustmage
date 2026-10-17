@@ -1,0 +1,12 @@
+{
+  "name": "Dawn-Blessed Pennant",
+  "catalogue_id": 980,
+  "oracle_id": "311eef28-21e9-44fa-96df-d281f0a9ba34",
+  "facts_sha256": "5ed2c4709334a006a9fd3b27421ed9c89e1dc46a22da12b5d340bc3103a8bd29",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fd9904e9435d1a7aaf49b54ab0d2b8b6518b70a2dc92c7316b04840160208414"
+  },
+  "physical_metadata_sha256": "38eee1d377b13e05b717b4935d75d911e8f6513859c0eed9cabefcefb655b659"
+}

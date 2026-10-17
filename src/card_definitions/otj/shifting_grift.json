@@ -1,0 +1,12 @@
+{
+  "name": "Shifting Grift",
+  "catalogue_id": 3829,
+  "oracle_id": "763d60ea-a0ad-4f13-b8a7-aa1515283266",
+  "facts_sha256": "7eadf1795c0dd08f4c4c44ae1e4464ea826f16bb828ddeaed4f0bbf504fef817",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "189b2e70881dec0508ee65a6b8234cbc34b79fb1a1dd453d9f2bd7f5e31aed33"
+  },
+  "physical_metadata_sha256": "3d7b8538444dac035c0a35c76c5da527b9c1da4fb4c911d9d24bbcf1442fc0e9"
+}

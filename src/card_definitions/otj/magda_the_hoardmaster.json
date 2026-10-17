@@ -1,0 +1,12 @@
+{
+  "name": "Magda, the Hoardmaster",
+  "catalogue_id": 2613,
+  "oracle_id": "7fd2beb8-f823-4723-beec-e59b62127490",
+  "facts_sha256": "48d8ff725c8b1034729a3dd1f7cc9a966d660ca8b8e25dbf4a9e75fcf4d00c7e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bce5448e3e4822b3683e6cfcaba0cf7f06c3a0583b819d4eef0fc2afaaff5f85"
+  },
+  "physical_metadata_sha256": "76fd5891d9767b673d73fcfe8f3ec7d5fe92b00ff5017e37a654dd3c5eb1673d"
+}

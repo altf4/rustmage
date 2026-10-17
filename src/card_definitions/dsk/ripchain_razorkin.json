@@ -1,0 +1,12 @@
+{
+  "name": "Ripchain Razorkin",
+  "catalogue_id": 3534,
+  "oracle_id": "ce000c0b-db42-4569-855f-f4eae0431c09",
+  "facts_sha256": "7fe9771ea1944e59479a555023c3e382a48b319fc2d8c9c78341764a91c39296",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "94596299d9f4425b2f044b64a651c0caf31edc492a6c5b2a374220f929d906a8"
+  },
+  "physical_metadata_sha256": "adea0cae47a5b15606a23609fedaf4a416f39a1de5ddac5b51547e07c2132430"
+}

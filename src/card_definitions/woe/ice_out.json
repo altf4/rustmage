@@ -1,0 +1,12 @@
+{
+  "name": "Ice Out",
+  "catalogue_id": 2122,
+  "oracle_id": "fed3bc35-4269-48f0-9133-a595ce49c2d1",
+  "facts_sha256": "1132cb2c7fcc0810d0ba21ecb5baa598c16ee087b4dcbaed7f8db5c0866e75e9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e087d64103b1dba8a32e256a8ffa639e7e64d8d7925f14e2ccb6dd25e5ae2c2f"
+  },
+  "physical_metadata_sha256": "b3dcb46d43bc27973d0f90b4d7967a9948a9b852ac94b5e12ffb79152c0378f1"
+}

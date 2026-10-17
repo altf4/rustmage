@@ -1,0 +1,12 @@
+{
+  "name": "Captain Howler, Sea Scourge",
+  "catalogue_id": 645,
+  "oracle_id": "46c99d67-8307-4af0-afd0-377714806614",
+  "facts_sha256": "5fc2d5c1354102b2730bd2780a8c409ad87c1e85f239d2a763e17b1020a53559",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "968864c64dfb519532acd7499f27d80d7008e199c2bc2e58d41cb274c99987ca"
+  },
+  "physical_metadata_sha256": "bbbd613eda86e9d4252df565255b77c0cc9bd3b1371ef475362e605782bf3d83"
+}

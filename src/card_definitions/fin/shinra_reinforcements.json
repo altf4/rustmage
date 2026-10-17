@@ -1,0 +1,12 @@
+{
+  "name": "Shinra Reinforcements",
+  "catalogue_id": 3834,
+  "oracle_id": "6cfe63ac-3581-461b-8ed3-3e231851e3f8",
+  "facts_sha256": "b3ceaa9d9c3ab96e87febb7795c08a996036732ebe45b501fdbbe13ce6bc3b30",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a95f43739646f0eb1de4c20bf499c90e19c01642012f2b1304494db9acdd9734"
+  },
+  "physical_metadata_sha256": "480ab99c7db48c472ddf22ab9db1eb564f24e23742d6fe13ab471fb397390a25"
+}

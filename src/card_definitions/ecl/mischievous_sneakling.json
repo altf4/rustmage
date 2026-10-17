@@ -1,0 +1,12 @@
+{
+  "name": "Mischievous Sneakling",
+  "catalogue_id": 2789,
+  "oracle_id": "fe7a4361-561a-4bab-921e-d01bab19dad3",
+  "facts_sha256": "110f32f3bdd07934040bacbdc446ed1a3b5a6e72c066e62e373dba37734dab56",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "27696de1fead4f74d0f5ed431c52fbf07ff37ffad9b9930d2e02cc1f037fab5d"
+  },
+  "physical_metadata_sha256": "bea9640e60bee2670b3191efe4377ce27805b39d26451535d48fc63167ca5f1c"
+}

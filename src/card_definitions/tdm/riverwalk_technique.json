@@ -1,0 +1,12 @@
+{
+  "name": "Riverwalk Technique",
+  "catalogue_id": 3554,
+  "oracle_id": "a123aab8-3f3a-4187-abcb-21a99dcf13bb",
+  "facts_sha256": "5a07429271ab7a1246c7b3e97dbcb3fa33a90ae4e2eba4cb9a4b1638994f7745",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d98a79a7e9354d0315a43b1a800b59476071241619e5668bc7d369745202d728"
+  },
+  "physical_metadata_sha256": "198d680a3d0affc95bcf4e11c1266d60898f79968e8a7de23893d9074facdef1"
+}

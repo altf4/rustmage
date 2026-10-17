@@ -1,0 +1,12 @@
+{
+  "name": "Warrior's Sword",
+  "catalogue_id": 4986,
+  "oracle_id": "a339961e-3555-467f-a4f8-c5eaac7e7ed1",
+  "facts_sha256": "142d8a021b09a6a9fb5df99181f8ae8671ff75b323c9e7450bbb3653f7dec9bb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "969dbc4567e3dae5f2161684cfad2247e9d3eb5588c7d21aaedfd1f453ffd322"
+  },
+  "physical_metadata_sha256": "89a9ed4dcb9456b93744962ac789ddabf81078b31fd8db03c14676283d88ca43"
+}

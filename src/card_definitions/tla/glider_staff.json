@@ -1,0 +1,12 @@
+{
+  "name": "Glider Staff",
+  "catalogue_id": 1778,
+  "oracle_id": "823006a8-098c-457a-8546-77ae2457c459",
+  "facts_sha256": "df4cbe7fe67552164f60c37c21f0dba2e9d02da63e6ffe0dc2f0bfe660933483",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eb07014990f77c25b4de73fa316d98e93e28e9b62b77ee5985f65725f299bd53"
+  },
+  "physical_metadata_sha256": "a3a3834c3025922e96b7268b896173800b56954b90ae5b188abdd30cdf898bf5"
+}

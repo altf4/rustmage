@@ -1,0 +1,12 @@
+{
+  "name": "Nibelheim Aflame",
+  "catalogue_id": 2930,
+  "oracle_id": "eab5eef8-d180-4b08-a770-6b3a1df03745",
+  "facts_sha256": "59bae8680ffc040df96848293afe47b3ba4290a3cdc513e61d8bf1be6d647681",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3a2fc8a19ae1fb903b7d6094bf0aa907c485ee161644cf47fdf5984c9ef79305"
+  },
+  "physical_metadata_sha256": "acea3b2948c8a11354dda0f1dc46e0d6ceb1895839da236a4cefd2f3e7da7d8b"
+}

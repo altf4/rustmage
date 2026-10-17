@@ -1,0 +1,12 @@
+{
+  "name": "Plunge into Winter",
+  "catalogue_id": 3190,
+  "oracle_id": "a272f15d-caa2-40e9-894f-19638bd5f375",
+  "facts_sha256": "3f05685cebe141336c83d08ceaa8b5b17bcb936476a8180ca196fe647af98880",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "83e3ab005a970c84d2df59fc8b83c19d685ba2ee02975d45fd85f5ebcea51f9a"
+  },
+  "physical_metadata_sha256": "453aa8a2f7e1cde051633dd8bf15c298121ae492e454cdda0deb879672c13c36"
+}

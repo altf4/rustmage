@@ -1,0 +1,12 @@
+{
+  "name": "Doc Aurlock, Grizzled Genius",
+  "catalogue_id": 1113,
+  "oracle_id": "3ca32660-bf5f-4398-bef6-a0ec8bc767cf",
+  "facts_sha256": "413083aff58440f4257be051ebbefc1a4f42cba42da3d803c6adfacbedf4b80c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e2a2b1fac007ffaeecd0163fe53489fe5b8d7a6f5d9c6c6b9d4bfca2f741a20c"
+  },
+  "physical_metadata_sha256": "d4657ac7127991953e2e731ac3431db5ffcbf5bc4ce04f4399b68844e188e41d"
+}

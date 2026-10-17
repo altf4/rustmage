@@ -1,0 +1,12 @@
+{
+  "name": "Intrepid Paleontologist",
+  "catalogue_id": 2203,
+  "oracle_id": "d6026309-aae9-43e7-938b-69db7af7139c",
+  "facts_sha256": "07044cbfc63455927778248b96ed232ff37536f9f657cdba333a1febaf9dfd06",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1fcd8aa33dc0ddef1368bd9a88061f1d3d28fbdd50b3d93271dfef97ac02cbda"
+  },
+  "physical_metadata_sha256": "523d1baaaf57a9f9677133eff5b50cf795dbb00cf49b971c14fcdc6f84c65d72"
+}

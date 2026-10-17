@@ -5,8 +5,8 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 New card behavior is [authored directly in typed Rust](docs/direct-card-authoring.md),
-using reusable engine effects and independent per-card files. Existing templates
-remain available; English rules parsing is not required for new definitions.
+using reusable engine effects and independent files organized by set. The English
+rules compiler has been removed; all existing behavior is ordinary typed Rust.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
 knows all 5,164 pinned Standard identities; 1,987 have executable rules so far,
@@ -303,8 +303,8 @@ indestructible and menace. Fixed temporary keyword gains share these rules.
 Incremental blocks enforce cumulative evasion and blocker-count restrictions. Damage uses
 source-aware simultaneous batches; strike steps and damage choices can be copied
 and restored. Zone transitions assign new object generations, reset transient state, and remove
-combat membership. Targets retain their chosen incarnation. A strict compiler
-admits exact vanilla/keyword-only creatures and the complete text of Unsummon,
+combat membership. Targets retain their chosen incarnation. Typed card definitions
+implement vanilla/keyword-only creatures and the complete behavior of Unsummon,
 Fell, Murder and Bilbo’s Deadly Slice. Typed immutable programs also implement
 entry/death/attack triggers, controller ordering, draw/discard and life effects for
 31 additional creatures and two draw spells. Optional effects and private discard

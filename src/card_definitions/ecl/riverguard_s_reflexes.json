@@ -1,0 +1,12 @@
+{
+  "name": "Riverguard's Reflexes",
+  "catalogue_id": 3552,
+  "oracle_id": "0bdebad7-a05e-439a-b5a9-241a2d09f943",
+  "facts_sha256": "ce3e93d068ba7b9a9e7fdb825966a7e65d7ad3ad89f7a8934ce8d8eeca32cb02",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5809d44840d396d6d972a0ad2db9545310757760dec0ea07ddbe96feee28b80d"
+  },
+  "physical_metadata_sha256": "41139683410934a73f47a3760ecc563c7f09ac20dd44fbae0ad3eb79c4fefabe"
+}

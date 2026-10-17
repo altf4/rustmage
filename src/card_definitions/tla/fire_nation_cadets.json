@@ -1,0 +1,12 @@
+{
+  "name": "Fire Nation Cadets",
+  "catalogue_id": 1520,
+  "oracle_id": "5ebfa3f5-f80a-4845-bba7-75c4ddb88682",
+  "facts_sha256": "753d8fe739e8a7c8d0455737f6ef5a23c6d62bf7aaffab3dce7efd17e9de5cb5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "73b0b39a026ec7c1d53d9052dfa1374900a9ba4dba6e90ab963cd66cfc69110a"
+  },
+  "physical_metadata_sha256": "6460a745012dc90e2cccb197b78511dc4c4482717b47e973f97a18a3e2e469e2"
+}

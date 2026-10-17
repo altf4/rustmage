@@ -1,0 +1,12 @@
+{
+  "name": "Ajani, Outland Chaperone",
+  "catalogue_id": 117,
+  "oracle_id": "3ba809ce-3556-415c-9fcc-291cb10a43cd",
+  "facts_sha256": "cb3699255ad84cd3d3fe8ac4fb1bcccea428ff58be4ab7f4a00f78f532c5de7c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cac9cfe57e4059eb3423c5386af45b4d85c0c774818fa6341198a3c8d4f894d9"
+  },
+  "physical_metadata_sha256": "6420347483f3910db27d0e969aa96715450c835157af9a33c78e5c18de383360"
+}

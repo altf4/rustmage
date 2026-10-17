@@ -1,0 +1,12 @@
+{
+  "name": "Hazel's Nocturne",
+  "catalogue_id": 1971,
+  "oracle_id": "2a74a055-ff7f-434b-8dfb-d9fb72579cee",
+  "facts_sha256": "64416aa405bcaa43fd63bf7779bd87aa6f7f12cf90f756ac6bc00d80fb11b781",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "26e107ec8067aa3c27097209573c42e877e24198b6fc783483afd6b5c8aee208"
+  },
+  "physical_metadata_sha256": "e3fa8233082fa2d9cc1b3cf1218161cbf3a54a1e74abb1d9e7382dd3d6e95ab8"
+}

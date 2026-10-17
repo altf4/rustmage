@@ -1,0 +1,12 @@
+{
+  "name": "Sleight of Hand",
+  "catalogue_id": 3919,
+  "oracle_id": "05a039ad-1689-4d13-b393-6c1219583b5d",
+  "facts_sha256": "681b6cce1a0f58a0fa7d70b6ea866c193a94cfcca257d2eaa23a24972fef420a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a2dd1eb78b80ddb10453d821ea5160561c8e2bc19783a51b4bfa1ad3f0cae019"
+  },
+  "physical_metadata_sha256": "1523236b00384d9a33b705df9d35f7a9e8194493c7b01fbfeadf60d945f7bc1a"
+}

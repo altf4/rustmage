@@ -1,0 +1,12 @@
+{
+  "name": "Haazda Vigilante",
+  "catalogue_id": 1925,
+  "oracle_id": "4b707ef4-2c17-41e7-8dac-583791a98055",
+  "facts_sha256": "68bfe1be9c40d9650740068b0e016f485c63f9007400afd9f8f09900d7d2cbce",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e33893080013b85d272b79daa500947c33c0f1b6b856ddf84695076cc3610cbf"
+  },
+  "physical_metadata_sha256": "c77801e4f548ff3ddafac20b98a456be75b4203b9ff8d08213af909c25cb21e5"
+}

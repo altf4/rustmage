@@ -1,0 +1,12 @@
+{
+  "name": "Season of Loss",
+  "catalogue_id": 3750,
+  "oracle_id": "31b5d0ad-3a4d-4f43-b0a9-c9f7a362680f",
+  "facts_sha256": "8ed5656ac6e77239f138eb64d58d3a556411a21ed706b9dba6d7bc96cb76ece7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "04a15aa997f4f26be0883abdafbdf685af4c50a0b554109020b92277de187587"
+  },
+  "physical_metadata_sha256": "725e44e429f235f855940f19f73bbcd09fd6317c79236bec725c319304e4dce0"
+}

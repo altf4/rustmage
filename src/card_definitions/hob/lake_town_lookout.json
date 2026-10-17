@@ -1,0 +1,12 @@
+{
+  "name": "Lake-town Lookout",
+  "catalogue_id": 2438,
+  "oracle_id": "cf765efe-884c-48e2-9edb-9d45cf2756dd",
+  "facts_sha256": "844d5521132a2a293f403dd29fcfcf37c7d4af39aea49be17df80a5eea810ce5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b065cbc1d2c0217a90f249c8d1db2adc76ecdb41436b25f4ab086b10ef34acaa"
+  },
+  "physical_metadata_sha256": "20dcbb3f3f617c7ca1f9b0be339505108f363f7c3e42aabf1c23f6cdaef45ca2"
+}

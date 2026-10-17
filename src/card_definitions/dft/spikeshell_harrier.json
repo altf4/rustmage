@@ -1,0 +1,12 @@
+{
+  "name": "Spikeshell Harrier",
+  "catalogue_id": 4044,
+  "oracle_id": "23102d8a-3a93-4e83-af5b-401c85ba9dbc",
+  "facts_sha256": "115ff573601a07a9315eb5bf80b483018c873234a22839ae587a81ae21cf9c42",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "916ac447686dc450a06f67c652690f612ebbcfaffcc1fdd33049e4fdc1b2f972"
+  },
+  "physical_metadata_sha256": "57ea145aa9b6d20088db701e4da01f968ad95fab434e7a45f13807070a5b344d"
+}

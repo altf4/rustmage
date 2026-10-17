@@ -1,0 +1,12 @@
+{
+  "name": "Dragonhawk, Fate's Tempest",
+  "catalogue_id": 1163,
+  "oracle_id": "f7f435bc-1716-4412-9505-a1f2f2d83d08",
+  "facts_sha256": "116e332fd6f842bfa95624af2967f72f1831e7283bebac385bdabb165a79f19c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3a9b681a4eb007fcf9f8a07e63c46ca83ce6a7a1ca20d3b0c92bea7c5c9dbac1"
+  },
+  "physical_metadata_sha256": "fca490597b04e3907c798c0435c5b8e9051ace3a508651d13d0f2a220d42335c"
+}

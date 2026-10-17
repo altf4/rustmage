@@ -1,0 +1,12 @@
+{
+  "name": "Steampath Charger",
+  "catalogue_id": 4126,
+  "oracle_id": "75237b2c-232b-479a-ab3a-e1566c8a9fe7",
+  "facts_sha256": "964127e507eb711d767f533c3d6495b529a747133a33f7fa4e0ec03b933ec40e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "48b5c5520bec5c7a07d44d28b1492abf4189e99746102cddc8e7dee8df900aca"
+  },
+  "physical_metadata_sha256": "e4015b20803083dad8acf7da0335197f5696088012de39dfbdcbbc323c425dd3"
+}

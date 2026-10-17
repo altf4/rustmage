@@ -1,0 +1,12 @@
+{
+  "name": "Rowan, Scion of War",
+  "catalogue_id": 3600,
+  "oracle_id": "333c15c6-c8fd-4cdd-89d2-06b921edeb8b",
+  "facts_sha256": "c5b107637c72a3d700291e5fcdc6295f4dcbd69f8f8dd24457ef4f338b121403",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "84b90d8075753ca3bcac638e6aa9b571de11786fff96b9d575e9256494f2193f"
+  },
+  "physical_metadata_sha256": "adfe1fb6ab91d6a10eddd6877bcf052afefb347e46f8956475e122b336168465"
+}

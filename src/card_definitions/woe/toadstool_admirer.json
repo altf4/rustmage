@@ -1,0 +1,12 @@
+{
+  "name": "Toadstool Admirer",
+  "catalogue_id": 4616,
+  "oracle_id": "77b48b3c-c780-4c5b-90e6-33c5fd940c16",
+  "facts_sha256": "798a11d0ec8067ab009be610de8e4e4efcbb4d5f96743b91ca4145c012819f48",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "edc0c9b4d1276c6d206486190a79bd61e076ed91ce06e0694c18773f89442747"
+  },
+  "physical_metadata_sha256": "33acb99cce3af2c9db7cf7d48df940273d9cc13db30ec4f6e624c06916d78eb2"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Pretending Poxbearers",
+  "catalogue_id": 3225,
+  "oracle_id": "fefef024-3a05-4221-bb74-419ee08716e5",
+  "facts_sha256": "4a5c353c410840e35667c47c8bc3b33dc3410fb0c9140062d55e558f05fe6b16",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7e75c6ab49b77cd8fa86f7f51e59d9658ff0a6922a5d3b99d6173f2b8b309987"
+  },
+  "physical_metadata_sha256": "f51b1d93d27e57619f982612d42c3783bdbd49a1384c302cc44be20c981e4f0e"
+}

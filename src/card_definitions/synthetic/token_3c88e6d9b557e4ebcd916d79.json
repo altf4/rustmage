@@ -1,0 +1,12 @@
+{
+  "name": "@token/3c88e6d9b557e4ebcd916d79",
+  "catalogue_id": 5251,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "12bc9ab8031300f8fdeb3f8c58bb84a067e7894a60303a3e5459a41b02690afd"
+  },
+  "physical_metadata_sha256": "080b99fe628524287de6501359cf8ec55d6e36af9bdf60f0c841a3082b3291fe"
+}

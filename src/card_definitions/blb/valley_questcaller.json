@@ -1,0 +1,12 @@
+{
+  "name": "Valley Questcaller",
+  "catalogue_id": 4832,
+  "oracle_id": "81c509b2-3164-47e9-94b3-bdba0487d2f1",
+  "facts_sha256": "2e8a4e4cca22d21475ecad17867d7a764651130d9ce2ebcc92dbd0506ba2c531",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9b742cccaf813eac7d342e39d1e63149c6a0012e03dc15ee8c7ef369c920f1c9"
+  },
+  "physical_metadata_sha256": "6cb0377b7446f25eb55f35dd9c257546b4e0e6c4843821e9d812f3c06abb2e99"
+}

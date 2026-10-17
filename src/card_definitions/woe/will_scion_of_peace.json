@@ -1,0 +1,12 @@
+{
+  "name": "Will, Scion of Peace",
+  "catalogue_id": 5071,
+  "oracle_id": "4ecb8653-db8c-468a-853d-420ff62a7a8a",
+  "facts_sha256": "61b692fac8cfdd51e29be3f8f36fc704870362b1956750b2a8e61e6cb63615af",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9a5423361d378aacf3627bd9ee59aeab33ecd497a0ebf24f8813fcd35bb25237"
+  },
+  "physical_metadata_sha256": "60ef1c75f1119991046ed030d943ecebc514f7742de0f19822291084c4523cf2"
+}

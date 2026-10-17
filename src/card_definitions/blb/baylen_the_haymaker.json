@@ -1,0 +1,12 @@
+{
+  "name": "Baylen, the Haymaker",
+  "catalogue_id": 354,
+  "oracle_id": "73dc28a7-37ac-4b16-aa00-967c9c44d979",
+  "facts_sha256": "5c555392418823b8746ed489d924dd53c6b5d0a7ff4f29b6c4595e41e03c6636",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "feb0e42adcda53c1d8bf8da11c4261931ef1b9f0d1ada3c8c4716d95b079db8c"
+  },
+  "physical_metadata_sha256": "c325d438f087ed0849097d2535f1b35864f1c83152fb8116d507c85ea2efe225"
+}

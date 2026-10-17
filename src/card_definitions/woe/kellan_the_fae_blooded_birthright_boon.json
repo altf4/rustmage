@@ -1,0 +1,12 @@
+{
+  "name": "Kellan, the Fae-Blooded // Birthright Boon",
+  "catalogue_id": 2342,
+  "oracle_id": "10c48d19-d91f-4674-b186-477acaf08e5a",
+  "facts_sha256": "88124cad64f10f67e932fa595c82cbc85e1dc285bd7642bad324b092806a737e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fe477140c29dc32a67baf6d788eae3305a371fa97e143d5544258af9dc920f39"
+  },
+  "physical_metadata_sha256": "4f787e59013ee17a726424a1113762ea357b26a82636af7e05773673744dd70e"
+}

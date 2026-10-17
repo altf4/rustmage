@@ -1,0 +1,12 @@
+{
+  "name": "A Killer Among Us",
+  "catalogue_id": 14,
+  "oracle_id": "79d577a8-53c0-4220-bc0e-70764d72d5fd",
+  "facts_sha256": "d67e1629d5baf31c26fc319863f6df34fd4d8dffe40d52a6ece7e64f01b77db7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7d0706b8f65bd69c224302ce643d7306cab21aeff4d2b2cc0cca2cde3c5321af"
+  },
+  "physical_metadata_sha256": "9498afbaad152c48f9e35cdfeaedf53aff1a322849d403de4406d0515f70ce4e"
+}

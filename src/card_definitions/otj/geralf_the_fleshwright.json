@@ -1,0 +1,12 @@
+{
+  "name": "Geralf, the Fleshwright",
+  "catalogue_id": 1714,
+  "oracle_id": "a62e6cf4-1adb-4c28-b24b-91287bb23e96",
+  "facts_sha256": "07fff672657a3c70565307fb43e08901ac305d4da70b76973979aca260c63f42",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8b6553db54216fd0c64d20588943ae83d9abe2f56881a17e38afcff733c4a057"
+  },
+  "physical_metadata_sha256": "30c268a51bf617d20870809264ce2bc72c4e36bbbeff17df652e78e69d119380"
+}

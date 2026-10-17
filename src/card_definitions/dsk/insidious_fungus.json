@@ -1,0 +1,12 @@
+{
+  "name": "Insidious Fungus",
+  "catalogue_id": 2182,
+  "oracle_id": "0a8d0217-ff24-4177-b6be-707eb2b6b9e9",
+  "facts_sha256": "235c00a42a9e100ebb9f7008b9ec67e3391f8b8ec567274a56a844ac3dbe31de",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "40d80693036d5a011a1ddcefef9d7580a94c6857eef9eac77287f59f6644f87e"
+  },
+  "physical_metadata_sha256": "907033ffdd8a52962d9a2bd24000c10919121263dd55c69470bdc5ac0651429c"
+}

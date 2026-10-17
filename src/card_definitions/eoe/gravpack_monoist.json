@@ -1,0 +1,12 @@
+{
+  "name": "Gravpack Monoist",
+  "catalogue_id": 1858,
+  "oracle_id": "9c009b3f-6580-4ab8-84e8-d4cf7a456a02",
+  "facts_sha256": "e5cc14f83ba71d66dbffd7df5557807e7af4c6055e27fe44290f1484e48a2ac6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3635d77e0cee2638d0dba6b47c28b35b3c857505e92136d6ac10d193abceaf96"
+  },
+  "physical_metadata_sha256": "dcbdfbb809faaab324194faed43a550afc9cddd11e02a1d6948dd58d12b92280"
+}

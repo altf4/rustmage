@@ -1,0 +1,12 @@
+{
+  "name": "Cosmium Confluence",
+  "catalogue_id": 862,
+  "oracle_id": "798aaf78-16d9-474b-a963-f5e9c39aae6e",
+  "facts_sha256": "d8b061b83bbb2d7ee34049479b37138b2e87678e0585d7b683e19e27d252cb6c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "46cb522253555b795257de05861ce64bec003d07ec85928b2a5fe4c3e4546c69"
+  },
+  "physical_metadata_sha256": "8a15d96b18b863040573940b45add3f67ad6481a87cc86cbd7191de4c11bb73b"
+}

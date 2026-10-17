@@ -1,0 +1,12 @@
+{
+  "name": "Rot-Curse Rakshasa",
+  "catalogue_id": 3592,
+  "oracle_id": "9fee2572-8864-475c-bade-a64e36ef69c4",
+  "facts_sha256": "04484f7c6cff8b1019d6608f098d08792bb6cac36b44ac05ba78fc1777cbf493",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "058f707c2e0c14324dd95f170c9368680052ea5e5a9dabf54ac51daf9cacfe29"
+  },
+  "physical_metadata_sha256": "46d762f542a7fa755441cd7fffcb0b544043c82f8bf23aa681599df3f6a5b69c"
+}

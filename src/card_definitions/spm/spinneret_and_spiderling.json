@@ -1,0 +1,12 @@
+{
+  "name": "Spinneret and Spiderling",
+  "catalogue_id": 4051,
+  "oracle_id": "daca1d5e-349d-4e8a-abc7-427dab43fb0c",
+  "facts_sha256": "f57ba57c852c46160711e1f8c2aa64846ba9c19bb3d6d4383ca5c8ba39dfd51b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ff0f0c87784427799e20801e55a049025214eca57422dfe8b9a14c94ed8260fd"
+  },
+  "physical_metadata_sha256": "29c7d3fd90c2141751e336f3773ef0b6ba8cd2437b01bc1d41231b2ca26b92ff"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Zimone, Paradox Sculptor",
+  "catalogue_id": 5165,
+  "oracle_id": "9dd674a7-becf-4106-b53f-bca88426d92d",
+  "facts_sha256": "181a40c543d5419fef07a6862761178b0c3d7e4383aff7ad0e4e6a44ba32f259",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0ce71fd0669db9dfeefdb983dac6759bd4ca3e434499d1e925fb2ba5d6b0bda3"
+  },
+  "physical_metadata_sha256": "d3c9df0f8fbcf5414eb8a9283a3ceb43c4fdecc662b389407be483f3471d7287"
+}

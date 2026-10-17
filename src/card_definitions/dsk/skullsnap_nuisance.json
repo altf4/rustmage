@@ -1,0 +1,12 @@
+{
+  "name": "Skullsnap Nuisance",
+  "catalogue_id": 3896,
+  "oracle_id": "99348e1d-e95e-4911-aae0-8fd1a7345a82",
+  "facts_sha256": "5ea4acec7c4c8e7fa3bcd4497c190a4bc0e6bf70804d0d6d0eaab2a19ee14a1a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b993ccef21a19e4fc78fa6c02c07b52b04980769f98a5ea13828a90c944728aa"
+  },
+  "physical_metadata_sha256": "c5e07e9bb42ad933c93d4c951fa01c88773a8b4d6b0f603f46d13a185ff1b5e4"
+}

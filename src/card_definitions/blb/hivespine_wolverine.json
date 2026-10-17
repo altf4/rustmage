@@ -1,0 +1,12 @@
+{
+  "name": "Hivespine Wolverine",
+  "catalogue_id": 2050,
+  "oracle_id": "312be209-dba5-4e6c-938e-1287642f67d4",
+  "facts_sha256": "1ceb7eb5dff71598cd9e5878768bc2668a13d925fa0a64a78b33a70e9040e3f0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f5f8c97bb21f133d8538df31da171b57104446946389ac277d7baa692e09dcdf"
+  },
+  "physical_metadata_sha256": "e6ff2fe76d7f3ddff6ac1f84cb0dabbbd0f139b4842c62b05e53a8f21f553d11"
+}

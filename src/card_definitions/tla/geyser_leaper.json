@@ -1,0 +1,12 @@
+{
+  "name": "Geyser Leaper",
+  "catalogue_id": 1725,
+  "oracle_id": "dfdcb451-a597-46fe-893c-49e6dbda5f71",
+  "facts_sha256": "e9e9a7f298d045a7d7251c6b0c409e858d40b8f133be96e28c0bfcb23cc7429b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "144c77e10339637969b8ffaa4d8c2dd24b5f933a15edabb0fd9d83884fb532d1"
+  },
+  "physical_metadata_sha256": "90a45b4344c27a0caa371d7c0d441a4699564df80c0d2c664f9502277a3f8d91"
+}

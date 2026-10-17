@@ -1,0 +1,12 @@
+{
+  "name": "The Spot's Portal",
+  "catalogue_id": 4503,
+  "oracle_id": "3ceac6ce-acde-42ab-b79d-ff153074d2d8",
+  "facts_sha256": "fe8aa099d2b534bf46cefd24f4279e6143a318b372a4a56219b328cf71747269",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5e62c98843e5c7595a5bc4c0e33748a37f8d65b3ee1c050d74b22dc8171f74e1"
+  },
+  "physical_metadata_sha256": "e23e52723e96af9a7d4ee89b61cc000ab15aa83e25b35c21611b865a4c7dd9e9"
+}

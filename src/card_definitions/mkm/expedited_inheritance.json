@@ -1,0 +1,12 @@
+{
+  "name": "Expedited Inheritance",
+  "catalogue_id": 1401,
+  "oracle_id": "11e2f581-7c3c-4f2f-877f-e41540ab967e",
+  "facts_sha256": "43c0ccd5afd60d4b1f40b5ea388953e522838f51e1c73486d80d4d256a442c6c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0ec9a7b06e36e9602aae233ac0aae3facaf7b7bf3edb172cfabf90a65b57c9d7"
+  },
+  "physical_metadata_sha256": "282b37fcddd91306737129ac51952e5eb792fa701a76b80208a4487fec9c9ee4"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Grim Javelineer",
+  "catalogue_id": 1880,
+  "oracle_id": "bd31487e-e95a-4d90-8c85-742aa83c3e90",
+  "facts_sha256": "3216d4f62def310acd9af84691a1b9bf459bc16b0bc1f2b826309782228d688a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5bcf7b61630d3b6717196cc62925964b7f06fbf447b5df8aad451d739fe677ef"
+  },
+  "physical_metadata_sha256": "ee15b8168c2a642c7a78ed3796dfa6e4359c9af5fe4dd6246271bcf234ebb058"
+}

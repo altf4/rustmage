@@ -1,0 +1,12 @@
+{
+  "name": "Tanufel Rimespeaker",
+  "catalogue_id": 4336,
+  "oracle_id": "bf8de96b-0a75-4459-a123-dcf95e1b89f2",
+  "facts_sha256": "86fb681771662565547d9fd66c3bacd304181223abb62dcf3bd88c2711d15fe4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "418968414507ed2ebe222c2824d3e0a53dc21d62022d63bed06410a28776cac1"
+  },
+  "physical_metadata_sha256": "e804d64e6c45cb8b0a883e76af35cd1c4eb33d76cac2d229c9b82ef8028f4d4a"
+}

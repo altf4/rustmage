@@ -1,0 +1,12 @@
+{
+  "name": "Guidelight Matrix",
+  "catalogue_id": 1903,
+  "oracle_id": "98005890-d566-4a27-906f-625513171e85",
+  "facts_sha256": "aa03aeaacb3369ff3160bbc5f0937488d9f8aac862455fa397dd640cd782b632",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "adfd3236c07673d52da271f448167c4e8c4177d6543bab193ac6436773c0ebb7"
+  },
+  "physical_metadata_sha256": "3798682f749a00ccf0c8a4a1cb019aed3db261cf0459a65072007217665ec860"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Malamet Battle Glyph",
+  "catalogue_id": 2636,
+  "oracle_id": "483a0caa-e912-41e9-aaa3-bcea9369ec06",
+  "facts_sha256": "186faf8e964db989a73341b7003b8b132dda48a7ae816b1ed56f7aa6101e8006",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d75d94bbf01bfb3fd42f3b89a83f1750a4991e5102691a7c37c784413cba94fd"
+  },
+  "physical_metadata_sha256": "219621b1d8cab9d5954b3b8fda738c83ac46fbec853d59c94254ee196e6e8a06"
+}

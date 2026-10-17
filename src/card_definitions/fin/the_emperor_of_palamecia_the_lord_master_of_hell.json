@@ -1,0 +1,12 @@
+{
+  "name": "The Emperor of Palamecia // The Lord Master of Hell",
+  "catalogue_id": 4440,
+  "oracle_id": "042c01ec-9f1f-432b-bea9-d64d822cd91e",
+  "facts_sha256": "3eee6ddb68f91d6bec8a82e238e990bb2dc469dbd73483327fd8f831bee64c9e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c2b2d2bd4ee973b8445fe1e7dc67aaf3419fdcc5ee9d56c9bf486a9dc7b2ab77"
+  },
+  "physical_metadata_sha256": "379d199821aed23a06943b280d12ac4402a6ea6b5709588d4d4b8c505af57e12"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Raph & Mikey, Troublemakers",
+  "catalogue_id": 3376,
+  "oracle_id": "82563a5f-cae4-4ece-876c-0df245d2dc58",
+  "facts_sha256": "e002bd7cffa4e6e3364e854c5cfbc05df336338e02e5163e2df493704a345f33",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7e41cdc66d26ad38d6f5c1f985ec558a712f4950806b626eb44b6071e4ea95cc"
+  },
+  "physical_metadata_sha256": "b86cbdeaf6942c0ccf97c923df8c5dfa1821e4daf6669693df8ef14d65d964bf"
+}

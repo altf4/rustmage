@@ -1,0 +1,12 @@
+{
+  "name": "Kindled Fury",
+  "catalogue_id": 2357,
+  "oracle_id": "ebeee06e-3345-4f02-896f-cb0b2cfa5548",
+  "facts_sha256": "0ac204fd380cd97086c9218196227be369fdf6d6dcc383312df5c2a3bace05e8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a2f235f892093db8354b485c616240ab9d50a9e1ed3a383cdb6606713bfc2f3b"
+  },
+  "physical_metadata_sha256": "1e0de64be50456f12e260c0c686e12b6ae86aafea55d65d9779b8c7774268089"
+}

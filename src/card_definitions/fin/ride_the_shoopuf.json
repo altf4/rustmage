@@ -1,0 +1,12 @@
+{
+  "name": "Ride the Shoopuf",
+  "catalogue_id": 3520,
+  "oracle_id": "81b67745-0b1f-4433-963d-9b9653fb4d95",
+  "facts_sha256": "24eb6b43caa3a7781f897ce73fe1d5373a340905e4ae3a67b812ffa049ddf56c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f499a2bc911b7845530a012e2f2a80758794ace6c73548aff16ab7d7b1db3597"
+  },
+  "physical_metadata_sha256": "d6827703f0d82fe407242ff917daaae6427661c7b8c3ebe20b8e7afd7d376c55"
+}

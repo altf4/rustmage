@@ -1,0 +1,12 @@
+{
+  "name": "Silken Strength",
+  "catalogue_id": 3868,
+  "oracle_id": "53a59ba9-f4e9-460b-928a-ce6d7ae883f7",
+  "facts_sha256": "08de9fdc3894d80de44340cd98636ce33a7c569d7d73ec98f62d51974a27175c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ee3b71466424f81063de59bebbbfa01da04ceb9995e9cb7f349f9a737d9eef08"
+  },
+  "physical_metadata_sha256": "ae3535cbe176df324d8bf818ad5eb02f44f6199c06afafa60f2aab14b5441e74"
+}

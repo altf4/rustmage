@@ -1,0 +1,12 @@
+{
+  "name": "Betroth the Beast",
+  "catalogue_id": 5212,
+  "oracle_id": "c7b6d2cd-9105-404b-88f0-a67037fb2120",
+  "facts_sha256": "7015079462c4f8bb2b882284d54cdac8cd21528b188c9920639bfd875e4e6310",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f046acfc18eedde25beecf5f9cb554ee085dcb12e8253bfe2af14fb333c4311f"
+  },
+  "physical_metadata_sha256": "00f374c9dc29a1f128207ae9d91897d4065c34f2ae75ab12966a00f576f9e53c"
+}

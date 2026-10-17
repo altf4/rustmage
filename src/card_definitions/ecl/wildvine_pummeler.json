@@ -1,0 +1,12 @@
+{
+  "name": "Wildvine Pummeler",
+  "catalogue_id": 5068,
+  "oracle_id": "6c34674f-856b-4062-87d5-6ed73d9a9855",
+  "facts_sha256": "a96b6d0fa707e4d322632a3b133613864516699248cd564f4bbd2cb252f61b91",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "39b681020b80032c3c5223a96e881e868909ac70e85a3d2088d4b1c6dfc6cecd"
+  },
+  "physical_metadata_sha256": "d5ab7fe18b26bcbdd77e3a144836fe6a9ac3f275ffaf808ba3869b9b62cd2c6a"
+}

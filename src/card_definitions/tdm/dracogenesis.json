@@ -1,0 +1,12 @@
+{
+  "name": "Dracogenesis",
+  "catalogue_id": 1146,
+  "oracle_id": "9b06f2bf-146d-4b30-b467-e16f1a942253",
+  "facts_sha256": "f0d0884bd6420526f5806957361cbe89a0f0e1b75b282eae46d89d2f7a02aa14",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "702c838925a209fff852c985ee130f775c8fdb39c570b11b6d0097cd327af90f"
+  },
+  "physical_metadata_sha256": "78addea4a1a3c28dc10b906b6b035e1f513c8e666819d5ef330799167d956f03"
+}

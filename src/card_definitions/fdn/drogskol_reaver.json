@@ -1,0 +1,12 @@
+{
+  "name": "Drogskol Reaver",
+  "catalogue_id": 1190,
+  "oracle_id": "68175b49-f1e6-4b34-aad9-20d61a43d427",
+  "facts_sha256": "e18af5f5089dc2a114d3fd249e5d51f286c256b0ed05614e641a2bc4eb38b1be",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bc54a351dea207d246246f27b22026d42047b8f397db3a5d008acd25602a4467"
+  },
+  "physical_metadata_sha256": "78ed0963b408e0164bdbfc514cfd410205c8a30693fa388bd0689d5221c70c9e"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Greenbelt Guardian",
+  "catalogue_id": 1871,
+  "oracle_id": "2d8aa053-289d-40d9-baa7-9bd1c5b8e957",
+  "facts_sha256": "6a12666c46d335d62136d568242c614985774c7f9c86811a70f1c246d22be321",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e04bd8ba516c589ae09124188c54816b622ec7fabb20212d103b98d739aa52e7"
+  },
+  "physical_metadata_sha256": "ef62040059d3ae91fae1dfec7ce02aa6aae47ec98246d5839320894e2ec80498"
+}

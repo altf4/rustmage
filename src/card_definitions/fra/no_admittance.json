@@ -1,0 +1,12 @@
+{
+  "name": "No Admittance",
+  "catalogue_id": 2951,
+  "oracle_id": "d53ae01b-87e1-48e1-9fc3-23a734ce6622",
+  "facts_sha256": "025cb05b55efef7bf17a1d5b299a5e8098c9edec6c97063c8e1e6974db162680",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6a8c5af57fe84de6cf6bed9eebfaa3681157bc54f801058e0b4097fc56a49d93"
+  },
+  "physical_metadata_sha256": "d74abdb77be21b45ef047282fba64ca520bfa4e3d715f87216931f61b6790d25"
+}

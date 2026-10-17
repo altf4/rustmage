@@ -1,0 +1,12 @@
+{
+  "name": "Ainok Wayfarer",
+  "catalogue_id": 102,
+  "oracle_id": "8134f3fd-197a-4b44-a370-311cc955dea3",
+  "facts_sha256": "4fcca41940ac0ddef94eb313500773e2b4b88be664c8ee420115633b2ef4f450",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0da6bfca31f312b2fc8728bbbb2295e8bd72cb0a5115f49e9c5b6ed87fbab4dd"
+  },
+  "physical_metadata_sha256": "b07ea9ccdb1877870abff9260fac31d8911ac61b9b557ddde67cff451709cb59"
+}

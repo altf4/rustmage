@@ -1,0 +1,12 @@
+{
+  "name": "Opulent Palace",
+  "catalogue_id": 3029,
+  "oracle_id": "f9e7e855-1e3b-42d3-91b0-64ba8b5b8982",
+  "facts_sha256": "c728a3ca030df99d07154e76cd62228aa71cab7d8451c7b7270b57744134ea05",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e5083b4f781219be1708615e238efa3e39cb2be5a87109971952e18984faa5c4"
+  },
+  "physical_metadata_sha256": "ceb0ce78734d63f6de39c444f63c125c5a0638e634601c7031739dc49e5c3a88"
+}

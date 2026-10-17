@@ -1,0 +1,76 @@
+// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+pub(in crate::cards) const RULES: CardRules = CardRules {
+    effect: Effect::Creature(1, 2),
+    triggers: &[],
+    activated: &[ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        cycling: false,
+        origin: ActivationOrigin::Battlefield,
+        cost: ActivationCost {
+            colored: [0, 0, 0, 0, 0, 0],
+            generic: 2,
+            alternatives: &[],
+            additional: None,
+            mana_component: true,
+            tap: false,
+            sacrifice: true,
+            exile_self: false,
+            discard: false,
+            life: 0,
+            remove: None,
+            loyalty: None,
+        },
+        targets: TargetPlan::Single(TargetSpec::NONE),
+        program: &[Instruction::Modal(&[
+            SpellMode {
+                text: "Destroy target artifact.",
+                targets: TargetPlan::Single(TargetSpec::one(TargetRule::Object {
+                    zone: TargetZone::Battlefield,
+                    kinds: 16,
+                    relation: -1,
+                    other: false,
+                    nonland: false,
+                    tapped: false,
+                    min_mana: 0,
+                    max_mana: u32::MAX,
+                })),
+                program: &[Instruction::Destroy],
+            },
+            SpellMode {
+                text: "Destroy target enchantment.",
+                targets: TargetPlan::Single(TargetSpec::one(TargetRule::Object {
+                    zone: TargetZone::Battlefield,
+                    kinds: 32,
+                    relation: -1,
+                    other: false,
+                    nonland: false,
+                    tapped: false,
+                    min_mana: 0,
+                    max_mana: u32::MAX,
+                })),
+                program: &[Instruction::Destroy],
+            },
+            SpellMode {
+                text: "Draw a card. Then you may put a land card from your hand onto the battlefield tapped.",
+                targets: TargetPlan::Single(TargetSpec::NONE),
+                program: &[
+                    Instruction::Draw(PlayerSet::Controller, 1),
+                    Instruction::PutHandLand { tapped: true },
+                ],
+            },
+        ])],
+        sorcery: false,
+        once_per_turn: false,
+    }],
+    enters: Counters {
+        plus_one: 0,
+        minus_one: 0,
+        stun: 0,
+        loyalty: 0,
+        lore: 0,
+    },
+    entry: EntryTapped::Never,
+    keywords: Keywords(0),
+    ..CardRules::EMPTY
+};

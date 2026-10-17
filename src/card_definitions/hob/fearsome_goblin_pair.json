@@ -1,0 +1,12 @@
+{
+  "name": "Fearsome Goblin Pair",
+  "catalogue_id": 1475,
+  "oracle_id": "edbd3d4e-78a2-4c03-936d-dcb24cf7c87c",
+  "facts_sha256": "10ec10a565305c2b410a24cc826a767b61c260ce606a359bd51ffb054766c861",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c9d39ada55912eff5dbaaa2a77a140d7791c04ca9faf3e1fbd61a999e6935dd0"
+  },
+  "physical_metadata_sha256": "2de537a086c1ce63d98e8a6eba209a052a9a704eb01b64933b822424b54e7520"
+}

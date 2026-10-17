@@ -1,0 +1,12 @@
+{
+  "name": "Glorious Decay",
+  "catalogue_id": 1789,
+  "oracle_id": "ac4277d7-d78a-4d6e-8d6d-11f9e56f8ae7",
+  "facts_sha256": "15af380e9234722413af3aab7c8856b07f977b91e15a565e83fb5990c17d8060",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "868fbb42643965bef7d73dab6704bf4913d012e47a94d7c9abc9ede74416bf6f"
+  },
+  "physical_metadata_sha256": "6cbefaabb30224a9e60d89b9cdc39877e7a18cce4827611d37a9c71f75eae853"
+}

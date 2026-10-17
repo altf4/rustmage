@@ -1,0 +1,12 @@
+{
+  "name": "Sandbender Scavengers",
+  "catalogue_id": 3674,
+  "oracle_id": "0feacc7c-b93e-4322-bc8b-b3c19006128e",
+  "facts_sha256": "a533db3ae785af3efa8395aae276c78055e4bef28a588287b4aec081f7c70209",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1afda24393676419b8ea617f070107dcec8501489a65cf54cef80fefb60d2042"
+  },
+  "physical_metadata_sha256": "9242b856b223f04dee7880a22cdc2dd0000c2cba14d9bcd10c5c76ae5057e1d8"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Eerie Interference",
+  "catalogue_id": 1269,
+  "oracle_id": "35ba0e70-da7c-4ed9-b8ec-7dd5c5ce110e",
+  "facts_sha256": "185dbf19a50673646d7390887240346918af6fca33a45e9cce2b99219999aa15",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5fc06b0f365d92ffb69350b560dbb3309122ea1c1ae677ef19d8e618b738832f"
+  },
+  "physical_metadata_sha256": "9ad5e5953429ccd35eeca4b8bc3d2e2fc8cc26b6b8a0acdf4d057f0186dcbedf"
+}

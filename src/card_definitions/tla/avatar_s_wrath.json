@@ -1,0 +1,12 @@
+{
+  "name": "Avatar's Wrath",
+  "catalogue_id": 279,
+  "oracle_id": "e3431dae-969c-4896-9f9e-a80e7bec4bdf",
+  "facts_sha256": "9bc407d6c74e3708eece3916f9f2540467d96769e1434f7b4b8420924af67ae3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b06f8e18195f9c56f6e66ff475c04340ede2553af63a99f14e513de0bc81227b"
+  },
+  "physical_metadata_sha256": "259d544abccb3c82a74245164089aaa15515896c7427198b859ab0a46d2cf6f0"
+}

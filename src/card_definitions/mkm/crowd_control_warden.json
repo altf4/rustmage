@@ -1,0 +1,12 @@
+{
+  "name": "Crowd-Control Warden",
+  "catalogue_id": 898,
+  "oracle_id": "439e59ab-0350-4729-9352-60e697eaa78d",
+  "facts_sha256": "0219bd56d0154372f5a5f72116cc541b8b629b50d148f1ac3db1eedc3e5c213f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "581bdc6daa22cdafd6c14ece0dfa91e4d6c8d514deb9317447d471d54383bcf7"
+  },
+  "physical_metadata_sha256": "a3f0f3092364b52ae3fb53c13f8fa637af6024e0d69a96354521879098ab7a74"
+}

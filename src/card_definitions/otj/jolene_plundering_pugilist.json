@@ -1,0 +1,12 @@
+{
+  "name": "Jolene, Plundering Pugilist",
+  "catalogue_id": 2286,
+  "oracle_id": "fb8efd6e-b8f8-4da8-ac65-5b745c02d2bb",
+  "facts_sha256": "07926919e1e410256e68843d7066cb14c232487fa626ca545829e0a15cf12c6b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ac350a9ccb095be65e48daef0a26f75e1bd9247311a0c74c119242cf0db3d210"
+  },
+  "physical_metadata_sha256": "daeae17e6e6fdd5390b334c31825850eb05ba01f51bbbd2b406927093ce870bd"
+}

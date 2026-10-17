@@ -1,0 +1,12 @@
+{
+  "name": "Aquitect's Defenses",
+  "catalogue_id": 195,
+  "oracle_id": "b9dee727-8ad8-42e0-93c6-5ef91d3f7309",
+  "facts_sha256": "be5839b3870df9aa90aec86114424ab402afe16ffcb98583cc739b0e681ffaf2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ed440354506249da95e04e4f7470c463d28f28fc88af21f73f24a9480a1bda93"
+  },
+  "physical_metadata_sha256": "6cc8bc2ca470b266970545167e20240e18ea5fa09e798fcc0c01143f5c9dcd53"
+}

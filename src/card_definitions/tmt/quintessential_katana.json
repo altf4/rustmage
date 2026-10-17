@@ -1,0 +1,12 @@
+{
+  "name": "Quintessential Katana",
+  "catalogue_id": 3320,
+  "oracle_id": "e9685c61-e33d-4ae0-9dd3-7fd0df5eb46f",
+  "facts_sha256": "29db21baead7b9e303b0dc289d937a7c0bbd0735283eb72cb215dc33b294b043",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "87e956b29601ca55f555328a7e51f4142651d8ee26a97b26a35559f73ffb807c"
+  },
+  "physical_metadata_sha256": "fa27094714dfbee028437f4c744589a2e3c9d2702100ef698d66a0c3e725044b"
+}

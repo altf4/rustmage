@@ -1,0 +1,12 @@
+{
+  "name": "Prideful Parent",
+  "catalogue_id": 3230,
+  "oracle_id": "a90d1d35-6d67-43b3-8256-b0318b3a4b07",
+  "facts_sha256": "a2e267a83cd3ffe3a1712cfe8b46ab5c78239f5f27aa46d2062c5d15c1a02a4f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4e980d626ba7081a342f0963d4e21da2cf7ac9212ea3d2d3a82c270b0bc7bd4b"
+  },
+  "physical_metadata_sha256": "0c3bc813fd715dd8d499083cd52bd0810dbeb3b67ab933a7ab8750b160cde67b"
+}

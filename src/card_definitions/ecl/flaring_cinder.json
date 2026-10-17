@@ -1,0 +1,12 @@
+{
+  "name": "Flaring Cinder",
+  "catalogue_id": 1547,
+  "oracle_id": "f70d65bf-5f1c-4aee-9bd1-f5ee6974b058",
+  "facts_sha256": "e4dfc4fc3b34a39b4bcb6ae52cba0ec460b73e7a4dbda94a819340a11ab63770",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "acf986bea78f80d07f0b6670178a557d671e604fd58739e3409f7bde5588dfaf"
+  },
+  "physical_metadata_sha256": "036355a9e8cfb170f7caf3c16485635ac773f3610b687787a15b84ba72963bb9"
+}

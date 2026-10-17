@@ -1,0 +1,12 @@
+{
+  "name": "Tarmogoyf",
+  "catalogue_id": 4338,
+  "oracle_id": "45900b2f-f6a9-4c42-9642-008f3c1cf6dd",
+  "facts_sha256": "142d01b4c8393302c648d6eb21f0ef475b819f68525f8eb8e4b6c6fe1f37652b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "999a7b5f655171c4be2a7ec0387f425edcd1384518aa4906d29c3c0f1b377b2f"
+  },
+  "physical_metadata_sha256": "0b009d878d20a5991c87e929eb392ac0f4ea58741a222bbb5f804f4324ac0845"
+}

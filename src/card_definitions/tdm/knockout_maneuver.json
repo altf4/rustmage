@@ -1,0 +1,12 @@
+{
+  "name": "Knockout Maneuver",
+  "catalogue_id": 2389,
+  "oracle_id": "7e4931f4-f518-4200-aad4-4ac8acf202e5",
+  "facts_sha256": "a48934db945de9f06ba2e4d5eda24ed2cc9671175af1a5eb51080e0072a9914b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "056e25806925642fae2b0ff3fdae7cc6f58592c1cdc80746f647e7e01ea855c3"
+  },
+  "physical_metadata_sha256": "a43e5eb7e2eed4c51a01552e7c93780022ee36b3fd7fe18a817eff359ef67232"
+}

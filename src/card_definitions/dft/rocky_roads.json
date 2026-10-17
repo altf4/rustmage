@@ -1,0 +1,12 @@
+{
+  "name": "Rocky Roads",
+  "catalogue_id": 3574,
+  "oracle_id": "a659c29f-aaca-44c5-8426-cdafcb195f86",
+  "facts_sha256": "034d8d343fb8e9183d3663eebc947c339f25d4275904f61144f43394306dfa05",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "230e09d0b9f985af68dc0de71eb85f701a027eda2753e7897606c360baac14d0"
+  },
+  "physical_metadata_sha256": "ea61125e138726b7f164140c0f9494ef59304b8a1d95cee1f8a817d3d312ff3d"
+}

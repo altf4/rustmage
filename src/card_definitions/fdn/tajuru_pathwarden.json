@@ -1,0 +1,12 @@
+{
+  "name": "Tajuru Pathwarden",
+  "catalogue_id": 4319,
+  "oracle_id": "d8c7cd66-d8bf-4a99-add5-1d5651d4e025",
+  "facts_sha256": "46ccb6a0bccf1dc4dd9aa541aa17b8228c91777a1c3d79080cb8acab5b1d7ed0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "82b34999378fc89e50f41faf03132a5519775be33009b2c1e6d0bfde3071d36c"
+  },
+  "physical_metadata_sha256": "b7051e6c7addaeea19b6b92c3734e9627bb2c4013178d6103512be87a2bbf7cc"
+}

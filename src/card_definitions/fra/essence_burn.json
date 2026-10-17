@@ -1,0 +1,12 @@
+{
+  "name": "Essence Burn",
+  "catalogue_id": 1371,
+  "oracle_id": "f1216f36-00fd-4d03-85c1-f4910a02d4d0",
+  "facts_sha256": "e283d8657df98d15a4a37f8b6d469adaf907e8b2cea3677ca9213f1d7a83f86c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e9710011b8368625ec066dc18fd61bdc1941c67fadba092745ba9f1e4b58a708"
+  },
+  "physical_metadata_sha256": "bcb046633d80da1bd9fba902d956fb9ce0e87a5d875b7dbd4fca0d74aec62ca2"
+}

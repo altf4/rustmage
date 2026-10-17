@@ -1,0 +1,12 @@
+{
+  "name": "Pyromancer's Goggles",
+  "catalogue_id": 3295,
+  "oracle_id": "f76bcbfe-483f-4e63-8425-76feca1abf3e",
+  "facts_sha256": "7c67b08d5db0d2e0f88e229938ea58d5ae4fe38f6318d8d3a5920b6ad3a700f4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0ed7fe887f4e6c8102f936f8bf49d27a7c3f7f1a3df611a76b4c78c223607e94"
+  },
+  "physical_metadata_sha256": "62927d9b7313712893bcf2c746eeafa6cf39d86f7f5f968f1c8dd0ccb68b7baa"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Sundial, Dawn Tyrant",
+  "catalogue_id": 4239,
+  "oracle_id": "9ca808c5-9338-4199-a45b-df1a1a20625e",
+  "facts_sha256": "2f0bda2a0013f2008f63199be1addee8ea37c5c08b137b144bf863d617454381",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ce4ae28c9e00db19eeb971c25e9095792fa2383e1fc52e47f479e98f2de8f01e"
+  },
+  "physical_metadata_sha256": "1ac13e55299e7ef2f2f0dcda1d3d15b34a4eb284d0af3bdf623c77418edda637"
+}

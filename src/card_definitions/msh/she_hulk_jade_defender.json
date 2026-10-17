@@ -1,0 +1,12 @@
+{
+  "name": "She-Hulk, Jade Defender",
+  "catalogue_id": 3823,
+  "oracle_id": "bbd0a2a4-f81b-4a6b-bc4d-d7e53dc51333",
+  "facts_sha256": "e4c34e11c88c1dfb68a95cb7981cefd7817657242f3000bdce9a5e49a1d8fe78",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b8996838048001c3311f7486d30051ba9e04f9f7fef703c849edb6da6bb72eb5"
+  },
+  "physical_metadata_sha256": "50eb960f2369aaba77e133a24277b6bf6c4dc646f891a4cbc475a2f43ac0afb2"
+}

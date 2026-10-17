@@ -1,0 +1,12 @@
+{
+  "name": "Fisk Tower",
+  "catalogue_id": 1538,
+  "oracle_id": "5554db95-9676-4c24-b82a-8173513d7927",
+  "facts_sha256": "28e57da13bd36ef7a42625a611b97e418633e9a7e961638b32dcc5248c1381cb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e0ae3c643532ccec4b35da58b94cbcb2f1661316768aa5f691d784c603ae37e3"
+  },
+  "physical_metadata_sha256": "db4149ac817dcb047d410a83bdde768dfe0e0c1918c2ffc4e5d7bc92e30a908d"
+}

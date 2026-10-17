@@ -1,0 +1,12 @@
+{
+  "name": "Felidar Savior",
+  "catalogue_id": 1487,
+  "oracle_id": "2bee2508-cd5d-4c62-a205-12d8bbb3143d",
+  "facts_sha256": "e4024a4e91c3bf1cf391e7dad85402f678f251f94626d0a4f2787de683c37b79",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e9a6cb751b171f97dd9b3f45a8112bca242f68439f25f893d3676ca999a2b1e8"
+  },
+  "physical_metadata_sha256": "c76cb17a67683075808dfac5d041b622dc5d7f71fa001dadaa039430c7e0556b"
+}

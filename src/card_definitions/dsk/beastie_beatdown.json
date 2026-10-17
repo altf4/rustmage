@@ -1,0 +1,12 @@
+{
+  "name": "Beastie Beatdown",
+  "catalogue_id": 363,
+  "oracle_id": "3da5fbe2-e47b-4a1d-9e73-393f37314fa3",
+  "facts_sha256": "8da5fff03e027af581a7714a28d639ce4ac60102a681d2a513528ec1486485b5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ffa825dc4c720c9ead6b4c8efe0b5d7b1465135eda2d44f0890818e7a652a9a8"
+  },
+  "physical_metadata_sha256": "6ecc0543941167a548bde81afd60da39e3588a43b46f6fe264b00bb3d30ed223"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Burrog Barrage",
+  "catalogue_id": 597,
+  "oracle_id": "c47caa45-e7fc-414a-8a5d-59b58f1751f3",
+  "facts_sha256": "e54811f964e3e7140fdb3d84519f78adac99fa07f71505f5904035778068f9fb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "57a66466b80c7fe24229947a90742ed4585c4561f343d639543c66d67f8b9526"
+  },
+  "physical_metadata_sha256": "7eac32c172e57ec6623114588a3062165dd6b826b846f07af95099b08206993d"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Heirloom Epic",
+  "catalogue_id": 1993,
+  "oracle_id": "43037ef5-09e8-4881-beff-ed38cf7574c6",
+  "facts_sha256": "a3e8a652b3738e14fc7c930f51815074710d9122399bf3b12145509332628abf",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b73ff2f2caa6b92d0b1d0df616ca28d3b7cf3b6bc04d4e0660cbcc0817fea6db"
+  },
+  "physical_metadata_sha256": "82393ff3f56836f337a6fbf00885a61590e463d4e19f229145eadf888786e2a5"
+}

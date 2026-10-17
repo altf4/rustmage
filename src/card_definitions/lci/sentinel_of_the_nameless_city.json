@@ -1,0 +1,12 @@
+{
+  "name": "Sentinel of the Nameless City",
+  "catalogue_id": 3788,
+  "oracle_id": "a5bbfe32-2fb9-48a0-bc8a-e9899aac1fda",
+  "facts_sha256": "2c8f4ce70c6741652a812c55d7d2a12c1056143ffc823ee842d6b0122b63f678",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d3e4213589de90d6230572bbdb8c8c709f494a41bd3dca354b14f7277492c92d"
+  },
+  "physical_metadata_sha256": "a452e35bcbebf8ed66b68908d26521df25912c5cc01e4ed58c0e1f4f7dfaa130"
+}

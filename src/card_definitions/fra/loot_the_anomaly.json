@@ -1,0 +1,12 @@
+{
+  "name": "Loot, the Anomaly",
+  "catalogue_id": 2550,
+  "oracle_id": "e0142e7d-7b0b-4290-a56c-5fa950fdccf8",
+  "facts_sha256": "e28da423e3e7fd263ca40162342519e9634ef0458052c280a2b5b93c39185659",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f6da7e624bc1776a7ebf273b2b3f47f4454f9b36772a0b4ee7ce775a37cdc483"
+  },
+  "physical_metadata_sha256": "8087a0ced6cb42b605f08ecda1afd1d69214152d8685c10160f99ff977e65aec"
+}

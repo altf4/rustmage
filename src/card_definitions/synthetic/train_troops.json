@@ -1,0 +1,12 @@
+{
+  "name": "Train Troops",
+  "catalogue_id": 5199,
+  "oracle_id": "50bee80e-89df-48c2-b608-ba66ff3e794a",
+  "facts_sha256": "e1d4899936408cf72fa9ef81f38d5d7501226d792a4efa571232643ce58ca7be",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d2fcde3b75320f12a4c8874de00bf2014d74aa917f9fa5ef5433c28b6f458642"
+  },
+  "physical_metadata_sha256": "af15f615a7b0c9b34ba75a2f40fb60e0e79259e2e437caae6ba4a53ed999384f"
+}

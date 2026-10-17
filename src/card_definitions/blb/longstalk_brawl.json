@@ -1,0 +1,12 @@
+{
+  "name": "Longstalk Brawl",
+  "catalogue_id": 2548,
+  "oracle_id": "adc8976a-0871-4fd6-9c4c-822ba9549b4b",
+  "facts_sha256": "3784e647386544343851a5a449b08aa967d4e9d4206dc04f1bdb67b02f1c2122",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9c4b78d632d49631be134c635506d81f8f4557c955f643fbf21975db35e40146"
+  },
+  "physical_metadata_sha256": "0e7abd41791a5ed7ab587352315e27c033fa93a986594057c7d59f38ce9b6dde"
+}

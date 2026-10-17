@@ -1,0 +1,12 @@
+{
+  "name": "Rescue Girl, First Responder",
+  "catalogue_id": 3474,
+  "oracle_id": "df6fc0b4-333b-4f6c-804c-ba6c8e29c88e",
+  "facts_sha256": "f47abf83d9b1a46059ca2d8dfab4a3780089ede966d8043824aa56476b4f6313",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ed05477eaa812da1e5e59ccf2c894745b2d669ae36a53babbf88f0ee2847c242"
+  },
+  "physical_metadata_sha256": "cf46aa43d3292ab7c80eb903d720730f988563f24bd9191621dd4f06b287a29c"
+}

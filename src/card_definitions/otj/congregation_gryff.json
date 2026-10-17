@@ -1,0 +1,12 @@
+{
+  "name": "Congregation Gryff",
+  "catalogue_id": 831,
+  "oracle_id": "376cbc85-2941-4d97-b031-bffff86550e7",
+  "facts_sha256": "0f4d861f8d93a2e5fce2b3346b7e534f362f7a51ac8b4e50873fc5416185db61",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3a44492d3661b9c6d51ab9d3720b12a61af4210bea97695a80b3b8315c19aa9d"
+  },
+  "physical_metadata_sha256": "aec42abf093987034aff7a866c9370ca3a8a78ff93d85777fe58b35fc37dab81"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Feather of Flight",
+  "catalogue_id": 1476,
+  "oracle_id": "c61b05b8-00f1-4371-9856-c65852b4ca02",
+  "facts_sha256": "7b59bc67bd6e8f1b6d0e6154bce85c34e7fc3171576cecc35bcedffc49c3e6b3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "60824c19640a03e1c8f0226a787bd38f0a1aea99605c05581c0287fce5645ebb"
+  },
+  "physical_metadata_sha256": "cc0869cbb390886f46b25af4cce3679d06c0de459915de62eefadf443e8bdfc1"
+}

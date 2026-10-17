@@ -1,0 +1,12 @@
+{
+  "name": "Mabel's Mettle",
+  "catalogue_id": 2598,
+  "oracle_id": "c657626f-7444-4c26-842c-dda9b9656fa3",
+  "facts_sha256": "21ac5e9d4b6bf4873a4a255c1c3ac30366a7b9eb40df712ef778977732bc2322",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e95f0aff07ce598ed3bf845c8e787e693468283ed2df43c80477add19a1db8d5"
+  },
+  "physical_metadata_sha256": "ed5ec30a4192e58700ea33320f996b3ecd8382cfad0a4b23b4342a2fad3fd81e"
+}

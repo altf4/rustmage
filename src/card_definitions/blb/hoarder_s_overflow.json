@@ -1,0 +1,12 @@
+{
+  "name": "Hoarder's Overflow",
+  "catalogue_id": 2051,
+  "oracle_id": "75f7d9c7-5d52-4bfe-a730-62fef187b8b8",
+  "facts_sha256": "cdd1699ad35e599f0d7fafad6cdc379c42cfc12c1a7ec4016b6ad25fa2fb4c28",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "64fab041a2bc6cff50396bdb764a5205052a17053661fc562c8423b159668e7d"
+  },
+  "physical_metadata_sha256": "782f6b9cce917c971a14f26a0b58e09810f15251dcb74f9082c0272dd16e3498"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Warehouse Tabby",
+  "catalogue_id": 4977,
+  "oracle_id": "a7736614-cdd3-43bd-ab3e-461e3e24ed40",
+  "facts_sha256": "f31025568d4648a0b24015d3050a3f80a7803a3ddec665b2dfe344f1de9e096b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e510c971432818d90cd2c5a0baa97f21a78a76f360a047f91593063873c45d13"
+  },
+  "physical_metadata_sha256": "f15a7330f73a77b1e253534e7368303ff13f83e294af8d98afe4a2430016b7a2"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Prickly Pair",
+  "catalogue_id": 3227,
+  "oracle_id": "4ce8e0d0-6a3e-4c47-a7b7-c1b1ea1b9426",
+  "facts_sha256": "04c13939d54777b0abd37c79749d249779379200c62a367d613c24287382047b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6fa5d22fb7f85cef6adaa2ff807d88b412bd4bd1d62b9c6b29aa051298b48220"
+  },
+  "physical_metadata_sha256": "47b6f581fdc4960b4562d68057c5e8899f23e00e9a06ccf79d2271c2c789c863"
+}

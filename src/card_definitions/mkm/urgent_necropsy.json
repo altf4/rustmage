@@ -1,0 +1,12 @@
+{
+  "name": "Urgent Necropsy",
+  "catalogue_id": 4816,
+  "oracle_id": "378a6203-0d47-4165-bdc2-43dfdfb4d15d",
+  "facts_sha256": "a78ff7b6c4b0e32024ff68d87beb2f7842a5f2b46d85cdb2a047ab1320980fab",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "017003683116cc4dd3a5d2c8df7d47b565edcfd2c0b6b1359d81b9bb0cf8bdc2"
+  },
+  "physical_metadata_sha256": "6d508108e262328e68f0f9f52cbe074d9d240308b15c40e54374feab2eaad455"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Lush Oasis",
+  "catalogue_id": 2587,
+  "oracle_id": "b6a965eb-cffb-41c1-925a-7cf3e8e2f248",
+  "facts_sha256": "7b3b1a700ceaedcee8aa7e2b241f964be9962cc81a44179617f2589df22cd990",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d9ee70eec26561f2c84715a268a5e6497bd8c6c82f25fb16918dc6c492b88b1a"
+  },
+  "physical_metadata_sha256": "7b9bfea686e5ae942d795cbd0b89ed74d39da77a9d1847394b637ba658b5d449"
+}

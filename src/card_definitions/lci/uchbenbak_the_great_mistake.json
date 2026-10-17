@@ -1,0 +1,12 @@
+{
+  "name": "Uchbenbak, the Great Mistake",
+  "catalogue_id": 4737,
+  "oracle_id": "36bfcc4a-7f66-4649-ab6b-18d360299d46",
+  "facts_sha256": "9cf76fc85d7e8c64f4b2a7360d2f04889f83ab768a7d416e5a2d58463211115d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8a3fd532e833266ed7ffadbbda89e3726d4465527c91915aa2e4bf859d9b00c8"
+  },
+  "physical_metadata_sha256": "e8cc01fc8a7ab587dbc9a3b50d1668d20bb7adc4e8c47cb9e90f008e43d1cf24"
+}

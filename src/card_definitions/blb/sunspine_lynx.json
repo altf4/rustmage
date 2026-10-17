@@ -1,0 +1,12 @@
+{
+  "name": "Sunspine Lynx",
+  "catalogue_id": 4248,
+  "oracle_id": "479adf64-f42c-4cb6-bf25-648c044bca8b",
+  "facts_sha256": "8401ee10f9c035551b22467b0c4c4fcd1b8cdef7bbd7ec8f10ff72567641b10c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d3ff99325445d3e497868bea55229e1e269ef896132ff8e4dbe385d0f00f6b81"
+  },
+  "physical_metadata_sha256": "24160960e3e3f06a8c34b7cf9ea47f44d6897a0ace507da7eb3c02ea8a3b1b76"
+}

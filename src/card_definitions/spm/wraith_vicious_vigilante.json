@@ -1,0 +1,12 @@
+{
+  "name": "Wraith, Vicious Vigilante",
+  "catalogue_id": 5118,
+  "oracle_id": "38684c31-e8c6-4825-8740-1a3d34b58b39",
+  "facts_sha256": "6b47b5a83c537f0e0578466ed03f772d572109082169c3c53f6d558def4815a1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "464c2750561df1d1cd12ac2b66d4d3581884239f2f3f816f9024ec86a9caa716"
+  },
+  "physical_metadata_sha256": "5310b674dc66359e5abbf9d7d9dc83d1fee08e7a0dca1d0e918b34ef9bdd7666"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Kellan Joins Up",
+  "catalogue_id": 2337,
+  "oracle_id": "9b3ddd31-c058-4846-8784-25c7a9bbcb31",
+  "facts_sha256": "d5fff396e380b58dd2a4c0d024b2378457154e8d59bfafabf83a0629316642ef",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "92b6354c9085b3c44f1c566c6ec24d04eadee6452605547ac030e035127c03e2"
+  },
+  "physical_metadata_sha256": "43bff9a95bcbc34c2fd869361f4c23b3f0f7b659ca6b94a4330024331c1e7fa2"
+}

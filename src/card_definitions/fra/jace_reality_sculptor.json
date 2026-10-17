@@ -1,0 +1,12 @@
+{
+  "name": "Jace, Reality Sculptor",
+  "catalogue_id": 2249,
+  "oracle_id": "bf0e9e00-fba5-448a-9052-ae730aea4bf8",
+  "facts_sha256": "4dc020bbf1af66b5ed88b1da3c91a5f8f05de6fc7cfcf0c9f409569c5707b9ba",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "99730508b225863a64c92502486aa89d708eee2bac8db7532d8daa6a728edd3e"
+  },
+  "physical_metadata_sha256": "300ffabcbcb53f9d50dee346bd5a1a680e8c16312f1fdb4cc5d418ef7543a729"
+}

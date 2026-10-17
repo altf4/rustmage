@@ -1,0 +1,12 @@
+{
+  "name": "Duty Beyond Death",
+  "catalogue_id": 1211,
+  "oracle_id": "67e6ce99-4883-4713-9822-cb2334765b5b",
+  "facts_sha256": "c2a98e61509f0a926a19b15300c8911c551cd0354bd7396e248bdbe135fb27fb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "57eddf9540b4e29da0635c00ca1c97200a0a3911aa74da67d5ef3d6c210c1e87"
+  },
+  "physical_metadata_sha256": "82e9490361c74da2791afc33204f68c3c4d0f7a90c4537cf49e75f0961524675"
+}

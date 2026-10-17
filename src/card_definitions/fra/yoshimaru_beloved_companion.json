@@ -1,0 +1,12 @@
+{
+  "name": "Yoshimaru, Beloved Companion",
+  "catalogue_id": 5140,
+  "oracle_id": "c00a0be5-d9a9-4263-a87e-7bf2d128ab3a",
+  "facts_sha256": "b96fd6cc110af7d31af02f0e6e64e48668b3394363baf0444af0c0ced6b3fdbc",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6910603e98bb33b17bf4a1fcc597789f137f35bd2d9dab0604a2a0fbf8d4c5ba"
+  },
+  "physical_metadata_sha256": "b1dc852de80bfd9eba9b9f96c476c980cc57e23770702ac3da0102b0272e6f87"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Crib Swap",
+  "catalogue_id": 888,
+  "oracle_id": "2987c385-011a-4032-a516-a46d1e9dc9e8",
+  "facts_sha256": "166c196de4c0fb24703906171363380fd4e89fa4c9f47f074bc8b0d02cf250ab",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8fe8a50fa87a199db9a2b84e2d9d6486857798f9dcbec0d0c835650b9cb2fc69"
+  },
+  "physical_metadata_sha256": "1b1af028228b792dcd7b5ae21acda7766aaa49126ad2575ef3d099fefb87cce5"
+}

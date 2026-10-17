@@ -1,0 +1,12 @@
+{
+  "name": "Kuja, Genome Sorcerer // Trance Kuja, Fate Defied",
+  "catalogue_id": 2420,
+  "oracle_id": "3998a60d-9521-4100-8d41-3e612972a3de",
+  "facts_sha256": "8bf62faf7d3a072367f4b564a5229df2adcff8ebb86afbe78e5fd2b187dc6665",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "adf3ae0354622c02d71ee002973e788d92609df38e0915f840888cd9470160a8"
+  },
+  "physical_metadata_sha256": "7255657cf976a5346eb50f165c5be4f86628a853646ca052f9d3b73cdffb4f86"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Gaze in Wonder",
+  "catalogue_id": 5203,
+  "oracle_id": "70a702fe-1dd6-4d7b-a85a-45744ecad741",
+  "facts_sha256": "1620d259dbddd361d01d6e65e713b6d20c2510cc4eaf70ddd92ae0569512443b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2fc25cf12df90bca26101e1d8c8ed12640aa272183137fb4624d89193cd5ed54"
+  },
+  "physical_metadata_sha256": "2c81001378896f5c46891321ee3f25ab71ef9e3d310befbe40117ef028e70cec"
+}

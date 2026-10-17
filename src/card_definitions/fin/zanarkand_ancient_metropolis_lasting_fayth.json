@@ -1,0 +1,12 @@
+{
+  "name": "Zanarkand, Ancient Metropolis // Lasting Fayth",
+  "catalogue_id": 5153,
+  "oracle_id": "5f2b3ea8-99ee-47a4-8a1c-4b27478d524c",
+  "facts_sha256": "f130a9088d0d8067a5091b8b4023a2eed2e4117452d75b05599aaa180ff44fd3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7d02a0600c2bd59a5c4342e4914c3aeb47906a1eebf8b8190936a3e2da9da7ac"
+  },
+  "physical_metadata_sha256": "20436b61562f7680f6a2a4dd4a58d341424ffd5b1886de5c6bcd7cd3bfa52d6a"
+}

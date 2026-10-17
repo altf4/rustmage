@@ -1,0 +1,12 @@
+{
+  "name": "Vinebred Brawler",
+  "catalogue_id": 4900,
+  "oracle_id": "5fffd840-1e6e-4f5d-b847-802f9a25eb5c",
+  "facts_sha256": "14762d6ce065cdec0a32d48637aec453446ceecbb63ed4f7f3d381faa6f4d47e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1bcd7dc58f997b927f1cdbaecb8cc6c6c9aaff0e103abee56f27258119de8a85"
+  },
+  "physical_metadata_sha256": "0354e32563ff5529cf13bd7ee2b9cd27c8d4a9bc38c75d845aed9d3cacd5f7c0"
+}

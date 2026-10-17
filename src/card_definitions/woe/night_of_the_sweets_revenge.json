@@ -1,0 +1,12 @@
+{
+  "name": "Night of the Sweets' Revenge",
+  "catalogue_id": 2935,
+  "oracle_id": "4bcf4f12-470e-4f73-a19a-643a20084e16",
+  "facts_sha256": "f5074b8db102c512222f3c151b71f19ab482ce2956223ee933d76074201546cd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "46cf1bdb64c75bcc982be4e6d14c561622b5d9763d952bf681af3a47edb732c1"
+  },
+  "physical_metadata_sha256": "6ed5e7a335657ffeb7f9f471f78d158e13bf75e10f108330c4979f2fb0bac097"
+}

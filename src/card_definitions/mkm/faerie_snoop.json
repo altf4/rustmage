@@ -1,0 +1,12 @@
+{
+  "name": "Faerie Snoop",
+  "catalogue_id": 1429,
+  "oracle_id": "b759e8a6-8dd0-48ce-8816-e45b35a79895",
+  "facts_sha256": "07b050f83e67f974a4a2cd73779824e26238c6a65fbbf70ecc61a398b12a3bce",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eb2cadcc3e6fb72a62e94c675ce06784927421dccd705b5e7f146d3a7e4517c3"
+  },
+  "physical_metadata_sha256": "edface5049d8395509c70b523ba8d9d92d4d35af220c3dfeb718a174e42fbe7e"
+}

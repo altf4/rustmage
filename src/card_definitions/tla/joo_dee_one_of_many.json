@@ -1,0 +1,12 @@
+{
+  "name": "Joo Dee, One of Many",
+  "catalogue_id": 2288,
+  "oracle_id": "4601ed7b-716e-4c89-b733-1eeabe8bf5a2",
+  "facts_sha256": "a0cb6ecd5e278b92352e85169220161daf62860af5595eefdae81e20627bdd77",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5e975d5837becb760eb789ce40eee50cbe8770e54b12ee4048816dcc0fd0585e"
+  },
+  "physical_metadata_sha256": "9525c0142dd8ca1250dddfa6f7c062bdb0e6a23af43f935fa544de56e3eacc6a"
+}

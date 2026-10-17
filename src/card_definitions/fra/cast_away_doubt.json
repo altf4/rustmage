@@ -1,0 +1,12 @@
+{
+  "name": "Cast Away Doubt",
+  "catalogue_id": 675,
+  "oracle_id": "bcf29dd7-6d5a-4139-958e-7c59434c0770",
+  "facts_sha256": "fd3c8a2b7f827300f8bf0375cb786afec20a55053c7817de9cb76a91648853c0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cfed0e0f6814f6867e72a0651903addd6cf4aa78f1d44ded4b62ebe6b8d4b1b4"
+  },
+  "physical_metadata_sha256": "5c73d0bb33e7bd76d021f4c1f92d350941bd6219d524addf9a8a24db2f3c3833"
+}

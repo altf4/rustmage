@@ -1,0 +1,12 @@
+{
+  "name": "Decadent Dragon // Expensive Taste",
+  "catalogue_id": 1011,
+  "oracle_id": "5df44b8d-b337-49d8-8427-34253f52cb47",
+  "facts_sha256": "4fc9c7b38e82244b4445cc02e0c69f2770dc106ea4b8305f4151f270b6d37f9a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1f899dc998e260c3d1fb220585515e1e3193f61c15769ba31e876356aaf59d65"
+  },
+  "physical_metadata_sha256": "bc48a6099bf3000584747e0a237801b62884490cfac8d5a0cf0fd621b586df11"
+}

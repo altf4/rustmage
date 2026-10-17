@@ -1,0 +1,12 @@
+{
+  "name": "Scarecrow Guide",
+  "catalogue_id": 3713,
+  "oracle_id": "cf7bb5d4-c33f-4879-a793-6d6f2a4d94be",
+  "facts_sha256": "d617e57475cc8cadcfa96a37edbdebdfb50ba1946cd5b04555dfb3e18c51b012",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3ca35627976361d9d90a4c331ab559e49c5ddd862938e13d11f4bcc9e67851c7"
+  },
+  "physical_metadata_sha256": "ae4ae14ad3201269c27c6d6cd5aa7602a35158d456e3f54b9d365ec0455bf100"
+}

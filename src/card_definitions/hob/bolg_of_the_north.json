@@ -1,0 +1,12 @@
+{
+  "name": "Bolg of the North",
+  "catalogue_id": 486,
+  "oracle_id": "88522a0f-5377-4522-97f4-4148bef954af",
+  "facts_sha256": "4efe818de797ffc05ef23a4f25571ed364c4d02a54f042af538a0537a06bc95e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c52832021590eff7b7de2fb700d2da0ba21dabe8d19aa1b5a50684fb19c868ff"
+  },
+  "physical_metadata_sha256": "1f89f67daf8c562b49144e15c6f31529aa0c17e35ae061ceee8e86a88b80694f"
+}

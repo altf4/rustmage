@@ -1,0 +1,12 @@
+{
+  "name": "Decorum Dissertation",
+  "catalogue_id": 1015,
+  "oracle_id": "f4c57454-d36f-4f38-b7ac-76477a516c3e",
+  "facts_sha256": "9216215e8eae4baa8d2e482523b3c416d62b2b923e03bf5365089644b883d390",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "088fe4ae1ab93c65ae9a22a7dfeb163eacf648c31e7da96d4acf2edbbe14a004"
+  },
+  "physical_metadata_sha256": "b68f12f4cc21ae50b337d3251ba405e541f88a8f735268ba48a5889729cd5251"
+}

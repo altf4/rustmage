@@ -1,0 +1,12 @@
+{
+  "name": "Snooping Page",
+  "catalogue_id": 3945,
+  "oracle_id": "f07c07d7-00f1-44a5-b51f-0a22cc51fd2b",
+  "facts_sha256": "857897d2a74638cadb16ff7efc05d4fdbe3c0066984e5a7d353b8252677bf3ec",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "91542517b5131e998952af799fccd26792e0836b5137c5832e8e2c9e50588335"
+  },
+  "physical_metadata_sha256": "baa598cd86b756d7cbdcab030bd5390eded9057e827399be44d06c489a11db25"
+}

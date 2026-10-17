@@ -1,0 +1,12 @@
+{
+  "name": "S.H.I.E.L.D. Spy Kit",
+  "catalogue_id": 3638,
+  "oracle_id": "6fd44fb9-3433-4cb0-95a4-4ac8170b2166",
+  "facts_sha256": "071e0b3b27f4a8940d2e3129185faf776ccf1b67d9eec77e3dbd97f230d28549",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ada36c2fa040bdf9501c812f836f1315bebe4786ce485ddd0239404927ae5e0c"
+  },
+  "physical_metadata_sha256": "96e10f8711905c9faa9814c1ed5917d5b957aaa44d42a953d0e0d2a516365316"
+}

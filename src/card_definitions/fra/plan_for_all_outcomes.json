@@ -1,0 +1,12 @@
+{
+  "name": "Plan for All Outcomes",
+  "catalogue_id": 3178,
+  "oracle_id": "7fd2cac5-cd29-4a47-9e89-9c6be39a0b67",
+  "facts_sha256": "f47fde6fa3ffcbbeef67a688600a3cdfbc922137bbaddeaa9d6a2b6988bd2b4a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5265fe7a93b5172b9e0f6eadeb5c86e4e8e2601b4d096fa8d393aac1faf1eca7"
+  },
+  "physical_metadata_sha256": "0909eac59667ca2ca13bc3b4ebf380aee8b818f8e06b32f9644c3f4b16b92b76"
+}

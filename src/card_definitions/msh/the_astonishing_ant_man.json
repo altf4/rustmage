@@ -1,0 +1,12 @@
+{
+  "name": "The Astonishing Ant-Man",
+  "catalogue_id": 4421,
+  "oracle_id": "6c7e4e51-099a-4398-a4b7-e2f0ddd36429",
+  "facts_sha256": "10f5f6131639f51e5ba98163dbef13fabde32bd71f61adf43ef72811cf999c42",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fb6ac4dc1607393bb4da349bc4b4e7d607a40fc0f20016b28a04ed19b65ccd71"
+  },
+  "physical_metadata_sha256": "6e02136b324c62384514d916a6bf1837c490eec8afe16fa3cd8a2d5ce5feaf2f"
+}

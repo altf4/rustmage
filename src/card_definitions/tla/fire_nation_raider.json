@@ -1,0 +1,12 @@
+{
+  "name": "Fire Nation Raider",
+  "catalogue_id": 1523,
+  "oracle_id": "b37e9bc5-6a2c-4f08-b856-3f8d0d16defb",
+  "facts_sha256": "a42f9fe2bc8ba13ef94d2e8635ba3a19e0b63577b5cf61c6de3adfa8c7d2c192",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c3455092a01f6fbf9c23d903b50a6117117b1ae4693f3d348ef47177dc7b86e5"
+  },
+  "physical_metadata_sha256": "719031c390850e9bea97ed59127056da69533fd18fed9cdf0ac87a93b402500b"
+}

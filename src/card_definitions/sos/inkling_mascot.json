@@ -1,0 +1,12 @@
+{
+  "name": "Inkling Mascot",
+  "catalogue_id": 2169,
+  "oracle_id": "0f0959ff-4464-4738-9d79-5b06f368f144",
+  "facts_sha256": "9c36c5587d7cd579e3e4e4f5a6d1105b8384490630f56d70d3f6b575f4a37e45",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "14ca72e955e96c19bcaaad614e39ecc4f283473551fd81f60fdcc3b7d8475e53"
+  },
+  "physical_metadata_sha256": "fc591720869065c88ecc17daffc21db64cfd6dcc14fc1c6608c0cbd36a4b4555"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Charge the Sanctum",
+  "catalogue_id": 721,
+  "oracle_id": "9d835137-584c-46bd-952e-4b2812bba1a3",
+  "facts_sha256": "51e4f274f36bdef10599b1943b31307f72677ea878c4682128ba447f7e82abd3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "313e7deb4f6aaacc839555cfcdb58b61d7ddf5c01e97a29763f9b7396dbcaf17"
+  },
+  "physical_metadata_sha256": "b3fd2651c6bcb527f3a930b8938323a670b4fedd8154309501b04d917e44772d"
+}

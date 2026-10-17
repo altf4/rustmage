@@ -1,0 +1,12 @@
+{
+  "name": "Gollum the Abandoned",
+  "catalogue_id": 1827,
+  "oracle_id": "8d88facd-cf7e-498e-ab6b-6bd021316162",
+  "facts_sha256": "a2001b92bf547e75e525f88523b49e56852b1545b83cdcfde82c50b03f0591b7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c7ea5c97fdc902c33b3c64d3414cb380a998204f93882551e8a65b1ffbb3e50c"
+  },
+  "physical_metadata_sha256": "8ce11cd67822c1f011cb5f45aa800196e0fb942a6fcf6d2ed48c19103f023fbc"
+}

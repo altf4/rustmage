@@ -1,0 +1,12 @@
+{
+  "name": "Sharp-Eyed Rookie",
+  "catalogue_id": 3817,
+  "oracle_id": "0642fb0d-73cb-4989-852c-3233fe36c3b4",
+  "facts_sha256": "0095d0d19eb734208316aa0cff31d5eb2db0bd3f018633b221bca1c139ee2de3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e23d13db193d70e24f191f6d4b96011310bec115896dd6997303caa78874c9b5"
+  },
+  "physical_metadata_sha256": "77e46c7b6c7efa77f00ad086248da02e9d4f2f64dcb435f6c72078f6e8655fb7"
+}

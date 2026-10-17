@@ -1,0 +1,12 @@
+{
+  "name": "Diversion Specialist",
+  "catalogue_id": 1106,
+  "oracle_id": "7130d063-fc1b-408b-97f2-14cb6b55d9cd",
+  "facts_sha256": "76834668ae04a3a5b132aea2451395387393db6bb33692b0cd0ee4c26360aea0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b39e739416fd4b55119bf98287124d08915deceaa2c223323974bb070ed1891d"
+  },
+  "physical_metadata_sha256": "0fac9b4b76c017894e66bc2eb3f9ecc7e28de9a1aab9926fe62eea3d661bf001"
+}

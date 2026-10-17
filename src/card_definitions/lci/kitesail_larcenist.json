@@ -1,0 +1,12 @@
+{
+  "name": "Kitesail Larcenist",
+  "catalogue_id": 2375,
+  "oracle_id": "2452be47-cc23-47f7-a3a1-fec900bb0119",
+  "facts_sha256": "433c48a6f037e9abe17acd06e040517bb2fcbbd90c88097e80e2b50f4989060f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f649892d61d6f3aa8465e492a330375f5ab9111b5dedbafcb3562fc0660a3639"
+  },
+  "physical_metadata_sha256": "c80f39aa74aff67b2152759f5c09d991faa37e3d22d4e6d725e89cf48a61af30"
+}

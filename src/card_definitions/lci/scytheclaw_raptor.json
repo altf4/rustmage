@@ -1,0 +1,12 @@
+{
+  "name": "Scytheclaw Raptor",
+  "catalogue_id": 3745,
+  "oracle_id": "8c653a0d-e35a-4596-bed6-b5156192955b",
+  "facts_sha256": "64c15811d1720e8443d5e617010d28d8141ffd49097951a74ad57f07c1ca4a9a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2a351a688558ca61b261065aafb0466fb623644cb136036bdeacfe4a784d3925"
+  },
+  "physical_metadata_sha256": "3f3bf010525cd64926515544545ba222fb1929ff60196779a12c4cc2cc67fce4"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Pit of Offerings",
+  "catalogue_id": 3174,
+  "oracle_id": "044d2788-6daa-4849-a813-1f577eef9295",
+  "facts_sha256": "74308f71d69c137fa8c1eb4db31ca131ddb0fd2613e9c3841d61345dbc20c556",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6a0aaa1833fdd244be4cc8dde1b2c97306b379a7f9a9c994e6d76ae22e44a3ef"
+  },
+  "physical_metadata_sha256": "7604ed039aee91d66ede7335df033520d4cc2c368964e4fe262ac7b2bc80c59a"
+}

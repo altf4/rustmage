@@ -1,0 +1,12 @@
+{
+  "name": "Morcant's Eyes",
+  "catalogue_id": 2851,
+  "oracle_id": "c55a27cc-8e25-4714-b1da-86e5c1c6661a",
+  "facts_sha256": "69f89cf5d1512801582ef5e010011f45c4106e40ceed57d208257032e9025529",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "19edd899e79f86dd17811fd2859994d278d4a99b1e8f0ef2bfa24696a68b6868"
+  },
+  "physical_metadata_sha256": "0e36b25aecc9de0c8d0dd86d15c1821a3d846073fd256c20e1e1ed486be37512"
+}

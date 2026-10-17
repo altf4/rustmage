@@ -1,0 +1,12 @@
+{
+  "name": "Brass's Bounty",
+  "catalogue_id": 527,
+  "oracle_id": "63b0538e-aa94-4e23-adf1-704cbf5bc3e5",
+  "facts_sha256": "be7360d07bf6e398ba8f37780a3c4b97a65aa4ee1e9062a82c4ae1acc44749ee",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9b8160dd54e4681d17bde954f9da626f9dd587fcfbc020857897658dda96af81"
+  },
+  "physical_metadata_sha256": "306c40dc70012d4923d0819eb8f13d41840c77ecf76a716833ee9d3bd1c09789"
+}

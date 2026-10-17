@@ -1,0 +1,12 @@
+{
+  "name": "Stromkirk Bloodthief",
+  "catalogue_id": 4191,
+  "oracle_id": "c85987b4-090e-472e-b9af-1114cce56ffb",
+  "facts_sha256": "3da8f2fb236a33628c59a9852a4723a9f299f4c4ad2d9e19ccae6b7a55a87768",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c37edb619a7be38f57a38b4eef19560d442bc5bcce7b836af798b5eb0b748318"
+  },
+  "physical_metadata_sha256": "c7b747fe6b644a9ccc1853aaec9c20959ce089ab4c1ba17508aff0e1f370513e"
+}

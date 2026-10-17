@@ -1,0 +1,12 @@
+{
+  "name": "Voidforged Titan",
+  "catalogue_id": 4929,
+  "oracle_id": "f7afe534-fbb0-4f8b-9e98-aa49d4005465",
+  "facts_sha256": "ffc1c6ff2d8c84fcdb02c11049d98890c11b89224d8d2530af826702c9db297d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "79fc35c85efb4f909468b5bce5746962b2d0d24fc7f818fb367911b5994a9a85"
+  },
+  "physical_metadata_sha256": "bb81c4a440c526d11ebdd726b44c5eda7c7684f453984dbf05a51a7bebf62ab6"
+}

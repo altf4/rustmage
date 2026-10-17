@@ -1,0 +1,12 @@
+{
+  "name": "Dragonfly Swarm",
+  "catalogue_id": 1162,
+  "oracle_id": "83abf1d0-04e4-49e5-bf63-59f77829ffd1",
+  "facts_sha256": "2fcd8138f742e6ce51822dab647a79af1e777cbf1fa20b57b0ba0a6b22729536",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c1d20d20f1f6b007b16cbaf7d1a85285d6e796f7198a5b4bdaccf2483c7a5c1d"
+  },
+  "physical_metadata_sha256": "4e5cbcf18e34b4acbccf4c98e8d565d3f01077130bfe31d577fa4f96f8d7b100"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Wildfire Howl",
+  "catalogue_id": 5064,
+  "oracle_id": "04fd8c1f-80e5-4b3d-b63e-7af6ccafbbaa",
+  "facts_sha256": "031ffc063260301aa7afbf4de133b32b2411a8509d9c766ba3bb449f3a780c95",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "14d60b2b98aa883a4615c027d33661e8208b816d4c83b4594af252de5c190ab3"
+  },
+  "physical_metadata_sha256": "ab1157c06cbe6bcf05682d307fd51c8ed8cda4f1612bd29feec1a8880aa8272c"
+}

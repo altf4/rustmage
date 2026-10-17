@@ -1,0 +1,12 @@
+{
+  "name": "Flickering Hound",
+  "catalogue_id": 1558,
+  "oracle_id": "162421d2-8761-437f-bed9-578b61c96f1f",
+  "facts_sha256": "b9da0597e5cb29ddcc8b59f2309edcf0d28391e701fa43e823c9f11b245f06d5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fe7b05ab35ea7a64cd130123b25b557ee77447411b37d89ef3dfc643955c91ae"
+  },
+  "physical_metadata_sha256": "6ebfee377747ee4e0affe4d606d9434b2096901eff5127973570f558c0001d2c"
+}

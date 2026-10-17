@@ -1,0 +1,12 @@
+{
+  "name": "Eclipsed Boggart",
+  "catalogue_id": 1253,
+  "oracle_id": "9cc3b91b-ad70-4b01-b718-fda3819f84d0",
+  "facts_sha256": "83a30d0686b00843c31ad22fab8e5d7bf6e8e6dd2b24d0736c23494fe1bd0a4b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "750b8d4ab8ec136be3872080e9b0ddcc44a67a59916c2cf46621e157d5c7ffc2"
+  },
+  "physical_metadata_sha256": "3ad3f0d3e6079824bc73b4598cdbb3a1bf758992992147f9a2e5e13f07d6ff42"
+}

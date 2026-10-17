@@ -1,0 +1,12 @@
+{
+  "name": "Gloomlake Verge",
+  "catalogue_id": 1787,
+  "oracle_id": "d71bda4c-3dee-4398-8fd0-f77d8743b887",
+  "facts_sha256": "ff9c26f4a2fb0f35ff6c7d87cbc100501bcb14414934af4354343619a22881b2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "964e212733811c25885f644b4ef92cb713643b9688c936611be5af9f12bbd46c"
+  },
+  "physical_metadata_sha256": "d7ee1de323033a0701173a8d5e256d8d34a9d41d5e4647af43a1956179630844"
+}

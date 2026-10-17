@@ -1,0 +1,12 @@
+{
+  "name": "Pym Particles",
+  "catalogue_id": 3290,
+  "oracle_id": "636b44dc-f7e4-42d2-abf6-ae49432b6052",
+  "facts_sha256": "b3a98d8b3e559385f5dd6b80bb9050ae263bae07026f2c300b0de3600a7a5861",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e1293b76b81d52a4c1cf35c2cfa61de58884d1d7aea43371e6f0ddc314c66955"
+  },
+  "physical_metadata_sha256": "55c0822e913e0336115123552ccc37e370933fa6c32ba4574c99f72ca3b8491f"
+}

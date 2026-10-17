@@ -1,0 +1,12 @@
+{
+  "name": "Archdruid's Charm",
+  "catalogue_id": 209,
+  "oracle_id": "3c1ef404-e2c6-486d-a5a2-d5779c71d498",
+  "facts_sha256": "3b308f62067df80f4096ce7c8e5984ce532dc90f1de9539f641d316ceca78de7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0c55501505296e8b0ff7d959e01ce693745ed0bb678872581e976f1febb94416"
+  },
+  "physical_metadata_sha256": "ba04fbbbf30740ef0ea831017c786df07bf132baf515cb5a76f8189532aa4ed4"
+}

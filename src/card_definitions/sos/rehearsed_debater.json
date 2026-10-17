@@ -1,0 +1,12 @@
+{
+  "name": "Rehearsed Debater",
+  "catalogue_id": 3447,
+  "oracle_id": "e30ccf07-0969-4e81-ba43-c50a2ff9c040",
+  "facts_sha256": "efad0da37b4c5fc59d2376f6224135d9c039413c02e0627f5c500d2c1db87d90",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "03d3f96dec4ab2f473cd9779b34f354c64c696cfd094a07f23901c51fe0f5d15"
+  },
+  "physical_metadata_sha256": "dca7703ddac64f0b9b8d46762018d5d8d097fa345ebfe76ab3771468855de6f5"
+}

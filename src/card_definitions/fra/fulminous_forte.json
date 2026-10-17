@@ -1,0 +1,12 @@
+{
+  "name": "Fulminous Forte",
+  "catalogue_id": 1647,
+  "oracle_id": "2a29d028-d1a4-413f-9c01-d6842294420a",
+  "facts_sha256": "340aa425677407aa41164d40e272c92672b0c957c71ef6fc67bf5d36e0658f29",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "506b4a3c328cc42cd39084d4e008397ccc3eb98393c2cd995fe0c928aa0d98d3"
+  },
+  "physical_metadata_sha256": "cb91517c590318351a8b0aff985e5f606e047c6d850d6139f30e6bfb9cc850ec"
+}

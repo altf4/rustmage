@@ -1,0 +1,12 @@
+{
+  "name": "Swampsnare Trap",
+  "catalogue_id": 4285,
+  "oracle_id": "fc532d1d-6cf5-4b59-afb3-325d0bc0db77",
+  "facts_sha256": "d98bfc07e64baf3e8580d13443cba7035c7631cd1d1d8cab9ee1015b96bc4ef2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5ca4dc6fd184cfded5110f2404ade2c3240f94248d7b36f95bfda910c0c3050e"
+  },
+  "physical_metadata_sha256": "ff7b9b041aedbb2b77f8cdd76d0c946f14137f4195da2d5a9dc23fb7e9efebe2"
+}

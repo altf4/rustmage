@@ -1,0 +1,12 @@
+{
+  "name": "New Horizons",
+  "catalogue_id": 2925,
+  "oracle_id": "8834d3c9-cdb5-423b-bc78-94a94add5e74",
+  "facts_sha256": "50db5a0c29979778dda3bcdac8bf9d2371d23eb34a4b665e9c508882ed9d1115",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3998f9ca9d2fe81c6b0dd77cb4ee31404815edc7d191e1720f3813901b9eb0fd"
+  },
+  "physical_metadata_sha256": "ed2d2f31f3c6780e5af2b2fb9ee0d6f648e59710f16b772fee398a9bdde5c612"
+}

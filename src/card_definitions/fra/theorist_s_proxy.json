@@ -1,0 +1,12 @@
+{
+  "name": "Theorist's Proxy",
+  "catalogue_id": 4522,
+  "oracle_id": "0089acfe-da66-4dd7-b1e5-4d7407f58257",
+  "facts_sha256": "e0e5809b96907c21fc5f3f7380a854362ef24750eb7d302ead8a87455df9e58b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2478d1a73af7875b04bcc05bb278a50bb6d1c4d869d99aa64ee2dfef44a772df"
+  },
+  "physical_metadata_sha256": "5ba2e35caa2628c679a08400db04238aebe97391496927ea5764e02e02a2799c"
+}

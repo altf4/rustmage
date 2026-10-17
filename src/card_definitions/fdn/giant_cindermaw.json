@@ -1,0 +1,12 @@
+{
+  "name": "Giant Cindermaw",
+  "catalogue_id": 1738,
+  "oracle_id": "bd0c0e85-ff24-46c9-a547-4f633355c131",
+  "facts_sha256": "1efcdcf0e6b1cbd33787db8d68b38c016bc335c9013563c97ebda085b9ce7eb8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "67d21055a557a5685c1e4ce155fa6780a621071abdee2d5838fdd6aa19ba7fb5"
+  },
+  "physical_metadata_sha256": "9ab14668b5f4cc2a6f2e315d167350d4273ba1431302f4629f076d45720edd1e"
+}

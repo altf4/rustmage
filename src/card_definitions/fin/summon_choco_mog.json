@@ -1,0 +1,12 @@
+{
+  "name": "Summon: Choco/Mog",
+  "catalogue_id": 4216,
+  "oracle_id": "8b4bfdc5-8c0a-40c3-abbf-ada4a536dc34",
+  "facts_sha256": "48657f3101381f1ab61d97dc27a4e25aad97019b2c69809118907b427c99f7af",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "45cbd2627c374485e0732d9f68b5c6705a5b28105514ca635b6b3656fa67889f"
+  },
+  "physical_metadata_sha256": "7b2737d0ace1c09561b5dca2298a5ec0f1e0992d4f9ee1ec3d2ca7f3cd8cdfa0"
+}

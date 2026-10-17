@@ -1,0 +1,12 @@
+{
+  "name": "Boggart Prankster",
+  "catalogue_id": 478,
+  "oracle_id": "1bcac664-835a-4474-8ca4-263801bde08e",
+  "facts_sha256": "9514f2d80a5f0b93908f55f1914c2bed39cae07f52e33651b4f2ac6bfb31b815",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2fcb525be35224f00ff4e4fd7c37c59f96fa7673f9a889f56ee8486b71eaef7d"
+  },
+  "physical_metadata_sha256": "9b35723ce0a3123186aefa38acc7b4ccb54b9e658d942c3f950b6a6ed54fec2f"
+}

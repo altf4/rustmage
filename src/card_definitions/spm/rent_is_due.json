@@ -1,0 +1,12 @@
+{
+  "name": "Rent Is Due",
+  "catalogue_id": 3460,
+  "oracle_id": "3fe1530d-bcf2-440b-a905-5a2216daa7eb",
+  "facts_sha256": "f1b68e5ee09695715e6918335d7cad933318f6c88ad51b3d05e02da917c5d36f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "868ad0f2164044bbffeac20e743661c7381b275bf7b0cbadccd8060b48929fae"
+  },
+  "physical_metadata_sha256": "3765a3bf484434ae2bc80a9a7f9544b5fbb8a5f82d0a31e77e600e9ed3f7f420"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Tenured Tethermage",
+  "catalogue_id": 4385,
+  "oracle_id": "571cb06d-55b5-46e4-9678-1f74aca73068",
+  "facts_sha256": "d9e1c2ff54820cad9791ff6d84a213a4f008e264a5894ca8f2545c6615e1bcc2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "db2b52b79095c2a96403647ad13020435a0a3df204e1a381c863306508306fa3"
+  },
+  "physical_metadata_sha256": "a42148fa4b0402dde72568352f599728f152268809b95e49ffd60880252bafea"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Shrewd Storyteller",
+  "catalogue_id": 3852,
+  "oracle_id": "ec238819-81f6-4904-922d-298a17cbac7e",
+  "facts_sha256": "70636602ce21819a33e82c9b3ab2ef432c2c1552e6efddddc1665cf68ab0c4a1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5fef31415b76b56ecb9c9786e7b357b8036b706fe8a490b2cc24d0af7411114d"
+  },
+  "physical_metadata_sha256": "3687a0fa060e3af4ba1bdde00683fc34b309038e7a4586f80a113213e32f9281"
+}

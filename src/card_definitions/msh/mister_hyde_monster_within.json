@@ -1,0 +1,12 @@
+{
+  "name": "Mister Hyde, Monster Within",
+  "catalogue_id": 2793,
+  "oracle_id": "4a7c7ecc-df72-4da0-af35-dd0af58ec02c",
+  "facts_sha256": "2f15aa060718f276396dfbee0e9fca3b5c41e2559e792d72c5d9277a0df958fc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bf21b483ccf17b0642b4ebab548418a6153e3a397ad0b9afde8aaddbd3ffeb1b"
+  },
+  "physical_metadata_sha256": "b8f1fad56ae951b2f7055fd22909e8005f3146286b845526d6c475575e463516"
+}

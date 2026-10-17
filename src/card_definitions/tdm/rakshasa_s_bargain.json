@@ -1,0 +1,12 @@
+{
+  "name": "Rakshasa's Bargain",
+  "catalogue_id": 3356,
+  "oracle_id": "d87be8c6-7a1f-4db8-ada1-b1a030f03877",
+  "facts_sha256": "67924ba99e7fc7209be65a763657cc77a8e39eaf3d1805340b665707ea1bd51a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6b8b8da9e089f330fbba57ef9b87595f036fc6486b6ddd7083f949a0bb487c83"
+  },
+  "physical_metadata_sha256": "4d21cc8a18b44facb758411136a9bfae3d7e360a490a7823313c56247fedb993"
+}

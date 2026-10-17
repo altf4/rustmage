@@ -1,0 +1,12 @@
+{
+  "name": "Seraphic Steed",
+  "catalogue_id": 3793,
+  "oracle_id": "51622e89-aa5e-4dd6-a078-eb45e8ebb434",
+  "facts_sha256": "cb82d70fb945e2f08a81ac3b6d0289797eea2cdfe8f64a4612c15fbd9277b578",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "056f0e88cfdcf7ba64ec8642c1cc61802832eb923b05a6627c3085eef8d94b7a"
+  },
+  "physical_metadata_sha256": "07d2f9404e7c885a0563fc19d3d48f9cb9fe8c02545d27592042195cd691ff95"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Pearl of Wisdom",
+  "catalogue_id": 3117,
+  "oracle_id": "91ddd2bd-2dec-4670-8edb-e89c009b2187",
+  "facts_sha256": "0ff4781f44e3378813514b08c2a0b706b732da2bfd9cb3069f108f1dbe67d59a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "043734944df60be8704646a0286e7cd1431de7f65ff3a6a82f89cbb485178f1c"
+  },
+  "physical_metadata_sha256": "5c25e4fd7d5adbbaca69bac683b15ca60efcd04e5ddadad14ffe9ced8e78cf94"
+}

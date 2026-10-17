@@ -1,0 +1,12 @@
+{
+  "name": "Arcane Epiphany",
+  "catalogue_id": 204,
+  "oracle_id": "fe1556cc-32d0-4e51-bb15-f3fce669a5e1",
+  "facts_sha256": "09f155e15be1840dd630814e79332a2862b957af0f28118e6feb4d7951cdfc27",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e618b2b1126efea00631875ed4356eb7ed3e353a37602ef24c4fd89225d309c6"
+  },
+  "physical_metadata_sha256": "ba579c38a44fa9ab1f44340881dbe49fedddc305d9d85de8154921b650d50a87"
+}

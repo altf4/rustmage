@@ -1,0 +1,12 @@
+{
+  "name": "Hard-Won Jitte",
+  "catalogue_id": 1941,
+  "oracle_id": "ab433d41-e801-405c-81f7-06fa6640797d",
+  "facts_sha256": "222631289c824a4c728439f7efe12d15948a888e5a2ae01868eb0fec46de1818",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6cab306a237b80a8b3750e8ba08245610b3aa204bab645e9aef82924e63bd61e"
+  },
+  "physical_metadata_sha256": "8a418183506f3bd667a548ac90d5602a4b14600049a6988aa18571041f200bb5"
+}

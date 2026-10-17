@@ -1,0 +1,12 @@
+{
+  "name": "Elder Auntie",
+  "catalogue_id": 1275,
+  "oracle_id": "079f0d7f-57a5-4101-a9e3-c5a57148b3fb",
+  "facts_sha256": "d5ee2c9a048af53dc586719a3ee15744e0ba15cd0682c866b4a627602c7c1810",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "29dcad25109493d3577194562df1a1d6c66e25c6492f687ba6d5059019858e0d"
+  },
+  "physical_metadata_sha256": "9e6eb25cc688c74652a48cfcc8462fd13fb75b6bcf145d9de8112f020b0a7ee1"
+}

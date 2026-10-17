@@ -1,0 +1,12 @@
+{
+  "name": "Death Begets Life",
+  "catalogue_id": 1002,
+  "oracle_id": "53e86135-3b24-4618-bcc0-af4d81e672dd",
+  "facts_sha256": "b5d0aac8c93f9f828e4b81d070d5a2e026f8025e9904ea68af944a1f59c1986b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a974463a673324d90eb6dffe051bfc814f34234ee48041516e732dabd9422373"
+  },
+  "physical_metadata_sha256": "cd85b5263f39391b18571bd9a37a0433d5ac6d76a93f5d48a3b466906c07f74e"
+}

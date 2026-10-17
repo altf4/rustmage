@@ -1,0 +1,12 @@
+{
+  "name": "Dark Fortress",
+  "catalogue_id": 966,
+  "oracle_id": "40760bfa-a423-487c-ba29-043b2d00c736",
+  "facts_sha256": "fed28ee181770240f378695fdad9ae264daf606fb8bc4c7260f4d6c6f5492b7e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "316c8ed56fe2f5d00a33be266b50753a39dcdbe6dde74ba0586778d3327044a9"
+  },
+  "physical_metadata_sha256": "98bb234c0b7936682ee4bfb6378d9e2c99b467dd8ec966222948ae7b926c7ca0"
+}

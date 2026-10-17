@@ -1,0 +1,12 @@
+{
+  "name": "Chase Inspiration",
+  "catalogue_id": 730,
+  "oracle_id": "9c055ef0-1164-4a9f-80de-23405423aed5",
+  "facts_sha256": "83153eedbc3d87c4577cba5ce10d0c7942210ab5f3612f17c9fc9db7fcd85728",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "231a53de5f667253518431e5600aeb15ae1e02d7db707f7ad45d7b9c11d980ce"
+  },
+  "physical_metadata_sha256": "3b3775e7002b2f3ea6794250fc9f4b62e8dbb5d828e8417300237709b3ba8a59"
+}

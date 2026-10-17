@@ -1,0 +1,12 @@
+{
+  "name": "Construct a Cosmic Cube",
+  "catalogue_id": 835,
+  "oracle_id": "369aa9a6-af8a-432c-adff-ced2bb203dc7",
+  "facts_sha256": "f32e4f84c9c74dfd9c011a37b98d5432e49324403fa81fcf48aa9de044f83da0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b791f50df66efe9887ede707f8a96e80c09d6dc05c3fddc38b3b433b7aa3dd84"
+  },
+  "physical_metadata_sha256": "9ce8d40e40f87534925e4ef9e64ea9c01efe46fc2f440885a76fcfbabd7b04cc"
+}

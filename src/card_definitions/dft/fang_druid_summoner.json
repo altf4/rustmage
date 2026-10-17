@@ -1,0 +1,12 @@
+{
+  "name": "Fang-Druid Summoner",
+  "catalogue_id": 1444,
+  "oracle_id": "1a9bfe76-6c74-4393-b04e-461422a29ddb",
+  "facts_sha256": "23ed7a177525840b47774603a4418f11c440a9394f29fdfb221648eda26a51be",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "88a124ae6757a3ca2417baeda7f1f34565fe7133f1d44dd740dfdce35a577938"
+  },
+  "physical_metadata_sha256": "15a06e30ab5527a7e91b6a403628741b674d70b2efb26629c9c3b355fe052c7f"
+}

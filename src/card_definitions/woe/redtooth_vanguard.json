@@ -1,0 +1,12 @@
+{
+  "name": "Redtooth Vanguard",
+  "catalogue_id": 3439,
+  "oracle_id": "9e459e48-d2bb-4c4e-9a87-58efb56cddd1",
+  "facts_sha256": "146bd8daf545fd1fc7f870b1b4596e14672d60b1c9e69451b56c49a7b9036733",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3cf9f202e05f60347ca25cd78f00d7693b084fad0c7949b902f35d720e08af70"
+  },
+  "physical_metadata_sha256": "aeefa2a5a117f43edbed77282422bd1230213a2e5f7b905034a918b0aec799e2"
+}

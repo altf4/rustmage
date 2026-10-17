@@ -1,0 +1,12 @@
+{
+  "name": "The Vision",
+  "catalogue_id": 4513,
+  "oracle_id": "32aee76a-e738-4898-985a-801d1cce15ea",
+  "facts_sha256": "07fb1672c77832ab8731a941164bedcd79eb29fd5d8cfeaf713ae3e749fef05a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dbe92c630ad4bb8511b5c473f46cdc9eb0384e8f9ad91bd98e54883b2c6a8c71"
+  },
+  "physical_metadata_sha256": "e0be4f4d086ed74fa0375b15059a360f026318278151573cd097be8252673354"
+}

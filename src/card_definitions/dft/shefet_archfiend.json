@@ -1,0 +1,12 @@
+{
+  "name": "Shefet Archfiend",
+  "catalogue_id": 3824,
+  "oracle_id": "06355d3f-a82d-4f12-a399-016a12824795",
+  "facts_sha256": "e257c6f02f2cd7f592040698400989d61b8485593d145ee6a4cb312b126681dc",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2d05d444481aa5f7c95ec5844370bd0898fa22630775ffaeb55d49db2e96294d"
+  },
+  "physical_metadata_sha256": "d8c287002dc3ca01f598d7b5c72d91fbbd05521993acf927ddb4b4a2ece9526a"
+}

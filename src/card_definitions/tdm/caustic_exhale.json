@@ -1,0 +1,12 @@
+{
+  "name": "Caustic Exhale",
+  "catalogue_id": 687,
+  "oracle_id": "c4023e1f-26e3-4225-98d0-3d33f6654616",
+  "facts_sha256": "b6cb476034e48a2877b95fd6c271c2bda8eb8b1f8e465182b86ca02c3ba7a78c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "365cbe450558f89ed23bc85f4acb22de9b8f25f178f19064662d2fb7ac7d1ed8"
+  },
+  "physical_metadata_sha256": "8fc136e3fc5aab0e13d3a17bef2623c5ed88f96d7a138494bda6c09d4e3a5cff"
+}

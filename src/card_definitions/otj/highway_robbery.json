@@ -1,0 +1,12 @@
+{
+  "name": "Highway Robbery",
+  "catalogue_id": 2044,
+  "oracle_id": "df020a47-1784-479b-9882-be77b7f30950",
+  "facts_sha256": "7a7147ab87fc1a161084ac78ab26ca8cc2d9979b4db23997e3d7ea5dcf21d824",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1e6166be6a78cb4f9b1982efa1dbc732711e3dc24e1ae57fcf9b73c52898e0a0"
+  },
+  "physical_metadata_sha256": "ae2c4bc336c09b67a7bd1ff22dbd3e720945f71e95e9ec9b05e7670a36d21155"
+}

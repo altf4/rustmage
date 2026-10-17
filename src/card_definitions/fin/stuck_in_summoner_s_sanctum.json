@@ -1,0 +1,12 @@
+{
+  "name": "Stuck in Summoner's Sanctum",
+  "catalogue_id": 4195,
+  "oracle_id": "84d308ce-c3c5-4612-accc-6e6cc68a33be",
+  "facts_sha256": "2e38c4ce6b46b7b044e9400cf302205e244d7a29bf46ad0005aa119d4c322136",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d594bb1c12ca6c6ecb9f78735629c6fe9997cdaf389a0645e4cd5d4af90b1308"
+  },
+  "physical_metadata_sha256": "6706779824626d5b25029e4d25c169194e06286645e245a4d49613427d4e89d9"
+}

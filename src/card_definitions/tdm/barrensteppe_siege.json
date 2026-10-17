@@ -1,0 +1,12 @@
+{
+  "name": "Barrensteppe Siege",
+  "catalogue_id": 337,
+  "oracle_id": "228d3307-69a9-45ce-a610-77754ed50877",
+  "facts_sha256": "d145c2a340c24ba5a61299b5c8862b76081c1ad154bbd61b4512c99b6759c5c4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1da7e91cf9eeb6045e10af54cfdfd508cd25216f8d9a6be4611a282a765e53b0"
+  },
+  "physical_metadata_sha256": "e0b870d61f0d6d76c5791b175e4ee9d1e6e95eaf24166f2767ca06d5816f705a"
+}

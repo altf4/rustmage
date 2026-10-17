@@ -1,0 +1,12 @@
+{
+  "name": "Gigantosaurus",
+  "catalogue_id": 1747,
+  "oracle_id": "e666bae7-dd51-4921-8b89-7e8d423caba0",
+  "facts_sha256": "966e96331502fe82b56484af9ee4dc2a462a59e5cc37e766be304a7b9232efc4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b3b6b8802d9a765e7f072829ce0b35fa42cd3aba4fd9d40c7564bebc7686ea52"
+  },
+  "physical_metadata_sha256": "f6fa65b98ad62d04fffbf23dccb9c82e1e0908cdce38f907842f0a46662463f9"
+}

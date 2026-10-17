@@ -1,0 +1,12 @@
+{
+  "name": "Knife",
+  "catalogue_id": 2382,
+  "oracle_id": "7627163a-1689-446f-b5aa-a6c56aefb532",
+  "facts_sha256": "284b9242818c93f83ff833739e96b5c9ab1cd4f19798a74bcc20365e1a2dfc11",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "60b4ef9f549559bc08b21bc214d823fede9c37ae713d1399993d27bb5ede04a5"
+  },
+  "physical_metadata_sha256": "d9579aa6e2e81cac45bb99cab07f1e272e5ff01df04127058800dcea61d80df0"
+}

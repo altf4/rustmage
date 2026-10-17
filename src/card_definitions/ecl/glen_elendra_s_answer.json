@@ -1,0 +1,12 @@
+{
+  "name": "Glen Elendra's Answer",
+  "catalogue_id": 1775,
+  "oracle_id": "11ed8209-2184-4416-a8f0-72de00599574",
+  "facts_sha256": "8292e5254da3d8ee0c800a0fd60a3637c18900bdb8d5fa159868d941e5becf44",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1c0fcc7d0e86552fd8e3e728be8ec799bab06032d00b44e080e908f6d70e6eee"
+  },
+  "physical_metadata_sha256": "f1555b8d5f3b8fc9103222fc8bac831d6d949ffeda74bee57c21066cabee9dcc"
+}

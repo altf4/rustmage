@@ -1,0 +1,12 @@
+{
+  "name": "Deserted Beach",
+  "catalogue_id": 1053,
+  "oracle_id": "f0ec8681-da50-466b-8cdd-1dc710deccd9",
+  "facts_sha256": "4d523acf3c31b2f23bd4d9ca0004d9867ede408eeecdb669cee13f731fa2bf24",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bcdac350977b3d395d81a6cdfdf5fc10534515187bc0246b2b4c9f2ae30b11df"
+  },
+  "physical_metadata_sha256": "b47e9ff24c0d9e9c5e34af1314cc226b0e3ce289484f134c3c0bbdbc378a7c4d"
+}

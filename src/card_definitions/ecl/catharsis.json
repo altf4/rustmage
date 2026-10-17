@@ -1,0 +1,12 @@
+{
+  "name": "Catharsis",
+  "catalogue_id": 681,
+  "oracle_id": "9e3303aa-2484-4832-86ac-f5ae290d02f1",
+  "facts_sha256": "493d297e845c89999a26536c41bc7a457d057096e6ea7424f3bb263fe89b66d0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "224cb05b2b64dfa7c37843ded23d4e9074ded654df907debffed2a884c985d1d"
+  },
+  "physical_metadata_sha256": "de8e5195272e7f89b7ee0b281fc637288de2958492295ef1b371181c3d58b383"
+}

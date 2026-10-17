@@ -1,0 +1,12 @@
+{
+  "name": "Ruinous Waterbending",
+  "catalogue_id": 3614,
+  "oracle_id": "7d3a0216-871b-4c1b-adb1-de99b832f577",
+  "facts_sha256": "a24cbf83c4bf1ef58351f4ef38d74af854614b5a22a86481a32c958b7a49494f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cb460d90fd680970be34959aea4164cf8c39d1c8acbc6a63aed14e6003635717"
+  },
+  "physical_metadata_sha256": "0c4ad7a91658e7cea9f0975bd0bc7bc707efcb6c51071022ce9ef4b730ef91b6"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Embereth Veteran",
+  "catalogue_id": 1305,
+  "oracle_id": "2c232056-9dd6-4a78-be08-3bff19daa88d",
+  "facts_sha256": "c843d637c53a341dd9bbf326981e18ef1c9b632fefff311bfb94ebe861cb7aa9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f7f064ea6f64387ac3821d8cbd21810b2321fcd653ca4a64e4905657dc8ef3cf"
+  },
+  "physical_metadata_sha256": "a2af74e5a09f2a3789b1979c9125e255abe0136ef283ecf5727b41d855aaa4ca"
+}

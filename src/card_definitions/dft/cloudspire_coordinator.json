@@ -1,0 +1,12 @@
+{
+  "name": "Cloudspire Coordinator",
+  "catalogue_id": 783,
+  "oracle_id": "65d8b481-ebe9-4029-98a8-dd4693340bff",
+  "facts_sha256": "de015a24ddef35ee04a34f494fbf3d0ee48e674ee08ec19f51965ba1af498891",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f698322b1b4f154287179f2edc5c86cd57e5286c4c342a367de2ee2eb7a92ca6"
+  },
+  "physical_metadata_sha256": "8a96db8abd9ff0c8528bf18e876a2a771a0baed256a3861a89e239d714023eeb"
+}

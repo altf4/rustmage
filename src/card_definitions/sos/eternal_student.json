@@ -1,0 +1,12 @@
+{
+  "name": "Eternal Student",
+  "catalogue_id": 1379,
+  "oracle_id": "140cb5cf-8aa2-457c-9d65-5acefea00195",
+  "facts_sha256": "de1baeed4a0838c5d51a8ee2d149cf923de8ffc4621ea76c8aca3141eb3dcc54",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2a6ec7b1813f0535af12093e8b61c141c3a6b386d662ef0e70e15aa1e7ea796f"
+  },
+  "physical_metadata_sha256": "5971bb2c79ae127cb07ed3ac9902bf692df1dfea7f4aef5758e682c8d4cfb4f0"
+}

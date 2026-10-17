@@ -1,0 +1,12 @@
+{
+  "name": "Parker Luck",
+  "catalogue_id": 3102,
+  "oracle_id": "03d1a4e9-3ebc-491f-8741-5d933b500abf",
+  "facts_sha256": "220555ca0cb1a342d17c34bcc362cc9e13a80d5325bccfc858ff70393974415c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "40aeacdd14a6f57ed0f28d762e8a7886dd0c1b3cb9fee9682bc05187b9ce0415"
+  },
+  "physical_metadata_sha256": "df0601dc0405f75bd0bbbcdbfd749fbab104e5a4716a58b5ba31ee8a6564b127"
+}

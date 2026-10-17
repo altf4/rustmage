@@ -1,0 +1,12 @@
+{
+  "name": "Terror Tide",
+  "catalogue_id": 4398,
+  "oracle_id": "12be58f4-1c12-4bca-8069-1f049cd8a90c",
+  "facts_sha256": "fe2e900eb97bab429a1c072007ea275b59afa44bd04750f6f0627037a7baf3fe",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ad4512cb8910a590ca8fb5cba21545ec9ce3b723bfde3974c320298160bb4d44"
+  },
+  "physical_metadata_sha256": "32b041f35d9d68aacc18362c9d1819ac85fb7bedf823b347ebafa3e05e4b3d97"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Crystal Fragments // Summon: Alexander",
+  "catalogue_id": 919,
+  "oracle_id": "b291d046-7649-4a05-98c4-224ecaece912",
+  "facts_sha256": "2d005582a28ea329000c88e54565b7bba55701d657e9aa594fcf9189ff2ca23f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cd0e4b1d847008f33cabfa2845e18a6e02aa38209dd0ba4be6411eb957f751a4"
+  },
+  "physical_metadata_sha256": "c7a3a447ac90061b3eaa2b9026959b6258de826cc4ba3e141780a2caab1627a6"
+}

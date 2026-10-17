@@ -1,0 +1,12 @@
+{
+  "name": "Raucous Theater",
+  "catalogue_id": 3393,
+  "oracle_id": "04e5e84f-8fd4-43ab-8f9d-5b24646f7ae5",
+  "facts_sha256": "ee8ef11031402cc8f54817df67b414956b9aba28caf7a3d8ceb4fb2aa1aaa5b3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6090de611054b59ee72db5ff5472b73c23edbf17b6f7f64d3105c12075a60a5a"
+  },
+  "physical_metadata_sha256": "6ab7344533fa14e60095f7a2d104c1db71c86c72ceaa77bd21f70d8899dc860e"
+}

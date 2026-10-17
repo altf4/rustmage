@@ -1,0 +1,12 @@
+{
+  "name": "Insidious Roots",
+  "catalogue_id": 2183,
+  "oracle_id": "d75b2b8e-05c9-47da-b359-a867256d78ea",
+  "facts_sha256": "6815b6335e5f77ca642c8544a1d1d4ec48a02bdf5568eefc651ba8d2e290af0a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bd3150a37773fa3ba71ba4cbcd514f7a5d1462a7ff9d7de2333f086b37ea98ac"
+  },
+  "physical_metadata_sha256": "aa4d19c61e00611d2932fc164cea5f60e878b7e384d0cc5408586d3390d447b7"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Badgermole",
+  "catalogue_id": 303,
+  "oracle_id": "2084a7f6-226b-4fb4-a30e-703f674d33b4",
+  "facts_sha256": "a4433155f783fa0fa22f811e2aa3987ac261a2355ecfce0a490715f024c526af",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2acdd5a949483ba1e98f5ec4ea2c2702b2ce744bd5e3f188a774fd8d11eb2dc8"
+  },
+  "physical_metadata_sha256": "a83462b507f7df2c83ab664fbe38bb3764cfe901e7dff82def770061b62a7a2c"
+}

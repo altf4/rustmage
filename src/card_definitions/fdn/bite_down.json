@@ -1,0 +1,12 @@
+{
+  "name": "Bite Down",
+  "catalogue_id": 423,
+  "oracle_id": "623903de-3c04-4745-9af3-d7ec9fb2574d",
+  "facts_sha256": "f57c2a033d24c631355b8a956b88850405b3c75e229091a3637380958492528b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c398f8fe387c6229f0bc5145d8ff1ccd9345168eecf90c2e7253e960c20efabf"
+  },
+  "physical_metadata_sha256": "ccf25b862450d48f249ba0c3d66b9f6c21c65e613a95d07b0175420c28e0d4af"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "The Earth Crystal",
+  "catalogue_id": 4437,
+  "oracle_id": "5e7ef7fe-968b-4ada-9fe4-6fda0541aafc",
+  "facts_sha256": "b9dd9aabe2b078fe058b5352434369866cffd6dbeb8c0e75f0b232f6a98f0004",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "33de0d8318cd2a611d515c0a466baa6ace929dbc235d0cb64a767863bacc0399"
+  },
+  "physical_metadata_sha256": "56b12e3615f6a9a0048aa9377adbc755ee58725de09083e29564dc29011680ca"
+}

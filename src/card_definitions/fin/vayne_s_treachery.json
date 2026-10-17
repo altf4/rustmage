@@ -1,0 +1,12 @@
+{
+  "name": "Vayne's Treachery",
+  "catalogue_id": 4855,
+  "oracle_id": "93af8f9d-6877-4cb8-a744-c89186db22e1",
+  "facts_sha256": "211ad151edbcaad4eb2f05ef0dbbc370cbd3c613fb045cc0bda2a9dc48ef0d7a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5e001be0f094c9d996044fca0f80c66983901ded59fd9a6b07ad0183bdf9893d"
+  },
+  "physical_metadata_sha256": "55725a8c86e1452a1377d3e9fec501cdf97a31624586db0629f23d943e5b9232"
+}

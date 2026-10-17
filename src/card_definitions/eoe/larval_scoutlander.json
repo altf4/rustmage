@@ -1,0 +1,12 @@
+{
+  "name": "Larval Scoutlander",
+  "catalogue_id": 2446,
+  "oracle_id": "b3f3d55c-a3f6-441b-a380-60c0734dc514",
+  "facts_sha256": "05fa36872143f8f369ff6f55874cac60d85f06f5e8c32052cd4583334a5e3e41",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5c587303a0c763a34a18de45a32a72d7f989fed0a71dc2761ccd57e52f0e84a4"
+  },
+  "physical_metadata_sha256": "91f8ebcf9eec7b13b4b5586f99e65065568d07a91b9e38992cd7158a232c4012"
+}

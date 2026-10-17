@@ -1,0 +1,12 @@
+{
+  "name": "Eclipsed Merrow",
+  "catalogue_id": 1257,
+  "oracle_id": "a3a00b62-f07e-44ef-8d97-22a3e7a06f72",
+  "facts_sha256": "e91fcb319e2d1ed1983d7dad252c5c8a4b12d31d6836ea726ef3cbf0a7cc4716",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5f4e4b14464e7f77962f073049427ac235bf33831c5fdba2d3fc68000be92b13"
+  },
+  "physical_metadata_sha256": "4b02840376e61935cafe7906200081a56aa1865f01989a62fa19acdfa351608c"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Autarch Mammoth",
+  "catalogue_id": 272,
+  "oracle_id": "eb50b5f2-4840-4f90-9c85-40fc581be9c7",
+  "facts_sha256": "a21b1a6d134cdf4811b1cb62623a43aff3f031f0705c063a3a8fd4823f51d986",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fe3c2e0bd9b4cddc2f0b39ff3a727301892f672a403e034c1732e7b716c262af"
+  },
+  "physical_metadata_sha256": "6c4a174a34cf0e48a2b79b59871f450cc1fc58a801f3c415e65360128a3720ed"
+}

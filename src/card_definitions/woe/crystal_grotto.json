@@ -1,0 +1,12 @@
+{
+  "name": "Crystal Grotto",
+  "catalogue_id": 920,
+  "oracle_id": "f15fb0cc-8e96-4f03-94d0-b51410415afd",
+  "facts_sha256": "9fc98913447c6318cc4fa3fd2ce664bfd8a92e356fdafc43be80fe1c04f41806",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "06e6d0ba94014107fd665df9235655fd71a6fb250353e5b6555e8f7a5ed39486"
+  },
+  "physical_metadata_sha256": "a8c0935e68d996b6ec7beab20c75c90128e4411360e06662b5b3627b15f40bbe"
+}

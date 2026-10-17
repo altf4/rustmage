@@ -1,0 +1,12 @@
+{
+  "name": "Dazzling Angel",
+  "catalogue_id": 989,
+  "oracle_id": "7de464e3-fae3-44cc-8233-776fc727c00a",
+  "facts_sha256": "837328aefe45c897b1d2d0255d29086f8ebbd9e9088989782a5783add6732ced",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ed4d2cf238a603ca029bcff6e4ac4f377216665fb8f69a88622fd6862d38e9a7"
+  },
+  "physical_metadata_sha256": "c2b29818df600318fd73f3f05538e86aa51790965d575d867bc8f887cc3d83c4"
+}

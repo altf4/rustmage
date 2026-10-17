@@ -1,0 +1,12 @@
+{
+  "name": "Redtooth Genealogist",
+  "catalogue_id": 3438,
+  "oracle_id": "f6cb9c5a-601e-4580-9fab-903e9b00e35e",
+  "facts_sha256": "0f6779d682f000d320f0f0ba69e2de1fa60a6d0da5c4eac4da45fbe495a6d333",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fd0a78c9e82e5fc2dfdada5f9c888f487fce0aed176345be5daaeb6fa52e682a"
+  },
+  "physical_metadata_sha256": "80452f0c6cf8c7a99342f44529cdccaf94041dfbb77e3cf118be3957712e2dc2"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Pillar Launch",
+  "catalogue_id": 3164,
+  "oracle_id": "a39c758d-82be-4d8c-bb3e-8ee8a6c6788b",
+  "facts_sha256": "7d146cfdd6db580dae74e3aefbf2154c21d712f4fe5b56a932bd18455dbcc2d8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a726d90a88fb65d015fe46f84a606482f0ebe569979b6b47e5816549b90508c4"
+  },
+  "physical_metadata_sha256": "1dab2403e572ffdf7c488a23a48def514ae6400d6514b773c2caaad27e818de1"
+}

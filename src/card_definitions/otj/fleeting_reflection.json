@@ -1,0 +1,12 @@
+{
+  "name": "Fleeting Reflection",
+  "catalogue_id": 1554,
+  "oracle_id": "c915f815-77d7-4e08-b178-82b29a58bb03",
+  "facts_sha256": "03823a70dd25432b5665385e204aaadd61580597fd4150ffe9f0b566e4967f95",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6c9580658d30b8f1cbbb90d4258d23b1c32bfeab24da68f98d9d7b13944927e2"
+  },
+  "physical_metadata_sha256": "d41213b0aa14afa35b7051d860427d9bcf7a79a1779f38d7f3137757a48e1b30"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Orysa, Tide Choreographer",
+  "catalogue_id": 3044,
+  "oracle_id": "cf56a5b4-48fa-4d53-a4b9-14afe079c1d3",
+  "facts_sha256": "bee3ef5c11dccad1ac0f8009a81be1a4646cf21f305528055fb8370595619871",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6ea7f3ce680399222d44ea5e9b9d626a29ba0335f55a680e9273a7513fbf4614"
+  },
+  "physical_metadata_sha256": "a0ff17e48d3906cc39e35548c4724621ff77d0a475f40f888208db3ef6004c4a"
+}

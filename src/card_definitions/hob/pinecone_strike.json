@@ -1,0 +1,12 @@
+{
+  "name": "Pinecone Strike",
+  "catalogue_id": 3165,
+  "oracle_id": "961e3023-39ea-4141-99b6-738280a2815d",
+  "facts_sha256": "10e0b5c1e20922ece5cb44fc98f936d50754782f3b9db838dbc0b0391afcabab",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7d99a1bd5e53b7f4befa5731b57b6eaa656f35693fb62bfe5602f5ceef3c8a79"
+  },
+  "physical_metadata_sha256": "62ad8ccf4108d928a7e398e2481ad147bade156354a99833a4e8a012cccf045a"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Diary of Dreams",
+  "catalogue_id": 1071,
+  "oracle_id": "98b43c61-4563-4a29-8cf0-fb8b34f337ce",
+  "facts_sha256": "cee1f5713f916b4a27afbde1824b603a17cf8b19b90feb3d0e722c2c12d9742a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dc2d7fa0162573000737ede0167f7e621aa3cc28836f9e2dd85d7a2f25c1b7e8"
+  },
+  "physical_metadata_sha256": "6d27be2585a6d1387ed9bfd7a61ba2e33ad5bf7201d645f484683fc371fad4f9"
+}

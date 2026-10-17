@@ -1,0 +1,12 @@
+{
+  "name": "Mystic Archaeologist",
+  "catalogue_id": 2898,
+  "oracle_id": "b77dfe2a-ebc9-46b0-9134-2ecb2abdd8be",
+  "facts_sha256": "96b095c105e01ce91816d5cb448007c955a1cad520425749f42349bbfe39492e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0a1c6bdaf8e27b840a2b5f3132ecc7b9199bc6854eb84ed5f2d83e3daceae68e"
+  },
+  "physical_metadata_sha256": "f333286621ebf245c4c5f734a9524338fa9185e26cde83c369ad1aa6b8b7d5f8"
+}

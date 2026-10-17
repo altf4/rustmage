@@ -1,0 +1,12 @@
+{
+  "name": "Merchant of Many Hats",
+  "catalogue_id": 2722,
+  "oracle_id": "23820b45-2f3a-4b6e-99ea-d84caccb7e37",
+  "facts_sha256": "45bd9814096173bc0c627d3181c51906e0b834531f912e9c0d45a94769c8e7b6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "874a2cb942eeb197dbda86b87bf29563cc1a12ee2441d5cec2edfbfcc5ed9437"
+  },
+  "physical_metadata_sha256": "81b423b7244c8134e153fa6bde079263023b563def771c940002fbd1693c5c50"
+}

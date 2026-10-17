@@ -1,0 +1,12 @@
+{
+  "name": "Sibsig Appraiser",
+  "catalogue_id": 3858,
+  "oracle_id": "5b51958d-533a-45e4-aac1-3c157670978b",
+  "facts_sha256": "9d998ea01f4fb3e96d5357cb4f2d661969e1c6bba5dfc8dfd9efd1828961da55",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "45e0e10465618cec654b942b886ac6d4e2aa8d359bde2aac67e78987f6110291"
+  },
+  "physical_metadata_sha256": "fc2e1fd7ebfeae9cafef119dee39b6d990b95f62430ec8423fa939790419e71d"
+}

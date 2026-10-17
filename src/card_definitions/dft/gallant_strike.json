@@ -1,0 +1,12 @@
+{
+  "name": "Gallant Strike",
+  "catalogue_id": 1669,
+  "oracle_id": "04dcda3b-3401-4523-8b97-b700a14feb36",
+  "facts_sha256": "12d05f8f96d4a4497d3e576ceea75494b6115292a496ee13d1f09933b10813cd",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1bc0ddcdab33c1b069d898e95de34cfa515056a017e1b18fa97d20d64253bb6a"
+  },
+  "physical_metadata_sha256": "0e8e2aaa9808f476f03db1b2b51a5f511f1d5df209ce6812fe1bc11ffc7b4a07"
+}

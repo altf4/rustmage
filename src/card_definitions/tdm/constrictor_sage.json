@@ -1,0 +1,12 @@
+{
+  "name": "Constrictor Sage",
+  "catalogue_id": 834,
+  "oracle_id": "abfb7234-c5cc-4e0b-9a67-d66473f918fc",
+  "facts_sha256": "3cb9ff718a5201978e5f68d0d927509155a7900bdb4d47e4de7f8ba7833fc821",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3d863771c77e638cafdbe77887142cedf49dee71e10577b368470b8d17ebd0c5"
+  },
+  "physical_metadata_sha256": "f85a74c627289f363ecffb354144c55be402e978d99183507d92e78cd58bf873"
+}

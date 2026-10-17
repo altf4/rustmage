@@ -1,0 +1,12 @@
+{
+  "name": "Deeproot Pilgrimage",
+  "catalogue_id": 1024,
+  "oracle_id": "188656d8-4ea8-4e58-88da-b010a16eb6f2",
+  "facts_sha256": "ddaf126d10a977873da27e242b92b818e0985b6f4d25e09ffd8f9276bdcc9d84",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b9db5c29d1cc2eec5a8c3c7e43e6e6163403604b69cbf79c28c1825a90654bc4"
+  },
+  "physical_metadata_sha256": "316fcc3065df832d8852b3b3e49a9f417382202b1753bbec604586a32304678f"
+}

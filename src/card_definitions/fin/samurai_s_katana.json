@@ -1,0 +1,12 @@
+{
+  "name": "Samurai's Katana",
+  "catalogue_id": 3666,
+  "oracle_id": "9b8b5812-73bd-453e-bdff-aad1fafa9226",
+  "facts_sha256": "6fe7aa4720152f82bd157234864aef14bb6897b2ada571964724a1f21ffdb57c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f4288bdb6bca64226f8b99ea9ef527ca5c905870c5a0db56bb8c11d8aa0da774"
+  },
+  "physical_metadata_sha256": "283d43d2cc3c58daae50970d0ab3daa2ad624e69d3939e074f42b5e03ce01b3b"
+}

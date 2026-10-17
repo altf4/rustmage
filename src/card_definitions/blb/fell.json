@@ -1,0 +1,12 @@
+{
+  "name": "Fell",
+  "catalogue_id": 1488,
+  "oracle_id": "8f968470-ce00-43a3-95f5-2e3fe987be19",
+  "facts_sha256": "f2d0b90f05f2a5acc297a6958ce6857852fb05974faf80c995cda52b274348a9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "43770cd357bb1a8a3b3f3795008028745161977b0324cb8259e5b36c1572fb3f"
+  },
+  "physical_metadata_sha256": "4d11bed051cf31178b55f61d57427a0713f0e832c140a76459456d70a7707ce3"
+}

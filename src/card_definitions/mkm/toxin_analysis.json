@@ -1,0 +1,12 @@
+{
+  "name": "Toxin Analysis",
+  "catalogue_id": 4645,
+  "oracle_id": "1f3b0b15-2c38-4aaa-b527-afbb540a6715",
+  "facts_sha256": "801951b129f6ed542308946c82e8b129a72399674ab29c47f0bbbcea21a5853b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "710daaad451303ba0bf025a70644a4525d08b68c84f1030508e4520a055e60e6"
+  },
+  "physical_metadata_sha256": "d39af19a8b4f4819d22c66f5af4f09f9b7a7e0d325d16adc55e7b2efb95c94af"
+}

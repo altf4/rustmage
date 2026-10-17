@@ -1,0 +1,12 @@
+{
+  "name": "Ingris Stingerquill",
+  "catalogue_id": 2168,
+  "oracle_id": "bda098cb-31ec-41a1-a9d7-122877cc69d2",
+  "facts_sha256": "16429f8b9f96ee3ec366e689a980cb49a99c60f5a0f269f1606d92f5c64bc16d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7af56185eb09f96ba4872798bd86d23c09241d28a4cc9ca4e4868207efe65681"
+  },
+  "physical_metadata_sha256": "a3418485aec1c43169e5a4d412af6c0ab0c24190934c949e8e2d104596acf877"
+}

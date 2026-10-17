@@ -1,0 +1,12 @@
+{
+  "name": "Sami, Wildcat Captain",
+  "catalogue_id": 3664,
+  "oracle_id": "c4175a34-70bb-47e5-8406-efdc4d2cd079",
+  "facts_sha256": "e8a5e36b0e8291318dc85709d74b3a12287fdefa574a0ea27806353ed214db01",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8c516f4b1519bd51112c6d1ad551112e33e6991b4ca3c0fa56eed560a6cf02cf"
+  },
+  "physical_metadata_sha256": "8a4c38e94872d0d68b9014d5343fcd4b455f52c9798c90b4c6328a6900eff0ce"
+}

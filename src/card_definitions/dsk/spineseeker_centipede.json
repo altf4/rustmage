@@ -1,0 +1,12 @@
+{
+  "name": "Spineseeker Centipede",
+  "catalogue_id": 4047,
+  "oracle_id": "dcfa0476-e88f-43b4-8011-d78a3de97f2a",
+  "facts_sha256": "ac3bcd0ca1430860bba8f019689d6eace686c4768314297f1ed47fd7bd012745",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "75d02988eb39098201e9c4445df4c7b5257216b01c078a831a4acfad9f4fd2bd"
+  },
+  "physical_metadata_sha256": "98df462a00f9acc3bd4592f80bc75f2754e60588d374f6f62cbcea822cfe6c0b"
+}

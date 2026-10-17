@@ -1,0 +1,12 @@
+{
+  "name": "Perforating Artist",
+  "catalogue_id": 3128,
+  "oracle_id": "a3643f66-dfa2-4275-a093-23e162496354",
+  "facts_sha256": "89dfc0fea77877b445113c83192d98b79741c6a3f29c916617776c3cb0e1a606",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3e446d6cf74795f4b2b192ac61a39cdcd22c5f47f38a84665e4d09c1bc8c9381"
+  },
+  "physical_metadata_sha256": "3114234a605e3ac183853f15dfc26ab36087aadd10a5c33524363aeb537db251"
+}

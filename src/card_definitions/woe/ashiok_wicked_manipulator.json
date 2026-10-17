@@ -1,0 +1,12 @@
+{
+  "name": "Ashiok, Wicked Manipulator",
+  "catalogue_id": 241,
+  "oracle_id": "67d66678-a8e6-4f80-bade-1f1daf4b0610",
+  "facts_sha256": "256ede756ccb719b73de0e6e311b8d79e4a92605c9b192741b5ccfb4d1d6d093",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3906d69e5076f29f94f75988136a7a7f5bd2644339d8d4363150d2112298992f"
+  },
+  "physical_metadata_sha256": "890e4c8b1088cc5846ab1d89d183d809a08aa2365e280272e0df546e19f95088"
+}

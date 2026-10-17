@@ -1,0 +1,12 @@
+{
+  "name": "Fractalize",
+  "catalogue_id": 1613,
+  "oracle_id": "9e7bd032-8946-4d72-9910-b224823bc940",
+  "facts_sha256": "16f2272353ad5a81320a4ecf392450ce03b3203a9676c1a0901f3ee8817760d7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "37fe147c7450d818670ec765d21d86360fbe2024be4088a510981ac6a4e3406c"
+  },
+  "physical_metadata_sha256": "31aba144be7b0ceda7c1ca16eb7a1d69399386ee332f47b967215fd2669c7895"
+}

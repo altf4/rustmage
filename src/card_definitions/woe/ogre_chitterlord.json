@@ -1,0 +1,12 @@
+{
+  "name": "Ogre Chitterlord",
+  "catalogue_id": 2994,
+  "oracle_id": "532cac99-e3cf-4869-a19f-cba67a2a6fd0",
+  "facts_sha256": "3ca465f656d7b84f72a340f3e7c6fa713dba0da44482ff18354d7a75bc3ae0d9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d4c91200a6b9eea16131a542fa1c83247889b4f0e1a95fd39b899345b1764423"
+  },
+  "physical_metadata_sha256": "171e0fbe3d40d250e95895acbaeffc9666c6667d7cf6e53d0f8b2e2d1289924f"
+}

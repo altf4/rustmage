@@ -1,0 +1,12 @@
+{
+  "name": "Enter the Enigma",
+  "catalogue_id": 1345,
+  "oracle_id": "67554654-e751-4679-9e92-f3588525ae4f",
+  "facts_sha256": "8b42ae4e153c8df292ad8921172cd4c340a9665af8bae08e3a5746d87cb8a8af",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "477c37f013effbd8c5e81c352529c5d08ff98f34396e1a732ef0620ec75cde17"
+  },
+  "physical_metadata_sha256": "4a8ec7b86a38b85608e2409cacf58163f9d2e1a4d11dc9e6cb0d5c23ea95a5f5"
+}

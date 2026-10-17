@@ -1,0 +1,12 @@
+{
+  "name": "Cleave Shadows",
+  "catalogue_id": 5214,
+  "oracle_id": "de52b262-418e-418c-b2aa-8d5a776e3a75",
+  "facts_sha256": "37c4342872a2b1706f5dfe9ee7600644e8aceb57b7cdcd93ddbfa0517c70ef1d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3e6e586f3976b06666fe40fd6b2347995352a3e525f7325cba58d2d91c112f07"
+  },
+  "physical_metadata_sha256": "85286ae0e5639649a2223dfcbe004c8d8cd3f41ed796f3734f95b5504099f224"
+}

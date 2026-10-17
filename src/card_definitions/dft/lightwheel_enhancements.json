@@ -1,0 +1,12 @@
+{
+  "name": "Lightwheel Enhancements",
+  "catalogue_id": 2503,
+  "oracle_id": "17fae94e-558f-449a-b30c-e3c37a068b79",
+  "facts_sha256": "72cab838c387d8cf25d0c9f4374e9ee5a99a6c6839f5f4be443c558ee8a1e407",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5d32215dc1c0be5b0a372379d81097b7967235434d38a815158d4eaf460e4854"
+  },
+  "physical_metadata_sha256": "93a6aaa2709cdeb3ece6bba2dafe7229a7216fc5a061c0d9e33b5036d0bca170"
+}

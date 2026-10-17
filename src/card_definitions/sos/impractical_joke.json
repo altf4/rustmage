@@ -1,0 +1,12 @@
+{
+  "name": "Impractical Joke",
+  "catalogue_id": 2151,
+  "oracle_id": "c8da73ed-2834-4094-8723-a4ad75660290",
+  "facts_sha256": "919597c9cc417dabe03a3d3369c4efa0517221819f0df71bdf8ce4dcc624b8fa",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "002e08b60b09a9610b88ec19e191290c9233e8f410c49407104e6f9620622e16"
+  },
+  "physical_metadata_sha256": "7364eedee678d68b72db8dd79af50e724c1654c7ff73e56471e33fecc17c8593"
+}

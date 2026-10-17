@@ -1,0 +1,12 @@
+{
+  "name": "Sokka, Lateral Strategist",
+  "catalogue_id": 3954,
+  "oracle_id": "427f8ef9-12b3-4fa0-b303-28153566b6dc",
+  "facts_sha256": "222ce99cae6cc7bd04392f9ac7a8805770be37c08e7ed84799da48ed1533b348",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "40e02de2719b53740749087f8bd1139fb422c4d243c3ec8558d40bba3b029adb"
+  },
+  "physical_metadata_sha256": "a6c0b346ec1299d582ef2331025472841937253ece3c6620480f9a971d240a2e"
+}

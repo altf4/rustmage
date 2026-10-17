@@ -1,0 +1,12 @@
+{
+  "name": "Alien Symbiosis",
+  "catalogue_id": 130,
+  "oracle_id": "19504e19-2886-4d28-a813-b798a9a446a2",
+  "facts_sha256": "b6b5e3a385fe2dae19ae8e362c7602480914a8784ae2325815ba5064e9390543",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e9267ef883e3ee8127e7e9374d821df3d59533ae8880d8d54cd30581b9e8731f"
+  },
+  "physical_metadata_sha256": "15b278ceaea7b0ad9890569425445fde75bacc74c7a17c8982d132cb84b93408"
+}

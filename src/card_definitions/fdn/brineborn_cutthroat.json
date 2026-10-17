@@ -1,0 +1,12 @@
+{
+  "name": "Brineborn Cutthroat",
+  "catalogue_id": 555,
+  "oracle_id": "916cb70f-3b06-48ed-972d-75f805aa0892",
+  "facts_sha256": "15d29cde60bb8fdc5a688b263577dc4eb3cef1822e7b6cd0aaedc72cb47c2e19",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "90b2de216db1ecca613c41e00d1571912eef7f9911ff7d34d7fe90e444c3fb51"
+  },
+  "physical_metadata_sha256": "c6e4390b24a463dddf27eb052f9c745d4dff644df2e983566b5d91732e3a179c"
+}

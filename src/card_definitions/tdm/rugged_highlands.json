@@ -1,0 +1,12 @@
+{
+  "name": "Rugged Highlands",
+  "catalogue_id": 3611,
+  "oracle_id": "6c922206-6e68-4dcd-9559-88da1074f2c4",
+  "facts_sha256": "229cf0320f309f152fce970274deb5cd20e5eabedf38738216ad6abefc770e3b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e46f522f923b5be517593851dae2f26286f2cac427cfc30736f3c30efa0e5185"
+  },
+  "physical_metadata_sha256": "135ccef42e271a00e01159fef94f55f4e42f76338c15f2356ce1b23b7e506692"
+}

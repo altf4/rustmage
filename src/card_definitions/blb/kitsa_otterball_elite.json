@@ -1,0 +1,12 @@
+{
+  "name": "Kitsa, Otterball Elite",
+  "catalogue_id": 2378,
+  "oracle_id": "16414460-11ce-481d-ab54-6f0e0ea7d83d",
+  "facts_sha256": "ab0ea0ce4566e75584175a40e6680c7e9756e954a0538ccadd44947f1ca94143",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c4ff6fbf1d45ff60bd5d231ca8a8f270a1fb55f578ec33293168865384cbb141"
+  },
+  "physical_metadata_sha256": "5bd4fe0cabf5df2f98f33e143e5e0c5d1b63797f9b537f4f55d77960f368259a"
+}

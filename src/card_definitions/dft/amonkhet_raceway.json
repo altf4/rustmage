@@ -1,0 +1,12 @@
+{
+  "name": "Amonkhet Raceway",
+  "catalogue_id": 149,
+  "oracle_id": "fe174586-d36b-40f6-babd-1f98e76eec22",
+  "facts_sha256": "7a5d44e0c7c6cb3d53c3970bbb0ed8e5d36f3f7cc87f0ccc76614d202f1ee485",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2657e2dbc03de34d46311bba73183b2e80b6bbc3e325cf94144a67adbbcb6de1"
+  },
+  "physical_metadata_sha256": "0f9752a186894e8e747ab3ada162501f052da6f78dbc1a535817877045dde8f5"
+}

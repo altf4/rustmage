@@ -1,0 +1,12 @@
+{
+  "name": "Authority of the Consuls",
+  "catalogue_id": 273,
+  "oracle_id": "55f3c721-e13a-406e-bc8e-d6cdc91ac477",
+  "facts_sha256": "d73733d066dde1eadfeb2ca7d0747035cc45826b1be1b96539b0eb879a453e0d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d158932b934f02a94d0fce46915cdce540b9011e5c75426f0e96a902fe7b12d1"
+  },
+  "physical_metadata_sha256": "cc3f09226367c12539cb21314c487045f683a945dbcfa15a1fdbc8776d1c499e"
+}

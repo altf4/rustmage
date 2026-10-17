@@ -1,0 +1,12 @@
+{
+  "name": "Refute Destiny",
+  "catalogue_id": 3443,
+  "oracle_id": "2a18b3f0-8a78-46d8-b60f-3cd634062f1b",
+  "facts_sha256": "82ca2291789c8d939819d6d822376e820921609e88cd214ab06642f5d52597a4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8e775a0c90bbf557fe5ca1ecaca8bdf0dfc0ef5292eae47c81aa8eccd07daf3f"
+  },
+  "physical_metadata_sha256": "7d4b035e65667161eebf08266007eff5bb936d5f0a480d88f26254bfc5b1fafd"
+}

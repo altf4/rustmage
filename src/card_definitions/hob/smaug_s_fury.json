@@ -1,0 +1,12 @@
+{
+  "name": "Smaug's Fury",
+  "catalogue_id": 3934,
+  "oracle_id": "5c034266-8e63-4b43-8f9e-564e6fff6ec1",
+  "facts_sha256": "646e54491271e00644fc1a8cef5d0141b1798d7083115db0913c7a71329b1f8e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9ec918fe3c2ce9996b1eb5e731140d4a23cb0e58bdd03eef37870199588ec6ea"
+  },
+  "physical_metadata_sha256": "d00fb33e0133bdcafa09556e11ae810fc116e42f5fc5e4433f950fa68716d0cf"
+}

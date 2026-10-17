@@ -1,0 +1,12 @@
+{
+  "name": "Stinging Cave Crawler",
+  "catalogue_id": 4147,
+  "oracle_id": "a9a35c77-637f-4d56-afa2-6c8a4ded4838",
+  "facts_sha256": "f20a42999882f93d6775ccad1c6f3dbe5bf40220f9d8704890d962c71e5ecfa9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b2917175753431b6ec26e870b01977cdf2056372f925dff0ba3b859e12b876f4"
+  },
+  "physical_metadata_sha256": "8632df66b650c45229718f7fcdfa08b43ccdeb3a6750a34da4c9ed55f3b15854"
+}

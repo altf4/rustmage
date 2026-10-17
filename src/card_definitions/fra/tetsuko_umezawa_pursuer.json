@@ -1,0 +1,12 @@
+{
+  "name": "Tetsuko Umezawa, Pursuer",
+  "catalogue_id": 4406,
+  "oracle_id": "708d4567-a5a3-437f-bae4-ae10f1537aa9",
+  "facts_sha256": "7e441a77011e4fcb6672b885fa143fa89a6000b512ece13a6d180a4f6308bd9f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "28db548911c447906bc4f621337aed1f025260138972f4e5b30245e15a5098cb"
+  },
+  "physical_metadata_sha256": "887a248c778bc8966b78e6add23b164f64bd93457d62336679685c97c8d9274d"
+}

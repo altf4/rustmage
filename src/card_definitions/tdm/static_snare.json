@@ -1,0 +1,12 @@
+{
+  "name": "Static Snare",
+  "catalogue_id": 4118,
+  "oracle_id": "b5b742d2-f19b-47c9-84bd-e85d975900e6",
+  "facts_sha256": "fd337069a7b16faf6db83030cd85c484f4de8bc08e323ec7b31a9a051b6cdb10",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d2d18bfe353957aac6db5500d9caa373b1e1cfb3aafe6fea911f85c6dd1f8d60"
+  },
+  "physical_metadata_sha256": "8d709be7c06e84a389b34845c7984e9e6458f72d386c393b2b0c07af9bef7813"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Shock",
+  "catalogue_id": 10,
+  "oracle_id": "a9d288b8-cdc1-4e55-a0c9-d6edfc95e65d",
+  "facts_sha256": "e5ad462b17210befb185c4dfed6b4d8ce37d097822f37d782b021f5a6d35df5f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e82c2cb0bcde191fcfdbc6c18d0163917b8f70f91fe20a154d2ef36b2896eec7"
+  },
+  "physical_metadata_sha256": "f277cfcbd1ba9db6fc5d057325475a49c551a1193117ac9276ec8a6a9356acba"
+}

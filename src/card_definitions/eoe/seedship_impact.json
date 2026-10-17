@@ -1,0 +1,12 @@
+{
+  "name": "Seedship Impact",
+  "catalogue_id": 3767,
+  "oracle_id": "c6d89c4a-351f-4d63-ba57-b978a695191e",
+  "facts_sha256": "89c9c5a06b499c2cbc14953a836158b340c15f6ba2bf1a00f72d28172ab92836",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8fb1522937019bc0ae4f1d19b069ba2a1aeff747a3166e30fd55ac796c22d99a"
+  },
+  "physical_metadata_sha256": "c0be237dc121ab20b66b015e782408e29228cd1d05676cbebd6e77e699a527ce"
+}

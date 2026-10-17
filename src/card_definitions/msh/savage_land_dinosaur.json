@@ -1,0 +1,12 @@
+{
+  "name": "Savage Land Dinosaur",
+  "catalogue_id": 3692,
+  "oracle_id": "6e21ebdf-b97c-494e-a1d5-19db1b7d3016",
+  "facts_sha256": "f85da9f4aa0ff456689ba4ed2cc86c3250851db6b5e446427ead09927654a860",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5bbb38214a2db7aa71718c6d34c3737b07a9e27847a19aed0297cf28c9d9092c"
+  },
+  "physical_metadata_sha256": "8d5dd908402559cec18b754870b55d9c42a048e421be0e1e69c0bcef104fe2d0"
+}

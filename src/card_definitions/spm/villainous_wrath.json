@@ -1,0 +1,12 @@
+{
+  "name": "Villainous Wrath",
+  "catalogue_id": 4895,
+  "oracle_id": "1c7c1867-20cb-4035-bb2a-42760edf0a55",
+  "facts_sha256": "2d92229a196a75ae58ccdc2051cb0477ad12b510ab867e11e4c0ea97d116f50f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "663e169f7d48573fc8d0b46d601eb9d24dacab59037dfddd6a38d8432614bfa1"
+  },
+  "physical_metadata_sha256": "55d5bdccf56ff22b0c0d38da0c1d7c24eeb840efb9e994bf6bd6a566c0b75b06"
+}

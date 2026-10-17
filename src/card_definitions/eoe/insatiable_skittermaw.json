@@ -1,0 +1,12 @@
+{
+  "name": "Insatiable Skittermaw",
+  "catalogue_id": 2178,
+  "oracle_id": "69a68dec-4b01-4528-81fc-a3c5f5097f72",
+  "facts_sha256": "d9fd346e8c3d34ed1b728efcef8b11282a51a2dad66421306a9d533d8fd0830d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e2892e032f21cf74935f994e5d3663d7eed00d142cc0f30e177ab47816274ca6"
+  },
+  "physical_metadata_sha256": "63cc727d1483014b0b69084b3b4f4171f2e7d738910202ad8140b48c923b09c6"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Malamet Veteran",
+  "catalogue_id": 2639,
+  "oracle_id": "25a9c864-59c6-4230-a234-bf78bf1ef24c",
+  "facts_sha256": "672edcfff1f4a91be40c88b9669f205b8363156fdd8978cfde3f6ee170b04e2a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2a8d391698ff0de34c15616f6557955ac033f7899a7a5b4688a9607de4d038e1"
+  },
+  "physical_metadata_sha256": "671cdef2ec836000699fbf9fe09fc07c88cd618ba24785451ba2b803d61c0031"
+}

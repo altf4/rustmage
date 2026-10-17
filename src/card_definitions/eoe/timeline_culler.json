@@ -1,0 +1,12 @@
+{
+  "name": "Timeline Culler",
+  "catalogue_id": 4602,
+  "oracle_id": "3c307122-bc18-41f1-87d5-ae6b3ca9b8b9",
+  "facts_sha256": "5e07ed3014d62be798712a28e924323dfa27c0ffa584296ceaa7d1e6ed91b82a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9da94fd1c69ec774c6776d7b367b6e584c99e44e620a762da878568245ad4e74"
+  },
+  "physical_metadata_sha256": "fe7c846dc400675746b180af7c2ef35ed6504c14565290935e8757653361d832"
+}

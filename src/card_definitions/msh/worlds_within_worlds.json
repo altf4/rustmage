@@ -1,0 +1,12 @@
+{
+  "name": "Worlds Within Worlds",
+  "catalogue_id": 5114,
+  "oracle_id": "e25062ba-7176-4d59-ac3e-26d19b26f02a",
+  "facts_sha256": "c495b3e3578f1405b65504d6b324dde533406f84d86a7c5f7726783743ec134c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8bb5c66b234e44b3478aa695692ffa881c88a351572fd334b4705455a2338182"
+  },
+  "physical_metadata_sha256": "14a1f974dc21c99d28fb4dbc201cffe0d2913806bc35b33ac340572e4d03a76b"
+}

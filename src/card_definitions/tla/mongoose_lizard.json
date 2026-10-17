@@ -1,0 +1,12 @@
+{
+  "name": "Mongoose Lizard",
+  "catalogue_id": 2831,
+  "oracle_id": "a9bae56c-9666-42e8-94ec-03b0a964b142",
+  "facts_sha256": "1b77fb93e567b95df77ee221ece64c4d10fb856e194ba2c20657c64d4b6597e5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e7c39774d0a03a912af154dc8ff1d431973ba37bb9b155d7cf0f4cf204a0eca7"
+  },
+  "physical_metadata_sha256": "429c344ced4e2ccb0fbdf4c6dd7377c4f2abe2ff58da52162632f4a0c34a3332"
+}

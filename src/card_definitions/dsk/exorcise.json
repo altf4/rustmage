@@ -1,0 +1,12 @@
+{
+  "name": "Exorcise",
+  "catalogue_id": 1399,
+  "oracle_id": "58916455-844c-4d97-908f-8205bdc117c0",
+  "facts_sha256": "23ec041755a921363203f206469871a8adfaba6649f46f6fd59287996c54835c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6dac8ca2bcb592111273d155c4ecd65ef0c57edbfacbc5605096db96cb5fe492"
+  },
+  "physical_metadata_sha256": "12469fd28bcd46ba90badcad90a743f6002e63376277b9b63c4015f9620ea25c"
+}

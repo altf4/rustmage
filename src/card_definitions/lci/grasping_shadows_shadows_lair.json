@@ -1,0 +1,12 @@
+{
+  "name": "Grasping Shadows // Shadows' Lair",
+  "catalogue_id": 1850,
+  "oracle_id": "522a4b02-24c7-45d2-9097-2803cc9fffad",
+  "facts_sha256": "adddc5ccf50b804c4dc49192fe86e9db0203a80604d0bff0b2848c8e404898f7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "84f260dd6e6de8101a6d3dee4196b79a8f6ebfc1ff04968450369ce2dfe89795"
+  },
+  "physical_metadata_sha256": "2c737a8ee288a45a09a476c04b9b9653809642da9fdcf3f4e421c280cd1a8d20"
+}
