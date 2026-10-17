@@ -72,6 +72,9 @@ class TargetExclusionTests(unittest.TestCase):
       return 2200-20*sum(v['card']==n and v['controller']==actor and v['zone']=='Battlefield' for v in objects.values())
      if k in ['AnnounceMana','TapMana','ActivateMana']:return 3000 if o['decision'] in ['pay_costs','resolution_mana'] else -1000
      if k in ['Discard','Bottom']:
+      if actor==q and stage=='setup' and name=='Amazing Acrobatics' and mode!=1 and n=='Bear Cub':
+       enemy_hand=[v for v in g.observe(q)['objects'] if v['zone']=='Hand' and v['owner']==q]
+       if sum(v['card']=='Bear Cub' for v in enemy_hand)<=1:return -1000
       if actor==p and stage=='setup' and name=='Decoy Ploy' and ((n=='Agent of Atlas' and hero is None) or (n=='Common Crook' and villain is None)):return 3500
       if actor==p and stage=='setup' and n==name and sum(v['card']==n for v in hand)<=1:return -1000
       return 2500 if n in ['Candy Trail','Basilisk Collar','Chrome Companion'] else 1200
