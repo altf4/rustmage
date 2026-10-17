@@ -410,6 +410,10 @@ pub(crate) struct BattlefieldFilter {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
     GiveGift,
+    ReturnSpellToHand,
+    ProhibitCastingThisTurn,
+    PlayerHexproofThisTurn,
+    GrantPermanentsThisTurn(Keywords),
     DamageWithController {
         damage: i32,
         controller_damage: i32,

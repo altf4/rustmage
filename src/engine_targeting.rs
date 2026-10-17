@@ -440,11 +440,17 @@ impl Game {
             _ => {}
         }
         match target {
-            Target::Player(player) => match rule {
-                TargetRule::Any => true,
-                TargetRule::Player { opponent_only } => !opponent_only || player != controller,
-                _ => false,
-            },
+            Target::Player(player) => {
+                (player == controller
+                    || !self.state.players[player.index()].hexproof_until_end_turn)
+                    && match rule {
+                        TargetRule::Any => true,
+                        TargetRule::Player { opponent_only } => {
+                            !opponent_only || player != controller
+                        }
+                        _ => false,
+                    }
+            }
             Target::Spell(id) => self.state.stack.iter().any(|item| {
                 item.kind == StackKind::Spell
                     && item.card == id
@@ -733,7 +739,12 @@ impl Game {
     ) {
         let plan = self.target_spec(&item);
         let player = item.controller;
-        assert!(self.targets_available(plan, player, item.target_source()));
+        assert!(
+            self.targets_available(plan, player, item.target_source())
+                || item.source_card.gift().is_some_and(|gift| {
+                    self.targets_available(gift.promised_targets, player, item.target_source())
+                })
+        );
         let needs_mode = item.kind == StackKind::Spell
             && matches!(item.source_card.effect(), Effect::Modal(_))
             && item.mode.is_none();

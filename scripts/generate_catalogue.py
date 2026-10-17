@@ -3413,11 +3413,19 @@ def gift_spell_program(card):
     if '(' in body or ')' in body: return None
     body = ' '.join(body.split())
     if card.get('name'):
-        body = re.sub(r'(^|\. |, )'+re.escape(card['name'])+r' (also )?deals ',
+        body = re.sub(r'(^|\. |, |instead )'+re.escape(card['name'])+r' (also )?deals ',
                       lambda m:m[1]+'this spell '+(m[2] or '')+'deals ', body)
     def conditional(program, promised=True):
         return [f'IfGift {{ promised: {str(promised).lower()}, skip: {len(program)} }}', *program]
     cases = {
+      "Return target spell to its owner's hand. If the gift was promised, players can't cast spells this turn.":
+        ('Spell','Spell',['ReturnSpellToHand',*conditional(['ProhibitCastingThisTurn'])]),
+      'You and permanents you control gain hexproof until end of turn. If the gift was promised, permanents you control also gain indestructible until end of turn.':
+        ('None','None',['PlayerHexproofThisTurn','GrantPermanentsThisTurn(Keywords(4096))',*conditional(['GrantPermanentsThisTurn(Keywords(8192))'])]),
+      'Creatures you control get +2/+0 until end of turn. If the gift was promised, target creature you control gains first strike until end of turn.':
+        ('None','CreatureYou',[*statement_program('creatures you control get +2/+0 until end of turn.'),*conditional(['GrantKeywords { subject: Subject::Targets, keywords: Keywords(512) }'])]),
+      'this spell deals 2 damage to each creature. If the gift was promised, instead this spell deals 1 damage to any target and 2 damage to each creature.':
+        ('None','Any', [*conditional(['Damage(1)']),*battlefield_damage_program('this spell deals 2 damage to each creature.')]),
       "this spell deals 2 damage to target creature. If the gift was promised, this spell also deals 3 damage to that creature's controller.":
         ('Creature','Creature',[*conditional(['Damage(2)'],False),*conditional(['DamageWithController { damage: 2, controller_damage: 3 }'])]),
       "Destroy target creature. If the gift wasn't promised, you lose 2 life.":
@@ -4972,7 +4980,7 @@ def compile_catalogue(snapshot, target):
         gift_surface = original.get('oracle_text','')
         gift_seen = False
         while True:
-            gift_seen |= any(line.lstrip().startswith('Gift ') for line in gift_surface.splitlines())
+            gift_seen |= re.search(r'(?:^|\n|\()\s*Gift\s',gift_surface) is not None
             stripped = re.sub(r'\([^()]*\)', '', gift_surface)
             if stripped == gift_surface: break
             gift_surface = stripped

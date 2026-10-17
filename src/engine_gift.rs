@@ -37,6 +37,32 @@ impl SpellView {
 }
 
 impl Game {
+    pub(super) fn return_targeted_spells_to_hand(&mut self, item: &SpellView) {
+        for bound in &item.targets {
+            if let Target::Spell(card) = bound.target
+                && let Some(victim) = self
+                    .state
+                    .stack
+                    .iter()
+                    .find(|s| {
+                        s.kind == StackKind::Spell
+                            && s.card == card
+                            && Some(s.object) == bound.object
+                    })
+                    .cloned()
+            {
+                // A return is not a counter; uncounterable spells remain valid.
+                if victim
+                    .cast
+                    .is_some_and(|c| matches!(c.face, CastFace::Adventure | CastFace::Omen))
+                {
+                    self.move_adventure_spell(&victim, Zone::Hand);
+                } else {
+                    self.move_object(card, Zone::Hand);
+                }
+            }
+        }
+    }
     pub(super) fn give_gift(&mut self, item: &SpellView) {
         let Some(context) = item.gift_context() else {
             return;

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "9bd9e7baf9cddaddbb88386849a57f7989f06888154266dbae4a086e0e8316a4",
+  "catalogue_version": "e87921c2f79e9f12cba1962439a72b90caebc74cba57dc064042f3503d7d31bf",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1908,
-  "implemented_total": 1914,
+  "implemented_standard_cards": 1912,
+  "implemented_total": 1918,
   "token_definitions": 94,
   "emblem_definitions": 1,
   "cards": [
@@ -2464,8 +2464,8 @@
     {
       "name": "Bilbo's Gambit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Bilbo, Luckwearer // Burglar's Plot",
@@ -5884,8 +5884,8 @@
     {
       "name": "Dawn's Truce",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Dawn-Blessed Pennant",
@@ -29008,8 +29008,8 @@
     {
       "name": "Valley Rally",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Valley Rotcaller",
@@ -30394,8 +30394,8 @@
     {
       "name": "Wildfire Howl",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Wildfire Wickerfolk",

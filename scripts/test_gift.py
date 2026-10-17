@@ -2,16 +2,16 @@
 import hashlib,json,subprocess,unittest
 from pathlib import Path
 from scripts import generate_catalogue as g
-from scripts.test_legacy_metadata import LegacyMetadataTests
+from scripts import test_legacy_metadata as metadata
 from scripts.catalogue_preservation import canonical,assert_union
 PARENT='e5ebe64954635555938cd315b0f423953eb4e78f'
 # Explicit prototype inventory; expand only after the corresponding whole kernel exists.
-NAMES={'Blooming Blast','Consumed by Greed','Crumb and Get It','Dewdrop Cure','Into the Flood Maw',"Long River's Pull",'Longstalk Brawl','Mind Spiral','Nocturnal Hunger','Peerless Recycling',"Sazacap's Brew",'Scrapshooter','Wear Down'}
+NAMES={'Blooming Blast','Consumed by Greed','Crumb and Get It','Dewdrop Cure','Into the Flood Maw',"Long River's Pull",'Longstalk Brawl','Mind Spiral','Nocturnal Hunger','Peerless Recycling',"Sazacap's Brew",'Scrapshooter','Wear Down',"Bilbo's Gambit","Dawn's Truce",'Valley Rally','Wildfire Howl'}
 class GiftTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):cls.cards=json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards']
  def implemented(self,c):
-  _,coverage=LegacyMetadataTests.compile([c]);return next(r['implemented']for r in coverage['cards']if r['name']==c['name'])
+  _,coverage=metadata.LegacyMetadataTests.compile([c]);return next(r['implemented']for r in coverage['cards']if r['name']==c['name'])
  def test_complete_prototype_bodies_and_every_raw_boundary_are_name_independent(self):
   for card in self.cards:
    if card['name']not in NAMES:continue
@@ -26,7 +26,7 @@ class GiftTests(unittest.TestCase):
   a,b=canonical(before,physical),canonical(after,physical)
   allowed={('gift',n+'#0')for n in NAMES}|{('additional_cost',"Sazacap's Brew#0")}
   proof=assert_union(a,b,changed={n+'#0'for n in NAMES},added=set(),helpers=allowed,aliases={})
-  self.assertEqual(proof['preserved_definitions'],5318)
+  self.assertEqual(proof['preserved_definitions'],5314)
  def test_all23_full_java_bodies_and_direct_imports_are_pinned(self):
   manifest=json.loads((g.ROOT/'docs/gift-admissions.json').read_text());gifts={c['name']:c for c in self.cards if c.get('oracle_text','').startswith('Gift ')}
   self.assertEqual(len(gifts),23);self.assertEqual({c['name']for c in manifest['cards']},set(gifts))

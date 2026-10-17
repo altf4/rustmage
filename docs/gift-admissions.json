@@ -5,7 +5,7 @@
   "cards": [
     {
       "name": "Bilbo's Gambit",
-      "status": "pending_complete_kernel",
+      "status": "compiled_complete_body_pending_acceptance",
       "oracle_id": "ef71ef07-8a35-41ec-a851-d95e9e3a221b",
       "facts": {
         "layout": "normal",
@@ -100,7 +100,7 @@
     },
     {
       "name": "Blooming Blast",
-      "status": "pending_complete_kernel",
+      "status": "compiled_complete_body_pending_acceptance",
       "oracle_id": "2e5b8973-4f6e-4abe-bbbe-81fdca784997",
       "facts": {
         "layout": "normal",
@@ -167,7 +167,7 @@
     },
     {
       "name": "Coiling Rebirth",
-      "status": "pending_complete_kernel",
+      "status": "gated_dependency_issue_314",
       "oracle_id": "27a91ebd-39f4-432d-b6cc-cd86b4a3979a",
       "facts": {
         "layout": "normal",
@@ -265,11 +265,12 @@
       ],
       "external_imports": [
         "java.util.UUID"
-      ]
+      ],
+      "dependency_issue": 314
     },
     {
       "name": "Consumed by Greed",
-      "status": "pending_complete_kernel",
+      "status": "compiled_complete_body_pending_acceptance",
       "oracle_id": "b548578c-4910-402c-8e78-498924e0a9be",
       "facts": {
         "layout": "normal",
@@ -359,7 +360,7 @@
     },
     {
       "name": "Cruelclaw's Heist",
-      "status": "pending_complete_kernel",
+      "status": "gated_dependency_issue_315",
       "oracle_id": "7a0bc265-6b40-48d6-a588-c9624df7d1bc",
       "facts": {
         "layout": "normal",
@@ -797,11 +798,12 @@
       ],
       "external_imports": [
         "java.util.UUID"
-      ]
+      ],
+      "dependency_issue": 315
     },
     {
       "name": "Crumb and Get It",
-      "status": "pending_complete_kernel",
+      "status": "compiled_complete_body_pending_acceptance",
       "oracle_id": "93596258-bb44-4aa3-833d-9a0ab16b5ec1",
       "facts": {
         "layout": "normal",
@@ -876,7 +878,7 @@
     },
     {
       "name": "Dawn's Truce",
-      "status": "pending_complete_kernel",
+      "status": "compiled_complete_body_pending_acceptance",
       "oracle_id": "37c06f89-db36-4937-9404-2b07cd22e1a6",
       "facts": {
         "layout": "normal",
@@ -958,7 +960,7 @@
     },
     {
       "name": "Dewdrop Cure",
-      "status": "pending_complete_kernel",
+      "status": "compiled_complete_body_pending_acceptance",
       "oracle_id": "07634620-a83a-4ca0-8a60-2a21368a2661",
       "facts": {
         "layout": "normal",
@@ -1040,7 +1042,7 @@
     },
     {
       "name": "Into the Flood Maw",
-      "status": "pending_complete_kernel",
+      "status": "compiled_complete_body_pending_acceptance",
       "oracle_id": "8cb36a67-9206-4665-a03f-64f52ba559c4",
       "facts": {
         "layout": "normal",
@@ -1122,7 +1124,7 @@
     },
     {
       "name": "Kitnap",
-      "status": "pending_complete_kernel",
+      "status": "gated_dependency_issue_265",
       "oracle_id": "a1bd1e83-40ac-449f-838c-ef308f275a5d",
       "facts": {
         "layout": "normal",
@@ -1225,11 +1227,12 @@
       ],
       "external_imports": [
         "java.util.UUID"
-      ]
+      ],
+      "dependency_issue": 265
     },
     {
       "name": "Long River's Pull",
-      "status": "pending_complete_kernel",
+      "status": "compiled_complete_body_pending_acceptance",
       "oracle_id": "f1993767-1d07-49c8-b8dc-04ec9840a999",
       "facts": {
         "layout": "normal",
@@ -1295,7 +1298,7 @@
     },
     {
       "name": "Longstalk Brawl",
-      "status": "pending_complete_kernel",
+      "status": "compiled_complete_body_pending_acceptance",
       "oracle_id": "adc8976a-0871-4fd6-9c4c-822ba9549b4b",
       "facts": {
         "layout": "normal",
@@ -1374,7 +1377,7 @@
     },
     {
       "name": "Mind Spiral",
-      "status": "pending_complete_kernel",
+      "status": "compiled_complete_body_pending_acceptance",
       "oracle_id": "03e356ae-f1e8-4730-8d2b-b9e2f32db915",
       "facts": {
         "layout": "normal",
@@ -1460,7 +1463,7 @@
     },
     {
       "name": "Nocturnal Hunger",
-      "status": "pending_complete_kernel",
+      "status": "compiled_complete_body_pending_acceptance",
       "oracle_id": "ed7f64d1-69ba-40f5-9863-3edba10e23c7",
       "facts": {
         "layout": "normal",
@@ -1527,7 +1530,7 @@
     },
     {
       "name": "Parting Gust",
-      "status": "pending_complete_kernel",
+      "status": "gated_dependency_issue_316",
       "oracle_id": "367bb252-41e1-4f98-9d22-442dd332cccf",
       "facts": {
         "layout": "normal",
@@ -1645,11 +1648,12 @@
         "java.util.Set",
         "java.util.UUID",
         "java.util.stream.Collectors"
-      ]
+      ],
+      "dependency_issue": 316
     },
     {
       "name": "Peerless Recycling",
-      "status": "pending_complete_kernel",
+      "status": "compiled_complete_body_pending_acceptance",
       "oracle_id": "938c03fc-8adf-4c7a-8ae1-eca8401f7a83",
       "facts": {
         "layout": "normal",
@@ -1715,7 +1719,7 @@
     },
     {
       "name": "Sazacap's Brew",
-      "status": "pending_complete_kernel",
+      "status": "compiled_complete_body_pending_acceptance",
       "oracle_id": "ac7d1986-8388-4e4c-973e-d90382b12acf",
       "facts": {
         "layout": "normal",
@@ -1801,7 +1805,7 @@
     },
     {
       "name": "Scrapshooter",
-      "status": "pending_complete_kernel",
+      "status": "compiled_complete_body_pending_acceptance",
       "oracle_id": "235e3231-c5e5-4696-a867-705b2c4158fe",
       "facts": {
         "layout": "normal",
@@ -1894,7 +1898,7 @@
     },
     {
       "name": "Starfall Invocation",
-      "status": "pending_complete_kernel",
+      "status": "gated_dependency_issue_317",
       "oracle_id": "7024532b-f99b-43a7-b0ed-5b3e7ec7592b",
       "facts": {
         "layout": "normal",
@@ -2328,11 +2332,12 @@
       ],
       "external_imports": [
         "java.util.UUID"
-      ]
+      ],
+      "dependency_issue": 317
     },
     {
       "name": "Starforged Sword",
-      "status": "pending_complete_kernel",
+      "status": "gated_dependency_issue_318",
       "oracle_id": "2cdc1d82-30dc-4f0a-af20-33dde90269b1",
       "facts": {
         "layout": "normal",
@@ -2413,11 +2418,12 @@
       ],
       "external_imports": [
         "java.util.UUID"
-      ]
+      ],
+      "dependency_issue": 318
     },
     {
       "name": "Valley Rally",
-      "status": "pending_complete_kernel",
+      "status": "compiled_complete_body_pending_acceptance",
       "oracle_id": "5b919920-b1b6-499b-a7fe-c630778a7831",
       "facts": {
         "layout": "normal",
@@ -2500,7 +2506,7 @@
     },
     {
       "name": "Wear Down",
-      "status": "pending_complete_kernel",
+      "status": "compiled_complete_body_pending_acceptance",
       "oracle_id": "27905301-333e-4cdd-90cf-188159fcf8e9",
       "facts": {
         "layout": "normal",
@@ -2566,7 +2572,7 @@
     },
     {
       "name": "Wildfire Howl",
-      "status": "pending_complete_kernel",
+      "status": "compiled_complete_body_pending_acceptance",
       "oracle_id": "04fd8c1f-80e5-4b3d-b63e-7af6ccafbbaa",
       "facts": {
         "layout": "normal",

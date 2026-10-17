@@ -1201,6 +1201,19 @@ impl Game {
             }
             match instruction {
                 Instruction::GiveGift => self.give_gift(&item),
+                Instruction::ReturnSpellToHand => self.return_targeted_spells_to_hand(&item),
+                Instruction::ProhibitCastingThisTurn => self.state.casting_prohibited = true,
+                Instruction::PlayerHexproofThisTurn => {
+                    self.state.players[item.controller.index()].hexproof_until_end_turn = true;
+                }
+                Instruction::GrantPermanentsThisTurn(keywords) => {
+                    for object in &mut self.state.objects {
+                        if object.zone == Zone::Battlefield && object.controller == item.controller
+                        {
+                            object.gained_keywords = object.gained_keywords.union(keywords);
+                        }
+                    }
+                }
                 Instruction::DamageWithController {
                     damage,
                     controller_damage,

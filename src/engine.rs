@@ -615,6 +615,7 @@ impl Object {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct PlayerState {
+    hexproof_until_end_turn: bool,
     extra_land_plays_remaining: u64,
     nonland_permanents_entered_this_turn: u64,
     spells_cast_this_turn: u64,
@@ -1108,6 +1109,7 @@ enum Pending {
 /// Card definitions are enum/static data, never cloned object graphs or trait objects.
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
+    casting_prohibited: bool,
     #[allow(clippy::box_collection)]
     temporary_abilities: Option<Box<Vec<TemporaryAbilityView>>>,
     roles: Option<Box<roles::RoleState>>,
@@ -1247,6 +1249,7 @@ pub struct ZoneChange {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct PlayerView {
+    pub hexproof_until_end_turn: bool,
     /// Additional land plays granted until the current turn ends.
     pub extra_land_plays_remaining: u64,
     /// Historical actual entries this turn; departures do not remove them.
@@ -1409,6 +1412,7 @@ pub struct LegalActionSpace {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    pub casting_prohibited: bool,
     pub temporary_abilities: Vec<TemporaryAbilityView>,
     pub replacement_choice: Option<ReplacementChoiceView>,
     pub created_token_choice: Option<CreatedTokenChoiceView>,
@@ -1550,6 +1554,7 @@ impl Game {
         }
         let mut objects = Vec::with_capacity(config.decks.iter().map(Vec::len).sum());
         let mut players = std::array::from_fn(|_| PlayerState {
+            hexproof_until_end_turn: false,
             extra_land_plays_remaining: 0,
             nonland_permanents_entered_this_turn: 0,
             spells_cast_this_turn: 0,
@@ -1599,6 +1604,7 @@ impl Game {
         let mut game = Self {
             revision: 0,
             state: State {
+                casting_prohibited: false,
                 replacements: None,
                 objects: objects.into(),
                 attacked_this_turn: Vec::new().into(),
@@ -2195,6 +2201,20 @@ impl Game {
                         && emit(Action::AnnouncePlot { card })
                     {
                         return true;
+                    }
+                    if s.casting_prohibited {
+                        if obj.card.is_land()
+                            && sorcery
+                            && (obj.zone == Zone::Hand || self.can_play_exiled(actor, card))
+                            && (!s.land_played
+                                || s.players[actor.index()].extra_land_plays_remaining > 0)
+                            && emit(Action::PlayLand { card })
+                        {
+                            return true;
+                        }
+                        // Plot and activated abilities were offered above; every
+                        // casting method/face below remains prohibited.
+                        continue;
                     }
                     if sorcery
                         && obj.zone == Zone::Exile
@@ -4061,6 +4081,10 @@ impl Game {
     }
 
     fn finish_cleanup(&mut self) {
+        self.state.casting_prohibited = false;
+        for player in &mut self.state.players {
+            player.hexproof_until_end_turn = false;
+        }
         // Until-end-of-turn abilities expire before any cleanup-induced SBA death.
         self.state.temporary_abilities = None;
         for player in &mut self.state.players {
@@ -4338,6 +4362,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
+            casting_prohibited: s.casting_prohibited,
             replacement_choice: self.replacement_choice(viewer),
             created_token_choice: self.created_token_choice(),
             mana_payment: owns_choice.then(|| self.mana_payment_domain()).flatten(),
@@ -4456,6 +4481,7 @@ impl Game {
                 Pending::Terminal => "terminal",
             },
             players: std::array::from_fn(|i| PlayerView {
+                hexproof_until_end_turn: s.players[i].hexproof_until_end_turn,
                 extra_land_plays_remaining: s.players[i].extra_land_plays_remaining,
                 nonland_permanents_entered_this_turn: s.players[i]
                     .nonland_permanents_entered_this_turn,
