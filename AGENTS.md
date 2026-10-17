@@ -34,3 +34,7 @@ Catalogue entries or partial card implementations do not satisfy it.
   unrelated cwd with --manifest-path must still use the runner.
   Do not bypass the wrapper, raise the memory cap or launch unmanaged builds.
   Keep logs/reports under ~/.cache so reboot does not erase failure evidence.
+
+- Do not deliberately trigger the OOM killer in routine tests. Even a tiny contained
+  cgroup kill can cause disruptive desktop memory warnings. Verify configured
+  limits and fail-closed enforcement without killing an allocation probe.
