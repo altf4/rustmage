@@ -1619,6 +1619,9 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::CreateRolesMatching { token, filter } => {
+                    self.resolve_roles_matching(&item, token, filter);
+                }
                 Instruction::CreateRole { token, subject } => {
                     self.resolve_role(&item, token, subject);
                 }
@@ -2121,6 +2124,24 @@ impl Game {
                             }
                         }
                     }
+                }
+                Instruction::ReturnToBattlefieldWithRole { token } => {
+                    let moves = item
+                        .targets
+                        .iter()
+                        .copied()
+                        .filter(|&bound| self.same_target_object(bound))
+                        .filter_map(|bound| match bound.target {
+                            Target::Card(id) => {
+                                let mut movement = self.entry_move(id, Zone::Battlefield, false);
+                                movement.controller = item.controller;
+                                movement.role_after = Some((token, item.controller));
+                                Some(movement)
+                            }
+                            _ => None,
+                        })
+                        .collect();
+                    self.stage_entries(moves, None);
                 }
                 Instruction::ReturnToBattlefieldTapped => {
                     let moves = item

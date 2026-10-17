@@ -24,7 +24,7 @@ pub use adventure::{AdventurePermission, SpellCharacteristicsView};
 pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 86;
+pub const OBSERVATION_SCHEMA: u32 = 87;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
 #[path = "engine_mobilize.rs"]
@@ -373,6 +373,7 @@ define_actions! {
     AnnounceExile {
         card: CardId,
     },
+    AnnounceFlashSurcharge { card: CardId },
     AnnounceWarp { card: CardId },
     AnnounceAdventure { card: CardId },
     AnnounceOmen { card: CardId },
@@ -650,6 +651,8 @@ pub struct CastInfo {
     pub payment: Mana,
     pub origin: Zone,
     pub method: CastMethod,
+    /// Optional additional mana paid to obtain this spell's flash timing.
+    pub flash_surcharge: bool,
     /// Explicit optional additional cost, declared before targets; None until chosen.
     pub offspring: Option<bool>,
     /// One fixed optional surcharge, independent of casting method and offspring.
@@ -2208,6 +2211,12 @@ impl Game {
                         }
                         continue;
                     }
+                    if obj.card.flash_surcharge().is_some()
+                        && self.flash_surcharge_cast_fundable(actor, card, flashback)
+                        && emit(Action::AnnounceFlashSurcharge { card })
+                    {
+                        return true;
+                    }
                     if !sorcery
                         && !obj.card.is_instant()
                         && !self.keywords(card).contains(Keywords::FLASH)
@@ -2916,6 +2925,17 @@ impl Game {
             }
             Action::AnnounceCast { card } | Action::AnnounceExile { card } => {
                 let item = self.cast_item(actor, card, [0; 6]);
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
+            Action::AnnounceFlashSurcharge { card } => {
+                let flashback = self.state.objects[card as usize].zone == Zone::Graveyard;
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                let cast = item.cast.as_mut().unwrap();
+                cast.flash_surcharge = true;
+                if flashback {
+                    cast.method = CastMethod::Flashback;
+                    self.state.objects[card as usize].flashback = true;
+                }
                 self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceAdventure { card } | Action::AnnounceOmen { card } => {

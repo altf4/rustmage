@@ -42,10 +42,13 @@ class ExclusionTests(unittest.TestCase):
   for name in ['Amazing Acrobatics','Decoy Ploy','Overwhelming Surge']:
    c=self.cards[name];modes=g.modal_spell_template(c);self.assertEqual(len(modes),3);self.assertEqual(len(modes[2][1]),2);self.assertIn('SelectGroup(1)',modes[2][2])
    self.assertIsNone(g.modal_spell_template(dict(c,oracle_text=c['oracle_text']+'\n• Draw a card.')))
- def test_current_parent_preservation_exact_seven(self):
+ def test_historical_seven_union_and_current_programs_remain_exact(self):
   from scripts.catalogue_preservation import canonical,assert_union
   old=subprocess.check_output(['git','-C',str(g.ROOT),'show','ce4b0c104a8e0dbc0a76753a03608eb7bc4618be:src/generated/catalogue.rs'],text=True);physical={c['oracle_id']:c['name'] for c in json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards']}
-  before=canonical(old,physical);after=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical);changed={n+'#0' for n in NAMES};report=assert_union(before,after,changed=changed,added=set(),helpers=set(),aliases={});self.assertEqual(report['preserved_definitions'],5324)
+  merged=subprocess.check_output(['git','-C',str(g.ROOT),'show','8108a6f3366f8d5553f4059b9c648481769eb420:src/generated/catalogue.rs'],text=True)
+  before=canonical(old,physical);after=canonical(merged,physical);changed={n+'#0' for n in NAMES};report=assert_union(before,after,changed=changed,added=set(),helpers=set(),aliases={});self.assertEqual(report['preserved_definitions'],5324)
+  current=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  for key in changed:self.assertEqual(current['definitions'][key],after['definitions'][key])
   mutant=copy.deepcopy(after);mutant['definitions']['Plains#0']='unrelated mutation'
   with self.assertRaises(AssertionError):assert_union(before,mutant,changed=changed,added=set(),helpers=set(),aliases={})
  def test_all_full_records_and_explicit_direct_imports_are_pinned(self):

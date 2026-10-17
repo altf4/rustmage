@@ -309,6 +309,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         info,
                         CastInfo {
                             physical_card: None,
+                            flash_surcharge: false,
                             face: CastFace::Normal,
                             payment: info.payment,
                             offspring: None,

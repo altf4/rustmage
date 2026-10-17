@@ -393,6 +393,13 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    CreateRolesMatching {
+        token: Card,
+        filter: CreatureFilter,
+    },
+    ReturnToBattlefieldWithRole {
+        token: Card,
+    },
     CreateRole {
         token: Card,
         subject: Subject,
@@ -830,6 +837,12 @@ impl KeywordGrant {
 pub(crate) struct StaticModifier {
     pub own_turn: bool,
     pub requires_life_gain: bool,
+    pub filter: CreatureFilter,
+    pub stats: Stats,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct EnchantedModifier {
     pub filter: CreatureFilter,
     pub stats: Stats,
 }
@@ -1688,6 +1701,12 @@ impl Card {
 
     pub(crate) fn static_modifiers(self) -> &'static [StaticModifier] {
         generated::static_modifiers(self)
+    }
+    pub(crate) fn enchanted_modifiers(self) -> &'static [EnchantedModifier] {
+        generated::enchanted_modifiers(self)
+    }
+    pub(crate) fn flash_surcharge(self) -> Option<ManaCost> {
+        generated::flash_surcharge(self)
     }
     pub(crate) fn equipment(self) -> Option<EquipmentSpec> {
         generated::equipment(self)

@@ -97,11 +97,15 @@ class RoleFollowupTests(unittest.TestCase):
     variants.append(text[:index]+'((You win the game.)) '+text[index:])
    for variant in variants:
     self.assertFalse(self.compile_one(dict(card,oracle_text=variant))[1]['implemented'],(card['name'],variant))
- def test_historical_twelve_admissions_preserve_every_prior_program_and_recipe(self):
-  old=subprocess.check_output(['git','-C',str(g.ROOT),'show','c41c060c024626843b17cf292aab838d36fd6eb1:src/generated/catalogue.rs'],text=True);new=subprocess.check_output(['git','-C',str(g.ROOT),'show','ce4b0c104a8e0dbc0a76753a03608eb7bc4618be:src/generated/catalogue.rs'],text=True)
+ def test_historical_twelve_admissions_and_current_complete_programs_remain_exact(self):
+  old=subprocess.check_output(['git','-C',str(g.ROOT),'show','c41c060c024626843b17cf292aab838d36fd6eb1:src/generated/catalogue.rs'],text=True)
+  new=subprocess.check_output(['git','-C',str(g.ROOT),'show','ce4b0c104a8e0dbc0a76753a03608eb7bc4618be:src/generated/catalogue.rs'],text=True)
   defs=lambda t:[l for l in t.splitlines() if l.lstrip().startswith('Definition {')]
   before,after=defs(old),defs(new);self.assertEqual(len(before),5331);self.assertEqual(len(after),5331)
   changed=[(a,b) for a,b in zip(before,after) if a!=b];self.assertEqual(len(changed),12)
+  current=defs((g.ROOT/'src/generated/catalogue.rs').read_text())
+  for index,(a,b) in enumerate(zip(before,after)):
+   if a!=b:self.assertEqual(current[index],b)
   self.assertEqual({json.loads(re.search(r'name: ("(?:[^"\\]|\\.)*")',b)[1]) for a,b in changed},set(NAMES))
   for a,b in changed:self.assertIn('effect: Effect::Unsupported',a)
   index=next(i for i,l in enumerate(after) if 'name: "Diminisher Witch",' in l)

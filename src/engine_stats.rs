@@ -110,6 +110,10 @@ impl Game {
             .is_empty()
             || !self.state.objects[id as usize]
                 .card
+                .enchanted_modifiers()
+                .is_empty()
+            || !self.state.objects[id as usize]
+                .card
                 .static_modifiers()
                 .is_empty()
             || !self.state.objects[id as usize]
@@ -285,6 +289,18 @@ impl Game {
                     )
                 {
                     stats += modifier.stats;
+                }
+            }
+            if !object.card.enchanted_modifiers().is_empty() && self.is_enchanted(id) {
+                for modifier in object.card.enchanted_modifiers() {
+                    if self.creature_matches(
+                        modifier.filter,
+                        object.controller,
+                        self.object_ref(source),
+                        id,
+                    ) {
+                        stats += modifier.stats;
+                    }
                 }
             }
         }

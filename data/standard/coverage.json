@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "7435d4dee1e84a7345dc91812ac8583eae8dccd3c37658ca42fb29211bc9a62d",
+  "catalogue_version": "aaf3add17ed8e6e8421a93e7beaa4314a35ff3244378a9384a323b010cc09bdc",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1886,
-  "implemented_total": 1892,
+  "implemented_standard_cards": 1892,
+  "implemented_total": 1898,
   "token_definitions": 94,
   "emblem_definitions": 1,
   "cards": [
@@ -106,8 +106,8 @@
     {
       "name": "A Tale for the Ages",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "A.I.M. Labs",
@@ -1480,8 +1480,8 @@
     {
       "name": "Asinine Antics",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Assassin's Trophy",
@@ -17416,8 +17416,8 @@
     {
       "name": "Mystical Tether",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Naga Fleshcrafter",
@@ -21022,8 +21022,8 @@
     {
       "name": "Return Triumphant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Return from the Wilds",
@@ -25858,8 +25858,8 @@
     {
       "name": "Syr Armont, the Redeemer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Syr Ginger, the Meal Ender",
@@ -28378,8 +28378,8 @@
     {
       "name": "Twisted Sewer-Witch",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Twists and Turns // Mycoid Maze",
