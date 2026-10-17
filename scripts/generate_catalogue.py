@@ -2581,6 +2581,42 @@ def targeted_program(text):
 
 OPPONENT_TURN_CAST_PREFIX = "Whenever you cast a spell during an opponent's turn, "
 
+def adventure_event_route(text):
+    """Detect new event routes through erased stages; never authenticate erasure."""
+    if not isinstance(text, str): return False
+    while True:
+        surface = ' '.join(text.casefold().split())
+        if (re.search(r'you cast your (?:first|second) instant or sorcery spell each turn', surface)
+                or 'attacks alone' in surface
+                or (re.search(r'\bcasts?\b', surface) and 'damage to that player' in surface)):
+            return True
+        stripped = re.sub(r'\([^()]*\)', '', text)
+        if stripped == text: return False
+        text = stripped
+
+
+def adventure_event_reminders_valid(card):
+    raw = card.get('oracle_text', '')
+    if not adventure_event_route(raw) or not any(c in raw for c in '()'): return True
+    for line in raw.splitlines():
+        if not any(c in line for c in '()'): continue
+        match = re.fullmatch(r'([^()]+) \(([^()]+)\)', line)
+        if match is None: return False
+        body, reminder = match.groups()
+        intrinsic = dict(card, oracle_text=line)
+        if (creature_template(dict(intrinsic, oracle_text=body)) is not None
+                and intrinsic_reminders_valid(intrinsic)):
+            continue
+        # Authenticate the complete Food creation production, not a reminder
+        # copied onto another ability or detached from its actual token clause.
+        if (reminder == 'It\'s an artifact with "{2}, {T}, Sacrifice this token: You gain 3 life."'
+                and re.search(r'(?:^|, |\. )create (?:a|one|two|three|four|five|six) (?:tapped )?Food tokens?\.$', body)
+                and trigger_creature_template(dict(card, oracle_text=body)) is not None):
+            continue
+        return False
+    return True
+
+
 def qualified_cast_prefix(line):
     """Printed spell characteristics and event-only turn qualifications."""
     targeted = {
@@ -2596,6 +2632,9 @@ def qualified_cast_prefix(line):
     }
     for prefix,filter_ in targeted.items():
         if line.startswith(prefix):return prefix,cast_condition(filter_=filter_)
+    for word,ordinal in [('first',1),('second',2)]:
+        prefix=f'Whenever you cast your {word} instant or sorcery spell each turn, '
+        if line.startswith(prefix):return prefix,cast_condition(filter_=f'InstantSorceryOrdinal({ordinal})')
     prefix='Whenever you cast your first spell each turn, '
     if line.startswith(prefix):return prefix,cast_condition(ordinal=1)
 
@@ -2914,6 +2953,7 @@ def trigger_creature_template(card):
         **{f'When this {noun} enters or is put into a graveyard from the battlefield, ': 'SelfEntersOrDies'
            for noun in ('creature','artifact','enchantment','Aura','Equipment')},
         'Whenever this creature attacks, ': 'SelfAttacks',
+        'Whenever this creature attacks alone, ': 'SelfAttacksAlone',
         'Whenever this creature becomes tapped, ': 'SelfBecomesTapped',
         'Whenever you attack, ': 'AttackDeclared { minimum: 1, power_min: None, guard: StepGuard::Always }',
         'Whenever one or more creatures you control attack, ': 'AttackDeclared { minimum: 1, power_min: None, guard: StepGuard::Always }',
@@ -3099,6 +3139,9 @@ def trigger_creature_template(card):
                 entering_program=entering_object_program(effect_text,condition)
                 if entering_program is not None:
                     targets,program=entering_program
+                elif condition.startswith('SpellCast {') and (m:=re.fullmatch(r'this creature deals ([0-9]+) damage to that player\.',effect_text)):
+                    amount=int(m[1])
+                    targets,program=('None',[f'DamagePlayers(PlayerSet::CastingPlayer, {amount})']) if amount<=32767 else ('None',None)
                 elif condition.startswith('CardDrawn {'):
                     result=draw_event_program(effect_text)
                     targets,program=result if result else ('None',None)
@@ -4531,6 +4574,8 @@ def compile_catalogue(snapshot, target):
             activations = [*activations, *cycling]
             if len(activations) > 64: effect = 'Unsupported'; activations = []
         # A later generic selector cannot revive rejected intrinsic reminder text.
+        if not adventure_event_reminders_valid(original):
+            effect = 'Unsupported'
         if not recovery_reminders_valid(original):
             effect = 'Unsupported'
         if not intrinsic_reminders_valid(original):

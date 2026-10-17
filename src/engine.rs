@@ -609,6 +609,7 @@ struct PlayerState {
     extra_land_plays_remaining: u64,
     nonland_permanents_entered_this_turn: u64,
     spells_cast_this_turn: u64,
+    instant_sorcery_cast_this_turn: u64,
     cards_drawn_this_turn: u64,
     cards_discarded_this_turn: u64,
     life_gain_events_this_turn: u64,
@@ -1516,6 +1517,7 @@ impl Game {
             extra_land_plays_remaining: 0,
             nonland_permanents_entered_this_turn: 0,
             spells_cast_this_turn: 0,
+            instant_sorcery_cast_this_turn: 0,
             cards_drawn_this_turn: 0,
             cards_discarded_this_turn: 0,
             life_gain_events_this_turn: 0,
@@ -3191,8 +3193,9 @@ impl Game {
                 })
             }
             Action::FinishAttackers => {
+                let declared_count = self.state.selected_attackers.len();
                 self.commit_attackers_with(actor, |game, card| {
-                    game.attack_triggers(&game.object_view(card));
+                    game.attack_triggers_for_declaration(&game.object_view(card), declared_count);
                 });
                 self.give_priority();
             }
@@ -3867,6 +3870,7 @@ impl Game {
         for player in &mut self.state.players {
             player.nonland_permanents_entered_this_turn = 0;
             player.spells_cast_this_turn = 0;
+            player.instant_sorcery_cast_this_turn = 0;
             player.cards_drawn_this_turn = 0;
             player.cards_discarded_this_turn = 0;
             player.life_gain_events_this_turn = 0;
@@ -5378,6 +5382,10 @@ mod graveyard_recovery_tests;
 #[cfg(test)]
 #[path = "engine_milled_selection_tests.rs"]
 mod milled_selection_tests;
+
+#[cfg(test)]
+#[path = "engine_adventure_event_tests.rs"]
+mod adventure_event_tests;
 #[cfg(test)]
 #[path = "engine_role_tests.rs"]
 mod role_tests;

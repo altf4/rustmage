@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "8ffd6ad2fb8995ea434df197223167aaa70f9b0afed737e6edd8b9be10454c3d",
+  "catalogue_version": "843a08b6c682792307f80a379a9a61059157bd4ee4b585e1e70b57387332db0c",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1869,
-  "implemented_total": 1875,
+  "implemented_standard_cards": 1872,
+  "implemented_total": 1878,
   "token_definitions": 94,
   "emblem_definitions": 1,
   "cards": [
@@ -1174,8 +1174,8 @@
     {
       "name": "Aquatic Alchemist // Bubble Up",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Aquitect's Defenses",
@@ -13252,8 +13252,8 @@
     {
       "name": "Intrepid Trufflesnout // Go Hog Wild",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Intrude on the Mind",
@@ -22252,8 +22252,8 @@
     {
       "name": "Scalding Viper // Steam Clean",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Scales of Shale",
@@ -31106,6 +31106,6 @@
       "implementation": null
     }
   ],
-  "adventure_definitions": 37,
+  "adventure_definitions": 40,
   "omen_definitions": 13
 }

@@ -8,7 +8,7 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Requirement | Current evidence | Remaining work |
 | --- | --- | --- |
 | Full legal identity pool | 5,164 frozen oracle identities, Java reconciliation and native catalogue tests | Maintain reviewed data versions; implement missing Java-source cards directly |
-| All card semantics | Coverage manifest and runtime admission agree: 1,863 executable Standard identities | 3,301 identities; many reusable mechanics plus card-specific rules |
+| All card semantics | Coverage manifest and runtime admission agree: 1,866 executable Standard identities | 3,298 identities; many reusable mechanics plus card-specific rules |
 | Gameplay enforcement | Implemented timing, payment, targets, stack, source-aware damage, strike steps, 15 keywords, typed programs, trigger ordering and regression tests | Wider events/cross-group relationships, replacement/prevention, layers, wider counter mechanics, broader token abilities/copies, modes/costs, remaining keywords and mechanics |
 | In-process library | Rust rlib and C ABI/cdylib; Python ctypes tests including complete games | Batched/packed training interface and model hooks |
 | Branch/restore | Isolated COW object/library buffers, owned continuations, local RNG, reusable snapshots, replay/invariant tests | Cover every new continuation/mechanic; search over information sets |
@@ -82,3 +82,15 @@ other Elf, 5,097 owned decisions and 10,194 actor/revision denials. The new inhe
 Tombstone payment method passes separately on identical production. Exact
 checkpoint/export/library identities and required independent reviews remain in
 the [PR 293 record](review-pr-293.md). This does not complete the all-Standard goal.
+
+
+The [cast and declaration event delivery](adventure-event-predicates.md) completes
+three further whole Adventure pairs on actual merged source-binding main:
+1,866/5,164 executable Standard identities (3,298 gated), 40 Adventure/13 Omen,
+94 token recipes and schema86. Frozen corrected source passes 1,762 native tests,
+all-target Clippy, all 430 unique compiler/provenance methods, all 261 unique
+fresh public API methods and 100 natural paid Standard games with actual normal
+events, 81,129 owned frames and 162,258 actor/revision denials. Exact parent union
+and ten-manifest pinned provenance proofs pass. Two independent reviewers approve
+production; exact final published-head confirmation remains the merge gate.
+The full all-Standard and training goal remains incomplete.

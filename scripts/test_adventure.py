@@ -10,13 +10,14 @@ NAMES=['Bilbo Baggins, Burglar // Take a Glance','Frolicking Familiar // Blow Of
 NAMES += ['Beanstalk Wurm // Plant Beans', 'Beorn, Reluctant Host // Till and Tend', 'Bellowing Bruiser // Beat a Path', "Beluna's Gatekeeper // Entry Denied", 'Bofur, Reliable Guardian // Concerted Care', 'Ishgard, the Holy See // Faith & Grief', 'Velvetwing Butterflies // Gaze in Wonder', 'Woodland Acolyte // Mend the Wilds']
 NAMES += ['Besotted Knight // Betroth the Beast','Conceited Witch // Price of Beauty','Ferocious Werefox // Guard Change','Vantress Transmuter // Croaking Curse']
 NAMES += ['Bramble Familiar // Fetch Quest', 'Most Decrepit Old Bird // Speak Secrets', 'Picklock Prankster // Free the Fae', 'Thranduil, Sindarin Liege // Silvan Rally', 'Beluna Grandsquall // Seek Thrills', 'Glamdring, Foe-hammer // Gleam of Death']
+NAMES += ['Aquatic Alchemist // Bubble Up','Scalding Viper // Steam Clean','Intrepid Trufflesnout // Go Hog Wild']
 class AdventureCompilerTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):cls.rows={c['name']:c for c in json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards']}
  def compile(self,c):
   a=[c];return g.compile_catalogue(dict(cards=a,card_count=1,cards_sha256=hashlib.sha256(json.dumps(a,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()),dict(banned_card_names=[]))
  def admitted(self,c):return next(r['implemented']for r in self.compile(c)[1]['cards']if r['name']==c['name'])
- def test_all_thirty_seven_whole_pairs_and_both_immutable_links(self):
+ def test_all_forty_whole_pairs_and_both_immutable_links(self):
   for name in NAMES:
    with self.subTest(name=name):
     rust,report=self.compile(self.rows[name]);self.assertTrue(self.admitted(self.rows[name]));self.assertEqual(report['adventure_definitions'],1)
@@ -46,9 +47,9 @@ class AdventureCompilerTests(unittest.TestCase):
   for c in cards:
    with self.subTest(name=c['name']):
     self.assertIsNone(g.adventure_faces(c));self.assertEqual(self.compile(c)[1]['adventure_definitions'],0)
- def test_all_other_thirty_eight_adventure_parents_remain_wholly_gated(self):
+ def test_all_other_thirty_five_adventure_parents_remain_wholly_gated(self):
   cards=[c for c in self.rows.values()if c.get('layout')=='adventure'and 'Adventure'in c['card_faces'][1]['type_line']and c['name']not in NAMES]
-  self.assertEqual(len(cards),38)
+  self.assertEqual(len(cards),35)
   for c in cards:
    with self.subTest(name=c['name']):self.assertFalse(self.admitted(c))
  def test_malformed_variable_costs_completion_and_parent_metadata_fail_closed(self):
