@@ -301,6 +301,7 @@ impl Game {
         self.state.passes = 0;
         SpellView {
             delayed_sacrifice: None,
+            delayed_warp_exile: None,
             x: None,
             attachment_trigger: None,
             cast: None,

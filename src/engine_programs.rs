@@ -449,6 +449,7 @@ impl Game {
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
             delayed_sacrifice: None,
+            delayed_warp_exile: None,
             x: None,
             attachment_trigger: event,
             cast: None,
@@ -840,9 +841,9 @@ impl Game {
             return;
         }
         let program = match item.kind {
-            StackKind::TriggeredAbility { .. } | StackKind::DelayedSacrifice => {
-                item.program().expect("selected trigger program").1
-            }
+            StackKind::TriggeredAbility { .. }
+            | StackKind::DelayedSacrifice
+            | StackKind::DelayedWarpExile => item.program().expect("selected trigger program").1,
             StackKind::ActivatedAbility { ability } => {
                 item.source_card.activations()[ability as usize].program
             }
@@ -855,6 +856,10 @@ impl Game {
                         self.enters_tapped(item.card),
                     );
                     movement.attachment = Some(target);
+                    movement.warp_controller = item
+                        .cast
+                        .filter(|c| c.method == CastMethod::Warp)
+                        .map(|_| item.controller);
                     self.stage_entries(vec![movement], None);
                     self.give_priority();
                     return;
@@ -865,6 +870,7 @@ impl Game {
                             || c.kicker == Some(true)
                             || c.bargain == Some(true)
                             || c.evidence == Some(true)
+                            || c.method == CastMethod::Warp
                     }) || item.x.is_some()
                     {
                         let mut movement = self.entry_move(
@@ -872,6 +878,10 @@ impl Game {
                             Zone::Battlefield,
                             self.enters_tapped(item.card),
                         );
+                        movement.warp_controller = item
+                            .cast
+                            .filter(|c| c.method == CastMethod::Warp)
+                            .map(|_| item.controller);
                         movement.offspring_paid =
                             item.cast.is_some_and(|c| c.offspring == Some(true));
                         movement.kicked = item.cast.is_some_and(|c| c.kicker == Some(true));
@@ -1028,6 +1038,7 @@ impl Game {
                     }
                 }
                 Instruction::SacrificeDelayedTokens => self.sacrifice_delayed_tokens(&item),
+                Instruction::ExileWarpedPermanent => self.exile_warped_permanent(&item),
                 Instruction::BecomeSaddled { .. } => self.resolve_saddle(&item),
                 Instruction::BottomLibrary => {
                     for bound in &item.targets {

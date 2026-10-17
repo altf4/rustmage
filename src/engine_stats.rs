@@ -232,8 +232,9 @@ impl Game {
                 }
             }
             for modifier in object.card.static_modifiers() {
-                if (!modifier.requires_life_gain
-                    || self.state.players[object.owner.index()].life_gained_this_turn > 0)
+                if (!modifier.own_turn || self.state.active == object.owner)
+                    && (!modifier.requires_life_gain
+                        || self.state.players[object.owner.index()].life_gained_this_turn > 0)
                     && self.creature_matches(
                         modifier.filter,
                         object.owner,

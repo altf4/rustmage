@@ -12,6 +12,7 @@ pub(super) struct EntryMove {
     pub reveal_hand: bool,
     pub life_paid: Option<bool>,
     pub offspring_paid: bool,
+    pub warp_controller: Option<Player>,
     pub kicked: bool,
     pub bargained: bool,
     pub x: u32,
@@ -136,6 +137,7 @@ impl Game {
             reveal_hand: false,
             life_paid: None,
             offspring_paid: false,
+            warp_controller: None,
             kicked: false,
             bargained: false,
             x: 0,
@@ -262,6 +264,12 @@ impl Game {
                 if movement.reveal_hand && event.destination == Zone::Hand {
                     self.state.known_hand.push(event.after);
                 }
+            }
+            if let Some(controller) = movement.warp_controller
+                && event.moved
+                && event.destination == Zone::Battlefield
+            {
+                self.register_warp_exile(&event, controller);
             }
             events.push(event);
         }

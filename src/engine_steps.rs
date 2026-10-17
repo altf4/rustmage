@@ -5,6 +5,7 @@ impl Game {
         self.state.step = step;
         if step == Step::End {
             self.queue_delayed_sacrifices();
+            self.queue_warp_exiles();
         }
         let sources: Vec<_> = self
             .state

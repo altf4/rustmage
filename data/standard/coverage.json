@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "115c0b72334f47bb04635dc48e734617da2fa9ca2e6b12bd04076cfa3e238db8",
+  "catalogue_version": "6308cd9852add06732f6c36123993b6b3a06a0a6b037f16442b78acaf1374822",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1693,
-  "implemented_total": 1699,
+  "implemented_standard_cards": 1707,
+  "implemented_total": 1713,
   "token_definitions": 83,
   "emblem_definitions": 1,
   "cards": [
@@ -3646,8 +3646,8 @@
     {
       "name": "Bygone Colossus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Byrke, Long Ear of the Law",
@@ -7144,8 +7144,8 @@
     {
       "name": "Drix Fatemaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Drogskol Reaver",
@@ -8314,8 +8314,8 @@
     {
       "name": "Eusocial Engineering",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Evendo, Waking Haven",
@@ -10306,8 +10306,8 @@
     {
       "name": "Germinating Wurm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Germination Practicum",
@@ -14308,8 +14308,8 @@
     {
       "name": "Knight Luminary",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Knight of Doves",
@@ -16216,8 +16216,8 @@
     {
       "name": "Mechanozoa",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Meddling Youths",
@@ -16282,8 +16282,8 @@
     {
       "name": "Memorial Team Leader",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Memorial Vault",
@@ -17830,8 +17830,8 @@
     {
       "name": "Nova Hellkite",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Novel Nunchaku",
@@ -20596,8 +20596,8 @@
     {
       "name": "Red Tiger Mechan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Redcap Gutter-Dweller",
@@ -21730,8 +21730,8 @@
     {
       "name": "Runaway Boulder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Rune-Brand Juggler",
@@ -23296,8 +23296,8 @@
     {
       "name": "Sinister Cryologist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Sinister Hideout",
@@ -24586,8 +24586,8 @@
     {
       "name": "Starbreach Whale",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Starfall Invocation",
@@ -30112,8 +30112,8 @@
     {
       "name": "Waylaying Pirates",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Wayspeaker Bodyguard",
@@ -30190,8 +30190,8 @@
     {
       "name": "Weftblade Enhancer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Weftstalker Ardent",

@@ -3526,10 +3526,11 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Creatures you control lose flying.',
                      'Creatures you control have flying as long as you control an Island.',
                      'As long as you control a Mountain, creatures you control have haste.',
-                     'During your turn, creatures you control get +1/+1.',
                      'Creatures you control have haste.\nWhenever you cast a spell, proliferate.',
                      'Creatures you control have haste.\nThis creature has base power and toughness 4/4.']:
             self.assertIsNone(generate.static_permanent_template(self.card(oracle_text=text)),text)
+        result=generate.static_permanent_template(self.card(oracle_text='During your turn, creatures you control get +1/+1 and have lifelink.'))
+        self.assertIsNotNone(result);self.assertIn('own_turn: true',result[5][0]);self.assertIn('own_turn: true',result[6][0])
         self.assertIsNone(generate.static_permanent_template(self.card(type_line='Artifact',oracle_text='This creature has first strike.')))
 
     def test_continuous_keyword_admissions_are_complete(self):

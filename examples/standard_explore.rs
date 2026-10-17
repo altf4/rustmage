@@ -357,7 +357,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && let Some(item) = &before.announcing
             {
                 match item.kind {
-                    StackKind::DelayedSacrifice => panic!("no delayed producer in this fixture"),
+                    StackKind::DelayedSacrifice | StackKind::DelayedWarpExile => {
+                        panic!("no delayed producer in this fixture")
+                    }
                     StackKind::Spell => {
                         if let Some(k) = index(item.source_card) {
                             casts[k][p.index()] += 1;

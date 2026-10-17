@@ -26,3 +26,21 @@ class JobPlotCompositionTests(unittest.TestCase):
                 one['cards_sha256'] = hashlib.sha256(json.dumps(one['cards'], ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
                 _, report = g.compile_catalogue(one, dict(banned_card_names=[]))
                 self.assertFalse(next(c for c in report['cards'] if c['name'] == name)['implemented'])
+
+    def test_recognized_warp_does_not_revive_job_select_composites(self):
+        rows = {c['name']: c for c in json.loads((g.ROOT / 'data/standard/cards.json').read_text())['cards']}
+        names = [c['name'] for c in rows.values() if g.job_select_template(c) is not None]
+        self.assertEqual(len(names), 16)
+        declaration = next(line for line in rows['Eusocial Engineering']['oracle_text'].splitlines() if line.startswith('Warp '))
+        for name in names:
+            with self.subTest(name=name):
+                base = rows[name]
+                mutant = dict(base, oracle_text=base['oracle_text'] + '\n' + declaration)
+                residual, cost = g.extract_warp(mutant)
+                self.assertIsNotNone(cost)
+                self.assertEqual(residual['oracle_text'], base['oracle_text'])
+                self.assertIsNotNone(g.job_select_template(residual))
+                one = dict(cards=[mutant], card_count=1)
+                one['cards_sha256'] = hashlib.sha256(json.dumps(one['cards'], ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+                _, report = g.compile_catalogue(one, dict(banned_card_names=[]))
+                self.assertFalse(next(c for c in report['cards'] if c['name'] == name)['implemented'])

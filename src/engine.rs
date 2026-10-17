@@ -11,14 +11,17 @@ use crate::cards::{
 #[path = "engine_saddle.rs"]
 mod saddle;
 pub use saddle::SaddleChoiceView;
-/// Public observation structure, including Plot permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 72;
+/// Public observations, including Plot/Warp permissions and captured subtype grants.
+pub const OBSERVATION_SCHEMA: u32 = 73;
 #[path = "engine_mobilize.rs"]
 mod mobilize;
 #[path = "engine_plot.rs"]
 mod plot;
+#[path = "engine_warp.rs"]
+mod warp;
 pub use mobilize::{DelayedSacrificeView, MobilizeChoiceView};
 pub use plot::{PlotPaymentView, PlottedCard};
+pub use warp::{DelayedWarpExileView, WarpedCard};
 
 #[path = "engine_subtypes.rs"]
 mod subtypes;
@@ -332,6 +335,7 @@ define_actions! {
     AnnounceExile {
         card: CardId,
     },
+    AnnounceWarp { card: CardId },
     AnnouncePlot { card: CardId },
     PayPlot { payment: Mana },
     AnnouncePlotted { card: CardId },
@@ -583,6 +587,7 @@ pub enum CastMethod {
     Normal,
     Flashback,
     Plot,
+    Warp,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CastInfo {
@@ -612,6 +617,7 @@ pub struct AttachmentTriggerView {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
     pub delayed_sacrifice: Option<Box<DelayedSacrificeView>>,
+    pub delayed_warp_exile: Option<Box<DelayedWarpExileView>>,
     /// Chosen X, retained independently by a spell and its own entry-trigger packets.
     pub x: Option<u32>,
     pub attachment_trigger: Option<Box<AttachmentTriggerView>>,
@@ -670,7 +676,9 @@ impl SpellView {
                 Some(Instruction::Modal(modes)) => Some(modes),
                 _ => None,
             },
-            StackKind::ActivatedAbility { .. } | StackKind::DelayedSacrifice => None,
+            StackKind::ActivatedAbility { .. }
+            | StackKind::DelayedSacrifice
+            | StackKind::DelayedWarpExile => None,
         }
     }
     pub(crate) fn program(&self) -> Option<(TargetPlan, &'static [Instruction])> {
@@ -715,6 +723,9 @@ impl SpellView {
             StackKind::DelayedSacrifice => {
                 Some((TargetPlan::NONE, &[Instruction::SacrificeDelayedTokens]))
             }
+            StackKind::DelayedWarpExile => {
+                Some((TargetPlan::NONE, &[Instruction::ExileWarpedPermanent]))
+            }
         }
     }
 }
@@ -742,6 +753,7 @@ pub enum StackKind {
     TriggeredAbility { ability: u16 },
     ActivatedAbility { ability: u16 },
     DelayedSacrifice,
+    DelayedWarpExile,
 }
 
 /// The object being attacked; this is not a spell/ability target.
@@ -990,6 +1002,7 @@ struct State {
     exile_links: Vec<ExileLink>,
     exile_permissions: Vec<ExilePlayPermission>,
     plot: Option<Box<plot::PlotState>>,
+    warp: Option<Box<warp::WarpState>>,
     known_hand: Vec<ObjectRef>,
     explore_data: Option<Box<explore::ExploreState>>,
     evidence_data: Option<Box<evidence::EvidenceState>>,
@@ -1267,6 +1280,8 @@ pub struct Observation {
     pub exile_links: Vec<ExileLink>,
     pub exile_permissions: Vec<ExilePlayPermission>,
     pub plotted_cards: Vec<PlottedCard>,
+    pub warped_cards: Vec<WarpedCard>,
+    pub delayed_warp_exiles: Vec<DelayedWarpExileView>,
     pub plot_payment: Option<PlotPaymentView>,
     pub triggered_this_turn: Vec<TriggerUse>,
     pub legend_choices: Vec<LegendGroupView>,
@@ -1431,6 +1446,7 @@ impl Game {
                 exile_links: Vec::new(),
                 exile_permissions: Vec::new(),
                 plot: None,
+                warp: None,
                 known_hand: Vec::new(),
                 explore_data: None,
                 evidence_data: None,
@@ -1958,6 +1974,18 @@ impl Game {
                         && obj.zone == Zone::Exile
                         && self.plotted_cast_available(actor, card)
                         && emit(Action::AnnouncePlotted { card })
+                    {
+                        return true;
+                    }
+                    if obj.zone == Zone::Hand
+                        && (sorcery
+                            || obj.card.is_instant()
+                            || self.keywords(card).contains(Keywords::FLASH))
+                        && obj
+                            .card
+                            .warp_cost()
+                            .is_some_and(|cost| self.warp_cast_fundable(actor, card, cost))
+                        && emit(Action::AnnounceWarp { card })
                     {
                         return true;
                     }
@@ -2636,6 +2664,11 @@ impl Game {
                 let item = self.cast_item(actor, card, [0; 6]);
                 self.open_payment_announcement(item, Counters::default(), None);
             }
+            Action::AnnounceWarp { card } => {
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                item.cast.as_mut().unwrap().method = CastMethod::Warp;
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
             Action::AnnouncePlot { card } => self.begin_plot(actor, card),
             Action::PayPlot { payment } => self.finish_plot(payment),
             Action::AnnouncePlotted { card } => {
@@ -3310,6 +3343,7 @@ impl Game {
         }
         if before.zone == Zone::Exile {
             self.remove_plotted(before.reference);
+            self.remove_warped(before.reference);
             self.state
                 .exile_permissions
                 .retain(|p| p.object != before.reference);
@@ -4018,6 +4052,11 @@ impl Game {
             exile_links: s.exile_links.clone(),
             exile_permissions: s.exile_permissions.clone(),
             plotted_cards: s.plot.as_ref().map_or_else(Vec::new, |p| p.cards.clone()),
+            warped_cards: s.warp.as_ref().map_or_else(Vec::new, |w| w.cards.clone()),
+            delayed_warp_exiles: s
+                .warp
+                .as_ref()
+                .map_or_else(Vec::new, |w| w.delayed.iter().map(|d| d.view).collect()),
             plot_payment: self
                 .plot_payment()
                 .filter(|p| p.controller == viewer)
@@ -4276,6 +4315,7 @@ impl Game {
             + s.exile_links.len() * std::mem::size_of::<ExileLink>()
             + s.exile_permissions.len() * std::mem::size_of::<ExilePlayPermission>()
             + s.plot.as_ref().map_or(0, |p| p.bytes())
+            + s.warp.as_ref().map_or(0, |w| w.bytes())
             + s.triggered_this_turn.len() * std::mem::size_of::<TriggerUse>()
             + s.sba_batch.as_ref().map(|batch| batch.bytes()).unwrap_or(0)
             + s.entry_batch
@@ -4372,6 +4412,10 @@ impl Game {
                 .chain(s.announcing.iter().map(|announcement| &announcement.item))
                 .map(|item| {
                     item.delayed_sacrifice.as_ref().map_or(0, |d| d.bytes())
+                        + item
+                            .delayed_warp_exile
+                            .as_ref()
+                            .map_or(0, |_| std::mem::size_of::<DelayedWarpExileView>())
                         + item.targets.len() * std::mem::size_of::<BoundTarget>()
                         + item
                             .attachment_trigger
@@ -4810,6 +4854,10 @@ mod mobilize_tests;
 #[cfg(test)]
 #[path = "engine_plot_tests.rs"]
 mod plot_tests;
+
+#[cfg(test)]
+#[path = "engine_warp_tests.rs"]
+mod warp_tests;
 
 #[cfg(test)]
 #[path = "engine_job_select_tests.rs"]

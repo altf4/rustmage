@@ -36,12 +36,18 @@ impl Announcement {
                     .cost
                     .additional
             }
-            StackKind::TriggeredAbility { .. } | StackKind::DelayedSacrifice => None,
+            StackKind::TriggeredAbility { .. }
+            | StackKind::DelayedSacrifice
+            | StackKind::DelayedWarpExile => None,
         }
     }
 
     pub(super) fn cost_options(&self) -> crate::cards::ManaCostOptions {
         match self.item.kind {
+            StackKind::Spell if self.item.cast.is_some_and(|c| c.method == CastMethod::Warp) => {
+                std::iter::once(self.item.source_card.warp_cost().expect("fixed Warp cost"))
+                    .chain([].iter().copied())
+            }
             StackKind::Spell
                 if self
                     .item
@@ -63,7 +69,9 @@ impl Announcement {
                 [ability as usize]
                 .cost
                 .mana_options(),
-            StackKind::TriggeredAbility { .. } | StackKind::DelayedSacrifice => {
+            StackKind::TriggeredAbility { .. }
+            | StackKind::DelayedSacrifice
+            | StackKind::DelayedWarpExile => {
                 unreachable!("triggered ability has no activation cost")
             }
         }
@@ -98,7 +106,10 @@ impl Announcement {
             && match self.item.kind {
                 StackKind::Spell => {
                     self.item.cast.is_none_or(|cast| {
-                        !matches!(cast.method, CastMethod::Flashback | CastMethod::Plot)
+                        !matches!(
+                            cast.method,
+                            CastMethod::Flashback | CastMethod::Plot | CastMethod::Warp
+                        )
                     }) && self.item.source_card.has_hybrid_cost()
                 }
                 StackKind::ActivatedAbility { ability } => !self.item.source_card.activations()
@@ -106,7 +117,9 @@ impl Announcement {
                     .cost
                     .alternatives
                     .is_empty(),
-                StackKind::TriggeredAbility { .. } | StackKind::DelayedSacrifice => false,
+                StackKind::TriggeredAbility { .. }
+                | StackKind::DelayedSacrifice
+                | StackKind::DelayedWarpExile => false,
             }
     }
 }
@@ -512,6 +525,7 @@ impl Game {
         let id = self.next_stack_id();
         SpellView {
             delayed_sacrifice: None,
+            delayed_warp_exile: None,
             x: None,
             attachment_trigger: None,
             cast: Some(CastInfo {

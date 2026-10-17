@@ -658,6 +658,17 @@ def extract_stat_rules(card):
     return proxy,base,scales
 
 
+def extract_counter_grants(card):
+    if card.get('layout')!='normal' or not isinstance(card.get('oracle_text'),str):return card,[]
+    body,grants=[],[]
+    for line in card['oracle_text'].splitlines():
+        m=re.fullmatch(r'Each creature you control with a \+1/\+1 counter on it has (.+)\.',line)
+        if m and (keywords:=keyword_list(m[1].casefold())) is not None:
+            grants.append(f'(CounterKind::PlusOne, Keywords({keywords}))')
+        else:body.append(line)
+    return dict(card,oracle_text='\n'.join(body)),grants
+
+
 def static_permanent_template(card):
     if not isinstance(card.get('oracle_text'), str): return None
     body, modifiers, grants = [], [], []
@@ -696,14 +707,13 @@ def static_permanent_template(card):
             grants.append(extra);continue
         m = re.fullmatch(r'(.+) get ([+-][0-9]+)/([+-][0-9]+)(?: and have (.+))?\.', line)
         if m:
-            if own_turn: return None
             filt = creature_filter(m[1])
             if filt is None or max(abs(int(m[2])), abs(int(m[3]))) > 32767: return None
             if m[4]:
-                extra=grant(m[1],m[4],False,requires_life_gain)
+                extra=grant(m[1],m[4],own_turn,requires_life_gain)
                 if extra is None: return None
                 grants.append(extra)
-            modifiers.append(f'StaticModifier {{ requires_life_gain: {str(requires_life_gain).lower()}, filter: {filt}, stats: Stats {{ power: {int(m[2])}, toughness: {int(m[3])} }} }}')
+            modifiers.append(f'StaticModifier {{ own_turn: {str(own_turn).lower()}, requires_life_gain: {str(requires_life_gain).lower()}, filter: {filt}, stats: Stats {{ power: {int(m[2])}, toughness: {int(m[3])} }} }}')
         elif m:=re.fullmatch(r'(.+) (?:have|has) (.+)\.',line):
             extra=grant(m[1],m[2],own_turn,requires_life_gain)
             if extra is None: return None
@@ -924,6 +934,20 @@ def extract_plot(card):
     if not m or fixed_cost(m[1]) is None or spell_cost_options(m[1]) is None: return card,None
     colored,generic=fixed_cost(m[1])
     return dict(card,oracle_text='\n'.join(line for line in lines if line!=declarations[0])), f'ManaCost {{ colored: {colored}, generic: {generic} }}'
+
+
+def extract_warp(card):
+    if card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'), str): return card,None
+    lines=card['oracle_text'].splitlines()
+    declarations=[line for line in lines if line.startswith('Warp')]
+    if len(declarations)!=1: return card,None
+    m=re.fullmatch(r'Warp ((?:\{(?:[0-9]+|[WUBRGC])\})+) \(You may cast this card from your hand for its warp cost\. Exile this (creature|enchantment) at the beginning of the next end step, then you may cast it from exile on a later turn\.\)',declarations[0])
+    if not m or fixed_cost(m[1]) is None or spell_cost_options(m[1]) is None: return card,None
+    types=card.get('type_line','').split(' — ')[0].split()
+    if not any(t in types for t in ['Creature','Artifact','Enchantment','Planeswalker']) or any(t in types for t in ['Instant','Sorcery','Land']):return card,None
+    if (m[2]=='creature') != ('Creature' in types):return card,None
+    colored,generic=fixed_cost(m[1])
+    return dict(card,oracle_text='\n'.join(line for line in lines if line!=declarations[0])),f'ManaCost {{ colored: {colored}, generic: {generic} }}'
 
 
 def extract_bargain(card):
@@ -1586,6 +1610,7 @@ for _name, _zone, _kinds, _relation, _other, _nonland in [
     ('Artifact', 'Battlefield', 16, -1, False, False),
     ('ArtifactCreature', 'Battlefield', 17, -1, False, False),
     ('ArtifactCreatureYou', 'Battlefield', 17, 0, False, False),
+    ('ArtifactCreatureOpponent', 'Battlefield', 17, 1, False, False),
     ('Enchantment', 'Battlefield', 32, -1, False, False),
     ('ArtifactEnchantment', 'Battlefield', 48, -1, False, False),
     ('ArtifactEnchantmentOpponent', 'Battlefield', 48, 1, False, False),
@@ -1690,6 +1715,7 @@ for _name, _members in [
 FIXED_DAMAGE_SUBJECTS = {
     'any target':'Any',
     'target creature':'Creature',
+    'target creature an opponent controls':'CreatureOpponent',
     'target creature or planeswalker':'CreaturePlaneswalker',
     'target opponent':'Opponent',
     'target player':'Player',
@@ -1913,8 +1939,8 @@ def targeted_program(text):
         if rule:=object_subjects.get(m[3]):
             spec=(rule,0,1) if m[2] else (rule,1,1) if rule=='Creature' else rule
             return spec,[m[1].capitalize()]
-    if m:=re.fullmatch(r'tap target creature an opponent controls and put (a|one|two|three) stun counters? on it\.',text):
-        return 'CreatureOpponent',['Tap',counter_instruction('Targets',m[1],'stun')]
+    if m:=re.fullmatch(r'tap (target creature|target artifact or creature) an opponent controls and put (a|one|two|three) stun counters? on it\.',text):
+        return ('CreatureOpponent' if m[1]=='target creature' else 'ArtifactCreatureOpponent'),['Tap',counter_instruction('Targets',m[2],'stun')]
     if m:=re.fullmatch(r'([^.]+) if you gained life this turn\.',text):
         result=targeted_program(m[1]+'.')
         return (result[0],[f'If {{ guard: StepGuard::GainedLife, skip: {len(result[1])} }}',*result[1]]) if result else None
@@ -3445,6 +3471,7 @@ def compile_catalogue(snapshot, target):
     additional_rows = []
     flashback_rows = []
     plot_rows = []
+    warp_rows = []
     x_rows = []
     x_entry_rows = []
     kicker_rows = []
@@ -3476,6 +3503,9 @@ def compile_catalogue(snapshot, target):
         card, convoke = extract_convoke(card)
         plot_seen = any(line.startswith('Plot ') for line in card.get('oracle_text','').splitlines())
         card, plot = extract_plot(card)
+        warp_seen = any(line.startswith('Warp') for line in card.get('oracle_text','').splitlines())
+        card, warp = extract_warp(card)
+        card, extra_counter_grants = extract_counter_grants(card) if kicker is None and offspring is None else (card,[])
         card, evidence = extract_evidence(card)
         card, additional = extract_additional_cost(card)
         card, target_reduction = extract_target_cost_reduction(card)
@@ -3492,7 +3522,7 @@ def compile_catalogue(snapshot, target):
         spell = spell_program_template(card)
         modal = modal_spell_template(card)
         aura = aura_template(card)
-        job = job_select_template(card) if (plot is None and not cycling and flashback is None and offspring is None and kicker is None and not bargain and not convoke and evidence is None and additional is None and target_reduction is None and not reductions and dynamic is None and not scaling and creature_entry == 'Never' and not entry_counters) else None
+        job = job_select_template(card) if (plot is None and warp is None and not cycling and flashback is None and offspring is None and kicker is None and not bargain and not convoke and evidence is None and additional is None and target_reduction is None and not reductions and dynamic is None and not scaling and creature_entry == 'Never' and not entry_counters) else None
         equipment = job[0] if job else equipment_template(card)
         permanent = permanent_program_template(card)
         static = static_permanent_template(card)
@@ -3576,12 +3606,18 @@ def compile_catalogue(snapshot, target):
         # silently combine an unimplemented additional/alternative payment recipe.
         if convoke and (bargain or evidence is not None or cycling or any(v is not None for v in (flashback,offspring,kicker,additional,target_reduction)) or '{X}' in card.get('mana_cost','') or any(line.startswith(('Saddle ', 'Mobilize ')) for line in card.get('oracle_text','').splitlines())):
             effect='Unsupported'
-        if plot_seen and (plot is None or convoke or evidence is not None or cycling
+        if plot_seen and (plot is None or warp_seen or convoke or evidence is not None or cycling
                 or any('endures ' in line for line in card.get('oracle_text','').splitlines())
                 or any(line.startswith(('Saddle ', 'Mobilize ')) for line in card.get('oracle_text','').splitlines())
                 or any(v is not None for v in (flashback,offspring,kicker,additional,target_reduction,scalar))
                 or bargain or reductions
                 or spell_cost_options(card.get('mana_cost','')) is None):
+            effect='Unsupported'
+        if warp_seen and (warp is None or plot_seen or convoke or evidence is not None or cycling
+                or any('endures ' in line for line in card.get('oracle_text','').splitlines())
+                or any(line.startswith(('Saddle ', 'Mobilize ')) for line in card.get('oracle_text','').splitlines())
+                or any(v is not None for v in (flashback,offspring,kicker,additional,target_reduction,scalar))
+                or bargain or reductions or spell_cost_options(card.get('mana_cost','')) is None):
             effect='Unsupported'
         # Later fixed-cost selectors must never revive a rejected variable-cost body.
         if '{X}' in card.get('mana_cost', '') and scalar is None:
@@ -3642,7 +3678,9 @@ def compile_catalogue(snapshot, target):
                 offspring_rows.append(f'        {index} => Some({offspring}),')
                 offspring_copy_rows.append(f'        {index} => Some(__TOKEN_{offspring_key}__),')
             if flashback is not None: flashback_rows.append(f'        {index} => Some({flashback}),')
+            if extra_counter_grants: counter_grant_rows.append(f'        {index} => &[{", ".join(extra_counter_grants)}],')
             if plot is not None: plot_rows.append(f'        {index} => Some({plot}),')
+            if warp is not None: warp_rows.append(f'        {index} => Some({warp}),')
             if entry_suppression: entry_suppression_rows.append(f'        {index} => {entry_suppression},')
             if opponent_entry_tapped: opponent_entry_tapped_rows.append(f'        {index} => {opponent_entry_tapped},')
             if entry_counters: entry_counter_rows.append(f'        {index} => &[{", ".join(entry_counters)}],')
@@ -3772,6 +3810,7 @@ def compile_catalogue(snapshot, target):
         lines.append(f'    pub const {name.replace(" ", "")}: Card = Card({index});')
     lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn equipment(card: Card) -> Option<EquipmentSpec> {', '    match card.0 {', *equipment_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn aura(card: Card) -> Option<AuraSpec> {', '    match card.0 {', *aura_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn plot_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *plot_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn warp_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *warp_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn attached_subtype(card: Card) -> Option<&'static str> {", '    match card.0 {', *attached_subtype_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn attached_turn_keywords(card: Card) -> Keywords {', '    match card.0 {', *attached_turn_rows, '        _ => Keywords::NONE,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn dynamic_stats(card: Card) -> Option<DynamicStats> {', '    match card.0 {', *dynamic_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', "pub(super) fn scaling_modifiers(card: Card) -> &'static [ScalingModifier] {", '    match card.0 {', *scaling_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn entry_trigger_suppression(card: Card) -> u16 {', '    match card.0 {', *entry_suppression_rows, '        _ => 0,', '    }', '}', '']
