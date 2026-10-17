@@ -2616,7 +2616,7 @@ impl Game {
                         .into_iter()
                         .map(|id| {
                             let mut counters = Counters::default();
-                            counters.add(kind, self.state.objects[id as usize].counters.get(kind));
+                            counters.add(kind, self.counter_count(id, kind));
                             (self.object_ref(id), counters)
                         })
                         .collect();
@@ -2682,10 +2682,7 @@ impl Game {
                             let Target::Card(id) = b.target else {
                                 return None;
                             };
-                            Some((
-                                self.object_ref(id),
-                                self.state.objects[id as usize].counters.clone(),
-                            ))
+                            Some((self.object_ref(id), self.counter_amounts(id).to_owned()))
                         })
                         .collect();
                     self.effect_counters(changes, replacements::ResumeMode::Program);
@@ -2697,7 +2694,7 @@ impl Game {
                         self.keyword_subjects(&item, subject)
                     };
                     for id in ids {
-                        self.state.objects[id as usize].counters = Counters::default();
+                        self.set_counters(id, Counters::default());
                     }
                 }
                 Instruction::RemoveAllCounters => {
@@ -2705,7 +2702,7 @@ impl Game {
                         if self.same_target_object(*bound)
                             && let Target::Card(id) = bound.target
                         {
-                            self.state.objects[id as usize].counters = Counters::default();
+                            self.set_counters(id, Counters::default());
                         }
                     }
                 }

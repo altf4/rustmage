@@ -44,12 +44,8 @@ fn targeted_counter_is_permanent_snapshot_owned_and_resets_on_zone_change() {
 fn negative_counters_kill_and_opposing_pairs_cancel() {
     let mut game = scenario();
     let creature = spawn(&mut game, Player::P1, Card::HillGiant, Zone::Battlefield);
-    game.state.objects[creature as usize]
-        .counters
-        .add(CounterKind::PlusOne, 2);
-    game.state.objects[creature as usize]
-        .counters
-        .add(CounterKind::MinusOne, 1);
+    game.add_counter(creature, CounterKind::PlusOne, 2);
+    game.add_counter(creature, CounterKind::MinusOne, 1);
     game.state_based_actions();
     assert_eq!(game.object_view(creature).counters.plus_one, 1);
     assert_eq!(game.object_view(creature).counters.minus_one, 0);

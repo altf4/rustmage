@@ -2,19 +2,24 @@
 use super::ability_timeline_tests::{checked, named, settle, setup};
 use super::*;
 
-const NAMED: [CounterKind; 6] = [
+const NAMED: [CounterKind; 9] = [
     CounterKind::Incubation,
     CounterKind::Bait,
     CounterKind::Page,
     CounterKind::Divinity,
     CounterKind::Revival,
     CounterKind::Soul,
+    CounterKind::Fellowship,
+    CounterKind::Wish,
+    CounterKind::Stash,
 ];
 
 #[test]
 fn named_counters_storage_is_canonical_owned_and_sparse() {
     assert_eq!(std::mem::size_of::<crate::cards::InitialCounters>(), 40);
     assert_eq!(std::mem::size_of::<Counters>(), 48);
+    assert_eq!(std::mem::size_of::<Object>(), 144);
+    assert!(!std::mem::needs_drop::<Object>());
     let empty = Counters::default();
     assert_eq!(empty.owned_bytes(), 0);
     assert!(empty.is_empty());
@@ -29,15 +34,15 @@ fn named_counters_storage_is_canonical_owned_and_sparse() {
     for kind in NAMED.into_iter().rev() {
         all.add(kind, 2);
     }
-    assert_eq!(all.total(), 12);
-    assert_eq!(all.owned_bytes(), 24 + 6 * 16);
+    assert_eq!(all.total(), 18);
+    assert_eq!(all.owned_bytes(), 24 + 9 * 16);
     let frozen = all.clone();
     for kind in NAMED {
         all.remove(kind, 2);
     }
     assert_eq!(all, empty);
     assert_eq!(all.owned_bytes(), 0);
-    assert_eq!(frozen.total(), 12);
+    assert_eq!(frozen.total(), 18);
     let baseline = Game::new(Config {
         decks: [vec![Card::Forest; 60], vec![Card::Forest; 60]],
         seed: 249,
@@ -46,7 +51,7 @@ fn named_counters_storage_is_canonical_owned_and_sparse() {
     })
     .unwrap();
     println!(
-        "NAMED_COUNTER_MEMORY counters={} initial_counters={} object={} state={} initial_logical_bytes={} six_kinds_logical_heap={} six_kinds_allocated_heap={} empty_allocated_heap={}",
+        "NAMED_COUNTER_MEMORY counters={} initial_counters={} object={} state={} initial_logical_bytes={} nine_kinds_logical_heap={} nine_kinds_allocated_heap={} empty_allocated_heap={}",
         std::mem::size_of::<Counters>(),
         std::mem::size_of::<crate::cards::InitialCounters>(),
         std::mem::size_of::<Object>(),
@@ -122,7 +127,7 @@ fn named_counters_replacement_choices_freeze_all_kinds_and_public_observations()
         assert!(game.damage_facts(bear).counter);
         assert!(game.damage_facts(bear).modified);
         assert_eq!(game.object_view(bear).power, 2);
-        assert_eq!(game.state_bytes() - empty_bytes, 2 * (24 + 6 * 16));
+        assert_eq!(game.state_bytes() - empty_bytes, 24 + 2 * (40 + 9 * 16));
     }
 }
 
@@ -131,10 +136,8 @@ fn named_counter_removal_costs_are_complete_atomic_and_survive_owned_branches() 
     for player in [Player::P0, Player::P1] {
         let mut game = setup(player);
         let elm = named(&mut game, player, "Gnarlbark Elm", Zone::Battlefield);
-        game.state.objects[elm as usize].counters = Counters::of(CounterKind::Incubation, 2);
-        game.state.objects[elm as usize]
-            .counters
-            .add(CounterKind::Soul, 2);
+        game.set_counters(elm, Counters::of(CounterKind::Incubation, 2));
+        game.add_counter(elm, CounterKind::Soul, 2);
         let choices: Vec<_> = game
             .legal_actions()
             .into_iter()
@@ -221,7 +224,7 @@ fn named_counters_frozen_lki_and_token_slot_reuse_do_not_alias() {
             .iter()
             .position(|o| o.card == token && o.zone == Zone::Battlefield)
             .unwrap() as CardId;
-        game.state.objects[id as usize].counters = Counters::of(CounterKind::Revival, 8);
+        game.set_counters(id, Counters::of(CounterKind::Revival, 8));
         let frozen = game.object_view(id);
         let saved = game.snapshot();
         let mut child = {
@@ -246,7 +249,7 @@ fn named_counters_frozen_lki_and_token_slot_reuse_do_not_alias() {
 #[test]
 fn named_counter_doubling_and_capacity_failure_use_paid_rules_transactions() {
     for player in [Player::P0, Player::P1] {
-        for amount in [3, u64::MAX] {
+        for (amount, hot) in [(3, false), (3, true), (u64::MAX, true)] {
             let mut game = setup(player);
             let source = named(
                 &mut game,
@@ -255,8 +258,10 @@ fn named_counter_doubling_and_capacity_failure_use_paid_rules_transactions() {
                 Zone::Battlefield,
             );
             let target = named(&mut game, player, "Mox Jasper", Zone::Battlefield);
-            game.state.objects[target as usize].counters = Counters::of(CounterKind::Soul, amount);
-            game.state.objects[target as usize].counters.plus_one = 1;
+            game.set_counters(target, Counters::of(CounterKind::Soul, amount));
+            if hot {
+                game.state.objects[target as usize].counters.plus_one = 1;
+            }
             checked(
                 &mut game,
                 Action::AnnounceActivate {
@@ -280,9 +285,21 @@ fn named_counter_doubling_and_capacity_failure_use_paid_rules_transactions() {
             checked(&mut game, payment);
             checked(&mut game, Action::Pass);
             if amount == 3 {
+                let objects = game.state.objects.clone();
+                let names = game.state.named_counters.clone();
                 checked(&mut game, Action::Pass);
+                if !hot {
+                    assert!(game.state.objects.ptr_eq(&objects));
+                    assert!(!live_counters::same_storage(
+                        &game.state.named_counters,
+                        &names
+                    ));
+                }
                 assert_eq!(game.object_view(target).counters.get(CounterKind::Soul), 6);
-                assert_eq!(game.object_view(target).counters.plus_one, 2);
+                assert_eq!(
+                    game.object_view(target).counters.plus_one,
+                    if hot { 2 } else { 0 }
+                );
             } else {
                 let saved = game.snapshot();
                 let revision = game.revision();
@@ -325,10 +342,13 @@ fn named_counter_state_based_pair_cancellation_mutates_live_storage_only() {
     for player in [Player::P0, Player::P1] {
         let mut game = setup(player);
         let creature = named(&mut game, player, "Bear Cub", Zone::Battlefield);
-        game.state.objects[creature as usize].counters = Counters::of(CounterKind::PlusOne, 3)
-            .with(CounterKind::MinusOne, 2)
-            .with(CounterKind::Soul, 4)
-            .with(CounterKind::Incubation, 2);
+        game.set_counters(
+            creature,
+            Counters::of(CounterKind::PlusOne, 3)
+                .with(CounterKind::MinusOne, 2)
+                .with(CounterKind::Soul, 4)
+                .with(CounterKind::Incubation, 2),
+        );
         let frozen = game.object_view(creature);
         checked(&mut game, Action::Pass);
         let after = game.object_view(creature);
@@ -341,5 +361,63 @@ fn named_counter_state_based_pair_cancellation_mutates_live_storage_only() {
         assert_eq!(frozen.counters.minus_one, 2);
         assert_eq!(frozen.counters.get(CounterKind::Soul), 4);
         assert_eq!(after.zone, Zone::Battlefield);
+    }
+}
+
+#[test]
+fn named_counter_rows_follow_all_zone_incarnations_and_detach_owned_branches() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = setup(player);
+        let id = named(&mut game, player, "Mox Jasper", Zone::Exile);
+        game.set_counters(id, Counters::of(CounterKind::Stash, 3));
+        let saved = game.snapshot();
+        let reference = game.object_ref(id);
+        let mut child = {
+            let parent = game.clone();
+            parent.clone()
+        };
+        assert!(game.state.objects.ptr_eq(&child.state.objects));
+        child.add_counter(id, CounterKind::Stash, 2);
+        assert!(game.state.objects.ptr_eq(&child.state.objects));
+        assert!(!live_counters::same_storage(
+            &game.state.named_counters,
+            &child.state.named_counters
+        ));
+        assert_eq!(game.counter_count(id, CounterKind::Stash), 3);
+        assert_eq!(child.counter_count(id, CounterKind::Stash), 5);
+        assert!(!child.is_modified(id));
+        child.move_object(id, Zone::Graveyard);
+        assert_ne!(child.object_ref(id), reference);
+        assert!(child.state.named_counters.is_none());
+        assert_eq!(child.counter_count(id, CounterKind::Stash), 0);
+        assert_eq!(game.counter_count(id, CounterKind::Stash), 3);
+        child.restore(&saved).unwrap();
+        assert_eq!(child.counter_count(id, CounterKind::Stash), 3);
+        assert_eq!(child.object_ref(id), reference);
+        child.set_counters(id, Counters::default());
+        assert!(child.state.named_counters.is_none());
+        assert_eq!(game.counter_count(id, CounterKind::Stash), 3);
+    }
+}
+
+#[test]
+fn every_named_kind_pays_actual_remove_any_costs() {
+    for player in [Player::P0, Player::P1] {
+        for kind in NAMED {
+            let mut game = setup(player);
+            let source = named(&mut game, player, "Gnarlbark Elm", Zone::Battlefield);
+            game.set_counters(source, Counters::of(kind, 2));
+            let action = game.legal_actions().into_iter().find(|action| matches!(action,
+                Action::BeginActivate { card, counter_payment, .. } if *card == source && counter_payment.get(kind) == 2)).unwrap();
+            checked(&mut game, action);
+            checked(
+                &mut game,
+                Action::ChooseTarget {
+                    target: Target::Card(source),
+                },
+            );
+            assert_eq!(game.counter_count(source, kind), 0);
+            assert!(game.state.named_counters.is_none());
+        }
     }
 }

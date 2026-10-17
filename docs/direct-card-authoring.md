@@ -92,18 +92,24 @@ single-kind action payment, chain `.with(kind, amount)` for a mixed payment,
 and use `get(kind)` to inspect any kind. Mixed payments can also be deserialized from the typed `named` list; zero, duplicate and hot-kind
 entries there are rejected. Empty cold storage is omitted from JSON.
 
-The five existing counter fields stay inline. The additional runtime storage is
-one nullable pointer regardless of how many named kinds are supported; it owns a
-boxed vector header and its element buffer only when a named kind is present.
-Removing the last named counter releases both. `Game::state_bytes()` includes
-initialized sparse payloads in objects, announcements, replacement and entry
-batches, consistently excluding unused vector capacity. Snapshots and frozen
-object views clone that payload; feasibility queries borrow their goals and
-available counter sets.
+Live objects retain five inline `Copy` counter fields (40 bytes) and have no
+counter-owned allocations or destructor. Named counters live in an optional
+copy-on-write State buffer, sorted by card slot and qualified by exact incarnation.
+No row or buffer is allocated until named counters exist. Actual zone changes
+clear the old row in every zone, including exile; removing its final named counter
+removes the row and releasing the last row releases the buffer. Named-only writes
+leave the hot object buffer shared across owned branches.
+
+Owned public `Counters` values, payments and frozen object views keep the same
+five fields plus an optional boxed canonical named list. Use `Game::counter_count`
+or the borrowed characteristic-world query inside rules code. Speculative funding
+owns a copy-on-write overlay, including exact counter reservations in its key.
+`Game::state_bytes()` includes initialized sparse rows and owned announcement,
+replacement and entry payloads, excluding unused vector capacity consistently.
 
 Immutable card initializers retain their existing five-field `Counters` spelling
 through a private `InitialCounters` alias in generated module imports. New named
 entry counters use typed entry-counter rules or the surrounding entry effect;
-this storage change does not admit the six Foundations consumers or implement
+this storage change does not admit the Foundations consumers or implement
 their remaining triggers and costs. In particular, adding a counter as an
 activation cost still needs its own rules implementation and tests.

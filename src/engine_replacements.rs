@@ -404,9 +404,7 @@ impl Game {
             {
                 let before = self.state.objects[p.object.card as usize].counters.lore;
                 for kind in CounterKind::ALL {
-                    self.state.objects[p.object.card as usize]
-                        .counters
-                        .add(kind, p.amount.get(kind));
+                    self.add_counter(p.object.card, kind, p.amount.get(kind));
                 }
                 for kind in CounterKind::ALL {
                     self.self_counters_added(p.object, kind, p.amount.get(kind), p.placed_by);
@@ -510,7 +508,7 @@ impl Game {
             })
         {
             let before = self.state.objects[id as usize].counters.lore;
-            self.state.objects[id as usize].counters.add(kind, amount);
+            self.add_counter(id, kind, amount);
             let placed_by = self
                 .state
                 .resolving

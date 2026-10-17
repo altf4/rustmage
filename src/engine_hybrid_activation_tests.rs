@@ -251,7 +251,7 @@ fn hurler_sorcery_and_counter_restrictions_apply_to_every_cost_route() {
     g.state.step = Step::BeginCombat;
     assert!(!offered(&g));
     g.state.step = Step::Main1;
-    g.state.objects[id as usize].counters = Counters::default();
+    g.set_counters(id, Counters::default());
     assert!(!offered(&g));
 }
 

@@ -353,7 +353,7 @@ fn entry_loyalty_and_all_counter_kinds_are_replaced_while_normal_loyalty_activat
         );
         assert!(!g.advance_replacements(false));
         assert_eq!(
-            g.state.objects[bear as usize].counters,
+            g.object_view(bear).counters,
             Counters {
                 lore: 0,
                 plus_one: 2,

@@ -338,11 +338,7 @@ fn purging_remove_all_counter_kinds_and_marang_two_other_targets_execute() {
                         .all(|&b| g.state.objects[b as usize].zone == Zone::Hand)
                 );
             } else {
-                assert!(
-                    bears
-                        .iter()
-                        .any(|&b| g.state.objects[b as usize].counters == Counters::default())
-                );
+                assert!(bears.iter().any(|&b| g.counter_amounts(b).total() == 0));
             }
         }
     }

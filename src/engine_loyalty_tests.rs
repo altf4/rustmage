@@ -81,9 +81,7 @@ fn loyalty_entry_and_zone_resets_are_separate_from_turn_and_cleanup() {
     let mut g = scenario();
     let w = walker(&mut g, Player::P1, "Vivien Reid");
     assert_eq!(g.object_view(w).counters.loyalty, 5);
-    g.state.objects[w as usize]
-        .counters
-        .add(CounterKind::Loyalty, 3);
+    g.add_counter(w, CounterKind::Loyalty, 3);
     g.begin_turn();
     assert_eq!(g.object_view(w).counters.loyalty, 8);
     g.finish_cleanup();

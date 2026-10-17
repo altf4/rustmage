@@ -15,6 +15,7 @@ impl Game {
         Self::object_modified_with(
             self.object_ref(id),
             &self.state.objects[id as usize],
+            self.counter_amounts(id).has_any(),
             self.state
                 .attachment_sources
                 .iter()
@@ -25,10 +26,11 @@ impl Game {
     pub(super) fn object_modified_with<'a>(
         source: ObjectRef,
         object: &Object,
+        has_counters: bool,
         attachments: impl Iterator<Item = &'a Object>,
     ) -> bool {
         object.zone == Zone::Battlefield
-            && (object.counters.has_any()
+            && (has_counters
                 || attachments.into_iter().any(|attachment| {
                     attachment.zone == Zone::Battlefield
                         && attachment.attached_to == Some(source)
@@ -58,7 +60,7 @@ impl Game {
                 object.card
             },
             battlefield: object.zone == Zone::Battlefield,
-            counter: object.counters.has_any(),
+            counter: self.counter_amounts(id).has_any(),
             plus_one: object.counters.plus_one > 0,
             modified: self.is_modified(id),
             attacking: self.state.attackers.iter().any(|a| a.card == id),

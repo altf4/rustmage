@@ -179,7 +179,7 @@ impl Game {
                     deathtouch_since_sba: false,
                     growth: Stats::default(),
                     gained_keywords: Keywords::NONE,
-                    counters: Counters::default(),
+                    counters: InitialCounters::default(),
                     used_abilities: 0,
                     attached_to: None,
                 };
@@ -264,10 +264,11 @@ impl Game {
         object.deathtouch_since_sba = false;
         object.growth = Stats::default();
         object.gained_keywords = Keywords::NONE;
-        object.counters = Counters::default();
+        object.counters = InitialCounters::default();
         object.used_abilities = 0;
         object.attached_to = None;
         // No zone-change event: this game object ceases to exist (CR111.7).
+        self.set_counters(id, Counters::default());
         self.state.free_tokens.push(id);
     }
 }

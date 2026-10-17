@@ -7,6 +7,16 @@ use crate::cards::{LiveStatRecipients, LiveStaticEffect};
 pub(super) trait CharacteristicWorld {
     fn game(&self) -> &Game;
     fn object(&self, id: CardId) -> &Object;
+    fn counter_amounts(&self, id: CardId) -> CounterAmounts<'_> {
+        live_counters::amounts(
+            &self.game().state.named_counters,
+            self.reference(id),
+            self.object(id).counters,
+        )
+    }
+    fn counter_count(&self, id: CardId, kind: CounterKind) -> u64 {
+        self.counter_amounts(id).get(kind)
+    }
     fn life(&self, player: Player) -> i128;
     fn gained_life(&self, player: Player) -> bool;
     fn attacking(&self, id: CardId) -> bool;
@@ -74,6 +84,7 @@ pub(super) trait CharacteristicWorld {
             &|id| self.subtypes(id),
             &|id, object| game.object_kinds(id, object),
             &|id| self.name(id),
+            &|id| self.counter_amounts(id).has_any(),
             self.life(controller),
             game.state.attack_declared && self.attacking(source),
         )
