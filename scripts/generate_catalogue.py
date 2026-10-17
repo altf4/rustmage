@@ -247,6 +247,64 @@ def creature_template(card):
 
 
 
+def intrinsic_reminders_valid(card):
+    """Authenticate complete intrinsic bodies before any generic text extraction.
+
+    Erased text detects the semantic route only. It never becomes executable
+    text: the original body must prove every reminder in its own grammar slot.
+    Other whole-body families have separate reminder audits.
+    """
+    raw = card.get('oracle_text')
+    if not isinstance(raw, str) or not any(c in raw for c in '()'):
+        return True
+    bare = raw
+    while True:
+        stripped = re.sub(r'\([^()]*\)', '', bare)
+        if stripped == bare:
+            break
+        bare = stripped
+    if creature_template(dict(card, oracle_text=bare)) is not None:
+        # These are semantic keyword productions, anchored to the final keyword
+        # on the same intrinsic line. Matching prose elsewhere proves nothing.
+        grammar = {
+            'changeling': r'This card is every creature type\.',
+            'deathtouch': r'Any amount of damage this deals to a creature is enough to destroy it\.',
+            'defender': r"This creature can't attack\.",
+            'double strike': r'This creature deals both first-strike and regular combat damage\.',
+            'first strike': r'This creature deals combat damage before creatures without first strike\.',
+            'flash': r'You may cast this spell any time you could cast an instant\.',
+            'flying': r"This creature can't be blocked except by creatures with flying or reach\.",
+            'haste': r'This creature can attack and \{T\} as soon as it comes under your control\.',
+            'hexproof': r"It can't be the target of spells or abilities your opponents control\.",
+            'indestructible': r'''Damage and effects that say "destroy" don't destroy it\.(?: If its toughness is 0 or less, it still dies\.)?''',
+            'lifelink': r'Damage dealt by this creature also causes you to gain that much life\.',
+            'menace': r"This creature can't be blocked except by two or more creatures\.",
+            'reach': r'This creature can block creatures with flying\.',
+            'skulk': r"This creature can't be blocked by creatures with greater power\.",
+            'trample': r"This creature can deal excess combat damage to the player or planeswalker it's attacking\.",
+            'vigilance': r"Attacking doesn't cause this creature to tap\.",
+        }
+        for line in raw.splitlines():
+            if not any(c in line for c in '()'):
+                continue
+            match = re.fullmatch(r'([^()]+) \(([^()]+)\)', line)
+            if match is None:
+                return False
+            words = [word.strip().casefold() for word in match[1].split(',')]
+            if (not words or any(word not in INTRINSIC_KEYWORDS for word in words)
+                    or words[-1] not in grammar
+                    or re.fullmatch(grammar[words[-1]], match[2]) is None):
+                return False
+        return True
+    if (card.get('layout') == 'normal' and card.get('mana_cost', '') == ''
+            and permanent_type(card) in ('Land', 'Basic Land') and not bare.strip()):
+        # The complete intrinsic land grammar includes its actual basic subtypes
+        # and matching mana production. No other reminder is discarded.
+        return (re.fullmatch(r'\(\{T\}: Add \{[WUBRG]\}(?: or \{[WUBRG]\})?\.\)', raw) is not None
+                and land_template(card) is not None)
+    return True
+
+
 def spell_template(card):
     if (card.get('layout') != 'normal' or card.get('type_line', '').split(' — ')[0] not in ('Instant', 'Sorcery')
             or spell_cost_options(card.get('mana_cost', '')) is None):
@@ -4199,6 +4257,9 @@ def compile_catalogue(snapshot, target):
             if creature_entry != 'Never':entry=creature_entry
             activations = [*activations, *cycling]
             if len(activations) > 64: effect = 'Unsupported'; activations = []
+        # A later generic selector cannot revive rejected intrinsic reminder text.
+        if not intrinsic_reminders_valid(original):
+            effect = 'Unsupported'
         # Rejected timing syntax/source shapes must not be revived by legacy selectors.
         if timing_seen and not timing_grants:
             effect = 'Unsupported'
