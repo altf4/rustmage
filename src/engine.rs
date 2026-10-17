@@ -15,7 +15,7 @@ mod saddle;
 pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 76;
+pub const OBSERVATION_SCHEMA: u32 = 77;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
 #[path = "engine_mobilize.rs"]
@@ -4627,6 +4627,9 @@ mod milling_tests;
 #[path = "engine_damage_trigger_tests.rs"]
 mod damage_trigger_tests;
 
+#[cfg(test)]
+#[path = "engine_attachment_ward_tests.rs"]
+mod attachment_ward_tests;
 #[cfg(test)]
 #[path = "engine_spell_cost_tests.rs"]
 mod spell_cost_tests;

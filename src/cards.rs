@@ -779,6 +779,8 @@ pub(crate) struct EquipmentSpec {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct AuraSpec {
+    /// Enchant object-kind union, evaluated using live characteristics.
+    pub kinds: u8,
     pub relation: i8,
     pub bonus: EquipmentSpec,
 }

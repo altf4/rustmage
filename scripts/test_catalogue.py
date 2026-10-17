@@ -2667,7 +2667,8 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Hulking Raptor',"It'll Quench Ya!",'Negate','No More Lies','Spell Pierce','Spider-Rex, Daring Dino',
                      'Theorix Charm','Toadstool Admirer','Unflinching Hortimancer','Wrecking Gecko','Vein Ripper','Sire of Seven Deaths']:
             self.assertIn(name,supported)
-        for name in ['Dazzling Denial','Spell Stutter',"Falcon's Wing Harness"]:
+        self.assertIn("Falcon's Wing Harness",supported)
+        for name in ['Dazzling Denial','Spell Stutter']:
             self.assertNotIn(name,supported)
 
     def test_player_damage_filters_and_event_amount_scope(self):
