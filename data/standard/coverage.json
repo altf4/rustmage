@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "746e6f63adf0cc08c962d90098cc3fc91a8296706e380a621562716c417f61fe",
+  "catalogue_version": "2b7dcb15c2ff61094071dce2d937cbc40f348da76cca62abbdadeb05128ff886",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1981,
-  "implemented_total": 1987,
-  "token_definitions": 96,
+  "implemented_standard_cards": 1983,
+  "implemented_total": 1989,
+  "token_definitions": 97,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -24086,8 +24086,8 @@
     {
       "name": "Spelunking",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Sphinx of False Conclusions",
@@ -27104,8 +27104,8 @@
     {
       "name": "The Wandering Minstrel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "The Wandering Rescuer",

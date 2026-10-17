@@ -874,6 +874,8 @@ fn sparse_gift_context_heap_payloads_are_owned_and_counted_once() {
         resume: None,
         shuffle_after: None,
         replacement_resume: None,
+        tap_events: Vec::new(),
+        tap_next: 0,
     };
     let before = batch.bytes();
     batch.moves[0].gift = Some(Box::new(context));

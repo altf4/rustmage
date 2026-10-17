@@ -220,8 +220,7 @@ impl Game {
             let moves = ids
                 .into_iter()
                 .map(|id| {
-                    let mut incoming =
-                        self.entry_move(id, destination, self.enters_tapped_for(id, player));
+                    let mut incoming = self.entry_move(id, destination, false);
                     incoming.controller = player;
                     incoming
                 })

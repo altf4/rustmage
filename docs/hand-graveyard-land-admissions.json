@@ -2473,8 +2473,13 @@
   "remaining_dependencies": {
     "Kellan, the Kid": "Conditional free permanent casting and fallback land choice.",
     "Michelangelo, Improviser": "Sneak plus creature-and/or-land multiple private choice.",
-    "Spelunking": "Captured successful Cave land result and prospective untapped entry replacement.",
     "The Gitrog, Ravenous Ride": "Exact saddler sacrifice choice and power-LKI-bound draw/multiple-land placement."
   },
-  "original_inventory_baseline": "ba3752a"
+  "original_inventory_baseline": "ba3752a",
+  "subsequently_completed": {
+    "Spelunking": {
+      "pr": "343",
+      "completed_dependency": "Captured successful Cave land result and prospective untapped entry replacement."
+    }
+  }
 }
