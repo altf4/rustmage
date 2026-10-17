@@ -47,7 +47,7 @@ class TemporaryDeathGrantCompilerTests(unittest.TestCase):
   changed={n+'#0' for n in roles+exclusions+own}
   report=assert_union(before,current,changed=changed,added=set(),helpers=helpers,aliases={})
   self.assertEqual(report['preserved_definitions'],5315)
-  for ref,names in [('fb56027f4016f4ccc5508013f31f78c70ee7f16c',roles),('ac1aa6292e4947a3234a411a95353b1eb40aa0bd',exclusions),('eb3790c',own)]:
+  for ref,names in [('fb56027f4016f4ccc5508013f31f78c70ee7f16c',roles),('07086ff00dd2424f772db2dddd4d5895660d6d2c',exclusions),('eb3790c',own)]:
    old=frozen(ref)
    for name in names:self.assertEqual(current['definitions'][name+'#0'],old['definitions'][name+'#0'])
    for key,value in old['helpers'].items():self.assertEqual(current['helpers'][key],value)

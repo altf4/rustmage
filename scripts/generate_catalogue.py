@@ -2424,8 +2424,7 @@ def target_exclusion_reminders_valid(card):
     if not seen:return True
     for line in raw.splitlines():
         if '(' not in line and ')' not in line:continue
-        bare=re.sub(r'\([^()]*\)','',line).strip()
-        if creature_template(dict(card,oracle_text=bare)) is None or not intrinsic_reminders_valid(dict(card,oracle_text=line)):
+        if not intrinsic_reminder_line_valid(line):
             return False
     return True
 

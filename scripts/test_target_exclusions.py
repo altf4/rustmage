@@ -30,14 +30,22 @@ class ExclusionTests(unittest.TestCase):
     for injected in ['(You win the game.)',' ((You win the game.)) ']:
      text=c['oracle_text'].replace(token,token[:3]+injected+token[3:])
      self.assertFalse(self.compile(dict(c,oracle_text=text))[1],(name,token,injected))
+ def test_intrinsic_reminder_is_line_bound_on_noncreature_hosts(self):
+  reminder='Damage and effects that say "destroy" don\'t destroy it.'
+  for host in ['Artifact','Enchantment']:
+   body='{2}, {T}: Tap target nonenchantment creature.'
+   c=dict(self.cards['Coeurl'],name='Independent exclusion host',type_line=host,mana_cost='{2}',oracle_text='Indestructible\n'+body)
+   clean,ok=self.compile(c);self.assertTrue(ok)
+   shown,ok=self.compile(dict(c,oracle_text='Indestructible ('+reminder+')\n'+body));self.assertTrue(ok);self.assertEqual(self.definition(clean,c['name']),self.definition(shown,c['name']))
+   for raw in ['Indestructible\n'+body+' ('+reminder+')','Indestructible ('+reminder+') (You win the game.)\n'+body]:self.assertFalse(self.compile(dict(c,oracle_text=raw))[1])
  def test_three_legal_combinations_only_and_ordered_groups(self):
   for name in ['Amazing Acrobatics','Decoy Ploy','Overwhelming Surge']:
    c=self.cards[name];modes=g.modal_spell_template(c);self.assertEqual(len(modes),3);self.assertEqual(len(modes[2][1]),2);self.assertIn('SelectGroup(1)',modes[2][2])
    self.assertIsNone(g.modal_spell_template(dict(c,oracle_text=c['oracle_text']+'\n• Draw a card.')))
  def test_historical_parent_preservation_exact_seven_and_current_programs(self):
   from scripts.catalogue_preservation import canonical,assert_union
-  old=subprocess.check_output(['git','-C',str(g.ROOT),'show','c41c060c024626843b17cf292aab838d36fd6eb1:src/generated/catalogue.rs'],text=True);physical={c['oracle_id']:c['name'] for c in json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards']}
-  before=canonical(old,physical);after=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show','ac1aa6292e4947a3234a411a95353b1eb40aa0bd:src/generated/catalogue.rs'],text=True),physical)
+  old=subprocess.check_output(['git','-C',str(g.ROOT),'show','ce4b0c104a8e0dbc0a76753a03608eb7bc4618be:src/generated/catalogue.rs'],text=True);physical={c['oracle_id']:c['name'] for c in json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards']}
+  before=canonical(old,physical);after=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show','07086ff00dd2424f772db2dddd4d5895660d6d2c:src/generated/catalogue.rs'],text=True),physical)
   current=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
   for name in NAMES:self.assertEqual(current['definitions'][name+'#0'],after['definitions'][name+'#0'])
   changed={n+'#0' for n in NAMES};report=assert_union(before,after,changed=changed,added=set(),helpers=set(),aliases={});self.assertEqual(report['preserved_definitions'],5324)
