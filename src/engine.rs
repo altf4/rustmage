@@ -24,7 +24,7 @@ pub use adventure::{AdventurePermission, SpellCharacteristicsView};
 pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 86;
+pub const OBSERVATION_SCHEMA: u32 = 87;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
 #[path = "engine_mobilize.rs"]
@@ -373,6 +373,7 @@ define_actions! {
     AnnounceExile {
         card: CardId,
     },
+    AnnounceFlashSurcharge { card: CardId },
     AnnounceWarp { card: CardId },
     AnnounceAdventure { card: CardId },
     AnnounceOmen { card: CardId },
@@ -608,6 +609,7 @@ struct PlayerState {
     extra_land_plays_remaining: u64,
     nonland_permanents_entered_this_turn: u64,
     spells_cast_this_turn: u64,
+    instant_sorcery_cast_this_turn: u64,
     cards_drawn_this_turn: u64,
     cards_discarded_this_turn: u64,
     life_gain_events_this_turn: u64,
@@ -649,6 +651,8 @@ pub struct CastInfo {
     pub payment: Mana,
     pub origin: Zone,
     pub method: CastMethod,
+    /// Optional additional mana paid to obtain this spell's flash timing.
+    pub flash_surcharge: bool,
     /// Explicit optional additional cost, declared before targets; None until chosen.
     pub offspring: Option<bool>,
     /// One fixed optional surcharge, independent of casting method and offspring.
@@ -1513,6 +1517,7 @@ impl Game {
             extra_land_plays_remaining: 0,
             nonland_permanents_entered_this_turn: 0,
             spells_cast_this_turn: 0,
+            instant_sorcery_cast_this_turn: 0,
             cards_drawn_this_turn: 0,
             cards_discarded_this_turn: 0,
             life_gain_events_this_turn: 0,
@@ -2205,6 +2210,12 @@ impl Game {
                             return true;
                         }
                         continue;
+                    }
+                    if obj.card.flash_surcharge().is_some()
+                        && self.flash_surcharge_cast_fundable(actor, card, flashback)
+                        && emit(Action::AnnounceFlashSurcharge { card })
+                    {
+                        return true;
                     }
                     if !sorcery
                         && !obj.card.is_instant()
@@ -2916,6 +2927,17 @@ impl Game {
                 let item = self.cast_item(actor, card, [0; 6]);
                 self.open_payment_announcement(item, Counters::default(), None);
             }
+            Action::AnnounceFlashSurcharge { card } => {
+                let flashback = self.state.objects[card as usize].zone == Zone::Graveyard;
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                let cast = item.cast.as_mut().unwrap();
+                cast.flash_surcharge = true;
+                if flashback {
+                    cast.method = CastMethod::Flashback;
+                    self.state.objects[card as usize].flashback = true;
+                }
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
             Action::AnnounceAdventure { card } | Action::AnnounceOmen { card } => {
                 let omen = matches!(action, Action::AnnounceOmen { .. });
                 let physical = self.state.objects[card as usize].card;
@@ -3171,8 +3193,9 @@ impl Game {
                 })
             }
             Action::FinishAttackers => {
+                let declared_count = self.state.selected_attackers.len();
                 self.commit_attackers_with(actor, |game, card| {
-                    game.attack_triggers(&game.object_view(card));
+                    game.attack_triggers_for_declaration(&game.object_view(card), declared_count);
                 });
                 self.give_priority();
             }
@@ -3847,6 +3870,7 @@ impl Game {
         for player in &mut self.state.players {
             player.nonland_permanents_entered_this_turn = 0;
             player.spells_cast_this_turn = 0;
+            player.instant_sorcery_cast_this_turn = 0;
             player.cards_drawn_this_turn = 0;
             player.cards_discarded_this_turn = 0;
             player.life_gain_events_this_turn = 0;
@@ -5358,6 +5382,10 @@ mod graveyard_recovery_tests;
 #[cfg(test)]
 #[path = "engine_milled_selection_tests.rs"]
 mod milled_selection_tests;
+
+#[cfg(test)]
+#[path = "engine_adventure_event_tests.rs"]
+mod adventure_event_tests;
 #[cfg(test)]
 #[path = "engine_role_tests.rs"]
 mod role_tests;

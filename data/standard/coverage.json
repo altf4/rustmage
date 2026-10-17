@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "1286b67491500df6c3b26a0f381c26cffcfc5dcf6fc38661c395a9ddc299055c",
+  "catalogue_version": "843a08b6c682792307f80a379a9a61059157bd4ee4b585e1e70b57387332db0c",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1863,
-  "implemented_total": 1869,
+  "implemented_standard_cards": 1872,
+  "implemented_total": 1878,
   "token_definitions": 94,
   "emblem_definitions": 1,
   "cards": [
@@ -106,8 +106,8 @@
     {
       "name": "A Tale for the Ages",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "A.I.M. Labs",
@@ -1174,8 +1174,8 @@
     {
       "name": "Aquatic Alchemist // Bubble Up",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Aquitect's Defenses",
@@ -1480,8 +1480,8 @@
     {
       "name": "Asinine Antics",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Assassin's Trophy",
@@ -13252,8 +13252,8 @@
     {
       "name": "Intrepid Trufflesnout // Go Hog Wild",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Intrude on the Mind",
@@ -17416,8 +17416,8 @@
     {
       "name": "Mystical Tether",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Naga Fleshcrafter",
@@ -21022,8 +21022,8 @@
     {
       "name": "Return Triumphant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Return from the Wilds",
@@ -22252,8 +22252,8 @@
     {
       "name": "Scalding Viper // Steam Clean",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Scales of Shale",
@@ -25858,8 +25858,8 @@
     {
       "name": "Syr Armont, the Redeemer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Syr Ginger, the Meal Ender",
@@ -28378,8 +28378,8 @@
     {
       "name": "Twisted Sewer-Witch",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Twists and Turns // Mycoid Maze",
@@ -31106,6 +31106,6 @@
       "implementation": null
     }
   ],
-  "adventure_definitions": 37,
+  "adventure_definitions": 40,
   "omen_definitions": 13
 }

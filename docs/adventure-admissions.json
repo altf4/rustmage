@@ -3,7 +3,7 @@
   "as_of": "2026-10-16",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "rules": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
-  "scope": "All 88 snapshot adventure-layout records; 37 admitted true Adventure pairs and 38 other Adventures gated. All 13 distinct Omen pairs are now admitted by their independent Omen wrapper. Full source files are hashed. Admitted entries include direct imported semantic dependencies and the audited shared face/permission infrastructure; this does not claim every transitive Java dependency was rewritten.",
+  "scope": "All 88 snapshot adventure-layout records; 40 admitted true Adventure pairs and 35 other Adventures gated. All 13 distinct Omen pairs are now admitted by their independent Omen wrapper. Full source files are hashed. Admitted entries include direct imported semantic dependencies and the audited shared face/permission infrastructure; this does not claim every transitive Java dependency was rewritten.",
   "cards": [
     {
       "name": "An Unexpected Party // At the Door",
@@ -51,11 +51,75 @@
         }
       ],
       "mechanic": "Adventure",
-      "status": "gated_incomplete_residual",
+      "status": "complete_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/a/AquaticAlchemist.java",
           "java_sha256": "1e5c1edc5ef464d8a91aaee0a37e9b7e782a0bbb90ec91f3a7bcbc86c1d9bd82"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+          "java_sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+          "java_sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+          "java_sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/AdventureCard.java",
+          "java_sha256": "b9a7b04e6575138b44c3aae159b47b1c2e11bc221bb4f2a301cc4a944dc31b8b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterInstantOrSorcerySpell.java",
+          "java_sha256": "b271d68baa3227e6b955ec16d8e4f56d1e8f0ef1548ee3fa5ef029f24f39e1ee"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/events/GameEvent.java",
+          "java_sha256": "3df463d33eff295607e700578e547cef896cf183e1dba3c41131a353f53cb7dc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/stack/Spell.java",
+          "java_sha256": "7613dc12a6650f28f30cddca34bc409021108489792961eb4a7a7bcf9e747099"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+          "java_sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/watchers/common/SpellsCastWatcher.java",
+          "java_sha256": "cd80bcc11ba9cb5774cf81148c1ab251c8a3b6b529a67af9ed084c64f88600a8"
         }
       ]
     },
@@ -1969,11 +2033,55 @@
         }
       ],
       "mechanic": "Adventure",
-      "status": "gated_incomplete_residual",
+      "status": "complete_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/i/IntrepidTrufflesnout.java",
           "java_sha256": "75886d51933b3578f90b325bb10725af627e905892a933cbcd88174c5cbaf21f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksAloneSourceTriggeredAbility.java",
+          "java_sha256": "4eb76c925bae9299b847218ba9616ed865cd9eff2afd741b6de7eb9146c8bb42"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/AdventureCard.java",
+          "java_sha256": "b9a7b04e6575138b44c3aae159b47b1c2e11bc221bb4f2a301cc4a944dc31b8b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/FoodToken.java",
+          "java_sha256": "67fca2eef5afc92dc08eefebb5d25489a0ab37ac22ab3b1b06556b17e5f0b53a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
         }
       ]
     },
@@ -2848,11 +2956,47 @@
         }
       ],
       "mechanic": "Adventure",
-      "status": "gated_incomplete_residual",
+      "status": "complete_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/s/ScaldingViper.java",
           "java_sha256": "827b5e7aa3adcee06f6ece4ee52432838e7197040b706e59bbf16d6a5e691647"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SpellCastOpponentTriggeredAbility.java",
+          "java_sha256": "84626f91214806489e0cd62e2dfae9fb0f0e510af41d84ca8bdd20d94ca9d9f3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+          "java_sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/AdventureCard.java",
+          "java_sha256": "b9a7b04e6575138b44c3aae159b47b1c2e11bc221bb4f2a301cc4a944dc31b8b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterSpell.java",
+          "java_sha256": "50fd3169b7ed9ae7f81bce450a44155f4326c657186c1ba6713e2d0f8c3e3a6c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+          "java_sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetNonlandPermanent.java",
+          "java_sha256": "6e4720e1386bdaa8f84eaf97cc8d6646845307f0be8697190c25cd1285ba598a"
         }
       ]
     },
