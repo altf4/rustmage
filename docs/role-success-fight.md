@@ -1,8 +1,8 @@
 # Successful Role creation and reflexive fight — issue304
 
 This delivery completes Curse of the Werefox's entire pinned normal body, on
-actual merged main ce4b0c104a8e0dbc0a76753a03608eb7bc4618be. The candidate adds
-exactly one executable Standard identity: 1,880/5,164, with 3,284 still gated.
+actual merged main 8108a6f3366f8d5553f4059b9c648481769eb420. The candidate adds
+exactly one executable Standard identity: 1,887/5,164, with 3,277 still gated.
 It retains 5,331 definitions, forty Adventure pairs, thirteen Omen pairs,
 94 token recipes and one emblem. The complete Standard/training goal is unfinished.
 
@@ -57,3 +57,15 @@ werefox304-d3785cc-e938-schema89-e13cc4239d7c.so. These are initial checkpoint s
 not final composed broad gates. Full corrected/composed Clippy/compiler/API gates
 and the fixed 100-game natural Standard workload remain pending.
 Two independent nonauthor exact-final-head reviews are required before merge.
+
+The new main composition retains all seven reviewed target-exclusion/modal bodies.
+The exact actual-parent proof still changes only Curse of the Werefox and retains
+5,330 other definitions, all helpers/colors/recipes/aliases/flags. Nineteen affected
+compiler methods pass on the composed source. The corrected initial 5e76842
+checkpoint passes all 1,782 native tests and Clippy; its fixed 100-game workload
+passes with 81,976 owned frames and 163,952 actor/revision denials in 228.782
+seconds, using the initial d378 immutable runtime (style-only implementation change).
+All 820 tracked inputs remain fixed in that initial workload. These results retain
+their checkpoint scope; fresh composed gates are pending. An additional native
+self-fight control checks that control changes may make the captured creature a
+legal opponent target without replacing the trigger's independent controller.

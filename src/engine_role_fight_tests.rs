@@ -492,3 +492,23 @@ fn successful_role_with_no_opposing_creature_still_queues_one_zero_target_reflex
         assert_eq!(g.stats(own).power, 3);
     }
 }
+
+#[test]
+fn captured_fighter_can_be_a_later_opponent_target_after_control_changes_and_fights_itself() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let own = named(&mut g, p, "Shattered Acolyte", Zone::Battlefield);
+        named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        paid(&mut g, p, own, false);
+        to_reflexive(&mut g);
+        // Synthetic response boundary changes current control without changing
+        // either the trigger controller or exact non-targeted successful subject.
+        g.state.objects[own as usize].controller = p.other();
+        let before = g.state.players[p.other().index()].life;
+        announce_fight(&mut g, Some(own));
+        settle(&mut g);
+        assert_eq!(g.object_view(own).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(own).owner, p);
+        assert_eq!(g.state.players[p.other().index()].life, before + 6);
+    }
+}
