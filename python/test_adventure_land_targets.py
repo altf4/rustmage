@@ -64,6 +64,8 @@ class AdventureLandTargetTests(unittest.TestCase):
                     if i==5:self.assertTrue(objects[source]['tapped'])
                     else:
                         face=FACTS[name]['card_faces'][0];self.assertEqual((objects[source]['power'],objects[source]['toughness']),(int(face['power']),int(face['toughness'])))
+                        for keyword,bit in [('Flying',1),('Reach',2),('Haste',4),('Lifelink',64),('Trample',256)]:
+                            if keyword in face['oracle_text']:self.assertTrue(objects[source]['keywords']&bit)
                     if i==7:self.assertEqual(objects[target]['zone'],'Hand')
                     stage='finish'
                 ready=bool(quiet and ally and foe and len(lands)>=8 and (dead if i in [5,7] else True) and (played_turn==o['turn'] and any(v['card'] in BASICS for v in hand) if i in [0,1] else True))
@@ -73,7 +75,7 @@ class AdventureLandTargetTests(unittest.TestCase):
                     if k=='AnnounceAdventure':return 2800 if actor==p and stage=='setup' and n==name and ready else -1000
                     if k=='AnnounceExile':return 2800 if actor==p and stage=='normal' and a['card']==source else -1000
                     if k=='AnnounceCast':
-                        if stage=='finish':return 2300 if n in ['Bear Cub','Bygone Colossus','Chrome Companion',name] and i!=5 else 2300 if n in ['Bear Cub','Bygone Colossus','Chrome Companion'] else -1000
+                        if stage=='finish':return 2300 if n in ['Bear Cub','Bygone Colossus','Chrome Companion'] else -1000
                         if n=='Bear Cub':return 2200 if not (ally if actor==p else foe) else -1000
                         if actor==p and n=='Candy Trail' and i in [5,7] and not dead and not candy:return 2300
                         return -1000
