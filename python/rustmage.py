@@ -87,7 +87,7 @@ class Game:
                             viewer=observation["actor"])["observation"]
 
     def act(self, observation, action):
-        """Submit a concrete action, including any integer in damage_assignment or x_choice bounds."""
+        """Submit a concrete action, including damage/X values or any six-vector in mana_payment constraints."""
         return self.request("act", actor=observation["actor"], revision=observation["revision"],
                             action=action, viewer=observation["actor"])["observation"]
 
