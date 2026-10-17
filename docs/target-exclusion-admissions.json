@@ -1,0 +1,410 @@
+{
+  "schema": 1,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "scope": "Seven complete bodies using live target exclusions or two-mode choose-one-or-both lowering; whole Java records and explicit direct imports, not a transitive port or execution whitelist",
+  "cards": [
+    {
+      "name": "Amazing Acrobatics",
+      "oracle_id": "0466f23c-d07c-4015-82d5-eab4b226f1ff",
+      "mana_cost": "{1}{U}{U}",
+      "type_line": "Instant",
+      "oracle_text": "Choose one or both \u2014\n\u2022 Counter target spell.\n\u2022 Tap one or two target creatures.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AmazingAcrobatics.java",
+          "java_sha256": "c0793ad056547175d9ecba55eeeb2a779d03d103a927956020252bf0269d5a81"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Mode.java",
+          "java_sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterTargetEffect.java",
+          "java_sha256": "49282767e8f8d631bb38ae1d35bc91a29ab2ae8173030e3a89d3da495c1cf233"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+          "java_sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetSpell.java",
+          "java_sha256": "349d67f29235bc2e3ad846c3b177f18dc1097e87e80327a77c852667289f94cc"
+        }
+      ]
+    },
+    {
+      "name": "Coeurl",
+      "oracle_id": "00d1596a-c3e2-4109-86da-388934a0c652",
+      "mana_cost": "{1}{W}",
+      "type_line": "Creature \u2014 Cat Beast",
+      "oracle_text": "{1}{W}, {T}: Tap target nonenchantment creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/Coeurl.java",
+          "java_sha256": "9f203ba6ce034a51797397267f27f05a5513d7c51ea5521c04f5818edf37ab7e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "java_sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+          "java_sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+          "java_sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        }
+      ]
+    },
+    {
+      "name": "Decoy Ploy",
+      "oracle_id": "035cddbc-39c9-42af-9e26-c88419b43b49",
+      "mana_cost": "{1}{B}",
+      "type_line": "Instant",
+      "oracle_text": "Choose one or both \u2014\n\u2022 Return target Villain card from your graveyard to your hand.\n\u2022 Return target Hero card from your graveyard to your hand.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DecoyPloy.java",
+          "java_sha256": "a39aa84673c174bd0ebfc308a264d9f6ec594be1e95d857ca201f0b36cf84e67"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Mode.java",
+          "java_sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+          "java_sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterCard.java",
+          "java_sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+          "java_sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+        }
+      ]
+    },
+    {
+      "name": "Guerrilla Gorilla",
+      "oracle_id": "6cb65b68-91b2-45ba-867b-3b31d6dd5643",
+      "mana_cost": "{1}{G}",
+      "type_line": "Creature \u2014 Ape Soldier Hero",
+      "oracle_text": "Reach\nSacrifice this creature: Destroy target noncreature artifact or noncreature enchantment. Activate only as a sorcery.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GuerrillaGorilla.java",
+          "java_sha256": "35d7649a8064bf2d96cfb1b741bc10c7e8d7e00bbfb39d6ba6c08055f4b872cb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "java_sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+          "java_sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+          "java_sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+          "java_sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterArtifactOrEnchantmentPermanent.java",
+          "java_sha256": "6a2926a1a496baaf1e453cafc25fb2c88e26d4e551e1c5caa0a9d928ab0c830f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+          "java_sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        }
+      ]
+    },
+    {
+      "name": "Overwhelming Surge",
+      "oracle_id": "bc8a37f1-c36b-4d0f-82da-4558ff712565",
+      "mana_cost": "{2}{R}",
+      "type_line": "Instant",
+      "oracle_text": "Choose one or both \u2014\n\u2022 Overwhelming Surge deals 3 damage to target creature.\n\u2022 Destroy target noncreature artifact.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/o/OverwhelmingSurge.java",
+          "java_sha256": "4462e5d36346440050ca7a2a6da93c783bc111a8f09821d90b8a0230ed2ff9fc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Mode.java",
+          "java_sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+          "java_sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "name": "Rock Soldiers",
+      "oracle_id": "0217da8e-e74f-4f5c-ab75-f17600f94405",
+      "mana_cost": "{3}{R}",
+      "type_line": "Artifact Creature \u2014 Elemental Soldier",
+      "oracle_text": "When this creature enters, destroy up to one target noncreature artifact.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RockSoldiers.java",
+          "java_sha256": "3f8b91f2bb4c68298c63a58414c3cf3e87ea4d723b17cd464411bd47c7e631ec"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+          "java_sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        }
+      ]
+    },
+    {
+      "name": "Sterling Keykeeper",
+      "oracle_id": "f893d3d6-efef-4394-8e15-e01deed72b4f",
+      "mana_cost": "{1}{W}",
+      "type_line": "Creature \u2014 Human Mercenary",
+      "oracle_text": "{2}, {T}: Tap target non-Mount creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SterlingKeykeeper.java",
+          "java_sha256": "efc3c8b69763c858a34246d25d0c8a51b5057929819e0580b8b3635f20caadf8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "java_sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "java_sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+          "java_sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+          "java_sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        }
+      ]
+    }
+  ]
+}

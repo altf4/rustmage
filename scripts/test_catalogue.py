@@ -3088,7 +3088,6 @@ class CatalogueCompilerTests(unittest.TestCase):
         for text in [
             'Choose one —\n• Draw two cards.\n• Win the game.',
             'Choose two —\n• Draw two cards.\n• You gain 2 life.',
-            'Choose one or both —\n• Draw two cards.\n• You gain 2 life.',
             'Choose one —\n• Draw two cards.',
             'Choose one —\n• Draw two cards.\n• You gain 2 life.\nThen win the game.',
             'Choose one —\nDraw two cards.\n• You gain 2 life.',
@@ -3096,6 +3095,11 @@ class CatalogueCompilerTests(unittest.TestCase):
             'Choose one —\n• Draw two cards.\n• Test Spell deals X damage to target creature.',
             'Choose one —\n• Draw two cards.\n• Other creatures you control get +1/+1.']:
             self.assertIsNone(generate.modal_spell_template(dict(row, oracle_text=text)), text)
+        combined = generate.modal_spell_template(dict(row, oracle_text='Choose one or both —\n• Draw two cards.\n• You gain 2 life.'))
+        self.assertEqual(len(combined), 3)
+        self.assertEqual(combined[0][1:], ('None', ['Draw(PlayerSet::Controller, 2)']))
+        self.assertEqual(combined[1][1:], ('None', ['GainLife(PlayerSet::Controller, 2)']))
+        self.assertEqual(combined[2][1:], ('None', ['Draw(PlayerSet::Controller, 2)', 'GainLife(PlayerSet::Controller, 2)']))
         self.assertIsNone(generate.modal_spell_template(dict(row, layout='adventure')))
         self.assertIsNone(generate.modal_spell_template(dict(row, mana_cost='{X}{R}')))
         self.assertIsNone(generate.modal_spell_template(dict(row, type_line='Enchantment')))

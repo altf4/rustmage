@@ -2,16 +2,16 @@
 import copy, hashlib, json, os, re, subprocess, unittest
 from pathlib import Path
 from scripts import generate_catalogue as g
-from scripts.test_legacy_metadata import LegacyMetadataTests
+from scripts import test_legacy_metadata as metadata
 from scripts.catalogue_preservation import canonical, assert_union
-PARENT='ce4b0c104a8e0dbc0a76753a03608eb7bc4618be'
+PARENT='8108a6f3366f8d5553f4059b9c648481769eb420'
 NAME='Curse of the Werefox'
 class RoleSuccessFightTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):
   cls.cards=json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards'];cls.card=next(c for c in cls.cards if c['name']==NAME)
  def compile(self,c):
-  rust,coverage=LegacyMetadataTests.compile([c]);return rust,next(r['implemented'] for r in coverage['cards'] if r['name']==c['name'])
+  rust,coverage=metadata.LegacyMetadataTests.compile([c]);return rust,next(r['implemented'] for r in coverage['cards'] if r['name']==c['name'])
  def test_complete_program_cost_type_and_every_role_are_name_independent(self):
   for kind in g.ROLE_BODIES:
    bare=f"Create a {kind} Role token attached to target creature you control. When you do, that creature fights up to one target creature you don't control."
