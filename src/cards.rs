@@ -390,6 +390,9 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    ReturnToBattlefieldWithRole {
+        token: Card,
+    },
     CreateRole {
         token: Card,
         subject: Subject,

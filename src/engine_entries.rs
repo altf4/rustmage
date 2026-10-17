@@ -8,6 +8,8 @@ pub(super) struct EntryMove {
     pub destination: Zone,
     pub tapped: bool,
     pub attachment: Option<ObjectRef>,
+    /// Owned completion tied to this move's actual successful public result.
+    pub role_after: Option<Card>,
     pub attacking: Option<CombatDefender>,
     pub skipped: bool,
     pub reveal_hand: bool,
@@ -141,6 +143,7 @@ impl Game {
             destination,
             tapped,
             attachment: None,
+            role_after: None,
             attacking: None,
             skipped: false,
             reveal_hand: false,
@@ -306,6 +309,7 @@ impl Game {
             .collect();
         let mut events = Vec::new();
         let mut attachments = Vec::new();
+        let mut role_results = Vec::new();
         for (movement, counters) in moves {
             let mut event = self.transition_object_under_control(
                 movement.before,
@@ -320,6 +324,11 @@ impl Game {
             event.x = movement.x;
             event.evidence_collected = movement.evidence_collected;
             if event.moved {
+                if event.destination == Zone::Battlefield
+                    && let Some(token) = movement.role_after
+                {
+                    role_results.push((movement.controller, token, event.after));
+                }
                 if event.destination == Zone::Battlefield
                     && let Some(defender) = movement.attacking
                 {
@@ -358,6 +367,17 @@ impl Game {
             }
         }
         self.finish_zone_events(&events, &[]);
+        for (controller, token, recipient) in role_results {
+            if self.aura_can_enchant(token, controller, recipient) {
+                self.stage_token_creation(
+                    controller,
+                    token,
+                    1,
+                    false,
+                    replacements::TokenCompletion::RoleAttach(recipient),
+                );
+            }
+        }
         if let Some(player) = batch.shuffle_after {
             if self.state.players[player.index()].library.len() > 1 {
                 self.forget_library_top(player);

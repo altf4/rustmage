@@ -609,3 +609,108 @@ fn paid_tale_for_ages_buffs_only_live_enchanted_creatures_and_not_equipment_both
         assert_eq!(g.stats(equipment_only).power, equipped_power);
     }
 }
+
+#[test]
+fn paid_return_triumphant_attaches_to_actual_new_object_and_stale_targets_do_not_rebind() {
+    for p in [Player::P0, Player::P1] {
+        for stale in [false, true] {
+            let mut g = setup(p);
+            let target = named(&mut g, p, "Bear Cub", Zone::Graveyard);
+            let before = g.object_ref(target);
+            let source = named(&mut g, p, "Return Triumphant", Zone::Hand);
+            let mana = g.state.players[p.index()].mana.iter().sum::<u32>();
+            act(&mut g, Action::AnnounceCast { card: source });
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            if g.legal_actions().contains(&Action::FinishTargets) {
+                act(&mut g, Action::FinishTargets);
+            }
+            let saved = g.snapshot();
+            assert_eq!(
+                g.apply(p, Action::PayCosts { payment: [0; 6] }),
+                Err(Error::IllegalAction)
+            );
+            assert_eq!(g.snapshot(), saved);
+            let pay = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PayCosts { .. }))
+                .unwrap();
+            act(&mut g, pay);
+            assert_eq!(
+                g.state.stack.last().unwrap().targets[0].object,
+                Some(before)
+            );
+            if stale {
+                g.move_object(target, Zone::Hand);
+                g.move_object(target, Zone::Graveyard);
+            }
+            settle(&mut g);
+            assert_eq!(
+                mana - g.state.players[p.index()].mana.iter().sum::<u32>(),
+                2
+            );
+            assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+            assert_eq!(
+                g.object_view(target).zone,
+                if stale {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            let roles: Vec<_> = g
+                .state
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.attached.iter().collect());
+            if stale {
+                assert!(roles.is_empty());
+            } else {
+                assert_ne!(g.object_ref(target), before);
+                assert_eq!(roles.len(), 1);
+                assert_eq!(roles[0].recipient, g.object_ref(target));
+                assert_ne!(roles[0].recipient, before);
+                assert_eq!(
+                    g.state.objects[roles[0].aura.card as usize].card.role(),
+                    Some(RoleKind::YoungHero)
+                );
+                assert_eq!(g.stats(target).power, 2);
+            }
+        }
+    }
+}
+
+#[test]
+fn role_move_completion_requires_actual_successful_battlefield_destination() {
+    for p in [Player::P0, Player::P1] {
+        for skipped in [false, true] {
+            let mut g = setup(p);
+            let target = named(&mut g, p, "Bear Cub", Zone::Graveyard);
+            let before = g.object_ref(target);
+            let mut movement = g.entry_move(target, Zone::Battlefield, false);
+            movement.role_after = Some(factory(RoleKind::YoungHero));
+            movement.skipped = skipped;
+            if !skipped {
+                movement.destination = Zone::Exile;
+            }
+            g.stage_entries(vec![movement], None);
+            assert!(g.state.roles.as_ref().is_none_or(|r| r.attached.is_empty()));
+            assert_eq!(
+                g.object_view(target).zone,
+                if skipped {
+                    Zone::Graveyard
+                } else {
+                    Zone::Exile
+                }
+            );
+            if skipped {
+                assert_eq!(g.object_ref(target), before);
+            }
+        }
+    }
+}

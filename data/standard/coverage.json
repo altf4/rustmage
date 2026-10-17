@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "24d10057fcd713c4fc1ee5fe722dc3976b761195b8488b59028ba2090fa15f8d",
+  "catalogue_version": "c9788739f0d77606d0bd58b76d50b32d8222c0a80963f9a3d61bdadefc313dfd",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1865,
-  "implemented_total": 1871,
+  "implemented_standard_cards": 1866,
+  "implemented_total": 1872,
   "token_definitions": 94,
   "emblem_definitions": 1,
   "cards": [
@@ -21022,8 +21022,8 @@
     {
       "name": "Return Triumphant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Return from the Wilds",

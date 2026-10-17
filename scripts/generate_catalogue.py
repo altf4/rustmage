@@ -415,12 +415,32 @@ def role_reminder_text(text):
         prefix = 'If you control another Role on it, put that one into the graveyard. '
         # These two printed presentations describe the same predefined Role.
         bodies = [body, prefix + body]
+        if kind == 'Young Hero':
+            bodies += [body + ' If you put another Role on the creature later, put this one into the graveyard.']
         if kind == 'Wicked':
             bodies += [v.replace('this Aura', 'this enchantment') for v in bodies]
         for accepted in bodies:
             pattern = r'(' + re.escape(kind) + r' Role token attached to [^.]+\.)( Activate only as a sorcery\.)? \(' + re.escape(accepted) + r'\)'
             text = re.sub(pattern, r'\1\2', text)
     return text
+
+
+def role_factory(kind):
+    if kind not in ROLE_BODIES: raise ValueError('unknown predefined Role')
+    factory = {'role':kind, 'name':kind, 'subtypes':'Aura Role', 'colors':0, 'keywords':0}
+    key = hashlib.sha256(json.dumps(factory,sort_keys=True).encode()).hexdigest()[:24]
+    if key in TOKEN_DEFS and TOKEN_DEFS[key] != factory:raise ValueError('token factory collision')
+    TOKEN_DEFS[key] = factory
+    return '__TOKEN_' + key + '__'
+
+
+def role_return_program(text):
+    match = re.fullmatch(r'return target creature card with mana value ([0-9]+) or less from your graveyard to the battlefield\. Create a (Cursed|Monster|Royal|Sorcerer|Wicked|Young Hero) Role token attached to it\.', text)
+    if not match or int(match[1]) > 4294967295: return None
+    rule = f'TargetRule::Object {{ zone: TargetZone::Graveyard, kinds: 1, relation: 0, other: false, nonland: false, tapped: false, min_mana: 0, max_mana: {int(match[1])} }}'
+    key = 'ReturnRole' + hashlib.sha256(rule.encode()).hexdigest()
+    TARGET_RULES[key] = rule
+    return key, [f'ReturnToBattlefieldWithRole {{ token: {role_factory(match[2])} }}']
 
 
 def role_program(text):
@@ -445,11 +465,7 @@ def role_program(text):
         if fixed_rule is None:return None
         rule = fixed_rule
     elif fixed_rule is not None and rule != fixed_rule:return None
-    factory = {'role':kind, 'name':kind, 'subtypes':'Aura Role', 'colors':0, 'keywords':0}
-    key = hashlib.sha256(json.dumps(factory,sort_keys=True).encode()).hexdigest()[:24]
-    if key in TOKEN_DEFS and TOKEN_DEFS[key] != factory:raise ValueError('token factory collision')
-    TOKEN_DEFS[key] = factory
-    return rule, [*before, f'CreateRole {{ token: __TOKEN_{key}__, subject: Subject::Targets }}']
+    return rule, [*before, f'CreateRole {{ token: {role_factory(kind)}, subject: Subject::Targets }}']
 
 
 def token_program(text):
@@ -2253,6 +2269,7 @@ def targeted_program(text):
     if 'another target attacking creature you control' in text:
         result=targeted_program(text.replace('another target attacking creature you control','another target creature you control',1))
         return ('OtherCreatureAttackingYou',result[1]) if result and result[0]=='OtherCreatureYou' else None
+    if result:=role_return_program(text):return result
     if result:=role_program(text):return result
     if result:=target_subject_conditional(text):return result
     for subject,rule in [('another target attacking creature you control','OtherCreatureAttackingYou'),('target attacking creature','CreatureAttacking'),('target attacking Goblin you control','GoblinAttackingYou')]:
