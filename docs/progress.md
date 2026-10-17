@@ -40,7 +40,7 @@ owned replays / 733,070 denials. The [union review record](review-pr-275.md)
 identifies the exact source/library, preservation proof and independent reviews.
 Final exact-head approvals are recorded in the PR comments before merge.
 
-The other 40 true Adventure parents and 53 Saga parents
+Other Adventure and Saga bodies
 remain part of the full goal, alongside wider Ward/Role/disguise/cloak/control
 and other required semantics. Full rules enforcement across Standard, efficient
 training interfaces and full-deck performance remain incomplete.
