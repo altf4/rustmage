@@ -1824,8 +1824,14 @@ impl Game {
                 Instruction::DrainLifeScaled(value) => {
                     let amount = i128::try_from(self.item_amount(value, &item))
                         .capacity("life drain amount representation exhausted");
-                    self.lose_life(item.controller.other(), amount);
-                    self.gain_life(item.controller, amount);
+                    let opponent = item.controller.other();
+                    let before = self.state.players[opponent.index()].life_lost_this_turn;
+                    self.lose_life(opponent, amount);
+                    let lost = self.state.players[opponent.index()].life_lost_this_turn - before;
+                    self.gain_life(
+                        item.controller,
+                        i128::try_from(lost).capacity("life drain result exhausted"),
+                    );
                 }
                 Instruction::Discard(set, _) | Instruction::DiscardScaled(set, _) => {
                     let amount = match instruction {
@@ -2348,6 +2354,25 @@ impl Game {
                         })
                         .collect();
                     self.stage_entries(moves, None);
+                }
+                Instruction::ReturnToHandDrawForSubtype(subtype) => {
+                    // Capture the legal target before changing its incarnation.
+                    // The subtype condition is independent of a successful move.
+                    let draws = item
+                        .targets
+                        .iter()
+                        .filter(|&&bound| {
+                            self.same_target_object(bound)
+                                && match bound.target {
+                                    Target::Card(id) => {
+                                        self.state.objects[id as usize].card.has_subtype(subtype)
+                                    }
+                                    _ => false,
+                                }
+                        })
+                        .count();
+                    self.move_target_batch(&item.targets, Zone::Hand);
+                    self.draw_many(item.controller, draws as u128);
                 }
                 Instruction::Exile
                 | Instruction::Destroy

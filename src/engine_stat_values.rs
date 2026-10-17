@@ -158,6 +158,10 @@ impl Game {
             StatValue::LifeGainOccurredThisTurn => {
                 i128::from(self.state.players[owner.index()].life_gained_this_turn > 0)
             }
+            StatValue::LifeGainedThisTurn => {
+                i128::try_from(self.state.players[owner.index()].life_gained_this_turn)
+                    .capacity("life gain count representation exhausted")
+            }
             StatValue::ControllerLife => life,
             StatValue::Colors(filter) | StatValue::CardTypes(filter) => objects()
                 .filter(|&(id, o)| {
