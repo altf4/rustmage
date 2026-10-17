@@ -2811,7 +2811,7 @@ impl Game {
                 }
             }
             Pending::Attackers => {
-                if emit(Action::FinishAttackers) {
+                if self.attack_declaration_complete(actor) && emit(Action::FinishAttackers) {
                     return true;
                 }
                 // Freeze the small defending set once, not one arena scan per
@@ -2820,22 +2820,16 @@ impl Game {
                     .objects
                     .iter()
                     .enumerate()
-                    .filter(|(_, o)| {
+                    .filter(|(id, o)| {
                         o.controller == actor.other()
                             && o.zone == Zone::Battlefield
-                            && o.card.is_planeswalker()
+                            && self.current_kinds(*id as CardId) & 64 != 0
                     })
                     .map(|(i, _)| self.object_ref(i as CardId))
                     .collect();
-                for (i, obj) in s.objects.iter().enumerate() {
+                for (i, _) in s.objects.iter().enumerate() {
                     let card = i as CardId;
-                    if obj.controller != actor
-                        || obj.zone != Zone::Battlefield
-                        || !self.is_creature(card)
-                        || obj.tapped
-                        || (obj.summoning_sick && !self.keywords(card).contains(Keywords::HASTE))
-                        || self.keywords(card).contains(Keywords::DEFENDER)
-                        || self.combat_restricted(card, true)
+                    if !self.can_declare_attacker(actor, card)
                         || s.selected_attackers.iter().any(|a| a.card == card)
                     {
                         continue;
@@ -4638,7 +4632,7 @@ impl Game {
                 .filter(|o| {
                     o.zone == Zone::Battlefield
                         && o.generation == reference.generation
-                        && o.card.is_planeswalker()
+                        && self.current_kinds(reference.card) & 64 != 0
                 })
                 .map(|_| Target::Card(reference.card)),
         }
@@ -6091,3 +6085,7 @@ mod fdn_library_eight_tests;
 #[cfg(test)]
 #[path = "engine_object_name_tests.rs"]
 mod object_name_tests;
+
+#[cfg(test)]
+#[path = "engine_attack_requirement_tests.rs"]
+mod attack_requirement_tests;
