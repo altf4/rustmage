@@ -393,6 +393,13 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    /// Queue a reflexive ability only when this exact Role actually enters attached.
+    CreateRoleReflexive {
+        token: Card,
+        ability: u16,
+    },
+    /// The first fighter is the captured non-targeted successful-action subject.
+    ReflexiveFight,
     CreateRolesMatching {
         token: Card,
         filter: CreatureFilter,

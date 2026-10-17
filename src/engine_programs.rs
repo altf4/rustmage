@@ -497,6 +497,7 @@ impl Game {
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
             source_move: None,
+            reflexive_subject: None,
             crew: None,
             cast_event: None,
             delayed_sacrifice: None,
@@ -1261,12 +1262,7 @@ impl Game {
                     return;
                 }
                 Instruction::Reflexive { ability } => {
-                    let mut reflexive = item.clone();
-                    reflexive.id = self.next_stack_id();
-                    reflexive.kind = StackKind::TriggeredAbility { ability };
-                    reflexive.targets.clear();
-                    reflexive.mode = None;
-                    self.state.pending_triggers.push(reflexive);
+                    self.queue_reflexive(&item, ability, None);
                 }
                 Instruction::Modal(_) => unreachable!("unselected modal trigger executed"),
                 Instruction::Explore(subject) => {
@@ -1629,6 +1625,12 @@ impl Game {
                     if self.start_discard_mana_value_life(&item) {
                         return;
                     }
+                }
+                Instruction::CreateRoleReflexive { token, ability } => {
+                    self.resolve_role_reflexive(&item, token, ability);
+                }
+                Instruction::ReflexiveFight => {
+                    self.reflexive_fight(&item);
                 }
                 Instruction::CreateRolesMatching { token, filter } => {
                     self.resolve_roles_matching(&item, token, filter);
