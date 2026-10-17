@@ -1,6 +1,6 @@
 //! Typed immutable programs and owned, snapshot-safe execution continuations.
 use super::*;
-use crate::cards::{CastFilter, CastTarget};
+use crate::cards::{CastFilter, CastTarget, StaticAbilityFragment};
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Resolution {
@@ -123,6 +123,11 @@ impl Game {
     }
 
     pub(super) fn lose_life(&mut self, player: Player, amount: i128) {
+        self.lose_life_unobserved(player, amount);
+        self.life_lost_event(player, amount);
+    }
+
+    pub(super) fn lose_life_unobserved(&mut self, player: Player, amount: i128) {
         if amount <= 0 {
             return;
         }
@@ -137,10 +142,106 @@ impl Game {
             .capacity("life lost this turn representation exhausted");
     }
 
+    pub(super) fn life_lost_event(&mut self, player: Player, amount: i128) {
+        if amount <= 0 {
+            return;
+        }
+        let sources: Vec<_> = self
+            .state
+            .life_sources
+            .iter()
+            .filter(|&&id| {
+                self.state.objects[id as usize]
+                    .card
+                    .triggers()
+                    .iter()
+                    .any(|a| matches!(a.condition.event(), TriggerCondition::LifeLost { .. }))
+            })
+            .map(|&id| self.object_view(id))
+            .collect();
+        for source in sources {
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                if let TriggerCondition::LifeLost { relation } = ability.condition.event() {
+                    let related = match relation {
+                        CastRelation::You => source.controller == player,
+                        CastRelation::Opponent => source.controller != player,
+                        CastRelation::Any => true,
+                    };
+                    if related && self.queue_trigger(&source, index) {
+                        self.state.pending_triggers.last_mut().unwrap().life_event =
+                            Some(LifeTriggerView { player, amount });
+                    }
+                }
+            }
+        }
+    }
+
+    pub(super) fn self_counters_added(
+        &mut self,
+        object: ObjectRef,
+        kind: CounterKind,
+        amount: u64,
+        placed_by: Player,
+    ) {
+        if amount == 0
+            || !self.on_battlefield(object.card)
+            || self.object_ref(object.card) != object
+        {
+            return;
+        }
+        if !self.state.objects[object.card as usize].card.triggers().iter().any(|a| matches!(a.condition.event(), TriggerCondition::SelfCountersAdded { kind: expected, .. } if expected == kind)) { return; }
+        let source = self.object_view(object.card);
+        for (index, ability) in source.card.triggers().iter().enumerate() {
+            if let TriggerCondition::SelfCountersAdded {
+                kind: expected,
+                controller_only,
+            } = ability.condition.event()
+                && kind == expected
+                && (!controller_only || source.controller == placed_by)
+            {
+                self.queue_trigger(&source, index);
+            }
+        }
+    }
+
     pub(super) fn gain_life(&mut self, player: Player, amount: i128) {
         if amount <= 0 {
             return;
         }
+        // These additive replacements commute; each available source applies once.
+        // Prohibition takes precedence and creates no life-gain event (CR101.2).
+        let query = self.characteristic_query();
+        let mut additional = 0i128;
+        for &id in &self.state.static_sources {
+            let source = &self.state.objects[id as usize];
+            for group in source.card.static_ability_groups() {
+                for fragment in group.fragments {
+                    match fragment {
+                        StaticAbilityFragment::CantGainLife
+                            if query.continuous_fragment_available(id, |f| {
+                                matches!(f, StaticAbilityFragment::CantGainLife)
+                            }) =>
+                        {
+                            return;
+                        }
+                        StaticAbilityFragment::LifeGainAdditional(n)
+                            if source.controller == player
+                                && query.continuous_fragment_available(id, |f| {
+                                    matches!(f, StaticAbilityFragment::LifeGainAdditional(_))
+                                }) =>
+                        {
+                            additional = additional
+                                .checked_add(i128::from(*n))
+                                .capacity("life replacement exhausted");
+                        }
+                        _ => {}
+                    }
+                }
+            }
+        }
+        let amount = amount
+            .checked_add(additional)
+            .capacity("life replacement exhausted");
         let state = &mut self.state.players[player.index()];
         state.life = state
             .life
@@ -335,6 +436,8 @@ impl Game {
                     | TriggerCondition::CreatureDiesFiltered { .. }
                     | TriggerCondition::Sacrificed { .. }
                     | TriggerCondition::LifeGained { .. }
+                    | TriggerCondition::LifeLost { .. }
+                    | TriggerCondition::SelfCountersAdded { .. }
                     | TriggerCondition::AttackDeclared { .. }
                     | TriggerCondition::SelfAttacks
                     | TriggerCondition::SelfAttacksAlone
@@ -1980,6 +2083,13 @@ impl Game {
                     let players: Vec<_> = self.program_players(set, &item).collect();
                     for player in players {
                         self.gain_life(player, amount);
+                    }
+                }
+                Instruction::LoseLifeScaled(set, value) => {
+                    let amount = i128::try_from(self.item_amount(value, &item))
+                        .capacity("life loss amount exhausted");
+                    for player in self.program_players(set, &item) {
+                        self.lose_life(player, amount);
                     }
                 }
                 Instruction::LoseLife(set, amount) => {

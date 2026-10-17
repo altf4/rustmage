@@ -35,6 +35,8 @@ pub(crate) struct StaticAbilityGroup {
     reason = "Complete immutable typed origin payloads are preserved while legacy fast tables supply some values; do not discard during direct-definition migration"
 )]
 pub(crate) enum StaticAbilityFragment {
+    LifeGainAdditional(u16),
+    CantGainLife,
     IntrinsicKeywords(Keywords),
     Changeling,
     /// Predefined Cursed Role sets both axes in layer 7b.

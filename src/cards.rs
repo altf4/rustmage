@@ -66,6 +66,10 @@ pub(crate) enum TargetRule {
         base: &'static TargetRule,
         predicate: &'static TargetPredicate,
     },
+    GraveCreaturePower {
+        excluded_subtype: &'static str,
+        maximum: Option<i128>,
+    },
     Creature,
     /// Bound to the captured attachment attack defender before target selection.
     DefendingCreature,
@@ -784,6 +788,7 @@ pub(crate) enum Instruction {
     GainLife(PlayerSet, u16),
     GainLifeScaled(PlayerSet, AmountValue),
     LoseLife(PlayerSet, u16),
+    LoseLifeScaled(PlayerSet, AmountValue),
     /// Each opponent loses the frozen amount; the controller gains it once.
     DrainLifeScaled(AmountValue),
     /// Optional block containing the following `skip` instructions.
@@ -879,6 +884,7 @@ pub(crate) enum AmountValue {
     ChosenX,
     Stat(StatValue),
     LifeGainedThisTurn,
+    LifeEventAmount,
     CardsDiscardedThisTurn,
     Multiple {
         value: &'static AmountValue,
@@ -1425,6 +1431,13 @@ pub(crate) enum TriggerCondition {
         combat_only: bool,
         opponent_only: bool,
         one_or_more: bool,
+    },
+    LifeLost {
+        relation: CastRelation,
+    },
+    SelfCountersAdded {
+        kind: CounterKind,
+        controller_only: bool,
     },
     LifeGained {
         first_only: bool,

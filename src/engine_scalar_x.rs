@@ -161,6 +161,9 @@ impl Game {
                     item.source_facts.power.max(0) as u128
                 }
             }
+            AmountValue::LifeEventAmount => {
+                item.life_event.expect("saved life event").amount.max(0) as u128
+            }
             AmountValue::ChosenX => u128::from(item.x.unwrap_or(0)),
             AmountValue::Multiple { value, factor } => self
                 .item_amount(*value, item)

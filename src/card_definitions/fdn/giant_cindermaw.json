@@ -3,10 +3,20 @@
   "catalogue_id": 1738,
   "oracle_id": "bd0c0e85-ff24-46c9-a547-4f633355c131",
   "facts_sha256": "1efcdcf0e6b1cbd33787db8d68b38c016bc335c9013563c97ebda085b9ce7eb8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "67d21055a557a5685c1e4ce155fa6780a621071abdee2d5838fdd6aa19ba7fb5"
   },
-  "physical_metadata_sha256": "9ab14668b5f4cc2a6f2e315d167350d4273ba1431302f4629f076d45720edd1e"
+  "physical_metadata_sha256": "9ab14668b5f4cc2a6f2e315d167350d4273ba1431302f4629f076d45720edd1e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GiantCindermaw.java",
+  "java_sha256": "3aaa02f11d2d22cf74923778b2767977bd4b79262327fbe3b117d99655716bd8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/CantGainLifeAllEffect.java",
+      "sha256": "61c61069573641bc716ee655e0f81b7df63bb33e8978dae13f44279fe76ef822"
+    }
+  ]
 }
