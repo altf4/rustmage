@@ -116,7 +116,9 @@ fn eighteen_whole_paid_normal_bodies_recover_typed_targets_both_seats() {
     for p in [Player::P0, Player::P1] {
         for (i, name) in NAMES.iter().enumerate() {
             if i == 10 {
-                assert!(!Card::from_name(name).unwrap().is_supported());
+                // Paid casting, static Elf lord and source-death recovery use
+                // dedicated exact-incarnation tests, not this ETB fixture.
+                assert!(Card::from_name(name).unwrap().is_supported());
                 continue;
             }
             let mut g = setup(p);

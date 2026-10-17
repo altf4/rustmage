@@ -298,7 +298,8 @@ impl Game {
                 return;
             };
             let item = &announcement.item;
-            if spec.max > 0 && self.visit_targets(spec.rule, item.controller, item.object, |_| true)
+            if spec.max > 0
+                && self.visit_targets(spec.rule, item.controller, item.target_source(), |_| true)
             {
                 let player = item.controller;
                 self.state.announcing.as_mut().unwrap().spec = spec;
@@ -597,6 +598,7 @@ impl Game {
         let object = event.after;
         let id = self.next_stack_id();
         SpellView {
+            source_move: None,
             crew: None,
             cast_event: None,
             delayed_sacrifice: None,
@@ -640,17 +642,15 @@ impl Game {
     pub(super) fn start_announcement(&mut self, item: SpellView, trigger: bool) -> bool {
         let needs_mode = item.modes().is_some() && item.mode.is_none();
         if needs_mode
-            && !item
-                .modes()
-                .unwrap()
-                .iter()
-                .any(|mode| self.targets_available(mode.targets, item.controller, item.object))
+            && !item.modes().unwrap().iter().any(|mode| {
+                self.targets_available(mode.targets, item.controller, item.target_source())
+            })
         {
             assert!(trigger, "validated modal spell");
             return false;
         }
         let plan = self.target_spec(&item);
-        if !self.targets_available(plan, item.controller, item.object) {
+        if !self.targets_available(plan, item.controller, item.target_source()) {
             assert!(trigger, "validated spell announcement");
             return false;
         }
@@ -658,11 +658,21 @@ impl Game {
             || match plan {
                 TargetPlan::Single(spec) => {
                     spec.max > 0
-                        && self.visit_targets(spec.rule, item.controller, item.object, |_| true)
+                        && self.visit_targets(
+                            spec.rule,
+                            item.controller,
+                            item.target_source(),
+                            |_| true,
+                        )
                 }
                 TargetPlan::Groups(groups) => groups.iter().any(|spec| {
                     spec.max > 0
-                        && self.visit_targets(spec.rule, item.controller, item.object, |_| true)
+                        && self.visit_targets(
+                            spec.rule,
+                            item.controller,
+                            item.target_source(),
+                            |_| true,
+                        )
                 }),
             };
         if !has_choice {
@@ -702,7 +712,7 @@ impl Game {
     ) {
         let plan = self.target_spec(&item);
         let player = item.controller;
-        assert!(self.targets_available(plan, player, item.object));
+        assert!(self.targets_available(plan, player, item.target_source()));
         let needs_mode = item.kind == StackKind::Spell
             && matches!(item.source_card.effect(), Effect::Modal(_))
             && item.mode.is_none();

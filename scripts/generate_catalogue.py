@@ -2130,10 +2130,8 @@ def recovery_target_program(text):
     if match is None:
         return None
     action, cardinality, noun, destination, where = match.groups()
-    # Death-trigger source references currently retain the former incarnation.
-    # 'Another' in a graveyard needs a validated physical-source exclusion.
-    if cardinality == 'another target':
-        return None
+    # Zone-trigger packets bind their exact first public destination separately
+    # from source LKI, so `other` excludes that incarnation, never every CardId.
     if (action == 'return') != (where is None):
         return None
     noun = noun or ''

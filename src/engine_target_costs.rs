@@ -155,7 +155,7 @@ impl Game {
         let plan = plan.unwrap_or(a.plan);
         let c = Completion {
             actor: a.item.controller,
-            source: a.item.object,
+            source: a.item.target_source(),
             plan,
             chosen: &a.item.targets,
             group: a.group,
@@ -205,7 +205,7 @@ impl Game {
     pub(super) fn provisional_target_cost(&self, a: &Announcement, base: ManaCost) -> ManaCost {
         let c = Completion {
             actor: a.item.controller,
-            source: a.item.object,
+            source: a.item.target_source(),
             plan: a.plan,
             chosen: &a.item.targets,
             group: a.group,
