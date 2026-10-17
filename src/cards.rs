@@ -643,6 +643,12 @@ pub(crate) enum Instruction {
     UntapSource,
     TapSource,
     UntapCreatures(CreatureFilter),
+    UntapPlayerCreatures(PlayerSet),
+    PutPlayerCreatureCounters {
+        players: PlayerSet,
+        kind: CounterKind,
+        amount: u32,
+    },
     SetBaseStats {
         subject: Subject,
         power: Option<i128>,
@@ -1694,6 +1700,9 @@ struct Definition {
     generic: u32,
 }
 
+#[path = "card_definitions/mod.rs"]
+mod authored;
+
 mod generated {
     use super::*;
     include!("generated/catalogue.rs");
@@ -1871,7 +1880,7 @@ impl Card {
         generated::live_static_effects(self)
     }
     pub(crate) fn tiered_costs(self) -> Option<&'static [ManaCost]> {
-        generated::tiered_costs(self)
+        authored::mode_costs(self).or_else(|| generated::tiered_costs(self))
     }
     pub(crate) fn base_stat_setter(self) -> Option<BaseStatSetter> {
         generated::base_stat_setter(self)
