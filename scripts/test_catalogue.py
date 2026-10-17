@@ -37,7 +37,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
         rust,report=generate.compile_catalogue(snapshot,target)
         supported={c['name'] for c in report['cards'] if c['implemented']}
-        self.assertEqual(report["token_definitions"],81)
+        self.assertEqual(report["token_definitions"],83)
         manifest=json.loads((generate.ROOT/'docs/scalar-x-admissions.json').read_text())
         self.assertEqual([r['name'] for r in manifest['cards']],names)
         self.assertEqual(sum(len(r['sources']) for r in manifest['cards']),75)
@@ -1019,7 +1019,8 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIn(name,supported)
             c=next(c for c in rows['cards'] if c['name']==name);bad=dict(c,oracle_text=c['oracle_text']+'\nWhenever you cast a spell, discover 3.')
             for compiler in [generate.permanent_program_template,generate.trigger_creature_template,generate.aura_template]:self.assertIsNone(compiler(bad),name)
-        for name in ['Bitter Chill','Demonic Ruckus','Krenko, Baron of Tin Street',"Tarrian's Soulcleaver",'Teysa, Opulent Oligarch','Ygra, Eater of All','Zoetic Glyph']:
+        self.assertIn('Demonic Ruckus',supported)
+        for name in ['Bitter Chill','Krenko, Baron of Tin Street',"Tarrian's Soulcleaver",'Teysa, Opulent Oligarch','Ygra, Eater of All','Zoetic Glyph']:
             self.assertNotIn(name,supported)
 
     def test_temporary_blocking_prohibition_has_exact_target_and_duration(self):
@@ -1544,7 +1545,8 @@ class CatalogueCompilerTests(unittest.TestCase):
             proxy,_=generate.extract_cost_reductions(dict(original,oracle_text=original['oracle_text']+'\nWhenever you cast a spell, discover 3.'))
             proxy,_=generate.extract_entry_counters(proxy)
             self.assertIsNone(generate.creature_template(proxy));self.assertIsNone(generate.trigger_creature_template(proxy));self.assertIsNone(generate.permanent_program_template(proxy));self.assertIsNone(generate.static_permanent_template(proxy))
-        for name in ['Blacksnag Buzzard','Rictus Robber','Old Flitterfang','Tragic Banshee']:
+        for name in ['Blacksnag Buzzard','Rictus Robber']:self.assertIn(name,supported)
+        for name in ['Old Flitterfang','Tragic Banshee']:
             self.assertNotIn(name,supported)
 
     def test_entry_counter_replacements_use_exact_pre_entry_predicates(self):
@@ -1583,7 +1585,8 @@ class CatalogueCompilerTests(unittest.TestCase):
             proxy,rules=generate.extract_entry_counters(altered);self.assertTrue(rules)
             self.assertIsNone(generate.creature_template(proxy));self.assertIsNone(generate.trigger_creature_template(proxy))
             self.assertIsNone(generate.permanent_program_template(proxy));self.assertIsNone(generate.static_permanent_template(proxy))
-        for name in ['Cruel Administrator','Blacksnag Buzzard','Patched Plaything','Putrid Pals']:
+        self.assertIn('Blacksnag Buzzard',supported)
+        for name in ['Cruel Administrator','Patched Plaything','Putrid Pals']:
             self.assertNotIn(name,supported)
 
     def test_attack_intervening_guards_require_the_complete_tapped_declaration(self):
@@ -1980,7 +1983,8 @@ class CatalogueCompilerTests(unittest.TestCase):
         rows=json.loads((generate.ROOT/'data/standard/cards.json').read_text());target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
         rust,report=generate.compile_catalogue(rows,target);supported={r['name'] for r in report['cards'] if r['implemented']}
         for name in ['Aatchik, Emerald Radian','Ajani, Caller of the Pride',"Brass's Bounty",'Clachan Festival','Gather the White Lotus','Germinate Recruits','Krenko, Mob Boss',"Moogles' Valor", "Morcant's Eyes",'Sally Pride, Lioness Leader','The Unbeatable Squirrel Girl']:self.assertIn(name,supported,name)
-        for name in ['Anim Pakal, Thousandth Moon','Rise of the Varmints','Smaug, Wicked Worm','Twitching Doll','Kithkeeper']:self.assertNotIn(name,supported,name)
+        self.assertIn('Rise of the Varmints',supported)
+        for name in ['Anim Pakal, Thousandth Moon','Smaug, Wicked Worm','Twitching Doll','Kithkeeper']:self.assertNotIn(name,supported,name)
         self.assertEqual(generate.permanent_type(self.card(type_line='Kindred Enchantment — Elf')),'Enchantment')
         line=next(line for line in rust.splitlines() if 'name: "Morcant' in line)
         self.assertIn('type_line: "Kindred Enchantment — Elf"',line);self.assertIn('kind: 160',line)

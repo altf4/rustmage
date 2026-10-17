@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "e1bc2e84bd56971a17d789743c446eb5260b8925df98d0f780bb6da79d243788",
+  "catalogue_version": "b41688a98da80a651870ccad086b3f7dd62befc89279b2826570847efce2f81f",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1664,
-  "implemented_total": 1670,
-  "token_definitions": 81,
+  "implemented_standard_cards": 1677,
+  "implemented_total": 1683,
+  "token_definitions": 83,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -2182,8 +2182,8 @@
     {
       "name": "Beastbond Outcaster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Beastie Beatdown",
@@ -2626,8 +2626,8 @@
     {
       "name": "Blacksnag Buzzard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Blade of the Swarm",
@@ -5560,8 +5560,8 @@
     {
       "name": "Cunning Coyote",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Cunning Maneuver",
@@ -6262,8 +6262,8 @@
     {
       "name": "Demonic Ruckus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Denzilore Fatehold",
@@ -6682,8 +6682,8 @@
     {
       "name": "Djinn of Fool's Fall",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Doc Aurlock, Grizzled Genius",
@@ -13318,8 +13318,8 @@
     {
       "name": "Irascible Wolverine",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Iridescent Tiger",
@@ -15202,8 +15202,8 @@
     {
       "name": "Loan Shark",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Loch Mare",
@@ -21118,8 +21118,8 @@
     {
       "name": "Rictus Robber",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Riddles in the Dark",
@@ -21250,8 +21250,8 @@
     {
       "name": "Rise of the Varmints",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Risen Necroregent",
@@ -23554,8 +23554,8 @@
     {
       "name": "Slickshot Show-Off",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Slickshot Vault-Buster",
@@ -24304,8 +24304,8 @@
     {
       "name": "Spinewoods Paladin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Spinner of Souls",
@@ -24526,8 +24526,8 @@
     {
       "name": "Stagecoach Security",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Staggering Size",
@@ -24868,8 +24868,8 @@
     {
       "name": "Stingerback Terror",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Stingerquill Annex",
