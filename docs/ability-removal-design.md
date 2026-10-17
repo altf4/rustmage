@@ -43,7 +43,8 @@ an Alchemist counter instead of its printed temporary +2/+0 effect. All were
 corrected before the passing full core run. An eight-case natural-game diagnostic
 was explicitly terminated when the missing controlled-entry provider gate was
 found, then the gate was fixed and the real paid regression added. No passing
-natural-game workload is claimed. Repeated evaluation during observations needs
+natural-game workload is claimed; the unaccepted diagnostic policy is preserved
+as evidence and omitted from default test discovery. Repeated evaluation during observations needs
 profiling and reuse of a coherent ephemeral world (issue #354).
 
 ## Historical architecture checkpoints
