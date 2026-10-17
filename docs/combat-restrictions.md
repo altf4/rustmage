@@ -68,5 +68,40 @@ All of these policy revisions leave production Rust, card programs, decks, seeds
 schema and optimized library unchanged. Every frozen execution file and library
 hash is verified per gate; no workload failure is relabeled as a pass.
 
-Composition on the final current main, fresh integration checks and two
-independent complete-batch approvals at the final head remain required.
+Final frozen composition `69943a1bb2cdc54bf0dece2dc8610debd8a1aedd` is based
+on actual main `b39084973f5e4d1d347f99322080c315df2fc7bc`. It admits exactly the
+five complete bodies and preserves all 5,326 other definitions, all 882 previous
+helpers, colors, aliases, flags, 94 token recipes and the emblem. Only the five
+combat helper rows and Pacifism's Aura row are added. The five complete programs,
+read-only combat runtime file and two new extraction/authentication functions
+are unchanged from the original production baseline. Every inherited return,
+Role, reflexive and temporary-grant rule and raw guard remains present.
+
+Fresh composed validation passes 1,812 unit plus 12 integration tests, all-target
+Clippy with denied warnings and formatting (40.520 seconds); all 35 affected
+compiler/provenance methods (9.415 seconds); and seven public API methods
+(77.453 seconds), without failures/errors/skips. The public methods exercise all
+ten combat body/seat cells, four return cells, six temporary-grant cases, local/foreign
+Werefox and all six Role semantics bodies plus cheaper-normal-cast timing.
+The fixed unretried 100-game Standard workload passes in 198.364 seconds with
+ten complete vectors, 93,895 owned frames and 187,790 actor/revision denials.
+All 852 frozen execution files and the immutable library hash remain unchanged.
+
+The final optimized library is
+`/home/altf4/.cache/rustmage-immutable/combat309-69943a1-995c-schema89-e4f7906b304c.so`,
+SHA256 `e4f7906b304ce5d4abecf0feeb2c2a875d14a3f362c51f709029c13213a05d5e`,
+schema89, fingerprint
+`995c10d2b1e8c94c6d014d4cfb3e083ee681433bb8b246d1833f648539c0fb92`.
+Historical parent-preservation tests retain their exact delivered checkpoints
+and independently compare their complete programs with the current catalogue.
+No failed workload is relabeled passing, and no full broad compiler/API suite is
+claimed for this batch. The earlier scope and fixed-seed policy diagnostics above
+remain explicit.
+
+Two independent complete-batch preliminary reviews report no findings. Their
+novel paid controls include foreign ownership/current control, opponent versus
+controlled enabling creatures, real power changes/cleanup, and Aura removal plus
+same-physical-card recast. Original and current probe scopes remain distinct.
+All gate jobs are terminal and non-library targets cleaned, preserving every
+shared-library path/hash. Final exact-head nonauthor confirmations remain required
+before merge. Full Standard and training acceptance remain incomplete.
