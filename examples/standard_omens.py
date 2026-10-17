@@ -63,7 +63,7 @@ class OmenStandard(unittest.TestCase):
     lands=[v for v in objects.values()if v['owner']==p and v['zone']=='Battlefield'and v['card']in BASICS and not v['tapped']]
     ready=len(lands)>=8 and ally and enemy and artifact and (inset or i!=3 or ally['counters']['plus_one']>0)
     for d in o['spell_characteristics']:
-     if source is not None and d['object']['card']==source:
+     if stage=='effect'and source is not None and d['object']['card']==source:
       f=FACTS[name]['card_faces'][int(inset)];self.assertEqual(d['physical_card'],name);self.assertEqual(d['name'],f['name']);self.assertEqual(d['type_line'],f['type_line']);self.assertEqual(d['mana_cost'],f['mana_cost']);self.assertEqual(d['face'],'Omen'if inset else'Normal');descriptor=True
       if inset:
        item=o['announcing']or next((x for x in o['stack']if x['card']==source),None)or o['resolving'];self.assertEqual(item['cast']['method'],'Normal');self.assertEqual(item['cast']['physical_card'],name)
@@ -101,7 +101,11 @@ class OmenStandard(unittest.TestCase):
      if k=='PlayLand':return 1800-20*sum(v['owner']==actor and v['zone']=='Battlefield'and v['card']==n for v in objects.values())
      if k in ['TapMana','ActivateMana','AnnounceMana']:return 2100 if o['decision']in ['pay_costs','resolution_mana']and n in BASICS else -1000
      if k in ['PayCosts','PutTrigger','FinishAttackers','FinishBlockers','Keep','ChooseSpellCost']:return 2400
-     if k in ['Discard','Bottom']:return 2200 if n in BASICS else 1000
+     if k in ['Discard','Bottom']:
+      # Retain one fixture spell until its real paid route has been witnessed.
+      reserve=(stage=='setup'and((actor==p and n==name)or(n=='Bear Cub'and not(ally if actor==p else enemy))or(actor==q and n=='Chrome Companion'and not artifact)))or(i==5 and n=='Shock'and stage!='finish'and actor==(q if inset else p))or(not inset and i==3 and actor==p and stage=='setup'and n=='Snakeskin Veil')
+      copies=sum(v['owner']==actor and v['zone']=='Hand'and v['card']==n for v in objects.values())
+      return 100 if reserve and copies==1 else 2200 if n in BASICS else 1000
      if k=='ChooseSearch':return 2500 if not search_chosen else -1000
      if k=='FinishSearch':return 2000
      if k=='DeclineEffectPayment':return -1000
