@@ -1,4 +1,4 @@
-//! Core-only consumers stay gated. Immutable programs use the normal interpreter.
+//! Shared subtype regressions. Immutable programs use the normal interpreter.
 use super::ability_timeline_tests::{cast, checked, named, settle, setup};
 use super::tests::spawn;
 use super::*;
@@ -100,10 +100,7 @@ fn subtype_layers_static_threshold_is_reversible_and_starts_before_ability_remov
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
         let card = Card::from_name("Skyknight Squire").unwrap();
-        assert!(
-            !card.is_supported(),
-            "enter trigger is deliberately still gated"
-        );
+        assert!(card.is_supported());
         let squire = spawn(&mut g, p, card, Zone::Battlefield);
         g.state.objects[squire as usize].counters.plus_one = 2;
         assert!(!g.has_subtype(squire, "Knight"));
