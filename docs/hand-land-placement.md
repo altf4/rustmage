@@ -7,7 +7,67 @@ Strict canonical proof preserves 5,327 other definitions and all 911 prior helpe
 no new helper/factory is added. Current fingerprint is
 `a9e03eb43bf0586fc2558d95bf3cc0ff32b6be700fe709485774bc14c49b2cb3`.
 Nine focused compiler/raw/provenance/actual-parent methods pass in 1.937s.
-Fresh combined native/library/public/workload validation remains pending.
+Final runtime execution source is `71d7c3481705e755440411c9db32fe7c3a5d65b2`.
+Corrected policy/audit source is `95fed243cd28a682128cb646d533c56088d1815a`;
+its only three changes are the hand-land acceptance policy, the historical Explore
+manifest and its test. All other 884 tracked files, including every engine,
+generator, card-data and parent-policy input, are byte-identical. All five programs
+also equal the original a36 prototype. No native rebuild is attributed to the
+policy-only correction.
+
+Final immutable library:
+`/home/altf4/.cache/rustmage-immutable/handland325-71d7c34-a9e0-schema97-60a69f3cf930.so`
+
+SHA256 `60a69f3cf930435df3d49c0db180c7f37868878815fda83b5a65f748600c4811`.
+
+All consuming jobs are terminal, with source and library hashes unchanged:
+
+- 1,869 unit plus 12 integration tests pass (1,881 total), all-target Clippy
+  and formatting pass; generator verification passes separately. Native driver
+  38.881s; optimized library build28.327s.
+- All37 affected compiler/provenance methods pass in17.099s with explicit pinned
+  Java input, no failures/errors/skips: own nine, Explore four, base-stat seven,
+  inherited modal four, Feral ten and ownership three.
+- All24 naturally drawn paid body/mode/decline/seat cases pass in40.427s on the
+  corrected policy. Both Nicanzil explore conditions execute in each case.
+- All100 fixed Standard games pass without retries/concessions in144.118s:
+  all24 vectors,68,728 owned replay frames and137,456 actor/revision denials.
+- Seven affected public methods pass in41.612s: three split-search methods,
+  decoded-NUL subprocess routing, twelve complete modal-trigger bodies,
+  Summoner private normal/enchantment/decline routes in both seats, and twelve
+  selected paid Gift/Suspect/base-stat cases. This evidence remains71d-scoped;
+  none of those parent policies changed in the final three-file correction.
+
+Historical failures remain explicit. The original497-method compiler run at71d
+had494 passes, one stale Explore assertion that Nicanzil remained gated, and two
+module-loader errors because absolute helper imports lacked the scripts path.
+It was not a green full suite. The fresh37-method run executes all thirteen
+previously unloaded Feral/ownership methods; an initial narrow attempt omitted
+the Java environment and had35 passes/two skips, followed by the explicit pinned
+37-method pass above. The initial namespace-discovery harness failed before
+collecting tests and is retained separately. No fresh complete public API suite
+is claimed.
+
+The first fixed100 run completed68 games/49,687 owned frames before Nicanzil/P0/
+seed32534 ended while still waiting to explore a land. Its policy kept drawing
+past lands with Quick Study and ignored Candy Trail's actual private scry choices.
+The corrected policy keeps the missing kind on top, bottoms the other kind and
+avoids Quick Study while exploring. The unchanged failing seed then passed in526
+frames; the complete rerun uses exactly the same100 seeds/decks/vectors. No
+engine change accompanies this correction. The original24-case policy at71d
+already passed in37.823s; its evidence is distinct from the corrected40.427s run.
+
+The former Explore-gated Nicanzil record retains its original reason in
+`subsequently_completed`, with both clauses and unknown residuals now asserted.
+Seven remaining whole-body dependencies stay tracked in issue330. An inherited
+triggered-modal parenthetical admission gap reproduced at both parent19e and71d
+remains a separate issue261 obligation; this PR does not claim global reminder
+closure. Both generic internal-marker binding vulnerabilities are fixed here.
+
+Two independent whole-five preliminary reviews found no introduced issue; final
+exact-head confirmations are required before merge. Build cleanup reclaimed
+267,329,536 allocated non-SO bytes, preserving all five target SO paths and hashes
+plus the immutable library. No build or test jobs remain live.
 
 ## Historical prototype evidence
 
