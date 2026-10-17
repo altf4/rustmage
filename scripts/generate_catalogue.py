@@ -2041,6 +2041,32 @@ def target_subject_conditional(text):
     return spec,[*program,subject_guard('Targets',len(body),**kwargs),*body]
 
 
+def another_recovery_program(text):
+    """Exact subtype recovery after public-source incarnation binding (CR400.7e)."""
+    match = re.fullmatch(r'return another target (.+) card from your graveyard to your hand\.', text)
+    if match is None or match[1] not in CREATURE_TYPE_NAMES:
+        return None
+    expression = ('TargetRule::Filtered { base: &TargetRule::Object { zone: TargetZone::Graveyard, '
+                  'kinds: 0, relation: 0, other: true, nonland: false, tapped: false, '
+                  'min_mana: 0, max_mana: u32::MAX }, predicate: &TargetPredicate::Subtype(' +
+                  json.dumps(match[1]) + ') }')
+    key = 'Recovery' + hashlib.sha256(expression.encode()).hexdigest()
+    TARGET_RULES[key] = expression
+    return key, ['ReturnToHand']
+
+
+def another_recovery_route(text):
+    """Detection may erase text only to reject, never authenticate a program."""
+    while isinstance(text, str):
+        if re.search(r'\breturn\b[^.\n]*\banother\s+target\b[^.\n]*\bgraveyard\b', text, re.IGNORECASE):
+            return True
+        stripped = re.sub(r'\([^()]*\)', '', text)
+        if stripped == text:
+            return False
+        text = stripped
+    return False
+
+
 def targeted_program(text):
     """Complete target occurrences with independent predicates and effect focus."""
     if not isinstance(text, str) or not text.endswith('.'):
@@ -2048,6 +2074,7 @@ def targeted_program(text):
     text = strip_rule_label(text)
     if text.casefold()=='untap target attacking creature.':return 'CreatureAttacking',['Untap']
     text = normalize_duration(text[0].lower() + text[1:])
+    if result := another_recovery_program(text): return result
     if 'another target attacking creature you control' in text:
         result=targeted_program(text.replace('another target attacking creature you control','another target creature you control',1))
         return ('OtherCreatureAttackingYou',result[1]) if result and result[0]=='OtherCreatureYou' else None
@@ -4248,6 +4275,9 @@ def compile_catalogue(snapshot, target):
         # templates strip generic parentheticals, so reject every unaudited
         # clause before that historical behavior can hide a new instruction.
         raw_split_text = original.get('oracle_text', '')
+        if (another_recovery_route(raw_split_text)
+                and ('(' in raw_split_text or ')' in raw_split_text)):
+            effect = 'Unsupported'
         if (split_search_route_text(raw_split_text)
                 and ('(' in raw_split_text or ')' in raw_split_text)):
             effect = 'Unsupported'
