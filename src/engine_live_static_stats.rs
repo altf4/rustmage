@@ -1,8 +1,8 @@
 //! Sparse live source clauses use current earlier-layer facts and a shared timestamp clock.
 use super::*;
+use crate::cards::LiveStaticEffect;
 #[cfg(test)]
-use crate::cards::LiveStatRecipients;
-use crate::cards::{LiveStatValue, LiveStaticEffect, StaticAbilityFragment};
+use crate::cards::{LiveStatRecipients, LiveStatValue};
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct LiveStaticSourceView {
@@ -55,101 +55,10 @@ impl Game {
         }
         self.assign_static_source_timestamp(source);
     }
-    fn live_static_applies(
-        &self,
-        row: &LiveStaticSourceView,
-        effect: &LiveStaticEffect,
-        index: usize,
-        id: CardId,
-    ) -> bool {
-        self.continuous_fragment_available(row.source.card, |fragment| matches!(fragment,
-            StaticAbilityFragment::LiveBase(slot, _) | StaticAbilityFragment::LiveBonus(slot, _)
-            | StaticAbilityFragment::LiveKeywords(slot, _) | StaticAbilityFragment::LiveBlockRestriction(slot, _)
-            if usize::from(*slot) == index))
-            && ability_world::CharacteristicWorld::live_applies(self, row.source, effect, id)
-    }
 
-    fn live_stat_value(&self, value: LiveStatValue, source: ObjectRef) -> i128 {
-        match value {
-            LiveStatValue::Fixed(value) => value,
-            LiveStatValue::ControllerLife => {
-                self.state.players[self.state.objects[source.card as usize].controller.index()].life
-            }
-        }
-    }
-    pub(super) fn apply_live_base_stat_layers(
-        &self,
-        id: CardId,
-        mut stats: Stats,
-        power_time: &mut Option<u64>,
-        toughness_time: &mut Option<u64>,
-    ) -> Stats {
-        if let Some(r) = &self.state.roles {
-            for row in &r.live_static {
-                for (index, effect) in row.effects.iter().enumerate() {
-                    if !self.live_static_applies(row, effect, index, id) {
-                        continue;
-                    }
-                    if let Some(power) = effect.power
-                        && power_time.is_none_or(|t| row.timestamp > t)
-                    {
-                        stats.power = self.live_stat_value(power, row.source);
-                        *power_time = Some(row.timestamp);
-                    }
-                    if let Some(toughness) = effect.toughness
-                        && toughness_time.is_none_or(|t| row.timestamp > t)
-                    {
-                        stats.toughness = self.live_stat_value(toughness, row.source);
-                        *toughness_time = Some(row.timestamp);
-                    }
-                }
-            }
-        }
-        stats
-    }
-    pub(super) fn live_static_bonus(&self, id: CardId) -> Stats {
-        let mut stats = Stats::default();
-        if let Some(r) = &self.state.roles {
-            for row in &r.live_static {
-                for (index, effect) in row.effects.iter().enumerate() {
-                    if self.live_static_applies(row, effect, index, id) {
-                        stats += Stats {
-                            power: effect.bonus_power,
-                            toughness: effect.bonus_toughness,
-                        };
-                    }
-                }
-            }
-        }
-        stats
-    }
-    pub(super) fn live_static_keywords(&self, id: CardId) -> Keywords {
-        let mut keywords = Keywords::NONE;
-        if let Some(r) = &self.state.roles {
-            for row in &r.live_static {
-                for (index, effect) in row.effects.iter().enumerate() {
-                    if self.live_static_applies(row, effect, index, id) {
-                        keywords = keywords.union(effect.keywords);
-                    }
-                }
-            }
-        }
-        keywords
-    }
     pub(super) fn live_static_forbids_block(&self, blocker: CardId, attacker: CardId) -> bool {
-        self.state.roles.as_ref().is_some_and(|r| {
-            r.live_static.iter().any(|row| {
-                row.effects.iter().enumerate().any(|(index, effect)| {
-                    self.live_static_applies(row, effect, index, blocker)
-                        && effect.cannot_block_subtype.is_some_and(|subtype| {
-                            self.state.objects[attacker as usize]
-                                .card
-                                .has_subtype(subtype)
-                                || self.granted_subtypes(attacker).contains(subtype)
-                        })
-                })
-            })
-        })
+        self.characteristic_query()
+            .live_static_forbids_block(blocker, attacker)
     }
 }
 

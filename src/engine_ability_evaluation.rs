@@ -360,52 +360,8 @@ impl Game {
         source: CardId,
         matches: impl Fn(&StaticAbilityFragment) -> bool,
     ) -> bool {
-        if !self.on_battlefield(source) {
-            return true;
-        }
-        let Some(evaluation) = self.evaluated_abilities() else {
-            return true;
-        };
-        let reference = self.object_ref(source);
-        let mut bound = false;
-        let mut available = false;
-        for (index, group) in self.state.objects[source as usize]
-            .card
-            .static_ability_groups()
-            .iter()
-            .enumerate()
-        {
-            if group.fragments.iter().any(&matches) {
-                bound = true;
-                available |= evaluation.group_available(reference, index);
-            }
-        }
-        assert!(
-            bound,
-            "continuous helper has no immutable source-group identity"
-        );
-        available
-    }
-    pub(super) fn ability_availability(&self, id: CardId) -> Option<Box<AbilityAvailabilityView>> {
-        if !self.on_battlefield(id) {
-            return None;
-        }
-        let evaluation = self.evaluated_abilities()?;
-        let object = &evaluation.result.objects[id as usize];
-        Some(Box::new(AbilityAvailabilityView {
-            printed: object.printed,
-            grants: object
-                .grants
-                .iter()
-                .map(|grant| GrantedAbilityView {
-                    grantor: grant.source,
-                    granting_card: grant.granting_card,
-                    ability: grant.ability,
-                    grantor_controller: grant.grantor_controller,
-                    timestamp: grant.timestamp,
-                })
-                .collect(),
-        }))
+        self.characteristic_query()
+            .continuous_fragment_available(source, matches)
     }
 }
 impl ObjectView {

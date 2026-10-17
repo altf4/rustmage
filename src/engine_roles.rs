@@ -1,6 +1,5 @@
 //! Snapshot-owned Role timestamps and predefined attachment creation (CR303.7/704.5).
 use super::*;
-use crate::cards::RoleKind;
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct RoleTimestampView {
@@ -179,28 +178,7 @@ impl Game {
             r.attached.retain(|v| v.aura != aura);
         }
     }
-    pub(super) fn cursed_role_timestamp(&self, recipient: ObjectRef) -> Option<u64> {
-        self.state.roles.as_ref().and_then(|r| {
-            r.attached
-                .iter()
-                .filter(|v| {
-                    v.recipient == recipient
-                        && self.on_battlefield(v.aura.card)
-                        && self.object_ref(v.aura.card) == v.aura
-                        && self.state.objects[v.aura.card as usize].card.role()
-                            == Some(RoleKind::Cursed)
-                        && self.state.objects[v.aura.card as usize].attached_to == Some(recipient)
-                        && self.continuous_fragment_available(v.aura.card, |fragment| {
-                            matches!(
-                                fragment,
-                                crate::cards::StaticAbilityFragment::PredefinedRoleBase
-                            )
-                        })
-                })
-                .map(|v| v.timestamp)
-                .max()
-        })
-    }
+
     pub(super) fn resolve_role(&mut self, item: &SpellView, token: Card, subject: Subject) {
         assert!(
             token.role().is_some(),
