@@ -5,10 +5,11 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,760 have executable rules so far.
+knows all 5,164 pinned Standard identities; 1,791 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
+[Single-graveyard target groups](docs/single-graveyard.md) add three complete bodies on the dependent ten-Omen-pair branch; current-main composition and independent review are still required.
 [Actual cast payments](docs/cast-payments.md) adds twenty complete bodies, exact color allocation, Opus, Increment and Converge.
 [Warp](docs/warp.md) adds twelve complete Warp bodies plus two shared-rule bodies, with paid casting, counterable delayed exile and exact paid recast permissions.
 [Crew and Vehicles](docs/crew-vehicles.md) add24 complete bodies with private exact power costs, live battlefield animation, printed spell identity and sparse owned rollback state.

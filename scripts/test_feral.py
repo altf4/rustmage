@@ -39,14 +39,20 @@ class FeralCompilerTests(unittest.TestCase):
   self.assertEqual(g.targeted_program('exile up to two target cards from graveyards.')[0],('CardGrave',0,2))
   self.assertEqual(g.targeted_program('exile up to two target cards from a single graveyard.')[0],('CardSingleGrave',0,2))
  def test_all_feral_provenance_records_match_checked_out_and_pinned_java(self):
-  import subprocess
+  import os,subprocess
+  from pathlib import Path
+  source_root=os.environ.get('RUSTMAGE_XMAGE_SOURCE')
+  if not source_root:self.skipTest('Set RUSTMAGE_XMAGE_SOURCE to audit the pinned original Java bytes')
+  source_root=Path(source_root)
   m=json.loads((g.ROOT/'docs/omen-admissions.json').read_text());entry=next(c for c in m['cards']if c['name']==NAME)
   self.assertEqual(entry['status'],'complete_pair_admitted');self.assertIsNone(entry['remaining_obligation'])
   self.assertTrue(any(s['java_source'].endswith('/TargetCardInASingleGraveyard.java')for s in entry['sources']))
-  for source in entry['sources']:
+  manifest=json.loads((g.ROOT/'docs/single-graveyard-admissions.json').read_text())
+  sources={s['java_source']:s for card in manifest['cards']for s in card['sources']}
+  for source in sources.values():
    p=source['java_source'];expected=source['java_sha256']
-   self.assertEqual(hashlib.sha256((__import__('pathlib').Path('/home/altf4/Code/mage')/p).read_bytes()).hexdigest(),expected,p)
-   blob=subprocess.check_output(['git','-C','/home/altf4/Code/mage','show',m['java_revision']+':'+p])
+   self.assertEqual(hashlib.sha256((source_root/p).read_bytes()).hexdigest(),expected,p)
+   blob=subprocess.check_output(['git','-C',str(source_root),'show',m['java_revision']+':'+p])
    self.assertEqual(hashlib.sha256(blob).hexdigest(),expected,p)
  def test_complete_other_bodies_and_full_body_negative_controls(self):
   for name in ['Arashin Sunshield','Griffnaut Tracker']:
