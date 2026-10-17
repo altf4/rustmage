@@ -26,7 +26,7 @@ fn deck(land: &str, names: &[&str]) -> Vec<Card> {
 
 #[test]
 fn foundations_five_color_full_games_and_owned_search_replay() {
-    let decks = [
+    let mut decks = [
         deck(
             "Plains",
             &[
@@ -35,9 +35,9 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
                 "Healer's Hawk",
                 "Helpful Hunter",
                 "Inspiring Overseer",
-                "Pacifism",
+                "Prayer of Binding",
                 "Adamant Will",
-                "Prideful Parent",
+                "Felidar Savior",
                 "Serra Angel",
             ],
         ),
@@ -45,12 +45,12 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
             "Island",
             &[
                 "Opt",
-                "Quick Study",
+                "Micromancer",
                 "Spectral Sailor",
-                "Elementalist Adept",
-                "Mocking Sprite",
+                "Corsair Captain",
+                "Starlight Snare",
                 "Exclusion Mage",
-                "Bigfin Bouncer",
+                "Pirate's Cutlass",
                 "Unsummon",
                 "Tempest Djinn",
             ],
@@ -62,24 +62,24 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
                 "Infestation Sage",
                 "Exsanguinate",
                 "Vampire Nighthawk",
-                "Skeleton Archer",
-                "Maalfeld Twins",
+                "Rune-Scarred Demon",
+                "Arbiter of Woe",
                 "Sanguine Indulgence",
                 "Cemetery Recruitment",
-                "Moment of Craving",
+                "Vile Entomber",
             ],
         ),
         deck(
             "Mountain",
             &[
-                "Swab Goblin",
+                "Courageous Goblin",
                 "Brazen Scourge",
                 "Viashino Pyromancer",
                 "Dragon Fodder",
                 "Guttersnipe",
                 "Burst Lightning",
                 "Goblin Surprise",
-                "Boltwave",
+                "Ruby, Daring Tracker",
                 "Shivan Dragon",
             ],
         ),
@@ -88,16 +88,24 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
             &[
                 "Llanowar Elves",
                 "Bear Cub",
-                "Druid of the Cowl",
-                "Magnigoth Sentry",
+                "Elvish Archdruid",
+                "Fierce Empath",
                 "Thornweald Archer",
                 "Giant Growth",
-                "Gnarlid Colony",
+                "Garruk's Uprising",
                 "Aggressive Mammoth",
-                "Overrun",
+                "New Horizons",
             ],
         ),
     ];
+    // Ruby has a real two-color cost; Caves replaces basics without adding
+    // a fifth copy of any card or leaving this set's Standard-legal inventory.
+    for land in &mut decks[3][..12] {
+        *land = Card::from_name("Forest").unwrap();
+    }
+    for land in &mut decks[0][..4] {
+        *land = Card::from_name("Cryptic Caves").unwrap();
+    }
     let mut total_decisions = 0;
     let mut triggered = false;
     let mut token = false;
