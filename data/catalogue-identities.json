@@ -5343,7 +5343,8 @@
     2,
     2,
     16,
-    1
+    1,
+    0
   ],
   "aliases": [
     [
@@ -5509,6 +5510,10 @@
     [
       "@emblem/775571b10b62868058a6d841",
       5333
+    ],
+    [
+      "@emblem/vivien_reid",
+      5338
     ],
     [
       "@omen/099b8d2c-b482-48dd-b6bc-dedf546d66c5",
@@ -27730,6 +27735,9 @@
   "emblems": [
     {
       "oracle_text": "Whenever you gain life, target opponent loses that much life."
+    },
+    {
+      "oracle_text": "Creatures you control get +2/+2 and have vigilance, trample, and indestructible."
     }
   ],
   "creature_types": [
@@ -71317,7 +71325,7 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        2,
         0,
         0,
         0,
@@ -76939,7 +76947,7 @@
         0,
         0,
         0,
-        0,
+        3,
         0
       ],
       "generic": 0
@@ -180246,6 +180254,33 @@
       "standard_legal": false,
       "legendary": false,
       "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5338,
+      "module": "card_5338",
+      "path": "synthetic/emblem_vivien_reid.rs",
+      "set": "synthetic",
+      "category": "emblem",
+      "name": "@emblem/vivien_reid",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 0,
       "basic": false,
       "mana_color": null,
       "colored": [

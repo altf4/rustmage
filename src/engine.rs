@@ -659,6 +659,7 @@ struct PlayerState {
     hexproof_until_end_turn: bool,
     extra_land_plays_remaining: u64,
     no_maximum_hand_size: bool,
+    extra_land_plays_granted: u64,
     nonland_permanents_entered_this_turn: u64,
     spells_cast_this_turn: u64,
     instant_sorcery_cast_this_turn: u64,
@@ -1778,6 +1779,7 @@ impl Game {
             hexproof_until_end_turn: false,
             extra_land_plays_remaining: 0,
             no_maximum_hand_size: false,
+            extra_land_plays_granted: 0,
             nonland_permanents_entered_this_turn: 0,
             spells_cast_this_turn: 0,
             instant_sorcery_cast_this_turn: 0,
@@ -2298,13 +2300,18 @@ impl Game {
             }
             Pending::EffectChoice { player } => {
                 let choice = s.resolving.as_ref().unwrap().choice.as_ref().unwrap();
-                if matches!(choice.kind, EffectChoiceKind::LandCards { .. })
-                    && emit(Action::FinishLandSelection)
+                if matches!(
+                    choice.kind,
+                    EffectChoiceKind::LandCards { .. } | EffectChoiceKind::UntapLands { .. }
+                ) && emit(Action::FinishLandSelection)
                 {
                     return true;
                 }
                 if choice.skip_to.is_some()
-                    && !matches!(choice.kind, EffectChoiceKind::LandCards { .. })
+                    && !matches!(
+                        choice.kind,
+                        EffectChoiceKind::LandCards { .. } | EffectChoiceKind::UntapLands { .. }
+                    )
                     && emit(
                         if matches!(
                             choice.kind,
@@ -2324,7 +2331,8 @@ impl Game {
                         let action = match choice.kind {
                             EffectChoiceKind::HandCreature => Action::PutHandCreature { object },
                             EffectChoiceKind::HandLand { .. } => Action::PutHandLand { object },
-                            EffectChoiceKind::LandCards { .. } => Action::SelectLand { object },
+                            EffectChoiceKind::LandCards { .. }
+                            | EffectChoiceKind::UntapLands { .. } => Action::SelectLand { object },
                             EffectChoiceKind::Sacrifice => Action::Sacrifice { object },
                             EffectChoiceKind::Discard => Action::Discard { card: object.card },
                             _ => unreachable!("forage has its own choice"),
@@ -2475,8 +2483,11 @@ impl Game {
                             && sorcery
                             && (obj.zone == Zone::Hand || self.can_play_exiled(actor, card))
                             && (!s.land_played
-                                || s.players[actor.index()].extra_land_plays_remaining > 0
-                                || self.continuous_land_plays(actor) > s.continuous_land_plays_used)
+                                || self
+                                    .continuous_land_plays(actor)
+                                    .checked_add(s.players[actor.index()].extra_land_plays_granted)
+                                    .capacity("land allowance exhausted")
+                                    > s.continuous_land_plays_used)
                             && emit(Action::PlayLand { card })
                         {
                             return true;
@@ -2531,8 +2542,11 @@ impl Game {
                     if obj.card.is_land() {
                         if sorcery
                             && (!s.land_played
-                                || s.players[actor.index()].extra_land_plays_remaining > 0
-                                || self.continuous_land_plays(actor) > s.continuous_land_plays_used)
+                                || self
+                                    .continuous_land_plays(actor)
+                                    .checked_add(s.players[actor.index()].extra_land_plays_granted)
+                                    .capacity("land allowance exhausted")
+                                    > s.continuous_land_plays_used)
                             && emit(Action::PlayLand { card })
                         {
                             return true;
@@ -3268,9 +3282,8 @@ impl Game {
                 if self.state.land_played {
                     if self.state.players[actor.index()].extra_land_plays_remaining > 0 {
                         self.state.players[actor.index()].extra_land_plays_remaining -= 1;
-                    } else {
-                        self.state.continuous_land_plays_used += 1;
                     }
+                    self.state.continuous_land_plays_used += 1;
                 } else {
                     self.state.land_played = true;
                 }
@@ -4412,6 +4425,7 @@ impl Game {
         self.state.death_exile_replacements = None;
         for player in &mut self.state.players {
             player.extra_land_plays_remaining = 0;
+            player.extra_land_plays_granted = 0;
         }
         let expired_vehicles = self.expire_vehicle_animation();
         self.state.saddled.clear();
@@ -5993,6 +6007,15 @@ impl Game {
         self.state.players[player.index()].no_maximum_hand_size
             || self.state.static_sources.iter().any(|&id| {
                 self.state.objects[id as usize].controller == player
+                    && self.state.objects[id as usize]
+                        .card
+                        .static_ability_groups()
+                        .iter()
+                        .any(|g| {
+                            g.fragments.iter().any(|f| {
+                                matches!(f, crate::cards::StaticAbilityFragment::NoMaximumHandSize)
+                            })
+                        })
                     && self.continuous_fragment_available(id, |f| {
                         matches!(f, crate::cards::StaticAbilityFragment::NoMaximumHandSize)
                     })
@@ -6034,3 +6057,6 @@ mod fdn_cast_choices_four_tests;
 #[cfg(test)]
 #[path = "engine_fdn_events_seven_tests.rs"]
 mod fdn_events_seven_tests;
+#[cfg(test)]
+#[path = "engine_fdn_library_eight_tests.rs"]
+mod fdn_library_eight_tests;

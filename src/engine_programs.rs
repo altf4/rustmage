@@ -1541,6 +1541,11 @@ impl Game {
                 Instruction::Crew { .. } => self.resolve_crew(&item),
                 Instruction::BecomeSaddled { .. } => self.resolve_saddle(&item),
                 Instruction::AdditionalLandPlays(amount) => {
+                    let granted =
+                        &mut self.state.players[item.controller.index()].extra_land_plays_granted;
+                    *granted = granted
+                        .checked_add(amount)
+                        .capacity("land allowance exhausted");
                     let available =
                         &mut self.state.players[item.controller.index()].extra_land_plays_remaining;
                     *available = available
@@ -2049,6 +2054,45 @@ impl Game {
                 Instruction::ExileTargetLibraryPlay { amount } => {
                     for player in self.program_players(PlayerSet::Targeted, &item) {
                         self.exile_top_play_from(player, item.controller, amount, false);
+                    }
+                }
+                Instruction::IfAmountAtLeast {
+                    value,
+                    minimum,
+                    skip,
+                } => {
+                    if self.item_amount(value, &item) < minimum {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
+                Instruction::UntapLands(maximum) => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::UntapLands { maximum },
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        0,
+                        None,
+                    ) {
+                        return;
+                    }
+                }
+                Instruction::RevealUntilLandToGraveyard(players) => {
+                    for player in self.program_players(players, &item).collect::<Vec<_>>() {
+                        let library = &self.state.players[player.index()].library;
+                        let amount = library
+                            .iter()
+                            .rev()
+                            .position(|&id| self.state.objects[id as usize].card.is_land())
+                            .map_or(library.len(), |n| n + 1);
+                        let ids = library
+                            .iter()
+                            .rev()
+                            .take(amount)
+                            .copied()
+                            .collect::<Vec<_>>();
+                        let events = self.move_objects_raw(&ids, Zone::Graveyard);
+                        self.finish_zone_events(&events, &[]);
                     }
                 }
                 Instruction::NoMaximumHandSize => {

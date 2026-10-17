@@ -3,10 +3,25 @@
   "catalogue_id": 4050,
   "oracle_id": "6883e79e-0b4f-4fb8-aee3-a3905246a408",
   "facts_sha256": "b355e9d0289427f3a563add28de8d02c09e89233696d5d35ae15d476f780921b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a08896f2cb7f2421657a3ad04a924b0ee824a1d16861a76f29d2ca2823dc8a18"
   },
-  "physical_metadata_sha256": "aaf62e9b6538fc859520ff13376bea7bafc761316dc584e57f8d6f45fb3c786e"
+  "physical_metadata_sha256": "aaf62e9b6538fc859520ff13376bea7bafc761316dc584e57f8d6f45fb3c786e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpinnerOfSouls.java",
+  "java_sha256": "3b7ba7d583a97d3865e74c286f8c866c4fab8dee6a0976d56728b1db8f38a172",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesCreatureTriggeredAbility.java",
+      "sha256": "62d53cb6be7c685032f9bf3a509c9217177b4ee44ccd9a294be1d8dca7d77b81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/RevealCardsFromLibraryUntilEffect.java",
+      "sha256": "a9fe0b1c05462c01f6d6cbb28ec59832b9353151a7a25c8b86eb6fa51a40c2e6"
+    }
+  ]
 }
