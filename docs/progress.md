@@ -72,7 +72,7 @@ vectors with 81,882 owned frames and 163,764 denials. The
 explicit. The full all-Standard, rules and training goal remains incomplete.
 
 The [exact source-binding delivery](trigger-source-binding.md) completes Morcant's
-Loyalist on actual merged Role main, bringing coverage to 1,866/5,164 (3,298 gated)
+Loyalist on actual merged Role main, bringing coverage to 1,863/5,164 (3,301 gated)
 and schema 86. All 1,755 native tests, all-target Clippy and 257 unique fresh public
 methods pass. The 423-method compiler collection executes 421 passing methods and
 skips two opt-in provenance methods; both then execute/pass with the pinned Java
@@ -82,3 +82,15 @@ other Elf, 5,097 owned decisions and 10,194 actor/revision denials. The new inhe
 Tombstone payment method passes separately on identical production. Exact
 checkpoint/export/library identities and required independent reviews remain in
 the [PR 293 record](review-pr-293.md). This does not complete the all-Standard goal.
+
+
+The [cast and declaration event delivery](adventure-event-predicates.md) completes
+three further whole Adventure pairs on actual merged source-binding main:
+1,866/5,164 executable Standard identities (3,298 gated), 40 Adventure/13 Omen,
+94 token recipes and schema86. Frozen corrected source passes 1,762 native tests,
+all-target Clippy, all 430 unique compiler/provenance methods, all 261 unique
+fresh public API methods and 100 natural paid Standard games with actual normal
+events, 81,129 owned frames and 162,258 actor/revision denials. Exact parent union
+and ten-manifest pinned provenance proofs pass. Two independent reviewers approve
+production; exact final published-head confirmation remains the merge gate.
+The full all-Standard and training goal remains incomplete.
