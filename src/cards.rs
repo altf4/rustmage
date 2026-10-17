@@ -158,6 +158,7 @@ impl TargetPlan {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum PlayerSet {
+    CastingPlayer,
     DrawingPlayer,
     DamagedPlayer,
     Controller,
@@ -963,6 +964,8 @@ pub(crate) enum CastFilter {
     Any,
     Creature,
     Noncreature,
+    /// Historical qualifying cast ordinal, evaluated only with the actual caster.
+    InstantSorceryOrdinal(u64),
     InstantSorcery,
     Sorcery,
     Artifact,
@@ -997,7 +1000,7 @@ impl CastFilter {
                     && card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256) != 0
             }
             // Contextual cast observers use Game::cast_filter_matches instead.
-            Self::Targeted { .. } => false,
+            Self::Targeted { .. } | Self::InstantSorceryOrdinal(_) => false,
             Self::Multicolored => card.colors().count_ones() >= 2,
             Self::ManaValueMaximum { filter, maximum } => {
                 filter.matches_mana_value(card, mana_value) && mana_value <= maximum
@@ -1228,6 +1231,8 @@ pub(crate) enum TriggerCondition {
     SelfDies,
     SelfEntersOrDies,
     SelfAttacks,
+    /// Declaration-time condition; not a resolution-time intervening if.
+    SelfAttacksAlone,
     EquippedAttacks,
     GrantedAttacks,
     SelfBecomesTapped,

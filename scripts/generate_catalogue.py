@@ -2363,6 +2363,9 @@ def qualified_cast_prefix(line):
     }
     for prefix,filter_ in targeted.items():
         if line.startswith(prefix):return prefix,cast_condition(filter_=filter_)
+    for word,ordinal in [('first',1),('second',2)]:
+        prefix=f'Whenever you cast your {word} instant or sorcery spell each turn, '
+        if line.startswith(prefix):return prefix,cast_condition(filter_=f'InstantSorceryOrdinal({ordinal})')
     prefix='Whenever you cast your first spell each turn, '
     if line.startswith(prefix):return prefix,cast_condition(ordinal=1)
 
@@ -2681,6 +2684,7 @@ def trigger_creature_template(card):
         **{f'When this {noun} enters or is put into a graveyard from the battlefield, ': 'SelfEntersOrDies'
            for noun in ('creature','artifact','enchantment','Aura','Equipment')},
         'Whenever this creature attacks, ': 'SelfAttacks',
+        'Whenever this creature attacks alone, ': 'SelfAttacksAlone',
         'Whenever this creature becomes tapped, ': 'SelfBecomesTapped',
         'Whenever you attack, ': 'AttackDeclared { minimum: 1, power_min: None, guard: StepGuard::Always }',
         'Whenever one or more creatures you control attack, ': 'AttackDeclared { minimum: 1, power_min: None, guard: StepGuard::Always }',
@@ -2866,6 +2870,9 @@ def trigger_creature_template(card):
                 entering_program=entering_object_program(effect_text,condition)
                 if entering_program is not None:
                     targets,program=entering_program
+                elif condition.startswith('SpellCast {') and (m:=re.fullmatch(r'this creature deals ([0-9]+) damage to that player\.',effect_text)):
+                    amount=int(m[1])
+                    targets,program=('None',[f'DamagePlayers(PlayerSet::CastingPlayer, {amount})']) if amount<=32767 else ('None',None)
                 elif condition.startswith('CardDrawn {'):
                     result=draw_event_program(effect_text)
                     targets,program=result if result else ('None',None)
