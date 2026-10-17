@@ -21,7 +21,7 @@ mod mobilize;
 mod plot;
 #[path = "engine_warp.rs"]
 mod warp;
-pub use cast_payments::ManaPaymentDomain;
+pub use cast_payments::{CastPaymentEvent, ManaPaymentDomain};
 pub use mobilize::{DelayedSacrificeView, MobilizeChoiceView};
 pub use plot::{PlotPaymentView, PlottedCard};
 pub use warp::{DelayedWarpExileView, WarpedCard};
@@ -621,6 +621,7 @@ pub struct AttachmentTriggerView {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
+    pub cast_event: Option<Box<CastPaymentEvent>>,
     pub delayed_sacrifice: Option<Box<DelayedSacrificeView>>,
     pub delayed_warp_exile: Option<Box<DelayedWarpExileView>>,
     /// Chosen X, retained independently by a spell and its own entry-trigger packets.
@@ -793,6 +794,7 @@ struct DamageChoice {
 /// that deal damage from their hand or as spells.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 pub struct DamageFacts {
+    pub power: i128,
     pub granted_subtypes: GrantedSubtypes,
     pub card: Card,
     pub battlefield: bool,
@@ -804,6 +806,7 @@ pub struct DamageFacts {
 impl DamageFacts {
     fn from_view(view: &ObjectView) -> Self {
         Self {
+            power: view.power,
             granted_subtypes: view.granted_subtypes,
             card: view.card,
             battlefield: view.zone == Zone::Battlefield,
@@ -4432,7 +4435,10 @@ impl Game {
                 .chain(s.resolving.iter().map(|resolution| &resolution.item))
                 .chain(s.announcing.iter().map(|announcement| &announcement.item))
                 .map(|item| {
-                    item.delayed_sacrifice.as_ref().map_or(0, |d| d.bytes())
+                    item.cast_event
+                        .as_ref()
+                        .map_or(0, |_| std::mem::size_of::<CastPaymentEvent>())
+                        + item.delayed_sacrifice.as_ref().map_or(0, |d| d.bytes())
                         + item
                             .delayed_warp_exile
                             .as_ref()
@@ -4886,3 +4892,7 @@ mod job_select_tests;
 
 #[path = "engine_granted_abilities.rs"]
 mod granted_abilities;
+
+#[cfg(test)]
+#[path = "engine_cast_payment_body_tests.rs"]
+mod cast_payment_body_tests;

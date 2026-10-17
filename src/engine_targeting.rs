@@ -524,6 +524,7 @@ impl Game {
         let object = self.move_object(card, Zone::Stack).after;
         let id = self.next_stack_id();
         SpellView {
+            cast_event: None,
             delayed_sacrifice: None,
             delayed_warp_exile: None,
             x: None,

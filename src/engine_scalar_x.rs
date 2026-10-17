@@ -127,6 +127,22 @@ impl Game {
     }
     pub(super) fn item_amount(&self, value: AmountValue, item: &SpellView) -> u128 {
         match value {
+            AmountValue::ManaSpent => u128::from(
+                self.item_cast_payment(item)
+                    .into_iter()
+                    .map(u64::from)
+                    .sum::<u64>(),
+            ),
+            AmountValue::ColorsSpent => (0..5)
+                .filter(|&i| self.item_cast_payment(item)[i] > 0)
+                .count() as u128,
+            AmountValue::SourcePower => {
+                if self.on_battlefield(item.card) && self.object_ref(item.card) == item.object {
+                    self.stats(item.card).power.max(0) as u128
+                } else {
+                    item.source_facts.power.max(0) as u128
+                }
+            }
             AmountValue::ChosenX => u128::from(item.x.unwrap_or(0)),
             AmountValue::Multiple { value, factor } => self
                 .item_amount(*value, item)
