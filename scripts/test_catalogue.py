@@ -37,7 +37,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
         rust,report=generate.compile_catalogue(snapshot,target)
         supported={c['name'] for c in report['cards'] if c['implemented']}
-        self.assertEqual(report["token_definitions"],85)
+        self.assertEqual(report["token_definitions"],87)
         manifest=json.loads((generate.ROOT/'docs/scalar-x-admissions.json').read_text())
         self.assertEqual([r['name'] for r in manifest['cards']],names)
         self.assertEqual(sum(len(r['sources']) for r in manifest['cards']),75)
@@ -2240,7 +2240,7 @@ class CatalogueCompilerTests(unittest.TestCase):
             self.assertIn(name,supported)
         for name in ['Grab the Prize','Pumpkin Bombardment','Souls Lost','Fear of Isolation']:
             self.assertNotIn(name,supported)
-        self.assertEqual(rust.count('=> Some(AdditionalCost {'),10)
+        self.assertEqual(rust.count('=> Some(AdditionalCost {'),11)
         prefix='As an additional cost to cast this spell, '
         for cost in ['discard two cards.','you may discard a card.','sacrifice two creatures.',
                      'discard a card or pay {2}.','sacrifice an artifact or pay {2}.',
@@ -2668,7 +2668,8 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Hulking Raptor',"It'll Quench Ya!",'Negate','No More Lies','Spell Pierce','Spider-Rex, Daring Dino',
                      'Theorix Charm','Toadstool Admirer','Unflinching Hortimancer','Wrecking Gecko','Vein Ripper','Sire of Seven Deaths']:
             self.assertIn(name,supported)
-        for name in ['Dazzling Denial','Spell Stutter',"Falcon's Wing Harness"]:
+        self.assertIn("Falcon's Wing Harness",supported)
+        for name in ['Dazzling Denial','Spell Stutter']:
             self.assertNotIn(name,supported)
 
     def test_player_damage_filters_and_event_amount_scope(self):

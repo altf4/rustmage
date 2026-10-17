@@ -180,6 +180,7 @@ def extract_cost_reductions(card):
                 quantity=candidate;amount=1;source_only=True;filt='CastFilter::Any'
         elif m:=re.fullmatch(r'(?:Vivid — )?This spell costs \{([0-9]+)\} less to cast for each (.+)\.',line):
             quantity=reduction_quantity(m[2]);amount=int(m[1]);source_only=True;filt='CastFilter::Any'
+            if m[2] in ('attacking creature','attacking creatures'):quantity='StatValue::AllAttackingCreatures'
             if '{X}' in card.get('mana_cost','') and amount==1 and m[2]=='creature you control with power 4 or greater':derived='SpellReductionAmount::CreaturePowerCount { minimum: 4 }'
             if m[2]=='creature that attacked this turn':derived=f'SpellReductionAmount::Attackers {{ factor: {amount} }}'
         elif m:=re.fullmatch(r'This spell costs \{X\} less to cast, where X is (?:the number of )?(.+)\.',line):
@@ -489,8 +490,8 @@ def stat_count_filter(text):
     elif noun in kinds:kind=kinds[noun]
     else:
         if noun.startswith('basic '):basic=True;noun=noun[6:]
-        singular={word.casefold():word for word in [*CREATURE_TYPE_NAMES,'Plains','Island','Swamp','Mountain','Forest','Equipment','Desert','Gate','Cave','Town','Treasure','Lesson']}
-        plurals={word.casefold()+'s':word for word in ['Island','Swamp','Mountain','Forest','Desert','Gate','Cave','Town','Treasure']}
+        singular={word.casefold():word for word in [*CREATURE_TYPE_NAMES,'Plains','Island','Swamp','Mountain','Forest','Equipment','Desert','Gate','Cave','Town','Treasure','Lesson','Food']}
+        plurals={word.casefold()+'s':word for word in ['Island','Swamp','Mountain','Forest','Desert','Gate','Cave','Town','Treasure','Food']}
         subtype=SUBTYPE_PLURALS.get(noun,plurals.get(noun,singular.get(noun)))
         if subtype is None:return None
         if basic and subtype not in ('Plains','Island','Swamp','Mountain','Forest'):return None
@@ -875,6 +876,7 @@ def search_filter(noun):
     """Closed card qualities, with explicit conjunctions and branch-local unions."""
     fixed={
         'basic land card':'BasicLand','land card':'Land','creature card':'Creature',
+        'creature or basic land card':'AnyOf(&[SearchFilter::Creature, SearchFilter::BasicLand])',
         'artifact card':'Artifact','enchantment card':'Enchantment',
         'basic land cards and/or Gate cards':'AnyOf(&[SearchFilter::BasicLand, SearchFilter::Subtype("Gate")])',
         'basic land cards and/or Desert cards':'AnyOf(&[SearchFilter::BasicLand, SearchFilter::Subtype("Desert")])',
@@ -1640,6 +1642,7 @@ for _name, _zone, _kinds, _relation, _other, _nonland in [
     ('OtherCreatureYou', 'Battlefield', 1, 0, True, False),
     ('CreatureOpponent', 'Battlefield', 1, 1, False, False),
     ('Permanent', 'Battlefield', 0, -1, False, False),
+    ('PermanentYou', 'Battlefield', 0, 0, False, False),
     ('Nonland', 'Battlefield', 0, -1, False, True),
     ('OtherNonlandYou', 'Battlefield', 0, 0, True, True),
     ('OtherNonland', 'Battlefield', 0, -1, True, True),
@@ -1649,9 +1652,12 @@ for _name, _zone, _kinds, _relation, _other, _nonland in [
     ('CardGrave', 'Graveyard', 0, -1, False, False),
     ('Land', 'Battlefield', 2, -1, False, False),
     ('Artifact', 'Battlefield', 16, -1, False, False),
+    ('ArtifactOpponent', 'Battlefield', 16, 1, False, False),
     ('ArtifactCreature', 'Battlefield', 17, -1, False, False),
     ('ArtifactCreatureYou', 'Battlefield', 17, 0, False, False),
     ('ArtifactCreatureOpponent', 'Battlefield', 17, 1, False, False),
+    ('ArtifactCreatureEnchantmentOpponent', 'Battlefield', 49, 1, False, False),
+    ('ArtifactYou', 'Battlefield', 16, 0, False, False),
     ('Enchantment', 'Battlefield', 32, -1, False, False),
     ('ArtifactEnchantment', 'Battlefield', 48, -1, False, False),
     ('ArtifactEnchantmentOpponent', 'Battlefield', 48, 1, False, False),
@@ -1679,6 +1685,8 @@ for _name, _kinds, _relation, _nonland, _tapped, _minimum, _maximum in [
                           f'tapped: {str(_tapped).lower()}, min_mana: {_minimum}, max_mana: {_maximum} }}')
 
 EXILE_SUBJECTS = {
+    'target artifact or creature an opponent controls': 'ArtifactCreatureOpponent',
+    'target artifact, creature, or enchantment an opponent controls': 'ArtifactCreatureEnchantmentOpponent',
     'target creature': 'Creature', 'target artifact': 'Artifact',
     'target enchantment': 'Enchantment', 'target artifact or enchantment': 'ArtifactEnchantment',
     'target creature or enchantment': 'CreatureEnchantment',
@@ -1717,6 +1725,7 @@ TARGET_RULES['CreatureEnchantmentPlaneswalker']='TargetRule::Object { zone: Targ
 TARGET_RULES['DefendingCreature'] = 'TargetRule::DefendingCreature'
 TARGET_RULES['LegendaryCreature'] = filtered_target('Creature','Legendary')
 TARGET_RULES['PirateYou'] = filtered_target('CreatureYou','Subtype("Pirate")')
+TARGET_RULES['DwarfYou'] = filtered_target('PermanentYou','Subtype("Dwarf")')
 TARGET_RULES['CaveGraveYou'] = 'TargetRule::Filtered { base: &TargetRule::Object { zone: TargetZone::Graveyard, kinds: 0, relation: 0, other: false, nonland: false, tapped: false, min_mana: 0, max_mana: u32::MAX }, predicate: &TargetPredicate::Subtype("Cave") }'
 TARGET_RULES['VampireYou'] = ('TargetRule::Filtered { base: &TargetRule::Object { zone: TargetZone::Battlefield, kinds: 0, relation: 0, other: false, nonland: false, tapped: false, min_mana: 0, max_mana: 4294967295 }, predicate: &TargetPredicate::Subtype("Vampire") }')
 
@@ -2031,6 +2040,8 @@ def targeted_program(text):
         return ('CreatureVehicle',0,1),[counter_instruction('Targets',m[1],m[2]),f'GrantKeywords {{ subject: Subject::Targets, keywords: Keywords({keywords}) }}']
     if text=='attach this Equipment to up to one target creature you control.':
         return ('CreatureYou',0,1),['AttachSource']
+    if text=='attach this Equipment to target Dwarf you control.':
+        return 'DwarfYou',['AttachSource']
     if text=='attach this Equipment to target Pirate creature you control.':
         return 'PirateYou',['AttachSource']
     if m := re.fullmatch(r'attach this Equipment to target creature you control\.(?: That creature gains (.+) until end of turn\.)?', text):
@@ -2873,6 +2884,55 @@ def activation_cost(text):
     return cost
 
 
+def attachment_ward_route(card):
+    """New typed attachment and linked-union routes, selected by grammar alone."""
+    text='\n'.join(line.strip() for line in re.sub(r'\([^()]*\)', '',card.get('oracle_text','')).casefold().splitlines())
+    return (re.search(r'(?m)^(?:enchanted|equipped) (?:creature|permanent)[^\n]*\bward\b',text) is not None
+            or 'enchant artifact you control' in text.splitlines()
+            or any(phrase in text for phrase in (
+                'exile target artifact or creature an opponent controls until ',
+                'exile target artifact, creature, or enchantment an opponent controls until ')))
+
+
+def attachment_ward_reminders_valid(card):
+    """Authenticate exact reminder syntax and repeated printed costs before extraction."""
+    mana=r'(?:\{(?:[0-9]+|[WUBRGC])\})+'
+    for line in card.get('oracle_text','').splitlines():
+        if '(' not in line and ')' not in line:continue
+        if line.count('(')!=1 or line.count(')')!=1 or not line.endswith(')') or ' (' not in line:return False
+        prefix,reminder=line.rsplit(' (',1)
+        if m:=re.fullmatch(r'Ward ('+mana+r')',prefix):
+            expected=r'Whenever this (?:artifact|enchantment|creature) becomes the target of a spell or ability an opponent controls, counter it unless that player pays '+re.escape(m[1])+r'\.\)'
+        elif m:=re.fullmatch(r'(Enchanted|Equipped) (?:creature|permanent)[^\n]*\bward ('+mana+r')\.',prefix):
+            recipient=m[1].lower()+r' (?:creature|permanent)'
+            expected=r'Whenever (?:'+recipient+r'|it) becomes the target of a spell or ability an opponent controls, counter it unless that player pays '+re.escape(m[2])+r'\.\)'
+        elif m:=re.fullmatch(r'(?:[^\n()]+ — )?Equip ('+mana+r')',prefix):
+            expected=re.escape(m[1])+r': Attach to target creature you control\. Equip only as a sorcery\.\)'
+        elif m:=re.fullmatch(r'Cycling ('+mana+r')',prefix):
+            expected=re.escape(m[1])+r', Discard this card: Draw a card\.\)'
+        elif prefix=='Job select':
+            expected=r'When this Equipment enters, create a 1/1 colorless Hero creature token, then attach this to it\.\)'
+        elif m:=re.fullmatch(r'Crew ([0-9]+)',prefix):
+            expected=r'Tap any number of (?:other untapped )?creatures you control with total power '+re.escape(m[1])+r' or more: This Vehicle becomes an artifact creature until end of turn\.\)'
+        else:return False
+        if re.fullmatch(expected,reminder) is None:return False
+    return True
+
+
+def attachment_grants(text):
+    """Keywords and independently triggered Ward instances; never merge Ward costs."""
+    if not text: return 0, []
+    words=re.split(r',? and |, ',text.casefold())
+    keywords=0; triggers=[]
+    for word in words:
+        if word in KEYWORDS:
+            keywords|=KEYWORDS[word]
+        elif (ward:=ward_word(word)) is not None:
+            triggers.append(('Granted(&TriggerCondition::Ward)',[counter_unless(ward,'Related')],'None'))
+        else:return None
+    return keywords,triggers
+
+
 def aura_template(card):
     if (card.get('layout') != 'normal' or permanent_type(card) != 'Enchantment'
             or card.get('type_line','').split(' — ')[-1] != 'Aura'
@@ -2881,28 +2941,33 @@ def aura_template(card):
     text=re.sub(r'\([^()]*\)', '', card['oracle_text']).strip()
     body=[]
     power,toughness,keywords=0,0,0
-    relation=None
+    relation=None; kinds=1; creature_grants=False; attached_abilities=[]
     for line in text.split('\n'):
         line=line.strip()
-        if line in ('Enchant creature','Enchant creature you control','Enchant creature an opponent controls'):
+        if line in ('Enchant creature','Enchant creature you control','Enchant creature an opponent controls','Enchant artifact you control'):
             if relation is not None: return None
-            relation={'Enchant creature':-1,'Enchant creature you control':0,'Enchant creature an opponent controls':1}[line]
+            relation={'Enchant creature':-1,'Enchant creature you control':0,'Enchant creature an opponent controls':1,'Enchant artifact you control':0}[line]
+            kinds=16 if line=='Enchant artifact you control' else 1
         elif m:=re.fullmatch(r'Enchanted creature gets ([+-][0-9]+)/([+-][0-9]+)(?: and has (.+))?\.',line):
             if max(abs(int(m[1])),abs(int(m[2])))>32767: return None
-            extra=keyword_list(m[3]) if m[3] else 0
+            extra=attachment_grants(m[3])
             if extra is None: return None
-            power+=int(m[1]);toughness+=int(m[2]);keywords|=extra
-        elif m:=re.fullmatch(r'Enchanted creature has (.+)\.',line):
-            extra=keyword_list(m[1])
+            power+=int(m[1]);toughness+=int(m[2]);keywords|=extra[0];attached_abilities.extend(extra[1]);creature_grants=True
+        elif m:=re.fullmatch(r'Enchanted (creature|permanent) has (.+)\.',line):
+            # A creature-only triggered grant needs a live guard on an artifact Aura.
+            creature_grants |= m[1]=='creature'
+            extra=attachment_grants(m[2])
             if extra is None: return None
-            keywords|=extra
+            keywords|=extra[0];attached_abilities.extend(extra[1])
         elif line.startswith('Enchanted creature ') and ('this creature '+line[len('Enchanted creature '):]).casefold() in TEXT_FLAGS:
             keywords|=TEXT_FLAGS[('this creature '+line[len('Enchanted creature '):]).casefold()]
         else:
-            body.append(line.replace('When this Aura enters, ','When this enchantment enters, '))
-    if relation is None: return None
+            body.append(line.replace('When this Aura enters, ','When this enchantment enters, ').replace('until this Aura leaves the battlefield.','until this enchantment leaves the battlefield.'))
+    if relation is None or (kinds!=1 and (creature_grants or power or toughness or keywords)): return None
     result=permanent_program_template(dict(card,type_line='Enchantment',oracle_text='\n'.join(body)))
-    return (*result,relation,power,toughness,keywords) if result else None
+    if result is None:return None
+    effect,intrinsic,abilities,activations,enters=result
+    return effect,intrinsic,[*abilities,*attached_abilities],activations,enters,kinds,relation,power,toughness,keywords
 
 
 def equipment_template(card):
@@ -2939,13 +3004,13 @@ def equipment_template(card):
             attached_abilities.append(ability)
         elif m:=re.fullmatch(r'Equipped creature gets ([+-][0-9]+)/([+-][0-9]+)(?: and has (.+))?\.',line):
             if max(abs(int(m[1])),abs(int(m[2])))>32767: return None
-            extra=keyword_list(m[3]) if m[3] else 0
+            extra=attachment_grants(m[3])
             if extra is None: return None
-            power+=int(m[1]);toughness+=int(m[2]);keywords|=extra
+            power+=int(m[1]);toughness+=int(m[2]);keywords|=extra[0];attached_abilities.extend(extra[1])
         elif m:=re.fullmatch(r'Equipped creature has (.+)\.',line):
-            extra=keyword_list(m[1])
+            extra=attachment_grants(m[1])
             if extra is None: return None
-            keywords|=extra
+            keywords|=extra[0];attached_abilities.extend(extra[1])
         elif m:=re.fullmatch(r'Equip Pirate ((?:\{(?:[0-9]+|[WUBRGC])\})+)',line):
             equips+=1
             body.append(m[1]+': Attach this Equipment to target Pirate creature you control. Activate only as a sorcery.')
@@ -3698,6 +3763,91 @@ def adventure_faces(card, mechanic="Adventure"):
     return result
 
 
+def saga_chapter_program(body):
+    """Complete chapter sentences using shared immutable effects, without card-name gates."""
+    text=normalize_duration(body[0].lower()+body[1:])
+    if text=='destroy target artifact an opponent controls.':return 'ArtifactOpponent',['Destroy']
+    if m:=re.fullmatch(r'this creature deals ([0-9]+) damage to target tapped creature an opponent controls\.',text):
+        return ('CreatureOpponentTapped',[f'Damage({int(m[1])})']) if int(m[1])<=32767 else None
+    if text=='each opponent sacrifices a creature of their choice and loses 3 life.':
+        parsed=sacrifice_program('each opponent sacrifices a creature of their choice.')
+        return 'None',[*parsed[1],'LoseLife(PlayerSet::Opponent, 3)']
+    if text=="draw a card if there's a creature or Lesson card in your graveyard.":
+        filters=[stat_count_filter('creature cards in your graveyard'),stat_count_filter('Lesson cards in your graveyard')]
+        value='StatValue::CountUnion(&['+', '.join(filters)+'])'
+        return 'None',['If { guard: StepGuard::Expression { value: '+value+', minimum: Some(1), maximum: None }, skip: 1 }','Draw(PlayerSet::Controller, 1)']
+    if text=='put X +1/+1 counters on target creature you control, where X is one plus the number of Foods you control.':
+        value='AmountValue::Stat(StatValue::Sum(&[StatValue::Fixed(1), '+stat_value('Foods you control')+']))'
+        return 'CreatureYou',['PutCountersScaled { subject: Subject::Targets, kind: CounterKind::PlusOne, amount: '+value+' }']
+    if m:=re.fullmatch(r'up to two target creatures each get ([+-][0-9]+)/([+-][0-9]+) and gain (.+) until end of turn\.',text):
+        keywords=keyword_list(m[3]);power,toughness=int(m[1]),int(m[2])
+        if keywords is None or max(abs(power),abs(toughness))>32767:return None
+        return ('Creature',0,2),[grow_instruction('Targets',power,toughness),f'GrantKeywords {{ subject: Subject::Targets, keywords: Keywords({keywords}) }}']
+    if text=='double the power and toughness of each creature you control until end of turn.':
+        return 'None',['SnapshotDoubleCreatures('+creature_filter('creatures you control')+')']
+    if text=='tap target creature an opponent controls. Put a stun counter on it.':
+        return 'CreatureOpponent',['Tap',counter_instruction('Targets','a','stun')]
+    if text=='draw a card for each tapped creature your opponents control.':
+        filt=stat_count_filter('creatures you control').replace('relation: 0','relation: 1')
+        return 'None',['DrawScaled(PlayerSet::Controller, AmountValue::Stat(StatValue::TappedCount('+filt+')))']
+    parsed=targeted_program(body)
+    if parsed:return parsed
+    program=statement_program(body)
+    return ('None',program) if program else None
+
+
+def saga_body(card):
+    """Whole single-face Saga only: exact reminder, all numbered effects and intrinsic text."""
+    if card.get('layout') != 'saga' or 'Saga' not in card.get('type_line','').split(' — ')[-1].split():return None
+    if spell_cost_options(card.get('mana_cost','')) is None or '{X}' in card.get('mana_cost',''):return None
+    lines=card.get('oracle_text','').splitlines()
+    if not lines:return None
+    roman={'I':1,'II':2,'III':3,'IV':4,'V':5}
+    header=re.fullmatch(r'\(As this Saga enters and after your draw step, add a lore counter\. Sacrifice after (I|II|III|IV|V)\.\)',lines[0])
+    if not header:return None
+    final=roman[header[1]];abilities=[];seen=set();intrinsic=[]
+    for line in lines[1:]:
+        match=re.fullmatch(r'([IV, ]+) — (.+)',line)
+        if match:
+            labels=match[1].split(', ')
+            if any(label not in roman for label in labels):return None
+            numbers=[roman[label] for label in labels]
+            if numbers!=sorted(set(numbers)) or seen.intersection(numbers):return None
+            seen.update(numbers)
+            body=match[2]
+            # A flavor word is part of this one complete chapter, never an executable clause.
+            if ' — ' in body:
+                flavor,body=body.split(' — ',1)
+                if flavor not in {'Aerial Blast','Diamond Dust','Heavenly Strike','Judgment Bolt','Kerplunk','Oblivion','Pain','Slipstream','Stampede!','Wark'}:return None
+            # Only remove authenticated reminder sentences from their exact instruction.
+            # Unknown parenthesized text is executable residual, never harmless prose.
+            reminders = {
+                'Mill three cards, then create a Food token. (It\'s an artifact with "{2}, {T}, Sacrifice this token: You gain 3 life.")': 'Mill three cards, then create a Food token.',
+                'Tap target creature an opponent controls. Put a stun counter on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)': 'Tap target creature an opponent controls. Put a stun counter on it.',
+            }
+            body=reminders.get(body,body)
+            if '(' in body or ')' in body:return None
+            body=body.replace('This Saga','This creature')
+            parsed=saga_chapter_program(body)
+            if parsed is None:return None
+            targets,program=parsed
+            abilities.extend((f'Chapter {{ number: {number} }}',program,targets) for number in numbers)
+        else:
+            if '(' in line or ')' in line:return None
+            intrinsic.append(line)
+    if not seen or max(seen)!=final or seen!=set(range(1,final+1)):return None
+    types=card.get('type_line','').split(' — ')[0].split()
+    if 'Creature'in types:
+        residual=dict(card,layout='normal',oracle_text='\n'.join(intrinsic))
+        parsed=creature_template(residual)
+        if parsed is None:return None
+        effect,keywords=parsed
+    else:
+        if intrinsic:return None
+        effect,keywords='Permanent',0
+    return effect,keywords,abilities
+
+
 def compile_catalogue(snapshot, target):
     TOKEN_DEFS.clear()
     EMBLEM_DEFS.clear()
@@ -3864,10 +4014,10 @@ def compile_catalogue(snapshot, target):
             elif spell is not None:
                 effect = 'Spell'
             elif aura is not None:
-                _, keywords, abilities, activations, enters, relation, power, toughness, granted = aura
-                target = {-1:'Creature',0:'CreatureYou',1:'CreatureOpponent'}[relation]
+                _, keywords, abilities, activations, enters, enchant_kinds, relation, power, toughness, granted = aura
+                target = 'ArtifactYou' if enchant_kinds==16 else {-1:'Creature',0:'CreatureYou',1:'CreatureOpponent'}[relation]
                 effect = f'Aura({rust_targets(target)})'
-                aura_rows.append(f'        {index} => Some(AuraSpec {{ relation: {relation}, bonus: EquipmentSpec {{ stats: Stats {{ power: {power}, toughness: {toughness} }}, keywords: Keywords({granted}) }} }}),')
+                aura_rows.append(f'        {index} => Some(AuraSpec {{ kinds: {enchant_kinds}, relation: {relation}, bonus: EquipmentSpec {{ stats: Stats {{ power: {power}, toughness: {toughness} }}, keywords: Keywords({granted}) }} }}),')
             elif equipment is not None:
                 effect, keywords, abilities, activations, enters, power, toughness, granted = equipment
                 equipment_rows.append(f'        {index} => Some(EquipmentSpec {{ stats: Stats {{ power: {power}, toughness: {toughness} }}, keywords: Keywords({granted}) }}),')
@@ -3946,6 +4096,14 @@ def compile_catalogue(snapshot, target):
                     and creature_entry == 'Never') else None
             if crew is None: effect='Unsupported'
             else: effect,keywords,abilities,activations,enters,dynamic,scaling=crew
+        if original.get("layout") == "saga":
+            saga=saga_body(original)
+            if saga is None: effect="Unsupported"
+            else:
+                effect,keywords,abilities=saga
+                activations=[];enters=[0,0,0]
+        if attachment_ward_route(original) and not attachment_ward_reminders_valid(original):
+            effect='Unsupported'
         # Later fixed-cost selectors must never revive a rejected variable-cost body.
         if '{X}' in card.get('mana_cost', '') and scalar is None:
             effect = 'Unsupported'
@@ -4055,7 +4213,7 @@ def compile_catalogue(snapshot, target):
         if effect != 'Unsupported':
             if dynamic is not None:dynamic_rows.append(f'        {index} => Some({dynamic}),')
             if scaling:scaling_rows.append(f'        {index} => &['+', '.join(scaling)+'],')
-        definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(card.get('name', name))}, oracle_id: {oracle_id}, mana_cost: {quote(card.get("mana_cost",cost) if scalar is not None else cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in standard_names).lower()}, legendary: {str(card.get('type_line', '').startswith('Legendary ')).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, activated: {rust_activations(activations)}, enters: Counters {{ plus_one: {enters[0]}, minus_one: {enters[1]}, stun: {enters[2]}, loyalty: 0 }}, entry: EntryTapped::{entry}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
+        definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(card.get('name', name))}, oracle_id: {oracle_id}, mana_cost: {quote(card.get("mana_cost",cost) if scalar is not None else cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in standard_names).lower()}, legendary: {str(card.get('type_line', '').startswith('Legendary ')).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, activated: {rust_activations(activations)}, enters: Counters {{ plus_one: {enters[0]}, minus_one: {enters[1]}, stun: {enters[2]}, loyalty: 0, lore: 0 }}, entry: EntryTapped::{entry}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
         if offspring_key is not None:
             offspring_factories[offspring_key]=(index,definitions[-1],color_mask,card.get('type_line','').split(' — ')[-1])
         if uncounterable and effect != 'Unsupported': uncounterable_rows.append(str(index))
@@ -4109,7 +4267,7 @@ def compile_catalogue(snapshot, target):
         if factory.get('landfall_growth'):
             p,t=factory['landfall_growth']
             token_triggers='&[TriggeredAbility { condition: TriggerCondition::LandEntersYou, targets: TargetPlan::Single(TargetSpec::NONE), program: '+rust_program([grow_instruction('Source',p,t)])+' }]'
-        definitions.append(f"    Definition {{ info: CardInfo {{ name: {json.dumps(name)}, oracle_id: None, mana_cost: \"\", type_line: {json.dumps(type_line, ensure_ascii=False)}, oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: Keywords({factory['keywords']}), deck_limit: None }}, effect: Effect::{effect}, triggers: {token_triggers}, activated: {rust_activations(token_abilities)}, enters: Counters {{ plus_one: 0, minus_one: 0, stun: 0, loyalty: 0 }}, entry: EntryTapped::Never, kind: {kind}, basic: false, mana_color: None, colored: [0; 6], generic: 0 }},")
+        definitions.append(f"    Definition {{ info: CardInfo {{ name: {json.dumps(name)}, oracle_id: None, mana_cost: \"\", type_line: {json.dumps(type_line, ensure_ascii=False)}, oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: Keywords({factory['keywords']}), deck_limit: None }}, effect: Effect::{effect}, triggers: {token_triggers}, activated: {rust_activations(token_abilities)}, enters: Counters {{ plus_one: 0, minus_one: 0, stun: 0, loyalty: 0, lore: 0 }}, entry: EntryTapped::Never, kind: {kind}, basic: false, mana_color: None, colored: [0; 6], generic: 0 }},")
         token_infos.append(f"    TokenInfo {{ factory_identity: {json.dumps(name)}, name: {json.dumps(factory['name'])}, subtypes: {json.dumps(factory['subtypes'])}, colors: {factory['colors']} }},")
         color_masks.append(factory['colors'])
         marker = '__TOKEN_' + key + '__'
@@ -4127,7 +4285,7 @@ def compile_catalogue(snapshot, target):
         index=len(names);name='@emblem/'+key;names.append(name);color_masks.append(0)
         body=EMBLEM_DEFS[key]
         triggers='&[TriggeredAbility { condition: TriggerCondition::LifeGained { first_only: false, own_turn: false }, targets: TargetPlan::Single(TargetSpec::one(TargetRule::Player { opponent_only: true })), program: &[Instruction::LoseGainedLife(PlayerSet::Targeted)] }]'
-        definitions.append(f'Definition {{ info: CardInfo {{ name: {json.dumps(name)}, oracle_id: None, mana_cost: "", type_line: "", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: Keywords(0), deck_limit: None }}, effect: Effect::Emblem, triggers: {triggers}, activated: &[], enters: Counters {{ plus_one: 0, minus_one: 0, stun: 0, loyalty: 0 }}, entry: EntryTapped::Never, kind: 0, basic: false, mana_color: None, colored: [0; 6], generic: 0 }},')
+        definitions.append(f'Definition {{ info: CardInfo {{ name: {json.dumps(name)}, oracle_id: None, mana_cost: "", type_line: "", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: Keywords(0), deck_limit: None }}, effect: Effect::Emblem, triggers: {triggers}, activated: &[], enters: Counters {{ plus_one: 0, minus_one: 0, stun: 0, loyalty: 0, lore: 0 }}, entry: EntryTapped::Never, kind: 0, basic: false, mana_color: None, colored: [0; 6], generic: 0 }},')
         emblem_infos.append(f'EmblemInfo {{ oracle_text: {json.dumps(body)} }},')
         definitions=[row.replace('__EMBLEM_'+key+'__',f'Card({index})') for row in definitions]
     if len(names) > 65536:

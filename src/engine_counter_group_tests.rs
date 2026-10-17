@@ -235,12 +235,14 @@ fn zimone_doubles_every_existing_counter_kind_on_creatures_or_artifacts_once_per
     let enemy = named(&mut g, Player::P1, "Mox Jasper", Zone::Battlefield);
     let land = named(&mut g, Player::P0, "Forest", Zone::Battlefield);
     g.state.objects[creature as usize].counters = Counters {
+        lore: 0,
         loyalty: 0,
         plus_one: 2,
         minus_one: 1,
         stun: 2,
     };
     g.state.objects[artifact as usize].counters = Counters {
+        lore: 0,
         loyalty: 0,
         plus_one: 3,
         minus_one: 0,
@@ -275,6 +277,7 @@ fn zimone_doubles_every_existing_counter_kind_on_creatures_or_artifacts_once_per
     assert_eq!(
         g.object_view(creature).counters,
         Counters {
+            lore: 0,
             loyalty: 0,
             plus_one: 2,
             minus_one: 0,
@@ -284,6 +287,7 @@ fn zimone_doubles_every_existing_counter_kind_on_creatures_or_artifacts_once_per
     assert_eq!(
         g.object_view(artifact).counters,
         Counters {
+            lore: 0,
             loyalty: 0,
             plus_one: 6,
             minus_one: 0,

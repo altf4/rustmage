@@ -426,7 +426,7 @@ fn score(o: &Observation, action: &Action, focal: Card, progress: &[Pilot; 2]) -
             }
         }
         Action::AnnounceExile { card } if object(*card).card == focal => {
-            if !state.normal || state.attacked {
+            if !state.normal || complete(state) {
                 2400
             } else {
                 -1000
@@ -451,7 +451,7 @@ fn score(o: &Observation, action: &Action, focal: Card, progress: &[Pilot; 2]) -
                     -1000
                 }
             } else if c == Card::from_name("Bygone Colossus").unwrap() {
-                if state.normal || all_done {
+                if state.main_verified || all_done {
                     1000
                 } else {
                     -1000
@@ -460,13 +460,13 @@ fn score(o: &Observation, action: &Action, focal: Card, progress: &[Pilot; 2]) -
                 -1000
             }
         }
-        Action::Cast { .. } | Action::BeginCast { .. } => -1000,
+        Action::Cast { .. } | Action::BeginCast { .. } | Action::AnnounceWarp { .. } => -1000,
         Action::AnnounceActivate { card, .. } => {
             if state.main_verified
                 && state.second
                 && !state.extra
                 && o.stack.is_empty()
-                && (object(*card).card == focal
+                && (Some(*card) == state.inset
                     || (focal == Card::from_name(NAMES[3]).unwrap()
                         && object(*card).card.has_subtype("Food")))
             {
@@ -491,7 +491,26 @@ fn score(o: &Observation, action: &Action, focal: Card, progress: &[Pilot; 2]) -
             }
         }
         Action::Bottom { card } | Action::Discard { card } => {
-            if object(*card).card == focal {
+            let candidate = object(*card).card;
+            let reserved_observer_spell = focal == Card::from_name(NAMES[16]).unwrap()
+                && candidate == Card::from_name("Bygone Colossus").unwrap()
+                && !state.high_paid
+                && o.objects
+                    .iter()
+                    .filter(|v| {
+                        v.owner == actor
+                            && v.zone == Zone::Hand
+                            && v.card == candidate
+                            && !o.effect_discards.contains(&v.id)
+                            && o.effect_choice.as_ref().is_none_or(|choice| {
+                                !choice.selected[actor.index()].contains(&v.reference)
+                            })
+                    })
+                    .count()
+                    <= 1;
+            if reserved_observer_spell {
+                -1000
+            } else if candidate == focal {
                 -50
             } else {
                 200
@@ -514,7 +533,7 @@ fn score(o: &Observation, action: &Action, focal: Card, progress: &[Pilot; 2]) -
             }
         }
         Action::Block { .. } => {
-            if progress.iter().all(|p| p.attacked) {
+            if all_done && progress.iter().all(|p| p.attacked) {
                 100
             } else {
                 -1000
@@ -535,7 +554,7 @@ fn score(o: &Observation, action: &Action, focal: Card, progress: &[Pilot; 2]) -
             ..
         } if object(*id).owner != actor
             && Some(*id) == progress[actor.other().index()].inset
-            && !progress[actor.other().index()].attacked =>
+            && !complete(&progress[actor.other().index()]) =>
         {
             -1000
         }
@@ -713,7 +732,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 .iter()
                                 .find(|v| Some(v.id) == state.inset)
                                 .unwrap();
-                            assert_eq!((a.power, a.toughness), (b.power + 2, b.toughness + 2));
+                            assert_eq!(
+                                (a.power, a.toughness),
+                                (b.power + 2, b.toughness + 2),
+                                "Hollow before={b:?} after={a:?} before_turn={} before_step={:?} after_turn={} after_step={:?}",
+                                flight.before.turn,
+                                flight.before.step,
+                                o.turn,
+                                o.step
+                            );
                             assert_eq!(
                                 token_count(&o, p, "Food") + 1,
                                 token_count(&flight.before, p, "Food")
@@ -752,12 +779,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 {
                     state.extra = true;
                 }
-                if i == 12 && state.main_verified {
-                    let source = o
+                if i == 12
+                    && state.main_verified
+                    && let Some(source) = o
                         .objects
                         .iter()
-                        .find(|v| Some(v.id) == state.inset)
-                        .unwrap();
+                        .find(|v| Some(v.id) == state.inset && v.zone == Zone::Battlefield)
+                {
                     if o.active == p {
                         assert!(source.keywords.contains(Keywords::FIRST_STRIKE));
                         state.own_strike = true;
@@ -803,6 +831,23 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let filtered: Vec<_> = candidates.iter().map(|(_, a)| a.clone()).collect();
             let pick = rustmage::policy::smoke_index(&game, &filtered);
             let (index, action) = candidates[pick].clone();
+            if std::env::args().any(|v| v == "--trace") && i == 16 {
+                let colossus = Card::from_name("Bygone Colossus").unwrap();
+                if matches!(action, Action::Discard { card } | Action::AnnounceCast { card }
+                    if o.objects.iter().any(|v| v.id == card && v.card == colossus))
+                {
+                    eprintln!(
+                        "TRACE action={action:?} score={best_score} actor={actor:?} turn={} pilot={:?} cards={:?}",
+                        o.turn,
+                        progress[actor.index()],
+                        o.objects
+                            .iter()
+                            .filter(|v| v.owner == actor && v.card == colossus)
+                            .map(|v| (v.id, v.zone))
+                            .collect::<Vec<_>>()
+                    );
+                }
+            }
             if matches!(action, Action::ArrangeLibrary { .. }) {
                 if let Some(f) = &mut progress[actor.index()].first_effect {
                     f.scry += 1;

@@ -1,0 +1,380 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-16",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "rules": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+  "cards": [
+    {
+      "name": "Dusk Rose Reliquary",
+      "mana_cost": "{W}",
+      "type_line": "Artifact",
+      "oracle_text": "As an additional cost to cast this spell, sacrifice an artifact or creature.\nWard {2}\nWhen this artifact enters, exile target artifact or creature an opponent controls until this artifact leaves the battlefield.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DuskRoseReliquary.java",
+          "java_sha256": "b1a92bfae0b3ca0179261d47d599030282470b9e957f28d1858619c819b53067"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+          "java_sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAttachToTarget.java",
+          "java_sha256": "e50af4bbb1c04c044c182d9d0acb58dcf41375d41a94e85a67fbcbfe39f2625b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+          "java_sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileUntilSourceLeavesEffect.java",
+          "java_sha256": "b996095b17f25f3acb6d649beaf87d3f4abca10338c9444419cca03029d940bf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        }
+      ]
+    },
+    {
+      "name": "Trapped in the Screen",
+      "mana_cost": "{2}{W}",
+      "type_line": "Enchantment",
+      "oracle_text": "Ward {2} (Whenever this enchantment becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)\nWhen this enchantment enters, exile target artifact, creature, or enchantment an opponent controls until this enchantment leaves the battlefield.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TrappedInTheScreen.java",
+          "java_sha256": "2b74f974d44d4595d47b07043b03723cc95705ca741a8c0b3efe00497da60afb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+          "java_sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAttachToTarget.java",
+          "java_sha256": "e50af4bbb1c04c044c182d9d0acb58dcf41375d41a94e85a67fbcbfe39f2625b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+          "java_sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileUntilSourceLeavesEffect.java",
+          "java_sha256": "b996095b17f25f3acb6d649beaf87d3f4abca10338c9444419cca03029d940bf"
+        }
+      ]
+    },
+    {
+      "name": "Dwarven Mattock",
+      "mana_cost": "{2}",
+      "type_line": "Artifact — Equipment",
+      "oracle_text": "When this Equipment enters, attach it to target Dwarf you control.\nEquipped creature gets +2/+2 and has ward {1}. (Whenever equipped creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {1}.)\nEquip {3} ({3}: Attach to target creature you control. Equip only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DwarvenMattock.java",
+          "java_sha256": "72af14e2eecc84ba3eb69e9900639ccab31961e8b783b5a773506e2bda6b0b36"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+          "java_sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAttachToTarget.java",
+          "java_sha256": "e50af4bbb1c04c044c182d9d0acb58dcf41375d41a94e85a67fbcbfe39f2625b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+          "java_sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        }
+      ]
+    },
+    {
+      "name": "Falcon's Wing Harness",
+      "mana_cost": "{1}{U}",
+      "type_line": "Artifact — Equipment",
+      "oracle_text": "When this Equipment enters, attach it to target creature you control.\nEquipped creature gets +1/+1 and has flying and ward {1}. (Whenever equipped creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {1}.)\nEquip {2}{U} ({2}{U}: Attach to target creature you control. Equip only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FalconsWingHarness.java",
+          "java_sha256": "404640665b29afc421f201ca783e909d90cd96c9c6af1da7136d6fa233198fc1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+          "java_sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAttachToTarget.java",
+          "java_sha256": "e50af4bbb1c04c044c182d9d0acb58dcf41375d41a94e85a67fbcbfe39f2625b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+          "java_sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        }
+      ]
+    },
+    {
+      "name": "Lavaspur Boots",
+      "mana_cost": "{1}",
+      "type_line": "Artifact — Equipment",
+      "oracle_text": "Equipped creature gets +1/+0 and has haste and ward {1}. (Whenever it becomes the target of a spell or ability an opponent controls, counter it unless that player pays {1}.)\nEquip {1}",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LavaspurBoots.java",
+          "java_sha256": "a238d90187f53a64a5da6ed5efa499cbbe83c8f89cc014667f3c28de5e4c5e25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+          "java_sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAttachToTarget.java",
+          "java_sha256": "e50af4bbb1c04c044c182d9d0acb58dcf41375d41a94e85a67fbcbfe39f2625b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+          "java_sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        }
+      ]
+    },
+    {
+      "name": "Hardlight Containment",
+      "mana_cost": "{W}",
+      "type_line": "Enchantment — Aura",
+      "oracle_text": "Enchant artifact you control\nWhen this Aura enters, exile target creature an opponent controls until this Aura leaves the battlefield.\nEnchanted permanent has ward {1}.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HardlightContainment.java",
+          "java_sha256": "f2c0968fb75f25f903f938fd64b9cc88ad7c5ea1290c6f63ed7667eee75366b1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+          "java_sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAttachToTarget.java",
+          "java_sha256": "e50af4bbb1c04c044c182d9d0acb58dcf41375d41a94e85a67fbcbfe39f2625b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+          "java_sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileUntilSourceLeavesEffect.java",
+          "java_sha256": "b996095b17f25f3acb6d649beaf87d3f4abca10338c9444419cca03029d940bf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        }
+      ]
+    },
+    {
+      "name": "Sheltered by Ghosts",
+      "mana_cost": "{1}{W}",
+      "type_line": "Enchantment — Aura",
+      "oracle_text": "Enchant creature you control\nWhen this Aura enters, exile target nonland permanent an opponent controls until this Aura leaves the battlefield.\nEnchanted creature gets +1/+0 and has lifelink and ward {2}.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/ShelteredByGhosts.java",
+          "java_sha256": "1c88234959d8160e5117ed63edb8b459f0107885830ab69c95b0aaffda9bc7b0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+          "java_sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAttachToTarget.java",
+          "java_sha256": "e50af4bbb1c04c044c182d9d0acb58dcf41375d41a94e85a67fbcbfe39f2625b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+          "java_sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileUntilSourceLeavesEffect.java",
+          "java_sha256": "b996095b17f25f3acb6d649beaf87d3f4abca10338c9444419cca03029d940bf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        }
+      ]
+    },
+    {
+      "name": "Super Strength",
+      "mana_cost": "{4}{G}",
+      "type_line": "Enchantment — Aura",
+      "oracle_text": "Enchant creature\nEnchanted creature gets +4/+4 and has trample and ward {1}. (Whenever enchanted creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {1}.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SuperStrength.java",
+          "java_sha256": "2a56e9591f34b2b31f6c683af79a0d90b42a1fc8715fc7e72866e4940376b245"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+          "java_sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAttachToTarget.java",
+          "java_sha256": "e50af4bbb1c04c044c182d9d0acb58dcf41375d41a94e85a67fbcbfe39f2625b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+          "java_sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        }
+      ]
+    },
+    {
+      "name": "Detention Chariot",
+      "mana_cost": "{4}{W}{W}",
+      "type_line": "Artifact — Vehicle",
+      "oracle_text": "When this Vehicle enters, exile target artifact or creature an opponent controls until this Vehicle leaves the battlefield.\nCrew 3 (Tap any number of creatures you control with total power 3 or more: This Vehicle becomes an artifact creature until end of turn.)\nCycling {W} ({W}, Discard this card: Draw a card.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DetentionChariot.java",
+          "java_sha256": "5972ed9bb5245ea1e4c75c7169f0b3e68435fabd8ed8916b4321563d8b22f49a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+          "java_sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAttachToTarget.java",
+          "java_sha256": "e50af4bbb1c04c044c182d9d0acb58dcf41375d41a94e85a67fbcbfe39f2625b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileUntilSourceLeavesEffect.java",
+          "java_sha256": "b996095b17f25f3acb6d649beaf87d3f4abca10338c9444419cca03029d940bf"
+        }
+      ]
+    },
+    {
+      "name": "Static Snare",
+      "mana_cost": "{4}{W}",
+      "type_line": "Enchantment",
+      "oracle_text": "Flash\nThis spell costs {1} less to cast for each attacking creature.\nWhen this enchantment enters, exile target artifact or creature an opponent controls until this enchantment leaves the battlefield.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StaticSnare.java",
+          "java_sha256": "9876e2b34877b2cca68e7d67ca1cdf3f2ee35f92f6282d1b17e09a0fa0195951"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+          "java_sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAttachToTarget.java",
+          "java_sha256": "e50af4bbb1c04c044c182d9d0acb58dcf41375d41a94e85a67fbcbfe39f2625b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileUntilSourceLeavesEffect.java",
+          "java_sha256": "b996095b17f25f3acb6d649beaf87d3f4abca10338c9444419cca03029d940bf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionForEachSourceEffect.java",
+          "java_sha256": "47265899e05cec6a04b65519e61353b4684a7c0c1bdf6abf04af79ae4c7708eb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+          "java_sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+        }
+      ]
+    }
+  ]
+}
