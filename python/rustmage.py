@@ -12,6 +12,9 @@ from pathlib import Path
 import sys
 import threading
 
+# Bump this repository contract once, in data/observation-schema.txt.
+OBSERVATION_SCHEMA = int((Path(__file__).resolve().parents[1] / "data/observation-schema.txt").read_text())
+
 
 class EngineError(RuntimeError):
     pass

@@ -3,7 +3,7 @@ import json
 import re
 import unittest
 from pathlib import Path
-from rustmage import Game
+from rustmage import OBSERVATION_SCHEMA, Game
 import test_role_consumers as prior
 
 NAMES=['Return Triumphant','Twisted Sewer-Witch','Syr Armont, the Redeemer','Asinine Antics','A Tale for the Ages','Mystical Tether']
@@ -33,7 +33,7 @@ class RoleSemanticTests(unittest.TestCase):
         with Game([deck,deck],seed=seed,starting_player=p,deck_rules='Standard',library=library) as g:
             stage='setup';source=None;recipient=None;foe_id=None;frames=0;paid=False;seen=False;attacked=False;pre_enchanted=False;spell_started=False;death_seen=False;returned_ref=None;young_seen=False;wicked=None;wicked_life=None
             for iteration in range(35000):
-                head=g.observe('P0');self.assertEqual((head['schema'],head['catalogue']),(103,FP))
+                head=g.observe('P0');self.assertEqual((head['schema'],head['catalogue']),(OBSERVATION_SCHEMA,FP))
                 if head['outcome'] is not None:
                     self.assertEqual(stage,'finish',(name,p,stage,iteration));self.assertTrue(paid);self.assertTrue(seen);self.assertTrue(attacked,(name,p,head['turn'],head['outcome'],recipient))
                     if i==0:self.assertTrue(young_seen)

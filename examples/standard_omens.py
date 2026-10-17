@@ -7,7 +7,7 @@ import json,unittest
 from pathlib import Path
 import sys,argparse
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'python'))
-from rustmage import Game,EngineError
+from rustmage import OBSERVATION_SCHEMA, Game,EngineError
 import test_adventure
 NAMES=['Dirgur Island Dragon // Skimming Strike','Disruptive Stormbrood // Petty Revenge','Marang River Regent // Coil and Catch','Purging Stormbrood // Absorb Essence','Riling Dawnbreaker // Signaling Roar','Runescale Stormbrood // Chilling Screech','Sagu Wildling // Roost Seek','Stormshriek Feral // Flush Out','Twinmaw Stormbrood // Charring Bite','Feral Deathgorger // Dusk Sight','Arashin Sunshield','Griffnaut Tracker']
 BASICS=['Plains','Island','Swamp','Mountain','Forest']
@@ -28,7 +28,7 @@ class OmenStandard(unittest.TestCase):
      self.assertEqual(stage,'finish',(name,p,inset,seed,'prematureterminal',stage))
      if not inset:self.assertTrue(attacked,(name,p,seed,'no actual source attack'))
      return dict(decisions=iteration,private=private,outcome=o['outcome'])
-    o=g.observe(o['actor']);self.assertEqual(o['schema'],103);actor=o['actor'];objects={v['id']:v for v in o['objects']};mine=g.observe(p)
+    o=g.observe(o['actor']);self.assertEqual(o['schema'],OBSERVATION_SCHEMA);actor=o['actor'];objects={v['id']:v for v in o['objects']};mine=g.observe(p)
     def field(owner,n):return next((v for v in objects.values()if v['owner']==owner and v['zone']=='Battlefield'and v['card']==n),None)
     ally=field(p,'Bear Cub');enemy=field(q,'Bear Cub');artifact=field(q,'Chrome Companion');body=objects.get(source)
     graves={v:[x for x in objects.values()if x['owner']==v and x['zone']=='Graveyard']for v in [p,q]}

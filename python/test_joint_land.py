@@ -1,7 +1,7 @@
 """Paid complete Worldsoul and Bonny bodies through naturally drawn Standard games."""
 import json, os, re, unittest
 from pathlib import Path
-from rustmage import Game, EngineError
+from rustmage import OBSERVATION_SCHEMA, Game, EngineError
 from test_role_consumers import RoleConsumerTests
 ROOT=Path(__file__).resolve().parents[1]
 FACTS={c['name']:c for c in json.loads((ROOT/'data/standard/cards.json').read_text())['cards']}
@@ -32,7 +32,7 @@ class JointLandTests(unittest.TestCase):
   self.assertEqual((len(deck),len(enemy)),(60,60));stage='setup';source=None;paid=False;selected=[];choice_seen=False;attacked=False;frames=0;base=None
   with Game([deck,enemy]if p=='P0'else[enemy,deck],seed=seed,starting_player=p,deck_rules='Standard',library=library or os.environ.get('RUSTMAGE_TEST_LIBRARY'))as g:
    for _ in range(35000):
-    head=g.observe('P0');self.assertEqual((head['schema'],head['catalogue']),(103,FP))
+    head=g.observe('P0');self.assertEqual((head['schema'],head['catalogue']),(OBSERVATION_SCHEMA,FP))
     if head['outcome']is not None:
      self.assertEqual(stage,'finish',(name,p,seed,stage));self.assertTrue(paid);self.assertTrue(attacked)
      return dict(name=name,x=x,selection=selection,seat=p,seed=seed,frames=frames,selected=selected)

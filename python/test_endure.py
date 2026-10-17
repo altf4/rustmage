@@ -2,7 +2,7 @@
 import json
 from pathlib import Path
 import unittest
-from rustmage import EngineError, Game
+from rustmage import OBSERVATION_SCHEMA, EngineError, Game
 
 NAMES = ['Anafenza, Unyielding Lineage', 'Descendant of Storms', 'Dusyut Earthcarver', 'Fortress Kin-Guard', 'Inspirited Vanguard', 'Kin-Tree Nurturer', 'Sandskitter Outrider', 'Sinkhole Surveyor']
 AMOUNTS = [2, 1, 3, 1, 2, 1, 2, 1]
@@ -162,5 +162,5 @@ class EndureTests(unittest.TestCase):
                 if action['kind'] == 'DeclineResolutionMana':
                     declined = True
                 after = self.replay(game, o, index)
-                self.assertEqual(after['schema'], 103)
+                self.assertEqual(after['schema'], OBSERVATION_SCHEMA)
             self.fail(str((name, player, paid, source, attacked, killed, bounced, choices)))

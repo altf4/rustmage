@@ -1,12 +1,12 @@
 """Real paid complete Werefox games: late reflexive targets and owned replay."""
 import json,re,unittest
 from pathlib import Path
-from rustmage import Game
+from rustmage import OBSERVATION_SCHEMA, Game
 import test_role_consumers as prior
 ROOT=Path(__file__).resolve().parents[1]
 FP=json.loads((ROOT/'data/standard/coverage.json').read_text())['catalogue_version']
 FACTS={v['name']:v for v in json.loads((ROOT/'data/standard/cards.json').read_text())['cards']}
-SCHEMA=99
+SCHEMA=OBSERVATION_SCHEMA
 NAME='Curse of the Werefox'
 SAGA='Korvold and the Noble Thief'
 BASICS=['Plains','Island','Swamp','Mountain','Forest']
