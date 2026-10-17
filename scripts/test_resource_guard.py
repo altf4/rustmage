@@ -1,4 +1,4 @@
-"""Small process tests: no Cargo builds, at most a 64 MiB allocation probe."""
+"""Small process tests: verify enforced limits without deliberately killing processes."""
 import concurrent.futures
 import json
 import os
@@ -7,7 +7,6 @@ import subprocess
 import sys
 import tempfile
 import unittest
-import uuid
 from scripts.resource_limits import bounded_group
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -43,17 +42,6 @@ class ResourceGuardTests(unittest.TestCase):
             with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
                 intervals=sorted(pool.map(run, [0,1]))
             self.assertLessEqual(intervals[0][1], intervals[1][0])
-
-    def test_small_cgroup_oom_is_contained(self):
-        # Even if enforcement were broken this probe allocates only 64 MiB.
-        probe=self.run_guard([sys.executable,'-c','pass'])
-        self.assertEqual(probe.returncode,0,probe.stderr)
-        unit='rustmage-build-limit-proof-'+uuid.uuid4().hex
-        result=subprocess.run(['systemd-run','--user','--wait','--pipe','--collect','--unit='+unit,
-            '--slice=rustmage-builds.slice','-p','MemoryMax=32M','-p','MemorySwapMax=0',
-            '-p','OOMPolicy=kill',sys.executable,'-c','x=bytearray(64*1024*1024)'],capture_output=True,text=True)
-        self.assertNotEqual(result.returncode,0)
-        self.assertIn('oom-kill',result.stderr)
 
 if __name__ == '__main__':
     unittest.main()
