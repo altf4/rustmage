@@ -35,7 +35,7 @@ The source review covers recipient/source/controller provenance, live and captur
 
 Five additional native adverse groups cover duplicate grants after source/recipient departure, late Ninja discard-counter overflow retaining the already committed draw, late Summoner entry-generation failure retaining its private frame, exact third-draw packets and both actual-departure lifelink controls. Four independently driven paid public games add 2,227 parent-closed replays, six private observations, sixteen atomic rejections and four paid opposing Unsummon responses; Summoner chooses a different legal planeswalker defender after its original attacker leaves.
 
-Its independently compiled final Standard100 and exact-head approval are recorded after completion, before merge. The detailed earlier report is `/tmp/issue236-library-review-core-9d.md`.
+Its independently compiled final Standard100 passes with the exact complete vector above (`/tmp/issue236-library-standard100-ae7.log`). It independently verified the remote PR and approved `da09620f307860be55fef446c3cce15ba2a81716` with no unresolved finding. The detailed final report is `/tmp/issue236-library-review-core-9d.md`.
 
 ## Scope
 
