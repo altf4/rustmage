@@ -22,7 +22,7 @@ class HandLandTests(unittest.TestCase):
   with Game([deck,enemy]if p=='P0'else[enemy,deck],seed=seed,starting_player=p,deck_rules='Standard',library=library or os.environ.get('RUSTMAGE_TEST_LIBRARY'))as g:
    stage='setup';source=None;victim=None;base=None;paid=False;activation_paid=False;frames=0;choice_seen=False;selected=None;selected_checked=False;declined=[];seen=set();map_context=None;mapping=None;attacked=False
    for step in range(35000):
-    head=g.observe('P0');self.assertEqual((head['schema'],head['catalogue']),(100,FP))
+    head=g.observe('P0');self.assertEqual((head['schema'],head['catalogue']),(103,FP))
     if head['outcome']is not None:
      self.assertEqual(stage,'finish',(name,mode,decline,p,seed,stage,step));self.assertTrue(paid);self.assertTrue(attacked)
      return dict(name=name,mode=mode,decline=decline,seat=p,seed=seed,frames=frames,explore=sorted(seen))

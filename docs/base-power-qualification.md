@@ -29,3 +29,31 @@ consistency PASS; five inherited live-static compiler/provenance methods PASS.
 All913 tracked inputs stayed fixed. The unique target was cleaned after terminal
 completion, preserving all shared-library paths/hashes. No complete-body admission
 or optimized public acceptance is claimed by this query-only checkpoint.
+
+## Complete-body runtime prototype on actual modal main
+
+The shared rules now also supply a current-controller battlefield casting
+restriction, captured damage-time power-above-base qualification, and a simultaneous
+resolution-time counter batch. Voice of Victory is the third generic complete-body
+consumer: its already-supported Mobilize2 composes the same casting restriction.
+The expanded source inventory verifies35 records/25 unique pinned Java files.
+Current draft coverage is1,975/5,164, observation schema103. This is candidate
+coverage awaiting runtime/public gates, not merged-main coverage.
+
+Object views and frozen damage facts expose a boolean qualification. A single
+layered-stat pass produces both base and effective values; no persistent Object
+field, cache or default game-state allocation is added. The casting rule is read
+once per legal-action visit and applies to every cast origin/face while permitting
+activated and mana abilities. Counter recipients and signed differences are all
+captured before the existing owned replacement-aware counter transaction.
+
+All23 affected compiler/provenance methods PASS7.466s, including strict actual-dff
+three-body preservation, unrelated-mutation rejection, names/costs/layouts/raw
+controls and authenticated Mobilize counts/characteristics. Native paid groups
+are written but have not yet executed at this checkpoint. Earlier initial runs
+exposed an overly broad new raw guard (rejecting existing legitimate hexproof and
+Tiered reminders); it was restricted to the new casting-rule route, preserving
+existing strict base-stat authentication. Two10-method runs each had one inherited
+live-stat exact-union context failure; that historical proof now pins its actual
+delivered main plus current owned bindings, as in the adjacent land-selection
+branch. These failed attempts are not passing gate claims.

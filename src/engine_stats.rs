@@ -144,6 +144,10 @@ impl Game {
                 .entry_trigger_suppression()
                 != 0
             || self.state.objects[id as usize].card.opponent_entry_tapped() != 0
+            || self.state.objects[id as usize]
+                .card
+                .static_cast_restriction()
+                != 0
             || !self.state.objects[id as usize]
                 .card
                 .cast_timing_grants()
@@ -226,8 +230,16 @@ impl Game {
     }
 
     pub(super) fn stats_without_hand(&self, id: CardId, departing: Option<CardId>) -> Stats {
+        self.layered_stats_without_hand(id, departing).1
+    }
+    pub(super) fn layered_stats_without_hand(
+        &self,
+        id: CardId,
+        departing: Option<CardId>,
+    ) -> (Stats, Stats) {
         let object = &self.state.objects[id as usize];
-        let mut stats = self.base_stats_without_hand(id, departing);
+        let base = self.base_stats_without_hand(id, departing);
+        let mut stats = base;
         let battlefield_creature = object.zone == Zone::Battlefield && self.is_creature(id);
         if matches!(object.card.effect(), Effect::Creature(..))
             || object.card.vehicle_stats().is_some()
@@ -260,7 +272,7 @@ impl Game {
                 .capacity(toughness_resource);
         }
         if !battlefield_creature {
-            return stats;
+            return (base, stats);
         }
         stats += self.live_static_bonus(id);
         stats += self.attachment_bonus(id).0;
@@ -326,6 +338,6 @@ impl Game {
                 }
             }
         }
-        stats
+        (base, stats)
     }
 }

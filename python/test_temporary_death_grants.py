@@ -19,7 +19,7 @@ class TemporaryDeathGrantTests(unittest.TestCase):
   with Game([deck,deck],seed=seed,starting_player=p,deck_rules='Standard',library=library) as g:
    stage='setup';recipient=None;old=None;source=None;frames=0;paid=False;death=False;attacked=False;returned=False
    for iteration in range(30000):
-    head=g.observe('P0');self.assertEqual((head['schema'],head['catalogue']),(100,FP))
+    head=g.observe('P0');self.assertEqual((head['schema'],head['catalogue']),(103,FP))
     if head['outcome'] is not None:
      self.assertEqual(stage,'finish',(name,p,seed,stage,iteration));self.assertTrue(paid and death and returned and attacked,(name,p,paid,death,returned,attacked))
      return dict(frames=frames,card=name,seat=p,outcome=head['outcome'])

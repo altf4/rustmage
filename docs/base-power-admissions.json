@@ -1,10 +1,11 @@
 {
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "parent": "356d79880dbae6bdcbda600dadb1bef6da16c18c",
-  "status": "Source inventory and shared base-stat query refactor only; zero new admissions.",
+  "status": "Three generic complete-body prototype candidates on actual dff main; native/paid/public gates and final reviews required before merge.",
   "proposed_complete": [
     "Kutzil, Malamet Exemplar",
-    "Sovereign Okinec Ahau"
+    "Sovereign Okinec Ahau",
+    "Voice of Victory"
   ],
   "cards": [
     {
@@ -276,10 +277,100 @@
           "released_at": "2023-11-17"
         }
       }
+    },
+    {
+      "name": "Voice of Victory",
+      "facts": {
+        "oracle_id": "b12cbda1-ac09-49eb-96b3-a4df27bc37ea",
+        "name": "Voice of Victory",
+        "layout": "normal",
+        "mana_cost": "{1}{W}",
+        "cmc": 2.0,
+        "type_line": "Creature \u2014 Human Bard",
+        "oracle_text": "Mobilize 2 (Whenever this creature attacks, create two tapped and attacking 1/1 red Warrior creature tokens. Sacrifice them at the beginning of the next end step.)\nYour opponents can't cast spells during your turn.",
+        "power": "1",
+        "toughness": "3",
+        "colors": [
+          "W"
+        ],
+        "color_identity": [
+          "W"
+        ],
+        "keywords": [
+          "Mobilize"
+        ],
+        "all_parts": [
+          {
+            "id": "7edc0515-a130-45a7-aa09-0e23bba41587",
+            "component": "token",
+            "name": "Warrior",
+            "type_line": "Token Creature \u2014 Warrior"
+          },
+          {
+            "id": "73f24785-c7b3-46ab-833e-666af3d86c63",
+            "component": "combo_piece",
+            "name": "Voice of Victory",
+            "type_line": "Creature \u2014 Human Bard"
+          }
+        ],
+        "reference_printing": {
+          "id": "ec3de5f4-bb55-4ab9-995f-f3e0dc22c1bb",
+          "set": "tdm",
+          "collector_number": "33",
+          "released_at": "2025-04-11"
+        }
+      },
+      "java_source": "Mage.Sets/src/mage/cards/v/VoiceOfVictory.java",
+      "java_sha256": "0386b8825e5439b5f2e32e238ba9c8c7d54e3d55d3fe43980855c785e8fc9a21",
+      "explicit_imports": [
+        "mage.MageInt",
+        "mage.abilities.common.SimpleStaticAbility",
+        "mage.abilities.effects.common.ruleModifying.CantCastDuringYourTurnEffect",
+        "mage.abilities.keyword.MobilizeAbility",
+        "mage.constants.SubType",
+        "mage.cards.CardImpl",
+        "mage.cards.CardSetInfo",
+        "mage.constants.CardType"
+      ],
+      "wildcard_imports": [],
+      "direct_import_sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/CantCastDuringYourTurnEffect.java",
+          "java_sha256": "eaae2c161a24b18f272dc7b26a726f1c171f68bdf2d4ee7c3a6902ea2247a276"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MobilizeAbility.java",
+          "java_sha256": "84ea782ab71b1b147b349c5f5ac8b2c03ae60211c95393a2e4e994da8ee5eac8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        }
+      ]
     }
   ],
-  "source_records": 26,
-  "unique_source_count": 23,
+  "source_records": 35,
+  "unique_source_count": 25,
   "unique_sources": [
     {
       "java_source": "Mage.Sets/src/mage/cards/k/KutzilMalametExemplar.java",
@@ -288,6 +379,10 @@
     {
       "java_source": "Mage.Sets/src/mage/cards/s/SovereignOkinecAhau.java",
       "java_sha256": "68943fb16c48b07b414d7d2a41b5a4e660934e29805bca49af064865a8112ed6"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/v/VoiceOfVictory.java",
+      "java_sha256": "0386b8825e5439b5f2e32e238ba9c8c7d54e3d55d3fe43980855c785e8fc9a21"
     },
     {
       "java_source": "Mage/src/main/java/mage/MageInt.java",
@@ -324,6 +419,10 @@
     {
       "java_source": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/CantCastDuringYourTurnEffect.java",
       "java_sha256": "eaae2c161a24b18f272dc7b26a726f1c171f68bdf2d4ee7c3a6902ea2247a276"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/MobilizeAbility.java",
+      "java_sha256": "84ea782ab71b1b147b349c5f5ac8b2c03ae60211c95393a2e4e994da8ee5eac8"
     },
     {
       "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",

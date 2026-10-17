@@ -411,6 +411,9 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    PutPowerExcessCounters {
+        filter: CreatureFilter,
+    },
     Suspect {
         subject: Subject,
     },
@@ -1284,6 +1287,7 @@ pub(crate) enum TriggerStep {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum DamageQualification {
     Any,
+    PowerAboveBase,
     Modified,
     Counter,
     PlusOne,
@@ -1782,6 +1786,10 @@ impl Card {
     }
     pub fn is_emblem(self) -> bool {
         self.emblem_info().is_some()
+    }
+    /// Closed battlefield casting restrictions; unsupported bodies emit no rule.
+    pub(crate) fn static_cast_restriction(self) -> u8 {
+        generated::static_cast_restriction(self)
     }
     /// Executable prohibition for this card's own spell while on the stack.
     /// Unsupported bodies do not emit this metadata.

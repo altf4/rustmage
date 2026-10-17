@@ -819,3 +819,6 @@ fn effective_base_power_query_excludes_real_growth_counters_and_keeps_current_se
         assert_eq!(g.base_stats_without_hand(body, None).power, -3);
     }
 }
+
+#[path = "engine_base_power_tests.rs"]
+mod power_consumers;
