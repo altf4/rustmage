@@ -83,6 +83,8 @@ Full Standard rules remain in progress.
 
 ## Build and use
 
+Development/test builds omit debug symbols and incremental caches by default. See [build artifact cleanup](docs/build-artifacts.md) for debugging overrides and worktree cleanup.
+
 Requires stable Rust with edition 2024 support and `panic = "unwind"` (the default). Dependencies are only `serde` and
 `serde_json`; the latter belongs to the optional control interface.
 
