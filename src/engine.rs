@@ -8,14 +8,17 @@ use crate::cards::{
     SpellMode, StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetPlan,
     TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
+#[path = "engine_adventure.rs"]
+mod adventure;
 #[path = "engine_crew.rs"]
 mod crew;
 #[path = "engine_saddle.rs"]
 mod saddle;
+pub use adventure::AdventurePermission;
 pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 76;
+pub const OBSERVATION_SCHEMA: u32 = 77;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
 #[path = "engine_mobilize.rs"]
@@ -355,6 +358,7 @@ define_actions! {
         card: CardId,
     },
     AnnounceWarp { card: CardId },
+    AnnounceAdventure { card: CardId },
     AnnouncePlot { card: CardId },
     PayPlot { payment: Mana },
     AnnouncePlotted { card: CardId },
@@ -609,7 +613,16 @@ pub enum CastMethod {
     Warp,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum CastFace {
+    Normal,
+    Adventure,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CastInfo {
+    /// Chosen characteristics, independent of payment/permission method.
+    pub face: CastFace,
+    /// Canonical physical identity, distinct from the chosen inset definition.
+    pub physical_card: Option<Card>,
     /// Actual mana spent on this cast, including additional mana costs.
     pub payment: Mana,
     pub origin: Zone,
@@ -1039,6 +1052,7 @@ struct State {
     attachment_sources: Vec<CardId>,
     exile_links: Vec<ExileLink>,
     exile_permissions: Vec<ExilePlayPermission>,
+    adventures: Option<Box<adventure::AdventureState>>,
     plot: Option<Box<plot::PlotState>>,
     warp: Option<Box<warp::WarpState>>,
     known_hand: Vec<ObjectRef>,
@@ -1324,6 +1338,7 @@ pub struct Observation {
     pub objects: Vec<ObjectView>,
     pub exile_links: Vec<ExileLink>,
     pub exile_permissions: Vec<ExilePlayPermission>,
+    pub adventures: Vec<AdventurePermission>,
     pub plotted_cards: Vec<PlottedCard>,
     pub crew_choice: Option<CrewChoiceView>,
     pub crewed_vehicles: Vec<CrewHistory>,
@@ -1402,9 +1417,11 @@ impl Game {
                 }
             }
             for &card in deck {
-                if card.is_token() || card.is_emblem() {
+                if card.is_token() || card.is_emblem() || card.adventure_parent().is_some() {
                     return Err(Error::InvalidDeck(
-                        if card.is_emblem() {
+                        if card.adventure_parent().is_some() {
+                            "inset spell definitions cannot be submitted in decks"
+                        } else if card.is_emblem() {
                             "emblems cannot be submitted in decks"
                         } else {
                             "tokens cannot be submitted in decks"
@@ -1493,6 +1510,7 @@ impl Game {
                 attachment_sources: Vec::new(),
                 exile_links: Vec::new(),
                 exile_permissions: Vec::new(),
+                adventures: None,
                 plot: None,
                 warp: None,
                 known_hand: Vec::new(),
@@ -2061,6 +2079,12 @@ impl Game {
                             .warp_cost()
                             .is_some_and(|cost| self.warp_cast_fundable(actor, card, cost))
                         && emit(Action::AnnounceWarp { card })
+                    {
+                        return true;
+                    }
+                    if obj.card.adventure_spell().is_some()
+                        && self.adventure_cast_available(actor, card, sorcery)
+                        && emit(Action::AnnounceAdventure { card })
                     {
                         return true;
                     }
@@ -2744,6 +2768,22 @@ impl Game {
                 let item = self.cast_item(actor, card, [0; 6]);
                 self.open_payment_announcement(item, Counters::default(), None);
             }
+            Action::AnnounceAdventure { card } => {
+                let definition = self.state.objects[card as usize]
+                    .card
+                    .adventure_spell()
+                    .unwrap();
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                item.cast.as_mut().unwrap().face = CastFace::Adventure;
+                item.cast.as_mut().unwrap().physical_card =
+                    Some(self.state.objects[card as usize].card);
+                item.source_card = definition;
+                item.source_keywords = definition.info().keywords;
+                item.source_facts.card = definition;
+                item.source_facts.kinds = definition.kind_mask();
+                item.source_facts.power = 0;
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
             Action::AnnounceWarp { card } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 item.cast.as_mut().unwrap().method = CastMethod::Warp;
@@ -3168,14 +3208,27 @@ impl Game {
 
     fn object_view(&self, id: CardId) -> ObjectView {
         let obj = &self.state.objects[id as usize];
-        let stats = self.stats(id);
+        let definition = if obj.zone == Zone::Stack {
+            self.effective_spell_card(id)
+        } else {
+            obj.card
+        };
+        let inset = definition.adventure_parent().is_some();
+        let stats = if inset {
+            Stats {
+                power: 0,
+                toughness: 0,
+            }
+        } else {
+            self.stats(id)
+        };
         ObjectView {
             kinds: self.current_kinds(id),
             granted_subtypes: self.granted_subtypes(id),
             saddled: self.is_saddled(self.object_ref(id)),
             id,
             reference: self.object_ref(id),
-            card: obj.card,
+            card: definition,
             owner: obj.owner,
             zone: obj.zone,
             tapped: obj.tapped,
@@ -3191,7 +3244,11 @@ impl Game {
             attacking: self.state.attackers.iter().any(|a| a.card == id),
             power: stats.power,
             toughness: stats.toughness,
-            keywords: self.keywords(id),
+            keywords: if inset {
+                definition.info().keywords
+            } else {
+                self.keywords(id)
+            },
             token: obj.card.token_info(),
             emblem: obj.card.emblem_info(),
         }
@@ -3411,6 +3468,7 @@ impl Game {
             self.forget_vehicle_animation(before.reference);
             self.state.saddled.retain(|r| *r != before.reference);
         }
+        self.forget_adventure(before.reference);
         let generation = before
             .reference
             .generation
@@ -4153,6 +4211,11 @@ impl Game {
             objects,
             exile_links: s.exile_links.clone(),
             exile_permissions: s.exile_permissions.clone(),
+            adventures: s
+                .adventures
+                .as_ref()
+                .map(|a| a.permissions.clone())
+                .unwrap_or_default(),
             plotted_cards: s.plot.as_ref().map_or_else(Vec::new, |p| p.cards.clone()),
             crew_choice: self.crew_choice(viewer),
             crewed_vehicles: s.crew.as_ref().map_or_else(Vec::new, |c| c.history.clone()),
@@ -4418,6 +4481,7 @@ impl Game {
             + s.objects.len() * std::mem::size_of::<Object>()
             + s.exile_links.len() * std::mem::size_of::<ExileLink>()
             + s.exile_permissions.len() * std::mem::size_of::<ExilePlayPermission>()
+            + s.adventures.as_ref().map_or(0, |p| p.bytes())
             + s.plot.as_ref().map_or(0, |p| p.bytes())
             + s.crew.as_ref().map_or(0, |c| c.bytes())
             + s.warp.as_ref().map_or(0, |w| w.bytes())
@@ -5006,3 +5070,7 @@ mod cast_payment_layout_probe {
         println!("LAYOUT initial_logical_bytes={}", g.state_bytes());
     }
 }
+
+#[cfg(test)]
+#[path = "engine_adventure_tests.rs"]
+mod adventure_tests;

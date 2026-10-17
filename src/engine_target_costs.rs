@@ -60,9 +60,7 @@ impl Game {
         Some(qualifies)
     }
     fn apply_target_discount(&self, id: CardId, mut cost: ManaCost, qualifies: bool) -> ManaCost {
-        if qualifies
-            && let Some(rule) = self.state.objects[id as usize].card.target_cost_reduction()
-        {
+        if qualifies && let Some(rule) = self.effective_spell_card(id).target_cost_reduction() {
             cost.generic = cost.generic.saturating_sub(rule.discount.generic);
             for (n, discount) in cost.colored.iter_mut().zip(rule.discount.colored) {
                 // CR 118.7b-d: excess typed reduction reduces generic mana.
@@ -79,8 +77,8 @@ impl Game {
         base: ManaCost,
         targets: &[BoundTarget],
     ) -> ManaCost {
-        let qualifies = self.state.objects[id as usize]
-            .card
+        let qualifies = self
+            .effective_spell_card(id)
             .target_cost_reduction()
             .is_some_and(|r| {
                 targets.iter().any(|b| {

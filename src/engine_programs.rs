@@ -1050,7 +1050,11 @@ impl Game {
             let Some(instruction) = resolution.program.get(resolution.pc).copied() else {
                 let item = self.state.resolving.take().unwrap().item;
                 if item.kind == StackKind::Spell {
-                    self.move_object(item.card, Zone::Graveyard);
+                    if item.cast.is_some_and(|c| c.face == CastFace::Adventure) {
+                        self.finish_adventure(&item);
+                    } else {
+                        self.move_object(item.card, Zone::Graveyard);
+                    }
                 }
                 self.give_priority();
                 return;

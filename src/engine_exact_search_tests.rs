@@ -602,6 +602,8 @@ fn all_three_new_flashback_bodies_use_real_graveyard_costs_and_exile_on_completi
             assert_eq!(
                 item.cast,
                 Some(CastInfo {
+                    physical_card: None,
+                    face: CastFace::Normal,
                     payment: item.cast.unwrap().payment,
                     origin: Zone::Graveyard,
                     method: CastMethod::Flashback,

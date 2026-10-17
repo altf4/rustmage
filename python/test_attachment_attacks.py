@@ -153,7 +153,7 @@ class AttachmentAttackTests(unittest.TestCase):
                     if action['kind'] == 'PayCosts':
                         self.assertEqual(sum(action['payment']), sum(want[0]) + want[1])
                         if ann['kind'] == 'Spell':
-                            self.assertEqual(ann['cast'], {'payment': [0]*6, 'origin': 'Hand', 'method': 'Normal', 'offspring': None, 'kicker': None, 'bargain': None, 'evidence': None})
+                            self.assertEqual(ann['cast'], {'physical_card': None, 'face': 'Normal', 'payment': [0]*6, 'origin': 'Hand', 'method': 'Normal', 'offspring': None, 'kicker': None, 'bargain': None, 'evidence': None})
                             cast_paid = True
                         elif not (i == 5 and ann['kind']['ActivatedAbility']['ability'] == 0): equip_paid = True
                 if obs['decision'] == 'targets':
@@ -176,7 +176,7 @@ class AttachmentAttackTests(unittest.TestCase):
                     elif i == 5 and packet['source_card'] == name and isinstance(packet['kind'], dict) and packet['kind']['ActivatedAbility']['ability'] == 0:
                         root, baseline = packet, obs
                 after = self.replay(game, obs, j)
-                self.assertEqual(after['schema'], 76)
+                self.assertEqual(after['schema'], 77)
                 if frame:
                     window, library_count, grave_count = surveil
                     if after['library_choice']:

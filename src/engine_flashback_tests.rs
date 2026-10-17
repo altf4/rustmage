@@ -125,6 +125,8 @@ fn all_nine_complete_bodies_cast_from_both_origins_and_have_independent_effects(
             assert_eq!(
                 root.cast,
                 Some(CastInfo {
+                    physical_card: None,
+                    face: CastFace::Normal,
                     payment: root.cast.unwrap().payment,
                     offspring: None,
                     kicker: None,

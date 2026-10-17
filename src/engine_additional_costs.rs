@@ -71,7 +71,7 @@ impl Game {
         cost: ManaCost,
         route: Option<ForageRoute>,
     ) -> bool {
-        let definition = self.state.objects[card as usize].card;
+        let definition = self.effective_spell_card(card);
         let base = FundingGoal {
             actor,
             required: cost.colored,

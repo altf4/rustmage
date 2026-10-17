@@ -60,7 +60,7 @@ class BargainTests(unittest.TestCase):
      if resources:
       stale=dict(resources[0]['reference']);stale['generation']+=1;self.reject(g,o,{'kind':'ChooseBargain','sacrifice':stale})
     if ann and ann['source_card']==name and o['decision']=='pay_costs':
-     self.assertEqual((o['payment_request']['required'],o['payment_request']['generic']),(required,generic));self.assertEqual(ann['cast'],{'payment': [0]*6, 'origin':'Exile' if exile else 'Hand','method':'Normal','offspring':None,'kicker':None,'bargain':pay, 'evidence': None})
+     self.assertEqual((o['payment_request']['required'],o['payment_request']['generic']),(required,generic));self.assertEqual(ann['cast'],{'physical_card': None, 'face': 'Normal', 'payment': [0]*6, 'origin':'Exile' if exile else 'Hand','method':'Normal','offspring':None,'kicker':None,'bargain':pay, 'evidence': None})
      if resource_ref:self.assertEqual(objects[resource_ref['card']]['reference'],resource_ref);self.assertEqual(objects[resource_ref['card']]['zone'],'Battlefield')
     if o['library_selection'] and o['resolving']['source_card']==name:
      f=o['library_selection'];self.assertEqual(i,2);self.assertEqual(f['remainder'],'bottom_random');self.assertFalse(f['reveal']);self.assertEqual((f['minimum'],f['maximum']),(2,2));self.assertIsNone(g.observe(other)['library_selection']);self.assertEqual(g.observe(other)['actions'],[])
@@ -106,7 +106,7 @@ class BargainTests(unittest.TestCase):
     if a['kind']=='PayCosts' and ann and ann['source_card']==name:paid=True;source=ann['object'];self.assertEqual(sum(a['payment']),sum(required)+generic)
     if a['kind']=='SelectLibrary' and o['resolving']['source_card']==name:selected.append(a['card'])
     if a['kind']=='Pass' and o['stack'] and o['stack'][-1]['source_card']==name:root=o['stack'][-1];base=o
-    after=self.replay(g,o,j);self.assertEqual(after['schema'],76)
+    after=self.replay(g,o,j);self.assertEqual(after['schema'],77)
     if a['kind']=='PayCosts' and ann and ann['source_card']==name and resource_ref:
      v=next((v for v in after['objects'] if v['id']==resource_ref['card']),None);self.assertTrue(v is None or v['zone'] in ('Graveyard','Outside'))
     if root and not any(v['id']==root['id'] for v in after['stack']+after['waiting_triggers']) and not(after['announcing'] and after['announcing']['id']==root['id']) and not(after['resolving'] and after['resolving']['id']==root['id']):

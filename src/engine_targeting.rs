@@ -532,6 +532,8 @@ impl Game {
             x: None,
             attachment_trigger: None,
             cast: Some(CastInfo {
+                physical_card: None,
+                face: CastFace::Normal,
                 payment,
                 origin,
                 method: CastMethod::Normal,

@@ -1548,6 +1548,14 @@ impl Card {
     pub fn vehicle_stats(self) -> Option<(i128, i128)> {
         generated::vehicle_stats(self).map(|s| (s.power, s.toughness))
     }
+    /// Immutable inset spell definition; never a second physical deck card.
+    pub fn adventure_spell(self) -> Option<Card> {
+        generated::adventure_spell(self)
+    }
+    /// Physical parent of an internal Adventure spell definition.
+    pub fn adventure_parent(self) -> Option<Card> {
+        generated::adventure_parent(self)
+    }
     pub fn warp_cost(self) -> Option<ManaCost> {
         generated::warp_cost(self)
     }
