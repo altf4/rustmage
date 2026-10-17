@@ -49,7 +49,9 @@ fn trigger_target(g: &mut Game, target: CardId) {
     );
     until(g, |g| g.state.announcing.is_none());
 }
-fn token(index: usize) -> Card { Card::catalogue().nth(index).unwrap() }
+fn token(index: usize) -> Card {
+    Card::catalogue().nth(index).unwrap()
+}
 fn tokens(g: &Game, p: Player, definition: Card) -> usize {
     g.state
         .objects
@@ -84,7 +86,9 @@ fn fdn_targeted_indrik_paid_optional_fight_uses_current_power_and_exact_source()
                 g.move_object(spell, Zone::Battlefield);
                 // The returned incarnation gets a distinct entry trigger; decline it.
                 trigger_target(&mut g, foe);
-                until(&mut g, |g| matches!(g.state.pending, Pending::EffectOptional { .. }));
+                until(&mut g, |g| {
+                    matches!(g.state.pending, Pending::EffectOptional { .. })
+                });
                 checked(&mut g, Action::ChooseOptional { accept: false });
             }
             until(&mut g, |g| {
@@ -173,7 +177,9 @@ fn fdn_targeted_offer_counter_uses_spell_controller_not_owner_and_no_stale_token
             assert_eq!(tokens(&g, p, token(5302)), if removed { 0 } else { 2 });
             assert_eq!(tokens(&g, p.other(), token(5302)), 0);
             if !removed {
-                if g.actor() != Some(p) { checked(&mut g, Action::Pass); }
+                if g.actor() != Some(p) {
+                    checked(&mut g, Action::Pass);
+                }
                 let treasure = g
                     .state
                     .objects
@@ -346,10 +352,14 @@ fn fdn_targeted_high_fae_flash_flying_and_cast_permission_follows_live_controlle
         cast(&mut g, fae, None, &[]);
         settle(&mut g);
         assert!(g.keywords(fae).contains(Keywords::FLYING));
-        if g.actor() != Some(p) { checked(&mut g, Action::Pass); }
+        if g.actor() != Some(p) {
+            checked(&mut g, Action::Pass);
+        }
         cast(&mut g, bear, None, &[]);
         settle(&mut g);
-        if g.actor() != Some(p) { checked(&mut g, Action::Pass); }
+        if g.actor() != Some(p) {
+            checked(&mut g, Action::Pass);
+        }
         let sorcery = named(&mut g, p, "Divination", Zone::Hand);
         assert!(
             g.legal_actions()
@@ -417,13 +427,31 @@ fn fdn_targeted_heartfire_can_tap_mana_during_announced_sacrifice_payment() {
         let mountain = named(&mut g, p, "Mountain", Zone::Battlefield);
         let foe = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
         g.state.players[p.index()].mana = [0; 6];
-        checked(&mut g, Action::AnnounceActivate { card: source, ability: 0, counter_payment: Counters::default() });
-        checked(&mut g, Action::ChooseTarget { target: Target::Card(foe) });
-        if g.legal_actions().contains(&Action::FinishTargets) { checked(&mut g, Action::FinishTargets); }
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(foe),
+            },
+        );
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            checked(&mut g, Action::FinishTargets);
+        }
         checked(&mut g, Action::TapMana { card: mountain });
-        let payment = g.legal_actions().into_iter().find(|a| matches!(a, Action::PayCosts { .. })).unwrap();
+        let payment = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
         checked(&mut g, payment);
-        assert_eq!(g.state.players[p.index()].mana, [0;6]);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
         assert_eq!(g.object_view(source).zone, Zone::Graveyard);
         settle(&mut g);
         assert_eq!(g.object_view(foe).zone, Zone::Graveyard);

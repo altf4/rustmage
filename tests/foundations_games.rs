@@ -30,29 +30,29 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
         deck(
             "Plains",
             &[
-                "Savannah Lions",
-                "Bishop's Soldier",
+                "Leonin Vanguard",
+                "Hare Apparent",
                 "Healer's Hawk",
-                "Helpful Hunter",
+                "Inspiring Paladin",
                 "Inspiring Overseer",
                 "Prayer of Binding",
-                "Adamant Will",
+                "Fleeting Flight",
                 "Felidar Savior",
-                "Serra Angel",
+                "Stroke of Midnight",
             ],
         ),
         deck(
             "Island",
             &[
-                "Opt",
-                "Micromancer",
-                "Spectral Sailor",
+                "An Offer You Can't Refuse",
+                "Dictate of Kruphix",
+                "Fog Bank",
                 "Corsair Captain",
-                "Starlight Snare",
+                "High Fae Trickster",
                 "Exclusion Mage",
                 "Pirate's Cutlass",
                 "Unsummon",
-                "Tempest Djinn",
+                "Harbinger of the Tides",
             ],
         ),
         deck(
@@ -63,7 +63,7 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
                 "Exsanguinate",
                 "Vampire Nighthawk",
                 "Rune-Scarred Demon",
-                "Arbiter of Woe",
+                "Death Baron",
                 "Sanguine Indulgence",
                 "Cemetery Recruitment",
                 "Vile Entomber",
@@ -72,26 +72,26 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
         deck(
             "Mountain",
             &[
-                "Courageous Goblin",
+                "Heartfire Immolator",
                 "Brazen Scourge",
-                "Viashino Pyromancer",
-                "Dragon Fodder",
-                "Guttersnipe",
+                "Goblin Smuggler",
+                "Bulk Up",
+                "Hidetsugu's Second Rite",
                 "Burst Lightning",
-                "Goblin Surprise",
+                "Halana and Alena, Partners",
                 "Ruby, Daring Tracker",
-                "Shivan Dragon",
+                "Feldon's Cane",
             ],
         ),
         deck(
             "Forest",
             &[
                 "Llanowar Elves",
-                "Bear Cub",
+                "Heroes' Bane",
                 "Elvish Archdruid",
-                "Fierce Empath",
-                "Thornweald Archer",
-                "Giant Growth",
+                "Affectionate Indrik",
+                "Dwynen, Gilt-Leaf Daen",
+                "Inspiring Call",
                 "Garruk's Uprising",
                 "Aggressive Mammoth",
                 "New Horizons",
@@ -204,6 +204,6 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
     }
     assert!(branches >= 20);
     println!(
-        "FDN initial matrix: 20 natural full games, {total_decisions} decisions, {branches} owned replay checks; 45 nonland card identities plus basics, not full-set acceptance"
+        "FDN initial matrix: 20 natural full games, {total_decisions} decisions, {branches} owned replay checks; 45 nonland card identities, Cryptic Caves and basics, not full-set acceptance"
     );
 }

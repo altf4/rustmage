@@ -46,19 +46,31 @@ impl CardRules {
         while index < self.activated.len() {
             let cost = &self.activated[index].cost;
             if !cost.mana_component {
-                assert!(cost.generic == 0, "paid activation lacks mana payment window");
+                assert!(
+                    cost.generic == 0,
+                    "paid activation lacks mana payment window"
+                );
                 let mut color = 0;
                 while color < 6 {
-                    assert!(cost.colored[color] == 0, "paid activation lacks mana payment window");
+                    assert!(
+                        cost.colored[color] == 0,
+                        "paid activation lacks mana payment window"
+                    );
                     color += 1;
                 }
                 let mut alternative = 0;
                 while alternative < cost.alternatives.len() {
                     let mana = &cost.alternatives[alternative];
-                    assert!(mana.generic == 0, "paid activation alternative lacks mana payment window");
+                    assert!(
+                        mana.generic == 0,
+                        "paid activation alternative lacks mana payment window"
+                    );
                     let mut color = 0;
                     while color < 6 {
-                        assert!(mana.colored[color] == 0, "paid activation alternative lacks mana payment window");
+                        assert!(
+                            mana.colored[color] == 0,
+                            "paid activation alternative lacks mana payment window"
+                        );
                         color += 1;
                     }
                     alternative += 1;
