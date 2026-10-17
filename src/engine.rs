@@ -6396,3 +6396,7 @@ mod search_pregame_tests;
 #[cfg(test)]
 #[path = "engine_event_counter_core_tests.rs"]
 mod event_counter_core_tests;
+
+#[cfg(test)]
+#[path = "engine_runtime_copy_tests.rs"]
+mod runtime_copy_tests;
