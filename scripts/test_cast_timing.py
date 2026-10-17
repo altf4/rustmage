@@ -59,6 +59,14 @@ class CastingTimingCompilerTests(unittest.TestCase):
                 bad["oracle_text"]+=residual
                 self.assertFalse(self.admitted(bad))
 
+    def test_split_literal_and_nested_unknown_reminders_cannot_revive_legacy_names(self):
+        front=copy.deepcopy(self.cards[self.name]["card_faces"][0])
+        front.update(layout="normal",oracle_id=self.cards[self.name]["oracle_id"],colors=["U"],keywords=["Flash","Flying"])
+        for name in ["Grizzly Bears","Llanowar Elves"]:
+            for old,new in [("as though","as(You win the game.) though"),("cast","ca(Draw a card.)st"),("as though","as((You win the game.)) though"),("as though","as\nthough"),("flash.","fl(Discover 3.)ash.")]:
+                c=copy.deepcopy(front);c["name"]=name;c["oracle_text"]=c["oracle_text"].replace(old,new)
+                with self.subTest(name=name,fragment=new):self.assertFalse(self.admitted(c))
+
     def test_unknown_permissions_and_any_unknown_face_text_remain_gated(self):
         changes = [
             "You may cast sorcery spells and Dragon spells as though they had flying.",

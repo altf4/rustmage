@@ -3954,7 +3954,16 @@ def compile_catalogue(snapshot, target):
             pt = [0 if original[axis] == '*' else int(original[axis]) for axis in ('power','toughness')]
             if max(pt) <= 2**127-1:
                 vehicle_stats_rows.append(f'        {index} => Some(Stats {{ power: {pt[0]}, toughness: {pt[1]} }}),')
-        timing_seen = any(re.search(r'\b(?:cast|play)\b.*\bas though\b', line, flags=re.I) for line in original.get('oracle_text', '').splitlines())
+        timing_raw = original.get('oracle_text', '')
+        timing_surface = timing_raw
+        while True:
+            stripped = re.sub(r'\([^()]*\)', '', timing_surface)
+            if stripped == timing_surface:break
+            timing_surface = stripped
+        # Detection alone joins split literals. Validation still sees the exact
+        # unchanged raw body, including every unsupported parenthetical.
+        timing_seen = any(re.search(r'\b(?:cast|play)\b.*\bas though\b', surface, flags=re.I | re.S)
+                          for surface in (timing_raw, ' '.join(timing_surface.split())))
         card, timing_grants = extract_cast_timing_grants(cards.get(name, {}))
         card, uncounterable = extract_uncounterable(card)
         card, entry_suppression = extract_entry_trigger_suppression(card)
