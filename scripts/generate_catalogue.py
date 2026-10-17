@@ -4068,7 +4068,9 @@ def compile_catalogue(snapshot, target):
         abilities = []
         entry = 'Never'
         land = land_template(card)
-        use_legacy = name in legacy and not (timing_seen or scalar_mass_seen or graveyard_route_seen or split_search_route_text(original.get('oracle_text', ''), include_other_search=True))
+        # Reserved IDs retain absent demonstration fixtures. Supplied facts must
+        # compile generically: a familiar name authenticates no rules or costs.
+        use_legacy = name in legacy and name not in cards
         if use_legacy:
             effect, fallback_cost, color = legacy[name]
             # Lands have no mana cost. Their legacy cost token encodes colour only.
@@ -4227,6 +4229,20 @@ def compile_catalogue(snapshot, target):
             offspring_key=hashlib.sha256(json.dumps(factory,sort_keys=True).encode()).hexdigest()[:24]
             TOKEN_DEFS[offspring_key]=factory
             abilities=[('SelfOffspring',[f'CreateTokens {{ token: __TOKEN_{offspring_key}__, amount: 1, tapped: false }}'],'None'),*abilities]
+        # The compact mana action is an ABI choice, never an admission route.
+        # A supplied definition reaches it only after complete generic compilation
+        # proves the exact same one-mana tap ability, with no additional ability.
+        if name in legacy and name in cards and effect != 'Unsupported':
+            old_effect, _, old_color = legacy[name]
+            if old_color is not None and effect == old_effect and not abilities and len(activations) == 1:
+                activation = activations[0]
+                cost_spec, targets, instructions, sorcery_only, once = activation
+                expected_cost = dict(activation_cost('{T}'), exhaust=False)
+                mana = [int(i == old_color) for i in range(6)]
+                if (cost_spec == expected_cost and targets == 'None'
+                        and instructions == [f'AddMana(ManaProduction::Fixed({mana}))']
+                        and not sorcery_only and not once):
+                    color, activations = old_color, []
         triggers_rust = '&[' + ', '.join(f'TriggeredAbility {{ condition: TriggerCondition::{condition}, targets: {rust_targets(targets)}, program: {rust_program(program)} }}' for condition, program, targets in abilities) + ']'
 
         if kind & 64:
@@ -4269,7 +4285,7 @@ def compile_catalogue(snapshot, target):
             if target_reduction: target_reduction_rows.append(f'        {index} => Some(&{target_reduction}),')
             if reductions: reduction_rows.append(f'        {index} => &[{", ".join(reductions)}],')
             if additional is not None: additional_rows.append(f'        {index} => Some({additional}),')
-        basic = name in {'Plains', 'Island', 'Swamp', 'Mountain', 'Forest'} or card.get('type_line', '').split(' — ')[0] == 'Basic Land'
+        basic = (not card and name in {'Plains', 'Island', 'Swamp', 'Mountain', 'Forest'}) or card.get('type_line', '').split(' — ')[0] == 'Basic Land'
         costs = spell_cost_options(cost) or [([0] * 6, 0)]
         colored, generic = costs[0]
         if len(costs)>1:

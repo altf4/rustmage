@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "catalogue_version": "4a45c284c7fa3e8db5dc8ec037fcb8a3ea4be8a3e3fdf9b55077e89def136b7e",
+  "catalogue_version": "dbfdde1e492b39513800fbc8a1b7fc0d118a7c4baac33331683dfddf35c641a5",
   "standard_legal_cards": 5164,
   "implemented_standard_cards": 1825,
   "implemented_total": 1831,
@@ -11,31 +11,31 @@
       "name": "Plains",
       "standard_legal": true,
       "implemented": true,
-      "implementation": "explicit"
+      "implementation": "land_template"
     },
     {
       "name": "Island",
       "standard_legal": true,
       "implemented": true,
-      "implementation": "explicit"
+      "implementation": "land_template"
     },
     {
       "name": "Swamp",
       "standard_legal": true,
       "implemented": true,
-      "implementation": "explicit"
+      "implementation": "land_template"
     },
     {
       "name": "Mountain",
       "standard_legal": true,
       "implemented": true,
-      "implementation": "explicit"
+      "implementation": "land_template"
     },
     {
       "name": "Forest",
       "standard_legal": true,
       "implemented": true,
-      "implementation": "explicit"
+      "implementation": "land_template"
     },
     {
       "name": "Grizzly Bears",
@@ -59,7 +59,7 @@
       "name": "Llanowar Elves",
       "standard_legal": true,
       "implemented": true,
-      "implementation": "explicit"
+      "implementation": "permanent_template"
     },
     {
       "name": "Lightning Bolt",
@@ -71,13 +71,13 @@
       "name": "Shock",
       "standard_legal": true,
       "implemented": true,
-      "implementation": "explicit"
+      "implementation": "spell_template"
     },
     {
       "name": "Giant Growth",
       "standard_legal": true,
       "implemented": true,
-      "implementation": "explicit"
+      "implementation": "spell_template"
     },
     {
       "name": "Divination",
