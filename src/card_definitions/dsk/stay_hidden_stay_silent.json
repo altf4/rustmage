@@ -1,0 +1,12 @@
+{
+  "name": "Stay Hidden, Stay Silent",
+  "catalogue_id": 4122,
+  "oracle_id": "266561cc-d014-48cc-ba5d-fa72f3a91736",
+  "facts_sha256": "182d1cb5bc467a40b186554213c3081d1cff73e9a5d1781c7e185c218ba1d3a2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "37d23fbc0cf90beb7aeb35a4ed557fc27abe074e6fcb46473e8e253b594b1c95"
+  },
+  "physical_metadata_sha256": "42bb53b47cb24bbbcc6ce311c75a5ee4b155b0e534af43448928791ffb355e05"
+}

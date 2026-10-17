@@ -1,0 +1,12 @@
+{
+  "name": "Sandstorm Verge",
+  "catalogue_id": 3681,
+  "oracle_id": "de417a82-8f03-4d7e-aee7-48f7d7eba61a",
+  "facts_sha256": "4686a4796c21a2bf36c6ff6b8c8ebbdaad7770cd09ad677576382cf56eb798f6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0ec2fba2706551c4a24f18f0194479697e201baeb61a5420e8d25b1c38bde85a"
+  },
+  "physical_metadata_sha256": "23315aec27d05c11c8fd0dc42d83f541593c7e724d8f3cdfa329a6ec8a03fcde"
+}

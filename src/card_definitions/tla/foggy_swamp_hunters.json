@@ -1,0 +1,12 @@
+{
+  "name": "Foggy Swamp Hunters",
+  "catalogue_id": 1576,
+  "oracle_id": "1941cf7a-ad53-4bce-beea-104951619a30",
+  "facts_sha256": "40a35cb235d1f00b5ba2d66664691d3d5242efe12cb9cce8cf319629ab93061a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7aeac4450f23c34e576e752183c6dd22ec47c76390679293976ae6cff8fd71eb"
+  },
+  "physical_metadata_sha256": "9efff20b1b564ee31559841063265002b9bf0096e749912c9419aceb7c1a66b5"
+}

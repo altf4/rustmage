@@ -1,0 +1,12 @@
+{
+  "name": "Dragoon's Lance",
+  "catalogue_id": 1169,
+  "oracle_id": "a66c35fc-d5db-4cfd-9b85-d70b001d83d3",
+  "facts_sha256": "7a65e49428effbf571e01ea04e789a9a2cf739815140067f44d1947fc39174ee",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6eabccf5901ddc713e378ddf86e660a61d516a3266f719c720f38b186ebb11e3"
+  },
+  "physical_metadata_sha256": "cdab9331b5c1e1492482bdc26980012ac5500dfd131096fd00451d579e0c1552"
+}

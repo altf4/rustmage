@@ -1,0 +1,12 @@
+{
+  "name": "Reroute Systems",
+  "catalogue_id": 3473,
+  "oracle_id": "26d2762b-4346-40d0-b93d-b0dbfeb6e2bc",
+  "facts_sha256": "fdf7d9eccee0de3e9905b44cf5078003bc06aabe01a126fff6cb71924a049ab9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "020825356f63e804d16800690aa2815cc3154485599a8d513581f92e41866a1b"
+  },
+  "physical_metadata_sha256": "73df79536dbaa7e91c772625fecd31f664e19554021ffa422c8121bfb2b407e5"
+}

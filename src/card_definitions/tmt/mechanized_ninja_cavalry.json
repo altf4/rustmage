@@ -1,0 +1,12 @@
+{
+  "name": "Mechanized Ninja Cavalry",
+  "catalogue_id": 2700,
+  "oracle_id": "2db8dda3-8136-4cf2-ba2d-ecc344a36725",
+  "facts_sha256": "cebe8dea9e73a82be5ec67e96133e288b2ef76d8928cc889d77b2bc3a5996c22",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "664798da80859864752be90a7445bd9ca908e419dc62bcaaf3c4425323e42146"
+  },
+  "physical_metadata_sha256": "08273f2de316e6521749e6d2ebffac95b140974099409f6b5f686e0d9b891e3a"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Barret Wallace",
+  "catalogue_id": 338,
+  "oracle_id": "913672bc-cc88-4964-a331-7dbce40f2bda",
+  "facts_sha256": "bbd8ed1d2dab281a26b8861054d06dc30eb41fe076db1cd1b00ecb89dbbe99ca",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "630df33dc28bbf337b86f419ac4cfffdf0dd22575ee78812392095a4dcc806ac"
+  },
+  "physical_metadata_sha256": "22190deaa677d5537bdee383ef5568a6ab8110f8272ec8bb92430c52b9ce5952"
+}

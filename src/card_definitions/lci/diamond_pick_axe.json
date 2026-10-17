@@ -1,0 +1,12 @@
+{
+  "name": "Diamond Pick-Axe",
+  "catalogue_id": 1069,
+  "oracle_id": "542e7d60-3fc8-46e2-8786-f7c8b3d4c979",
+  "facts_sha256": "1506cb5444aec2f75e348b0dcd8d828421953f07570c077dc83bbee4b2777a7a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c37becf9789719f41f9ed76ffd57e6d04e5facc02b0247c21542bb6d76562ef0"
+  },
+  "physical_metadata_sha256": "a48b945faff489fb10bdc31044f8fb55a311684d11c9127c23249162ed0de9a6"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "The Gold Saucer",
+  "catalogue_id": 4450,
+  "oracle_id": "93e38650-ce22-4ab9-b79d-cc7b6477c075",
+  "facts_sha256": "1384127b84f179c05bcb0233fdd27d32f31bb104b66a2c925eacae79b77a8501",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3ec71c2c9af04a1c92f1345d20ac4a5b54617748679f653946e9a5e0fb66f10f"
+  },
+  "physical_metadata_sha256": "ce8b2ebbee3f0b6919491ecbcc28d6de5b5f1ad86b13a285c1ca2646618de5fd"
+}

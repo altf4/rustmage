@@ -1,0 +1,12 @@
+{
+  "name": "Paradox Shaper // Omit Variables",
+  "catalogue_id": 3098,
+  "oracle_id": "511951ed-fbff-4e44-9429-27f237496672",
+  "facts_sha256": "230e23946bcc26317eeb881ff978fdaec95410d25619c7f67529c7d5a65fb829",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4c04cac63cd22fb313effae5e1d68c262caa39e5800ab3d93333565bfd86f728"
+  },
+  "physical_metadata_sha256": "9b2eb9a21ccb1487de91eac8d50d51c132d19ea957cb95042aefdbf68992f6c0"
+}

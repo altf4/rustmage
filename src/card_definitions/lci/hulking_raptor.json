@@ -1,0 +1,12 @@
+{
+  "name": "Hulking Raptor",
+  "catalogue_id": 2093,
+  "oracle_id": "9f2e7533-cfc1-4dd8-a9b8-09cdc712ef2f",
+  "facts_sha256": "e4722ccc9f45c9794cd0caf9d13b20d992af180a6493c0170fb9b0e8f6e04e67",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7e0cbf2df313a9ee0f4b8afa2bf811e4ae588adf97cad18c2e4d3c2c2d644eff"
+  },
+  "physical_metadata_sha256": "e0837de8d1d95ce39bb6c64484fa24b8713313626e668d580512111940463dd1"
+}

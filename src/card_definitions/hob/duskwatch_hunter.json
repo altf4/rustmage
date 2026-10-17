@@ -1,0 +1,12 @@
+{
+  "name": "Duskwatch Hunter",
+  "catalogue_id": 1207,
+  "oracle_id": "6283e5ca-9924-478b-89a5-36924accb9aa",
+  "facts_sha256": "c0ae64bc56b8c27ee7fb9ab436ec8eb77dbeb1d650331d1ba6b33d5a330925e6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0c8b0c1971de9dc1464d7c321349450b29533a41107fd90fa5453050bb48bee9"
+  },
+  "physical_metadata_sha256": "6e50918792afbb7ac8db0ce823665a1ba09e196e2fa2324b279c994f42878dcf"
+}

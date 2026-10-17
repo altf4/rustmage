@@ -1,0 +1,12 @@
+{
+  "name": "Sower of Chaos",
+  "catalogue_id": 3988,
+  "oracle_id": "2ec1860b-89cc-4529-8b8c-fb47f79f2b4b",
+  "facts_sha256": "cb61fd75439bd6120b2ea48887ccf374d43439c0505e61e13fbbd39faa1e9f69",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6f68b7850e1eebb20de0c48dc1ee0635db0c2638f1231f113bb475f5db9acd41"
+  },
+  "physical_metadata_sha256": "37dc24f6ae3cac279e99b1913136e933d4ce148a199bbbe5f0d6130c5dc682ba"
+}

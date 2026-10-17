@@ -1,0 +1,12 @@
+{
+  "name": "Walk with the Ancestors",
+  "catalogue_id": 4955,
+  "oracle_id": "ce657a2e-461b-45fd-ab98-35b5c8512777",
+  "facts_sha256": "dd0f4ef71a96b89fd7d98e799c2f4c5db91bb9db618bd365a09f04091407fc5b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dbdd2b514ea63feab3367fc660a275fff99bb85eda3033d0426d8b0926a78f73"
+  },
+  "physical_metadata_sha256": "0bf5b920c9ccc68615235dadd05c4c61606ba51f075159cf3218131c534adbed"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Gigastorm Titan",
+  "catalogue_id": 1748,
+  "oracle_id": "ef06e10c-553b-45b8-abf0-1d2e87c22128",
+  "facts_sha256": "f07b9171d4f6944211c117e39e037fb8cf5c83c2ab507ba7a94adaa49f470b18",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d1ef366cbc68d0c542c907b9473473e9f702d893886c6b0475e698f24f7e3418"
+  },
+  "physical_metadata_sha256": "3260665004d5faec169563cbb3461a8caca50606895b0ad468abb282086e19d4"
+}

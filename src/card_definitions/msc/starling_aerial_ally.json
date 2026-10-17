@@ -1,0 +1,12 @@
+{
+  "name": "Starling, Aerial Ally",
+  "catalogue_id": 4106,
+  "oracle_id": "13fd7ca6-c278-409f-a9c4-57f16051ffce",
+  "facts_sha256": "ee19215269fa6e80c8c36c56500cc7bc8acd5556d60e52d18b3f621619d3b910",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "88d2674657f26af15b02a05eec187b69b3df1f90b15354dedc60c1de7f2ad1e2"
+  },
+  "physical_metadata_sha256": "2136c804e8020a4aadcc27552a95a7276e7f8c0a60bf245e846fa21fa3f493e6"
+}

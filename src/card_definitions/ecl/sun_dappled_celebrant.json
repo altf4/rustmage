@@ -1,0 +1,12 @@
+{
+  "name": "Sun-Dappled Celebrant",
+  "catalogue_id": 4233,
+  "oracle_id": "27c87371-697e-4ca6-a7f4-d99215d908bc",
+  "facts_sha256": "970893131145e2e4368318c6757f6aecf97694b6180a0574661e28cad845ebd6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "28f562cfe655fb561c3dee946b33a01eff72ec8bb4d8691f92bf4a857e5074f5"
+  },
+  "physical_metadata_sha256": "0ce1a1162085a0251a840babc6670c68119b967f4e08eee632394e11e5932fca"
+}

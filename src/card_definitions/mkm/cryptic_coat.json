@@ -1,0 +1,12 @@
+{
+  "name": "Cryptic Coat",
+  "catalogue_id": 916,
+  "oracle_id": "73b8adea-1786-44fc-b190-bf240b07f5b6",
+  "facts_sha256": "e7fa8fed2156dde1f02c1e439451cb072be0e68143122905ac4e38585da42cb6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "08afa80a42ecadc7a196bea73a13f5fee4af6e5eff06161c3f530f85b21de590"
+  },
+  "physical_metadata_sha256": "9c7917b9c963f7116b88e02429c3ed14285272d81e584f7918e01e92bffa3838"
+}

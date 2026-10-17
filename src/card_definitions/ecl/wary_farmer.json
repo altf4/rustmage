@@ -1,0 +1,12 @@
+{
+  "name": "Wary Farmer",
+  "catalogue_id": 4988,
+  "oracle_id": "63eed1f5-442f-433d-989c-397b88543162",
+  "facts_sha256": "032e603afd5180c5af6a21cf9c4888147a516a94d7f043b3956daa724a28e007",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bdb67b43051d7c54704e26d76f17948f02029ca27b8e3943e4d943830f492bee"
+  },
+  "physical_metadata_sha256": "0e55ebb0c766ec8796bbb9c153299f08703486932c727fcb32c4d18ae6c0b835"
+}

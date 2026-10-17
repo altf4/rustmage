@@ -1,0 +1,12 @@
+{
+  "name": "Ghalta, Stampede Tyrant",
+  "catalogue_id": 1729,
+  "oracle_id": "b8f16311-be5a-4648-b024-849a61dff0bc",
+  "facts_sha256": "427548ce1cd7aab461a1e4ca9b2e38e2f4789d85400757cf70cd18e3ce71dae5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7494ab337b3d76ea8028a9a1fd7966661deff084f85b398469178afdf5da75dd"
+  },
+  "physical_metadata_sha256": "28195e8438fc34a1908ec0f72074e48e1076b79388a06e703f9c2bff6cda0c04"
+}

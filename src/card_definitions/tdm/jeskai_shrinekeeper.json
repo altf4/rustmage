@@ -1,0 +1,12 @@
+{
+  "name": "Jeskai Shrinekeeper",
+  "catalogue_id": 2273,
+  "oracle_id": "bb50b4f4-f0da-4283-821b-6d74bd20752f",
+  "facts_sha256": "86b73dc294325fca654452f973d84fcc71d0cd39fee0a928b47591ed825f991d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8501af7d4ccc0c02e13e5b89e57765a9a032f935f803e9c90465140ccf39b39a"
+  },
+  "physical_metadata_sha256": "ed283a6bc82ceb9a1671475f520cc9223921c57a9cd4802f1568a7670aaefaef"
+}

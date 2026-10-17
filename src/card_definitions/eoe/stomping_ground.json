@@ -1,0 +1,12 @@
+{
+  "name": "Stomping Ground",
+  "catalogue_id": 4161,
+  "oracle_id": "16052b52-ade1-406f-a06b-ce7ea607fb63",
+  "facts_sha256": "ef8e1d2c5412f60d153cf55da3428f46c291c0dbc4456260d9cba86e6bc55451",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c19733403edabb8e329922d5dae4041a4435eb438b0d45e6aa681c8faa934f1e"
+  },
+  "physical_metadata_sha256": "2f1fbdf7a46b470b15057684b526a5b87c2e577549fa7ca44fe35b623f5ab892"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Bite Down on Crime",
+  "catalogue_id": 424,
+  "oracle_id": "ff387264-31da-4f6b-88c6-2843f56acbda",
+  "facts_sha256": "8df21b7cb563e5daa60d9005e5c7fa27a3ff90b916eebdf4d236f08e5b1e2a08",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3fd034737bfc948e235d692cfb343ddbd9beee9c3455a02359c355c07d442ce9"
+  },
+  "physical_metadata_sha256": "bf4fc9d569ab83cc2367fb9c0d1e7340638f9804711de393b0451ca7f1bbbe80"
+}

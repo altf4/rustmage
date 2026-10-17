@@ -1,0 +1,12 @@
+{
+  "name": "Valkyrie Aerial Unit",
+  "catalogue_id": 4827,
+  "oracle_id": "1333d690-a6dc-4ef8-8c57-2ba16727c0a5",
+  "facts_sha256": "e56058ca88f40f62e97ba97aae4d56d3319f3b8160e8dff253c50b19a7b250ae",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "844a9d3de56a288fca629bc6a9aa139f1a3b493ade52dc62e796b2f6458e4284"
+  },
+  "physical_metadata_sha256": "a8abea11d414405c1461a2d09aa1c2b3bad8dfe57d702a2b48cff79b2e645942"
+}

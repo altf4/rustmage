@@ -1,0 +1,12 @@
+{
+  "name": "Scream Puff",
+  "catalogue_id": 3738,
+  "oracle_id": "b46ddf4b-7ed8-49c4-8828-f0fbbc023c1f",
+  "facts_sha256": "fefb77be333c9d911647ca47381b0b68ba6f3d7e31b2b642f57c874a417468a6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "59c87f491c3b4e33d413d5696dc3bbacf00580afcc18d7ad860757db26c5282d"
+  },
+  "physical_metadata_sha256": "bcc5d528f039e40e41b608ba2c7f17484ca0d872550b200fc5c60877c4372971"
+}

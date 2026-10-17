@@ -1,0 +1,12 @@
+{
+  "name": "Quistis Trepe",
+  "catalogue_id": 3322,
+  "oracle_id": "821e8648-222c-4b33-a8bd-e8bfff7dcd9e",
+  "facts_sha256": "0fff85ba4a0d3ec8c18d6e5560ffeca3fcb92a83995fbe2de50ebf8a22cbe0e5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bdba78be807ff43ec7fe6ecf26cbd3c9137ea65ca5059e982838df30a0857b17"
+  },
+  "physical_metadata_sha256": "a8ffc1f5a16779994b1f2272dda9f0969d2fd3fb400631dff4e4ae1deea8ca81"
+}

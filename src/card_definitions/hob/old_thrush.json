@@ -1,0 +1,12 @@
+{
+  "name": "Old Thrush",
+  "catalogue_id": 3007,
+  "oracle_id": "c8259b0e-131f-44f0-86d4-7c4d711b328d",
+  "facts_sha256": "f13b2d9901895b805ef109313d9b89021a75e756819b06df115e0eca8d91e064",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "11b409a9971d14e0047d1ded031add685f21a223afd9b213d186d3675b104f95"
+  },
+  "physical_metadata_sha256": "86315e087442b09dcde43a0267d9e6783555c5581eaf5c343457f4265d0ec1d6"
+}

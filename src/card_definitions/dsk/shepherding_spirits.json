@@ -1,0 +1,12 @@
+{
+  "name": "Shepherding Spirits",
+  "catalogue_id": 3827,
+  "oracle_id": "e8ff3e99-eca9-44a5-baac-99ee34df3c36",
+  "facts_sha256": "aa565c357766a0da7417a0505344c22f4d3dbba64aa5247c5e39e70cec730b99",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8ea6b01b138ee316d607d44825850d99b07ac950ea78f183d09f67cf5d29a7ce"
+  },
+  "physical_metadata_sha256": "900e146ec556c1341f571a4c91346a1dbae424d87db4581b31aca5145c862715"
+}

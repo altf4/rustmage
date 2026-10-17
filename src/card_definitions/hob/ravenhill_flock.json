@@ -1,0 +1,12 @@
+{
+  "name": "Ravenhill Flock",
+  "catalogue_id": 3396,
+  "oracle_id": "7f961374-00b0-40df-83eb-9ced2bb519aa",
+  "facts_sha256": "9209e9f8733602db4c93e83760c8216588b8e560c2c7198ef49aa04c9e4d19e0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "251d7d1e9784abf53460571f1fcc26711b933e297103dc1bc9822740e982f968"
+  },
+  "physical_metadata_sha256": "e9d1f35fc1782eb7df1e1f69998f74fb2b626636d291ccb77cbb20987c90efac"
+}

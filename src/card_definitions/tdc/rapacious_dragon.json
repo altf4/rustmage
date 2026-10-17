@@ -1,0 +1,12 @@
+{
+  "name": "Rapacious Dragon",
+  "catalogue_id": 3374,
+  "oracle_id": "0944ec2e-1dd9-459f-8f1d-667242cf52fe",
+  "facts_sha256": "458de3a684899bff6a1638f99f911c1e131635f138961ff4d3b52304576c4a57",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bea2b0d5cc3c09176e773b0da48342003ee38c2c9234e62fd582f7664a27d572"
+  },
+  "physical_metadata_sha256": "6236af04ea9d7b9202d90115f788f92b3a10d1e04dbc5febe5a3f962e107a97b"
+}

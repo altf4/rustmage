@@ -1,0 +1,12 @@
+{
+  "name": "Gev, Scaled Scorch",
+  "catalogue_id": 1723,
+  "oracle_id": "77b832a8-a3af-44fe-bc67-72510d292667",
+  "facts_sha256": "9ba626df652019ab5ae2f0e5cb8d7f87079f40d81ffff15b98b6671e64e04ad0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "72e4702ff87b1ac14ba9dbc5d049dc3c66626f418320ed629e7721d2d226e11e"
+  },
+  "physical_metadata_sha256": "56f0b19071e95d39e305fadf39f38978ce51ef3135c0839c5ba9b12102c41266"
+}

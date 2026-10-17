@@ -1,0 +1,12 @@
+{
+  "name": "Three Tree City",
+  "catalogue_id": 4567,
+  "oracle_id": "da3b17a2-e1e1-44e9-b9b1-ae54a92037db",
+  "facts_sha256": "974c661e6e4550495abf2a5840de352038447e00d06dba74ff1375115991ea11",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "195ab5c43f110e28d1ca0d30542bcf04bd7451b3cd91b30f4532c5203fe3f3ef"
+  },
+  "physical_metadata_sha256": "a9da11e4b77145aa0e6ef4323b89f703655fdaea6cc17f61406786fd0d2b9ef9"
+}

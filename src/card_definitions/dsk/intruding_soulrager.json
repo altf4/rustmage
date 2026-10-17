@@ -1,0 +1,12 @@
+{
+  "name": "Intruding Soulrager",
+  "catalogue_id": 2209,
+  "oracle_id": "7673d0db-07d6-4b40-a32e-f2c98d7ea7c1",
+  "facts_sha256": "3c368470f4705077b66e20d9ce4607bc1648f54f2873b94a2d2291882d7e5cf6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1176b5b79d161ecb5b1612154bf9a838f84ed56bae639283bc1551ca35b19643"
+  },
+  "physical_metadata_sha256": "ea74dca1b4b53a51706dfe8ec32ffbcf84618c08a736fbd569a71d68fb91b9ca"
+}

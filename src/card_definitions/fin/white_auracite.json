@@ -1,0 +1,12 @@
+{
+  "name": "White Auracite",
+  "catalogue_id": 5042,
+  "oracle_id": "6022608a-6cf2-45bd-adec-63211710a5ed",
+  "facts_sha256": "8f2e8e1275dfc3385207f2b8f53ba03ca4a324e124ff2c7c4882333c47c7a948",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "af1d28d022e0857c98623683f3b40b2fcbbb96cef5d5a40ac31c99c12749b08f"
+  },
+  "physical_metadata_sha256": "3f7abc158325991a5375f94e2adacbf8c805026acf2cea84284dbe6b6c507c92"
+}

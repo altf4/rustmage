@@ -1,0 +1,12 @@
+{
+  "name": "Bear Down",
+  "catalogue_id": 5206,
+  "oracle_id": "8a31c49f-5b3f-4f84-a08e-58b30a6bff7c",
+  "facts_sha256": "f1955782c2e4cfb200e323ad37d170b894cd5f31a90b62aa78cc51b09ed9ab49",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8fa70febcf967084b48a1d3dece25f4004b75a41d8ca805e9a8ff1e53e44d3cd"
+  },
+  "physical_metadata_sha256": "0c898f3a875bb9454d20eac555b726299759a4e8261fd22ddf44749512b8cacc"
+}

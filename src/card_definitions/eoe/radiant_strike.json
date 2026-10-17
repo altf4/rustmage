@@ -1,0 +1,12 @@
+{
+  "name": "Radiant Strike",
+  "catalogue_id": 3334,
+  "oracle_id": "186efd85-83d4-40cc-b617-76f32dbe99ce",
+  "facts_sha256": "56c84373b5bc2ad3ee91228a6a0019aaffb092b140e90f1e59b3ec529021e3e5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a60bccab861d765d77d6d90e315b3463e7fecaab8cba60e3c86cbac2c2fdb566"
+  },
+  "physical_metadata_sha256": "e49f83b8231311e8fbffe13b725aa1c893ec2da8b390e869b45edb11c139e248"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Kav Landseeker",
+  "catalogue_id": 2326,
+  "oracle_id": "528fe479-dab9-4cf8-bda0-1d226a644366",
+  "facts_sha256": "d22927469c6c64dd8e8a4b5cb0203ccde0b6c73af94c228cba799935ac84e568",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0dadc7c5e9bb6887648fe21ad63775bbbba9d68230aad58c62488966bf129249"
+  },
+  "physical_metadata_sha256": "35397632bcfec405f96123c00ada11840b168c138f8c32dc85dc2d15759c2ef0"
+}

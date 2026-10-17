@@ -1,0 +1,12 @@
+{
+  "name": "Beseech the Mirror",
+  "catalogue_id": 391,
+  "oracle_id": "cbbe535b-12d6-4e6c-8b26-9220f06a1604",
+  "facts_sha256": "9a0ebc7476ff783f87db82bb4f7819cd32ac9939219fb8cf71ddf7da22344891",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ba66ade711b105a2072d74a616ea6b533818dfc5ff4ad8589863c64771c000b3"
+  },
+  "physical_metadata_sha256": "bb721e3640f577b5a45ab1675874c786390674a591738580d93a69578a6ffd74"
+}

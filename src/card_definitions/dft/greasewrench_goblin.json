@@ -1,0 +1,12 @@
+{
+  "name": "Greasewrench Goblin",
+  "catalogue_id": 1859,
+  "oracle_id": "952300de-766e-4ceb-bd36-e0b721bebc17",
+  "facts_sha256": "95e40912ddaa2ca87e8a5fc7713e7741672040f7baf83d840135e5f7c39f7292",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bbe7783bf656ca922a973cf7c90703bbb72e1fec68c3879cd9635c7c1bcde76e"
+  },
+  "physical_metadata_sha256": "95c67e932a2fa5bbbcb273a4d01e260ca1694e9b83915beef802231d29d9c1c1"
+}

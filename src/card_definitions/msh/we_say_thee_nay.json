@@ -1,0 +1,12 @@
+{
+  "name": "We Say Thee Nay!",
+  "catalogue_id": 5019,
+  "oracle_id": "1abe8246-d2f9-407b-8c16-83da0a6b7de3",
+  "facts_sha256": "7aca3e917f33036e840f0a4447131327341fe2a52c4a8160816bbaa1b95d7231",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f928b28ef3f493577c7382a7108150e592d246c06467a2c7d4cd061fe5b7801d"
+  },
+  "physical_metadata_sha256": "6a00b264c24fe9c7e5e9b5c7dde41553a035a81563ec45cd634aa329faeb80fb"
+}

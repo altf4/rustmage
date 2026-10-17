@@ -1,0 +1,12 @@
+{
+  "name": "Helpful Hunter",
+  "catalogue_id": 2002,
+  "oracle_id": "c0864adb-e9aa-40b6-91ff-a0646193e887",
+  "facts_sha256": "d81aaebe09b4ec1476cc1de70b1eb18988ce2ddd9e54385f26973acdbeba8c0c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "adfa92e4d13f63553f263d1a6160432add9727d6b8220deb791c95f3ed73e6cc"
+  },
+  "physical_metadata_sha256": "18b71b89bf0873c0214a249d9abeecf4defe7a2505be6249260de4b792421b41"
+}

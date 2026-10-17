@@ -1,0 +1,12 @@
+{
+  "name": "Elementalist Adept",
+  "catalogue_id": 1284,
+  "oracle_id": "cf402270-ebc6-481b-b478-0e3acab7002a",
+  "facts_sha256": "87d1c46ed58c7cfa065840259fefb65251afefc4b669a31f1da2bbe948937c72",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c9fccbbb76dff3964914b88ad9f5a26d66f2c29ce6e4369209e511da1d0a18c0"
+  },
+  "physical_metadata_sha256": "45ee5f31519df3cabb43ea422c9f2ba96400044d3301f29ae908b43aee284397"
+}

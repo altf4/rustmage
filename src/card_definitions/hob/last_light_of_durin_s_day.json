@@ -1,0 +1,12 @@
+{
+  "name": "Last Light of Durin's Day",
+  "catalogue_id": 2450,
+  "oracle_id": "539583f4-21c8-4b61-a2c5-f612fadc3ffa",
+  "facts_sha256": "978a5ec5bc3a772f099e41078a4080cce8eb262d79f0640f809029eb624bc3a9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2827b58118d4fd027e3667c61b6992a8b76f12b42d1a6e22f273fea3859d9fbd"
+  },
+  "physical_metadata_sha256": "2fe7e984dff53702454105fdfbce194f80653ff3d1c4afa08bd468417d3cca21"
+}

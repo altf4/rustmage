@@ -1,0 +1,12 @@
+{
+  "name": "Haunt the Network",
+  "catalogue_id": 1961,
+  "oracle_id": "7e074b14-0ec8-439b-9b83-5f7c1a904384",
+  "facts_sha256": "f921577c9cafee89e4c1871395cac56dd40f8fdae337ecfab0068ad7ed05df11",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "99d6a6125c762b100926bca8c607f051e61a983023b6cc840030be48d78036a6"
+  },
+  "physical_metadata_sha256": "c968a84edb3bc013bbd241b28ff6fa87fb5a7ec3a4a953d18e77e662e64de255"
+}

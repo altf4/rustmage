@@ -1,0 +1,12 @@
+{
+  "name": "Glitch Ghost Surveyor",
+  "catalogue_id": 1785,
+  "oracle_id": "f0f83ab8-6185-4139-b41e-a11500036915",
+  "facts_sha256": "14eb86a26a0ae4040e713970cb089189647a5bed72b520383cd3f6c99a34726a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7cf77ba24aa95182ef73b24c8a6af7af3b058cfb3fa40298e8542efac72485cf"
+  },
+  "physical_metadata_sha256": "1e0c5774413fc6e0f321794db2ef1d2cbb28695e85e841979e0106e496a1991e"
+}

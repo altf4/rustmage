@@ -1,0 +1,12 @@
+{
+  "name": "Emptiness",
+  "catalogue_id": 1322,
+  "oracle_id": "dc5dd7f7-375e-4d51-85cb-1abf16ca3854",
+  "facts_sha256": "1d8c4e724f7284ff2297dae29971f7d756489bc1a44d71ed1af8fdacd5dc1170",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "19acc0470be5e2ad34dfb25131025644ee63b45546b339cb5ce265a0339b6661"
+  },
+  "physical_metadata_sha256": "aab0bcc63113c6ad4f3e30c810d979c4960395c2a218cf0e0e494a8030a7b8a8"
+}

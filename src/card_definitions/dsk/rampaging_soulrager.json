@@ -1,0 +1,12 @@
+{
+  "name": "Rampaging Soulrager",
+  "catalogue_id": 3364,
+  "oracle_id": "f6d8e6cb-0878-4f2c-9a89-ce84cb4f5bbc",
+  "facts_sha256": "25b146b31e334687b5345bb7634d4fc1ec026f577783574479266c5d2428ec3f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4a4255d6affb99bee60a296cc91745cd33c7c331ce7df498fabaa51f05e045d4"
+  },
+  "physical_metadata_sha256": "2d6ba092a09407412f89c980f15b4099dd0e17b8241d0e58391c0e5d40811b19"
+}

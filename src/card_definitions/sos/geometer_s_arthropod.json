@@ -1,0 +1,12 @@
+{
+  "name": "Geometer's Arthropod",
+  "catalogue_id": 1713,
+  "oracle_id": "7f577b46-c69d-4c75-9db5-7e10206b6b59",
+  "facts_sha256": "3c19d9ee8accef781cc3a3345104baf9f7efe32c37b520a597066001c335fc01",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3d838ea0ab6fc9eaa07ea59c0df148e8aa93ede34ca4a6ac13e8ab5997292cf0"
+  },
+  "physical_metadata_sha256": "e8e48b451df521b3b2924c668a5d5581ec5025c58fda1be9455d02886101de90"
+}

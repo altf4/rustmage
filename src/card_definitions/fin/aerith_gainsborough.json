@@ -1,0 +1,12 @@
+{
+  "name": "Aerith Gainsborough",
+  "catalogue_id": 70,
+  "oracle_id": "dd9a6f6b-f9b7-4292-bc80-b7da326de032",
+  "facts_sha256": "53908307c236ea54a8e704de67a819c3e48bdfa1e74c76309152861c127bcdd4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "006745a9f3ef0ac653d03fe72888de854385a05d92e8fc4d8598ea9947a130ef"
+  },
+  "physical_metadata_sha256": "972db1bacf98ef6077740b9274007485ffecf2a3dd3aae3f0d481aa65fd6d79e"
+}

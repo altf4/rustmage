@@ -1,0 +1,12 @@
+{
+  "name": "Venerated Stormsinger",
+  "catalogue_id": 4861,
+  "oracle_id": "4aff2f31-619f-406e-b2c9-a2c733c04bc4",
+  "facts_sha256": "52861ff14bc75293e627810c17d1f7208eea025b47857ef2b81a0a9503d360b2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cb1d147f0b5f8e4d2b08f25c097bfca269d22d98b19c31b216eccbe3a80e20ff"
+  },
+  "physical_metadata_sha256": "f3c6f2286537591274a5771e3a8d795b8060ed90c18d70b5c76121a0cb261dbc"
+}

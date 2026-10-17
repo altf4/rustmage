@@ -1,0 +1,12 @@
+{
+  "name": "Dragon Trainer",
+  "catalogue_id": 1155,
+  "oracle_id": "328a0691-9453-4f2d-a9c3-5c69da252d20",
+  "facts_sha256": "34f906c8d278b5a6452820e71c7d2bde546454bb1fcf95225a3aa5169089eeef",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c9fc25bea28bfc2bde25fc90a49742eb8affd7a5fc712f6bbf187b1fe868fe81"
+  },
+  "physical_metadata_sha256": "4eb77cca580b537ca23debf94417fd8a36c1750a604c93f9bfb08028e316c9b1"
+}

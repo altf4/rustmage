@@ -1,0 +1,12 @@
+{
+  "name": "Messenger Hawk",
+  "catalogue_id": 2728,
+  "oracle_id": "4029e884-8154-42b3-ae29-3cb98374a294",
+  "facts_sha256": "19d8f06411f1fcee93333ec714f8eda4ea4afd65975cff7ab3643de451009dd5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "38ca7918433713982f24105547e30e6a7ffbc9a7e34a1cc34342f8f812bdf65d"
+  },
+  "physical_metadata_sha256": "fb2443fef3f820dd8730be04a1c7138a5fad7757a46b7d4cb55a8732d91b60fe"
+}

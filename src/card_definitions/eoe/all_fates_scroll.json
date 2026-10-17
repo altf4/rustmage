@@ -1,0 +1,12 @@
+{
+  "name": "All-Fates Scroll",
+  "catalogue_id": 131,
+  "oracle_id": "cef5361a-a189-4e05-a8b8-fc764aed73b9",
+  "facts_sha256": "ae9bd4fa461dee3ba6f4c96f1eb958b1bc8695ec08e03641d622f8b028c24fcc",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ac573e10cdfd7be4e2f966769c3f8e15153cc00370a9c9fdb8d39c5c9b4664ed"
+  },
+  "physical_metadata_sha256": "4033c7c068ed7c4cf276482b27c0b7cc79440493620a903d005a48011f848f9c"
+}

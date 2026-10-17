@@ -1,0 +1,12 @@
+{
+  "name": "The Goose Mother",
+  "catalogue_id": 4451,
+  "oracle_id": "de595f1b-3f7d-45e0-a31b-ed23e5d1ee48",
+  "facts_sha256": "8f63b654fe76e6a90d15876f226ca78a64e14dbf25b478f09108dc7564ab3b2e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a784b3426557733766557c6f9f9d25c95feb11e66bde35ea4f350c3b5747e715"
+  },
+  "physical_metadata_sha256": "1727614a18d4014fcce2602591b1f44b081eef272cfae231cb223797bc91e6f4"
+}

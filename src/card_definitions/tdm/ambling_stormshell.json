@@ -1,0 +1,12 @@
+{
+  "name": "Ambling Stormshell",
+  "catalogue_id": 145,
+  "oracle_id": "75070eaf-c931-46e5-9aa1-b849e33580c6",
+  "facts_sha256": "ac2fe350c0614e5a53a5894bc17fb22b96d2a4a761c94db6b0c75321efbeee90",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f5931d4abc6e3d3a48270452d66b63b187e8a071b3a4c52809a328c1b401c57e"
+  },
+  "physical_metadata_sha256": "629806ff4ba761cc482d7d882b1871a4dc6686bb0c2d12f1f0b4a3eb16146f71"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Agent Bishop, Man in Black",
+  "catalogue_id": 88,
+  "oracle_id": "f33217cc-175f-45e8-bc69-801f41cb4495",
+  "facts_sha256": "a5b6cc2533be92cfcc3cfec0e8e05c32a723284c92a720ffb4f947cf2136ecbd",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1479df5ecb75dd7370ffdb1a642fe200b9a25cb7ec43be68d8bdbfaaecea4f27"
+  },
+  "physical_metadata_sha256": "2a7f7b24e60fbd332c661f705ea19f19e0c926464644722d197945b07ba92e4c"
+}

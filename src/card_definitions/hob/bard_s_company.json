@@ -1,0 +1,12 @@
+{
+  "name": "Bard's Company",
+  "catalogue_id": 327,
+  "oracle_id": "5c5bfbb2-0e63-4e43-b441-c4878983288f",
+  "facts_sha256": "cf78e7e552580c4e4cbf0037f89a9b80e311eacb8dfe8a5f1f3407a7491c3515",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d5f4d14bd6218c6ad749d5e569c114aa7053732fec0c213d8489b4d924ca0684"
+  },
+  "physical_metadata_sha256": "162ff0c3581b45c0704d5a1de2a25ab8ee4195d41d20e1759941e2c1fec975df"
+}

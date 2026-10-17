@@ -1,0 +1,12 @@
+{
+  "name": "Urban Retreat",
+  "catalogue_id": 4813,
+  "oracle_id": "18290c4b-cff6-4ee5-a487-fe0d5706d3de",
+  "facts_sha256": "3ce0a3bda36ce0a93135254eff54a15773d64a582a997d96254492bd42d50445",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6150116e62a0ede69d0db9e7337c6fdd536c8bd9509ff9810f96d2d1b5d1484b"
+  },
+  "physical_metadata_sha256": "0d65ef57d459fc0c8102bb6ee77e3f2a0cee810bcf87414e8acdb9ddaa7d8a78"
+}

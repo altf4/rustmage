@@ -1,0 +1,12 @@
+{
+  "name": "Lightless Evangel",
+  "catalogue_id": 2495,
+  "oracle_id": "b162ccf8-e0c2-46ae-84e7-dff2b6fceec1",
+  "facts_sha256": "c0ea4858ce0319012fe4efa1a6129ce674ac6fcbfa1f09cc137fcdcac0a54322",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a7bc3a722bc44f437cf0bea0298eb0e128a0163ad0767a1d9995b6a06003d954"
+  },
+  "physical_metadata_sha256": "8321285aa191a52d048f178b68766e48d8b4f2ef116aa318a958b4f3d047ed09"
+}

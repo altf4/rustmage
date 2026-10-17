@@ -1,0 +1,12 @@
+{
+  "name": "The Theorist, Jace Beleren",
+  "catalogue_id": 4509,
+  "oracle_id": "89a6e876-0b00-4671-9652-766fd7ef9bf2",
+  "facts_sha256": "6fe695a327710abba6a545c38f9a7b6d7a29710100fd29ab5d8a9da0da966dd0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8eb8f8b50b2b6a20d4b4e03d69df238ffd0d0ceb7ffb8d5e0ad3c2b8a9f2fc1a"
+  },
+  "physical_metadata_sha256": "66102ca20e696ece0f6a7cd03c45f43ba0075f226f9de5d26ee160513ea2217c"
+}

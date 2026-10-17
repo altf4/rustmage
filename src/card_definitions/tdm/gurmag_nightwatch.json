@@ -1,0 +1,12 @@
+{
+  "name": "Gurmag Nightwatch",
+  "catalogue_id": 1910,
+  "oracle_id": "fde50a0d-9bc6-45f4-873e-3de81a513fac",
+  "facts_sha256": "97ed8a9acc4ddf7aec08d91f40c2e14d6e42f4108b5c3aea0b810b0c57f70a3c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c08fe108c27236b1728660fe94600ab1593ebd94799d726f95381f9c4aaee7e5"
+  },
+  "physical_metadata_sha256": "85e9263f2ca4af7aec18970fafec7089ae643436fa811559292d9708a6c77fd1"
+}

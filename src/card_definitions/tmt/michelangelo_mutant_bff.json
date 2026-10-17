@@ -1,0 +1,12 @@
+{
+  "name": "Michelangelo, Mutant BFF",
+  "catalogue_id": 2741,
+  "oracle_id": "fe1eb8b3-c605-4711-a057-ed3565bfe75c",
+  "facts_sha256": "7801573421febc1122aaa713eec254ee9edfdad8d20dcf147bd36eb1648e5bd8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3a45bb7986e73b98b51fd48ed20cdb502b0d828df47a59257f464949dac705f3"
+  },
+  "physical_metadata_sha256": "a977eff5b6ad384db18496878e184d4040844cc345fc53c52176a2b96881ce34"
+}

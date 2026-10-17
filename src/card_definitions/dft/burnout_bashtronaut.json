@@ -1,0 +1,12 @@
+{
+  "name": "Burnout Bashtronaut",
+  "catalogue_id": 595,
+  "oracle_id": "1b122fbb-c2e1-42d1-bfc5-fcacacdfa0bc",
+  "facts_sha256": "0bb3522d85dba617b8a09b3dddc0eb746e47d416e8f2f7301fb4eb1b3c0da5b8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b2a5b10c6884556e0afae531e88f82a5553a9b73449146bce8d744b9055ff1a6"
+  },
+  "physical_metadata_sha256": "2f983e9f8b9fc7200d2b361a86380733e343d02e0d29ffff457fb084d104575e"
+}

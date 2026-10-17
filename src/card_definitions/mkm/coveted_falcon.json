@@ -1,0 +1,12 @@
+{
+  "name": "Coveted Falcon",
+  "catalogue_id": 873,
+  "oracle_id": "4c495e94-3194-47c7-8129-dd0a0f915daa",
+  "facts_sha256": "e3a2fb6eb4ff34c813b3e7db22124bcaf61130d48c1ee5e20e195d440f3daa7b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2497302ff41737475e6364707ba6e89412b488d2734edde511c0e066a5f0fcd5"
+  },
+  "physical_metadata_sha256": "5466063f8f3174197c7ae7e817d308cd6003564a1aeafcf4897512088ca0c7d7"
+}

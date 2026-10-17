@@ -1,0 +1,12 @@
+{
+  "name": "Quantum Riddler",
+  "catalogue_id": 3306,
+  "oracle_id": "58582fac-4c42-4a1c-9ab1-4a892b500da4",
+  "facts_sha256": "db6140e8e3dd3c1a2fe4e24253fa64cde25d2d20da6510a105340c438e6a13e5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "273fc22178df253eb670b9d9c522dac97e81c589b97c7327f6572ee34164036f"
+  },
+  "physical_metadata_sha256": "99cffbf3265ec121ea19ffff49a57f768d4966f515e0c084727183ae0f637c6f"
+}

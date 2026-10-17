@@ -1,0 +1,12 @@
+{
+  "name": "Rampaging Ceratops",
+  "catalogue_id": 3363,
+  "oracle_id": "91d01119-9b3e-4629-8cf0-bbca2c19a7cc",
+  "facts_sha256": "114ed2c96d07c63fb4ee958c0e69bd342bd1f6f46d28234a3287e84ed6eb6620",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4e964be951533e11ddb227ac6466074cef7ea942b8d78c7b23da7fe75c9f7543"
+  },
+  "physical_metadata_sha256": "f2a74f2dfbede78b8dfc1203c5c18858d6516718b1e1d53ea39d3a81e887d6c0"
+}

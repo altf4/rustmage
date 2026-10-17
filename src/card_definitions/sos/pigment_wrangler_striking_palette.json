@@ -1,0 +1,12 @@
+{
+  "name": "Pigment Wrangler // Striking Palette",
+  "catalogue_id": 3160,
+  "oracle_id": "c008d60a-ee06-4411-b8e7-c2df13616105",
+  "facts_sha256": "5a1094609e15b28bd4a5f4b0f82a1372d7b437cdf726ad1c03f350855ba5686c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "40caed68f322be315fe10227a168f3e9ba2cf2ee4d30049ecfed90506d7209b4"
+  },
+  "physical_metadata_sha256": "33d7b019f3fa64906b75ddaf4cc630a417462cd849c40029678e6bb80d577fdb"
+}

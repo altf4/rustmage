@@ -1,0 +1,12 @@
+{
+  "name": "Araña, Heart of the Spider",
+  "catalogue_id": 200,
+  "oracle_id": "a16037f2-a0f6-465d-8d6e-cec34b4a6320",
+  "facts_sha256": "98aab8a760216467d86c27b76e45b8d024d9c88c008efceaf6d05774cc4a14f9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4a5e3e2111dada26c96af2ce9b15aeddafbff439a3004bf622ebc2e84f290e79"
+  },
+  "physical_metadata_sha256": "2f35384b605060f42d4473d7e24a3519847997734aea2ab9edb2331f6c6df309"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Warden of the Grove",
+  "catalogue_id": 4974,
+  "oracle_id": "13bf8103-3db3-4ee6-a6bb-441aabfd9e41",
+  "facts_sha256": "8d4ccbc58faa773c46169c7915770c3d3f54250f7e9be6274ea0b11e7bb0c5f4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "773bb78d83e973b2b2d27b52b85a47f32a9908dc7cc001ff2432b57c484dbfd4"
+  },
+  "physical_metadata_sha256": "1660b6b3cff438e01f10d30fbaf94ff421b4366022f65e45158e208e8cf0a348"
+}

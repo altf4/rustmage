@@ -1,0 +1,12 @@
+{
+  "name": "Kavaron Turbodrone",
+  "catalogue_id": 2329,
+  "oracle_id": "3ebb8542-5d1d-4f0b-92a9-5a98425860fd",
+  "facts_sha256": "3e275254c808910e573cbfb475cf8ca719572ab888f16ebd8c952e44ea629e71",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0ae6a5361aba55bb1d078956340063f3eb61963347b5da173fd432c6015c2f3e"
+  },
+  "physical_metadata_sha256": "d40dbb11913cb19850ee5108081b855723614fb079e25ed34c0aebaba209ba93"
+}

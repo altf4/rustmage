@@ -1,0 +1,12 @@
+{
+  "name": "Storm, Windrider",
+  "catalogue_id": 4169,
+  "oracle_id": "06e9287b-56d4-443e-97ba-b5dcdc4fa989",
+  "facts_sha256": "a142c9aae362474193cd10fed4f04e90bf49fbfefa84540972e935ae78cdfe4f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "240d71011a34a11e877e0c655f55c71c5b5f0323e872fcac18b4927caba29d80"
+  },
+  "physical_metadata_sha256": "40f856877c6a50a16928eb9f57bfe0b560f5bbc48a188630749f8aa8f7a95260"
+}

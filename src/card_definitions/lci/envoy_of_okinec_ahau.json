@@ -1,0 +1,12 @@
+{
+  "name": "Envoy of Okinec Ahau",
+  "catalogue_id": 1351,
+  "oracle_id": "ebc70734-bf1a-4754-8094-bcbb4db91f30",
+  "facts_sha256": "fbc0e8ec1f4d7de7f0621189b95dc926b2f99b269d91bfbf8eaf64521eff1407",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "89f2368d111ffd5e6296fab039c7aaaba65fce5889d0a9bb186edc4e08a12c05"
+  },
+  "physical_metadata_sha256": "2162565cafd1974808a569f5daa6e9fe794512b17f9d43050690b3372e9f0f16"
+}

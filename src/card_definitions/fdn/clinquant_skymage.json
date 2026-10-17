@@ -1,0 +1,12 @@
+{
+  "name": "Clinquant Skymage",
+  "catalogue_id": 770,
+  "oracle_id": "d9a3207a-a330-4517-967e-f37c9a9f1355",
+  "facts_sha256": "bea5991b20a38ca95a4077269079e6778fc9a1c648ced31f3b57a4b9fd2cfff2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "03d1c26921017774cedffb48d03c614b7609703b7b54435b03e1075ab0d9fd37"
+  },
+  "physical_metadata_sha256": "48236cfe843dbe204f6a14b28db9e520c3c11fea8153b10ec076d6caddc04da6"
+}

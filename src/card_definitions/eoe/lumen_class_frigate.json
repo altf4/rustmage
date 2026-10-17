@@ -1,0 +1,12 @@
+{
+  "name": "Lumen-Class Frigate",
+  "catalogue_id": 2578,
+  "oracle_id": "3aa0cda4-fb2d-4fd4-84f6-482089a85547",
+  "facts_sha256": "e97c0ecc43ef88a9881f86ac1dcb7f2deb246c53dd08e2029c31ffb9e9de31d5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ce812da385ffab1ad502992ee8d11b871c70ef377ed7a1fceb5d9450baa80130"
+  },
+  "physical_metadata_sha256": "d2084912f7d68a924b56b55ab5f51c3039ba0a91bfd8656301288dadac6b0673"
+}

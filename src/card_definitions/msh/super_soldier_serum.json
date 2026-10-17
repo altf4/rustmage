@@ -1,0 +1,12 @@
+{
+  "name": "Super-Soldier Serum",
+  "catalogue_id": 4260,
+  "oracle_id": "6f2ba142-5e7c-4709-ae03-e028cb2a9872",
+  "facts_sha256": "60cf12ea50fdfa3c83145a5d346e8f84a3fdff5d004e36151c827bec082a4f8d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "389642f26f22740502071e266219d4cdb8cf3951fd3c49e8cb7a658470bc4911"
+  },
+  "physical_metadata_sha256": "8c34159c52a9758798fdc232f367588cc90b3cb30e0f628c363462e7ebc5832c"
+}

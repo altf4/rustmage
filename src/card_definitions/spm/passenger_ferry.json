@@ -1,0 +1,12 @@
+{
+  "name": "Passenger Ferry",
+  "catalogue_id": 3106,
+  "oracle_id": "e9832d58-0ee6-4641-a9fd-d34d54b3b11c",
+  "facts_sha256": "c711f3ee05aba6a9a8584584b973b7fdf7e899594ea268a820eacf521fb3a2e7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "27180b13bcd3ba64295337527b4c6bb2cc75b1a10ab112ae7cf7b2609ebc1ca7"
+  },
+  "physical_metadata_sha256": "d98899469eab5185b1eae6bc61f8e83222ebcb4d79158f1a93a69537caa49cf1"
+}

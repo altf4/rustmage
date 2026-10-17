@@ -1,0 +1,12 @@
+{
+  "name": "Syr Vondam, Sunstar Exemplar",
+  "catalogue_id": 4310,
+  "oracle_id": "9e597063-c077-4236-a9e4-b0721b24677f",
+  "facts_sha256": "4484e4142553ad4cdf9b6a4671a55df8a8e65744785eb9ba6cf1459ff35aa584",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9e768ce26f7daf40edeffbab7522feff220243bd998f71c0822066faf9973509"
+  },
+  "physical_metadata_sha256": "07d563804dea8d2ffaa7cdd70439f495ac2c7035cb41c9d9812a56b2d7bc743d"
+}

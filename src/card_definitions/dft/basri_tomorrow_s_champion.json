@@ -1,0 +1,12 @@
+{
+  "name": "Basri, Tomorrow's Champion",
+  "catalogue_id": 347,
+  "oracle_id": "d8e1e9ba-708c-4f54-abc3-817004a2f2ac",
+  "facts_sha256": "f1edb3ac4b68d8aeebe803bffe35f7c44065ea4b181b05b37753a79e4fff13a2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5697bdac81d251d6d0c514578fb95d41e6f4eb799852fee6d06eaaa204cfe83f"
+  },
+  "physical_metadata_sha256": "2c93c4fe4dccb9b5e4e3099cb5ff4400d54f1a68adf1b59c3768234c25f483df"
+}

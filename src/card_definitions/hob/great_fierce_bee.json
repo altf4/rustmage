@@ -1,0 +1,12 @@
+{
+  "name": "Great Fierce Bee",
+  "catalogue_id": 1862,
+  "oracle_id": "37f82ad8-4f0b-4b17-abcc-03f43d4fdf1c",
+  "facts_sha256": "6d0e4e35806b5c7bcbbf50bc413760cb9bdb0ff72b2a2fa2e2bb0b12c3568261",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eadca3640ffc890a83f8ce940dc67871a1e7acde88496151b05c2939b5e4f1fb"
+  },
+  "physical_metadata_sha256": "07b6d8249e46eece266273a5ac2cc0007561c61cca214e8cd79dcd25356a04ca"
+}

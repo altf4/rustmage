@@ -1,0 +1,12 @@
+{
+  "name": "Worthy Cost",
+  "catalogue_id": 5117,
+  "oracle_id": "0f8ebf11-b5ec-4f21-8c49-90d569b5a4c5",
+  "facts_sha256": "82d7f0d3624278304111b19e236dcb46a74186f70bafa2148a253d6c65357aeb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a454e377e95bf125694e843b1d96c157829bea6eb9254dad3b5e2002c516aa54"
+  },
+  "physical_metadata_sha256": "c07aa539677287682ee3c905766e4bec45459097c8d7dd11fe98c3b8a6c8880a"
+}

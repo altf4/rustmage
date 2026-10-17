@@ -1,0 +1,12 @@
+{
+  "name": "Vampire Neonate",
+  "catalogue_id": 4839,
+  "oracle_id": "c0045925-25bf-403c-b721-5f05ba30985b",
+  "facts_sha256": "41f0dc4745cb3ce5c628aceefe490e12ce11644fe03f9238c88f7827547a1a7d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ec163c32689caad5c0e982e2202f360b467a98dcd35c00548a08cd699351911c"
+  },
+  "physical_metadata_sha256": "61b2d95d3cce18323246c34873ce7afe4196cc59a46ab0e8a0c6ed4c802e6ccc"
+}

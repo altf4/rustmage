@@ -1,0 +1,12 @@
+{
+  "name": "Coliseum Behemoth",
+  "catalogue_id": 794,
+  "oracle_id": "076cf4f1-b3d4-4175-b976-938ad851cc0e",
+  "facts_sha256": "1d87deb1887ec05bb89b90238a230feaae4614e1f743422d8d4e676a89b3ce6b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5e8bb7a2a6a9d78bc9ec3373b1078fea3de8664827afe267b807d35b1551bf39"
+  },
+  "physical_metadata_sha256": "d5dbc451158984273de11b19e91dd9486dbb18f7388e7ab33d31d3a9700d56da"
+}

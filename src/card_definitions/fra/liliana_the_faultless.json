@@ -1,0 +1,12 @@
+{
+  "name": "Liliana the Faultless",
+  "catalogue_id": 2506,
+  "oracle_id": "22c2e66d-a2a1-46db-a70a-dff5ad5d6c14",
+  "facts_sha256": "b0a6a4afdd047acd30f207f09024c0b38500df35163ca3e9a4739a8177893112",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d214f3c67d281d6be08d1226cc1224f499bc3073711d826fe257bcc112b3f6a2"
+  },
+  "physical_metadata_sha256": "18ac3e653220f767c45260ef26e39bc1a93132247871bbb26cc38c645075685a"
+}

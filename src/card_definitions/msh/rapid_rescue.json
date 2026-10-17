@@ -1,0 +1,12 @@
+{
+  "name": "Rapid Rescue",
+  "catalogue_id": 3382,
+  "oracle_id": "de1ad369-5aa3-4c54-8fb1-30b7f1d4d542",
+  "facts_sha256": "c83a97df4104d42922aec6f1985e064d04c5859ab6e8ba3a6e7f17b9dec859c6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b3976da37a8b04f6f489037b7c26401e751d39f5a5137f4412628e1d4cea10d8"
+  },
+  "physical_metadata_sha256": "65d96d68c58158c35bafa399039cdad602dea4d1b8a0b59e8c8d1ad79431cab7"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Stingblade Assassin",
+  "catalogue_id": 4141,
+  "oracle_id": "7938112a-3832-42b4-b123-27a42c06a290",
+  "facts_sha256": "98f02dfdc78784be25a58d0b4533721c79af3d24e7d81f33ff6cd72702c81979",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8664eb1199cd9850480c548ffd753bfe0dba6be37d33feca9afaea0be5066ea1"
+  },
+  "physical_metadata_sha256": "4a058bb9a74f16cac09dbf390c17646e291b90e73caca92118ea7fdc7073fe12"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Case of the Burning Masks",
+  "catalogue_id": 661,
+  "oracle_id": "7c1eb874-97f3-463f-bf4e-4d82dcc16e69",
+  "facts_sha256": "3c42a618082994a20acfb4589ed337ad218702df22165321887d3c4110d92f27",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6ec8d4d3c5ac8151c30fdcc32e115b7e851c4978fa6fb3c1507b177891288ab3"
+  },
+  "physical_metadata_sha256": "12b7d60733fa6d78e4a8d7ed622427cb489b900690dd8978a42660755dfd58e7"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Ooze Patrol",
+  "catalogue_id": 3024,
+  "oracle_id": "a9e3e8b0-4276-419d-9326-be56af3c41be",
+  "facts_sha256": "c226b9e0e341a7a9fc332b704ba41618a6dabcece0e761c9f6cd38cd73cf392c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1793bd6c4d87548020c8a881e7e99385116ca1431adfbdde677979c79e925dee"
+  },
+  "physical_metadata_sha256": "a46475ee7f9833d88c01147370b42a6c7dbc35feb9a452cd6260736b13ae1b52"
+}

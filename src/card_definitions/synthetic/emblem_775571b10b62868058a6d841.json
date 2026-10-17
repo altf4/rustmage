@@ -1,0 +1,12 @@
+{
+  "name": "@emblem/775571b10b62868058a6d841",
+  "catalogue_id": 5333,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bfe9d95c941d21b904a25f33732b0973c47d2e91f29fafa00c117242540734af"
+  },
+  "physical_metadata_sha256": "ee8b7641afd7db7ce98aebaca28a72b353dda843f427dcabee114431c2f631f6"
+}

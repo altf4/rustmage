@@ -1,0 +1,12 @@
+{
+  "name": "University Campus",
+  "catalogue_id": 4787,
+  "oracle_id": "98e547de-b963-4ee4-9a08-67bae010734b",
+  "facts_sha256": "2cfe879a3dc179b64984bdc02583acb48bdd0522f0225ccea73cd5f0501ff974",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5a71d64f8ea50400c6b66b332aa17af1522ca4c85a18c99326be9f74bfffb47f"
+  },
+  "physical_metadata_sha256": "06cef2f3ce41039f536c8c75476bd2f3583f2cbf2c828d186691c892e7df8668"
+}

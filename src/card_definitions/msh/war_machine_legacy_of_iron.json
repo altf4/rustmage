@@ -1,0 +1,12 @@
+{
+  "name": "War Machine, Legacy of Iron",
+  "catalogue_id": 4972,
+  "oracle_id": "ae6d1aa3-4ceb-4fc1-a3a6-033afd4b3bce",
+  "facts_sha256": "be774c1ef9ff94e34e10c9e0917d239e31c4375b7b0ee8478107a82424fbc735",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9a1e52ac363c0585f543e75e83350a5909e4586d7fd6aa1ce684599af46a1d0b"
+  },
+  "physical_metadata_sha256": "0acf2f9ec2715c6dcbc7c8fb371747d3452199c1b40fb79a4a280e0faa6aabee"
+}

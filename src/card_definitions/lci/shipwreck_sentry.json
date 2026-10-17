@@ -1,0 +1,12 @@
+{
+  "name": "Shipwreck Sentry",
+  "catalogue_id": 3837,
+  "oracle_id": "f05575f8-4961-4780-83fc-3584d9146a14",
+  "facts_sha256": "9bc771781287f9aa1c6b8c5763b35b156f6f9564ead32f83acf3b002b592d3d7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3642f6861c345c97afc0de2e3d0f1f65fcb7777b5be90623cd263d2021308273"
+  },
+  "physical_metadata_sha256": "b1baa56e8fd0e326ea4242f08390533b373c8699a0c2aca2cddc5baabedb4b7d"
+}

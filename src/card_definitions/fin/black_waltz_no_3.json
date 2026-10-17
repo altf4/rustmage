@@ -1,0 +1,12 @@
+{
+  "name": "Black Waltz No. 3",
+  "catalogue_id": 432,
+  "oracle_id": "9c84c681-40c1-4ff3-86e6-48b4ab7491e5",
+  "facts_sha256": "c835bd52666e0997dc9a7523a696f47069d732b85d173127d47be0d7f4e8f8b7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9ebcc36af39fc5ff0d73bc20472596051ea493fcbca36bda798c603cd13afcfb"
+  },
+  "physical_metadata_sha256": "8ac868bdc0b68b7efb3a262cddde2c9e08b91a31a7c4b8122e50f9953b518c64"
+}

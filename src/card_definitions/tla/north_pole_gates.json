@@ -1,0 +1,12 @@
+{
+  "name": "North Pole Gates",
+  "catalogue_id": 2963,
+  "oracle_id": "3fcd1432-66d0-40e1-85ef-b57a6fa94b7c",
+  "facts_sha256": "e6dae01790d241c94e44020d8372c7feedcd5f6df07b97d6e0abffde73dcc415",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f71ffc7eadb621bd28fd249037af31b51650a00519e68713bb4562955db6459a"
+  },
+  "physical_metadata_sha256": "a4e0fce491b8dbd58000531adb014de427778e19f02462d9b70134a8b2307bcc"
+}

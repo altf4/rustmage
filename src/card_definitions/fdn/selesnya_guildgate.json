@@ -1,0 +1,12 @@
+{
+  "name": "Selesnya Guildgate",
+  "catalogue_id": 3778,
+  "oracle_id": "75b235d3-595a-4859-be45-9559d8445db5",
+  "facts_sha256": "4c889ed9ccb2a1f6b016ea19290e158890859a269f7825227c802727669091b6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "74e946380968d2ffcdc5268ecfd93496d329e49aa09163e5085bd45a822df1a4"
+  },
+  "physical_metadata_sha256": "fe870e310c08ac7046418a7cc70e69ff88e702633a1a1c3fa0ca109bb6debe81"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Zoraline, Cosmos Caller",
+  "catalogue_id": 5172,
+  "oracle_id": "5a775f50-20f8-4a8f-868c-8907305bfad6",
+  "facts_sha256": "61926c13726a8e4ea3a149084d80fe5794a74e41a3f880a0cb10758622d5dd80",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3b1bc70ec29e030f5bf4aa15bae45282d9894f8ea202e76f6bd336b3c6857235"
+  },
+  "physical_metadata_sha256": "b2a561f065c98677a701b85c141898fa10d5ccc0802a02f2c838352c47695abb"
+}

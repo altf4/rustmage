@@ -1,0 +1,12 @@
+{
+  "name": "Temur Battlecrier",
+  "catalogue_id": 4374,
+  "oracle_id": "fadf984c-c224-432a-87b9-b34f929b8409",
+  "facts_sha256": "2c6f5dca886a53fe9d6b9568138f986398036694ce760eddc78408f06e3a42b3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2b86239615420470ac5d809e56e13813379adc1568dfb6e796a145854b389ed1"
+  },
+  "physical_metadata_sha256": "77bdf6e581c028d29b5cc5c0d1fdbe362ad6108a07ca57c9bca840657710ac74"
+}

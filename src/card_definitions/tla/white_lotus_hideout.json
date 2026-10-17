@@ -1,0 +1,12 @@
+{
+  "name": "White Lotus Hideout",
+  "catalogue_id": 5043,
+  "oracle_id": "2cdbfda3-98fc-4108-b551-c7049168924e",
+  "facts_sha256": "c4ba6aca5a036edd92c519d35485219a09c2f046804d44dd8a1b4b80a022d902",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "88839bbfbbb39c2cc0bb508f40846be7f839fca66369ebf8fa4a0ba993513bad"
+  },
+  "physical_metadata_sha256": "24f89b22881b0d94fa03323b32f51aca581ed93fdadbd094c4b3ebd4fcbe558d"
+}

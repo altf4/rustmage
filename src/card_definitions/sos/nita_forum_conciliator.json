@@ -1,0 +1,12 @@
+{
+  "name": "Nita, Forum Conciliator",
+  "catalogue_id": 2948,
+  "oracle_id": "f589e5ee-399c-4613-b7a2-9ab2866cc830",
+  "facts_sha256": "03dedf56d9af47d93c53146becc9f2b4d490e478217bfb66cbb6f8377c558b6e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0732246c8be76578713145d9fc3d1f031f4ce28c442b05c8b2d6d09a98f5cf2e"
+  },
+  "physical_metadata_sha256": "fb88a4001ad81cf3c21d2e160a984a76333dd50a9f3d0ce9bcac3495630fda44"
+}

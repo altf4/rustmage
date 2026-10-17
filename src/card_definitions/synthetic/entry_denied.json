@@ -1,0 +1,12 @@
+{
+  "name": "Entry Denied",
+  "catalogue_id": 5200,
+  "oracle_id": "52fd9309-b849-419a-8d19-5882c00a72b4",
+  "facts_sha256": "02a647bc38eca778390d9acfb34ad190706d1ec1274ac4bb036873a8abbd9ffb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e051ece2f42f4788d17a1d092beede8c9e8f315c830a7e3b4294910c5c62fb46"
+  },
+  "physical_metadata_sha256": "42400e0464d5a7d9a8d4df1ca90aab31bb728eab3c8b4dd04d698eb39872f98e"
+}

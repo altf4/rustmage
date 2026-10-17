@@ -1,0 +1,12 @@
+{
+  "name": "Punishing Punch",
+  "catalogue_id": 3281,
+  "oracle_id": "454c4e8b-e417-4381-a931-6a11356ef64e",
+  "facts_sha256": "783d3502841ba9d4ea7f62c74bca72d65a9d37eb476bf4ec76d9d0ab862dbf22",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1c3921a558ad7865f3f474d8e11d032297e957e03dad3122dc15a016c54192d6"
+  },
+  "physical_metadata_sha256": "8f4b8a56b6c9c203729c3f54cbdeded148afcaa10d04eae435fb79d1eb50f170"
+}

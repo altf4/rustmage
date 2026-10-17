@@ -1,0 +1,12 @@
+{
+  "name": "The Notary Hobbits",
+  "catalogue_id": 4483,
+  "oracle_id": "dc20b29b-856e-4d45-99cd-5e12cfc2324d",
+  "facts_sha256": "fc5dd40445a4a26b35489e84896c051acfade2e9f03309383acf3326f723bcb1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "75653d070fae58d5adc669a1906c4c2aadd6f493b98d35d4e118d1805732eb41"
+  },
+  "physical_metadata_sha256": "ab6c95971435ce2432cd8e97bbc072053a39f87f1579aaf4bd7d665d983740d3"
+}

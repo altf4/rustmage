@@ -1,0 +1,12 @@
+{
+  "name": "Spin Out",
+  "catalogue_id": 4045,
+  "oracle_id": "c1b6795a-1ac6-4edb-bcee-4db1f1fbe8ea",
+  "facts_sha256": "a1b7763f89ba9055d73200f4509f670e75411a58c898eb7b89795c21078dd2e6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "81ce7f982859bbefd2e8090d66583fa943ec140c8658ecfced293c848f209e3d"
+  },
+  "physical_metadata_sha256": "a36649b211732a58f4729321e83c29f15cd69691a57505dd2bc845695730b5e3"
+}

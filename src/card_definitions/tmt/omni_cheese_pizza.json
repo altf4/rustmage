@@ -1,0 +1,12 @@
+{
+  "name": "Omni-Cheese Pizza",
+  "catalogue_id": 3018,
+  "oracle_id": "73144877-1d37-4c7a-8493-3cef191b9211",
+  "facts_sha256": "f7aeeccbd9dd02eb712ba132e0645946e25f83b667e219b9ea655e35f58caaa2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a0d8d2f0a867e9add3a170d1e9777643c94c7cba91df4abeefbcbff67e18e241"
+  },
+  "physical_metadata_sha256": "cc89f153d27b21e4fc3d325dcdfc2919953e104d7c003ee5ece1f4587ebd582b"
+}

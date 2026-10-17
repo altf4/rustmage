@@ -1,0 +1,60 @@
+// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+pub(in crate::cards) const RULES: CardRules = CardRules {
+    effect: Effect::Permanent,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::AtStep {
+            step: TriggerStep::Upkeep,
+            relation: CastRelation::You,
+            guard: StepGuard::Always,
+        },
+        targets: TargetPlan::Single(TargetSpec::NONE),
+        program: &[Instruction::Surveil(1)],
+    }],
+    activated: &[ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        cycling: false,
+        origin: ActivationOrigin::Battlefield,
+        cost: ActivationCost {
+            colored: [0, 0, 0, 0, 2, 0],
+            generic: 4,
+            alternatives: &[],
+            additional: None,
+            mana_component: true,
+            tap: false,
+            sacrifice: true,
+            exile_self: false,
+            discard: false,
+            life: 0,
+            remove: None,
+            loyalty: None,
+        },
+        targets: TargetPlan::Single(TargetSpec::NONE),
+        program: &[Instruction::CreateTokensScaled {
+            token: Card(5325),
+            amount: AmountValue::Stat(StatValue::Count(CountFilter {
+                zone: CountZone::Graveyard,
+                relation: 0,
+                kind: 0,
+                exclude: 0,
+                subtype: Some("Elf"),
+                basic: false,
+                other: false,
+                cards_only: true,
+            })),
+            tapped: false,
+        }],
+        sorcery: true,
+        once_per_turn: false,
+    }],
+    enters: Counters {
+        plus_one: 0,
+        minus_one: 0,
+        stun: 0,
+        loyalty: 0,
+        lore: 0,
+    },
+    entry: EntryTapped::Never,
+    keywords: Keywords(0),
+    ..CardRules::EMPTY
+};

@@ -1,0 +1,12 @@
+{
+  "name": "Sleep Magic",
+  "catalogue_id": 3917,
+  "oracle_id": "33d6f4f0-e1ad-4363-a012-46a1bd9daeb7",
+  "facts_sha256": "9490a57ffe1a628d5b148a8cc2f9b0379f0e8308d26d69c41876355515b3be06",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "111a962c68a86a304ad4fd70bce014b8558b44fc92d5483bcbd99480ae439712"
+  },
+  "physical_metadata_sha256": "7bad8c7f46a8b2680d15950b3b3e8a2553002b29ba90c4792564f3aad47fa9ca"
+}

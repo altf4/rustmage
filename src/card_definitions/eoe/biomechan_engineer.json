@@ -1,0 +1,12 @@
+{
+  "name": "Biomechan Engineer",
+  "catalogue_id": 417,
+  "oracle_id": "b395925b-2456-454e-9262-3b55c9f2799a",
+  "facts_sha256": "29a15fefb2eb93683f61791558df5a2a0b49194a1e9aa501fffb0308e68054cf",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bd25c0c52e0bf2d40bf66df765e9adb4fe38b8ba7edc442ab9744e516510f1ff"
+  },
+  "physical_metadata_sha256": "e3c793b3eea4ab2f814a02df513eff0e021e6b7640f96071579d167670ddb4a3"
+}

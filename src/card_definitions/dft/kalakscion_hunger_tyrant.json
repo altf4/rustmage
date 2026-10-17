@@ -1,0 +1,12 @@
+{
+  "name": "Kalakscion, Hunger Tyrant",
+  "catalogue_id": 2308,
+  "oracle_id": "d85f5edb-60a8-4abd-82b0-f9a58f3d4185",
+  "facts_sha256": "abcdfcfcb773f3e4dbd659e73a44cb9ae852a02a7ba6a30c5ed818aabf684cf4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3358fc873d6bca71c23a8ab7faf6643a2abe30c1be3f4cd80b72ae484de1dfed"
+  },
+  "physical_metadata_sha256": "f7441f329ee2e2456ed385af88dbdb1fd0bcaa366a512bd6f0c2462e088028c8"
+}

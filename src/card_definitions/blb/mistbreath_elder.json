@@ -1,0 +1,12 @@
+{
+  "name": "Mistbreath Elder",
+  "catalogue_id": 2791,
+  "oracle_id": "bf9221f5-a4b2-4074-901c-0fa3c2bda80c",
+  "facts_sha256": "b0ee861dbd6428438044d3c0ccaa4f718bab3aa4c47faa5d4bc39ce38eee5995",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8564eb40adcc628088de89a6d4b32c329029eedba4f78237399025e62a8999f6"
+  },
+  "physical_metadata_sha256": "718237eac4ba106c05bd0c0a7634dcbac35cd106f4afcf876ccc89ffdf23418c"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Loporrit Scout",
+  "catalogue_id": 2554,
+  "oracle_id": "24630190-a630-4dd3-a8f7-82f129c881e3",
+  "facts_sha256": "92a4cb407b9cdbc0b164b1da01c4cc6bc9574b58def18f871de44a45d4a15ec2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d9269c6d485d8cd27d12017cf9bbb80064e4ada33a717d6e43502c8d1ce27a37"
+  },
+  "physical_metadata_sha256": "9911260411ee77926c079f7733a9f2e89a2a763d5a0537c2fa74c446ef82b78d"
+}

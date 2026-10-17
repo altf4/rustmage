@@ -1,0 +1,12 @@
+{
+  "name": "Ride the Rails",
+  "catalogue_id": 5215,
+  "oracle_id": "df555f60-2164-49dc-be67-00aca9eb0d45",
+  "facts_sha256": "4b082a0c271204cf80ced5ece0f27ad2b703100b626be3c76fb40389a59d7b67",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "48221227428e555c3b17ec03f042ed21b4dba646e83fe961d3ee31f8cb8918c4"
+  },
+  "physical_metadata_sha256": "9cb14be0bc2efec801aed8a396b4f919af231e8d35b7706cf5e4914f3632d2ef"
+}

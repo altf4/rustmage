@@ -1,0 +1,12 @@
+{
+  "name": "Valley Flamecaller",
+  "catalogue_id": 4829,
+  "oracle_id": "60654004-7d9a-47ac-a70d-b246dd1728d3",
+  "facts_sha256": "1679072aa19db37e09a73a25868095b87b6d21c12a4584000253d7453e28ab6a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "efe364a98c11f79184a58f7b10f1beb7b3f31d9139af66ed523715032da12a5a"
+  },
+  "physical_metadata_sha256": "5178e87991f629aeaf189ec859f31bab5dab8dae46c40c3a1fa21ed8a2e1d770"
+}

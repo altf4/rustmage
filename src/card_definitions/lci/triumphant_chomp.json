@@ -1,0 +1,12 @@
+{
+  "name": "Triumphant Chomp",
+  "catalogue_id": 4685,
+  "oracle_id": "d417f574-38a4-405c-83bb-49c5cf542648",
+  "facts_sha256": "7d7c3f1c77d79a783c99a418cabbfcfb2e16183dafb8bde96c68f276ccb2741f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c682e27bc482e89f798ad161b4a7d1d5117bc5be3bd00dc5b898f35c275a32c4"
+  },
+  "physical_metadata_sha256": "f4748cf824774ba2a6da6698f444e358e0118d0cfb1bf2b935af7b32a8dbe7c2"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Deathcap Glade",
+  "catalogue_id": 1005,
+  "oracle_id": "f6d24565-5b32-4eff-b2e0-6e2c25516ff0",
+  "facts_sha256": "153ea61197884ff18405b94bc4f4f8e6f2aa063e43eb19b9041736bd6ba7d84b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "76f17df86c4abb976dbabcbcef7e7d31e499a6e1b54b4645fa86efeffba7129d"
+  },
+  "physical_metadata_sha256": "eb982b3e9499da5cac3d79c0a562baabdaee1bd764b4e6ff7d23958f97d068c5"
+}

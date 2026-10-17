@@ -1,0 +1,12 @@
+{
+  "name": "Restless Ridgeline",
+  "catalogue_id": 3489,
+  "oracle_id": "4c0f4a63-586a-4dde-9621-b0dd9118b2e5",
+  "facts_sha256": "bf00916edfae0daf027ee827cf819eebc03f9e8ac4706117c4b9f95a04e3b92d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "aa3f28fe6941cafdc2dd6261bafa66e0b2e2a113f8c5d0f67c77bdda264c6ad7"
+  },
+  "physical_metadata_sha256": "347602a5970712083e7359fd7231452b2ed739d41dd870b57b8b92f368c938d0"
+}

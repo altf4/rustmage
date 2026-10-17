@@ -1,0 +1,12 @@
+{
+  "name": "Make Your Own Luck",
+  "catalogue_id": 2633,
+  "oracle_id": "41246140-4b44-40c4-b92b-501e49c50bf7",
+  "facts_sha256": "a6e6b99e3e5f6096340ca6f3a7a446b63baf7492ebd94c910525c8680e24b8fa",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "88dd1f381e2b0d41871347a9570b8fb97f5eb684e66adf716e544e95d0ca7aad"
+  },
+  "physical_metadata_sha256": "b0240d878ecd480bb3d9f1b6b73cd86b0502e94818acbcabf4355ee25072ad26"
+}

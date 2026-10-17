@@ -1,0 +1,12 @@
+{
+  "name": "Assimilation Aegis",
+  "catalogue_id": 249,
+  "oracle_id": "6d39d218-254a-4886-907a-89df605d7ce4",
+  "facts_sha256": "be8b1da1aba92cd3d437e3db856613de9635211a1054ca0a887e3336c28c8e80",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d41d4b33a41d105f87b2e1eade41f0d0fb4287a3c14f1d63488684a07ab851a1"
+  },
+  "physical_metadata_sha256": "5b60eabf87bc39b766196114f79251a43291b7d41c65fe5a30440f7966d9c367"
+}

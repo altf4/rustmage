@@ -1,0 +1,12 @@
+{
+  "name": "Shark Shredder, Killer Clone",
+  "catalogue_id": 3815,
+  "oracle_id": "dabd0867-ee3f-40cb-8314-b4a3966f8b24",
+  "facts_sha256": "cd533dcf4621e2febe69d736cb7794b713d80bb1de6035a577c827f7aeecbc1b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a6f5eb7aca4f789b50ed0858e2407114310f904efad164a0d8243e4fc75bf9e0"
+  },
+  "physical_metadata_sha256": "89cfc0d45a60adcaa06a5c6d16f3a26838969329416421288ea5e95456143da9"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Earth's Mightiest Heroes",
+  "catalogue_id": 1240,
+  "oracle_id": "2b87bcac-ec64-4012-9e75-f459d3640eb3",
+  "facts_sha256": "9b7fca4607c4c8898387011f843a6f7631bbd52ade167f643ac6a49b3ec70056",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f10bab81975866c92e3d9f8e9fc5c0b116587bd74cd13b3b2ee57a28ac0782f6"
+  },
+  "physical_metadata_sha256": "b915192cf3f27386ce0f06c7041a11fc012098f96a8df663b9eac87d841b65c2"
+}

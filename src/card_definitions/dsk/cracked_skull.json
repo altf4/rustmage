@@ -1,0 +1,12 @@
+{
+  "name": "Cracked Skull",
+  "catalogue_id": 875,
+  "oracle_id": "4415b65d-5473-4b19-94f7-e5cf4ce64d5e",
+  "facts_sha256": "a196361794b795253362c52ad41b15a1bca1e9d3ef635c26093d75d2da741c06",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c414d9e4dfbbabf8686ce26a32b3638af562c570d3c2f231835df2191bd3763a"
+  },
+  "physical_metadata_sha256": "f1eacb50277533f2c62d89ec843ab792c886144aee8456f899bfd6d5b9565176"
+}

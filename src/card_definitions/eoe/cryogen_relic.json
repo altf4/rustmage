@@ -1,0 +1,12 @@
+{
+  "name": "Cryogen Relic",
+  "catalogue_id": 909,
+  "oracle_id": "106e9c0d-67a2-4db7-97d9-03e1ea1b40b5",
+  "facts_sha256": "c56696637ea3e7134fd4a71f4d77db022ef46b92b9e1f70badf7d125d6f8beca",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9e0b0e1c2a6ba37c67a6d46a0526bd77763eb7311c3b1bf62ad0d8c6efa942bd"
+  },
+  "physical_metadata_sha256": "ea9eb0a8a9f6bb3e7f8a7f5e5cb15fa201e78bf8a7b6d304fc2b44abec70acac"
+}

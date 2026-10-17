@@ -1,0 +1,12 @@
+{
+  "name": "Chrome Dome",
+  "catalogue_id": 748,
+  "oracle_id": "3dc71e16-b935-4ad7-b3f7-945ac2c179a7",
+  "facts_sha256": "5b5fd0d0c1714e7e8f846c30f46f8ea62415c5671c995c364a3e7f5819404510",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cad703379a1ceeeac6a968d66fd4eec3a3d83ed4cbc2fbfd17161ec20c33458b"
+  },
+  "physical_metadata_sha256": "e6a010f9c4b6eaaf445407c89790ebd91fb158288d9193c0f490cbd166b62eb3"
+}

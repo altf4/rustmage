@@ -1,0 +1,12 @@
+{
+  "name": "Inverted Iceberg // Iceberg Titan",
+  "catalogue_id": 2215,
+  "oracle_id": "3feedc63-173e-4713-8e96-8f1c9576055f",
+  "facts_sha256": "e3d3aeb5cb90c1f16b41a6314fb5ed1122022b652f20159cb1b59355473ba019",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5c2c077545f7473bf3372ff31cbe60a9d65b2d8a77aa07b80aa92e2e2a153bc6"
+  },
+  "physical_metadata_sha256": "ce062028d854cc95fc57abd05c5a1f85182f1e72d863d949db73447bc7b618d7"
+}

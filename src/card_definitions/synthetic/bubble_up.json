@@ -1,0 +1,12 @@
+{
+  "name": "Bubble Up",
+  "catalogue_id": 5208,
+  "oracle_id": "a78b063a-7f74-465a-9670-34f927f4bfe9",
+  "facts_sha256": "f7587455d7124fda0b5a89183b67fde94261560f50cd110798d459d4457cba20",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "98806df430812cb322ce9fe568e47ce3b85980189dee849b69edb0b81ac20f4f"
+  },
+  "physical_metadata_sha256": "557b97b7d74018e241f9dc7b7abcc1e8281dce00303cf065a13926ffe37740f7"
+}

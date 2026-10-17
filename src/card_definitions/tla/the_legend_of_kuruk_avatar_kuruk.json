@@ -1,0 +1,12 @@
+{
+  "name": "The Legend of Kuruk // Avatar Kuruk",
+  "catalogue_id": 4463,
+  "oracle_id": "201b8936-18f4-4881-a1d4-c308cf3832bf",
+  "facts_sha256": "85c6f9d7db7041d298b744d2fe30b694c5cd969fee7743d3cce3923d1b659b11",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bbb81bbb000dd35136036a29d0df412cae31562a267c1bc712411cfd9d796860"
+  },
+  "physical_metadata_sha256": "0bbc66155c750a7cac1ff65958f22f319c7246122ff3b975fcdc5d56b7f4c1ae"
+}

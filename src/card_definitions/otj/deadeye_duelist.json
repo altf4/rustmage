@@ -1,0 +1,12 @@
+{
+  "name": "Deadeye Duelist",
+  "catalogue_id": 993,
+  "oracle_id": "29ef90ac-2396-4488-970d-d440297ba5ee",
+  "facts_sha256": "d060b55745884962f31be4773724c863a9f324395d20c8a31aea4fa2dbc6947d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "faea9a77fdaca62d5d8714c9c01923226e5153f21fddacb5d907ca3ba9d6893b"
+  },
+  "physical_metadata_sha256": "a94c9fcd70bccc30a9a9dc3898b48b250c6ae3d58be15a6d38c695b0c43783f4"
+}

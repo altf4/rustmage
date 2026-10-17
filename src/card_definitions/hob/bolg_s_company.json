@@ -1,0 +1,12 @@
+{
+  "name": "Bolg's Company",
+  "catalogue_id": 487,
+  "oracle_id": "fa602f8f-1d80-4f6d-8b8f-d1a1f36037bd",
+  "facts_sha256": "251818d55217c6e9b29a208c24baa1d5b6d5df291aa819199a323592b0e3b764",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5630afb13bfb41d6f7ef5cffc66103c5c310ddb4fa49726ea18690cf104e2c23"
+  },
+  "physical_metadata_sha256": "828e4ae163dfe925b9602e7a00769a07de07e2389adf9ba824788a1d8398f8db"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Hylda's Crown of Winter",
+  "catalogue_id": 2115,
+  "oracle_id": "a8291d04-240e-456b-8c86-1fb4eb460476",
+  "facts_sha256": "0631d031e9d26582941508870cee6f4764c907e5286ea6b44f8fa8312c376d8d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "02acd07f89538ea6b654150d99395f72f44217817fd7818dbfe506b18e12bc35"
+  },
+  "physical_metadata_sha256": "42f08db74b19b9569d1954fe56ab17fdfd8070abc931aeaac3df8d60eacee760"
+}

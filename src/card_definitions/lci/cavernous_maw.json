@@ -1,0 +1,12 @@
+{
+  "name": "Cavernous Maw",
+  "catalogue_id": 691,
+  "oracle_id": "952ab8fe-f7d3-4673-89de-8c6d3f8a081f",
+  "facts_sha256": "b5161615bb5b7439638065acb1828561dfe588a998325c501f62879efe928a07",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "307ccaf1b357d5d01ca44a133f6a72c317a8e9dca9236b9eceeea608152bb53b"
+  },
+  "physical_metadata_sha256": "157634aa483061d6d553a5c0f8d8337c1ce7b24b84d6f4dc831527bd5eae2590"
+}

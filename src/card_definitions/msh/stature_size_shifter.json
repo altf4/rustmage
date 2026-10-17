@@ -1,0 +1,12 @@
+{
+  "name": "Stature, Size Shifter",
+  "catalogue_id": 4120,
+  "oracle_id": "bd49a05c-ed51-4d69-ab9b-11192442ec17",
+  "facts_sha256": "f1054d8b4d14261afaf42c232f4e2b84ae55e1b0cb41f38ed1be90a5c4252c31",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7a1351cf523efca92ac4172acab1c040a3f60b261a3cd43ca41f80942783ce93"
+  },
+  "physical_metadata_sha256": "b871a9d8df9591fd71ae5e354a19e9a5e0a352707f19a17f5acf3037973ef6a2"
+}

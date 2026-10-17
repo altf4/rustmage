@@ -1,0 +1,12 @@
+{
+  "name": "Basking Capybara",
+  "catalogue_id": 346,
+  "oracle_id": "0ce678fa-6495-4857-b178-231c283b4514",
+  "facts_sha256": "29fc72946f20b27880bdafff09f2382bab142daedbb889818a40e25ec28825ae",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "abfe83ac3bf2976389bbb083849b3b6b60175a5ca33812d27b6128cda49e07c2"
+  },
+  "physical_metadata_sha256": "f602d5dae97cfd9a302a37247e58e90f778a65a4685ea5658bd7d69e425b61d3"
+}

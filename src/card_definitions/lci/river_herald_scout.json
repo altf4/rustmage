@@ -1,0 +1,12 @@
+{
+  "name": "River Herald Scout",
+  "catalogue_id": 3549,
+  "oracle_id": "021428b1-005c-40ed-9d47-fb5aa970598b",
+  "facts_sha256": "8475d3380d3c50700827ed6bd20e646456fed6f2bc37d03edca0d820e435bc70",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2bb57557a285bdd6973fafd480f240b75134b98cb2137f7897486444f6784054"
+  },
+  "physical_metadata_sha256": "332fc0b2dae3f3070f1896e62b402206a2bb89fb2d58c47441fc3dd71ec24536"
+}

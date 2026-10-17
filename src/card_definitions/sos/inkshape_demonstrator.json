@@ -1,0 +1,12 @@
+{
+  "name": "Inkshape Demonstrator",
+  "catalogue_id": 2170,
+  "oracle_id": "4993651f-f161-4007-b485-a0c66a02f91b",
+  "facts_sha256": "d3bcea89231a8bce6f91e31f3b823af0edb440f9f835956ad195bc6eefeda2d8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "50d54f70b509eaced3e928cd5e8cf01da864a9cb668d98c7065716d35d1e099d"
+  },
+  "physical_metadata_sha256": "a4e1dac32ecebd7cf67cc27fad60424383298d2a8d5227ffbb45a72322b4f05d"
+}

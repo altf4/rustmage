@@ -1,0 +1,12 @@
+{
+  "name": "Brightspear Zealot",
+  "catalogue_id": 550,
+  "oracle_id": "31a0c9a2-c9bd-47f7-872b-a43fb64d873c",
+  "facts_sha256": "3aedb9d6839420e1c910f29ea6c64f3ac518070aab2b3c67cbe972c2561b1117",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3c2447b2d6e1d4c801a5d63531a820a37c1aae32d8c0d770c0eefc3d34b66064"
+  },
+  "physical_metadata_sha256": "7eb97b3652ff08ff074051bada502ab15f807687ec0e8cf61fb20e8651fd981d"
+}

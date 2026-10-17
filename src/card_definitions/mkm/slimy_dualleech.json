@@ -1,0 +1,12 @@
+{
+  "name": "Slimy Dualleech",
+  "catalogue_id": 3927,
+  "oracle_id": "ccb1b532-92b8-4ebf-b3c2-fb5924b116f5",
+  "facts_sha256": "b1d4e403b2229761139127afc2af9a604286667a8156acb1b1a21a082c5f563f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d3798e82c66f4f97ebd355018c82122590d097230ffe6a928ebf4a0306263be6"
+  },
+  "physical_metadata_sha256": "ebaac4c9ac3b89a32673c860433f15666cbd3061a914116651df5ce67a8d53e0"
+}

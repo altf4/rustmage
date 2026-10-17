@@ -1,0 +1,12 @@
+{
+  "name": "Jiang Yanggu, Alone",
+  "catalogue_id": 2277,
+  "oracle_id": "fa8b3557-b35a-4a68-ab85-cf09683f3bc5",
+  "facts_sha256": "81d2b243b545b44460f63f70ba990aa1aeb8f566c287ef1755a37c19a5e032b6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eb472ae221106cae0c485fd1a37eedd4ee4a1f72b9181eb5c2c04adcae889072"
+  },
+  "physical_metadata_sha256": "bacc53766c1aa6e36393aa82b20021372846d4602a32e20312b3b0bbb816492d"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Roxxon Brutes",
+  "catalogue_id": 3604,
+  "oracle_id": "b92c2da9-eaa4-404b-8114-5527eec6390e",
+  "facts_sha256": "46b91d80b2356fb9610798800f21361ddfe2f8e21a97f509788e779448acbc2a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1ba1eddb74a11e93992d2f53f315e313c5b569d5152f46f50bf5372fb46137af"
+  },
+  "physical_metadata_sha256": "aed49853bc1e0304fd518d10e01010976283bc03e4118115f54098d71af7234b"
+}

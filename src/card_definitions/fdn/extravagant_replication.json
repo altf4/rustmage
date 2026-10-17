@@ -1,0 +1,12 @@
+{
+  "name": "Extravagant Replication",
+  "catalogue_id": 1417,
+  "oracle_id": "3a646245-b8b7-4f91-a312-d5eea9a9e49a",
+  "facts_sha256": "c3117b65fe1a51782c9e86df8859baca7819c9fbbbcdab875b72d6726774d752",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1e1160ffcbc99e258014672bcd01bd8bb3668366476117b6c8a6ce8b1fadf050"
+  },
+  "physical_metadata_sha256": "388add8ec4ce1cb16ebb1fa5e76ae829937ad223dfe2a9939f1455292e9340d7"
+}

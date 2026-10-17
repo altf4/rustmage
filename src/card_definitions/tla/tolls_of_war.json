@@ -1,0 +1,12 @@
+{
+  "name": "Tolls of War",
+  "catalogue_id": 4621,
+  "oracle_id": "5d1d9914-3ef2-45c5-b1cb-cb85d2f7394c",
+  "facts_sha256": "a03ea9fa17a2a9e75a947d0df942293845b36a627f3ebf0d5baa35d4aa805f4c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "81a50e041377b8fa9c646dcf43d43d872c1b6971d8a46d9908c775d2816d2603"
+  },
+  "physical_metadata_sha256": "8397d29e7d6d33d8ec1076d7b0144396341c261fe592620cdec90b44ae2f498b"
+}

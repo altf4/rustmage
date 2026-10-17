@@ -1,0 +1,12 @@
+{
+  "name": "Totentanz, Swarm Piper",
+  "catalogue_id": 4642,
+  "oracle_id": "cfa46f8f-b3ec-4ee0-acdd-622f3177e02a",
+  "facts_sha256": "fcba9a9fc91a2ca14a770206c42624bd6ec68d440488f638e47dde39a1328ef5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f01f2894054404669444d695c067aa1d6914357489599243c395915adece1cbc"
+  },
+  "physical_metadata_sha256": "9d8d01349dd18bfe88095e508188523f41b4e3d995f7a96deeaaee54f7ef5ebe"
+}

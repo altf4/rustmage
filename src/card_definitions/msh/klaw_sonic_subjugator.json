@@ -1,0 +1,12 @@
+{
+  "name": "Klaw, Sonic Subjugator",
+  "catalogue_id": 2381,
+  "oracle_id": "1c233e08-d5a3-48d7-9074-20393896a480",
+  "facts_sha256": "e10306222a2f3871d3a692026a21d51080b63018de470cfb6cdc86e4d87e21fb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a733032342bcfb3a3adaa046f5125400dc91eccc6325c05fa465f6cdbba8b904"
+  },
+  "physical_metadata_sha256": "5da55189f9771e8e4a2e1da2c344b6d2ef8b8b09d3f17294f9d71a3ffc6dfe8e"
+}

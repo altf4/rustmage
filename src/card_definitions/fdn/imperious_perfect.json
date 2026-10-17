@@ -1,0 +1,12 @@
+{
+  "name": "Imperious Perfect",
+  "catalogue_id": 2147,
+  "oracle_id": "3fa71348-fa4d-4f39-a451-cf1570591991",
+  "facts_sha256": "6313874814e983b2fcc60004fd6e9f6732957e840060ee4373a03112c0ed00cb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "50449894d8771e332228e178a3fdfb6cf1235d8a092196058fa273146375b2e0"
+  },
+  "physical_metadata_sha256": "4cbae6540d2aabe806bf5358c49e2644cdacf5b90392e7b5b1b3c292df9639f7"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Veteran Beastrider",
+  "catalogue_id": 4876,
+  "oracle_id": "29f1484c-91b6-436a-a6be-3ab8b58c0fc1",
+  "facts_sha256": "2f0fda3ee69f6d702365ca2627a3d15a87048667f65e91c90dd933ffffc85279",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9612652d1396c77e325f04ae04362791875fb5fd39070c1d4d767dfcca8be23a"
+  },
+  "physical_metadata_sha256": "0ed2d485e4c9f8d8bed8004e4394f3265f6947c7de4e5012b9a3ccc4f5c5db34"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Dáin, Lord of the Iron Hills",
+  "catalogue_id": 1224,
+  "oracle_id": "5b79b68a-db71-4638-824e-ab89b1716c86",
+  "facts_sha256": "f28abf6f5ebbbba76c028bf544030658140e220ef2facbb940140e755f648e5e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "11fbb66ce97b324d467a57e1102dd00f43b86decb7f1561f8d60e65c3cc204e7"
+  },
+  "physical_metadata_sha256": "f534a448772475b743728690da2f52beeb1dd8249fef0c9a41db9b6b54fedd22"
+}

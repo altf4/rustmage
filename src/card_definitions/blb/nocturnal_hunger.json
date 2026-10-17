@@ -1,0 +1,12 @@
+{
+  "name": "Nocturnal Hunger",
+  "catalogue_id": 2956,
+  "oracle_id": "ed7f64d1-69ba-40f5-9863-3edba10e23c7",
+  "facts_sha256": "0351a9c34efcb048058707667269e526e1757e827b9be6a1abfb21c79a0acf33",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "58257c7d61e409407f2a6deebd7a49d0dd1f73c829cb20121294c1d85d437ee7"
+  },
+  "physical_metadata_sha256": "16548085c0157f142cd60d4576fee2b87257c292f64425ef942da193f26d812c"
+}

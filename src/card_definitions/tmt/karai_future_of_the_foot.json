@@ -1,0 +1,12 @@
+{
+  "name": "Karai, Future of the Foot",
+  "catalogue_id": 2315,
+  "oracle_id": "7246638e-0361-40e3-8019-3c10210a593e",
+  "facts_sha256": "51e56d5965959eaab3bf1bff7ac835f75f4c14d5519829a620076f50229ddd14",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "74d322aa1b960580f065eb82c343f2930691e53c821b872b7ddfe7d93eb4179d"
+  },
+  "physical_metadata_sha256": "fdceb91df6ffa2b5420cea0b2aa313a180f79afc5e1946954cbebf04c16415f1"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Rictus Robber",
+  "catalogue_id": 3518,
+  "oracle_id": "91e49e8e-575f-43c8-9263-a8568697e7f4",
+  "facts_sha256": "43048c6b9263cd7f29bed497c806ef8dd0ea2c70874442605ce4bed67584f189",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "158d84b74255f634ba6207dc47040d80c04db0e5e85d08dbd8affd9803f5f9c5"
+  },
+  "physical_metadata_sha256": "c3770dcb461ad1c901fee84e7f9f05f8c36760e07c7b2cd84879a7a112ffc1db"
+}

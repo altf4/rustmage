@@ -1,0 +1,12 @@
+{
+  "name": "Gideon the Oathless",
+  "catalogue_id": 1743,
+  "oracle_id": "7afa530f-ea51-4bee-af3b-59b83ea5cb25",
+  "facts_sha256": "82cdfdece2df42df9a2da7c79c2dfb408d923c34e96f3e9812f0dda0d880a24d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "df6e26b18cdc0ed3c5726f2b484abb1fcc42fbff3405564ec79f31f604a7e737"
+  },
+  "physical_metadata_sha256": "76d5c97d4f53b3189b31c6f31fe501a1dfebf1c017fc546b655537c2430981b9"
+}

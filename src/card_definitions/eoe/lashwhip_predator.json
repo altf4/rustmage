@@ -1,0 +1,12 @@
+{
+  "name": "Lashwhip Predator",
+  "catalogue_id": 2447,
+  "oracle_id": "56035e66-e730-436d-8de2-4ded7fd1b51e",
+  "facts_sha256": "dca7ed9aa609d94566ef82f2a2a46d83517f2b08f045e4398d9c6a02cf2e022e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9084d4ae031a2de272e2f69950fa651ea919e7cbb0371c73b48af227c49c1122"
+  },
+  "physical_metadata_sha256": "eb663e6a06ec20186001e6e82bb662c22d98d7b6d8cac6ffb2f0272c7543a8b2"
+}

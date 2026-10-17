@@ -1,0 +1,12 @@
+{
+  "name": "Mister Fantastic, Reed Richards",
+  "catalogue_id": 2792,
+  "oracle_id": "7fa5237e-dd79-4646-b935-cb8c6ee803ab",
+  "facts_sha256": "09800f330893ad6e3c3164de73fd021a990cc8741f4d4a42647fe6210b475f02",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eeab388e0e237bcf1bf15d7871b3d704dd03d1d65935fe8b329e36fdb12bddb1"
+  },
+  "physical_metadata_sha256": "cc8b2a05f46b2f5a833c5a2b47f4495c72feee64b5b08f718d0737fd9231d330"
+}

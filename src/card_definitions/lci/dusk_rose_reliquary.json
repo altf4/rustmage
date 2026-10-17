@@ -1,0 +1,12 @@
+{
+  "name": "Dusk Rose Reliquary",
+  "catalogue_id": 1205,
+  "oracle_id": "dca7102e-c020-4fdc-9b59-f186e3e615a5",
+  "facts_sha256": "824e33a64399692b12d61998769274e6223f96aaae3888f878edae7c19169260",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "026fd6fd6e1c0211a195b9a2a90d6e83c0039bde34bc7a10ad9825fb28284dd9"
+  },
+  "physical_metadata_sha256": "a99e6e983689aa145e96a534fc8c7d6db9209bfc877093f29a72e4ca8e347eee"
+}

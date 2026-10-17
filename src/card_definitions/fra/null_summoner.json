@@ -1,0 +1,12 @@
+{
+  "name": "Null Summoner",
+  "catalogue_id": 2976,
+  "oracle_id": "56c412be-daab-4461-931f-1e2ea8ecd75d",
+  "facts_sha256": "4c33e19fec94b353257afc371d8bfc3f0666e0c13f695a80cd968500af9f78c0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "646cc0624c38978a226256a932371e0da8bc7f5842a4e1a3278d100e68900a59"
+  },
+  "physical_metadata_sha256": "72f6f2d0e26cbe9b089f701588331275cc8ecdd07aef664d326a7b9257686eb8"
+}

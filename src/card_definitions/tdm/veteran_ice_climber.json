@@ -1,0 +1,12 @@
+{
+  "name": "Veteran Ice Climber",
+  "catalogue_id": 4878,
+  "oracle_id": "ccaadf8d-22c0-4139-b734-03ac2fcb4494",
+  "facts_sha256": "7df847193922849196e1e67b5225d4ac99110e9b1d7aae05ebbcde0be2770bc6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "94778c0e03dc8e5f28d7d7ea6d495c5ee66450fcc21faeba0d8828beb5c0b5db"
+  },
+  "physical_metadata_sha256": "37ba0e568e9c572d783ce59345d66c38ce031210d701280bf2bdb25082bcfcee"
+}

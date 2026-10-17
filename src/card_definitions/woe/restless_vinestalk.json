@@ -1,0 +1,12 @@
+{
+  "name": "Restless Vinestalk",
+  "catalogue_id": 3492,
+  "oracle_id": "0935faa2-fb90-48db-8a92-906ba0f374c7",
+  "facts_sha256": "f3924a5a4f0fb3dac7e9e8a47b9f38627d71a25e24f3b4dfab7703a901117009",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1ba4dcb7a42e6e512ac3640908a29b1dfb96f880cbf42e4a37f5386597e6de53"
+  },
+  "physical_metadata_sha256": "3607ccc6917f0e653cc9eaafd4c5e48dde7b8fe4b3e3972378e67a64493f731d"
+}

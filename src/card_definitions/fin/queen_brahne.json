@@ -1,0 +1,12 @@
+{
+  "name": "Queen Brahne",
+  "catalogue_id": 3308,
+  "oracle_id": "0527b7b5-a55d-4720-af1f-17fc1178f4a6",
+  "facts_sha256": "5292be24dd5abdc3922aa6fac634dbdb6430487cc16dfc3ad3808c72f162c271",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "035341a90163643900961bf77509da1b323f2b77ca899333e9c0989f809194e6"
+  },
+  "physical_metadata_sha256": "f2a51cdfb47a6c1ad2071eb33910df8d9b752215b11fe4a88217d6868abe9efa"
+}

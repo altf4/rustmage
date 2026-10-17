@@ -1,0 +1,12 @@
+{
+  "name": "Heraldic Banner",
+  "catalogue_id": 2008,
+  "oracle_id": "3525e263-e29a-49bf-a29f-fb3ce43bbd33",
+  "facts_sha256": "31fee9f993c93b15c0f95d88e1f53c04a8d47554698d21ebc607c54c6c310e2c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "814aa52d497a71bf141bd0a20bbc95d532a6c0b95743a2f7616a759582df4b4f"
+  },
+  "physical_metadata_sha256": "d3d728e4c4402dabf3e845f289e3c92a3dddf8dbf5557a7de9dc7e7fb70159cb"
+}

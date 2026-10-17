@@ -1,0 +1,12 @@
+{
+  "name": "Salvation Swan",
+  "catalogue_id": 3661,
+  "oracle_id": "0f68ae67-1671-4281-8b6b-3e52fdd4915f",
+  "facts_sha256": "c25f7f19a06657f15ac494a9745ee4468854597f30becf921168a5ccccf6ce54",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f11ec108e8db0c83715ba7ebe74f7b0c8e14654dddbd2e908a7df66272255903"
+  },
+  "physical_metadata_sha256": "43c0cd3293760f5f5f8f770bd55c576c006676ca3b9edd6fddbe1a8465132f3c"
+}

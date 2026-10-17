@@ -1,0 +1,12 @@
+{
+  "name": "Helping Hand",
+  "catalogue_id": 2003,
+  "oracle_id": "170a5dbc-6a43-4715-9501-178b1eb7b08c",
+  "facts_sha256": "cdf149f47ef3b07566688871b86481817036cb1c7757248d1e469634e4ac041c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dd7093cb77a2260539841ff7c3cd08d9d7e781c1a203c9dd7ba0322d34872751"
+  },
+  "physical_metadata_sha256": "728cfe37e6d8f47d8e51cdd373ede8909f13933524f96596682102b44670fff6"
+}

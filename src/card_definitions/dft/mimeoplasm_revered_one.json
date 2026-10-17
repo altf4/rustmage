@@ -1,0 +1,12 @@
+{
+  "name": "Mimeoplasm, Revered One",
+  "catalogue_id": 2759,
+  "oracle_id": "2b8c2882-dbca-466a-a0af-dd1d65edfe7c",
+  "facts_sha256": "65b685245135ea62816cb0aee59d2f3e29af47a2feb8aeea624317929c012318",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ec45f0ff48ddd8159f40913d83d1cc845aa7932273bdd14d69144edcb21cb660"
+  },
+  "physical_metadata_sha256": "f32f3213975f7e1f1ed78b07b7bc6ff4242663c774cdd721c6244e354f440ded"
+}

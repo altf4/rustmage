@@ -1,0 +1,12 @@
+{
+  "name": "Lord Skitter, Sewer King",
+  "catalogue_id": 2558,
+  "oracle_id": "f5bed085-bb7a-4250-9599-b2a8a95e6b6f",
+  "facts_sha256": "1563cfcaddaef8a411a58e5a3a80d396e6b19a0226324eaa6fbb1b8990599884",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cbf8d4a5c0f89ebd0cf8eac9d9b6a9aaf7f31cb661ce7c5dbc09c3617dab8637"
+  },
+  "physical_metadata_sha256": "dd721322c17bfa8a007c9540d9c9a74090376cf377aa2bca5534f07a7a2dc22f"
+}

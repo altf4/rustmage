@@ -1,0 +1,12 @@
+{
+  "name": "Sita Varma, Masked Racer",
+  "catalogue_id": 3887,
+  "oracle_id": "3b9bc41a-a43f-4be7-9452-f61f5ad5b482",
+  "facts_sha256": "1e8367227aa210605d755d1ace7fb36012b3c4e5ade06427348101756bd6aeee",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1bf3ead360f0e0ca50707a9b22206b75ebdb7668da0e556348b6e1b320266457"
+  },
+  "physical_metadata_sha256": "209da204f20d78986adbb5f6cbb2bc017cbc2319fda2f9126c73ad7be113461d"
+}

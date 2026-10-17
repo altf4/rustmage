@@ -1,0 +1,12 @@
+{
+  "name": "Massacre Girl, Known Killer",
+  "catalogue_id": 2676,
+  "oracle_id": "ccb39f4a-2684-4eb7-9066-aad81ae08962",
+  "facts_sha256": "38e009ffecc3ed469375ee5c8497d3921bea76791561d7ae304b1d3790f983ac",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cd92e4b935d4c4d5064a4a37fba3f29d1751257b7a601b9fd96b056e8e9c08ce"
+  },
+  "physical_metadata_sha256": "09740cff0477286aa7636c4da1580d39b4781c6a4f2b49edd0b33ac39f5fb15d"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Death to Our Enemies",
+  "catalogue_id": 1004,
+  "oracle_id": "c2b2b743-dfc7-439e-8563-1ccce54422bd",
+  "facts_sha256": "9e2f20f01ae6295df4c177968e24a02a422e803fd6080bd13b177f6250a91b48",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c35d7567a17c91ed6f7fef880e9735def66504a85b6b24ea2772f103695bca09"
+  },
+  "physical_metadata_sha256": "eca512cc996f15b186a142082b66b3479494147c13617dc6e7492afd54a46cc8"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Undercity Eliminator",
+  "catalogue_id": 4763,
+  "oracle_id": "93cb9c7e-d6d3-4b1e-8bcf-2a4a1d95a549",
+  "facts_sha256": "ebf1955484fa1145a22b45b10498221cb86869627ecc80db69a246143a47fa8d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "39be2d095e2aa91996bae72364bd26fc83ee73197e024565af504702e0426696"
+  },
+  "physical_metadata_sha256": "c6ea11361043894d5349e0cfee8f469bdb6d0de87126fa0b3c304fd86de8f691"
+}

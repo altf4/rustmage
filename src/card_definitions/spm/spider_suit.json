@@ -1,0 +1,12 @@
+{
+  "name": "Spider-Suit",
+  "catalogue_id": 4038,
+  "oracle_id": "ba08b4cf-9a13-40fd-8522-9504d2ff1a19",
+  "facts_sha256": "14caf2dea035130cd05d031025013c09bafae5cd97d3f2ec374b912fdef14e72",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0f8c82c4887f809840ba1ae52512ee3aa9ca5c0877aa962d5385ccaf23793b74"
+  },
+  "physical_metadata_sha256": "435a95e0915c672bcfad40ae7bd00d103331f002eccb07670bf03088ffe9a4e1"
+}

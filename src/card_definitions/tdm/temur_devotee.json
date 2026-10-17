@@ -1,0 +1,12 @@
+{
+  "name": "Temur Devotee",
+  "catalogue_id": 4375,
+  "oracle_id": "e444f072-ce24-4fd1-99eb-d20d12bc119a",
+  "facts_sha256": "8033f2810b7ef85916ad7690b43d5f1b2781ef0dce090a5b597ad945d74cbcef",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "400448dfd9ff009a718eaded0a82c72914eb60e45047101f0aad64bd829e190e"
+  },
+  "physical_metadata_sha256": "544e280f8c6a56c5b9507a92ccf8beca359c0f5ab67e8d9bfbb67e183afcf86e"
+}

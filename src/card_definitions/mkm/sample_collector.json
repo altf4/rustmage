@@ -1,0 +1,12 @@
+{
+  "name": "Sample Collector",
+  "catalogue_id": 3665,
+  "oracle_id": "566b65bb-fa5d-4da6-a766-b08128ee0049",
+  "facts_sha256": "4db0edf4a2d7a36226c6e991d1e7715c84a8d680024a6f931e993b41d6ed0701",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5e4944438a79549aa22548f123125bc1a49cd5598ce3468d8dea9ef8f0a753bc"
+  },
+  "physical_metadata_sha256": "67be76d4301b145a23d362dfdc25a30507ccef532a9e92bc89db8d0d793d09dc"
+}

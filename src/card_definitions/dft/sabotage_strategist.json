@@ -1,0 +1,12 @@
+{
+  "name": "Sabotage Strategist",
+  "catalogue_id": 3642,
+  "oracle_id": "1b788680-28e3-4378-9607-bd42acb4fbad",
+  "facts_sha256": "369935c56a33ddf80072032ed61fc66c4a0dc68cb345e1a719956840a92b4f58",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "604a5e0750a0820b197fa90fadc30a764228df82077dab78455c3ddcbbef4159"
+  },
+  "physical_metadata_sha256": "c1d622ea5dce69f9c564190d0ea17cf31e6be813872a90fd3063e7df039c6f75"
+}

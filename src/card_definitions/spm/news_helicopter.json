@@ -1,0 +1,12 @@
+{
+  "name": "News Helicopter",
+  "catalogue_id": 2927,
+  "oracle_id": "192dd1e2-b6c2-432a-a1b4-e52ff39b3db2",
+  "facts_sha256": "f34d2b531dd0637cb4ce89746ede413db10131746d1c82f336abcd747a223d08",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f7508adfa511d3950142742a4ccfe16d0e0d77b7eef07dfc1972c60f3af364c2"
+  },
+  "physical_metadata_sha256": "d5f771762507383049f6e33913f4f75ad0dac075ca778257dbd9877bccce1408"
+}

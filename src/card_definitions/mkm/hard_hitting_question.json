@@ -1,0 +1,12 @@
+{
+  "name": "Hard-Hitting Question",
+  "catalogue_id": 1940,
+  "oracle_id": "05fdefb4-2be7-4d9a-9ab9-14bbbe72aef7",
+  "facts_sha256": "f1e516a13c2e1e361361169d09cd2c2175db05562c965eef382991dab34239b0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eda32dece7719fc02faa16ec171e72b8f9a4bc6d8860446221252735030e1a72"
+  },
+  "physical_metadata_sha256": "15d2a266265424f27bf4cad22697e8d1de5d3f845e5b04d008689a8b4c8b524d"
+}

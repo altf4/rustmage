@@ -1,0 +1,12 @@
+{
+  "name": "Midnight Tilling",
+  "catalogue_id": 2749,
+  "oracle_id": "79bc2c6d-b03d-4ceb-b468-293378ec73ae",
+  "facts_sha256": "33cffc68cb64022c806a5388e3a5627578d4b39e0e0233eaa8b31d3458c5e99c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ef59c91f8b280729304b4f100cd760457ed7caa1597810d707c2d748efebebf4"
+  },
+  "physical_metadata_sha256": "3d1f70a98cdc1b89f163a462877110a63896191f41015d18e983cac5221f9539"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Hoverstone Pilgrim",
+  "catalogue_id": 2084,
+  "oracle_id": "64399663-2c1e-447e-a3ed-c49ebd9f2231",
+  "facts_sha256": "d7d1289a1202da11f9cd6841ee426ea1b0d4ed2215349728025d2df01a2e13b6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e00cd634cf29bb6f8315e89108db56f00ca911c3a7aeecd7cf9a97dc14301467"
+  },
+  "physical_metadata_sha256": "bc79cbbd59b5bfdf2614e26d4d2130ce511fb4fe2e0e3748ef7f61676408858d"
+}

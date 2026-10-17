@@ -1,0 +1,12 @@
+{
+  "name": "Sold Out",
+  "catalogue_id": 3957,
+  "oracle_id": "6a69d4b1-72dd-4599-a16d-32299de5b0b9",
+  "facts_sha256": "0676f9ee0b81f04d5661017c94c4bc20f00a61dfa6497edbd4fbf7b6123fa637",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "25f1005b81369fcdd19bbb62b5cb231093b394b3639d0543b11af586f6e67308"
+  },
+  "physical_metadata_sha256": "e60c7ab30c15261441bf7e0df49f21b329bb2152a3b94e26873954f8beb1c9d1"
+}

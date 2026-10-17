@@ -1,0 +1,12 @@
+{
+  "name": "Aetherjacket",
+  "catalogue_id": 74,
+  "oracle_id": "062c8e40-dea7-4df7-bcaa-f1d696fe61c3",
+  "facts_sha256": "1ef39bd9be06f555b42fc5f21c9c1111db3fd824baeb14923cdf577655df0781",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d39c4947a7fd85d77c1cea31dafcb51b9652b446994d5c42204ccef4bc6e3f37"
+  },
+  "physical_metadata_sha256": "f86177ae4269979e8abaf1c998bc63b0460f909ceb344eff64d5ddd10b4dfc1b"
+}

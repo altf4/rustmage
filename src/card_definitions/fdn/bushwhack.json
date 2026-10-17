@@ -1,0 +1,12 @@
+{
+  "name": "Bushwhack",
+  "catalogue_id": 601,
+  "oracle_id": "c61374e5-a7f6-455e-a40b-a481751b536b",
+  "facts_sha256": "d15ce56fdceca3b0228656adff0ec9cc032f2192984880182b37f14fc4ddda0b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "15f6aa928ebc01f72dffc86e45779db275392c456bba19231eff836dcdae582d"
+  },
+  "physical_metadata_sha256": "4e1c4947e4f356509ef849643a39ca5c66b24282c5b4662bd416ad07f8e578f6"
+}

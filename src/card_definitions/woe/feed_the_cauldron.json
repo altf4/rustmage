@@ -1,0 +1,12 @@
+{
+  "name": "Feed the Cauldron",
+  "catalogue_id": 1479,
+  "oracle_id": "21153db6-552a-4956-a53a-a9dfb6968629",
+  "facts_sha256": "2a0d89e9bf3bb75d5e003475d0bda4cefc61a9d1d8b131226e450dafbb644f99",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "39821802aebf652d3845c1abbeb7869fef157a62a4a82b0952bbc99c0bd145b7"
+  },
+  "physical_metadata_sha256": "a9e999b62ee96d5fad13e8f5f512f09cf569ca04023a1389025af3d6d587ec07"
+}

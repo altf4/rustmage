@@ -1,0 +1,12 @@
+{
+  "name": "Aurora Awakener",
+  "catalogue_id": 269,
+  "oracle_id": "cf9d13e2-bdcc-4c66-95ad-654ef795dbd3",
+  "facts_sha256": "8ae067ea962ef386acb7ad31ce5f8e0f411f99f8ce8feff7afd1c3d71386ad05",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "99551e053e3a69f5052d8192b0476457d7cba1048a4c5f9f2601f5f2dade1402"
+  },
+  "physical_metadata_sha256": "35e88363b558b840f565fc0b95da4e3cdb8525315abeca92ccdf87130767d6a3"
+}

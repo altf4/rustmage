@@ -1,0 +1,12 @@
+{
+  "name": "Masterful Flourish",
+  "catalogue_id": 2684,
+  "oracle_id": "1cb419cc-d8e4-4676-987f-089cebccc374",
+  "facts_sha256": "9242ae21084a6f17d2cc09d56f676d6b547e3b2c2983291816089a6fe6e319f6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a57a2d986db33ba140106a53c2db5a04130cf9bab6c8808b02ef2a479d427db8"
+  },
+  "physical_metadata_sha256": "e35671048efafe93bdf81f069c244a4b1950c976756b8134832558adc9976ab8"
+}

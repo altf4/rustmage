@@ -1,0 +1,12 @@
+{
+  "name": "Dust Animus",
+  "catalogue_id": 1208,
+  "oracle_id": "494f8c29-7626-43ed-b0b8-fb9afd4cd5d3",
+  "facts_sha256": "b9a7dfcb5831f872ec735c435d724f753b930831bec16c6d46d91df901158780",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d69c9433c87778e492069420184003b2e31e1f077614e66f01d763ef56578dc3"
+  },
+  "physical_metadata_sha256": "df2702ac05009e740dff2d24815f2bfe4ecf6d8f7f3eb83e0d4534b43fd11994"
+}

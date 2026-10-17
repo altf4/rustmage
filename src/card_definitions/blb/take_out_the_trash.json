@@ -1,0 +1,12 @@
+{
+  "name": "Take Out the Trash",
+  "catalogue_id": 4320,
+  "oracle_id": "e07700e7-218a-45a3-9ee4-de2cc25cdc02",
+  "facts_sha256": "0c29a2a5e3b3bb7a0f882860b5a64f3d1608cba3ced63810c8cf5e24e177f9c6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "60c4494a9e7b16cef10424bd7cdae9043f8621f40fa087d81595037045804488"
+  },
+  "physical_metadata_sha256": "953be32d64906811bec76fc5903d2c996e72e431fa8b1da2932065d1f7638d87"
+}

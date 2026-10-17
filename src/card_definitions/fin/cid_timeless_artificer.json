@@ -1,0 +1,12 @@
+{
+  "name": "Cid, Timeless Artificer",
+  "catalogue_id": 751,
+  "oracle_id": "87050537-99c9-4993-a770-4329b2e749e4",
+  "facts_sha256": "d89d73975596625e206a996cfddce351c500cd04b676cb9b787beb090663749b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "07cd86c3f018ed777333f87a389a15b96a5776ea85448a21b5946c690cc88b93"
+  },
+  "physical_metadata_sha256": "85dfd80d9ff9a376623a38cba62bc36db7c6e4209307ca5e6f412eab927849b1"
+}

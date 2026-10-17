@@ -1,0 +1,12 @@
+{
+  "name": "Desecration Demon",
+  "catalogue_id": 1050,
+  "oracle_id": "ef75be00-1a88-47a1-a1ae-fe2c9881a798",
+  "facts_sha256": "3a923a43d4d5c363cfdccf53c5e81994d3458a2b15a18cfc4daa63841d61c1ee",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ca1c5d5faf8d41b64b5f2572ebc24e8ffced528db1902146ad7ae60cd3d904a5"
+  },
+  "physical_metadata_sha256": "96468b478a6186e1af0c7a9bda6fd5780f55475b4bb1b8abe2dea085e4fa5e2b"
+}

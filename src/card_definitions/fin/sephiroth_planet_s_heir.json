@@ -1,0 +1,12 @@
+{
+  "name": "Sephiroth, Planet's Heir",
+  "catalogue_id": 3791,
+  "oracle_id": "6af71c5a-2c1b-4120-b3c9-c3c70d94a5c9",
+  "facts_sha256": "7ace1c6d20f32f70db3b6ed72cc4a550fbedc127b63ed3694e29ebfc5a7e9318",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2b0cede97c9eb0586d8e1c5d8dab20c33250f5b86a6491bfc2d7eefc2a00e68e"
+  },
+  "physical_metadata_sha256": "f79d49b990ac09e62f6b5a71875f31f1419d85d56d53597877ecaff6cdd4faa0"
+}

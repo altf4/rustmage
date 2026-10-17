@@ -1,0 +1,12 @@
+{
+  "name": "Roxanne, Starfall Savant",
+  "catalogue_id": 3603,
+  "oracle_id": "11765eaf-87a1-48bd-90c1-7a5f21be5918",
+  "facts_sha256": "34d10052c7bf3c711caf43153bf92001c27a6dc510f3b3b6c63a1154e3a743b4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "970216b311718fe1e5f8ce0d9ae21759fe00acecd850d57ab3b9cc273c3b1cb2"
+  },
+  "physical_metadata_sha256": "c2944ee85fd8bcb0862cc0491245b68bcaae372822e3fa2dbb250f165cb70ee5"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Dragonologist",
+  "catalogue_id": 1166,
+  "oracle_id": "f6791df0-a37b-44dc-8bf3-40ac2304d188",
+  "facts_sha256": "cf0cbe1c4d47641968be2daa7191c8ae05a86e4e7316fb985d4e5011808de5f9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5493a096beabce3e306b2241219a0e65aa3fbef9d622953f9c98e95c2cb7c3ce"
+  },
+  "physical_metadata_sha256": "2c44d6948f4e617e0f977e7920daa2e3b83cd1b25a4b2b59cbdcf67123af8e03"
+}

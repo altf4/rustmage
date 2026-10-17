@@ -1,0 +1,12 @@
+{
+  "name": "Transformative Commons",
+  "catalogue_id": 4658,
+  "oracle_id": "8ec56e2a-380f-4de7-9fb7-52de803008fc",
+  "facts_sha256": "8bc2a77f3ad74e3bb0551be7c66c6595c6c1fe8c391eaf0de5f442c7986774f4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6302870039318805d0286873142f294034ab9c9b33a582c5b2ae28775bdc2334"
+  },
+  "physical_metadata_sha256": "496ee5cc5cf7e4bebb3201c7e5d209bdfd9de0a9f65be2d4bc7a2cb867784f46"
+}

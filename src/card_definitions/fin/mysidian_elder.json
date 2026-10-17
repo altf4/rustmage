@@ -1,0 +1,12 @@
+{
+  "name": "Mysidian Elder",
+  "catalogue_id": 2895,
+  "oracle_id": "10039992-d51a-47e7-9a70-02fe2227c163",
+  "facts_sha256": "8ea634d40e5bb5daf365dfa887a41f005460fe7850001297ffe5570b946759d4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "292bfbd4cb8d3a5630cea444520999ddfe74e82944e363b3ec82a29a482c2d9d"
+  },
+  "physical_metadata_sha256": "50f11260e0982b660e60919bc80f38c36d3cd8267a3589ce2fef26452396b7db"
+}

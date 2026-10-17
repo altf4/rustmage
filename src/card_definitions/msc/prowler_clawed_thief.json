@@ -1,0 +1,12 @@
+{
+  "name": "Prowler, Clawed Thief",
+  "catalogue_id": 3267,
+  "oracle_id": "76742bfc-ae99-4b06-b29d-e0e41d92ae14",
+  "facts_sha256": "edb6d2e0d8b213b4acdce24caf63b292f97701a30445691c75c29fb075bfa8e2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "af957301a8ccf678a83692a28726447857954b1b5a90e3b18ace3658d780b3ae"
+  },
+  "physical_metadata_sha256": "d2067d827f4e8d45c9614daa73f421249cad2279c7c14041c262c2bdc4b16821"
+}

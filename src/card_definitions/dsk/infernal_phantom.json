@@ -1,0 +1,12 @@
+{
+  "name": "Infernal Phantom",
+  "catalogue_id": 2159,
+  "oracle_id": "a8225b2e-62bf-45b7-b573-e3ce301a1eab",
+  "facts_sha256": "ca00f92602557c86880286bac7c8ac73ced7a8f952b68ecb43b16e074fdc0c63",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "06cc539a46ed93c07b625b4eccf1fd13b3fc5969ffae9984d6ffdef260e8212c"
+  },
+  "physical_metadata_sha256": "6f3bbeb01741d26951b19b46141175b76309845b2453cb6b091707fe24ebf7a2"
+}

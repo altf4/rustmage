@@ -1,0 +1,12 @@
+{
+  "name": "Dissection Practice",
+  "catalogue_id": 1099,
+  "oracle_id": "73905f94-9665-4d82-8927-725d2c4fc4bd",
+  "facts_sha256": "0dae34d7a57567eabc02cfe6eedd919e03ca4a8dc4bdd61af5b9c72ff2e8d598",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1e2e0570258f9081b5a6757e678b3ab25ae38e3300bfb61d18155f4890b3d771"
+  },
+  "physical_metadata_sha256": "e55b6d5f24df5ddb34f5c5114c099c9cb217da75b0e3eed2407998bafa10dc15"
+}

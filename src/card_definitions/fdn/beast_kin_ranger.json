@@ -1,0 +1,12 @@
+{
+  "name": "Beast-Kin Ranger",
+  "catalogue_id": 361,
+  "oracle_id": "db794af5-ba2e-4b10-b213-e481e8a50432",
+  "facts_sha256": "bcc490aee53fb989996b22a52a8e89d94be6e0ddfc2c398acb806ffcfe750534",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4c897704d8899cdd0f0214ae33492c75e368891fabbc6dc181ed0bf012b3200c"
+  },
+  "physical_metadata_sha256": "a8c350c9308b441a075b5ae62e3b2f9b6cf97b270f3b061e3cc8d96c7c247d77"
+}

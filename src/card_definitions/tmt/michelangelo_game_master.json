@@ -1,0 +1,12 @@
+{
+  "name": "Michelangelo, Game Master",
+  "catalogue_id": 2739,
+  "oracle_id": "594c6b1f-ff0e-4122-8b29-852632a22a79",
+  "facts_sha256": "3d14af44092519cbc31bcdae19493297677b3516811c46933254fdeb1e525f29",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d78c98ce29c0ad7203373e8a1b47ce28c2712ac06a65fc012f4c2fee3eef105a"
+  },
+  "physical_metadata_sha256": "d81a4ecc40e7826ee1a442a5019eb2b3e08b790515b04d90be3c82b4cff8b8c1"
+}

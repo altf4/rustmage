@@ -1,0 +1,12 @@
+{
+  "name": "Private Eye",
+  "catalogue_id": 3244,
+  "oracle_id": "20750317-061b-4b65-9fc8-43477fcd7a21",
+  "facts_sha256": "bbeb6d4424c441d27bc36f3529c62941a4fa34ad447a6eb8868d4ce1e6d39e18",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7fa7ab232730407cc521c3c8c43ff9d56230e378092d21489b5d9bd18fbd0600"
+  },
+  "physical_metadata_sha256": "865b79547f8fd74196e1f33c7127244622e4d71fc0a915bf658b4b7ad1c3501e"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Fortress Kin-Guard",
+  "catalogue_id": 1601,
+  "oracle_id": "fa3ed0f6-e44e-433d-80d3-824de5e6135a",
+  "facts_sha256": "06685fa4432612c1f7bd316bd1b983634fd859bfacf18ccb48f782d444e40d39",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ba9a0ab4a65f80c7d3725758fd9c136b1abe85f62d4ee4767fec721d846d9073"
+  },
+  "physical_metadata_sha256": "298daa66929c8f5b0ed53b7221baee04bfeedd3c8ecb65ea519c29fc77f663c0"
+}

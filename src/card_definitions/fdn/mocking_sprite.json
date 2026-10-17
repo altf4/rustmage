@@ -1,0 +1,12 @@
+{
+  "name": "Mocking Sprite",
+  "catalogue_id": 2806,
+  "oracle_id": "013ca531-1ff7-4efc-a280-4bc3ab574072",
+  "facts_sha256": "56cf90ee4bc9f718bcf46f60c26774f29200fef1ca6453093e6ebea5919c2d15",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e689961128022cdd9db66fdf280951537bf0c314d624db0622443b9a319499fc"
+  },
+  "physical_metadata_sha256": "594119cbe2d34fc2732015264143a9612ba1e8c852cf8c19ee23bd74fe5aef1a"
+}

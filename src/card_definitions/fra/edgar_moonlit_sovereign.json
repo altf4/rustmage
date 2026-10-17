@@ -1,0 +1,12 @@
+{
+  "name": "Edgar, Moonlit Sovereign",
+  "catalogue_id": 1264,
+  "oracle_id": "1917bda6-c0e1-4c80-8009-74c28cf6b8e9",
+  "facts_sha256": "b98296f6568885e756374874ff9c46a8a59b69240937a524bfc97341f26fd4e0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6897dfa4dfd45ec45e3c29b58a7665471f59e9c6e3c4a63e121510e16b4602b8"
+  },
+  "physical_metadata_sha256": "98de95ad30d5ce5f4f247de9d20d85d934df05fc6edb4700f7efd2a09d99fdaa"
+}

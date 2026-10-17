@@ -1,0 +1,12 @@
+{
+  "name": "Sphinx of the Final Word",
+  "catalogue_id": 4015,
+  "oracle_id": "d4246e4d-390d-4925-a5a8-89cd096a237c",
+  "facts_sha256": "e83ff25c1dc67a0624d8dab3a5d85aa55000caa8a35da0c918e651f4593bdf4e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "35d3e7e9e0a5d9f4b091b60811fe98ee51de279057f9dd71da32a3a0658f1e4c"
+  },
+  "physical_metadata_sha256": "eaa7c3995b3c46b910f6461f807158608f98de49008efdcdf55fba87d94fd568"
+}

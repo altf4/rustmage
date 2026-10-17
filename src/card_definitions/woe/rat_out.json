@@ -1,0 +1,12 @@
+{
+  "name": "Rat Out",
+  "catalogue_id": 3386,
+  "oracle_id": "37043e1e-4556-45f7-9484-15dd8ed5272b",
+  "facts_sha256": "ab0102694a3fb08c1f6d5aa64e4424534099d988f7952577f79074bb0da98be9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "472c551967260cbfc2840c475a52bd07dba1cda5d7e26cbe139c135abee77564"
+  },
+  "physical_metadata_sha256": "739014c4d35fd363269b7b6821c3308f4e78b1cdb911e31bc7533d29c0890ef7"
+}

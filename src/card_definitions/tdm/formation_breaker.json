@@ -1,0 +1,12 @@
+{
+  "name": "Formation Breaker",
+  "catalogue_id": 1597,
+  "oracle_id": "82f59ac4-bf94-4fa2-9457-f0bec8360bd9",
+  "facts_sha256": "21a60353946da16ba965f5896fbc6cac4abec1ecd74763af3ee1b77c1a4fae9b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7017eb7c000879b5fc93c8ae8ff9733bd02ac95001ee46b1e55bfb86fa838473"
+  },
+  "physical_metadata_sha256": "772dffa040d541acdcb154bd9dc47d83ffa8079df24c52423b863f6202e6b8d9"
+}

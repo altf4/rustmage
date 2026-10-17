@@ -1,0 +1,12 @@
+{
+  "name": "Dune Drifter",
+  "catalogue_id": 1203,
+  "oracle_id": "b32649cb-bf5c-45fa-86f0-8bf4e8555f06",
+  "facts_sha256": "af7b7ab0c9584170065fb8608a168bc6bd6bfd3fe2ccad209e45e50c113d172a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5a32536aa074de2ab3fe5324c489239a7d7904446a241c82fdc6d6a2930baadb"
+  },
+  "physical_metadata_sha256": "190ded035b20ec17a316f3912858b5dac7608efd80aa11a1fa14ac06b2a1b318"
+}

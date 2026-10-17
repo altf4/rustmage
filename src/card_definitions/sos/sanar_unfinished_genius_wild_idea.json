@@ -1,0 +1,12 @@
+{
+  "name": "Sanar, Unfinished Genius // Wild Idea",
+  "catalogue_id": 3671,
+  "oracle_id": "a8c44bd9-6470-47d7-934f-77c76a44a984",
+  "facts_sha256": "0204f5fe1ab77f44ce6d6cc1894b3b3c647483ed8341ba2b8c2dbb0f87b6452d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4874bf948b49e671c89df4b86f0e891cea8069cd76be8235fe24bbb5fe844fbf"
+  },
+  "physical_metadata_sha256": "6bf918402f5f8d47fe71a5aaa63999ad2cd3034ed89c91dd18c84aefaeec5bc6"
+}

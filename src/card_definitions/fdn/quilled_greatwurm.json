@@ -1,0 +1,12 @@
+{
+  "name": "Quilled Greatwurm",
+  "catalogue_id": 3318,
+  "oracle_id": "01635d21-aeda-4754-9d94-68fcd0cd6556",
+  "facts_sha256": "c8abcf60d717b9c6be00fb744bce418569a4008172aed8d5aa12095f8f2064cb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7f136712a0cc0a3b6cc0bc044a011a10a576f7561870bb121e188c1d30d084ce"
+  },
+  "physical_metadata_sha256": "f5f482a48c1bd3221451f1a6674b9204b63bf340afbe66bb4d1282c6be1372c0"
+}

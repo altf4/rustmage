@@ -1,0 +1,12 @@
+{
+  "name": "Cryptex",
+  "catalogue_id": 914,
+  "oracle_id": "8186a992-9065-4a7f-bb00-1c20e01e8fb6",
+  "facts_sha256": "81d2e40a67cb7c1629bc94f69980c6474c13439cb18f052f4cce11c85cddd76c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0d064e9602537948bc2dc12ad6e2f2bd5f8198f538e73045e13fe2c752aabd4f"
+  },
+  "physical_metadata_sha256": "530b4c3180348e803c60cc607401a9ec7a3408425d1ecfe53294db5ca50f073f"
+}

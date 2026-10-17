@@ -1,0 +1,12 @@
+{
+  "name": "Kotis, the Fangkeeper",
+  "catalogue_id": 2401,
+  "oracle_id": "2eb2f6a2-e31a-4d3e-93ce-100394899014",
+  "facts_sha256": "144e7f70bf09f46e6b1e1d301979856fafdcfd5a9dd5aac228d4be8eaec8fbb2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bb536c5a6644377d552595206d9ac43a67002d269739c7fda4d1580bf827d2ff"
+  },
+  "physical_metadata_sha256": "5853d587512cf24f0373d7770d9d1de8a1e5c198543875dc848813e8373096a7"
+}

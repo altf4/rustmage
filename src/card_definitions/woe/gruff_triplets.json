@@ -1,0 +1,12 @@
+{
+  "name": "Gruff Triplets",
+  "catalogue_id": 1894,
+  "oracle_id": "32de1b70-f993-4423-b0ef-0762c2b4d1b1",
+  "facts_sha256": "3ee68902afd384f2482b54359d87b9249fe30bb8c35ec4ae84b419269fb6cb69",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "824e02b5fff6c7f1a70f7d66371c38474f0196fc27ac83300298797f9301b05e"
+  },
+  "physical_metadata_sha256": "848f4e13f03aa915fec48b9c2617f8430298192b52f7b56b765b77bb0847e960"
+}

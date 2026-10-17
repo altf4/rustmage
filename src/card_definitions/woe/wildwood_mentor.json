@@ -1,0 +1,12 @@
+{
+  "name": "Wildwood Mentor",
+  "catalogue_id": 5069,
+  "oracle_id": "f4e61b03-e6c8-4751-9720-b91fdecd57da",
+  "facts_sha256": "bf8c005448f170a487482f2c1ddf31758624633957369ad23582bc8d15af9f53",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7290949e35a0fc75dad3d6bdba51ae63ce6e6a6387f813ba1a4a046521e8af11"
+  },
+  "physical_metadata_sha256": "c7da8edb7327ba21992f69f223dc55d71bbf5dedc4335324405370b2f4b60009"
+}

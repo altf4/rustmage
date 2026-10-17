@@ -1,0 +1,12 @@
+{
+  "name": "Ballyrush Banneret",
+  "catalogue_id": 314,
+  "oracle_id": "0ad27d0e-b6c3-4c3f-a389-285d889b6a65",
+  "facts_sha256": "c054675f86bdc266ab366b63ef17e56df5ad3a00157f05a575139844a3d59432",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8ddfbf7adddb20296a1002a6f4ada05ea634ba24e5e08d99d8bfdd0ec19e136b"
+  },
+  "physical_metadata_sha256": "6fa5122f8a7dd5958edfd169ede488cbaa1a36ffb9107282d8f162d3cfcb5be9"
+}

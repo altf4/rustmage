@@ -1,0 +1,12 @@
+{
+  "name": "Guy in the Chair",
+  "catalogue_id": 1916,
+  "oracle_id": "83eb74df-1c77-48b0-83be-55d7aa4d3618",
+  "facts_sha256": "2c9e17056fb1ed147a66fe82408247af15f27798ab066270362a737809b10a40",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "893f69866650729da3e8c73ef5f3cbd5db4fd27d3a5ece0b3705dcd3978f57e8"
+  },
+  "physical_metadata_sha256": "c9d1ea6087dff484abf65c0138ccea7191c630615797b50bc61099d8a121a852"
+}

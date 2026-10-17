@@ -1,0 +1,12 @@
+{
+  "name": "Little Bear",
+  "catalogue_id": 2518,
+  "oracle_id": "53c6c6bf-0256-424d-b937-1cc7d9e2d574",
+  "facts_sha256": "094551294015995266fda9e7b8e831ea37ae0dd7ae1980c40769fa4a523b9117",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7a29322799f9759c9dedf4074c8e698b42c2547c366e422b9b4168498dfec55a"
+  },
+  "physical_metadata_sha256": "3128c9a3bfcd92f709af94fc18bcc9c269c9f4026ddbbc98e1c60ad7fe6e16ae"
+}

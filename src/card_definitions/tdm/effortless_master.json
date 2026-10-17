@@ -1,0 +1,12 @@
+{
+  "name": "Effortless Master",
+  "catalogue_id": 1271,
+  "oracle_id": "185e0892-194f-43ac-853f-1e142bf8476e",
+  "facts_sha256": "c2a8ee81fc265ede1a1b911c2b34b34364390510ac1479fa4de12b35b61ba247",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f4dbf81b3d25c0dae7514506aebe4bee8ffe3c933bf4f888a978d41b0642eb6d"
+  },
+  "physical_metadata_sha256": "78f49264ae9a1a37ecca43d3ec6467b69bea793659dc38b1737a525cd4cc9d15"
+}

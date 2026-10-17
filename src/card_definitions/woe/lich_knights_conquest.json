@@ -1,0 +1,12 @@
+{
+  "name": "Lich-Knights' Conquest",
+  "catalogue_id": 2489,
+  "oracle_id": "b0e533dd-baf2-482a-b9e1-872eb5e47439",
+  "facts_sha256": "f8dd2226b0666fc7a2e90dba42687626c70db6cb950c5fdca8e27f3ba888eab6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "44082c9c27d18578eb8b08c7fdbbcb4e98e0d8a229bbe4fb17f51e1ad7b92147"
+  },
+  "physical_metadata_sha256": "7e06ae238a560e20c9521454f62f42719e89332dfeec7ee9791663b5ab0803a8"
+}

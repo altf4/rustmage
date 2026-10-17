@@ -1,0 +1,12 @@
+{
+  "name": "Iron Giant",
+  "catalogue_id": 2225,
+  "oracle_id": "325b4288-fe1b-4e29-ae13-72924b4db3dd",
+  "facts_sha256": "0c3f16e6910b3ab9c8eceb43b10bfe052820dca098aebd0c32e45e3b84a0712e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "43e041bf3a876cb723fa5d81756457a6942069b643d92198a4c7473c7e1bb30a"
+  },
+  "physical_metadata_sha256": "a13f6c482ed3f9f9ee04dff09b85dfb68bc4f2020afe43f04e62e4899af4f5a2"
+}

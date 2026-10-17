@@ -1,0 +1,12 @@
+{
+  "name": "Mighty Mutanimals",
+  "catalogue_id": 2753,
+  "oracle_id": "fcdc7dfc-04b5-411a-ab49-282b9c2608e2",
+  "facts_sha256": "38cf4d255e949d1e0978a38654e29dc942b5cbef8ab451ef94b90bda682ee950",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "867a5b1fc4af892374d1cc219c5cced17dbccb73fb0ffeab6be60c49502ee874"
+  },
+  "physical_metadata_sha256": "043a4398cf72713ad35405dde03c89962c0cef0d29c61400302dc203fc947731"
+}

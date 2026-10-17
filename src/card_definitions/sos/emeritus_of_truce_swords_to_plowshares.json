@@ -1,0 +1,12 @@
+{
+  "name": "Emeritus of Truce // Swords to Plowshares",
+  "catalogue_id": 1317,
+  "oracle_id": "e6c41473-2398-4888-9f0c-467dce7c39a4",
+  "facts_sha256": "68379458ffe99650a4ffdc1345df06df2b3728b09c2689c4955f212a4e65b482",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0df1b6ef2e3b91a3ae55f6ede5c38e49e9d1275074b3a8d833d932795ac05f77"
+  },
+  "physical_metadata_sha256": "55c289d3973a6de9c00026eb488bf410616ab32ea1dcc4faee72522ffebff2a2"
+}

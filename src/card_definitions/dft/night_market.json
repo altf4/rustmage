@@ -1,0 +1,12 @@
+{
+  "name": "Night Market",
+  "catalogue_id": 2933,
+  "oracle_id": "4cdb9f80-d08f-4986-99c8-573166d66082",
+  "facts_sha256": "c6baee043bb5f0dc1b57d41c874e563f4f22dc189b91e21e93c2c1b2c56ec2ec",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b99a30e334f4f8d9e3f7c72166ac7c1d83c6717d2057b3d35ccefee6a5a28b8b"
+  },
+  "physical_metadata_sha256": "4ddceef4d478e4e06cc1e5145d43681fba4fb95c8fbf626140e13c18dafc3742"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Bogslither's Embrace",
+  "catalogue_id": 479,
+  "oracle_id": "21695c70-f746-4d77-b6d3-e2713a5c929e",
+  "facts_sha256": "afb0898ce2c9ec8ae4d6f2d56458dfce4f7445fb35105b1ef7caa1bd7d53c46b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "75785d4fc2cac1aa3bdc6c79e2026f6bd347969e19daa797256f31a9fe6b7bf1"
+  },
+  "physical_metadata_sha256": "d9676c56063d4dc41252d43ae74ffa39f0d0241555801fe9f9fbf612f3b83579"
+}

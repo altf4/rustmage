@@ -1,0 +1,12 @@
+{
+  "name": "Witherbloom, the Balancer",
+  "catalogue_id": 5099,
+  "oracle_id": "fbb04a21-e513-4317-aac8-fa6df91c3438",
+  "facts_sha256": "3232c12e78883a6d9df59cae49437d42634b5ee68f6d390177ab226c468ea74a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ef85feb12c9fda7a49c418affda68277f04e7efb8e1bd276ab502992ff13c691"
+  },
+  "physical_metadata_sha256": "7131631cef7b19d0541ecf3740d81175c6e742418cd448033c5af974170575b0"
+}

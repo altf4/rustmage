@@ -1,0 +1,12 @@
+{
+  "name": "Riverchurn Monument",
+  "catalogue_id": 3551,
+  "oracle_id": "71c714a2-baa9-4082-bc8e-ceadbea231e0",
+  "facts_sha256": "646ef5abb804328a31087b3dcf0363dc7c8365384ec543ec1abfafcdcdf12183",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c9b6685199903f5b4705c63dd251f47647bb387814f341e74925873d0241c38d"
+  },
+  "physical_metadata_sha256": "76eee0a442ae3f57bcc09f9a77d7fde9e876b983efe0d8f56561adefcdda809f"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "The Echoverse Fulcrum",
+  "catalogue_id": 4439,
+  "oracle_id": "c04197ad-d2f3-499f-b863-bed0c869519c",
+  "facts_sha256": "ad279db30f63a3e44f27697b93d796a61d28665f1789abf13901de083e910a10",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "57e1f7322d3a9c12bbb3f1d15c62b4b4102d6b71f17aeb90b4b0146aabadab7e"
+  },
+  "physical_metadata_sha256": "6f82df28216d42843f488bb48a8a41a57756d39d92be93f61779f901d9e44a5e"
+}

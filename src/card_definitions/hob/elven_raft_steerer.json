@@ -1,0 +1,12 @@
+{
+  "name": "Elven Raft-Steerer",
+  "catalogue_id": 1296,
+  "oracle_id": "d0f62148-1015-49b8-b61f-a4332325a6b0",
+  "facts_sha256": "b569e5673c8974b5e2aca039a99da9e47e3449898d93a052ad705d1d79c2cc11",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cc25e6cfe9e1f69996f499a77e3dfcbeea98679c7514cff91fae1a6cb171cf12"
+  },
+  "physical_metadata_sha256": "fe95747aa76fdae83ddad09d8888023720d4ff80b556081553b89ead3d45043b"
+}

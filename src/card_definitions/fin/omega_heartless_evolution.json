@@ -1,0 +1,12 @@
+{
+  "name": "Omega, Heartless Evolution",
+  "catalogue_id": 3013,
+  "oracle_id": "3173ca98-d46a-4de3-a95e-3eaad28d4017",
+  "facts_sha256": "edca8c39cc6a23ef26028ed04f14c407b70b1224c7edfdbda0afbcfeff42dce4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "29f4cd0130263e6694576acde2774198ef8b8951ea1179154af2d74c4e34b512"
+  },
+  "physical_metadata_sha256": "88be09cd0a31b4d520a23886cf1803c4edcc8d87a146477eb46b93cfbdc60a0d"
+}

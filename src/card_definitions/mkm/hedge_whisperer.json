@@ -1,0 +1,12 @@
+{
+  "name": "Hedge Whisperer",
+  "catalogue_id": 1989,
+  "oracle_id": "923b2a1b-d7b6-439d-9681-c7ba88165c31",
+  "facts_sha256": "f1070f2b906457efab8f7e13b7278820afac3089ca39e94893f4b871daa6d794",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "82a681d62d0a55bc0e3ce517718564fe58dfc4b6acc97d78ea3c425adaa68d15"
+  },
+  "physical_metadata_sha256": "8662bca0e162328dd44dfd40b68a5d595fba71a7e4c9e6c8a33a089e2a37d44f"
+}

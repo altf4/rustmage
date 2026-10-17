@@ -1,0 +1,12 @@
+{
+  "name": "Arnim Zola, Bio-Fanatic",
+  "catalogue_id": 231,
+  "oracle_id": "95161e23-e4c4-411f-bce5-58a02abc0958",
+  "facts_sha256": "a931a7a375a724df5a80b8f4e14e9417be6c9b956bb4da2f235f01a950da645f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7f206ed6ae0e66ae79595307b23fc3c1be1880590fcae0fa74ff2efdeb787c04"
+  },
+  "physical_metadata_sha256": "fd376382097374bfea501123fbdc4741937b4a136388d322779097050ecb5a62"
+}

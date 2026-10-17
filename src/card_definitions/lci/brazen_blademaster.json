@@ -1,0 +1,12 @@
+{
+  "name": "Brazen Blademaster",
+  "catalogue_id": 532,
+  "oracle_id": "43c92618-0aae-41f8-aa39-393e5d6b5ff7",
+  "facts_sha256": "f6a72faec8dfa37604782843233dd3a0b334766325f44bcc1ac0266525e36261",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9d418358a27519555e16837b8b6dec82d5f36aa9d875d8d9faf2f16432c4aac7"
+  },
+  "physical_metadata_sha256": "48e172760766bf0d3ab41a3e2ce82ac6dae757f9048fa2f7074e66dab95382cd"
+}

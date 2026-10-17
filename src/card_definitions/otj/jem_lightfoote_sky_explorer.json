@@ -1,0 +1,12 @@
+{
+  "name": "Jem Lightfoote, Sky Explorer",
+  "catalogue_id": 2262,
+  "oracle_id": "5802aa98-a9b7-4b0d-9d7c-c3938701870d",
+  "facts_sha256": "df682bfc396ae6ea4e4d254b414b6dd2560c083f5816c57384d1e79e12117833",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d54ef19bd8ae0c7533c86899f7aafb8a1e2b23d5ba1a0dc63f7c8e915895b009"
+  },
+  "physical_metadata_sha256": "6118ab789dd9aecc343427ec47ba4352ddbb8f5ab2b470fae85dfdf7df116ddb"
+}

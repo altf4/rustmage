@@ -1,0 +1,12 @@
+{
+  "name": "Territorial Witchstalker",
+  "catalogue_id": 4396,
+  "oracle_id": "97b9e3f1-7569-45e0-aef9-0d8d2845dbf1",
+  "facts_sha256": "827d09cb54ce231be953a676700f4211a4e42dcb02983948758238821485a9fc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0a8135cdb046d47a5eae9b457954b8816daac33aac318579c32c59e3ab9e3f19"
+  },
+  "physical_metadata_sha256": "450fb7881c3209ad295261ede123e919a52429982387cbab77ab3865e127c216"
+}

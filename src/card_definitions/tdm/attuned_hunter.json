@@ -1,0 +1,12 @@
+{
+  "name": "Attuned Hunter",
+  "catalogue_id": 261,
+  "oracle_id": "f652c593-e8fa-42ff-a8b4-206556b273de",
+  "facts_sha256": "a0181e876f16eb7b343c85e2840ddee02ec26db8fe4e7d50873191f1eaf61d44",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b4899ae7d6d063a35e07c9737c59fb147b1fc94c2aba8bfcff716065afbabec3"
+  },
+  "physical_metadata_sha256": "26d895aa4352ab314fafee862f66a2746ed0b69120285e7668925e6e75195bdf"
+}

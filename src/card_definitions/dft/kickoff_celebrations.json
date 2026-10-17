@@ -1,0 +1,12 @@
+{
+  "name": "Kickoff Celebrations",
+  "catalogue_id": 2348,
+  "oracle_id": "94868faf-9e88-4221-8db6-3ad10aa02da5",
+  "facts_sha256": "d11308278880857d882aae2cf532cde4653c4c8254c6cbb94a6250c49c64cf08",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "30ff63256489abb7057a08dffa26830c5114cd9c855703fca84a837a5f026a8a"
+  },
+  "physical_metadata_sha256": "5c3440ae286764e8947a6bdd23ce6e91f0fc91ee38ec6961d550ff6266046ddb"
+}

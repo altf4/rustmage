@@ -1,0 +1,12 @@
+{
+  "name": "Rediscover the Way",
+  "catalogue_id": 3435,
+  "oracle_id": "680a8e14-053f-4cde-a060-e1b36873cf14",
+  "facts_sha256": "64ae758876e8127005c074f2fd44a9f37c88283e8992c483c0a1f724429766ab",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "59af4db4678e7c674e357b813491f7dc7a142311b16268a57f2e9290e183f297"
+  },
+  "physical_metadata_sha256": "9289d1367c88e416e149c5bf105cb89f4d963a692b7dbd181422bfa31cb39b8f"
+}

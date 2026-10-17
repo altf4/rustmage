@@ -1,0 +1,12 @@
+{
+  "name": "Bifur, Melodic Rider",
+  "catalogue_id": 405,
+  "oracle_id": "b8d563e4-e2bc-4e8b-8841-6655beff9138",
+  "facts_sha256": "f5f29429ac345370c684a67470ef6a4f7944c3f05f98f0ab2a848c48b0984632",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7861dbc999c1a861692080cf4c1b56460011d710c89e0e9dc93d54e1204a88f7"
+  },
+  "physical_metadata_sha256": "f2efaa488f472f0704ce0129dbdfcc61c83ec8751ed964351fda504354b2b0bc"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Transdimensional Bovine",
+  "catalogue_id": 4657,
+  "oracle_id": "eaa6b294-ac66-4fe2-b694-97b0a04f7be1",
+  "facts_sha256": "f35bdd4abb73672a7e76854de6e7499de3b899954ebe4797624f8f27fb645fee",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "78559e92ffa1fd84d7d431422117aa87f06388d264382d96909ad9cfb6be0b36"
+  },
+  "physical_metadata_sha256": "c932e645edfa5e24dc1973540b7107a4e12a4582029924a47985f4d34dec49f8"
+}

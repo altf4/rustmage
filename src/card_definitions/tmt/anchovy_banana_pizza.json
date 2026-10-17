@@ -1,0 +1,12 @@
+{
+  "name": "Anchovy & Banana Pizza",
+  "catalogue_id": 158,
+  "oracle_id": "5f4834c7-cd63-420b-8492-ef127ffd4f45",
+  "facts_sha256": "6eaf6a482b309b9c1ba6de1a11df75cf0708fb6a871a2257d7f55144380b6050",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e3ea1793e49cd85197b12caecdddbc6513d6b7c5b73b7459c7b2e4cee7f6ae83"
+  },
+  "physical_metadata_sha256": "8972d218a91526710acec4ebc39df23ca84f33a0f3456a51944029e0e52d13c4"
+}

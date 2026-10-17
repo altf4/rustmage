@@ -1,0 +1,12 @@
+{
+  "name": "Frontier Bivouac",
+  "catalogue_id": 1633,
+  "oracle_id": "e4cf6c2f-0f1e-4980-9ef9-e4eabcae42a9",
+  "facts_sha256": "37433c2fbbd0a78ee311149a703fa143cdc69f8a8fa032ef4e9176acee54e83d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "aa2604a951a9bdd460375638fdba55b8545716de1a838c62d19cc6ca04a966a0"
+  },
+  "physical_metadata_sha256": "4a1f10a664f35b5013aa3f679b3a0c8534380fc181910b2c493666abd8bbe660"
+}

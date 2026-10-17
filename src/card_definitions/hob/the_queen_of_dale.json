@@ -1,0 +1,12 @@
+{
+  "name": "The Queen of Dale",
+  "catalogue_id": 4488,
+  "oracle_id": "a2ec1dd0-86c7-423d-b562-ed95b79bf8f7",
+  "facts_sha256": "dc0f7e6414be804779eeb2144c9d951d7305fc43e685f2957cdd89a5b25e9291",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c35360051c85b7a5c71cb4b0861d6202162c4a144c61ab435c39c5a6c21cb5af"
+  },
+  "physical_metadata_sha256": "22f4fc949f9f608d2c25914e6c9e01554b65718479bd922b5dc09cc477b0fff5"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Recursive Recruitment",
+  "catalogue_id": 3425,
+  "oracle_id": "b73e35b0-b8c9-471a-bdff-f7dc8f453d7a",
+  "facts_sha256": "dcd71a2321fc7f3c4aac32e337a7e35f3aa9eca62d4e7bde44c07c530366a651",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "82f4bb023bbee530063b5bae5b48e1a7cbe7898dbfd9b2fe65eca14a3d8557d9"
+  },
+  "physical_metadata_sha256": "407b4b25c17d3102fb04536ce57128b7278050624af5521fa03add361ddcb3a7"
+}

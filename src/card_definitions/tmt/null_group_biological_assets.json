@@ -1,0 +1,12 @@
+{
+  "name": "Null Group Biological Assets",
+  "catalogue_id": 2975,
+  "oracle_id": "49598fd5-2aad-4974-b499-38b60fc371b6",
+  "facts_sha256": "63e894cc7031d03a52fb30006738464d16d93e4bd1d58acc6d1f88aa2a38ad92",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8e671c9198f00d74ba8491b20106d3b949450a11009ff0ba379ccad267b82e30"
+  },
+  "physical_metadata_sha256": "e3c33b6ae6e9565b8bb172267f38f5a25515fa6ba5473ba0fcd7d1213fc4cac5"
+}

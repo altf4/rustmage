@@ -1,0 +1,12 @@
+{
+  "name": "Lotusguard Disciple",
+  "catalogue_id": 2567,
+  "oracle_id": "1139ee31-cb6e-4ae6-a08b-252c46b2db97",
+  "facts_sha256": "9fabf4611acb2439f600544b146ed56f45398553faf3084cc40fe04e9cecf7f1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "52c9af8c4d82b04d8fdf14dd6a7e714ee52b05b8a70f87c30fed167fb3c4eadf"
+  },
+  "physical_metadata_sha256": "c011bdbe99de9ab977973284e7abe160f6bdec66bc0d1a0f2944df9e0cc623ca"
+}

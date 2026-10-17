@@ -1,0 +1,12 @@
+{
+  "name": "Ori, Keeper of Songs",
+  "catalogue_id": 3037,
+  "oracle_id": "69cc089a-abd3-4edb-bc79-f02daac70837",
+  "facts_sha256": "5360e43dc67f0a5dee44b9c73d258fabbabad0f399b4bdd563186051724c2115",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "60eed63970af33a0689197abc1bb5fa000ce8ea19dacc66b8d2ef8592e8a5f54"
+  },
+  "physical_metadata_sha256": "6905e0702fcb52360a05b768abf041cf482716705eadd752462f221094972ca0"
+}

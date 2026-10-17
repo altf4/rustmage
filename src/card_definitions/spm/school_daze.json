@@ -1,0 +1,12 @@
+{
+  "name": "School Daze",
+  "catalogue_id": 3722,
+  "oracle_id": "af2275ea-1085-4145-aa6b-36924d53d88a",
+  "facts_sha256": "9c688f2108b8a5051f6e4f258398a72aaa2a9afd382ce7a87b2db7f4d2a57924",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "15ce5a4f26f5eace234486c2ba0aa42c4c2b58cafe51d9736f9fa7532835b64d"
+  },
+  "physical_metadata_sha256": "956c2a8d10835f34e0ff525492b450250afddbba711e7411f9c4c2effcf6b0fe"
+}

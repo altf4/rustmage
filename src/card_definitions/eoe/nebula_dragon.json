@@ -1,0 +1,12 @@
+{
+  "name": "Nebula Dragon",
+  "catalogue_id": 2912,
+  "oracle_id": "724b4a59-9c69-4f2b-a436-72183c62f1ff",
+  "facts_sha256": "9f05b2330bfc0429d12b4a5ec97a73a7a7d69c59caa6a58ac1f4061f5ed239d0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9be92652c2f6231d897053376c22f26773a63a229c362f63c0c70a8f2cd64935"
+  },
+  "physical_metadata_sha256": "dfaae0d27d7e92ccfa76cb5ce9b7b1ab7c39ab2fb6b0839b6d95304c37a70bf1"
+}

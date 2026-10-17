@@ -1,0 +1,12 @@
+{
+  "name": "Alley Assailant",
+  "catalogue_id": 134,
+  "oracle_id": "57eba48e-87bd-4b54-8635-7348020f2ba4",
+  "facts_sha256": "ce2755d4c789a761d1c0582e071684a213dfd6a9edfc1c93ed99b473b67a7422",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "831178e99832c5618d4f7bdda641d145d67c27ee2216695e2aada14ec936aa3f"
+  },
+  "physical_metadata_sha256": "52b4f47ed91e680326e9847e531bdc26823a84a88a10d465b3f8080c4f1afe17"
+}

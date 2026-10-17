@@ -1,0 +1,12 @@
+{
+  "name": "Rainveil Rejuvenator",
+  "catalogue_id": 3348,
+  "oracle_id": "6ccf72ee-a86a-4b13-9e76-e308d0d28523",
+  "facts_sha256": "262db47338e23c83a2fee39a0d4c7c001b9bb2d43dfdf329739e1fa7a24b2131",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ad2197a035d021075d5a453dc66092c113d817380f9d5afe23b71793ef6368ee"
+  },
+  "physical_metadata_sha256": "77c91887c48637a7541cc6fcf9df2ec272b0adf8e27650df7789664cbd0716d6"
+}

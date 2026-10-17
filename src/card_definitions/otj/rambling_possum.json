@@ -1,0 +1,12 @@
+{
+  "name": "Rambling Possum",
+  "catalogue_id": 3360,
+  "oracle_id": "4b100e6f-6c19-49d2-b9c4-613d63d42151",
+  "facts_sha256": "69fb2ef37687b06133a7e3052497bfff650ad77b3f7d0caf6bf53d9979fc3396",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "aa905c4aae0085414d2900785e82c7c21a722653a234fbad3c8f7cbfc5c007a0"
+  },
+  "physical_metadata_sha256": "d8e03fce40515c7c41bc228d1865ad46ae7ab87afa0bb675f8f625c3800ca1ab"
+}

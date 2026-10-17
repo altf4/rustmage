@@ -1,0 +1,12 @@
+{
+  "name": "Creeping Peeper",
+  "catalogue_id": 885,
+  "oracle_id": "acf22340-7ff9-443f-a846-c44bb5a3f4e7",
+  "facts_sha256": "404c291f05361048654077d7329111ebc5414473f273009fed3f71b1db19b8a7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cc23626273bbd98bf21fdbc8067d320d1828398e6bb5f0685845311c8317e660"
+  },
+  "physical_metadata_sha256": "b5736b4af0417918c54670eab55cea5cccbe4b60c839c2a93510bd6e0b0b9cab"
+}

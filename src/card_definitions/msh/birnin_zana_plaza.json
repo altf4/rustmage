@@ -1,0 +1,12 @@
+{
+  "name": "Birnin Zana Plaza",
+  "catalogue_id": 421,
+  "oracle_id": "c3172c5d-c745-4422-b651-cd414c8da11b",
+  "facts_sha256": "86e2821662413ae45f9da186529b337c26b8cf12df76d8434ac9ffebcb8b1567",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c1f14110ceb29240b18731b8cb03ef967bf8cd2253ab8e9b96e34d19c2cf12e9"
+  },
+  "physical_metadata_sha256": "2b52308949b873fdad9f2cd09663a8956585919c2a5e967501027bc1621f636a"
+}

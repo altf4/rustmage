@@ -1,0 +1,12 @@
+{
+  "name": "Judge Magister Gabranth",
+  "catalogue_id": 2292,
+  "oracle_id": "1a846ad6-15c9-4bf9-9127-612018a557b9",
+  "facts_sha256": "7d814473cfe83d337ffeffe6fd0efed851387807617884ec6e09649683552a86",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "158a1322c7cda956627e86bc4ee639394efed11418afa3e9263957e557b06130"
+  },
+  "physical_metadata_sha256": "60e444b6bd7be3ddf125c5a94273090448eb7a44bc9528e159454fb9838e042c"
+}

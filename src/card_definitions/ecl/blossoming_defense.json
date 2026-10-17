@@ -1,0 +1,12 @@
+{
+  "name": "Blossoming Defense",
+  "catalogue_id": 471,
+  "oracle_id": "5a851367-1c4a-4cc9-a9c3-3d2775986b4c",
+  "facts_sha256": "c980edde676dca35f3838df029b52ec321ff6bb3ce2f7eb797c0c233f57c9129",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "19d517142217925457fac03b160c36276fa1d4de4203ef8caf7fe79686f596fe"
+  },
+  "physical_metadata_sha256": "44c5d5013d061c57edb5a5e058b0c0f67299144f7b1a76036da3c9f0ac3a8f78"
+}

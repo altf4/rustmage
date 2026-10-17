@@ -1,0 +1,12 @@
+{
+  "name": "Fanatical Offering",
+  "catalogue_id": 1439,
+  "oracle_id": "3e5402bf-ce7b-4c23-9333-0acdcf349caf",
+  "facts_sha256": "5cc1455f45fe23218adb6aba4ac48cd6d1dc640ed15affde4605743171e1fea9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5b6078f82b57b698a470aac8043a7b926fc03fbf70d9c78ae7bf497e5fd6bf0a"
+  },
+  "physical_metadata_sha256": "fe77c20877b49c162a95f8d7540e3e9fdffa6e44b3d0230625db3cf025b7f04b"
+}

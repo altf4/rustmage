@@ -1,0 +1,12 @@
+{
+  "name": "Casey Jones, Jury-Rig Justiciar",
+  "catalogue_id": 673,
+  "oracle_id": "b4c4fdb9-e034-49c0-9f7f-07e8cae19eb2",
+  "facts_sha256": "b9988ee23d455a086eab59327a8ec8e5834ac43fd7ca94c25a80d82699510a7b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7a17d0ded2d859cc251dacee07ff0d1439f589300df4e143ee143a25759e8381"
+  },
+  "physical_metadata_sha256": "1880d3e02b4e4a489e8453f9c1e057876335815780d808e52de2ba96c2192b4d"
+}

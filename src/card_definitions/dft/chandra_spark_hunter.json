@@ -1,0 +1,12 @@
+{
+  "name": "Chandra, Spark Hunter",
+  "catalogue_id": 716,
+  "oracle_id": "30bb01c1-9253-4251-80e7-fb8236b3d858",
+  "facts_sha256": "c369f5fcb83d66171e877c3eb30040eba7611d698a169cf92e9500720a819c4c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ddbd9e2e151a18f19d00d2b151dd0a95696c074637db4c4f136b1d4f4176abab"
+  },
+  "physical_metadata_sha256": "7402ca7b586811d6b77fa5a8edf04bdeba544a4cfe7e80d2a0af88dc30b30631"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Aurelia, the Law Above",
+  "catalogue_id": 266,
+  "oracle_id": "2a800427-ff8c-4b3c-baee-85211b70656d",
+  "facts_sha256": "91195d79767561cb8ed1f4e0e4666d61d09f5279905b5cf3727e54253bc9025e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6e1139060e839614be16638f55f6b5a615499c24f2a2bebd99c93ed423fddbec"
+  },
+  "physical_metadata_sha256": "ecc948e5bef5e329273bd384311e1c3dd1efc6c617168708471049544004f2fe"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Blooming Marsh",
+  "catalogue_id": 466,
+  "oracle_id": "66fa2326-1b5d-41fb-b919-83bf9f383577",
+  "facts_sha256": "b3240be2420b5426a1484ba9af85d6eb09b9d85012a6b94b15248a5d94b63fe5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "96ea716bdf69fd358a7db00db9a7481124fa5041c6ab0010ce9453e5a2eb80ae"
+  },
+  "physical_metadata_sha256": "01ec39faa78572bf13fd5755b59b8327a8bc9ad33e9f2222e12a8044b4e353a6"
+}

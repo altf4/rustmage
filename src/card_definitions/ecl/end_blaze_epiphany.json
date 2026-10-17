@@ -1,0 +1,12 @@
+{
+  "name": "End-Blaze Epiphany",
+  "catalogue_id": 1330,
+  "oracle_id": "00cfbea0-e862-468b-90d5-7478eb9847c0",
+  "facts_sha256": "8dc64d153c7810a5db34585fdccc83ccc4cb94eb49fb18aff2be957b5187e1b5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5f68b1cbbcfe5d2e0d8069a09858418a3ea080ae5cca9a9b45d0e48789b9542c"
+  },
+  "physical_metadata_sha256": "fffbfd035efc596dea5b82aa8f75235d2ffdd1d6ed4d4fa50e2633fa967ea053"
+}

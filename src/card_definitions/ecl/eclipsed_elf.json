@@ -1,0 +1,12 @@
+{
+  "name": "Eclipsed Elf",
+  "catalogue_id": 1254,
+  "oracle_id": "7c89ef4d-b375-4644-ac8b-034effdbe98c",
+  "facts_sha256": "a2881b1927ba023ae8f6135c721191dd139a6ba878eee6808e9fc1b70811098f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "203b9750502500817c0bdd76d670211b37cf06a677adb9e6664a597f3974c72e"
+  },
+  "physical_metadata_sha256": "daa045eb7dca692c8c3dc29708c1949405adcdfc83ea76acddbcc078fe4092e9"
+}

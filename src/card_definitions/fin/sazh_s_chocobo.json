@@ -1,0 +1,12 @@
+{
+  "name": "Sazh's Chocobo",
+  "catalogue_id": 3706,
+  "oracle_id": "c2b082b4-5d9c-4125-b353-d1cf4f334720",
+  "facts_sha256": "a455454a1999c5d06cb5989a2a73db851855684befdaf66ac938791ae565e2d0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4233c9d4e3fc94676a1e9a2e2547a37e59a3d12e5445d8e535c245bc81d7739d"
+  },
+  "physical_metadata_sha256": "fd58f3ba8c120197bee28585c4daf8cddb8c9a4d1e860448976666e656316cce"
+}

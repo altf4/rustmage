@@ -1,0 +1,12 @@
+{
+  "name": "Daily Bugle Reporters",
+  "catalogue_id": 949,
+  "oracle_id": "2e677ded-7af3-4af0-81df-b70d6ee616ec",
+  "facts_sha256": "988010895e67f5d42dfc36de821f676d4eaa3af65ad0bff5de05ce291533b5c6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "248ee373b6ea99a98869e298127ddea99612e6341aafba1bbc1993eeaa3a5c20"
+  },
+  "physical_metadata_sha256": "1a4e576ffa1aed7308f4003896ea2cba9b299982aec25a4ea055ef5c0a58f944"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Lessons from Life",
+  "catalogue_id": 2479,
+  "oracle_id": "51df0203-578d-47e1-a9f7-a13445f597d7",
+  "facts_sha256": "a25c6b0b81b301762540e11b60ba82c97bef39e383602d91de1cfd09b535a34d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3ad0fadb0650c59947cf7658debc9562df5a33ef05f23e1ddee5baaefcae7160"
+  },
+  "physical_metadata_sha256": "dc02abb797acb977ec2536e6fd5ddd950a1d6121b9705e64b0b4c1102a24f179"
+}

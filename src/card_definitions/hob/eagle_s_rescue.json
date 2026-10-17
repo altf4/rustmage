@@ -1,0 +1,12 @@
+{
+  "name": "Eagle's Rescue",
+  "catalogue_id": 1229,
+  "oracle_id": "95e1c368-b58a-4e69-9583-587560ad558d",
+  "facts_sha256": "847b9d5d3936a524d548221b89d7ac2b4747daf05cb4e8f6b16896bacd0e15c4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9707ef3595164bcb3236517718d1d4852b08004fc39d3c1c635ad283db23e9bb"
+  },
+  "physical_metadata_sha256": "8bba3db0f7b72670185e2dec34a6c90c10a49e5b883e9c5417ba0f0e91ae9d83"
+}

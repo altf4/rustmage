@@ -1,0 +1,12 @@
+{
+  "name": "Groundchuck & Dirtbag",
+  "catalogue_id": 1884,
+  "oracle_id": "da344e46-6bdf-4032-8590-bac850d5713d",
+  "facts_sha256": "df2c87c9ae924d843d349e0ad9dd63134467d9d5881143c8458fa4889c348408",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ec8fbcecf73597ac91d924dcfd83d42e7f008f3778abbcd149512f8dce5f2ed7"
+  },
+  "physical_metadata_sha256": "e329edcd5e6ff049f4ba37d559ac7e502831a1945680392b4c4b11e60b793731"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Kapow!",
+  "catalogue_id": 2313,
+  "oracle_id": "d6eabbff-cc0c-4000-8feb-4826e1b6bc66",
+  "facts_sha256": "69d1fc46a793b3993470f2f9f67f856cff336422659477a44519ea7232448fde",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6b25fe8b73549d237b165276e820cc9a8812404f116fe3f4af64c7ef27de78f8"
+  },
+  "physical_metadata_sha256": "b472314ee9e3ef5a1e47730e055edcc705c676d5ac1094a84363351786c5d786"
+}

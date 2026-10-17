@@ -1,0 +1,12 @@
+{
+  "name": "Vanguard Seraph",
+  "catalogue_id": 4844,
+  "oracle_id": "3250466f-82a4-45e1-9722-ff247ddf8c15",
+  "facts_sha256": "8ffb2afaa8b5ea63433604a1fd614aa86505a2079f2235a2da6bec022f63de6c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "aa939c9266578529e23c56864014fb3c42d96c05c70289ca2c99ae66d98c927a"
+  },
+  "physical_metadata_sha256": "17a76bec44bba01a1f68691a3a449c9f92a71c12eb97398c6a8c306d1cdcaae8"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Djinn of Fool's Fall",
+  "catalogue_id": 1112,
+  "oracle_id": "7dbb540f-ee96-4115-b6ef-28ffc73da8b7",
+  "facts_sha256": "a963e04a2f80727e8e3b4594f67e86f78abc352f4d2ed45a9e9ce96be6712cc7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3dc22349c6a97a68ef9693e0aab18575f99e1f3813259911731ebb5392f9d52c"
+  },
+  "physical_metadata_sha256": "0ac2ffda40cddf3c3f538ddbd23fb8b4484722a0781a00795937def4af4c742a"
+}

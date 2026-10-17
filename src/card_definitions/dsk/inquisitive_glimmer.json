@@ -1,0 +1,12 @@
+{
+  "name": "Inquisitive Glimmer",
+  "catalogue_id": 2176,
+  "oracle_id": "4abb227a-534e-4300-9009-065a10f10e8a",
+  "facts_sha256": "1e72d9548be22a5f1d702720b720b8d3111c2b4ae555d98227445b8a4a7e33c1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4685a6c82d66affa476d1c198469d1ad627b5a3e6891ad10187455fdc528cd3c"
+  },
+  "physical_metadata_sha256": "bb5600f7370cd4e2a515dfa896cb7966e86796b162223322a858897f5aa5905d"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Pride of the Road",
+  "catalogue_id": 3228,
+  "oracle_id": "2af236b0-6b30-4ddc-8735-864d2ffad68e",
+  "facts_sha256": "4bb476d9010777b2f7e308313cb32ca4ece8cf07e560d32b0d36d378f7411e8b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4ed352fde864db19991f36d831827e87c8efb3dd947d629d9718aaa464fae74f"
+  },
+  "physical_metadata_sha256": "b2e8ba38ba8db501353e66d22e16f84cc786e652e55d7c7e273761aa1716a886"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Toph, the First Metalbender",
+  "catalogue_id": 4635,
+  "oracle_id": "fbfef028-b10c-4ade-9503-d9af5b0c211b",
+  "facts_sha256": "b9ef292cd5588afcc997c17ed71f1a2e1bc59f5faa25fe091169b97f8dc66a5a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "10ea5097fc9cc1f04e39a47037d3981645aedd93700876f685d1ce0f4ae91e42"
+  },
+  "physical_metadata_sha256": "f17ad9ca932f5da0dcfd2c19b49d53277c2affb26e6713c066638dfb9545e49e"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Rowdy Snowballers",
+  "catalogue_id": 3602,
+  "oracle_id": "74224cce-c2ce-4456-8a97-3abbbb199385",
+  "facts_sha256": "e96325971f7b7bc68bd92686bd0ec20e319236204f012d94b61793591cbb52e1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "34c47f5ba738f563fa0cb6cfdac133ce4535670985c22ad2230d1530e7c81159"
+  },
+  "physical_metadata_sha256": "2d3c09bbcc0305bd1a110beb371092c812a80fc0cd5428cf546ffb877de82790"
+}

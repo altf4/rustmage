@@ -1,0 +1,12 @@
+{
+  "name": "Guidelight Synergist",
+  "catalogue_id": 1906,
+  "oracle_id": "c0bc3704-9bf9-4039-b3f8-205c1e5eb6e9",
+  "facts_sha256": "d1350baea636e0bc5ad7db3acba785531aa98e0033ff591a6c98111f42b2f583",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "06c34f10b86329cce99a4993166b030be3e72c614dd9f225d02f8449ce70c861"
+  },
+  "physical_metadata_sha256": "0966020eda471083c220fc7c5ad216798d6856c9385d0a70ab7b2321d1d6d084"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Invasive Maneuvers",
+  "catalogue_id": 2213,
+  "oracle_id": "4c376349-1a50-4215-8a40-f702da81eb7b",
+  "facts_sha256": "c5ab5e9e421a3f7cde4dda683e8766b1c9d82022ce451ff1f4c51c869ce1fd91",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "338aa7493c4f6ea62ffd7afa892faac9b521dd359b13206d64f1f5e039c594a7"
+  },
+  "physical_metadata_sha256": "df9117b617d6a708c6767e480b7aa39f386d73c726148b9d3433977df10c2ca0"
+}

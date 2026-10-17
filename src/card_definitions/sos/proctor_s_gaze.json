@@ -1,0 +1,12 @@
+{
+  "name": "Proctor's Gaze",
+  "catalogue_id": 3247,
+  "oracle_id": "a7fe7621-9bb1-4d0d-8b50-c179c685d79d",
+  "facts_sha256": "2023fe1a39a272c01e89ab2ef87e5ee0b947b1b3e1ecb2173eced9eede319759",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8a8a8732c83d0d62e9d9e6be297bbeed252b27a9668cde4a9944e2b8f2eb57a7"
+  },
+  "physical_metadata_sha256": "186a5d22b908ff65da70573ac3f9ff3c64d8a4f7151505b9e8a8516d2674bc74"
+}

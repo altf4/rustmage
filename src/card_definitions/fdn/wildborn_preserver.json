@@ -1,0 +1,12 @@
+{
+  "name": "Wildborn Preserver",
+  "catalogue_id": 5062,
+  "oracle_id": "55cec4bc-3de6-4c0d-a4cc-c5a30849fbda",
+  "facts_sha256": "325ec4cb51b8266450c210663f0c45f12310a9d916cbbc86232868461b237292",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b0c2579d971f66035038c08f9bfa811d1b42e058a00738870116cd9119a84e74"
+  },
+  "physical_metadata_sha256": "4ae1fee2919ab3854c87480f4b53964199177307be0f20e1464e57656d9a9dec"
+}

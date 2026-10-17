@@ -1,0 +1,12 @@
+{
+  "name": "Zookeeper Mechan",
+  "catalogue_id": 5171,
+  "oracle_id": "6d4d98a8-a5a3-4cc1-9277-c45dafe40ea0",
+  "facts_sha256": "13500c9b58e2dded5023fdcfe164ce44dece20c39f8036da8e0a7f5eb5af5b2e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7bb716f771130096d1b0d208d49bf0f7739adeace393bb573eeac76d7d696515"
+  },
+  "physical_metadata_sha256": "058f4ff3a60d2136951ba23f1b5669d56be30c541293a2fcf4d102476fddecdb"
+}

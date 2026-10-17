@@ -1,0 +1,12 @@
+{
+  "name": "Hope Estheim",
+  "catalogue_id": 2070,
+  "oracle_id": "187a110c-032a-42e1-be2d-3cfaaa9495f8",
+  "facts_sha256": "6a852924b9cbf7b789923048496dd0e5d5931e9c6425d34eb9d185acc94bf729",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9105d86f60de9165c9516792e001ae8273182916c2701041586938ffcc89914a"
+  },
+  "physical_metadata_sha256": "be8c1393d9a0e8b431360158bf6221cacd09fbea9dfd133aaf1e27f4c1b124f1"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Vicious Rivalry",
+  "catalogue_id": 4887,
+  "oracle_id": "90898c76-21f9-4597-88fe-dc9179911cde",
+  "facts_sha256": "3c201fbaca1f55dbc6c6073a307aa319b65da5cc87382ca6f634b2b9e2b96b62",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fa199e68c0875e355e6b8f6c8c7a91cfb2af2391e281bc6407af492e1a05028d"
+  },
+  "physical_metadata_sha256": "b1e7789288028d00728a183bb82ad21e6b5a49447b05c0949082ccdb589ad470"
+}

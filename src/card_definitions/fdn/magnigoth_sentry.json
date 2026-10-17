@@ -1,0 +1,12 @@
+{
+  "name": "Magnigoth Sentry",
+  "catalogue_id": 2628,
+  "oracle_id": "b52824f9-7897-46b7-a4e5-a0261861cb5b",
+  "facts_sha256": "03f5074796f6f69fce35094c678a597b86fbda905f7cd1820ef04ba15afc554c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "124dd264ff85ac57dc33b0f597dc431850bb9ee16f5f355e31286cfaf5798715"
+  },
+  "physical_metadata_sha256": "2414bf9979d02c503b871345845757e19b4ea1d82949fc5a3c16e34038d0b2ef"
+}

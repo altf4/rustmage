@@ -1,0 +1,12 @@
+{
+  "name": "Bakersbane Duo",
+  "catalogue_id": 308,
+  "oracle_id": "ecd9a0a4-1dfa-4d91-8339-062e2be4e5d9",
+  "facts_sha256": "56da178be59b0590bc2c447e621ff1468daf0b06c0074055604275c3bf77f103",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8527904d15a1441da13863ec8b1c0b1defacfa054a4233308c32249e45cd95bf"
+  },
+  "physical_metadata_sha256": "f4f19c3475c284c31fa639d15ef1180704817bb7ca00aef1da965dc3349114d9"
+}

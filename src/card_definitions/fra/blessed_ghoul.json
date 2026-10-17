@@ -1,0 +1,12 @@
+{
+  "name": "Blessed Ghoul",
+  "catalogue_id": 447,
+  "oracle_id": "fe99d90e-4809-4310-a3f7-ceb540511d55",
+  "facts_sha256": "4d5377c050477fadfa1f158a57ea792f4ae987bf87e4b9cf61fd75b9986cc6fb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1a5d51243f2e68add101e87ccfbbb9b8f1489a35f0239245217a0eedc3ac7902"
+  },
+  "physical_metadata_sha256": "a3379cf8d9381e473d9060c06e71c625e3ba5fc3c82b99da1b0c9bd7b893120b"
+}

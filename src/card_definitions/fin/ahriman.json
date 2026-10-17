@@ -1,0 +1,12 @@
+{
+  "name": "Ahriman",
+  "catalogue_id": 101,
+  "oracle_id": "37d1d507-25dc-4cd0-b51e-2f1e9b24832c",
+  "facts_sha256": "2aa6076a8c183c6e9f1a4f142330958614f8db3f89451be4495345528be4903c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ab3352c710c063cddee6ec3f1918aea4e19f6b177abdd6eaf4be2e95fffb3b22"
+  },
+  "physical_metadata_sha256": "a3e35528da22d652b42ce8444e1946a1a5f1c2845bae98df503e948f11ddad37"
+}

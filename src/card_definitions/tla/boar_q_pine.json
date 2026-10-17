@@ -1,0 +1,12 @@
+{
+  "name": "Boar-q-pine",
+  "catalogue_id": 474,
+  "oracle_id": "551e4356-5b1f-475c-a64b-9c50ea9b0368",
+  "facts_sha256": "be0b53980ff34bdb31f73c3efc3531f5348aea3f8a833b158223787d43a8dd35",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "90b7d3f3abdd4834932ce714ae6faf9f479d29c440c658aecd48b41ca1dd7dae"
+  },
+  "physical_metadata_sha256": "e4a7edcc60c5923facdd75d39e030a2f56e11314e0b2bfde0a4eaf8b31bfa328"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Harvestrite Host",
+  "catalogue_id": 1959,
+  "oracle_id": "56208bdc-2eed-4ccc-8c34-c0eba9db0aa9",
+  "facts_sha256": "0bbb2d1cdc24401c0733de3e6f5a3951e0162f4788b5f93b98bd468b6a42e6a4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a7eadf6befcc4c6c29896b2da4193fee517c42f6eace07c5c8ed1c192fba7dd6"
+  },
+  "physical_metadata_sha256": "88e20ced13b501a57c91c6962c9926d854d9b7e6b2d62dafe9dea36d62e7cf8e"
+}

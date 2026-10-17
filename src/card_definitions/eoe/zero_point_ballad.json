@@ -1,0 +1,12 @@
+{
+  "name": "Zero Point Ballad",
+  "catalogue_id": 5158,
+  "oracle_id": "835abd35-27ea-45fe-b55d-25081c57bd4a",
+  "facts_sha256": "173b3c3ea639d06fcf5f78b0c7e3baaadb8f9f72a2949fe8fe12793c94ca0ebb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "041dec967b943ed581a77ed20061d656e6ca7d8bca1902dca0d7cf63304907f5"
+  },
+  "physical_metadata_sha256": "4e0e7fbe6fa631f65f15e9f4f14a5e20504ccdabc806c5bc994ecded40b82400"
+}

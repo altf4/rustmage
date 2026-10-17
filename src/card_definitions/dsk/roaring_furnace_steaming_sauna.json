@@ -1,0 +1,12 @@
+{
+  "name": "Roaring Furnace // Steaming Sauna",
+  "catalogue_id": 3563,
+  "oracle_id": "d5f31713-d380-42ba-8052-4b8d9beb3958",
+  "facts_sha256": "f31c4c4de92517952c5c118d284d3bbd23cf20d0a731cfa030b9a1d22ed69f13",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a4eafdbb2a4c3c4878ecd1a4613bc79cc7db9994645abfaa6501e38a891b7519"
+  },
+  "physical_metadata_sha256": "449f0e0bce8aef5a09b84c8a8dadd5daff46f3b4a7f6a21843ff27937c08e546"
+}

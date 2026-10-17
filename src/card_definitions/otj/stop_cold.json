@@ -1,0 +1,15 @@
+{
+  "name": "Stop Cold",
+  "catalogue_id": 4167,
+  "oracle_id": "e0206af2-8034-4351-a797-a1d996f080b5",
+  "facts_sha256": "54b52837844e7b46f45e9ebe6f0b0ccaf77fd3ef41c921036b6ed0eab96f0d30",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "461803a915bea72bbbf2f81a8d81bfa2a369ca42755cab27e141e9f0d41bf65e"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StopCold.java",
+  "java_sha256": "d79dafea156849027e536c62f2eb5a540f8f5d7dab8e0be838fa6ee13777c5b7",
+  "physical_metadata_sha256": "0f9206033c5da525879a74ae7bfaedf530be144cfbd553d2247fc21ffcf90d34"
+}

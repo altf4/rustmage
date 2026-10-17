@@ -1,0 +1,12 @@
+{
+  "name": "Pawpatch Recruit",
+  "catalogue_id": 3116,
+  "oracle_id": "50ab0194-c7dc-4f11-abc0-1a82393cc42e",
+  "facts_sha256": "8e97b9ec7af86e0e8b2167e67d37bdfcb40ea173c1ae147ea251936353c5cd7f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "227bfe2eb76588077f9ffc08146ca22e0d0752b023f8c4e796648b68fbf69068"
+  },
+  "physical_metadata_sha256": "36dbb1c8ca1d3c553ff1862e8eea4170e6f5ef1343de0c63b84e5bff618eb6e8"
+}

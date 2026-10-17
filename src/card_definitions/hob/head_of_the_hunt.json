@@ -1,0 +1,12 @@
+{
+  "name": "Head of the Hunt",
+  "catalogue_id": 1974,
+  "oracle_id": "0523e271-5e0b-4e4b-9eac-86f915d18952",
+  "facts_sha256": "5f86c58d40e0b9da90b7e93f3bf6108bc25f9a75a44352d99fc6843c8a2d5b52",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3a96e6a8bd15f610e33cfb80caaeb7705e16077135926dee37b6df32a26642cc"
+  },
+  "physical_metadata_sha256": "e34031628a4255fab9e0801f06ff14ab0a8d3cbdedc7522a66eb25a93cb04752"
+}

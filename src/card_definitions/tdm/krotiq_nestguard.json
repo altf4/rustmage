@@ -1,0 +1,12 @@
+{
+  "name": "Krotiq Nestguard",
+  "catalogue_id": 2417,
+  "oracle_id": "33117d34-ea70-4566-92a3-5dec9bfe529a",
+  "facts_sha256": "8266a70a5c323d2d8e193433a06276f4d423bf91432a765ccf01c9de14f5a2c2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4cfe39b015a3823619c8b227859d19669024f35ab86a5bb077e9714f893d38eb"
+  },
+  "physical_metadata_sha256": "fae0a986142ff9e047431e8f142149907ba22915ad655e6359358cde66d1dece"
+}

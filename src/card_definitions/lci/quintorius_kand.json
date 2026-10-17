@@ -1,0 +1,12 @@
+{
+  "name": "Quintorius Kand",
+  "catalogue_id": 3321,
+  "oracle_id": "91babc5f-ebeb-4894-8c35-b0f60249cb80",
+  "facts_sha256": "91c3cf61f4349fdafac376f9d8a1e45aaafc83ac67a2ef1a3a265b0f673d0512",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bc2fb52cb1ac4997f9c44317454f8114a81f81b7a1b5ad1d6f1c9b202c2adffd"
+  },
+  "physical_metadata_sha256": "0554913c86a8d3d82fa94b3ea7b0db97068de5c949b0058b166538db3013c35c"
+}

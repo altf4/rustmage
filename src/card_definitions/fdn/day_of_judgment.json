@@ -1,0 +1,12 @@
+{
+  "name": "Day of Judgment",
+  "catalogue_id": 987,
+  "oracle_id": "d057289d-5e28-43d5-8ff3-4a1bc723477d",
+  "facts_sha256": "444de5ada776c11aec34000a1124ae06a952d05b1b0d313caba81bd046273c8c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ea41f5c0b4072556b3b0e3ca507d265208fd5d5cdcbb0b88f442e7a0235cd719"
+  },
+  "physical_metadata_sha256": "05ca5f4a1623be0590e4dc0479c6fc1047844b9189b7697f37308c20f15dd3e5"
+}

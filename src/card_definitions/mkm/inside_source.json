@@ -1,0 +1,12 @@
+{
+  "name": "Inside Source",
+  "catalogue_id": 2181,
+  "oracle_id": "12bced67-69bc-4fc7-a585-577060afdd50",
+  "facts_sha256": "1fd242c6f368c10921d8bc251d7c26ed076924d371386566f68a117b749910f4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e95631cc5fc801bc6ae08b6d4dbe3e2341b39a857b9f1f198de888c930f09bf7"
+  },
+  "physical_metadata_sha256": "6ce27c685d09b1cce757eab53cec399fabeae978c0dcbd880995767e1a06fccb"
+}

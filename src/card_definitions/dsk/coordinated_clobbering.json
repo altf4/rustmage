@@ -1,0 +1,12 @@
+{
+  "name": "Coordinated Clobbering",
+  "catalogue_id": 844,
+  "oracle_id": "b2b65b17-1fb4-42d6-9c6a-376d3f18851b",
+  "facts_sha256": "7e8e81cc65127435570b53a4721cc5dae84f2ba33631c92593e459a591795b30",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e29bdc92965309e4d8f415bdfd51eef0c32797f98b9b12bbd43673f4f2f34069"
+  },
+  "physical_metadata_sha256": "902851254f3e2adb5f4ad3357eff7a9dc2ae1e210daa8bd8fee343f1acd1868e"
+}

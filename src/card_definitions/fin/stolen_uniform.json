@@ -1,0 +1,12 @@
+{
+  "name": "Stolen Uniform",
+  "catalogue_id": 4159,
+  "oracle_id": "17c0cf45-a031-40e8-a37f-eda98a8f785b",
+  "facts_sha256": "addae8a2794cdd671c1bb0bc4d6f74afb95cbec48d92a9963d5122ba2e876b13",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2865631d526b5a2885fed9d1583fa7349e23b58a5988aa2a758f81ae064905ac"
+  },
+  "physical_metadata_sha256": "ae05314cac24ff3723ba3086cfb15d627310d7d78abbab32fab7f3fff3ff1a78"
+}

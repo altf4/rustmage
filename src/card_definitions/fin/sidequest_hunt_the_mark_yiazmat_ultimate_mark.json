@@ -1,0 +1,12 @@
+{
+  "name": "Sidequest: Hunt the Mark // Yiazmat, Ultimate Mark",
+  "catalogue_id": 3861,
+  "oracle_id": "d74f9a18-8dab-4549-be3f-9697ff68d73c",
+  "facts_sha256": "e0dc6388a13541d3818346ccbde73b5d33428877e2fea155eeab68a9bc4a5ed3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c412c19bc54bd7a9f7b5e93be56d903b7a9157b7aee04ddbcd75b6c3b4109be1"
+  },
+  "physical_metadata_sha256": "ff71298e84f6c368c0d4e3ec978fd76a10645f53f3bddef001595156122c6803"
+}

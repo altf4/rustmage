@@ -1,0 +1,12 @@
+{
+  "name": "The Neutrinos",
+  "catalogue_id": 4482,
+  "oracle_id": "b1462c82-7702-451b-b612-990353a79ac4",
+  "facts_sha256": "2969a12c316b77033d3e711bdb1421837bb176d9323e798c5e3eaba7e621770a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a8871d7e2cf2ba17db75b463d3668fbb45e7fc41e76028788422297145a9cd51"
+  },
+  "physical_metadata_sha256": "e91ba5c62150c46a6f10d5ce84550999369c6f6fd91a9eef37078ce24399f9a2"
+}

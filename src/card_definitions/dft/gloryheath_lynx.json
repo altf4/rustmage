@@ -1,0 +1,12 @@
+{
+  "name": "Gloryheath Lynx",
+  "catalogue_id": 1790,
+  "oracle_id": "28673657-f05f-4b0a-b80c-939773abdefb",
+  "facts_sha256": "b592e6608e0c92a99f8b43fd84781f869d95ec561e343d258aa80f7999b0c768",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cee2ada70f81c81fa2c40391021c5148ea1748c9de85dbaaa294bc2410e2c3bf"
+  },
+  "physical_metadata_sha256": "f146ee1411b8c5dac2516a26afcf2349f3f3117398a6ca6d9f138ed862a62889"
+}

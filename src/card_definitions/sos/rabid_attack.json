@@ -1,0 +1,12 @@
+{
+  "name": "Rabid Attack",
+  "catalogue_id": 3327,
+  "oracle_id": "4db02b34-efec-437c-ab28-aa318b8879ad",
+  "facts_sha256": "5b6de5fac55dda3ee28675c8720ac7185c8e4089d8b0b1b7a3562d6fd197f0a3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "085110bd8f217dc877513a3185c9bcfbad5d67ffd8aa61e288c11f56d90416eb"
+  },
+  "physical_metadata_sha256": "49a5bf637a5aa1e8d194f9480709129e7d9f6d7bf7aa6848b84c50b480f6adfd"
+}

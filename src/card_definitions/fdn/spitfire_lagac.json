@@ -1,0 +1,12 @@
+{
+  "name": "Spitfire Lagac",
+  "catalogue_id": 4059,
+  "oracle_id": "7215ca87-bbff-4c14-a1f5-de5ddd97c875",
+  "facts_sha256": "84b9456417a1f54e7ffb408eed9515d309de48a501495b8474b6623bf81d2f78",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a3c41aca9d8f8c6ebdb75951a234d68f32218b703e833133f777fb2716cf2624"
+  },
+  "physical_metadata_sha256": "5e0153e17ff3144ae5ce596de18f4b0057d857f7f1186321a484353d88801dd6"
+}

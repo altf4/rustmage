@@ -1,0 +1,12 @@
+{
+  "name": "Bilbo, Luckwearer // Burglar's Plot",
+  "catalogue_id": 410,
+  "oracle_id": "a73d9109-36e0-40ea-ab06-5c5f7eb4ac54",
+  "facts_sha256": "d7f24505a450843519b0cde64b46b97b3bce323a9759d997bd64912f984f8a6f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6a9ed252107b3fc6106f6ffb92ed2bc2b1c6590a0db43f40cad63ad074fa2f83"
+  },
+  "physical_metadata_sha256": "a7634c8ce322bc1372ece9687a269663c3eab445523f7cfa0d78c07e8fe5981f"
+}

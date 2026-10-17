@@ -1,0 +1,12 @@
+{
+  "name": "Flitterwing Nuisance",
+  "catalogue_id": 1560,
+  "oracle_id": "9148f2cb-5594-463c-a21b-a67706ec46d1",
+  "facts_sha256": "da6cbe07e887ea88af71fe88fb726d03dc7d62c2f1276634c9bbcd3fe217c322",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "008c0224d5e76031f9e69804c07a780431eef7b2b60360093ba148a03a74584b"
+  },
+  "physical_metadata_sha256": "bf4bcb39688d4bde41bc87b7d0e810bdb22cd6cbcaf4c942fd75aa07b336ebea"
+}

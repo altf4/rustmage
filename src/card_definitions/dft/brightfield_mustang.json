@@ -1,0 +1,12 @@
+{
+  "name": "Brightfield Mustang",
+  "catalogue_id": 548,
+  "oracle_id": "1b05e355-38a5-4307-9d8b-e99ec30f8ed3",
+  "facts_sha256": "8a526546e3ff49555a5f388cfb81ba66beebb64aabea32e9f47baad0204bce33",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ecb404d1e95ae0c36d4a8f96eb5721ba96f7d0ffdb3afd75a6c76a0512e99572"
+  },
+  "physical_metadata_sha256": "c1fd99f67408699a06ef2250ada0dcba634048408c0bd379a7542dffe8137ddc"
+}

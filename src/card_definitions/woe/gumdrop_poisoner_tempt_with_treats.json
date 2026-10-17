@@ -1,0 +1,12 @@
+{
+  "name": "Gumdrop Poisoner // Tempt with Treats",
+  "catalogue_id": 1908,
+  "oracle_id": "4f5ebbb8-f49b-488f-bb85-888aaa918bdd",
+  "facts_sha256": "775d630adc737a72655de4493af2f41322ac94037999da536205becc1ace2b53",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4295df9a506e064e750a2443b1d1d2fa50007b0e3bbf53578416287a3c0d8697"
+  },
+  "physical_metadata_sha256": "f875ccf9c57c737554dd7cdc6b5d672389b76c5f85322df3f95070cc6671f84f"
+}

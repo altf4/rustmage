@@ -1,0 +1,12 @@
+{
+  "name": "Obliterating Bolt",
+  "catalogue_id": 2985,
+  "oracle_id": "57fe941c-a830-4570-afe2-18f93c7a7b84",
+  "facts_sha256": "3a0c59a233ea02467011ddfc4cc930455fff151fa16732d065590b444ae21e39",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "191d73fe0011dcf7ecef592fc00ac912dd2c4c163c25fd6402417f4c9cae8118"
+  },
+  "physical_metadata_sha256": "727e7ae9fe195aea91f7f6f2ba07cc115789889015f0f16b3864625328861364"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Spider-Slayer, Hatred Honed",
+  "catalogue_id": 4037,
+  "oracle_id": "ca68f436-2522-4007-87bf-2669c7743db0",
+  "facts_sha256": "5923cd0fec041d0e9551b7f7fc5c233c68de88d97c7efaeaf78240f25eff9918",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5a27e362accf3c9ad3e5d8b1318fb88d1192c44366988f2018d9cc24aec187a3"
+  },
+  "physical_metadata_sha256": "e231c1a6c8178688d5ffbfe7f04d2ea8aa8242d5be6cf06a25f06e2018975472"
+}

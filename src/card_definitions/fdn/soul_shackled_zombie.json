@@ -1,0 +1,12 @@
+{
+  "name": "Soul-Shackled Zombie",
+  "catalogue_id": 3976,
+  "oracle_id": "f81ca3a5-356d-4b5d-afc2-a33aa774816b",
+  "facts_sha256": "cf2013f8ab173a04cc611e280786260d36de2e38ad21103399ca2726b2b5dc7e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6a9c34895439bac100708739b2e8503caa273f5a8028ea264110a98681d5c7b4"
+  },
+  "physical_metadata_sha256": "785f744776e9f84f866252663dd701474229a8f9beba96c047c2a1107c0dc100"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Lake-town",
+  "catalogue_id": 2437,
+  "oracle_id": "717c6beb-81c6-43ed-aab0-aedfc1cbac33",
+  "facts_sha256": "0e322ede1f9585b24ff00d6484aa3ab5602f9e7785dec6848e5bf0491cc83f82",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1aba67e346a2880dcd22f20927cc565ab9126c78f0bd5bae2cd95682c275e2dc"
+  },
+  "physical_metadata_sha256": "4a4fe3f28d87f9c0f5d24bb8812b30b84582fd634793478332c898e6b8876b4f"
+}

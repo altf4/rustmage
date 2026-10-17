@@ -1,0 +1,12 @@
+{
+  "name": "The Boulder, Ready to Rumble",
+  "catalogue_id": 4424,
+  "oracle_id": "d33ee141-a880-4368-a274-a6ae2f2c624b",
+  "facts_sha256": "65bb46288504d2dc587a0048241d6f2f626e0ab4a124ba61bcf4a1bd4a58bbe3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7189c3b55cc2872b76fc6105ee7bce0a1fb84e1a6fc47da683cac35812ffe94a"
+  },
+  "physical_metadata_sha256": "316962b8982ed5bc83c67b549c90469d4f9caff6d427e2adc758aaf7584de537"
+}

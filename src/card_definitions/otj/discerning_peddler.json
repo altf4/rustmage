@@ -1,0 +1,12 @@
+{
+  "name": "Discerning Peddler",
+  "catalogue_id": 1091,
+  "oracle_id": "a6584af7-583d-4d89-9b46-d61be8236413",
+  "facts_sha256": "a543f9914a98f4bd7d3cbf13568ee3c82ed9bfba429986b90862af4fdab5b9e4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "72d95d9e55ad8dbef9d56a718cfa6897c69dd4a8bacdb6eb0551ef3fe2c1b5f5"
+  },
+  "physical_metadata_sha256": "72a0766cb7c4bb6070583d656d44fc2090cc199a7a065094e3d59363a9b8b183"
+}

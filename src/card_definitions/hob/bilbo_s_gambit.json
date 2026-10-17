@@ -1,0 +1,12 @@
+{
+  "name": "Bilbo's Gambit",
+  "catalogue_id": 409,
+  "oracle_id": "ef71ef07-8a35-41ec-a851-d95e9e3a221b",
+  "facts_sha256": "b8493528890ff0dbf36771c3d2f71f5e8792002ecb1acf0cfa2654758b1d0acf",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5f58156bfb5fd8956b2e5e5c1ead5394045b1c58eae78d8e1f2e14923a3f6f7f"
+  },
+  "physical_metadata_sha256": "6fe199884741c2f840e88ba03835f351aeddf3bc57169e543b275d5c296caf21"
+}

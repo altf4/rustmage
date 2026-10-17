@@ -1,0 +1,12 @@
+{
+  "name": "Cauldron of Essence",
+  "catalogue_id": 685,
+  "oracle_id": "a2f8cde8-bf7b-4234-89f0-a95f9dc937e3",
+  "facts_sha256": "197e9c39916bfb59310a37b1cb79a8ae9c8a558ad7a2563a8cd9eccf85e44d70",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "16cc166add40c84f77d9a7d7b1d6d477c26b9feac13ce8812f6f9446a8040657"
+  },
+  "physical_metadata_sha256": "1c1f85cfc194a33f2cb9625646f9b030544de20bffb30964baa1d1d0ea201280"
+}

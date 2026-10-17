@@ -1,0 +1,12 @@
+{
+  "name": "Ninja of the Hand",
+  "catalogue_id": 2946,
+  "oracle_id": "c38f7447-e646-438d-81bd-fe2a71c8a79c",
+  "facts_sha256": "608ad3b27b98466ca15b8e60eae05d984732c1d1de659e0a9f589d8a5e90db33",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "91091c27ed75757027eb921de39ae002eb141bb7bffc62d3cc958bcf8ba2f63b"
+  },
+  "physical_metadata_sha256": "cb7992c0032d667f47fff92269495fe81e84dca7f28cd23c3302ba2381cece63"
+}

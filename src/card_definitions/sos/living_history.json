@@ -1,0 +1,12 @@
+{
+  "name": "Living History",
+  "catalogue_id": 2523,
+  "oracle_id": "a76adc88-e7db-43e2-8fbf-bae95c0838ef",
+  "facts_sha256": "b42b03a56cc9b1f7d9817fd9ab06455101c83a49255bdde9d92722c77fcb73e2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1f5bb4d2e1b24539212d56fa08e5e7675631000d1f4d8a4c32c5fd85b2df5f8c"
+  },
+  "physical_metadata_sha256": "411ca3ed6ec7124627070f89bfbb6e0b400ab4f35c4544bf6313753dc528571e"
+}

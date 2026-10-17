@@ -1,0 +1,12 @@
+{
+  "name": "Gilt-Leaf's Embrace",
+  "catalogue_id": 1753,
+  "oracle_id": "5eb8bb1d-7567-4c24-913b-463b5fe463c4",
+  "facts_sha256": "da43dba6458136892436ce5814bbd2f41ee66f7cd56e598f2aa4cd8868f8908c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "672520472d0483d85bec43c290ff7a998356c3e3f45f5f6c0f91618757f0c2de"
+  },
+  "physical_metadata_sha256": "c382da763105e902ed6d6c6cc36e67ed0f0f708c90a53651d7448de889dcdca8"
+}

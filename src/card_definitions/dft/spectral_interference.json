@@ -1,0 +1,12 @@
+{
+  "name": "Spectral Interference",
+  "catalogue_id": 4000,
+  "oracle_id": "cb5ed146-5079-46ef-a3e0-e584fa4467f6",
+  "facts_sha256": "495416c335f599abc87c3d702bdf6be4a09473af665fb982f8663d30001fa975",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "da8e5accd3ca561d708fcfe1bcc0cccda1c308b8698fca734619ee541029bf93"
+  },
+  "physical_metadata_sha256": "d649d8d225717c8b8b98fe42ced590ba782433f7222db55d23558e38dd0090da"
+}

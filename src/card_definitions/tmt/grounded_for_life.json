@@ -1,0 +1,12 @@
+{
+  "name": "Grounded for Life",
+  "catalogue_id": 1885,
+  "oracle_id": "9a334434-072a-4486-810a-63efb29dea6d",
+  "facts_sha256": "a368a63a81bc020fc41c4f128586cb9512eaeb39fb6a3599e8fd70318ad6e5d8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a19f62a16bdedca05449f71230e1dbeba5f805c8576c550b82e89808d9d1ce66"
+  },
+  "physical_metadata_sha256": "914de7004a7d8ce79919b80fd880c9045282c6fbfb3ec5da7da05827a9727234"
+}

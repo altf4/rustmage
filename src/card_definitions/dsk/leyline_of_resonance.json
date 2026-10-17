@@ -1,0 +1,12 @@
+{
+  "name": "Leyline of Resonance",
+  "catalogue_id": 2484,
+  "oracle_id": "f69574dd-097f-4908-9cab-344b0eb39c62",
+  "facts_sha256": "97444cc42ec2a9dde8e1ba05a5d887cc1b5a108e8bb524284b8e1767aeea3164",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e32bbdb5ac544cc91f2650054406d7a45b9ecc179bd129dd465882e7ad37ae93"
+  },
+  "physical_metadata_sha256": "a94c43e0a4160f43b96c82ccdb01af5b0c9585b331a06fe145058fec3487f3ad"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Fear of the Dark",
+  "catalogue_id": 1473,
+  "oracle_id": "9285cdf1-ad25-4aee-a865-1bf0cc905183",
+  "facts_sha256": "bcf793498206aae390454322e80742b5a456a093c3673c9929cddbb6f0e52689",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fac3b8e0b4cb18adad8a68c65af92df13c68af4f7455d5c062b8fdad85c3763f"
+  },
+  "physical_metadata_sha256": "cf12187fc99795e8a92d62ea75dddfb7cdec461553ae5c1513aa24cb4decab56"
+}

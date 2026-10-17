@@ -1,0 +1,12 @@
+{
+  "name": "Garland, Knight of Cornelia // Chaos, the Endless",
+  "catalogue_id": 1682,
+  "oracle_id": "75e930dd-32e9-4c39-81a7-d833a3976b8d",
+  "facts_sha256": "12efb0a96b21c31f05edc2f412c50f32e3c926815d62d3b5240abde2491d6d24",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0ddef542b19d7394e6f5799a7f95280a20c3256219cebe1fde9f58606759a8db"
+  },
+  "physical_metadata_sha256": "d159b5040c501644aca96fec4d7eb3115782f5c58a499aa951e50c9459393896"
+}

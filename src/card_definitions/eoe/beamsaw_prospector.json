@@ -1,0 +1,12 @@
+{
+  "name": "Beamsaw Prospector",
+  "catalogue_id": 355,
+  "oracle_id": "bbe740f8-6e7c-4cfd-9134-9bf8d5f48cf5",
+  "facts_sha256": "3d9dfa0689cc137bfacde3b719538b09c5d098693626d66007c8df2379d5945e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "77aac195cd49aeb8f35203202007e08cbd8571d84757be6b454e9507d51d3441"
+  },
+  "physical_metadata_sha256": "5f6306edc818ea64d47a50db39f4d9578491e967e4116fcb7eec67fa68d28db1"
+}

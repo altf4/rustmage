@@ -1,0 +1,12 @@
+{
+  "name": "Season of the Bold",
+  "catalogue_id": 3752,
+  "oracle_id": "5fe29c25-a7ad-4c79-a5a5-da1bbc832141",
+  "facts_sha256": "721cd72f39e4c93eeae1bed569aca9f1940eaeea5bb78012f1b4347b80317c04",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ff658559afabd2178e637ed3b86baa887eecb3705a4058597a1464c3b6620141"
+  },
+  "physical_metadata_sha256": "258092f7d20e33bd31da963bfc1ad3349ddbfc9ca98ae5d258fc5381846aaf14"
+}

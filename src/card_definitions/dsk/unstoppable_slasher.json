@@ -1,0 +1,12 @@
+{
+  "name": "Unstoppable Slasher",
+  "catalogue_id": 4802,
+  "oracle_id": "6662968e-ca9e-454c-be44-24ad10e43d3e",
+  "facts_sha256": "2fba12a1ab386abc88fb4d00fcd3f5cfbefe82e89d33a7c88f56ac82e16c9cea",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8b67eba41ea75ae44dea498d6df062d79c686ef852180591c3ed6c54558f8395"
+  },
+  "physical_metadata_sha256": "ec78cdbbf7149f5191320b24ffb14f3327df0a7cbeee9777884ccdc5e2e52db0"
+}

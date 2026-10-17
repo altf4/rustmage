@@ -1,0 +1,12 @@
+{
+  "name": "Wild Roads",
+  "catalogue_id": 5060,
+  "oracle_id": "36fbc8ba-bb4c-4e5e-9031-78c36e376851",
+  "facts_sha256": "5f4eda469a01ac63556804cb076ab3868394e387277e1ff7895435928246f386",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "02cde48e05367950a932fc758d15dfa13b2dd45f5387d323579a115075a6d4c8"
+  },
+  "physical_metadata_sha256": "3657899dfb2208da0e66494c2339a801ba8b15ebf4523ed03347a6a1e21491ec"
+}

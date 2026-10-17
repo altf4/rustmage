@@ -1,0 +1,12 @@
+{
+  "name": "Clash of the Eikons",
+  "catalogue_id": 765,
+  "oracle_id": "b1c38b70-575d-4d87-bc50-0b77b48ee823",
+  "facts_sha256": "be0f6b3edeae7ebbb3ecc2df5e4ebcd76c8f9297f445031c7504f93f2d6a592e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "25db4b3411d5aa79cfbe97e17a7f70df860239fbe94a913cae066ceeb242ce95"
+  },
+  "physical_metadata_sha256": "1c4ea8543f30ecdc3ec0c101c8231b0f297658c8e7474002c7d071190076bbad"
+}

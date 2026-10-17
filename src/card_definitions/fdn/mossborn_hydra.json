@@ -1,0 +1,12 @@
+{
+  "name": "Mossborn Hydra",
+  "catalogue_id": 2858,
+  "oracle_id": "84122d81-9634-4d3f-85a5-f6cf4303691a",
+  "facts_sha256": "02923c1b43f16b4c8de5b70ea7eea88869883d8e6d0badeb39ca20501db2edde",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7719dc93b680157a1d15ee8025b55e9c1a5794c590cc596e4c6e5157dedd4c6f"
+  },
+  "physical_metadata_sha256": "6fc19e0c21eec6f1e180d9627de82d2c724b89c01b8d1a2a437906a15dcea14d"
+}

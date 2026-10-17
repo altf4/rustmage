@@ -1,0 +1,12 @@
+{
+  "name": "Adept Watershaper",
+  "catalogue_id": 59,
+  "oracle_id": "602cce3e-7033-47d6-aec1-d755f234f270",
+  "facts_sha256": "951a23d499e7579a0cf5679c56ebd9d26b65acfa70b21b0690800686c96eb469",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bfbb6cb52831d8c6a906068cd4703c06fd18c314975483183fca754a531c8da0"
+  },
+  "physical_metadata_sha256": "bb3bdd819cc193f2a6be5befd9464532d77f6bf82517923c5991adb996539c90"
+}

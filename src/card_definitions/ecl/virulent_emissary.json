@@ -1,0 +1,12 @@
+{
+  "name": "Virulent Emissary",
+  "catalogue_id": 4910,
+  "oracle_id": "3d4bec90-7bbc-4385-a2b8-303c7a8d0a0f",
+  "facts_sha256": "298eed8e404d9c194f078ac8a3ba54e65765c841a51617d81880a3f98a773760",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c3008a9d14531cd91c834029e28e0d0965b0d0375ef9c1fb8bce7faae9b9bc53"
+  },
+  "physical_metadata_sha256": "54c135a1a939b5f8ee3a1d73deec5674708e9eb5dcabb1e174803a91c417ee65"
+}

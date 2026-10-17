@@ -1,0 +1,12 @@
+{
+  "name": "Sanitation Automaton",
+  "catalogue_id": 3687,
+  "oracle_id": "be2ab552-df82-49a0-8f0b-ee66de34e1a7",
+  "facts_sha256": "2a40fa3d59e3d10c84f7eef2eb02353ae79e5ddef60e7ddbc7d035e3a6776888",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "49e2596c2615cbd5f75a06a115dea7ab15a935053ccb3c0ab3f9d3109a311d8c"
+  },
+  "physical_metadata_sha256": "c7a03a9d01cb75f2919943c7fb129f57e6e06273a5c5f923215d244744a83212"
+}

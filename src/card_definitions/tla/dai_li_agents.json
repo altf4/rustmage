@@ -1,0 +1,12 @@
+{
+  "name": "Dai Li Agents",
+  "catalogue_id": 946,
+  "oracle_id": "8c05e716-b6eb-4f95-866b-7e43a898ebe2",
+  "facts_sha256": "84d02ddc9a204a196fab3b85c3aceeac429f106753847e6305eb7208c28bfac7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "862585b1958b2447944e762a06c4a404caadb24c88b5623933ba1427ff837281"
+  },
+  "physical_metadata_sha256": "af7b83201ff7bee9f83459eddf96749576b335093b182036e1fef495077c4360"
+}

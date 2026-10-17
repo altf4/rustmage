@@ -1,0 +1,12 @@
+{
+  "name": "Weftstalker Ardent",
+  "catalogue_id": 5031,
+  "oracle_id": "926d52a5-4db1-46ce-9567-17c28bf56ae7",
+  "facts_sha256": "006acc570c02cd90cd4d72f50565a36907196846fa96994da1e4cab37cb15e18",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "baba7585b43693c10466bf589ff7aac88922fc63c2ba8080e5562aceaae9bf64"
+  },
+  "physical_metadata_sha256": "dd5eefba22019d4c80826071136f83a02ba56daf077e9803633b076d0a93ad60"
+}

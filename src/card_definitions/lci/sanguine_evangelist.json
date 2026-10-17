@@ -1,0 +1,12 @@
+{
+  "name": "Sanguine Evangelist",
+  "catalogue_id": 3683,
+  "oracle_id": "a70d9645-7c25-4fcb-9d16-fb73ce8b55e2",
+  "facts_sha256": "d9d9d4fa579d06c89eb4209a3df06cefd488b42d3ce6a86ab0339575fdede567",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "62d7180fcabf925e70682f9a755c95db7c55dca6684e58eca768d1ea7553d36b"
+  },
+  "physical_metadata_sha256": "2728f9ff25a983c76a2032e446fb66c4c1991dcdb6208a3bb7f07c8b323255c8"
+}

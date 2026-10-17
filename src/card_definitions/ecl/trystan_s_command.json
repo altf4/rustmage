@@ -1,0 +1,12 @@
+{
+  "name": "Trystan's Command",
+  "catalogue_id": 4696,
+  "oracle_id": "ecc4e230-a546-4cb4-987c-87300060bbe2",
+  "facts_sha256": "0d8000a0f82a3854b07b989c96ea4070587ea22ce383fb7a10e0229ef032aed2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e67de96dfe5d2b9cfa5c6cda1eec7ad0d6bcf49c927196069125f2f5f54479dd"
+  },
+  "physical_metadata_sha256": "efad41ce7c57ec292539fc2a2dab12c15ffa4b824d9093736dd3c880317e50a5"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Omnivorous Flytrap",
+  "catalogue_id": 3021,
+  "oracle_id": "0aa2ab46-c5ad-462b-b441-dbbc4b2c3532",
+  "facts_sha256": "a56cb60168c2766b5ccf7d3c93cc957da692e6a7c6ecd7237c9ca0e8cfd10b80",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4878cba9cef56f5c6bb99d91cd96b4e3379cbd0c28e9bf7cf207c0ccc9e56e9f"
+  },
+  "physical_metadata_sha256": "0c976fcec00ec23ffbf0796a7614457f0fe2d497175e928e0fbfd7348e464e28"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Frantic Firebolt",
+  "catalogue_id": 1614,
+  "oracle_id": "f1882cc8-c81a-4131-b639-1bd6e083f8ba",
+  "facts_sha256": "cfe6d76ade5a4336b5fa0e26f005ce83350c3b61663b42928ca2acdb87a72299",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "04fbfed023d34febe08614703b047307655c9647200978f53862d7d9ad60d584"
+  },
+  "physical_metadata_sha256": "0ec3e44f26e469b767b1e3f6b5ceeac3da8b8ed519326c1b8da9619ae998fb43"
+}

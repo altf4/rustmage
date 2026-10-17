@@ -1,0 +1,12 @@
+{
+  "name": "Debris Beetle",
+  "catalogue_id": 1009,
+  "oracle_id": "2b15d571-2f90-44f7-9153-20ed51253045",
+  "facts_sha256": "d6cab1abc3e58d7364f673c9f28415a6a5b9e2b932c3562c4c3d902d106da554",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "72a09a091d53d0b4944aa00cebcb4d482994b265908bfc6167b0022fd09d5f8b"
+  },
+  "physical_metadata_sha256": "458ede3f7615d32a4ec508b929d3f08eff9516c788677e8d33be87c36c6aa7c7"
+}

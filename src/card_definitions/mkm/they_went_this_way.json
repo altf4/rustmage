@@ -1,0 +1,12 @@
+{
+  "name": "They Went This Way",
+  "catalogue_id": 4527,
+  "oracle_id": "47951720-9584-4ca3-a73d-3d259102b2f8",
+  "facts_sha256": "94bafc4026226d7aa63a02fd01e10fc41c89c3571782cc46c0c7ba7b70d6321d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "563f5daa032f55ff7e6841c7aa4beb65f94418789960250d48f1a158ca60e0cd"
+  },
+  "physical_metadata_sha256": "47184feafdb2108132f025eba8ecbf7e81930bed1655617ced345e9098485284"
+}

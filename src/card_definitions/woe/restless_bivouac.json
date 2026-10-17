@@ -1,0 +1,12 @@
+{
+  "name": "Restless Bivouac",
+  "catalogue_id": 3484,
+  "oracle_id": "b3c7b46f-c9ab-40ca-b50b-a4e0d0bd9be8",
+  "facts_sha256": "3d32d4b46a0c3aee8eb75bd5efbb2a3da29b8111e42309f4a0e73421f49acd17",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "abc9a113dcb1cd754ffecef5960a03a03176cff7560c90a51b2951ebd1a7f2d0"
+  },
+  "physical_metadata_sha256": "f594bd43298b8d29ffe94dae0bdcabcced02176c72b41587a524aec3201cdfdc"
+}

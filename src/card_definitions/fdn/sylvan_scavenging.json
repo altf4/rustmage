@@ -1,0 +1,12 @@
+{
+  "name": "Sylvan Scavenging",
+  "catalogue_id": 4300,
+  "oracle_id": "398afdf2-4a12-430e-85c9-c68847230939",
+  "facts_sha256": "805c535ad2b5eab9dec5de3b788bc8f5e8745938ccc10dfb913b9c79779eec4c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6ae2af569da2f3ed52f2e7843bbf41cc86ff83787bdd9d901181c982ea4b9e51"
+  },
+  "physical_metadata_sha256": "d27ac534ec6773055a1acef0cfac1acb425814c5fdd33902c5ff2e2d6de16a85"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Earth Rumble Wrestlers",
+  "catalogue_id": 1238,
+  "oracle_id": "1de17747-27e8-40bb-b6f7-6d5402d4705c",
+  "facts_sha256": "8e0b972b1b1df7652d67575cd49692e1c4c5e4a1605095ba9a09d218653f0b63",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4a757e7f0799b055f6962d935167bf1db977eb3b795c7a522ae6ae6df1f27d0b"
+  },
+  "physical_metadata_sha256": "5cb3578d5a30b99a80c5c4289b7e3132a3a4abf586e6db0d09278e6b09bf249e"
+}

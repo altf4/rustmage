@@ -1,0 +1,12 @@
+{
+  "name": "Consuming Ashes",
+  "catalogue_id": 839,
+  "oracle_id": "9ef676f0-53c5-4efe-9341-e960d00dbc69",
+  "facts_sha256": "31711a94347cf069a13c11c27dcbe46798ade88f012df534acadefb75090ae28",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6eac7000e78246c3dea7e37bd382394d94a0711c25f9e1a2794cac22385f8a6e"
+  },
+  "physical_metadata_sha256": "d5649389cff02e2ffe2cece8ecd00b6090d05e5afb4cef7c95e6fcb528bc84f6"
+}

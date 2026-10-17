@@ -1,0 +1,12 @@
+{
+  "name": "Vampiric Rites",
+  "catalogue_id": 4843,
+  "oracle_id": "660de988-b6fb-4f36-8006-42af3e7f908d",
+  "facts_sha256": "da13f902a04e47219d1317755b8909dc2666b4cff05d0a97f9e823bdaaefe55b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "deb0a253bce62ef817db4bc8e1694534dc0a5f832d59a6ad6cae6ec9d2d6238b"
+  },
+  "physical_metadata_sha256": "33937624fd3ee3bb2d46c2503816a5efd87e91bc203da7bad04d1e8374c228f5"
+}

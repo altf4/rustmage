@@ -1,0 +1,12 @@
+{
+  "name": "Mockingbird",
+  "catalogue_id": 2807,
+  "oracle_id": "b9df2cdf-397c-458d-89cf-911568737ffa",
+  "facts_sha256": "ab000b67bf92752530e9b95a2153b5f55332d6e43f5563ae98174afccb38b357",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f6c48ff003750ce3074fe14651b7a8dd31a68d67bf639ec03965dc77cb91eebd"
+  },
+  "physical_metadata_sha256": "644bb7b608b04473827dbd56d4fcdc3d8a3d37d7b4f1a9c74f2961a0c268c312"
+}

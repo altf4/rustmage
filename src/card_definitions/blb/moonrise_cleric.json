@@ -1,0 +1,12 @@
+{
+  "name": "Moonrise Cleric",
+  "catalogue_id": 2845,
+  "oracle_id": "d8067f42-68c0-42da-a1d6-859953939555",
+  "facts_sha256": "f156d46b26951fd68456539ade53460636884add200ce1e0eef49bbd9b56e84c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3111847f11cab6a18d4e3ca2772751296ed824d1f6c9bdfd93ccf40d561640bc"
+  },
+  "physical_metadata_sha256": "fa63b55011bebc5e80c9f2aebf83524fe2d54f04fc40932ad12f9e68fded2bbd"
+}

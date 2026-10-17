@@ -1,0 +1,12 @@
+{
+  "name": "Deluge Virtuoso",
+  "catalogue_id": 1035,
+  "oracle_id": "416c70ab-f136-43e0-b5d5-9af8d4211c01",
+  "facts_sha256": "9b1c371721ca2b2b51158c5714809b65b6b96e6bf899b0999662b74de58b6d01",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "35bfeda6085bfa7caff7063c184d6a55dd6d486fefcac0bc23197e23645742ac"
+  },
+  "physical_metadata_sha256": "16e08f2cf199e930b6b301dd674214782e5276b9a90e69955d9beb0864973236"
+}

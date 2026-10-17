@@ -1,0 +1,12 @@
+{
+  "name": "Pull from the Grave",
+  "catalogue_id": 3276,
+  "oracle_id": "c5373026-8b43-42a7-aa69-a1b0f1619795",
+  "facts_sha256": "4cf07f995076397a50438310441f34c8d612d53d8edb3d824431cde0401939af",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cebf2c2610fb97d1c487c4d4f951ea92c9722cd940bd5184006f92055978f9c3"
+  },
+  "physical_metadata_sha256": "8cbebefb62d4ab4b5e5e80d96968225cf98ae01fe475931611d1d1c88cb45e7d"
+}

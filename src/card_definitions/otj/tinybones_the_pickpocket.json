@@ -1,0 +1,12 @@
+{
+  "name": "Tinybones, the Pickpocket",
+  "catalogue_id": 4609,
+  "oracle_id": "7bc4c7e2-6758-4a85-84e7-03ab93981106",
+  "facts_sha256": "7b2d0619b3466a2625fd99763495c12cab3ebc7c97a485883622e981872cb728",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8eff0e55757e58f9e8fa70705ac6ec90403377c55714455f07244ba36d4c47dd"
+  },
+  "physical_metadata_sha256": "4434681012ee6a4730d1cc0b0e0a9c56005488f75b6383fca51080278631d6cf"
+}

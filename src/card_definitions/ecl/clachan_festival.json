@@ -1,0 +1,12 @@
+{
+  "name": "Clachan Festival",
+  "catalogue_id": 757,
+  "oracle_id": "5396045d-744b-435e-8324-a1bfbb03449d",
+  "facts_sha256": "6b7854a6f45c8946b44ecf12a655d99e28f43acf8022dbcacca1a5441493c04e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "58c5b23bb37d1f181cd07e5295224e1649fa7d9fec493fbd094c0c9a1ca9ddb1"
+  },
+  "physical_metadata_sha256": "bbca96d595299757764ac88d845679a6c9ada87fbe8f1399abd6ab861c93b52d"
+}

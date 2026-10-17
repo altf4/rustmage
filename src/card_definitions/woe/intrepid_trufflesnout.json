@@ -1,0 +1,12 @@
+{
+  "name": "Intrepid Trufflesnout",
+  "catalogue_id": 2207,
+  "oracle_id": "147d1e5c-fcfd-4115-a2f9-bea9b7ad7bb6",
+  "facts_sha256": "0ced8309793aab6b16be03d228a714654c18c32a05844c4f0c5cbcb35ed050d2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c311e2368c8a94e1801b35f66d7cc1c339f0511caca941bd04fbabbf2dade179"
+  },
+  "physical_metadata_sha256": "08b2b268ca5c700115dbd010ec5bb1cd7ef3cd5fac8cdc9555e969ca13703fc9"
+}

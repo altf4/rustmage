@@ -1,0 +1,12 @@
+{
+  "name": "Fungal Colossus",
+  "catalogue_id": 1650,
+  "oracle_id": "ce25dd89-dcc7-4576-b148-ef4c1cd5290c",
+  "facts_sha256": "ed143383e2b2cc26bcb4133dfd0e985826b82641f4080e7409e274e969a4f6b9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d96c423d4f105be5e7229e10271cc46035e01a1e011094d6a15d2d484eef9cab"
+  },
+  "physical_metadata_sha256": "e97839660337a37f6678c5064d6de6240a4b2a20b3d3990cc7ae32800eddf549"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Wood Elves",
+  "catalogue_id": 5108,
+  "oracle_id": "8973bd99-20f8-4867-90ef-50392147ee1b",
+  "facts_sha256": "ae64ebc0497dbfa8c4e357c18e0b12d13b2d3edd3a7a5764e123f29a932d64e4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "31d4c057cebc7e7c85cb673b06b0025549fadc6d3fd1bc13a1d6ea70f5230c6b"
+  },
+  "physical_metadata_sha256": "d094b76575a967e956d6e52df7de16745401c6f5d4cfac753d3729a268716eae"
+}

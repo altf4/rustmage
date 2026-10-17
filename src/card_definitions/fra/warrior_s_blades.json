@@ -1,0 +1,12 @@
+{
+  "name": "Warrior's Blades",
+  "catalogue_id": 4985,
+  "oracle_id": "f47419a5-b975-4934-a987-ea064a0c7c1a",
+  "facts_sha256": "a960ca403f42ad9ea05f7dae2517d21b3b334e9c55199bde2c2ef5399d3d58f4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "08d269ab2d94cc4e73840f9f33700b2a98a6b337a8d9b4e933e2ab61c2199b35"
+  },
+  "physical_metadata_sha256": "28f56f93a49f3d6b391f4f0ab9b9b13289e964cb5927f946f55ef3de32161850"
+}

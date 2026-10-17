@@ -1,0 +1,12 @@
+{
+  "name": "Gideon's Memorial",
+  "catalogue_id": 1744,
+  "oracle_id": "c8f08704-7330-4fa9-b456-2e96aa252a2c",
+  "facts_sha256": "0449cf27bf377cbcc3f9563f1f01375065eb39b2f2dc2333412531cdd17f8d0b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3b8a0ed94b7e9374bd5523767e5f349ebf700083f9174c189d17bc3dc5c08292"
+  },
+  "physical_metadata_sha256": "e6a0c2b419cd810385031fdf028d2d8bcb9c9071a74c1c0f5c2c78d507fbf113"
+}

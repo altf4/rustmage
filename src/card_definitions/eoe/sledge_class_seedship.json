@@ -1,0 +1,12 @@
+{
+  "name": "Sledge-Class Seedship",
+  "catalogue_id": 3916,
+  "oracle_id": "bcd086ce-de5c-4b34-92a1-ece22055e479",
+  "facts_sha256": "a20edee465744b6188b8d4cbe014bb8d024db90d8e8f6011bbcd2614523e8027",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a9a09f46317f9a03d1e21c8270f5830966532ce43f58a062752a72db43e0cc0d"
+  },
+  "physical_metadata_sha256": "fb5d6ab84e12d499a8f2d54adb54628fc287401d855ccea113e1d6cdf9efd165"
+}

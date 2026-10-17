@@ -1,0 +1,12 @@
+{
+  "name": "Starwinder",
+  "catalogue_id": 4116,
+  "oracle_id": "face2dc0-37ba-4efe-b900-b5521567c943",
+  "facts_sha256": "6873c553b391452360a9eebc8528623325c49d151acec6085c03de8bf9e0b52f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "66dd13ca71a4ef442cf1b6b7472de73f940e6f6acd5617ce0658585453d693cb"
+  },
+  "physical_metadata_sha256": "a859bc4e0b774e5344561944e159077a90b285c13c9cb11f7c9667971f03aefd"
+}

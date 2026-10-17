@@ -1,0 +1,12 @@
+{
+  "name": "Wanted Griffin",
+  "catalogue_id": 4969,
+  "oracle_id": "c1348afe-4dc7-41bb-9d3f-1e8751abd7db",
+  "facts_sha256": "dff18f7dfaf6bad01ad6c7ccd959868ef99a39ff79bad8e42c7e76795988a9c3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1b9e9ded3ae1e7a57c51ddcdaddd6ef1b4b311a575b7e9682e6b0fdf65a78e83"
+  },
+  "physical_metadata_sha256": "0ca6f92e3fa94c351567664bdc7524a74a65c6591fba76d8a0b28712380d6f30"
+}

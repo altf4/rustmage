@@ -1,0 +1,12 @@
+{
+  "name": "Alpharael, Dreaming Acolyte",
+  "catalogue_id": 138,
+  "oracle_id": "e4be4071-7910-460f-90f3-6c4d8cc9db65",
+  "facts_sha256": "32daf06582a82ddcad78fcedf4d5d5d482b67f6984bc030c7ca9e7d149deba37",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9496c2ebd8a041e1d405f8af84b979ad043f21ff69334abb027e61b8efaa80b4"
+  },
+  "physical_metadata_sha256": "85176edbdd049fafa1d80885db2281d5a6b75929b037b0e40b26befb9b71dc24"
+}

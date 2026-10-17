@@ -1,0 +1,12 @@
+{
+  "name": "Sazh Katzroy",
+  "catalogue_id": 3705,
+  "oracle_id": "0e5b40dc-debf-48a1-8398-5ea00b5a5166",
+  "facts_sha256": "6d3abac98936d5be36ee05c8f359dead29a4d70e74b1cd49299834c5a8c6a203",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2e521ececcdaa70c82122c3672522254dc8717a0613cadd7652782c69a512c7d"
+  },
+  "physical_metadata_sha256": "56851a8f9ddf593fb42985afb0afa1065cfd898b2f406381722ed44a532dd00a"
+}

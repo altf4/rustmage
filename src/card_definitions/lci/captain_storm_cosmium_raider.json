@@ -1,0 +1,12 @@
+{
+  "name": "Captain Storm, Cosmium Raider",
+  "catalogue_id": 648,
+  "oracle_id": "431e85e3-15e6-471b-ba71-6058394c9a96",
+  "facts_sha256": "d0f923d2e1107fa940162fa30252704f5e8b3457c6f5eb18846eff5f14aa701d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7b4db49aa267eba8983cd0764d703e608295aee81d7dbe782e9fd7cba94c7549"
+  },
+  "physical_metadata_sha256": "b1519a873bb1677bcbe3c1369ef753ae3133d1916fa185142de94cf64c741b51"
+}

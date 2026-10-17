@@ -1,0 +1,12 @@
+{
+  "name": "Meteor Sword",
+  "catalogue_id": 2732,
+  "oracle_id": "181965fb-e685-4b1f-9bd6-3a33bed933b2",
+  "facts_sha256": "ece4472db11b2c8cc122028421d33637901413a6e279f5fce5d411ccebfda17e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bb4c533d33996704105ad16e3219c81471126b221f2d2de4bb3bd1fad87a7498"
+  },
+  "physical_metadata_sha256": "7d2176678766aa98adfa44a034ddbce7bd759fe567c8e52f5e3f528cb60af80f"
+}

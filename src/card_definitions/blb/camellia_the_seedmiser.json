@@ -1,0 +1,12 @@
+{
+  "name": "Camellia, the Seedmiser",
+  "catalogue_id": 625,
+  "oracle_id": "312c7a7b-2084-42b0-9b13-0a6d3e43a73d",
+  "facts_sha256": "aa3534717563e9fb4ce81d1dd4b4bcf0b68db3d3fe765d9ae3ad11592e2083e1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8a3ff0e8cc025b2a0c4b1cfdfd1bcecdbf6d1690cacd888b445c1cbdd370703d"
+  },
+  "physical_metadata_sha256": "e1c1418f1aa6e1c7968b995fb33f12e51c5e682711816396f2bde307dafb0fe8"
+}

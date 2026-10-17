@@ -1,0 +1,12 @@
+{
+  "name": "Veteran Survivor",
+  "catalogue_id": 4879,
+  "oracle_id": "cc5b1276-d13e-4392-988d-1315bc90a9b1",
+  "facts_sha256": "4b639e46565ace3b85ec1054671f7a3d5777718ee5fefd2afa62460da86f9e84",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "98c9b1db084137b2016dd752388600824f2290f70007e037a62ce723584a3138"
+  },
+  "physical_metadata_sha256": "7bd7dfc1d6c85ee6de2009ff854d5e1e593d90922c619f2b6cfca09584d33c82"
+}

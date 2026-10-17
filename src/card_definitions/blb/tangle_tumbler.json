@@ -1,0 +1,12 @@
+{
+  "name": "Tangle Tumbler",
+  "catalogue_id": 4331,
+  "oracle_id": "0d81ea20-5e7d-4eea-b0ba-fe688f27df94",
+  "facts_sha256": "a8bc268a91b06bbb687d7348c862f932d294d77f53d6d6f7541973bf4a04ee00",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f64c75bfbff8ec1663dda3f01e3a7535d637ca12ba9c91779186ccdaba3c90ce"
+  },
+  "physical_metadata_sha256": "abd5e62a8e57e93f93211edb92716d80bd59748fe146ceb240b483208600a338"
+}

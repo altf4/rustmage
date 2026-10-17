@@ -1,0 +1,12 @@
+{
+  "name": "Assert Perfection",
+  "catalogue_id": 248,
+  "oracle_id": "ecf574a5-6410-466d-a726-732134f904b2",
+  "facts_sha256": "e95a8d12b30b588c31896c21f8c27e4025359b95f5285fc9606f88ade5f44634",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d1fbcec86aa3ec0c7b73cfee47cc84df2d99e020e6b862c5bc934417e6019085"
+  },
+  "physical_metadata_sha256": "5fc940c35cbd0bc1e843b326f91d152feb66583bf71e85f671477f5ffbf0b089"
+}

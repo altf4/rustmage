@@ -1,0 +1,12 @@
+{
+  "name": "Head of the Homestead",
+  "catalogue_id": 1973,
+  "oracle_id": "467d6acb-9a3c-433f-836d-54e0e670b7d0",
+  "facts_sha256": "797762b23ee8c76b8e791c49a9021c7a0875b5cf8f4e3c9059fe7806241fac4c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1f24e32126b9019d7825193129cb88118c804e51a38c3193837c158b143fde92"
+  },
+  "physical_metadata_sha256": "a016f2bb7966b41990525716b3b8e17b68258e947209c3f2f94a1598219fc1f4"
+}

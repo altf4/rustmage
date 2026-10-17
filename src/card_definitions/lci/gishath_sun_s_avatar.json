@@ -1,0 +1,12 @@
+{
+  "name": "Gishath, Sun's Avatar",
+  "catalogue_id": 1758,
+  "oracle_id": "a311daab-40dc-4433-9ed8-feab7c558bbf",
+  "facts_sha256": "b60e9aed0ebb12ba6a5beb66af7f891fd1a00e29d10baf5b0675d9c0574d04e2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fa8f2f72edabe23ad26414c55eb39c4bbde247ac98baf3bcf5eaf4c9a5894262"
+  },
+  "physical_metadata_sha256": "876e5128a9a8b6b8292ed168abff9f97eb71acffcfd40fa8687173bff10449e3"
+}

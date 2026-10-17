@@ -1,0 +1,12 @@
+{
+  "name": "Thrill of Possibility",
+  "catalogue_id": 4572,
+  "oracle_id": "1cb0610b-a731-42c2-b93f-0a29f63cebf4",
+  "facts_sha256": "a52082f994881159103afbb22f0b50de41798edaad96eb8bb9e2b671d634ccb3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8c75f6dffedfd9f3dce2ec24ac124d168eaa5044241ae2ab3d30ff7a549d992e"
+  },
+  "physical_metadata_sha256": "2299314b2014909ec31905ff61427ea6aab63b718e375d4a8119af62eab79982"
+}

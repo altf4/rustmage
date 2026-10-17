@@ -1,0 +1,12 @@
+{
+  "name": "Freya Crescent",
+  "catalogue_id": 1623,
+  "oracle_id": "7e3085d8-9d46-41e0-ad9d-54c44d9ef267",
+  "facts_sha256": "5d801e332549662156b1b38317e5f2fd416fc226a591f45518a4661fc711a6eb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "32e814cea4d9e6f552479054caa7f49456ed00bdda11f524cf3353288bd280ff"
+  },
+  "physical_metadata_sha256": "4819ab448e784792279e47e0a0339130d19dda7772472447801d9a429e490c5e"
+}

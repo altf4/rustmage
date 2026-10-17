@@ -1,0 +1,12 @@
+{
+  "name": "Ulna Alley Shopkeep",
+  "catalogue_id": 4740,
+  "oracle_id": "9da7f9ec-872a-471d-8d60-5f4213f0204f",
+  "facts_sha256": "0861c68913a214fd2ec9e3d6a1b45b757464bac0f5c5c8693f1b09405c89b445",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ab7da2760a42ddc748fe417b1cb223b714ab55f6fea108bec85a2b6848b36e58"
+  },
+  "physical_metadata_sha256": "39dd97433c7899b843cdfb94a18d4e74efd7ad1a3ca89b4c03537cb7138ecb2e"
+}

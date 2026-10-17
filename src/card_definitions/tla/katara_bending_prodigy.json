@@ -1,0 +1,12 @@
+{
+  "name": "Katara, Bending Prodigy",
+  "catalogue_id": 2323,
+  "oracle_id": "55adde23-c818-40fe-9bba-123de93568a5",
+  "facts_sha256": "2b6505b06d5e4f066ca88f01adb219b572f6268724b7e17727cc2270f365a72a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4f997a6c55e3c188aea9171b4b68930d968260afcadd1f784ff72aa29ae80928"
+  },
+  "physical_metadata_sha256": "682e7bd63a60745dfc4c6314ac54118f74b59533faf1c778acbd2baeb6ecbd8f"
+}

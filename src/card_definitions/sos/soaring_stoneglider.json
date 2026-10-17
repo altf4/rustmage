@@ -1,0 +1,12 @@
+{
+  "name": "Soaring Stoneglider",
+  "catalogue_id": 3950,
+  "oracle_id": "62d18d2b-fa68-49cd-b62d-803728ddfa8b",
+  "facts_sha256": "d8485933d5743a8fbdde452583f06040a3ccf1bc3fd2c049c876e186ef8f0c7a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "643f59337d0ae6f1ea34deb83d7ddb77a0ea9cf9b822725a09edd62407009fe2"
+  },
+  "physical_metadata_sha256": "de0b622bd296e8361b36198bf9ec648d9f0adf66549a68833f8be88a96667a20"
+}

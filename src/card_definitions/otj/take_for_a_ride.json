@@ -1,0 +1,12 @@
+{
+  "name": "Take for a Ride",
+  "catalogue_id": 4322,
+  "oracle_id": "4f815ca4-0197-48c7-bfa2-5eb937c615e6",
+  "facts_sha256": "f50495d47121fd64d48c4e9dfcca48c7f6870d2ebe7bf867d8f75093c9267867",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5e62ad1bbd0288640c2102f6402a93efaea3e0ca21503ff3aea4c6a927c34816"
+  },
+  "physical_metadata_sha256": "ecfaa1e91587fed10ef3bb1e9e8bcd206bd33d34fcfab512688d17a2fd5bafe4"
+}

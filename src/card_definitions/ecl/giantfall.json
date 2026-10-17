@@ -1,0 +1,12 @@
+{
+  "name": "Giantfall",
+  "catalogue_id": 1742,
+  "oracle_id": "77e5e7e3-b97b-4953-9df4-1aee509fbf2a",
+  "facts_sha256": "db90a773d7da4cc584c71d7eb1addaf4366db636925a40da1e4d245731732606",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "faa50d77686d59e1d1da813a2de44c826d57d51c26683ea0de830eeae50806c5"
+  },
+  "physical_metadata_sha256": "7c92b6ece68ca01a7a76f6a467cc9dfada187769c3e60678053770997ab4d372"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Reasonable Doubt",
+  "catalogue_id": 3416,
+  "oracle_id": "020503f5-0915-4cd5-a617-1c7bde045e10",
+  "facts_sha256": "46eb6b96eea599e8bc88067a5d0b065eede6aa1d4baba4bcc7448fadbc71819a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a4a8e0d982705a3d23674c9ffbfdb2952deacf638edca9e20f3855af1e24ee1a"
+  },
+  "physical_metadata_sha256": "db333b46f37e60dfcf254a97be7787f5ce4246d1078f95de6d3a1e50d1fbf0ec"
+}

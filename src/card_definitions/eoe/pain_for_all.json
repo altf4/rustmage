@@ -1,0 +1,12 @@
+{
+  "name": "Pain for All",
+  "catalogue_id": 3090,
+  "oracle_id": "4eedf21c-0ad1-48da-a9fe-2ffdbf8371e9",
+  "facts_sha256": "f3d058c4dd49a8f7eb2381d50315ceaa7de27034bd663d60e199c7485a9bf06b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f910df955fc9dc6905cbd715591239788ec752bb2170968d2530e654eabe099a"
+  },
+  "physical_metadata_sha256": "1450b3ccbcead854dbca0a512c5f99ed5e70ebc937c58f0dd1649807b7f7a391"
+}

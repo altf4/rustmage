@@ -1,0 +1,12 @@
+{
+  "name": "Valgavoth's Onslaught",
+  "catalogue_id": 4825,
+  "oracle_id": "663d9559-6619-46fe-8ff4-655f1d5e0e4c",
+  "facts_sha256": "869857d1d41ebfdbb409fb83c72823531c37d4e7ce2171703772a9d967d679b2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "63277c00f68c9ec5e3b5973a305560f71d0098cccd0b3e83b84c1325a62f8b93"
+  },
+  "physical_metadata_sha256": "e6f89a4358ffb60533b2cb6261f205ff7460c22d9c2b15a58ec22572d8a5ee96"
+}

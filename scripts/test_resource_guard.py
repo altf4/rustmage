@@ -8,6 +8,7 @@ import sys
 import tempfile
 import unittest
 import uuid
+from scripts.resource_limits import bounded_group
 
 ROOT = Path(__file__).resolve().parents[1]
 GUARD = ROOT/'scripts/resource_guard.py'
@@ -23,12 +24,14 @@ class ResourceGuardTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(json.loads(result.stdout), [6*1024**3, 6*1024**3, '0', '1', '1', '/a/custom/target'])
 
+    @unittest.skipIf(bounded_group() is not None, 'Launcher rejection requires an unbounded Python host')
     def test_compilation_cannot_be_enabled_by_a_fake_environment_flag(self):
         result = subprocess.run([sys.executable, str(ROOT/'scripts/rustc_guard.py'), 'rustc', '--version'],
                                 env=dict(os.environ, RUSTMAGE_RESOURCE_GUARD='1'), capture_output=True, text=True)
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('bounded runner', result.stderr)
 
+    @unittest.skipIf(bounded_group() is not None, 'Cross-unit scheduling requires an unbounded Python host')
     def test_two_units_serialize_and_nested_runner_does_not_deadlock(self):
         with tempfile.TemporaryDirectory() as directory:
             def run(i):

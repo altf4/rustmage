@@ -1,0 +1,12 @@
+{
+  "name": "Overgrown Farmland",
+  "catalogue_id": 3066,
+  "oracle_id": "709d2f10-1585-48c3-9058-ddd5f62f0452",
+  "facts_sha256": "e85702017eb807879467cdbec75c19e5b88e0d01b6308078ff0aa436074348a2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "864797a1689e912aaf6d0db4c8f9b229e692e0d4bca9e6663106b96cd556c081"
+  },
+  "physical_metadata_sha256": "52c475df717625ad11649ba1744b81bec3f1e527fb6b303d6bc4909f89eaaf50"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Virulent Silencer",
+  "catalogue_id": 4911,
+  "oracle_id": "7d70a2f4-92cb-40c3-9e5a-f6c57d4a64c2",
+  "facts_sha256": "66e484adfd87a99ae7044e5f1b0d4c2757129d6de32a774f3733c6cfa100fe2c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "80e6b5b4f58f7403bcd834836e7607dbc83ccbde05613816a40827f51660daf4"
+  },
+  "physical_metadata_sha256": "cbebe0adbf270b7d79ba82f221d439b1bd3ea61268f736646641f1ac2e5bdb4b"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Goblin Glasswright // Craft with Pride",
+  "catalogue_id": 1803,
+  "oracle_id": "23c3de07-8aa2-48e9-848c-50b5a40bd133",
+  "facts_sha256": "6bb85e89af095c5d16b3e649b165ac4f1bc9b57bc0e71acd27f9e44ed2c2d688",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "32d0e2e35b0ee6dc6f2e80b1161e23132d1199e037fd9b7ce5e05ad2ec49636c"
+  },
+  "physical_metadata_sha256": "903556f36a0f1153d4d2b4febca139c807a8e19bcb1754061be63a11e91a4c4f"
+}

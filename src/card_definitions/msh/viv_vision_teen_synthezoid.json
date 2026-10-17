@@ -1,0 +1,12 @@
+{
+  "name": "Viv Vision, Teen Synthezoid",
+  "catalogue_id": 4922,
+  "oracle_id": "f67a599c-200a-4831-9e73-126c7435a396",
+  "facts_sha256": "a093b5068007c89660e6de97ec0f726ff188c88151105f69a417e884061e8e81",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "733bb74222c731214f9dc50fa15ceec2b5f6b00c26e3c2796a84b539d7ab2d6c"
+  },
+  "physical_metadata_sha256": "65e0326998bf4006fc07835e99a9762a00836b0968bb0be3da3c336b4f384d65"
+}

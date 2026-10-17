@@ -1,0 +1,12 @@
+{
+  "name": "Venus, Torn Between Worlds",
+  "catalogue_id": 4873,
+  "oracle_id": "7b3d364d-6581-43de-a80a-d5b07f5d21ed",
+  "facts_sha256": "249d872adfb75e97312615ad5f469354708690803f55b784890223a449f8aeb8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d418e198679bab13b4dc9bced91ff67e4736a9e2e2f9182e4b0ab0221890fd41"
+  },
+  "physical_metadata_sha256": "4b6a772cd547188ca5f3ccdaf17b2707a9c8f0d75f812b5b0c1ea28cc03f3431"
+}

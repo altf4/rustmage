@@ -1,0 +1,12 @@
+{
+  "name": "Thranduil's Decree",
+  "catalogue_id": 4558,
+  "oracle_id": "d7cba934-02ad-4677-bb4d-50808b01b4f9",
+  "facts_sha256": "98e8ef128a0ed53481ea868468b36937e3ba9f5f9727e24ab2b50540dc2dda8b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a4393f92fd2e0ff438e748a55a38c2de67ac238e6f882c35e29b28151930fe62"
+  },
+  "physical_metadata_sha256": "fe65d2242cff117083f023fc9f39c5aeaeb1e6b8aae19047fd772a526bf83c34"
+}

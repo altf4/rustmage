@@ -1,0 +1,12 @@
+{
+  "name": "Balamb Garden, SeeD Academy // Balamb Garden, Airborne",
+  "catalogue_id": 309,
+  "oracle_id": "8b84fec5-617c-4088-8250-2ba1f1f9479a",
+  "facts_sha256": "d7ea6b107d97742b9da16b08e3832b970fc3e49364e532fb99e76b1400961e55",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bff21b42bd52ac01fe7abbe9d63a18467d83988e82c071dfb08211230682f503"
+  },
+  "physical_metadata_sha256": "e8569c3097fd6cbc1ca9385a49555fafcd2c1c7cc5e8a80f6a52c3be88f29f90"
+}

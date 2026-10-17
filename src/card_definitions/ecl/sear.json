@@ -1,0 +1,12 @@
+{
+  "name": "Sear",
+  "catalogue_id": 3747,
+  "oracle_id": "23b11fdc-61b5-4f5e-ad80-f81b729fc91d",
+  "facts_sha256": "b37e94b85257840c8fc76032b3fc74665747f0ee3a2f21a537c8f0648af4ee29",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8303f59861886a55ee7adc5d0177679a254a89829a59e6c4a19e235533dec012"
+  },
+  "physical_metadata_sha256": "10030a35f5918366081eb1c10f9c5f7207fb8c6091ad2bcdd0c8acb5e87ca244"
+}

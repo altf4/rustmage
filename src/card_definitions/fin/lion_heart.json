@@ -1,0 +1,12 @@
+{
+  "name": "Lion Heart",
+  "catalogue_id": 2514,
+  "oracle_id": "bd4151cc-743a-40f0-9e51-1f67555d9ab3",
+  "facts_sha256": "cb5caf3b4b96bb6a8a2dab544ff5f040d2ad633f2db5cb4fec7c0b0dc03a4d6c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6ba9a2cb4ed7c7de581498e542ae78c2f91986d1c5567fee9b1daa30a85b43a8"
+  },
+  "physical_metadata_sha256": "39dbde693d6ebc6075d252619446a7e4a01619517b5cd3ca7c99d46c08c35cc4"
+}

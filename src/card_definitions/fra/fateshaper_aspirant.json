@@ -1,0 +1,12 @@
+{
+  "name": "Fateshaper Aspirant",
+  "catalogue_id": 1455,
+  "oracle_id": "bb3996b6-b68d-4ea1-b3dd-1600f8da2f1c",
+  "facts_sha256": "ba097bcb490019150de52a85b48776c79a8d70e2ab36d7c74f97e707ba756b3e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f80282c9aa45443e4aab1273322c4a732dd925790cb25d62bc354fde0f79b001"
+  },
+  "physical_metadata_sha256": "c8cc660b069822f46895e65ce4be2efa30ec70de117d6a862e5a52847511c56a"
+}

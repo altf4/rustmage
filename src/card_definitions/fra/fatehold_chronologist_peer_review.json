@@ -1,0 +1,12 @@
+{
+  "name": "Fatehold Chronologist // Peer Review",
+  "catalogue_id": 1454,
+  "oracle_id": "1063822f-47d3-42e9-8a21-f62b12609fe1",
+  "facts_sha256": "b7c1659a12594135f805236ead8bc7d07fcaa9b46bf7e50fe4b8eb86c95f6e1e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e900325c3a19128635722d81dbadef6641cd26df325cbae05d46a875d8950d23"
+  },
+  "physical_metadata_sha256": "1573dde94836b22ce1d4a28b8904c80d4928c827da7efc291e42cf5f76428820"
+}

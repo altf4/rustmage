@@ -1,0 +1,12 @@
+{
+  "name": "Marina Vendrell",
+  "catalogue_id": 2664,
+  "oracle_id": "5aafc6c3-14f2-45b1-bd5b-c27760d791dd",
+  "facts_sha256": "8ff4c2e44d6e8472311d48cab6c225e96a398aacd69198fd9807e3f0db9aa08f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "af320e77c24dcc9c630c2c7f28b0748886267f7b8b2ec5465aac90530b7d3754"
+  },
+  "physical_metadata_sha256": "13e493c18cbf583dd1a5144d4cdf4c59eba24919043e9b315119608a44079708"
+}

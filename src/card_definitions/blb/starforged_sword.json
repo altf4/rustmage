@@ -1,0 +1,12 @@
+{
+  "name": "Starforged Sword",
+  "catalogue_id": 4101,
+  "oracle_id": "2cdc1d82-30dc-4f0a-af20-33dde90269b1",
+  "facts_sha256": "155efde40b6eeaee08aa4a1081a9f2598cd634e3258b3394c58c7d085b67c8b7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f95b620c52cccfa723b3c9a6f0bd36b7b8ff8bbe166988f927a7a7a9895ffcf8"
+  },
+  "physical_metadata_sha256": "45d0f5c38ad08e2f6d040c7814922e08d7be372404ba3aca7f9ad313d76f50c9"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Novice Inspector",
+  "catalogue_id": 2972,
+  "oracle_id": "c206bdcb-d2c4-4bda-a979-6c0627ef8f73",
+  "facts_sha256": "b6b3355f112636050a123120ea78c787e465ad0d07fd95614568446115887017",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "12679dcf115c521138b81a5646babfb42c4b11f1ecd46001f35f695ded095afc"
+  },
+  "physical_metadata_sha256": "615010077c812912d7bf7d405d378fd6b660ebd9f0a80d0b2c8a06a21e74f35a"
+}

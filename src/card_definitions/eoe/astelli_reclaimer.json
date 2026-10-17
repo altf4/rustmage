@@ -1,0 +1,12 @@
+{
+  "name": "Astelli Reclaimer",
+  "catalogue_id": 250,
+  "oracle_id": "bb956492-e3ed-483a-9169-5b795a8e619e",
+  "facts_sha256": "9f71a0ad718b8a5f94f3fd26fd37007bf66b41cb09cd4dd081de4010454f3e87",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c65c1be0f1034856ffb11f50f70df3c2a5a7d55125c10b0d28f0bddabc8312e7"
+  },
+  "physical_metadata_sha256": "57e10889931ffc5cfe4cb371f5c8c4f14dab32d504bf6b0993efc43fbebfa0bc"
+}

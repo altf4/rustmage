@@ -1,0 +1,12 @@
+{
+  "name": "Harried Dronesmith",
+  "catalogue_id": 1953,
+  "oracle_id": "a6e2d8bd-8fe7-4de0-af25-7ad3e9dcb81b",
+  "facts_sha256": "a628789fc6a16b74f2499a9f7864422a3ec1db27cd1541adad9aea4eb55d471f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7eadee368ab7e8e2f8f4f12d1be28419d813c0437c7088cf68310369af18c662"
+  },
+  "physical_metadata_sha256": "bf8db3f241750e0b8e527d204d8ea1a994ef025f4503e6f3986192a72f288b4e"
+}

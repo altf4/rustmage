@@ -1,0 +1,12 @@
+{
+  "name": "Attentive Sunscribe",
+  "catalogue_id": 258,
+  "oracle_id": "0f85714b-e731-45a3-aa65-8cd59cd48280",
+  "facts_sha256": "ba794af0800eb02c689fcce9b25ca3eaf796c00efcd97f77da9f58649206445a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "89d14ae18b7044a01e870e9b88fac591b2aafcdc8da6dbee4def69fc9418d11b"
+  },
+  "physical_metadata_sha256": "7e69ceaa8d3053d4f3b41b07590bfe290f99f88c77e44ec7da947db656363cc5"
+}

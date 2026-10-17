@@ -1,0 +1,12 @@
+{
+  "name": "Mai, Jaded Edge",
+  "catalogue_id": 2630,
+  "oracle_id": "b5029f21-e0d6-4f22-9afd-79452de26490",
+  "facts_sha256": "01beecb124f7bf34c547c9404f32f94dc1621cd7b147ceee0e10142a703478ab",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5318a4f4b0dd79de85b10f9946c7950a64ad8f225abbd225d22ea92ca16d878d"
+  },
+  "physical_metadata_sha256": "1e2b0df2929c0a6959c6155e64de7974f4513f1655a2cfe662dce017a125ef5c"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "War Effort",
+  "catalogue_id": 4971,
+  "oracle_id": "d9bc6841-9f71-46af-ac1f-a01caee290c1",
+  "facts_sha256": "1ffe396aa04cd32682b09c12fcbd41f047b4bbc79d492c9f445c00bdb97420a8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fe0965c271e7e6f4f1f80cec17cd4036833ffaa993043fe2d2aeeafe63e8578d"
+  },
+  "physical_metadata_sha256": "7a2ab3e68b8ec79238feefa44e4902f854bba0f1715135ec1949209400808c34"
+}

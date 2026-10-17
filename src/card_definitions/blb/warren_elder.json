@@ -1,0 +1,12 @@
+{
+  "name": "Warren Elder",
+  "catalogue_id": 4982,
+  "oracle_id": "33fcb05b-246d-4b82-8b0f-44d5f891b612",
+  "facts_sha256": "0431409b6b638195fb83b10ed67f31d0a1315ec09655a6345960b263f4566d97",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b1d8e7202c91096a594a1a1c669b927dec8497e3a519e18cfb6df73eddff2185"
+  },
+  "physical_metadata_sha256": "426a34965e207f5b2274596c5611c8416b27603689020c00ceb2f30740ff0e2c"
+}

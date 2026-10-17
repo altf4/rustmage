@@ -1,0 +1,12 @@
+{
+  "name": "Kitnap",
+  "catalogue_id": 2377,
+  "oracle_id": "a1bd1e83-40ac-449f-838c-ef308f275a5d",
+  "facts_sha256": "2456ba61e5dfe60dc2b52258216d00a47d07cd63b9973ef3824c0e4fbf2b8e43",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "acde10fc3496fc9145a5f1145a8b6ce84112fa89792b88c7a8f99a3c84d84233"
+  },
+  "physical_metadata_sha256": "0f8d558025c78b1cdb5ba3e89286d250462108210b08475eedbdd23f2bc4ea9f"
+}

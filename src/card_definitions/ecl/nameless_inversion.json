@@ -1,0 +1,12 @@
+{
+  "name": "Nameless Inversion",
+  "catalogue_id": 2904,
+  "oracle_id": "d6911456-42cb-4b23-a560-dc98784530f5",
+  "facts_sha256": "395e7b44764e83ed1b17ab934ad36c35cd1c6adba5a5d1277b0d713d43e67f5a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "13ac40900d0cc9b9afcf594af4ad080127319d86a2eb69a68a83b96e849b2b51"
+  },
+  "physical_metadata_sha256": "8d76bc8e681027602a916a6828b0b3bd3881b65c5e9d7346314d33e7e5ce5b6f"
+}

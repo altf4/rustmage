@@ -1,0 +1,12 @@
+{
+  "name": "Fountainport",
+  "catalogue_id": 1608,
+  "oracle_id": "94e8b0a9-44a1-4dce-8d44-78681ae638a1",
+  "facts_sha256": "bb41f6d9fd487c5e88847b8f1d41dad1eeb17655e5410eccdbd412d10a2636f4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4ce9bae4be0d13b03556e556a366ae2457574773ee7b4d4580e3d7288046ac58"
+  },
+  "physical_metadata_sha256": "4422f42e9a353b654d2e8474a5e47b925fdfba3c2705db8057f2fb6327cb802a"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Bloodfell Caves",
+  "catalogue_id": 455,
+  "oracle_id": "64e29bfc-9313-4e8c-808c-bc27f6b018a6",
+  "facts_sha256": "87bcaf44b9335e6635696a3a426c20a400f738f08861700ecb8161a9c91e6a15",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a069b2be50a20e3914dae08f99c782f675df5362141ae625adfad2f245e46a57"
+  },
+  "physical_metadata_sha256": "2a889efb089c92790ac36694f159d875a577294a7f455f1688483d8d23f79e42"
+}

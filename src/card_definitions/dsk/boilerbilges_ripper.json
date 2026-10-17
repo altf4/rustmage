@@ -1,0 +1,12 @@
+{
+  "name": "Boilerbilges Ripper",
+  "catalogue_id": 481,
+  "oracle_id": "0cbe2a00-4303-4ade-98b5-4172d97f15fb",
+  "facts_sha256": "a81cb2861f09c0b6e7e16b3ff273bf522b96b65cda4af4972fa685efdeaccad4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "833ff810605de6c636b98a616404264d3d849409021812643de933c3e3e5ea84"
+  },
+  "physical_metadata_sha256": "33dd3763fe2adffa371c80e60183b209c6db25e18e4a8049ee1edd87f5eeee46"
+}

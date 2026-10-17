@@ -1,0 +1,12 @@
+{
+  "name": "Kíli the Resourceful",
+  "catalogue_id": 2433,
+  "oracle_id": "840de40b-590e-4bf0-8d16-22b0eff61202",
+  "facts_sha256": "c8ff8e190bdd8d7ddc8ab9a88825e0a4351ca29ced3322520825d1a8e0899314",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "41858a09d61d85407cf0435cbc6efe28ce238c85562fe2dff816cc3f4a6c6c97"
+  },
+  "physical_metadata_sha256": "45c417e44b4567a25de269d70a42cd0d39769e79c90b62b5aebec2901fc33a1e"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Common Crook",
+  "catalogue_id": 814,
+  "oracle_id": "ebcbfdba-34c7-40eb-91a9-d306ff5ae8b9",
+  "facts_sha256": "c6b3f57fadf2a541e8b25848c999f26224c446bdc909073b672075fc1343bcc9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e68913a11236cd3bc56cbba774614de9d63e0407547f86cc84aaf7161e5ce6ff"
+  },
+  "physical_metadata_sha256": "289c4ecac5dc62ab977e41710544986d5ca5c21ad2b2f67476fd8fd6b294bcd2"
+}

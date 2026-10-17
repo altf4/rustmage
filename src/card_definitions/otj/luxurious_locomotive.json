@@ -1,0 +1,12 @@
+{
+  "name": "Luxurious Locomotive",
+  "catalogue_id": 2590,
+  "oracle_id": "c68c2a98-9a6d-4199-af3a-78eb92beda48",
+  "facts_sha256": "8afd917f8b22c85daf897190d8d2aeb05eaaebbb8e3fae21cda1a6a810f799d7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "05790e2057a21bb3260a9ae89fa4936acd5c9edffb59338055569395f90179d8"
+  },
+  "physical_metadata_sha256": "833139d1848e282a5472ded914047833d1f4d25c39f9653637de4d31ff73f53f"
+}

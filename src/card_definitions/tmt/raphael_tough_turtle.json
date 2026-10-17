@@ -1,0 +1,12 @@
+{
+  "name": "Raphael, Tough Turtle",
+  "catalogue_id": 3380,
+  "oracle_id": "2c72e6d2-bbb0-42de-b465-438d584cbddc",
+  "facts_sha256": "80314886639f9ac261ba0f66c251c7e729bb3e064a6b2182c50d5f497fbe54d1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4ecdd6738c963a2cc5a85103c42c50d3b7a3d5093bf9d69d9579821ef47d73e5"
+  },
+  "physical_metadata_sha256": "2c129f0b3cc5e64d99d07a2576993e1f7a36bb7de4debd98b6379c0f9f7553a8"
+}

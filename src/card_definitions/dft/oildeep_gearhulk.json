@@ -1,0 +1,12 @@
+{
+  "name": "Oildeep Gearhulk",
+  "catalogue_id": 2995,
+  "oracle_id": "aff0740f-51d5-41c7-ac13-97c298cfd743",
+  "facts_sha256": "1659fb88cb9078b409db85b98375cc936c3e667da390f8c275b103390a72b774",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5207b6647d9619338f61f52a815665312eab652b2eff482eec601b9da45c5d61"
+  },
+  "physical_metadata_sha256": "8f8b9c06fc0b13e3e8a6fdd2516ebf800fdf0fd23e6c7e4efe1d93c66bef2ab8"
+}

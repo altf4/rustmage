@@ -1,0 +1,12 @@
+{
+  "name": "Dai Li Indoctrination",
+  "catalogue_id": 947,
+  "oracle_id": "5591efbc-1b2c-489a-b4f3-935c9b6bd71a",
+  "facts_sha256": "d731c86d4fb6af74ebe36c87b05323b04b95a0821316add271e8e660c2ee4b2c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "89bb4aea619f639a188d78b8381aadba8cc8ecf6fcaef450fa631ef6431526d6"
+  },
+  "physical_metadata_sha256": "f6d25127cd8978dc461ead0e020ecb5d15ab22a451c7dce02f4f472ba333aab7"
+}

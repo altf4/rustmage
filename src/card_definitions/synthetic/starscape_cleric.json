@@ -1,0 +1,12 @@
+{
+  "name": "Starscape Cleric",
+  "catalogue_id": 5257,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4781f15aff9458ee96a2c5a582beb63e1450b26353b31df1bd6f582f8903c558"
+  },
+  "physical_metadata_sha256": "2c02d21c06bfdf7005fc0ad5b3e09dc17f359e88ce79b7217a5b59be0ea0edd0"
+}

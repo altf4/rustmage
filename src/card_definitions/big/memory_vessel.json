@@ -1,0 +1,12 @@
+{
+  "name": "Memory Vessel",
+  "catalogue_id": 2717,
+  "oracle_id": "0179bc62-823e-46b9-b536-342904fedafc",
+  "facts_sha256": "5ad892fa23136c47441b440df1ca3259bc62e05c51293a61f150e622840410b8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "07aaf03d3499986a1f8c7f5ffd2eea2ed86600056cf9cdd396dd146043ad6bdd"
+  },
+  "physical_metadata_sha256": "b0c81a58fbef9926ad9106cb54b2f5ce055a9dd666d60d40af2ff1d46b13ff5e"
+}

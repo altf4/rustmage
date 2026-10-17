@@ -1,0 +1,12 @@
+{
+  "name": "Hour of Defeat",
+  "catalogue_id": 2080,
+  "oracle_id": "2774fcb7-8988-4a18-b5ec-7534dd8b2e05",
+  "facts_sha256": "34f5eb80c9d7197334f4df8a554a9291018d89b90e31486d784fac17099cd5a5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "038f375bbf8e18c77fb71b5534ef0ec12e829264f8d0d301dc2a1ea24f20d2de"
+  },
+  "physical_metadata_sha256": "f6718726fc41a33e915c66f5811fda2d0b6e2f36a6c0610e1136cd6c3531f8d1"
+}

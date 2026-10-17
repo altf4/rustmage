@@ -1,0 +1,12 @@
+{
+  "name": "Thrashing Brontodon",
+  "catalogue_id": 4561,
+  "oracle_id": "60bc63dc-ac9f-4a2f-aef5-c90d0aa31553",
+  "facts_sha256": "3390d99ab07bfbe077cc6186ffa97bdf5dd74a56468efea934b5ceec2ed18ae4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3e64c71b86b800b2824bd5d95f40abf62a59ba7d1e26c78c2841a346ed923d1c"
+  },
+  "physical_metadata_sha256": "b14a9e1d2be84e284c28b5115ca60e9ab2d044924e4116788d9a7a496fb25f60"
+}

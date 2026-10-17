@@ -1,0 +1,12 @@
+{
+  "name": "Calamitous Tide",
+  "catalogue_id": 617,
+  "oracle_id": "d605d9d1-c01a-4ef6-89f9-06fae8cd57e6",
+  "facts_sha256": "22b0b173c740edcc3666eb0cc6e7bff496b3429927d19d414693a0a72ccd714b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "70e9e3c0d76f1320b31a3fff5928cc65171468de2c2082b4f3518ba394aeb1f8"
+  },
+  "physical_metadata_sha256": "ab1c42ac14a3f9716efb9ed7f161d1ab14dcbf7ec8534e9eee42a95d27f2d198"
+}

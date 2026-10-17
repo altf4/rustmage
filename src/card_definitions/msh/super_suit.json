@@ -1,0 +1,12 @@
+{
+  "name": "Super Suit",
+  "catalogue_id": 4256,
+  "oracle_id": "606092eb-8fe3-4ef7-aaf1-2d3b2687d27a",
+  "facts_sha256": "eff05677ebd4b9a1a03cfffa3719fe1254d855445ff06aec899f3ba9bea1cb4e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "60b005b53f811ef540e9941dbe747f4b5e2eae0cf3773d0c78dde3207ef5813c"
+  },
+  "physical_metadata_sha256": "3944f282291ffc023cca8c206941d64e36719deb187aade5448023f38856b713"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Jennika, Bad Apple Big Sister",
+  "catalogue_id": 2265,
+  "oracle_id": "b55da4d3-2cad-4c89-ad3f-7d8397b64d52",
+  "facts_sha256": "35da778d5968dd821517b6d44290b982cb9a97b9306ce33887eb06b4b540790f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a8f9f432eb8e462e7839d7c2e0aa530e3442bb0dd44aaf119b7a43eb9f44c809"
+  },
+  "physical_metadata_sha256": "6dbd4afd1b5f85fe8661a222aad1c58513fe114d22ab6027f979e13d6b3d5cc5"
+}

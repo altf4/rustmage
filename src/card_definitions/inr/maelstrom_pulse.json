@@ -1,0 +1,12 @@
+{
+  "name": "Maelstrom Pulse",
+  "catalogue_id": 2611,
+  "oracle_id": "95ce305f-34bc-4d6d-b7ba-ffd4b2a25336",
+  "facts_sha256": "04d546bcd091b9a07a582488021e23ac16646ef32833279d07194e0b7f7dff28",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "236d78cb8b72023b197caea54ed861605dde82d2fbf710b1528e503fa6e6d16f"
+  },
+  "physical_metadata_sha256": "a365d7a87a7714fb022898c691ba49272faf7c75ae8cd4f0533993b285e664a2"
+}

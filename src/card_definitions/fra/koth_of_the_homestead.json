@@ -1,0 +1,12 @@
+{
+  "name": "Koth of the Homestead",
+  "catalogue_id": 2399,
+  "oracle_id": "567aeb60-a441-41b1-98f4-54510d299317",
+  "facts_sha256": "3c607ebbc58dbd9fe5b1996a60f94f00d7a22ef88024a587fe5d5f8f38ae39ef",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "28de9f77a5d8f30b43e498aba42bbf9d7587ce2f16d1c7ec53ab94f7d1ba75df"
+  },
+  "physical_metadata_sha256": "f995ac0047c00bffb3b7b58d305cfd30960dcf3552c16592d3346bdc8c65a3d0"
+}

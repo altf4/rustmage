@@ -1,0 +1,12 @@
+{
+  "name": "Hazard of the Dunes",
+  "catalogue_id": 1969,
+  "oracle_id": "799664fc-279c-40c1-8e40-44a68c38801b",
+  "facts_sha256": "bfbc338f065a0126e86909c5be34e035d13ecb05509d86f50dd4c77a5a6b7036",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "35136fdf67f94583e285489429110c77a8e1e6231940e982ea8965e11c73c164"
+  },
+  "physical_metadata_sha256": "d14c9d14ad68ba5301857d990ba112bbd60c57dce369cd07be89fb9e2e0469b0"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Canyon Crawler",
+  "catalogue_id": 637,
+  "oracle_id": "bac94fc9-808b-4dc9-b405-408dd2aa6194",
+  "facts_sha256": "91489d9782f79945ddc3554c9505530a7b1a6a0e6e202bcb4d46b34d82fd6346",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "77aa7f84632f54e421cfd360b6a8b1c886c8d212b79e106725db520b418995c3"
+  },
+  "physical_metadata_sha256": "dfa5a0ce94d37557cc2c2a37c85831216320474064a825a9d38c040404e98f73"
+}

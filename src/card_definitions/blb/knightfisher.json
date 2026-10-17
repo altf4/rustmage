@@ -1,0 +1,12 @@
+{
+  "name": "Knightfisher",
+  "catalogue_id": 2388,
+  "oracle_id": "cb2d222c-df42-41a7-a517-0a41e47a4280",
+  "facts_sha256": "bca5d6049077d22d93ef53ce5d40c8d66cbc9d3ed171e5934117ac4192ff46f9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4a53d4e95005098226a213ab00836cef2c3c4fd024d9922fd91fcc0b48e3f27d"
+  },
+  "physical_metadata_sha256": "92fb991d7f1c284450da304d388f1e9020da25a823eca61e4cba248a20038921"
+}

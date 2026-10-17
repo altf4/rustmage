@@ -1,0 +1,12 @@
+{
+  "name": "Norin, Swift Survivalist",
+  "catalogue_id": 2961,
+  "oracle_id": "425d755b-7a15-423d-9640-494debc79dd9",
+  "facts_sha256": "d60498cbe51e798c9d1cd6a256acd3787736848418092b763bef2205f5fba99b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d3d6c2c2b5e7dde08795425f2ae1f6528d0ded26400e90045cd3d3163fc8ccb1"
+  },
+  "physical_metadata_sha256": "8e2a065134cd925ce02161134e9426c37d2ae0e84834525f6b427dd68252e457"
+}

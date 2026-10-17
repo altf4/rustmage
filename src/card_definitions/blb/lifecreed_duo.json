@@ -1,0 +1,12 @@
+{
+  "name": "Lifecreed Duo",
+  "catalogue_id": 2492,
+  "oracle_id": "63686c6b-9051-4002-aa8e-da8a3021330f",
+  "facts_sha256": "a5c3db260a3b43caf087ee60918307c02e8417a842b81a158cd2201602d0dd3d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c087752254a0a27386b4fcc9b80ea9a8675c9f1ef363c7762f24f53322ec48a6"
+  },
+  "physical_metadata_sha256": "b900b5f4fbed9be514c8eef35067b5b3def6bd1a86bfcc90b52acf858d699c5f"
+}

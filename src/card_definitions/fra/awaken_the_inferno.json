@@ -1,0 +1,12 @@
+{
+  "name": "Awaken the Inferno",
+  "catalogue_id": 289,
+  "oracle_id": "e729fce5-a1cf-4e95-9fd5-fccf4f704d31",
+  "facts_sha256": "d762dd7ac9e76e45a62f1291af7f7d951bbdde61215ad6fc8a700a895bfb3d9c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e5f0ceff5c7b62ea7e48d214d4b1a7d5489cbfeae06735f5c4c4e5dc97d0ae71"
+  },
+  "physical_metadata_sha256": "949277f7359d472e9a9c4141828f5a968ca1b6510c966f9d89f8990c3c3c3458"
+}

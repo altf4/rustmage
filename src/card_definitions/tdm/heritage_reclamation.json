@@ -1,0 +1,12 @@
+{
+  "name": "Heritage Reclamation",
+  "catalogue_id": 2011,
+  "oracle_id": "09955b4b-6052-4c27-8b63-9548482b3c5c",
+  "facts_sha256": "e1efdd4a58dbe5208329ff5a1019c7dddff9d16be54a278967eae91047961612",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2bf4bf423ad41fb984835680cf8b20e8ece5985be41121126401bf21fb9a7a85"
+  },
+  "physical_metadata_sha256": "cdade380f812ba16aaa4fea1bb56b7cf2923c4594adbb374efa0a3b2f78d5887"
+}

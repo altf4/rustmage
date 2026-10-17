@@ -1,0 +1,12 @@
+{
+  "name": "Wylie Duke, Atiin Hero",
+  "catalogue_id": 5127,
+  "oracle_id": "b3ac27d6-7e18-404d-9af2-b03897a5f1d9",
+  "facts_sha256": "836e0f49e7b9b119a1c78044fd0ad83e088fef6553714e442bce4eba76df0e50",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "13d6bc64371645f36e1ab4678ba5b6a61674a279c191b6e6039590abd4ab3821"
+  },
+  "physical_metadata_sha256": "1ebd78ab1d126f270e272ec5473c150c16fc140423dcd1cb3dfe1a14a596d051"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Rabid Bite",
+  "catalogue_id": 3328,
+  "oracle_id": "6d5dc34b-3eea-4b77-8db7-94bc30b14c4c",
+  "facts_sha256": "8e22adb10baca16ff5189d364645cee4fba3c61fabc03ec50aacd66762e0a6ac",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c585223a40b28a015568136f05f234cb0474c96260899fb288615f3863b6b19a"
+  },
+  "physical_metadata_sha256": "59a39ab1849a866b0fb927044ed472a6eaa2df8744fc2a02e462b6ddf13efab5"
+}

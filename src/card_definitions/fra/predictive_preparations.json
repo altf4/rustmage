@@ -1,0 +1,12 @@
+{
+  "name": "Predictive Preparations",
+  "catalogue_id": 3221,
+  "oracle_id": "d06a5642-861b-4b0d-9ea5-07046b7e1d37",
+  "facts_sha256": "83b30cf2901f210c0e61a5fb62c276644cb685df843a9a43732b17a12b52c00d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b75610adabbaec0a7780ad1ee0423a981b2a8cda9fe34b69d5d9514b5e139113"
+  },
+  "physical_metadata_sha256": "e4a6b3ea84ad7a452c418cacf85eec9873584c8d700d2fbc9733993d892626bc"
+}

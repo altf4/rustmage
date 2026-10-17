@@ -1,0 +1,12 @@
+{
+  "name": "Fomori Vault",
+  "catalogue_id": 1581,
+  "oracle_id": "622a53bd-d894-422c-a606-7126041afa02",
+  "facts_sha256": "f5d5dd3cdce268fe5e951ff51956d1f6e394b7e1c253473cfedb9d869b99cd59",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "68c911a11ecb61788a44660549ff997a7c9da9f0391305b4f249be8d73e06ef5"
+  },
+  "physical_metadata_sha256": "53a3e1be9a9c068a7c19adacd850e65a4fa55a1b847221500278ed383189de2c"
+}

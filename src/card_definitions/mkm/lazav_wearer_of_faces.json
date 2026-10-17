@@ -1,0 +1,12 @@
+{
+  "name": "Lazav, Wearer of Faces",
+  "catalogue_id": 2460,
+  "oracle_id": "4ec0b64d-c793-47a6-9c26-9ad4d9e9c182",
+  "facts_sha256": "abb2fabf94441b2028309e40cab9f60f4fc0093e3f7dd1bcfd69e0a27110ac14",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9fa8fc95fdae91092e24a8641eb3e556da1ac0c9391a02f859f790fd8e2fc514"
+  },
+  "physical_metadata_sha256": "8741c349994ba197fd2560e561e3e58ad6c0296c46ded5f2fad6de0e7b8f4570"
+}

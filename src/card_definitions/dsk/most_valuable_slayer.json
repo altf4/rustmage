@@ -1,0 +1,12 @@
+{
+  "name": "Most Valuable Slayer",
+  "catalogue_id": 2861,
+  "oracle_id": "f5bece93-afb3-4fa4-83a8-d7eaac032522",
+  "facts_sha256": "e2161e521c007b083e53b4e4bd9e757539829c81b662a076698a2460e745a6f8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "10228eb8ac1d39b20e70b26465aae7f8efb3c4fdafae62a45c469f0f8842334c"
+  },
+  "physical_metadata_sha256": "6772d8273c14c5047cd643af674b3af51b48d82526e38ad473b29a35863a6b57"
+}

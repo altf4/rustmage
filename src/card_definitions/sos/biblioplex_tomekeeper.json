@@ -1,0 +1,12 @@
+{
+  "name": "Biblioplex Tomekeeper",
+  "catalogue_id": 404,
+  "oracle_id": "08a0e845-9ef9-4de1-b9fe-4530357346ca",
+  "facts_sha256": "fae2ad34bd37dc38a11d5bd80eb20b6ea50103dd054476b9b2fe554fef638ec4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d4c884961d1c9a23ba1c159d78fc866df192e969dd0538d6d3f2a15dce07f7c9"
+  },
+  "physical_metadata_sha256": "a453360bbbc02629821958f31b855804a97f72b05ce89d982b2edb964ec2b1ca"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Toby, Beastie Befriender",
+  "catalogue_id": 4617,
+  "oracle_id": "b4c27c89-fa50-4cf0-bf37-039732d16fef",
+  "facts_sha256": "a6080a791bc10e0ce3f462194db82dbfd8c7d7c57c45b848ddb2b64933a1447b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eac8834666bb655e8b13ac244f9987e0d86726f009694f374198897fae6af580"
+  },
+  "physical_metadata_sha256": "755ae5c983f0bba656fdbdbbf000aa3ce0a29fd16542504207d0ea0c64910c24"
+}

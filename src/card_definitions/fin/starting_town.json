@@ -1,0 +1,12 @@
+{
+  "name": "Starting Town",
+  "catalogue_id": 4113,
+  "oracle_id": "d04e0975-f401-41b8-a9db-9bcf9cbbce66",
+  "facts_sha256": "f5dbf8c3658b9755a2be9b17d76f6e5f6d15ae3d0bb57094c26250e480403691",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "235fc40213887835136ca9f2f95c83d1823ff9e9b97ea4ce4982299b15976663"
+  },
+  "physical_metadata_sha256": "6fcca7955922f4e3be6f356b6bfcb3f8a0fc94be296161124a24a36803ce48bd"
+}

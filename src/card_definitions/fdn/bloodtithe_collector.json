@@ -1,0 +1,12 @@
+{
+  "name": "Bloodtithe Collector",
+  "catalogue_id": 462,
+  "oracle_id": "93088b0c-d158-473a-9c06-aa2f344a9868",
+  "facts_sha256": "9ad8694a9ae477537f2d72feb415a5cf1f340a507212e8f7c4b33208e3e39fbb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0adc6d5a18ab5b79755fc171e09fa82dd09a130680795aac7f2f9aace4bdae23"
+  },
+  "physical_metadata_sha256": "08aa7af21a6bc8f90c9ac987fdee7d1b237207b0ae1a87e4a69ab89124ccff14"
+}

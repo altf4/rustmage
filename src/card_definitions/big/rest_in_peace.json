@@ -1,0 +1,12 @@
+{
+  "name": "Rest in Peace",
+  "catalogue_id": 3482,
+  "oracle_id": "087f9ad7-e74f-40e2-8102-1ed2925d0418",
+  "facts_sha256": "2d35f61dd39d2a7c100d9072720d5534e7184b6ac0dddf2f3791aefdd2b0bddb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "82feecf1fd54bf32b7408b3d7ba257ea8d97f56978bb07ba3605c38c1b8bf90f"
+  },
+  "physical_metadata_sha256": "7d905eb603d14b978db970d8fe7d774e1c2641f53181d52dc2518fcef07874fa"
+}

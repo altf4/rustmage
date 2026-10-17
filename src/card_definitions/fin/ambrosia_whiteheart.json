@@ -1,0 +1,12 @@
+{
+  "name": "Ambrosia Whiteheart",
+  "catalogue_id": 146,
+  "oracle_id": "2bcc9f11-5b12-433e-9680-0f4b18aa521c",
+  "facts_sha256": "71ad8415fc959f61f16e529a1c58d4e1d72e4f46216317bfb9dcf02081e68677",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c205fb644eb7b17ff5ca0ab5b3ccf0219e58dba53188d6d8a19215df68c12422"
+  },
+  "physical_metadata_sha256": "6ff77329b91eb400919322bcabc3dfb82ff407b26a564e7005c1316f253c30d8"
+}

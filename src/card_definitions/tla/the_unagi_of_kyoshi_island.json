@@ -1,0 +1,12 @@
+{
+  "name": "The Unagi of Kyoshi Island",
+  "catalogue_id": 4511,
+  "oracle_id": "be922360-ee9f-4cfb-bf10-d481c5de5cb1",
+  "facts_sha256": "583b68a4b5cbfe2e803897a11a20cf4038206fadbe058c102a8ac6d0270083b9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e58341bd099efbcc2fefe6a55542db4de6232a584d83fda7003a9c1fa10b7127"
+  },
+  "physical_metadata_sha256": "11349a69017f292bfa99e7a35106a88678e7fb00242ed35d3ec92bc067cbf1bd"
+}

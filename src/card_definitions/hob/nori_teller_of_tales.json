@@ -1,0 +1,12 @@
+{
+  "name": "Nori, Teller of Tales",
+  "catalogue_id": 2960,
+  "oracle_id": "03253076-9add-4efb-9227-b0a062c86534",
+  "facts_sha256": "39d81f7e6615f75bb50283af22fe7d1feaecbca7c69e2943002a628870a14c2f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "506c5b2e0b62ba293295ddffc76f8fc78382b0ef0693d3d9ceb4ee5ff5a3a063"
+  },
+  "physical_metadata_sha256": "532cf9c21b95af4a409f199428eb56a6a0ab919ca141feeaaf377873924b5364"
+}

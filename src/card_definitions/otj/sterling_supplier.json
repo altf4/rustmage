@@ -1,0 +1,12 @@
+{
+  "name": "Sterling Supplier",
+  "catalogue_id": 4135,
+  "oracle_id": "ab23cca2-b59e-4d34-80de-98bd08985275",
+  "facts_sha256": "ecb57c76e3fc36819d26fdbc62440cdd7ed60e019d43e4f0467a7ac81be74d6d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "030d55ae65baa3d32823868b2ca353a549431da74720dd7c32fafc6caa10e896"
+  },
+  "physical_metadata_sha256": "7395e221e2a742e4149b69906aa1135780738edef2ae14874d51c7e6940cbe3c"
+}

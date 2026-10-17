@@ -1,0 +1,12 @@
+{
+  "name": "Push // Pull",
+  "catalogue_id": 3287,
+  "oracle_id": "7e050495-bed7-43b9-abce-866c61beb1da",
+  "facts_sha256": "cb61219aad82757f8655447c9072db6da9371dbd2d0be15be8d3a2397485b89c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4eb1d36d18e761e0c31e227e0f1542ed6e496a7a2aee93932529cd7c25985df5"
+  },
+  "physical_metadata_sha256": "8c09c829106824cbb9b83320f21d46c0e30e08d83cfa7330224e0fd5888bcd8f"
+}

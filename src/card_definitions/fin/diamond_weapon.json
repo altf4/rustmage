@@ -1,0 +1,12 @@
+{
+  "name": "Diamond Weapon",
+  "catalogue_id": 1070,
+  "oracle_id": "3beba02f-4d50-4a93-a13b-78d4595bfbfc",
+  "facts_sha256": "c12498c4b109220e31d7ced782298298280524d8d661d76f631b4a691f0b760d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f16b738e9f5f7966470a4b449b79d290ffbc6732f0fdd94f5cd4e5a72ab82e43"
+  },
+  "physical_metadata_sha256": "516fe4edb4343ba89849711660e8ca45bc8a0dd095cf7404f3514188ef488f0d"
+}

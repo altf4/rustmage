@@ -1,0 +1,12 @@
+{
+  "name": "Misleading Motes",
+  "catalogue_id": 2790,
+  "oracle_id": "09eec5a2-7835-4b24-9dd1-594612ee9152",
+  "facts_sha256": "bb68147f8b66c43f9ee2356d30c4cc9c0ff1dbf9d0d610ec0fb4e3c4dc851169",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dd94f49702c548e03b3673bc6c86b06a89775d2c8d208297281b708b5be6605b"
+  },
+  "physical_metadata_sha256": "309ca1699d85f3b905633dde1fd6dfb5f42fd15ee091ac9eda692a6961179f07"
+}

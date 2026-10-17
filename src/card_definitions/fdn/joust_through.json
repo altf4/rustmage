@@ -1,0 +1,12 @@
+{
+  "name": "Joust Through",
+  "catalogue_id": 2291,
+  "oracle_id": "33c21ef1-33eb-447a-a318-a352f163a8a0",
+  "facts_sha256": "e229437d672608a87a308b4fb1ee309c37bdb70a17cdbe1747c206dc528a2dc7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0e4559087f910d7a6af0806500a2087581d2808ae408b8f5a587913504ef427d"
+  },
+  "physical_metadata_sha256": "f19ad5debbc867a3d69306105905e27cc681322872d1938cf49f06a0f999a750"
+}

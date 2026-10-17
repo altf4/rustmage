@@ -1,0 +1,12 @@
+{
+  "name": "Black Panther, Vanguard",
+  "catalogue_id": 431,
+  "oracle_id": "b0bf1964-c543-4c53-9f09-0dd7c608d5c5",
+  "facts_sha256": "300163840cadc10fdc4901acd9d005233d643116aed21aec25dff0554cc31217",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "270bac5d4fe72e792296f75aedb639883dfe65b1e4f2ca000f953990dc8a4b99"
+  },
+  "physical_metadata_sha256": "76a5372600902289cba79f8008b5e7028fe7c520bca7247912ad0ec31e1e585f"
+}

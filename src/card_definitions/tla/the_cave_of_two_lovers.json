@@ -1,0 +1,12 @@
+{
+  "name": "The Cave of Two Lovers",
+  "catalogue_id": 4425,
+  "oracle_id": "c2df54f1-a2db-4de3-bc96-5c07f4594752",
+  "facts_sha256": "671754dafc1d1c2921fc0bc2a391f303143469779e5fccb1fdc5e66823795743",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1c1d14fb239ef8727909799592abbe3604fbc275e64097bea0a29da2d351edb0"
+  },
+  "physical_metadata_sha256": "3ed09b2c382f7c8149ffae10f71a3c014e59e78eaa6b3f4f902a9c2798bdb1e3"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Poised Practitioner",
+  "catalogue_id": 3193,
+  "oracle_id": "e08debdc-2db5-4562-8a02-4158bfc0db88",
+  "facts_sha256": "5a9a0b036b1770a5fe02e714738d6d74b9ec57dc83e05fec50df99151604570f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1f4c7d48a57ea93d4bf0093eff0cc7d37d924e70b3cd6a2dd1ed14c323cd7698"
+  },
+  "physical_metadata_sha256": "4b98f0f6067d6255ea70a4b0704ca8cef1ae540ef52edc9730506b18d93fbc5f"
+}

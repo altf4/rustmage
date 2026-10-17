@@ -1,0 +1,12 @@
+{
+  "name": "Coerced to Kill",
+  "catalogue_id": 789,
+  "oracle_id": "3a007dbd-18fd-44d1-a305-7cc8dd6231eb",
+  "facts_sha256": "faf3d45d4ac94061aea937fa544225e946d54c6e0352e2034d87d562c504660b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "73d732ee877c3119998ad39e75a5410405743df0aed00af9fd32803fb4f505b7"
+  },
+  "physical_metadata_sha256": "92634b68aacba4c42cc45764743c53e3b643b2d9e876fe7b16148f3729f36752"
+}

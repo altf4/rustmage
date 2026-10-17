@@ -1,0 +1,12 @@
+{
+  "name": "Appa, Loyal Sky Bison",
+  "catalogue_id": 186,
+  "oracle_id": "c6e28cf0-81c7-4f52-a29b-988cc6fd31ee",
+  "facts_sha256": "7f2826c89ae7a4966488bf171922ef69ceff38d090eeb3ae4b99741e365ae5dd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1ad4619928f66316d809e425438e8fc6dbcd8020fcb014c8ba29d07452b95ed7"
+  },
+  "physical_metadata_sha256": "e71cd16addd0efb576032fa3cce78c7d539c230313c6ca7666ae6b138dfc0a6b"
+}

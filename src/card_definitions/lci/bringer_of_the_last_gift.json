@@ -1,0 +1,12 @@
+{
+  "name": "Bringer of the Last Gift",
+  "catalogue_id": 556,
+  "oracle_id": "0fb9a8a2-4331-4259-9460-a37397554962",
+  "facts_sha256": "4f48112380aa9659fdced8a38764b757d7d02a95e29e5a7e109f9b88002c20ac",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "85ac0bee36089b385ddaac57b5b86326d59c922e7d697a87d3642bc187b2d323"
+  },
+  "physical_metadata_sha256": "63bae93b6015b9b760bc161c7d2de347cf8b1d0f3bf706d566ebe2c75f97cfd2"
+}

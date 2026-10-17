@@ -1,0 +1,12 @@
+{
+  "name": "Silver Sable, Mercenary Leader",
+  "catalogue_id": 3871,
+  "oracle_id": "40b82dee-98c7-4b86-88b8-28388cd0331f",
+  "facts_sha256": "0dd9c5f4dc0829530a9712417020fced94206c451b3b47c3e403309b4659c9cc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "70f0c096b88f85423144072f95d5024c253be2cb4262abcd88f8cca1d18da636"
+  },
+  "physical_metadata_sha256": "0d454b26713805dbd377e77f23f53576441d3dadd2486238e5392d88c7dbf0b8"
+}

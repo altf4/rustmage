@@ -1,0 +1,12 @@
+{
+  "name": "Ty Lee, Chi Blocker",
+  "catalogue_id": 4733,
+  "oracle_id": "081ad4e3-cda3-41cc-890f-412611dc9ea0",
+  "facts_sha256": "4fd258f625f116fab4533b199b67a8a9b22073c8cb6af9c7597e6a0435026ba3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8c45d36600448caf617d5c02249e2c10d76a1993ad616d0135590663522ccc93"
+  },
+  "physical_metadata_sha256": "02f5038f8816681354c847210c5e8a77903fbb698886a8cb8bbcc8ccf717f672"
+}

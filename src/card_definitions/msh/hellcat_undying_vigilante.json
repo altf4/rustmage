@@ -1,0 +1,12 @@
+{
+  "name": "Hellcat, Undying Vigilante",
+  "catalogue_id": 1998,
+  "oracle_id": "4c27ba61-6812-4dd7-8efc-65435a8df7b5",
+  "facts_sha256": "d78de0ce922d326631478b42b74978c8f30f7a98ee8794cc9644b2f5b9ed614f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "512afd23623fabda974edd4aba30210809b6d43704739a25ac9d0653a4c109a8"
+  },
+  "physical_metadata_sha256": "a7dd7ee8e486f44fbcc0564569e294dc1df328b4f77ba72b2b9ec9bb1bebb937"
+}

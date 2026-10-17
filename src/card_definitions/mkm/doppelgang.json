@@ -1,0 +1,12 @@
+{
+  "name": "Doppelgang",
+  "catalogue_id": 1135,
+  "oracle_id": "d04c6375-25dd-4882-b8b3-a3b0d3081f32",
+  "facts_sha256": "e78d64e79e370ec0060a0b9f57586923ce6bdd5acaddc6d429f36d9f5b3d1e78",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "23cc1d2a68466253541f356f213b3477e2576aa60a3ba72bc5688e6d668941b3"
+  },
+  "physical_metadata_sha256": "360688244f32ab07e0f9e0475ec68132b91c5d552f609d1d83d3257d5a026578"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Omniscience",
+  "catalogue_id": 3020,
+  "oracle_id": "730e39e6-c61d-48b5-8827-bfd952bf1be7",
+  "facts_sha256": "c47521f75f1eacfa8b4c8afdfe937fb89e0346a95e830fab1de1ab6b889b7c5c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "75493ef4611728d35ff90f93256af9a8b07fbfa7661c903b187baebc601df3e5"
+  },
+  "physical_metadata_sha256": "9c7ab394ff42aca483b44910d0e8cfab761d5dcb4998ecb1b3b2f559c88af993"
+}

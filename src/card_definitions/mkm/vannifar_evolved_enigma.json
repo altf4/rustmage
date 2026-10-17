@@ -1,0 +1,12 @@
+{
+  "name": "Vannifar, Evolved Enigma",
+  "catalogue_id": 4848,
+  "oracle_id": "e8aa0d7d-e5f6-4d66-bdc1-315483e1b256",
+  "facts_sha256": "8cb5981c10685de24849761fa21f88bdc73a6febf5319ca18f08f875c91025ce",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dc3209fcd158483c1e6662c63e45f6978c96c1762e25edf851ed712ae3fdfaca"
+  },
+  "physical_metadata_sha256": "1eb172acf72b0b076cdd55b39135c8826875a59d0ed619056b5260a580354362"
+}

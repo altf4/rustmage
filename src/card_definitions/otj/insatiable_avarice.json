@@ -1,0 +1,12 @@
+{
+  "name": "Insatiable Avarice",
+  "catalogue_id": 2177,
+  "oracle_id": "ad3e705f-da57-4eff-84d7-2072522de988",
+  "facts_sha256": "e052551b94d1aaf6974c78aea4463a0cdc50324e617416d7eb045da3982357d7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c6b7de5604895ccfab66dfc336cde68caa497ed546339aac9e31ba859a0694db"
+  },
+  "physical_metadata_sha256": "365c03637c9f46018afbaa25120b76520962ca92a6e8b4dda1db7b45333e4af4"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Wan Shi Tong, Librarian",
+  "catalogue_id": 4961,
+  "oracle_id": "2bace3ea-7d28-4a1c-857a-d3c3a1c11b59",
+  "facts_sha256": "4db4fb8d21520a00825662e17db002eb3c469c2d75792811b037e98dd2289548",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "36fcb98fca0f49cb009076f17f7959dbe11f26b97bed8b85e8a6a44822c49323"
+  },
+  "physical_metadata_sha256": "4943cd6c7e78e77cfeb4e6b50462ce8d5a27ccc6ffc14c9fb6b58c5ee38fcfee"
+}

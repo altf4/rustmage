@@ -1,0 +1,12 @@
+{
+  "name": "Fang, Fearless l'Cie",
+  "catalogue_id": 1443,
+  "oracle_id": "04ac8b2c-95e9-40e9-8cc0-af9b075a94c0",
+  "facts_sha256": "9c6736c28132974d88093924dd093ce1880c7ca3859cdfd82c56d53b5d1c2f26",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8abe9ca3a8c432c2b7744ead2b899aa48e1396f1e525a18e19d59c4b22957ab0"
+  },
+  "physical_metadata_sha256": "8fc8c00d608a56dd48515b21c76ea9dd1bd1c80717e74b374138653d95e68321"
+}

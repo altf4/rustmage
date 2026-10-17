@@ -1,0 +1,12 @@
+{
+  "name": "Extrapolate the Impossible",
+  "catalogue_id": 1416,
+  "oracle_id": "1f47c869-f4a9-43b0-aec0-8da4e3a3fec5",
+  "facts_sha256": "32052fb66aaad10ca9b88c9d04686abdc6bf7656f5404ff9f34aa8f2849a1e3c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "61597cd5f760739d2dfdaa5490112867702e5d89fc87a5b416b6a966628b1f95"
+  },
+  "physical_metadata_sha256": "28d64b81c97d67eaa7b6e5f38700951c3311e9146a4b63837cff43aaf419d992"
+}

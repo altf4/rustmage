@@ -1,0 +1,12 @@
+{
+  "name": "Bestial Bloodline",
+  "catalogue_id": 395,
+  "oracle_id": "a3ae6694-6314-42e2-bc12-d0e32d49b347",
+  "facts_sha256": "8b317c2b39a65802bc0abe184b0d9927577260b717eb3b16638e33ca23214785",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a8f13f7d78bf4f8a9462cc3639c36ee5fd75d29f9448792f3f0fb96ecee31fe7"
+  },
+  "physical_metadata_sha256": "c48f2b18e6edf40c0878c9f846f1eeb348f16411429824d0e9008d43221b0c73"
+}

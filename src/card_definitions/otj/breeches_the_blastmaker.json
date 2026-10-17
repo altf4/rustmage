@@ -1,0 +1,12 @@
+{
+  "name": "Breeches, the Blastmaker",
+  "catalogue_id": 542,
+  "oracle_id": "8514f20a-50c7-4319-84cb-2bf263548234",
+  "facts_sha256": "5336e52bc06f5ea1a62f0dbdbb67b716498b2b5c11d4899f2f9acf9691244c37",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3bd661e8a54e73a46e9c971cb90b7a749bee78e5148e326a809e068d3afa182e"
+  },
+  "physical_metadata_sha256": "6c2240338b1ce4fb089928fdc9d9885951e1b3deb72a7bc7e912191e0223d51a"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Harmonious Grovestrider",
+  "catalogue_id": 1949,
+  "oracle_id": "0ebec97e-3cb1-41e2-a693-0febb5623016",
+  "facts_sha256": "3c13c277881b8b1911ba7975c11abb4ece8b168eea8dfeaba81b51840ad4b2ec",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f4f1a75feb04aa47f4e01b2f883130887b0a12d06b5e467a3274fbd087889c89"
+  },
+  "physical_metadata_sha256": "75320ae1bc1049fe209c0b88deec117e0d12ecd483cc944a4d70c4c60ee04d9c"
+}

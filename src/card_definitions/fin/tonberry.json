@@ -1,0 +1,12 @@
+{
+  "name": "Tonberry",
+  "catalogue_id": 4630,
+  "oracle_id": "a26f3cbb-39b5-4688-92f7-26534613a9f3",
+  "facts_sha256": "c66b0bb5fc5e7fcfc5d6c60783058bbda3d4c8cbe0f89026c2b38ee36c689ba5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9f8d907bcc6717f9ae0f46153ec1f9fbeaababab04a368cac118a1f95fe158c3"
+  },
+  "physical_metadata_sha256": "aca8de144cf767c4e80a7d3dfd4d1efd22b51143a971fba630bfdab655f3abb6"
+}

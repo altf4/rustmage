@@ -1,0 +1,12 @@
+{
+  "name": "Gargantuan Leech",
+  "catalogue_id": 1681,
+  "oracle_id": "073f12d1-eaa1-4d08-bc1d-b216a3dc0c67",
+  "facts_sha256": "112873aa265b54d68e993a09b8fa400cf259348b856767f208d04091dd9f38e2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e9b25d59e566f4a2076b764a6cf4ab5b24e18584a85b8db48ab05509ba073226"
+  },
+  "physical_metadata_sha256": "7170ee8e8446cb38678d8ab6aee1af6b6a3dc82996bd448e8eb28ef09ba7d568"
+}

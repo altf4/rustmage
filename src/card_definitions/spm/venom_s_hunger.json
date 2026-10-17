@@ -1,0 +1,12 @@
+{
+  "name": "Venom's Hunger",
+  "catalogue_id": 4869,
+  "oracle_id": "8388faa0-f64e-4b01-836e-617f99b808a4",
+  "facts_sha256": "5acebe4f9ffa2467d449a3b35a77437af898df59fe609942e76949cf22d2ef0d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "19f83ca9dcec3188ebe02ce5893e4d4320f776db5fe4d2e466f4ee95f06e70fa"
+  },
+  "physical_metadata_sha256": "fe22cc042ba97ab419a027aa291ba7593c7e5b48c13a47d957f8d55682f16b9a"
+}

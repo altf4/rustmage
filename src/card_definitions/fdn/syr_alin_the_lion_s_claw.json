@@ -1,0 +1,12 @@
+{
+  "name": "Syr Alin, the Lion's Claw",
+  "catalogue_id": 4307,
+  "oracle_id": "5d9a4905-4a26-410e-936c-56de849e9ca3",
+  "facts_sha256": "6cabc97caf25abebb2ef7dbdc50802f24e05b63ea0e397af240e8d507812c842",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "602022f8e0209b7cd9d09b0e67adaf5785df04eb43708042b6852ee96b2fc6c0"
+  },
+  "physical_metadata_sha256": "653d899ae36f3c772f529f21249eb51b5f3f7911e470ce6c24e0dcbd505fd5d4"
+}

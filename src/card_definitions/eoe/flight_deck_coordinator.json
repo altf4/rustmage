@@ -1,0 +1,12 @@
+{
+  "name": "Flight-Deck Coordinator",
+  "catalogue_id": 1559,
+  "oracle_id": "57927909-11a9-44ef-989d-1dcca1f6e23f",
+  "facts_sha256": "60d6b2a5a0ec3a91f26451a181225a4ef57d49b75eab8a5919dd387ff41b83c8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f835042bf03184ce072b0e91ecedaa0a18b3d144d67f56f810f457361818346f"
+  },
+  "physical_metadata_sha256": "11212605c442ee102f1100acc79357d0644af98e4efb702a9c24ef861c4947e7"
+}

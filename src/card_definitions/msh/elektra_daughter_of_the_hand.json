@@ -1,0 +1,12 @@
+{
+  "name": "Elektra, Daughter of the Hand",
+  "catalogue_id": 1281,
+  "oracle_id": "b46647a1-0c91-451b-8c0b-be8fe02faee2",
+  "facts_sha256": "61e1b69ea557f3aac8eb3c243920255848c595fa4a900d12387c4d2cd49e374f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "503da667e3fdabb88f836cf1b52b16ca05ef2bbb29b2600d8a914287707f90a6"
+  },
+  "physical_metadata_sha256": "6185909d484ca0b3d1eb529b8025827cfc7f11d030947c18deca57c8c525b31b"
+}

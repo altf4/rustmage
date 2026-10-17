@@ -1,0 +1,12 @@
+{
+  "name": "Vitu-Ghazi Inspector",
+  "catalogue_id": 4921,
+  "oracle_id": "22a33139-a730-4792-9dd5-2c0f99f96855",
+  "facts_sha256": "05f202aa883a37d08f64ca15de88ebb06a523db9cee255515689176dd6849fe1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "96db383267c52e750878c7b3431bdf268a4d56f4a00e3183f60bbcf233675121"
+  },
+  "physical_metadata_sha256": "fa155baad96a191cce50d0d0dab1c2083bb270e7c05872a61e207d8595d69e0a"
+}

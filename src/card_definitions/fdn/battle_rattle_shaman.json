@@ -1,0 +1,12 @@
+{
+  "name": "Battle-Rattle Shaman",
+  "catalogue_id": 350,
+  "oracle_id": "72dc807b-35fb-4d69-ae4c-04eed0646170",
+  "facts_sha256": "219493df077a748c2c65b4702b12a17dc691b40333be5a13859e34ce88c10653",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9d464a5ef397238aa49aeb992b4b9796876a489a2f0928d77391e5ac84a50650"
+  },
+  "physical_metadata_sha256": "1de3cf5d5641d717e8f4d79c510e152f42fcf91aa802ef232418e3952adff2d8"
+}

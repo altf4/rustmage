@@ -1,0 +1,12 @@
+{
+  "name": "The Black Arrow",
+  "catalogue_id": 4423,
+  "oracle_id": "cb2803ee-825b-420e-b404-c7c44f15ec15",
+  "facts_sha256": "b0b9daee677e24094fc71aca7b63a636038d022596f441b85cce0749984fbec6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0086ddad87a96e196bf65eb300115d84d9a26cea4cf8b81830d53b6f122a6bc7"
+  },
+  "physical_metadata_sha256": "4b428d039081acfe2c252246875e8274b9a63715fd3d4c0572bea5d30f1f9332"
+}

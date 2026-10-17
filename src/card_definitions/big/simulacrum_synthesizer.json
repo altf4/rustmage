@@ -1,0 +1,12 @@
+{
+  "name": "Simulacrum Synthesizer",
+  "catalogue_id": 3878,
+  "oracle_id": "eb7a1f21-a66d-415b-8520-710b44890bb6",
+  "facts_sha256": "4b92d4042f136f85d5a626f3f5e0b8b77b0820e5af5529e6026994b8b93034f8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b27dc420ea6633d30d70b9dc363ef9fa37f035fbbea73e9b5ae8a467262c8d3d"
+  },
+  "physical_metadata_sha256": "c580aff3469533c8e78e19b281c96330db9067c82d12e9ad4a82355ff600d043"
+}

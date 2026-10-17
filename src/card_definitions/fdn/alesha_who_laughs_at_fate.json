@@ -1,0 +1,12 @@
+{
+  "name": "Alesha, Who Laughs at Fate",
+  "catalogue_id": 128,
+  "oracle_id": "17ce2c17-b69b-4ebf-9c3c-c64e771af101",
+  "facts_sha256": "3060966191b55c890680edb1e42a3e0c5b1c8a25af973776a7cdb44fd1cf3fe1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a08b74fe666c9dbd325c622f72f97ec4fade2ecad3a69409eb53a0f66ae18c2e"
+  },
+  "physical_metadata_sha256": "932eb21a4efca8c589835bedd9ccfd0d88b6fd2c5fb364518a7b470d95540141"
+}

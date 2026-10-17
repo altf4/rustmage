@@ -1,0 +1,12 @@
+{
+  "name": "Invisible Woman, Sue Storm",
+  "catalogue_id": 2216,
+  "oracle_id": "e9d20b6d-fa4f-473b-9866-230fd92a1319",
+  "facts_sha256": "ab3c415f56dbd37ee684584147365c49b33155f91b83f25fca56176d076dcf36",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9464f3f2bf230271257b8cb4d23e077b9ad50491c8ef960fff9fdaad6d9b3fb4"
+  },
+  "physical_metadata_sha256": "8829260c6d3f1a6cc148365a0cad240ebd0f3bb40bd3a19bf7023ccbfd320435"
+}

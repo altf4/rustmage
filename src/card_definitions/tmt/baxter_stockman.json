@@ -1,0 +1,12 @@
+{
+  "name": "Baxter Stockman",
+  "catalogue_id": 353,
+  "oracle_id": "e610bfd4-d064-410b-929c-1d9dd82828b1",
+  "facts_sha256": "331979a19e52fab7f0d101a274ad1139ba81e64a4a480e9878f9114df85a0f01",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8e197e195569573c4a403feeb995288acd1b2fdeb26a1a5c5231e5c96aaa2187"
+  },
+  "physical_metadata_sha256": "c796c9f10a43495d15424110ed1092fc3264548939f80de1cd0f779a642a53b1"
+}

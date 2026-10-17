@@ -1,0 +1,12 @@
+{
+  "name": "Nurturing Bristleback",
+  "catalogue_id": 2978,
+  "oracle_id": "d33509d6-9d0c-4248-bb6d-0a9b7712f3a0",
+  "facts_sha256": "f8976e8fd5db54e1ae037b2c8fafc9d7c2ea5ad8b31b6f863a4509c3eccac2e1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8c05cce6ee68c7274508c245cd27bb6e3e5d0988c198b1b401cd46809c596416"
+  },
+  "physical_metadata_sha256": "6442c4fcb97797a590812c33d8794f6e3b8765cbf21738a904ef622f0c410d3b"
+}

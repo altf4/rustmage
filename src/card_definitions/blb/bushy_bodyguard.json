@@ -1,0 +1,12 @@
+{
+  "name": "Bushy Bodyguard",
+  "catalogue_id": 602,
+  "oracle_id": "5436bb0d-b5c7-43a9-8b3f-67cdc0dd0381",
+  "facts_sha256": "0653b2bf575d8218db4595e6704d7ad70a873439ac42894b7b59f28c2c036ef5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f55e8912e0b5785448fb4cc7a378f95a1a47a9753ea6c4874a2899bb0b23eb4d"
+  },
+  "physical_metadata_sha256": "e6bd88161a535b795edb247b4408617c05e53d3a6bcdecb61756abce3039dd59"
+}

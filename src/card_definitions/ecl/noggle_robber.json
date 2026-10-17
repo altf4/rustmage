@@ -1,0 +1,12 @@
+{
+  "name": "Noggle Robber",
+  "catalogue_id": 2957,
+  "oracle_id": "a2f33166-6cfc-4dc5-8edc-088bf40f06b5",
+  "facts_sha256": "6053a34071e8867aee2523b095e4d682213b6faf6a1cc2608c6261bf38313e37",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "061d5a24351832e783f1e9f3150d28d23d9225c7b959810d93fe02ef4b2aad4f"
+  },
+  "physical_metadata_sha256": "38833ba6a3467150e9f04db42366951bfaee609522439bc8b6afb6a46c97c826"
+}

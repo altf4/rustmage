@@ -1,0 +1,12 @@
+{
+  "name": "Liliana, Dreadhorde General",
+  "catalogue_id": 2508,
+  "oracle_id": "5e958212-6a5b-4288-8d31-f1572619d7dc",
+  "facts_sha256": "85638520b73fa8573b41d0e46ff641f23af1d7b983754523458f9648731be031",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "735c9e9141b21d46881359ff2ef471a45ddc29df5ba639bae71cfa405f71c477"
+  },
+  "physical_metadata_sha256": "b2554db55fb60933607ec205cda40e57334c28aa641ebd05137a6f7a975e9944"
+}

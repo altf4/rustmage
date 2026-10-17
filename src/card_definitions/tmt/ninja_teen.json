@@ -1,0 +1,12 @@
+{
+  "name": "Ninja Teen",
+  "catalogue_id": 2945,
+  "oracle_id": "2c5044ff-a303-4276-8e23-7caac30a275b",
+  "facts_sha256": "e45a8cbbf8a74a15e66dce03dbf4938ebeefe91aaf11460b50bc02e4fd5760de",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e7934f7c63f9f44a6354a344028a3070151bd3014cdaea5d1cc0abcf53075ae3"
+  },
+  "physical_metadata_sha256": "c5152fda8e348c794f22e145d81b0982fd1aa91852977f2400c063e1d1253479"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Mintstrosity",
+  "catalogue_id": 2776,
+  "oracle_id": "c8c88c33-b8df-4b19-b12c-79c9709af8f1",
+  "facts_sha256": "92246327d2065e4378fd3517df13828106680ad157766dd06eefa634763f7e0b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0be189530d85f0e5a6bbff66cf6b764fff40cdfb627be75e3669931a38f23827"
+  },
+  "physical_metadata_sha256": "0ea4a9f27dec450aa6235b3990d9cfc5519316ef9f1585ed3fba586760801f5b"
+}

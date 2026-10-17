@@ -1,0 +1,12 @@
+{
+  "name": "Hullcarver",
+  "catalogue_id": 2095,
+  "oracle_id": "931c2153-e5e5-4642-bff0-f9dadcc24c9a",
+  "facts_sha256": "a342281cfd543984c68bf8f76b9516002c844e6696a5f3273b650cb581aa2d84",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d5f7b9198464d89a69d16e4480d9b98cd99bf9c3e5bdb7ceab7839f0aa61421a"
+  },
+  "physical_metadata_sha256": "387b1709ae5e0090d43955f3d5f3f9ce4c166c2eae1f93f455583d6c60898b59"
+}

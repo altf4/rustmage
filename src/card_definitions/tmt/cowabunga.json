@@ -1,0 +1,12 @@
+{
+  "name": "Cowabunga!",
+  "catalogue_id": 874,
+  "oracle_id": "a1ddf985-1646-468c-b1a4-ab6bb8e9dd7c",
+  "facts_sha256": "4247573759faa0bc0c401a33e112610f7cfae8773de6285d33d8a3c1deb789c8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1d68c3aedb4b5ce8bca209f1b9ea6653102789887c95b965660ee67cef01b6be"
+  },
+  "physical_metadata_sha256": "4a9c2b60e4ae4c0e242a43650cf6115e54a5a660204cf59ee91f5711b13673fc"
+}

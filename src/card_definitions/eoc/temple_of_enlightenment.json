@@ -1,0 +1,12 @@
+{
+  "name": "Temple of Enlightenment",
+  "catalogue_id": 4364,
+  "oracle_id": "89f43e27-790b-4ca1-8ba7-0882b31e0783",
+  "facts_sha256": "0c2db2facbc0fc4227dcd13f62208b1c59fb4f0d4a34cdb340a2405c85256be8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9d66d0d963ff560bcceb0f01315896835d55cc34057818fa25b51fc49aa59901"
+  },
+  "physical_metadata_sha256": "7ec554fd4e712ae4b79ceb8e09d47a0c0953b85e31ad88b30577ee93ed3e0065"
+}

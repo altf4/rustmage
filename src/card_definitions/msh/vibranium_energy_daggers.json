@@ -1,0 +1,12 @@
+{
+  "name": "Vibranium Energy Daggers",
+  "catalogue_id": 4883,
+  "oracle_id": "be0b86fc-8450-41d4-9836-6de11cecb857",
+  "facts_sha256": "4f053360f1af4add9353ce297b3794cebcbdc0ab0239079239fe1cc4b6d49f4b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ee8cb690ada3d03d6097a845a998016f0d2ce591c1e32b35d8ac918c3d43efb6"
+  },
+  "physical_metadata_sha256": "eaa2dfbc30714582656f4c9395705ce25427c67815ec3654d711847bc6a2a0e6"
+}

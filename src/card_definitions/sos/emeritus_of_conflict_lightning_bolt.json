@@ -1,0 +1,12 @@
+{
+  "name": "Emeritus of Conflict // Lightning Bolt",
+  "catalogue_id": 1315,
+  "oracle_id": "5963eef1-1022-42b1-8a0c-fc9850bfc2a3",
+  "facts_sha256": "f8de71e785c3c58db6fe80fb91a549b9040782e03d9fd4a8ef8d4f3563f1dfd5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "816c75ce7f049e9d664d69af736df32069fc22236f02db507a630770e6e71e0f"
+  },
+  "physical_metadata_sha256": "578411ac14f8c459dea0239f0c38d4993a02e29e6ee0c9a40328b95ef2923ead"
+}

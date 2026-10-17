@@ -1,0 +1,12 @@
+{
+  "name": "Syphon Fuel",
+  "catalogue_id": 4306,
+  "oracle_id": "8696eae4-3dc9-4572-aab9-aa4f7e8f53af",
+  "facts_sha256": "8ca09c003cbdcddd2959c23a2899b2d93685c637124ded1e09414e089efbfda9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ccce26869de94c530a2ba2d1666e26ebecac96bb4a9fe06392df7c1ae77e2341"
+  },
+  "physical_metadata_sha256": "acd51a6ee285d5f335b1578199e4b9d6114b787455bffc5c7343058149016025"
+}

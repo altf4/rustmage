@@ -1,0 +1,12 @@
+{
+  "name": "Enduring Courage",
+  "catalogue_id": 1333,
+  "oracle_id": "b3de29cb-7d7d-4566-b5bf-37e571bd5d78",
+  "facts_sha256": "b39419324c00937b1b1ed139b5e7f8fc5c52d5b91d0243d40a8089d0ba6a8d09",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d49ce03c4759cbc200f4a4fa772ae4ee913e92ed44aa5acba17e8308a1997b6b"
+  },
+  "physical_metadata_sha256": "a8c16fdaa46586b15b297159d2df2b55ee6991b4c78546f6f1b1724bb49dfa57"
+}

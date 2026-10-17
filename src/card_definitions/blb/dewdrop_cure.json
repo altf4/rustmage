@@ -1,0 +1,12 @@
+{
+  "name": "Dewdrop Cure",
+  "catalogue_id": 1067,
+  "oracle_id": "07634620-a83a-4ca0-8a60-2a21368a2661",
+  "facts_sha256": "5b71ea07e5320e6fb3f84550c30e33efd88f744fe043793938c621e1eef9ee70",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cd2fd9dd7be2e2b2b77c0693e5e72e4e73bf980841ee46265cc2ca935018ec89"
+  },
+  "physical_metadata_sha256": "5d382ee8ea1c304d47330fc42ab7db03b8e006505dcb03f59bab8c02612399f4"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Clandestine Meddler",
+  "catalogue_id": 762,
+  "oracle_id": "f11ec1c9-347d-4d79-aaa9-5919db5f9044",
+  "facts_sha256": "c388bd98962965b54db4fba434414f020b61ca706d33deb8d86d36c9a2effdff",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "acc07d273f3e284a7274341ef44620d2b5de2c0c8124b54b15e462d2562dae86"
+  },
+  "physical_metadata_sha256": "95af41fc156f8757207e356ab0a3b9570a129dd2ad82f2cf95c9114969644d40"
+}

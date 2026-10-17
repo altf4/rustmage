@@ -1,0 +1,12 @@
+{
+  "name": "No Witnesses",
+  "catalogue_id": 2953,
+  "oracle_id": "0639bd82-084f-47d5-b158-05dfc29efa40",
+  "facts_sha256": "4f9417d47061ec01cd40606fa934d50d7a4711b61e797a5d012da087658695bc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d109c1066e919008cf1da1b67f9bfd38db254f057ffdbe3e83d09a9ec4d480e6"
+  },
+  "physical_metadata_sha256": "a1f49706d118dfbfde5a697915daea746169c538fa9633ca748a36042cef532e"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Volatile Wanderglyph",
+  "catalogue_id": 4932,
+  "oracle_id": "ebc3ca0f-35eb-4606-90ab-eb64556f81fe",
+  "facts_sha256": "a41fbf036331870ee7f0ab8cdc29fcde72514def8e0e2be6c8074bf2dfbee9c9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c291f7c5bcc490eb4d8fc8d9eedde8afa8634803f322ad7519282c0d1b35047c"
+  },
+  "physical_metadata_sha256": "5574bec9ed9f44c8116ed246c0a1d743487aa9c57af95190eb900edc41abe664"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Murky Sewer",
+  "catalogue_id": 2881,
+  "oracle_id": "c2cdefeb-3176-4faf-be54-a62d31f777a5",
+  "facts_sha256": "f3edc294545fd57445e16085247b11ddc15458583f46c73170b6dbd185bd46ec",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e939f7573eb9a9fa8f85bbd31d5c36ed88e2734b84b35b02e66ebd911235e8ca"
+  },
+  "physical_metadata_sha256": "f5183a681e1ceb5161cd0faacb4ed9b825a04248eb677b5f583b2dbc7165c2cd"
+}

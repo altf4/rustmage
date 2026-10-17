@@ -1,0 +1,12 @@
+{
+  "name": "Attuma, Atlantean Warlord",
+  "catalogue_id": 260,
+  "oracle_id": "e3b70a85-4296-411f-a673-7992b0c8a9aa",
+  "facts_sha256": "d49bbe6b99b26145c18fcc8d25d2cb970639a2b54bd1ad22c8021101cc872312",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e638b53aac52183a35b52b037ed698351107370f10c79d471560be3bdabf5188"
+  },
+  "physical_metadata_sha256": "a1aa1d8bb77e2ca857c56e6fa22221a3cf821cf933d9125ea385cf7061f9c401"
+}

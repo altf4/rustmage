@@ -1,0 +1,12 @@
+{
+  "name": "Glóin the Mighty",
+  "catalogue_id": 1792,
+  "oracle_id": "6505a53b-00db-44c4-8eaa-09a1a01451a4",
+  "facts_sha256": "84eb45bcbe2c3b9618862efd10f7b1428b1e3aec3294c49ebf49388a58f4ca70",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dfc65f394c656705e9330660da7b9f1ddf96e497705d5a5e279c0a184ac2a7d6"
+  },
+  "physical_metadata_sha256": "e08a8e8e69267bcba85d39cf3ba953ba177ed8c317b62570173bb3aaaffd38f4"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Restless Fortress",
+  "catalogue_id": 3486,
+  "oracle_id": "8b3726f1-20b8-42ec-8f9b-b361515c3f05",
+  "facts_sha256": "576078e1d7f3a77991aa866e38ef39bedbcc6ae3b7602645c582f8984e1bcb47",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e52d1fe7468414d235c9ddb4bbd6bee7129bc3d5cbd28ac1667128919c4077fb"
+  },
+  "physical_metadata_sha256": "73cbbf600c0112cdbcd4db648266ecf04796629e25aea23974c38765465186ec"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Sarkhan's Resolve",
+  "catalogue_id": 3689,
+  "oracle_id": "30f058f8-5777-4c25-b881-8f1d0ce17d3a",
+  "facts_sha256": "695437c60be8d53d3703c7865de78e3f3631b5ef47dadd9d5e68a7161cf00468",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3357b3a12a3490288c39a1237052fa85e6dca3c69a56365b626cadafad4323cd"
+  },
+  "physical_metadata_sha256": "417a807bac3101e69645af2d9c05350526d92843592930d92fd2a6998f648762"
+}

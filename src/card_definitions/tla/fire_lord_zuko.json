@@ -1,0 +1,12 @@
+{
+  "name": "Fire Lord Zuko",
+  "catalogue_id": 1517,
+  "oracle_id": "a129423d-c886-4120-96f7-c2517ea7eb83",
+  "facts_sha256": "201e09cc98056f6ad8ef0af5b467a0c30b8edff4e905597eec1c198e49ad5d81",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b857ba7aef9c3e6ed0c624fae15e9dbc6b244e32123cec1ded008e739a7c769a"
+  },
+  "physical_metadata_sha256": "eecf668ca5402751d4c96d7522799504a3bb0107afe3b4b79d48760b9760adcd"
+}

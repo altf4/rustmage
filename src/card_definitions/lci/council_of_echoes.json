@@ -1,0 +1,12 @@
+{
+  "name": "Council of Echoes",
+  "catalogue_id": 867,
+  "oracle_id": "7b513bd0-27df-45f3-a85f-1f0aba3cae48",
+  "facts_sha256": "c63a98c7f78c31097f3763e48bfff8092f2929b4de384ffa06515a4b2d222b52",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d3159210ee06e5d3233e198fb0500716b04fef7b3e099bbf572057228bb6a27a"
+  },
+  "physical_metadata_sha256": "2862fe5f277147c03540c847c9169bb2bb99d83e258464c471096ff447a51d5d"
+}

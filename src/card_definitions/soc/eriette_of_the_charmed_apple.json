@@ -1,0 +1,12 @@
+{
+  "name": "Eriette of the Charmed Apple",
+  "catalogue_id": 1355,
+  "oracle_id": "f43f5855-f297-4433-984b-18263b734cfc",
+  "facts_sha256": "2b83f47e0cd538ac40761f917ee7d4d34cc2f88fda0e4905a2e5047ad1d1790a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2db9ca6acf3d04df3d30daa5ed21c292827ce29552c0b3081cfcffb0bfae5f0d"
+  },
+  "physical_metadata_sha256": "cc41798aaf247b95eed09237c925e90a7fdd4c115b078d300fafcb82eec24d01"
+}

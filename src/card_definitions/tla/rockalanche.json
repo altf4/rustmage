@@ -1,0 +1,12 @@
+{
+  "name": "Rockalanche",
+  "catalogue_id": 3567,
+  "oracle_id": "d1ecfad3-e79a-447b-a932-68ef728eaf1f",
+  "facts_sha256": "b445231404411b6d4c21e2c8a36c724661242e7ec4b6f69550c5b19604049b72",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4d683a9a96b1379f90595be2092987ae9e3101cc4595559502790ac698269875"
+  },
+  "physical_metadata_sha256": "d17169a4867a37303f1d30d6471507e078fabf84b4494f628111f2fad875713b"
+}

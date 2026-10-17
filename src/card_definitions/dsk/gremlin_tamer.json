@@ -1,0 +1,12 @@
+{
+  "name": "Gremlin Tamer",
+  "catalogue_id": 1875,
+  "oracle_id": "a4e34165-4e53-4c31-bf61-eb772bc3c054",
+  "facts_sha256": "f05f282ffe086a47609610e8afe3b682c650101631e01f5e39a91d06758b5b06",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bb4f841e05f56f2ed1596e86fe08045e5ced6975e2b3d7b4b4c76e76282c4a78"
+  },
+  "physical_metadata_sha256": "cbef65711ac66ce651b780302cccef96edb5ea2f160c4b992b3ccbb05b535b2b"
+}

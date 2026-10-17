@@ -1,0 +1,12 @@
+{
+  "name": "The Gitrog, Ravenous Ride",
+  "catalogue_id": 4449,
+  "oracle_id": "7739311a-682b-48a6-8db2-c07f44141751",
+  "facts_sha256": "fc8beff6b9b080075eb5950c1cdd9cceedabd48f1a28940446e208dd45c973cb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f37edeb81912cf3dbee06b0e5676ad7f6bc5afb82a257b06727aa6b3da06948d"
+  },
+  "physical_metadata_sha256": "2bca65430c6371d8168f6bbc38fac6ff26963f884e3cb0427a3ee78825d83b65"
+}

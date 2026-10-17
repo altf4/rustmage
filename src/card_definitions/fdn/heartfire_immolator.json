@@ -1,0 +1,12 @@
+{
+  "name": "Heartfire Immolator",
+  "catalogue_id": 1978,
+  "oracle_id": "1e414a4f-6e76-4cbe-9c69-d52852cd5bc0",
+  "facts_sha256": "b3c431477058be6538ae2f3d5199204e4f91a9270831a9d267ab3379502b3f14",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1ce76e0ee2b03ac43f5fec431d626428f73bf5e38c1a43b3c5d3ff430447ce8a"
+  },
+  "physical_metadata_sha256": "b4450adba867be12639532cf2b57414b5c72ac15abb8227864f2c80be693f8ef"
+}

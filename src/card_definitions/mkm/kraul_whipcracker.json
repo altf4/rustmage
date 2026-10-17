@@ -1,0 +1,12 @@
+{
+  "name": "Kraul Whipcracker",
+  "catalogue_id": 2406,
+  "oracle_id": "b563ae31-338e-4bcc-a05f-d7ed7c3fe46e",
+  "facts_sha256": "716b81edb7ef8158a64013582621738cbc19161980f05c855b2d293cb331f36a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0f0ff2a758cf904c9bff676f8ca8ec537b58213522c169d3c0d04eedd6faf733"
+  },
+  "physical_metadata_sha256": "f68e660b86f00516957e94e2a46f329fb172bf2d26a4e513fe2e5b848ae1e99c"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Last Gasp",
+  "catalogue_id": 2449,
+  "oracle_id": "a82c3860-4dd6-4ffd-aa8f-ab8df687db6c",
+  "facts_sha256": "31e455e379680c01e93e306cf4ce9e516d20ef20703dd9d2c5cdbfb755bd0893",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "783bcc18aaa9ab6d36d87684cd61bee0c04fa456330c8573058ac30994f61d05"
+  },
+  "physical_metadata_sha256": "d3e917618e574bc3faf092e1da8f361dc3fa35456812478578db9aeeb8824e77"
+}

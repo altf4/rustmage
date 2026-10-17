@@ -1,0 +1,12 @@
+{
+  "name": "Miriam, Herd Whisperer",
+  "catalogue_id": 2779,
+  "oracle_id": "1d88014b-8189-4a88-bee3-c2310d36f6e8",
+  "facts_sha256": "df499fd7bfa605df85f579e9f0394b962f33528ce28ac92d5d76f481269871e1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e2b30862d3aa8f80ee1666dbc577ad28f82e7c4bad872e3fe20a3af1bd3d8712"
+  },
+  "physical_metadata_sha256": "324fa9a9ed9e2ce32294b0680507bcd4fb3f1f32b007d15d6dba807c60950006"
+}

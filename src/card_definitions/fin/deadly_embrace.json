@@ -1,0 +1,12 @@
+{
+  "name": "Deadly Embrace",
+  "catalogue_id": 997,
+  "oracle_id": "32ad99a9-b5ed-41a1-8060-22265f7c5da1",
+  "facts_sha256": "cf5c4e5fd99b2f7a1e3b90ddf1f9d91a8574ea78bf1bba9f9fc5e11c85a97b4d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e9ea55eeac0f14d82ef3b978575ebb77447efca3998cef8d12d0ff63a94f6ecd"
+  },
+  "physical_metadata_sha256": "938e8e1a376751a12161787cb22ba560835a7a8f1e6c569ba8e733271be69d45"
+}

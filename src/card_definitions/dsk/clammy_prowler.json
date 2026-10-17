@@ -1,0 +1,12 @@
+{
+  "name": "Clammy Prowler",
+  "catalogue_id": 760,
+  "oracle_id": "afe4a60c-747a-439b-bf61-cd323b8dffe7",
+  "facts_sha256": "577b97a88c3fef95e471054ae3fae7010ab9338824aba38f08c737238af30c6b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9e4cc898b16ce6cd85c8b1c44b03516ca5186f0faaa3604aae83fcede3749fa7"
+  },
+  "physical_metadata_sha256": "61caa6463876940a00d341ca753023d78edd157bf372df756999996f9ce652b9"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Blasphemous Edict",
+  "catalogue_id": 439,
+  "oracle_id": "6cf50e21-0f60-4e9a-b910-ebe1bad2a29e",
+  "facts_sha256": "228ac366153e044dbfa9003a993e21d5f9336dd86eaf9c76b107ff9b13e952bd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fd4005c97bba8fc48af837ef90bd88fd4d7121a6b4748eacbe29f391fe0e2a1d"
+  },
+  "physical_metadata_sha256": "76d1834458d81efb21bd53ce10fe7e99be21fe2484c5cd01ec69424f430bb000"
+}

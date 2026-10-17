@@ -1,0 +1,12 @@
+{
+  "name": "Applied Geometry",
+  "catalogue_id": 190,
+  "oracle_id": "88fc179c-055b-47c2-b830-1fd2b1377147",
+  "facts_sha256": "75474b8f21f918b11eae6f0e7d9f31f61fa32fa495fe0b0e0e4addd49d13569b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fa12f7fb90e1787d8c64e5bdc403e6391a3e02d7fec44f18ecccd324a0bb571a"
+  },
+  "physical_metadata_sha256": "87e5e9118e6cc16e84b276a897528b0ba1e48162ae56d9f6ed2eb707400f3d6c"
+}

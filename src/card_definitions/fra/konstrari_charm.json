@@ -1,0 +1,12 @@
+{
+  "name": "Konstrari Charm",
+  "catalogue_id": 2396,
+  "oracle_id": "40961b23-b153-434a-aeb9-b9c2ff613dcb",
+  "facts_sha256": "614cb24c62e0a24651038f8618c90219d89df1bda7ddea3ea575c3dfb69bc1bd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c30d9878957cd59143b9c06290eccb34c526c3ba62abe78fda74d3a8d7432860"
+  },
+  "physical_metadata_sha256": "91bdf58e103767d844f696e05587a4594e70849b6e4060473469d91e293b011a"
+}

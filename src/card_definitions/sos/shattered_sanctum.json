@@ -1,0 +1,12 @@
+{
+  "name": "Shattered Sanctum",
+  "catalogue_id": 3820,
+  "oracle_id": "c854ecb0-cc60-4c48-a9aa-7f2348a7a8c6",
+  "facts_sha256": "242103e4cb8330358349ddaf88f38bfef7712e8ab91e479c79ef64c26f186e78",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d004789b15eb9af3527e2adbe3a3178c8e2e0ee1b6605d771c53e9015462515d"
+  },
+  "physical_metadata_sha256": "09402bbdce2d0f02ff5268a3ea4b4a448fbea0e3d3a24de9bd946ca6d2bec8dc"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Spellbook Vendor",
+  "catalogue_id": 4009,
+  "oracle_id": "51dad7d3-f91d-4bd8-aaed-235da42a448b",
+  "facts_sha256": "c89cc7d1545a741be2142d1cc741d705c6ba8931d185bc28fd3d5309ca769a74",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6955bce0f42d6268fffb9a971218d49d8074674608895fda4b685df54da08aeb"
+  },
+  "physical_metadata_sha256": "1ea8d377a0f4d91f2216904b632cf6658b746e12eef44dece5969a65aee14fea"
+}

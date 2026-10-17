@@ -1,0 +1,12 @@
+{
+  "name": "Iroh's Demonstration",
+  "catalogue_id": 2221,
+  "oracle_id": "8dd2e73a-d1b4-4d26-857f-9eb8e384c8ff",
+  "facts_sha256": "90f6222307196ea576e1f21e0b2db424ae03257da5ec216127f42a34a888cf43",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3fe123e524db72d521a1f0d398fea9c23d2e3c3b60570deba985a8e1c389eefd"
+  },
+  "physical_metadata_sha256": "f9a366ca02fb7a9929aaf963a371d0dbe90cae4ca36bc6e057d33661771c07be"
+}

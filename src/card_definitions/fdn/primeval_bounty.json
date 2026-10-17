@@ -1,0 +1,12 @@
+{
+  "name": "Primeval Bounty",
+  "catalogue_id": 3235,
+  "oracle_id": "f633c16d-d943-421c-ad18-af35db9ec9fc",
+  "facts_sha256": "bebeadbf34694c2e5de51530f8a5b1a0a5bf041760c59cb383e4765fbda292de",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a13abfb2d77b0ce95440dd82705b5b25a5d096defc37538e6aa014f789d82b2d"
+  },
+  "physical_metadata_sha256": "2825c039e228b5685ef62fcd3bbc9bb3c1d119613ee4cbd3837ecc0412365357"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Cantankerous Keepers",
+  "catalogue_id": 635,
+  "oracle_id": "77c97dad-17cc-4a28-a48b-907c044d9034",
+  "facts_sha256": "0ed5475c2c8be634ce36017a10c4a0218ba8c27e9fca26f3251b75e8cb5b9a88",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5d36fe62a2be968b6b93572411ebdaaf0c41118259ebcc064c48fb5a4139f570"
+  },
+  "physical_metadata_sha256": "011308ca052ebe70d07a5e549d354941d4b3e48c51ca8614d8b9a523b9c25e23"
+}

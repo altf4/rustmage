@@ -1,0 +1,12 @@
+{
+  "name": "Danitha, Spear of Agony",
+  "catalogue_id": 955,
+  "oracle_id": "4b5c7f11-75f2-4bad-86cd-f0232861f569",
+  "facts_sha256": "ef9ee4e929a6c8ef6067b30c805481bab378b30295522bec38bf6c61fa46a1d0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "458d241272e58b084eddac4093f7e720e822e9abe2143fea6f936649e13f9655"
+  },
+  "physical_metadata_sha256": "11f74039b5ac83bd67753c41e6bc2899fed85346dbdbfdf830731233e4e69054"
+}

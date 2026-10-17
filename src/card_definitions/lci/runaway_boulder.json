@@ -1,0 +1,12 @@
+{
+  "name": "Runaway Boulder",
+  "catalogue_id": 3620,
+  "oracle_id": "57f15861-82cf-4faf-827c-9bc7f4844d2a",
+  "facts_sha256": "575b9a7fc05555fe9b4bc27c228e2e598f82d67dc79fbb485f4b9a3253093cbf",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "24a131c6db1c96992193e08790e06015db027be4d208c6b7a3dc44ddb9e5d832"
+  },
+  "physical_metadata_sha256": "923386187e3ec3c49edb1ecfe62286a7346ac9374f50d6cc98e3e9cfc05d336e"
+}

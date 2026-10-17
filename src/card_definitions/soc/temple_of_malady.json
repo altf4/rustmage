@@ -1,0 +1,12 @@
+{
+  "name": "Temple of Malady",
+  "catalogue_id": 4366,
+  "oracle_id": "dc55421f-dee8-4263-9df0-2365df5f14bb",
+  "facts_sha256": "5c1ce8f48c424c5fd92785b3756b6a21ce96a40281aa318a512dbd367ae76fb7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d50851e3208a9ace64ee6f96fd2ffb6a1341264bb9ef6f85d788d04544a6c045"
+  },
+  "physical_metadata_sha256": "e671d3da01a5252c2e47aa5452381e559501a06ac2504f790eb43de99a2719f1"
+}

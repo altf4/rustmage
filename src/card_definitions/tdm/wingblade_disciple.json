@@ -1,0 +1,12 @@
+{
+  "name": "Wingblade Disciple",
+  "catalogue_id": 5078,
+  "oracle_id": "c566317e-cd82-46c1-b506-f41256d815f6",
+  "facts_sha256": "7fa68321e9e7f14aad934dc9bbb7941814e6d0fc6cdeb9fc0efb3826c88ba4c5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f459f7376d529548f26683c5a89e0b2ae071a27a237781055b5dc5e64cb01dae"
+  },
+  "physical_metadata_sha256": "d5974a6af48c41245a1659252712f5ba8c809c815c310d04adcd84405aec0785"
+}

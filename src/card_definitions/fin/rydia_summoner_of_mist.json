@@ -1,0 +1,12 @@
+{
+  "name": "Rydia, Summoner of Mist",
+  "catalogue_id": 3634,
+  "oracle_id": "a08f79b7-d66f-47da-9670-afd7409c0c5c",
+  "facts_sha256": "1d99c861a87863a5ec8da8fbf790eaaefd1fe56106f6cca47303ba934d99605f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5510e037207387048578d433c339d78c3242a2d16d7738de0043836fb861554e"
+  },
+  "physical_metadata_sha256": "1c5b12e4fcfe4560e53cd5f5e51370d914a2c6050db6d3c3eb435663f2acb7a2"
+}

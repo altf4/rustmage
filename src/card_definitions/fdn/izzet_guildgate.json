@@ -1,0 +1,12 @@
+{
+  "name": "Izzet Guildgate",
+  "catalogue_id": 2245,
+  "oracle_id": "bf75a3d1-f184-4b48-a913-21caee1db084",
+  "facts_sha256": "e9dd3dab4ecb7f5ff9d6c3491f745d1b1683c162081798c4014b6274ec7b47d0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fbbcc94a76a330c95438618aad54bd578d31e8e805cd6ad27977351b43dc0f54"
+  },
+  "physical_metadata_sha256": "0f76d0a4b470bc30f80da87e3e01ce322f354d08fa8a6dced65593d1974bc7b3"
+}

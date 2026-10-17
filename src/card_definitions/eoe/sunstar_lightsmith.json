@@ -1,0 +1,12 @@
+{
+  "name": "Sunstar Lightsmith",
+  "catalogue_id": 4251,
+  "oracle_id": "132de6c2-4ca2-41da-9c78-caa59838b641",
+  "facts_sha256": "fd40b1ccfac71468c47e06d6b7eff2c15192d4e58db124241bbced41d945b333",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4853c2a82155020e01f316b7819a3ce9c7354e613beb483d5b1a8e35d4436b07"
+  },
+  "physical_metadata_sha256": "fc8fc7404c034b3cb87217e1bfdead5ca295f32cc7e2fd5247a5514d3e2e7511"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Ravenous Amulet",
+  "catalogue_id": 3398,
+  "oracle_id": "87424e20-00ab-4f6d-a905-1955897b358e",
+  "facts_sha256": "9397fa4420e1533fee236b538da4554c27f1966ae6ab995f5fab917d17f90c7a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cbbe5f6b645d963c9b4924bb8e551e96e2cc7e02be2d61479340f22cf54d958a"
+  },
+  "physical_metadata_sha256": "d0026f29034ef745fa0e114b493ad13ee9f3ab1761a2480f22a391e2c48a6d19"
+}

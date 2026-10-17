@@ -1,0 +1,12 @@
+{
+  "name": "Take the Fall",
+  "catalogue_id": 4323,
+  "oracle_id": "279f3aa5-5807-4797-8cd1-e009984a3691",
+  "facts_sha256": "673ef0950c58da790b50188676af5dda90ffd6da4ccfdba540393d30ddac58e5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f33eb3abe58404e9e10d0ac44d15036d63fa052a028e5d9f1e3f8193f993ff68"
+  },
+  "physical_metadata_sha256": "6cf20fa6dd65aca926857bdc994efd3b945fdc65a8d0074170a39c1c47617fc1"
+}

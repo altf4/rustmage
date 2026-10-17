@@ -1,0 +1,12 @@
+{
+  "name": "Kellan, Planar Trailblazer",
+  "catalogue_id": 2341,
+  "oracle_id": "e8fd428f-7521-4e6a-86b7-835f20ee3c5c",
+  "facts_sha256": "22a1495a4f3e5ec3e04ef97ace4aaaff27a62b0e34caff60e45f12d8f11b66f9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0c7e6f92ce0998cc85d558c631b203b6c6527429002300247f68e2cef8d2062d"
+  },
+  "physical_metadata_sha256": "a6449bb1ecd87c684b8369ced52d19dcfc818e5abec76fd1f263af47ebd95f6b"
+}

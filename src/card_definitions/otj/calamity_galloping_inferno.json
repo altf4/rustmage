@@ -1,0 +1,12 @@
+{
+  "name": "Calamity, Galloping Inferno",
+  "catalogue_id": 618,
+  "oracle_id": "eb37496e-374f-41b9-bd52-f52f37bdac31",
+  "facts_sha256": "1b5e93929e3f478c1dd03b41e7053fa9407e0ac0d58c78009af81dfecd4233a4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "31a46b2c34af8a0f46cb2ba084a69481a38dc022cfd739f45bc4f679712b2a83"
+  },
+  "physical_metadata_sha256": "1a17a833c2b3c1f09f8536cebf5037bd155c98f6fc437f02cca5738269be3e36"
+}

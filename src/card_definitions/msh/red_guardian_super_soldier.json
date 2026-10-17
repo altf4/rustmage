@@ -1,0 +1,12 @@
+{
+  "name": "Red Guardian, Super-Soldier",
+  "catalogue_id": 3426,
+  "oracle_id": "e85567e8-1102-4d44-a15b-d5f1fdef8465",
+  "facts_sha256": "c456bff973ae33d05743d3399658d66494048089398a96b53c01da62ad8188fc",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "23fcead458bacebe4ba8accda32736d58833efa3b385567702793e5d901864c0"
+  },
+  "physical_metadata_sha256": "c384813203dc3025fee8ab48e679dc40c86cc55b07a469be69aad58e13808186"
+}

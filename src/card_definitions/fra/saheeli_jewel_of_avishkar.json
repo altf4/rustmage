@@ -1,0 +1,12 @@
+{
+  "name": "Saheeli, Jewel of Avishkar",
+  "catalogue_id": 3655,
+  "oracle_id": "83705258-1f42-41db-a32e-de99ffd759eb",
+  "facts_sha256": "9daa31006bc4d4669ca1d465ac8a3c60faf107b40c472cfd982ba825bd968dac",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "efb5ea73117d5ed54d51d47fb3d40e6992604cf5d9ed885bf9b12297934c4c76"
+  },
+  "physical_metadata_sha256": "0514c170f2d28fcec6e4b3acfabf7ac4cbac52baa24ac36f8ab12869e85a2a57"
+}

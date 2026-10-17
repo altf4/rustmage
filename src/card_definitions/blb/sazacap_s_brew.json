@@ -1,0 +1,12 @@
+{
+  "name": "Sazacap's Brew",
+  "catalogue_id": 3704,
+  "oracle_id": "ac7d1986-8388-4e4c-973e-d90382b12acf",
+  "facts_sha256": "58fb638fd0f4c53872dd4f86e0115a50b609988c14629082af37ab6db437b397",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "08c86a36d2ba9eb5cb47dfc74871a9dfd90ef9f3a6981cdacb18f4a6c8fb5643"
+  },
+  "physical_metadata_sha256": "f3ebaed1d5a55b7d95601757a590414322ed0f49a24a6cf4aba508a06be85c37"
+}

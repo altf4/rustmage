@@ -1,0 +1,12 @@
+{
+  "name": "Clifftop Lookout",
+  "catalogue_id": 769,
+  "oracle_id": "446db5a4-21b0-44c1-b12b-d365313dd67a",
+  "facts_sha256": "cd61fe1e1fc39e21781f21a234019876d6b0fd7f97165840b364d9ba88882db3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5d8044ad139f095dee36b401cace4ba5df319b0f66b2932c49c90613305e492a"
+  },
+  "physical_metadata_sha256": "a82e179a20a94bacffc34ac5d53ace9819ac696105f6dcd2ff4a94d04715d1da"
+}

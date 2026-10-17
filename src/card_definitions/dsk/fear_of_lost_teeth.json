@@ -1,0 +1,12 @@
+{
+  "name": "Fear of Lost Teeth",
+  "catalogue_id": 1470,
+  "oracle_id": "3724cc42-1bbd-4a11-8469-ab8492ddba52",
+  "facts_sha256": "037458f415cbc52eafd8eb2123c75d94170b2303fbc5ebb9ce44e73c89c2b685",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f751b1887b9cea1d4771d17254e399fa445fba76cd45aad1d1618134ed2b0171"
+  },
+  "physical_metadata_sha256": "9a123e393b72bdbfb4a310035aba033861f154a19642e8b8bdc9d76940f6f472"
+}

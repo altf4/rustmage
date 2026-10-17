@@ -1,0 +1,12 @@
+{
+  "name": "Dracosaur Auxiliary",
+  "catalogue_id": 1149,
+  "oracle_id": "457e3218-b2ef-4280-931a-5320987b9657",
+  "facts_sha256": "ac929d5f0e16ad4e730483ca54b4a1fff61c83f917303416ef689f4e0ae3b1aa",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4848ef6bbe44ae15ac768daa44c80a6b27c6bdc8a4a3bd46e0508e94d9575927"
+  },
+  "physical_metadata_sha256": "ed01021dd5448fe6bb594b04b62f7ffecf722cd2e4fd5b13506316b342a38cb1"
+}

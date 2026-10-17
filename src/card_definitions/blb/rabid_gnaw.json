@@ -1,0 +1,12 @@
+{
+  "name": "Rabid Gnaw",
+  "catalogue_id": 3329,
+  "oracle_id": "077ae62d-ed94-4365-a8b7-97fd99cff028",
+  "facts_sha256": "b65bfbd859b514e9a7ac94dd764df61b2c7fb1e20447e56de6e25126065c3132",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "94f769267973477bbdba4db5662a15564f177e836de7f92a50995ccc2dd2a1c8"
+  },
+  "physical_metadata_sha256": "ab2fba487cd9ff461bad8cffae8100956e950cefe85b808c698a97d4714c1952"
+}

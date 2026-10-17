@@ -1,0 +1,12 @@
+{
+  "name": "Iron-Fist Pulverizer",
+  "catalogue_id": 2233,
+  "oracle_id": "e5cea282-9e61-47da-8c5d-f5fca6a508a4",
+  "facts_sha256": "4d59dd9cbd75e9b9cd3e4806b4f9fc2ffe1ac66af0e11e365aff5d59d9ed53b2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "607b9c2e9352b72a227ef6169da31a39c0d1382c2e0bdd5c7058819c3ebc62d9"
+  },
+  "physical_metadata_sha256": "97603258fbbadebbdd72a71431b2e4772a164599eb06e560bcc109fce4ec622a"
+}

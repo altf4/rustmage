@@ -1,0 +1,12 @@
+{
+  "name": "Leonardo, Big Brother",
+  "catalogue_id": 2472,
+  "oracle_id": "6496eea7-38f5-4428-a379-b08b0eeb5239",
+  "facts_sha256": "f7d575b26401fac2291ff3f4b00981fd8512a69d8d7dd23895a64e73319a1811",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9c0c884f27616ea3b381740928813c8eb46c32967be1093eae76ad54f5b00dde"
+  },
+  "physical_metadata_sha256": "9000131214fbd1c72e8163a73e91c7ef6926a37aafa12dddeaefbfa51fd78ea7"
+}

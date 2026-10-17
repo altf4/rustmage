@@ -1,0 +1,12 @@
+{
+  "name": "Zaffai and the Tempests",
+  "catalogue_id": 5151,
+  "oracle_id": "3f8a8650-0e38-4926-8f48-526351e6a863",
+  "facts_sha256": "ae6f91038c81ad0fbbfeefa2ba562df79d2de3a702814ce969f7326c72d9bfbe",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4bb419245be1c3a5b51902ba58b51b6471ee503f964effcffd9892489da4ad01"
+  },
+  "physical_metadata_sha256": "8e9d9079f9bc306f9189ce64af16a1c6865b1ffd4939daa808db952b6e1ce910"
+}

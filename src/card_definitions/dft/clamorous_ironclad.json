@@ -1,0 +1,12 @@
+{
+  "name": "Clamorous Ironclad",
+  "catalogue_id": 761,
+  "oracle_id": "a08580da-e5aa-424b-86bf-d4535f3480d1",
+  "facts_sha256": "d0c5ba3d5bf207efaef4daeaf294c49a8008154ade58e378c03713a071c8e7ed",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "694e5471d99ac8e66177841d95862b08bd0ef623403cb22c80df70d6d2584588"
+  },
+  "physical_metadata_sha256": "8a9a2aef3f78ea24028e0ada9806ff372c38010ba7d7edb18a8872279627ee0e"
+}

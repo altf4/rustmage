@@ -1,0 +1,12 @@
+{
+  "name": "Illegitimate Business",
+  "catalogue_id": 2135,
+  "oracle_id": "01ee70d4-6527-45ae-9600-bd3d16b3037d",
+  "facts_sha256": "efbf5350792c924f6e397b1ec7368ef1881ace8c7e895eec872be5207c570cbb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3afc161e9d9d4f975912fd3bb8656bb33ba9668a0cf1bdd8909c13cc022d0e9a"
+  },
+  "physical_metadata_sha256": "8b07a6f7c90c92a72b9d2d51bb788f01534d5e9d05b738590ef8122e48f6a46a"
+}

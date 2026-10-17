@@ -1,0 +1,12 @@
+{
+  "name": "Surgical Suite // Hospital Room",
+  "catalogue_id": 4269,
+  "oracle_id": "68bb76af-f933-430a-a66a-fe4a7d6be4e0",
+  "facts_sha256": "200817abaec3db1af9c252ae7312fc32177c73b066cd6908d425a68c8fbfc402",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "214e5b91702619834f2fd8773856482e7cd9a7132d09fab7399c7c22562f5abb"
+  },
+  "physical_metadata_sha256": "cf60aa08581e553783d506987888548f29129f1126b17eead85a87edeaaa0ba6"
+}

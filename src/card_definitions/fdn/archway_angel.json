@@ -1,0 +1,12 @@
+{
+  "name": "Archway Angel",
+  "catalogue_id": 217,
+  "oracle_id": "f2cf087a-d89a-4145-9394-945ce41c8cca",
+  "facts_sha256": "0789ba7de8aada134f95dfcb3f4aee88e66250a290f045fda733c4b28be983cd",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "83116108a02d9430e33b1ec4630190bc3eedd9a6312e16ac9eb2c2bc2bbdd666"
+  },
+  "physical_metadata_sha256": "b54a86c5f9830e04556356e792613c3552e54740bb9a1c5556cbb59b91e0e8c1"
+}

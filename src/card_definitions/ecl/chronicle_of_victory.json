@@ -1,0 +1,12 @@
+{
+  "name": "Chronicle of Victory",
+  "catalogue_id": 749,
+  "oracle_id": "e949b362-4988-4482-ac51-c1049af9040c",
+  "facts_sha256": "664f90958dbd5c898bea18cb42987066fe8bb1a409d4207dd72e2fcc55b66e7d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7bb7cbb1ec061b2cf54d2e959d206cd6d09f7eb00231222f56bf01ddf5665e1b"
+  },
+  "physical_metadata_sha256": "9730ecb7061a2b100c2c62bbf36256ffd24954ffcdb0acc7de69f83615c6dbab"
+}

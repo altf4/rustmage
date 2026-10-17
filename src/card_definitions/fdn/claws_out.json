@@ -1,0 +1,12 @@
+{
+  "name": "Claws Out",
+  "catalogue_id": 766,
+  "oracle_id": "499d76c1-97ff-4006-922c-be1684a7754c",
+  "facts_sha256": "a9ef8b4b123639724afd6cca499073866803964ee5aad0bd97ae5c17bd5adaf5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "341479d67bf88aad42bdd74779fef8e45e0272f4faacef5f1d93bd5ff76f2709"
+  },
+  "physical_metadata_sha256": "d2ef752b76a146730be7fcb5dc5dfb67dfd17e078faf9b583ab0ea17c1383a52"
+}

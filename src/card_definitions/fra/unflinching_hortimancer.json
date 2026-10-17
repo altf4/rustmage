@@ -1,0 +1,12 @@
+{
+  "name": "Unflinching Hortimancer",
+  "catalogue_id": 4780,
+  "oracle_id": "7cd0bd74-2463-4e9d-9802-69ac4ef6d543",
+  "facts_sha256": "fac28491cd874a9df6429430cf601b2ff907193a5717f194ca0345e994208184",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b0a7ed35b2bec9d1d73d32c376cabec86d8d9cdd924254b6a365443e635a3ead"
+  },
+  "physical_metadata_sha256": "31670aa4e7e58d4f3953be655b0eafeeca28c2a49e00e04aa2238125aa032900"
+}

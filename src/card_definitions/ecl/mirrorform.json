@@ -1,0 +1,12 @@
+{
+  "name": "Mirrorform",
+  "catalogue_id": 2785,
+  "oracle_id": "81cb888c-c4d3-45a2-a03e-bfd91a2af2be",
+  "facts_sha256": "fda383e4a8076fadefe7ae733995448310cc6a78bba4c479718104a566d1866f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "897c83875dfd3bd3c3b2f7e0f4c75f702cf1daa27ddfe0f92dc9ae8a477d48f8"
+  },
+  "physical_metadata_sha256": "8e5df8d1cb3d1e787385d361a376b5b8df5657ecedb63edc227504f8300774e1"
+}

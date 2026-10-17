@@ -1,0 +1,12 @@
+{
+  "name": "Bullseye, Death Dealer",
+  "catalogue_id": 579,
+  "oracle_id": "10db57b4-f895-4514-b610-2252ba676353",
+  "facts_sha256": "6ea12f9cd9fcfa2adc912260f406efc433b19668d08e7d37eb031f84b90bb640",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "788c136473b3c7fb645b4e30b0bb376609a50d8a0d4a84a5e67d661fd7c750c6"
+  },
+  "physical_metadata_sha256": "603f3a41b225888c800cf53fb4eba73c1d5d4f60533e548f57286017831b1491"
+}

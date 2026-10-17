@@ -1,0 +1,12 @@
+{
+  "name": "Biogenic Upgrade",
+  "catalogue_id": 416,
+  "oracle_id": "30812870-87c0-469c-95a5-811d5a181e72",
+  "facts_sha256": "08c4a11621c36cdcf5f555e73792a904e59ce935c0e3eb66b78404a211b8831e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "84b6718293ca34be45b43d0b754f75082a34cb497ce7836fe9e23cb465b9618d"
+  },
+  "physical_metadata_sha256": "72116b8f0acaf1d7ebf82bc281f67225c262b438b27ba12940ce6e07811ca126"
+}

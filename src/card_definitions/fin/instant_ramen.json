@@ -1,0 +1,12 @@
+{
+  "name": "Instant Ramen",
+  "catalogue_id": 2192,
+  "oracle_id": "2283e409-c6c7-4de9-899b-2b3caea5f35e",
+  "facts_sha256": "fde06a6277caae9d726e9f6dcf79fc156ec03c3f9627a85347f0d161d6cd3b40",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "de6d4b59267bf561220d08dda8e1455bceb2304bbd43d6236aad6f63cf13f469"
+  },
+  "physical_metadata_sha256": "922b5de71b0c1915b349de0e8ca3b986038bb071f7e8e2489e064686488fa961"
+}

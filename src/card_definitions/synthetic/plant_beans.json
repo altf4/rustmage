@@ -1,0 +1,12 @@
+{
+  "name": "Plant Beans",
+  "catalogue_id": 5207,
+  "oracle_id": "a2192c80-c48f-44e2-807c-2f9ee1aa1152",
+  "facts_sha256": "754bf07dab1e606e3cb6a5940fa46cd69d83240a6ec9ef9f190c9f54c9d14513",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "220b921ed7b450d052872c13ec1cb419f78657b7116806e2a7fa3a47b81953b1"
+  },
+  "physical_metadata_sha256": "03932d9ff88313075d25f378ce7a4a18b30d25bc66cf673afc34f23f657b3c1f"
+}

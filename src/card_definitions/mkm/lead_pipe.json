@@ -1,0 +1,12 @@
+{
+  "name": "Lead Pipe",
+  "catalogue_id": 2461,
+  "oracle_id": "ed2ef95e-8851-4226-9c63-4c19ea323b82",
+  "facts_sha256": "fc1395c9f1ae324f6cf454fe0b79cdaf5f00fa9e903140bbfce70a5461e14fa7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0f044188f828319146ae5e919589ed03d2b3669d5a5e793cddf305b39c3c0af1"
+  },
+  "physical_metadata_sha256": "22126c82ce9ff9195bbf489771a98db91947311825112df732de157a1f602139"
+}

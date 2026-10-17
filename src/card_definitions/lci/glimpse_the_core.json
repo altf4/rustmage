@@ -1,0 +1,12 @@
+{
+  "name": "Glimpse the Core",
+  "catalogue_id": 1782,
+  "oracle_id": "fa44fa48-d270-4f0f-b672-d63e1c1942ce",
+  "facts_sha256": "ae37bf5976fde9d1c78abf4a9b7f28baac126aeb1bf91267fc060caacb9d18e1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0dd2c9ae44d97ac6f94861b6572ea3ba6bc21fe3c03b02b75be0988f69222476"
+  },
+  "physical_metadata_sha256": "32a801b854ad3d9cc6aceec9d340a2d454aa08c3554ef10e1f72844330da9e1e"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Fate of the Sun-Cryst",
+  "catalogue_id": 1449,
+  "oracle_id": "0ffeec93-89d7-42c2-8abf-802e9f6dc992",
+  "facts_sha256": "a242b74263b72b6649c93005411844d1c51b931e84c45e85327848fecdba7203",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "39d96942c5434a336f43436aa7eadeca8a80424dcad65696592bd9cac784c4f4"
+  },
+  "physical_metadata_sha256": "0edc445d1b0a70da5879802d795d18010f8f478801fd3bde7639a49e76244cc5"
+}

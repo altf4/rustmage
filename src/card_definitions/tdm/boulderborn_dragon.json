@@ -1,0 +1,12 @@
+{
+  "name": "Boulderborn Dragon",
+  "catalogue_id": 515,
+  "oracle_id": "1654cab1-0697-4547-b1fe-2d0a61385199",
+  "facts_sha256": "c0b071cbcf3cf8d42a1c1387ecf19331cb27208ba52ab0bbf5a0c1179e09bbc3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1bfb04a027b7123329a40b6a6305e8b03eb322e20a2f7b9b95857e09c4d8f476"
+  },
+  "physical_metadata_sha256": "01c76c263cd516be10c947ae8f7a12be5c645722b687b331a1a50fd38ec6b8ed"
+}

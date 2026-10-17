@@ -1,0 +1,12 @@
+{
+  "name": "Greedy Freebooter",
+  "catalogue_id": 1869,
+  "oracle_id": "d4a9d63a-5a8a-4f51-9e49-43d6dc3234b1",
+  "facts_sha256": "891f056a13fcef98765e0942561e246cd93bb99ec915ceae021821d9c891cc08",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "99b2fbc25ec7991cf049e2cc6111ab750be691bbc6c741d295facb4f69e0e974"
+  },
+  "physical_metadata_sha256": "60cbf14a3c1539b5b6d8213995207ca28877fd47f03bf6e328713bbb9bffa023"
+}

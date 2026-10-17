@@ -1,0 +1,12 @@
+{
+  "name": "Skybox Ferry",
+  "catalogue_id": 3898,
+  "oracle_id": "09726c3d-f700-4bf4-a9e7-326fe41b0a4a",
+  "facts_sha256": "31d058f434fffc4c71984200982344fe9290ecb8857c6991051bd26cfb128bb6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5538fc6048c04f56a311b5dd4e82baa4b70407ed81a448079abe01780c077c93"
+  },
+  "physical_metadata_sha256": "6956a5d41fc1513d8d1dea441c6f9fe86562f698c7d16045bc73ed1fa3e5701a"
+}

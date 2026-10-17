@@ -1,0 +1,12 @@
+{
+  "name": "Team Tactics",
+  "catalogue_id": 4351,
+  "oracle_id": "98b99d7c-d006-471a-8583-0468743c1597",
+  "facts_sha256": "6badccf6d4271d55fe11f4204af37929e04662a07e3c0e8de5137a9e19f80312",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1adde972ddbc52c11040b5fdd7ab07200e9bd992641704719d796f3176cfb8f0"
+  },
+  "physical_metadata_sha256": "5bd7bee8a2431df6e7c3361f103fc95586c3959aaff7a5988e8ea7b8b5bdd2fe"
+}

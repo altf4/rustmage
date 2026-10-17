@@ -1,0 +1,12 @@
+{
+  "name": "Dutiful Griffin",
+  "catalogue_id": 1210,
+  "oracle_id": "f91ff377-a997-4f24-926c-76edcbf91a6c",
+  "facts_sha256": "8baf4b2775f42d791d8444ccf55752f56a2c1a87a92bb4df995a22a29a50a67c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "005f3f0552eb627cf1b1921b0854d41fec0dc674934689452e6489a6085dd201"
+  },
+  "physical_metadata_sha256": "699915cb63d7ef3f4859d8f8b9a26c3b7c628d1bc029171b03c93b15e30668f8"
+}

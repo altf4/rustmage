@@ -1,0 +1,12 @@
+{
+  "name": "Riverwheel Sweep",
+  "catalogue_id": 3555,
+  "oracle_id": "917aef2b-0e6d-460e-8745-8da8423d1592",
+  "facts_sha256": "9f4f59b2de72dab663c360448064fc505e112ec57eeada12fceb2cf981034d14",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "96036efa826acc9701f6213745f75ad438ff3efa62f30523db0a2f396388b4af"
+  },
+  "physical_metadata_sha256": "c937897ad2813c5925183ecf4ee17a6edd1ed3adae25b0edc0df9ebe34f10cee"
+}

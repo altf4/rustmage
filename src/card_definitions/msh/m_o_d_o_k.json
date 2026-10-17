@@ -1,0 +1,12 @@
+{
+  "name": "M.O.D.O.K.",
+  "catalogue_id": 2596,
+  "oracle_id": "fe7cc414-42d0-4dad-8516-7a0be0860a67",
+  "facts_sha256": "de2b5beab383794b2fc634a510e3b63f506f81fb7cd25635dcbeeb5eeacdd9c0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d70fa659ba98adf7f2dbb9e848c194360ed06cade1cee25fb7c533970738f342"
+  },
+  "physical_metadata_sha256": "c063966197e1d3e73cfa3ea6e8d2a72e4fd5a179f82f686a40f82b5db5d72efd"
+}

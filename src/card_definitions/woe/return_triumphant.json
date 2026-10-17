@@ -1,0 +1,12 @@
+{
+  "name": "Return Triumphant",
+  "catalogue_id": 3502,
+  "oracle_id": "a4814615-ffa2-4692-86bc-3a1b7fc2acc8",
+  "facts_sha256": "e46f93c55b3f6c2519cf2bb5a8e98253f656387d740ba14cf54db68e2e38c2ac",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3648cb95d970e1bd63ba9035ee2fd3aa45ade565bba365e6a32bf98801ecc3ac"
+  },
+  "physical_metadata_sha256": "495444f447da5740b05fbf210c66e20dc7bcf28f72c447d725d193b647ada1a3"
+}

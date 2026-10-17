@@ -1,0 +1,12 @@
+{
+  "name": "Hinterland Sanctifier",
+  "catalogue_id": 2046,
+  "oracle_id": "d812fc6d-b96d-4986-b171-9f3feee603dc",
+  "facts_sha256": "2a8d992848f587c29adf867282d1903afa07c2bf6154111701e13cc3be017b0c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f4229a8150a35ad7520776576b9d58f4dcef2863ce024bd36ec38164b8963117"
+  },
+  "physical_metadata_sha256": "c5d4743ef82de41750e269cf8994174a1613727bef19066eebf1aff71eba8346"
+}

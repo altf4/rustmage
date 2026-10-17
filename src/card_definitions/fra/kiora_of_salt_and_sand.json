@@ -1,0 +1,12 @@
+{
+  "name": "Kiora of Salt and Sand",
+  "catalogue_id": 2367,
+  "oracle_id": "e70bb7f8-8098-49c5-929c-68f63cd821c5",
+  "facts_sha256": "26e5507c1cb053cd95d0ef07843061d77cfb8b230d798355d702e06498ee6486",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5643af9f382d06739bccbd4ad46320623e1de209ed917ba8b614bd5541b24b08"
+  },
+  "physical_metadata_sha256": "12b7060db100b5d33dfebedaaa601d82436d714161a6f8af2d5f50c459e7c236"
+}

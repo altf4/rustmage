@@ -1,0 +1,12 @@
+{
+  "name": "Snakeskin Veil",
+  "catalogue_id": 3940,
+  "oracle_id": "1e6a24be-8281-41c1-a5ba-b68f0ef1d7b8",
+  "facts_sha256": "f60c05bc8152dc4abdc25b2f35d354f3b786a659252a8aa0bef3d42c3ebe7905",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "12d61f199d43c711186e429153c7190ce69c37a58e632fab60e2d059a1aeeefd"
+  },
+  "physical_metadata_sha256": "827c05ddf37e6dbfbd8c7747d36d25b37270bdda340db80624827ba291b5f92b"
+}

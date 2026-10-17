@@ -1,0 +1,12 @@
+{
+  "name": "Codie, Ravenous Codex",
+  "catalogue_id": 788,
+  "oracle_id": "a17e414c-8de0-47fd-bcbc-540c7fec7642",
+  "facts_sha256": "718fa2f82fc6df5fb634e0dee0eea6be80458ff637d65a21beeb62a17595b279",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3773a59d3d15b575ed4c42993b67d0ceb8d0e37d93deac27a79fd64a33b458c6"
+  },
+  "physical_metadata_sha256": "ff015c8a40505b75e1066bfb1029c0e85226388c3a52aaa9706386d85d6db320"
+}

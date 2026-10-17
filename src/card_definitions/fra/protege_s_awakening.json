@@ -1,0 +1,12 @@
+{
+  "name": "Protege's Awakening",
+  "catalogue_id": 3264,
+  "oracle_id": "07617648-6490-4719-acec-7705671f7e01",
+  "facts_sha256": "6f731243c4bc9775adb8340def183603ca0b521a5e9c4f4c799e08c63ffde4a1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a14ff4d42c6e18d5d73a99a58b22f7f865bc941d5536c63473e4353ef811f066"
+  },
+  "physical_metadata_sha256": "a4331633faf701ff45c9174482db8f9d35f52a4037dc0406e00588f5ecd1b259"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Squawkroaster",
+  "catalogue_id": 4079,
+  "oracle_id": "6b79404b-2fae-41fb-994c-d4cd895e8f09",
+  "facts_sha256": "8b89e09f583aacae9c1cab9be86bd6d698302cb569e2d54cf266cb4f2b9a7cd4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "43327065492fd45baadd3d06ef1334184b160207846dfdef866862469fb1b3a8"
+  },
+  "physical_metadata_sha256": "d1282c7b02d1174ffc57d981c0994dfb85770a89b98bab36e38ca5bd600a72cb"
+}

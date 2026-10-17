@@ -1,0 +1,12 @@
+{
+  "name": "Unflinching Courage",
+  "catalogue_id": 4779,
+  "oracle_id": "0e969a27-1609-4ab4-b0db-46b1af8066a9",
+  "facts_sha256": "c7d0ffd7b573098767a0a4c865345b812e66d970abf97d0e0e00f66cab452b88",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c7d9e0790be3e47e211cf44944d3d0de7d8941ff2e567795c6522076eb284e42"
+  },
+  "physical_metadata_sha256": "1de060637cdd7f319eb5fc6db7ebe8a39743fd2eee27c64ae391686042d8de77"
+}

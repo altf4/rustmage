@@ -1,0 +1,12 @@
+{
+  "name": "Ran and Shaw",
+  "catalogue_id": 3367,
+  "oracle_id": "a728685f-8670-4db2-ae02-3cf74eb3c402",
+  "facts_sha256": "9a30a758e1a0fa701795a02f9b57c86600bf91cfb1fc4ad6627c7c20b7298101",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "570d238df24c92690ae0d1b82fd0f0bc2d9af11a64ced995914192517f03d589"
+  },
+  "physical_metadata_sha256": "96802d21132134b596b1ccb7d873c23bf5cdfd5b85eccc81811fbd1c6cf58306"
+}

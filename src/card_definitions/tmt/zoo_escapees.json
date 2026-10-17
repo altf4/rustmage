@@ -1,0 +1,12 @@
+{
+  "name": "Zoo Escapees",
+  "catalogue_id": 5170,
+  "oracle_id": "107e9ada-4e2e-4032-addd-274bca956621",
+  "facts_sha256": "98f246d4671083b2f6d07a7e25e6f2637d16f495c76cd16f4438959fc6c925e9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "85278efdeb27facebacbabfc15743506e4032fc61f68311ca583a45828d376f3"
+  },
+  "physical_metadata_sha256": "c5fd6fe04bc3a1c649006933e16eab78058b4b55070c2cb3e2952505e2564828"
+}

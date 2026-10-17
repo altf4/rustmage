@@ -1,0 +1,12 @@
+{
+  "name": "Morningtide's Light",
+  "catalogue_id": 2854,
+  "oracle_id": "a25bcf65-4417-45e9-a4b1-94e0ea78af63",
+  "facts_sha256": "269e7012b1ee01324718849538761df29e9a5cea6714e27c46f6e000b484644c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "94e2e7ed163b1ee6ebfc4ace30e1a788e50d00e89ec42da522704f6820280cae"
+  },
+  "physical_metadata_sha256": "fa415a470038615d51b697cf17cfc6a9d05ad888b1b2b48c52ea440f6668b7b5"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Thor Odinson",
+  "catalogue_id": 4537,
+  "oracle_id": "ec9b74d0-e4fe-4764-b628-992a62f2a1cf",
+  "facts_sha256": "c32716fd70947019b13d2ab4ddbbc615793add0d31588486df4645f0ec50bf6d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ca47d3d7dde679ac844ac7b5b153274de768b1ffc007d004c4d85a3711c4053c"
+  },
+  "physical_metadata_sha256": "e0c4a2d091c9bd21d2f664aefc803a81777abbb71626f90df08a99d83fa04ffd"
+}

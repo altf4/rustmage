@@ -1,0 +1,12 @@
+{
+  "name": "Scorpion Sentinel",
+  "catalogue_id": 3727,
+  "oracle_id": "5e53fe9f-9995-47ff-85e9-f09b70d7af15",
+  "facts_sha256": "aeda1a15db61f23d89cc938b80b71badf21b61aaa55954f57ce6bf23be6a3984",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8d542ff943555dbc2e6f185dc5fc7f5b2199e3f5317df49853ba2b207693330f"
+  },
+  "physical_metadata_sha256": "732e2c8031c0b1a1eb2ddecfb43542362e9aeadfc3996622fac0d9f8fdb9353b"
+}

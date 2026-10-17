@@ -1,0 +1,12 @@
+{
+  "name": "Scampering Surveyor",
+  "catalogue_id": 3710,
+  "oracle_id": "63c8f510-eba8-4f00-9f80-fbbc74801a4a",
+  "facts_sha256": "5bec88501fe8f81d149e5f81cabb6cf516de8f65dec62287ca2ff0463cd244db",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3dad961cd1a69ee00638e1c6a293207d011bb687ed0f67de58c0aa39962e4383"
+  },
+  "physical_metadata_sha256": "b88ee864b8f5ba6ccca77d5e69e5522a5c8959bb460ca61c4985108eb1ace751"
+}

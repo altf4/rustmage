@@ -1,0 +1,12 @@
+{
+  "name": "Central Elevator // Promising Stairs",
+  "catalogue_id": 699,
+  "oracle_id": "927fa223-69a3-4563-80b1-b578f3d031f1",
+  "facts_sha256": "6a4759952b4435c679897d2adffe65304a7ba8e889426add635c04b5a9fdf634",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fd3da8932d042382aa555ef729208055e9bdf2b70bdba3420bbea4d4e9a3a4fe"
+  },
+  "physical_metadata_sha256": "c635ace58ba4638766d7fcdd9463ce2d78b83b4446c1b1c64e0a3a29aa92a8b7"
+}

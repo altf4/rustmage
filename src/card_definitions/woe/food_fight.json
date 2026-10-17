@@ -1,0 +1,12 @@
+{
+  "name": "Food Fight",
+  "catalogue_id": 1583,
+  "oracle_id": "00571e7f-4e40-4a07-a529-34580e942338",
+  "facts_sha256": "a02399cf29a527879fb6bec51a5124b2a386110605427685978f3e761dcc238b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "db94d7713e9a19a14757c88dc15f1223a4162896a479b74c8ae887d2b19b3a08"
+  },
+  "physical_metadata_sha256": "0d8a0e81f9a0355b0139c7e0661e39f9d6aef12adff9049112a80f0c478e6b06"
+}

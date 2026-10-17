@@ -1,0 +1,12 @@
+{
+  "name": "Abandon Attachments",
+  "catalogue_id": 26,
+  "oracle_id": "82333385-631f-4abf-b159-bb367f1c6fd9",
+  "facts_sha256": "6135cc5bfb5300b8a56ef805e161a44b4b1dbf36530b4c894870acbfab0f0886",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e6ea4e46efcbabfd31e7a53abb53575ffa5dcf7fb3a9af5db5d1f588efaa3973"
+  },
+  "physical_metadata_sha256": "183f82c9e24832b3ef680527786c68c94eb64a767395d59cdf277519356750f0"
+}

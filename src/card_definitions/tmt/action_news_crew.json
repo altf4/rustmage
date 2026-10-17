@@ -1,0 +1,12 @@
+{
+  "name": "Action News Crew",
+  "catalogue_id": 52,
+  "oracle_id": "a9d68cf5-3055-4ec9-9893-244bfd7046be",
+  "facts_sha256": "fa96fc7ddf56985f4cddb2d2e2797cc4cc3c19688ecfdd66f42956de5ecb6d33",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "196eab3df5cedfe96c66866d321168ac24fd1d57fa0e4c5259c90e883792e108"
+  },
+  "physical_metadata_sha256": "f3b68c3e98273f6fb6db2eac0de21c2354e4dd4b13ca935693ea663777a1d3bb"
+}

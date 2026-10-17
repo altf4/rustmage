@@ -1,0 +1,12 @@
+{
+  "name": "Charmed Clothier",
+  "catalogue_id": 724,
+  "oracle_id": "ad0e6b12-a6bd-4860-9eac-68b2492d9567",
+  "facts_sha256": "c6bb0fac533f20055270acb18247fd57440b23b5eea10d82e72f4a071e98d1fe",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f604155568d4d3108e5d498267814bf62b05c2933458b7bf394e067621c1d2a7"
+  },
+  "physical_metadata_sha256": "7c8f9d9f524bfd55dfb4fcf2bdce89de6449f323d32ea66653ee41222f29fbe7"
+}

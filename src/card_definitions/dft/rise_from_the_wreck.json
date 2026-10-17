@@ -1,0 +1,12 @@
+{
+  "name": "Rise from the Wreck",
+  "catalogue_id": 3537,
+  "oracle_id": "8eeb83b4-dca1-497e-a6b7-0485807aeef3",
+  "facts_sha256": "77134a0442588b137b61dd1180e6a8475d4c76968a9727185dc097eb1c75e814",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8b0be5c42d3700561ea64d9251ab82c1a16740da58b3dfc02bb2c7575857478a"
+  },
+  "physical_metadata_sha256": "c0ccc599dd8fe15418a768106e178aa2e30b6037cae9c0b0ca552ef59a106226"
+}

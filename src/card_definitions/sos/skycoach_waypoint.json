@@ -1,0 +1,12 @@
+{
+  "name": "Skycoach Waypoint",
+  "catalogue_id": 3900,
+  "oracle_id": "2ac2b815-2d72-48e6-b43a-18884a74bf95",
+  "facts_sha256": "48a5473cf7d3bbc639950212ebc86f11fb33480051ac347825d01578bb623eb6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "128c855976b69d121f73db884823a5477e78d90e5f0294eee516d842df8f19e6"
+  },
+  "physical_metadata_sha256": "8161fa1277ee5d7edce897c0d4b166ddf335d0d8800817b0ac8f2e903e02996c"
+}

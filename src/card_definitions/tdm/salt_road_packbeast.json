@@ -1,0 +1,12 @@
+{
+  "name": "Salt Road Packbeast",
+  "catalogue_id": 3658,
+  "oracle_id": "50261b9d-48f2-4bad-a35b-14f13b3cdd32",
+  "facts_sha256": "ba5c1caafa23fb0b705167848e1177be6cf362d39f649abe659b7a3b073233a7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "82924fd9f5c5fb73d7e8cc46614e45e9cfa846f7c8e84d6c113ea4bfc4bf95c6"
+  },
+  "physical_metadata_sha256": "1b8002e5204f2a27d85314a766891b9ed8de3e017c96d48069c6761e3f0b81a8"
+}

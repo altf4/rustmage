@@ -1,0 +1,12 @@
+{
+  "name": "Stegron the Dinosaur Man",
+  "catalogue_id": 4131,
+  "oracle_id": "5c94b616-8edf-465c-b316-4599df95c52a",
+  "facts_sha256": "e54ab21d27b1efbc155f78501be05ead86d22d08f4ce7e02213f51023b928f16",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3944e4d1f722a0df87994d9e93b2bf525489b90f4e1bffda5deb75b1a1ff97ab"
+  },
+  "physical_metadata_sha256": "42c114322336377315ac012ceec2f1d5ce32488b9842f619ce22bc1ed8987ac4"
+}

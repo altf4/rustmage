@@ -1,0 +1,12 @@
+{
+  "name": "Virtue of Courage // Embereth Blaze",
+  "catalogue_id": 4905,
+  "oracle_id": "af6438b9-3fde-45c9-af69-dff686c1e0de",
+  "facts_sha256": "3596b0986430d213b7651d9199b7bd36e0d03b01a16b2e9ed246a57219f1ae43",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "90363c7a36224e6a79add1e148c744b21b92e0dfa4e54221fc0610a00cb4f2d7"
+  },
+  "physical_metadata_sha256": "5f0dee86c65619e07cbf68b4b6ed996c380c6e3144af97c683bf2f8efe1e3cc6"
+}

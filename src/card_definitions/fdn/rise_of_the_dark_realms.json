@@ -1,0 +1,12 @@
+{
+  "name": "Rise of the Dark Realms",
+  "catalogue_id": 3538,
+  "oracle_id": "e5223a09-f732-4747-8914-e6546ab0ef4c",
+  "facts_sha256": "280d4bde2e0842248ce9c79b0fe5348a16be8384a65aadf095260676d1e58585",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9a2ebff571d133fc1ffef9372623a6cd8d5817d3c25117bff9c6829c3de8653c"
+  },
+  "physical_metadata_sha256": "497385474bd040d5e7f5133946230dccb5b50e1695fa456081fb656bf76a2441"
+}

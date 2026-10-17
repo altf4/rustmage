@@ -1,0 +1,12 @@
+{
+  "name": "Death in the Family",
+  "catalogue_id": 1003,
+  "oracle_id": "f599471a-31a6-4fb0-bf27-c5b707e1db6a",
+  "facts_sha256": "cba3028840cdb25437a8709b12e28f40df00ecff1abb07268d1854b476f21f5c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dad519d1f128e275f50a256f3737fd16aa0b2196fa0f987950d01c6d58bf13ae"
+  },
+  "physical_metadata_sha256": "1d7e8fbb8cc45f860a1f5f1fd1055346408ee69cc242316c2c82715b70cee164"
+}

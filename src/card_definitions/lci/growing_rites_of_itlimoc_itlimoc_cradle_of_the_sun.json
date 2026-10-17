@@ -1,0 +1,12 @@
+{
+  "name": "Growing Rites of Itlimoc // Itlimoc, Cradle of the Sun",
+  "catalogue_id": 1890,
+  "oracle_id": "ea9c459a-6047-43aa-968f-a582be4000e8",
+  "facts_sha256": "68d003fab432db43395b9b57698247ba4683a5fa294ab906d0e51efe55a99493",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "94dd919c992032d41c44924efd36a115d8a90ca745e69b11c03430dcae3de121"
+  },
+  "physical_metadata_sha256": "473d669fa8ca0f654fbecb25fcbf0ca1922c5002f3232c30c902410667dd41ed"
+}

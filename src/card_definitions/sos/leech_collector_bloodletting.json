@@ -1,0 +1,12 @@
+{
+  "name": "Leech Collector // Bloodletting",
+  "catalogue_id": 2468,
+  "oracle_id": "84bb960c-c34e-4979-8c0f-893c85cee27d",
+  "facts_sha256": "17d6c7b71b11dddb1045e22c9e0d5917438163e38915a13f4cebee81534e05de",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8b9787e6dd7f39b77b569cab96223bc8c4a1298a9edd4c1e46519e84787d29d1"
+  },
+  "physical_metadata_sha256": "7e56d35a6eb4c6a943ecb545c9ea8beab8ab2d718a4bedca4e890ea194a32b9d"
+}

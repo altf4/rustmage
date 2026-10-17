@@ -1,0 +1,12 @@
+{
+  "name": "Combustion Man",
+  "catalogue_id": 806,
+  "oracle_id": "533b107c-fd66-45ef-b74e-e6bd9b75ea8f",
+  "facts_sha256": "e04096265e8778706f97fc8237f9ee0398ccb477b3588d72ff720068019487dc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d5fd864c49d3818b70ad8f38250c6300449c62757134a1e8d364b81fd70eac38"
+  },
+  "physical_metadata_sha256": "9390448ec8a1fff7d601045d4af5b4ccb70bf49ff2eb084b8ff1b8c4012522f1"
+}

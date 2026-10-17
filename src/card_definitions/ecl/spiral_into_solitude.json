@@ -1,0 +1,12 @@
+{
+  "name": "Spiral into Solitude",
+  "catalogue_id": 4052,
+  "oracle_id": "d8599f06-f030-4575-8497-307a4d7ec182",
+  "facts_sha256": "0e8a627a5a804b0e86c70eb7cae3a5f02a1fce32ef3657703aa5e6cbf159d2c5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3381d2330e6e6158283735caa996b08c089729e43cc1869d000f3001229b498a"
+  },
+  "physical_metadata_sha256": "91cc7d844da1b61d9fcc91626fa3d17b4ce3525ea2e83fac582d01c99d290a8d"
+}

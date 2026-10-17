@@ -1,0 +1,12 @@
+{
+  "name": "Punk Frogs",
+  "catalogue_id": 3282,
+  "oracle_id": "dfb13eca-55fd-4ac6-aee3-2bdbfe9e1c4e",
+  "facts_sha256": "5e4286b17e887f75e775a7612bb93301a86ff6f0766c60ed6cf3b18c96f425c7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "875eee6ec9ae940ac713d962f6cda7a631c7808d5856bb65448393ad4948638c"
+  },
+  "physical_metadata_sha256": "4ad30a6f7f57167635a71dc673926cdc65e40b1be1b7f890a6c8515758d0de40"
+}

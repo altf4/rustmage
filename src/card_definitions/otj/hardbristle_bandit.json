@@ -1,0 +1,12 @@
+{
+  "name": "Hardbristle Bandit",
+  "catalogue_id": 1942,
+  "oracle_id": "116eea43-4235-4608-8c6a-599e860ae2f1",
+  "facts_sha256": "fc62d765964a0105bc0bdf5ebdbaf6a11bc433e0cb875411bc4b05c072387df3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0d83ae306afe8600be2f84ce88bd3fe0c97b66cdbc3b9cc469eb0b8a55dc0dbe"
+  },
+  "physical_metadata_sha256": "09c0f5e52296e5d75afe0556e16a09a7294d125071db74aa261c6be30b1ba3be"
+}

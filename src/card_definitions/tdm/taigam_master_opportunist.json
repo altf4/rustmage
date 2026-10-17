@@ -1,0 +1,12 @@
+{
+  "name": "Taigam, Master Opportunist",
+  "catalogue_id": 4316,
+  "oracle_id": "49f2cbc3-bd03-48e6-b1c4-d7f315b8579d",
+  "facts_sha256": "1428cfdd25633bdac96a942cb42caa20fe3f08614e8b90b7aac7e69730a86aa6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d6f428f2f372ddbefbcede3b9908bc87ceae1bc799440399302dc51066907c87"
+  },
+  "physical_metadata_sha256": "d884684ac2a2cca345d66c978b4eaff36a1dd88ec063dde7ec34b2870f4d132f"
+}

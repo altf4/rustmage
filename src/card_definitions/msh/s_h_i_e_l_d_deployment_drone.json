@@ -1,0 +1,12 @@
+{
+  "name": "S.H.I.E.L.D. Deployment Drone",
+  "catalogue_id": 3635,
+  "oracle_id": "c1669020-8f81-471a-9083-7e9ce3e8f387",
+  "facts_sha256": "94856d8415a2b630ee52add0e6a231e284fee42bd3144db21fe1d66984a1884b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cba34a00c8d1ec0f79b6ff16106483b5da4f95cc7fb5f28aeeffd5c8c6e1c8b6"
+  },
+  "physical_metadata_sha256": "96348f1b2484a01f56029fef00a7cc546a053ffbf94c30134d1779b38bf846e3"
+}

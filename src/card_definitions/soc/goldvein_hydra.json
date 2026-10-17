@@ -1,0 +1,12 @@
+{
+  "name": "Goldvein Hydra",
+  "catalogue_id": 1823,
+  "oracle_id": "2b62543f-a475-457a-a96b-b5d070383d3c",
+  "facts_sha256": "f70d6926df9d01501bce45b719478e5dbeb1ad5102c4f555e7bf8d8c12812bb2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "43f49b1e282c906ae3efa7aad844619a769468ea0a76fdab420ed9f52fbda931"
+  },
+  "physical_metadata_sha256": "da6f837922e2b1b740ff89277939c7b3231f02a2f2b9034f0b98f6201d2dfe0a"
+}

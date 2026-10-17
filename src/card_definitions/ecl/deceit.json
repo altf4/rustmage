@@ -1,0 +1,12 @@
+{
+  "name": "Deceit",
+  "catalogue_id": 1012,
+  "oracle_id": "d7dddeac-c6ed-4111-ba40-e2830c08d480",
+  "facts_sha256": "1410ceef08f2dbc7de52076998982b265bf637dcdfba0be3e5ff9bd2cb2c29f7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0f61ec65f1fb6f53b57be98af4b915cbd44b61b1adc623333e7005414d0fd5a8"
+  },
+  "physical_metadata_sha256": "d5fd1c98c03b05e1c113acf5aae592c0d43014ac47e08633026c24ab233f5d22"
+}

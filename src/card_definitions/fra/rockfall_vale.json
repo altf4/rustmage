@@ -1,0 +1,12 @@
+{
+  "name": "Rockfall Vale",
+  "catalogue_id": 3571,
+  "oracle_id": "185c70c1-8403-4ae5-b45d-3679d4ee092a",
+  "facts_sha256": "ca39de3cfb2b4099f588d7584da558807e4d8fcae71d70a5f6e2e60e47363b53",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "033a3187fb2cabf2590e42d9e15aecb6eae4a95b3aa117ba8398bb5afd512b4a"
+  },
+  "physical_metadata_sha256": "4d851ae0c796699fc63250b9c28ca9d65242a2b2297b0ecf1091f46601fed082"
+}

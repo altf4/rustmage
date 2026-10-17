@@ -1,0 +1,12 @@
+{
+  "name": "Garruk, Veiled Butcher",
+  "catalogue_id": 1688,
+  "oracle_id": "4a6972fe-348a-4a19-a1d0-bdf8f1f9c792",
+  "facts_sha256": "548e2a6545afefb37f0dbc5a090be3ee2d00dc8bd27a6eeb890e4d24ed683102",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "95f0b2ae73a5dfddb9d2f1c1c1f951c9e726cd14e0cf6eed6ff02b76ef3fe44c"
+  },
+  "physical_metadata_sha256": "c7a3f97b6de0be84cb56efd07fa10ca4fe2791ed4fed9967c39c65cf02ed9a6d"
+}

@@ -19,7 +19,7 @@ class AbilityRemovalInventoryTests(unittest.TestCase):
         records = []
         for row in manifest['cards']:
             self.assertEqual(row['facts'], cards[row['facts']['name']])
-            self.assertIn(row['status'], ('inventoried_priority_not_implemented', 'gated_dependency'))
+            self.assertIn(row['status'], ('inventoried_priority_not_implemented', 'gated_dependency', 'implemented_direct_rust'))
             self.assertTrue(row['required_semantics'])
             self.assertTrue(any('/cards/' in r['java_source'] for r in row['sources']))
             records.extend(row['sources'])

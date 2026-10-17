@@ -1,0 +1,12 @@
+{
+  "name": "Viashino Pyromancer",
+  "catalogue_id": 4881,
+  "oracle_id": "5e78e6e0-60f0-4c3c-b8dd-bd673f5152b8",
+  "facts_sha256": "a96a3e20318b73b45fd1d12d1dc214ba880e657cf346e9795c6d4d13434c3557",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fc31d0e1fcd02352240b3b741062be7240155462734012a017eec8100f9a76fe"
+  },
+  "physical_metadata_sha256": "510a7fc92a47606341459aa3666bf72435c29ab736e3ffdf90338c6ac5a7131f"
+}

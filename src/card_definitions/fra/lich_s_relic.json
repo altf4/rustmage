@@ -1,0 +1,12 @@
+{
+  "name": "Lich's Relic",
+  "catalogue_id": 2488,
+  "oracle_id": "0540eaca-0e03-4831-955a-192ae2b87d35",
+  "facts_sha256": "fac3f9f22c10b4bc643fc44a4a9b7fc91a0f360744fa4de39560e5cb568e104d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "adeacd28890d14b2ebc8879b0ccf4c330626a561e9d2e4adb13de0b462732037"
+  },
+  "physical_metadata_sha256": "26eee5ff109a675db0e6dded0aeb04280898ab0c6c3a6f39e28715bb06897c53"
+}

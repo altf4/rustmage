@@ -1,0 +1,12 @@
+{
+  "name": "Etched Cornfield",
+  "catalogue_id": 1378,
+  "oracle_id": "6ccca5c2-66c3-495a-8d9e-1a9805569e52",
+  "facts_sha256": "7338039fb373eb8f708be60c222fce3fe99cd6634a0163472623ddc17a7dbd62",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "591741d988b1d19e0e584c97e871b79dbe0033d8dc2497fbb2a70a1f72de29cb"
+  },
+  "physical_metadata_sha256": "23d9b73eed3f7ad57b8f17b72a82d50ce165a8c698341fcc0b79384ae8a37c0e"
+}

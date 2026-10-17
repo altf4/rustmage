@@ -1,0 +1,12 @@
+{
+  "name": "Shadow of the Goblin",
+  "catalogue_id": 3806,
+  "oracle_id": "f343b6f9-41c3-419b-a57c-a7b08603ef5c",
+  "facts_sha256": "6b5d53e532953653f17599b357255f1df616b0e2ef8168fb0c9ea0a9e5c65871",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "518819b87c4451aa24e41a213b42c5a0331843592a560852653dc8e6be30cd23"
+  },
+  "physical_metadata_sha256": "51833b4dc913f6ea8bceff7a211a52b26656dc691a91dd24ba70609bf2c00804"
+}

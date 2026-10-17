@@ -1,0 +1,12 @@
+{
+  "name": "Engine Rat",
+  "catalogue_id": 1339,
+  "oracle_id": "7e29aae9-815a-4999-ace6-7bc860acde32",
+  "facts_sha256": "9bd3c406adb79682f697a677d3b841b14b40f9dc6ff078260617944ca1787761",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "57655685b6aef0a6296f661102ade6a1a9b82d62df5f550565afb10fea6a6cdc"
+  },
+  "physical_metadata_sha256": "22663d45a16c05fe0c0009f7bc7b76c4b3c1cf314b34515b0ee4aae6eaa04033"
+}

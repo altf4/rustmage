@@ -1,0 +1,12 @@
+{
+  "name": "Kwia Vigorbloom",
+  "catalogue_id": 2425,
+  "oracle_id": "07a28621-e617-46b0-af3e-2efb03b5056a",
+  "facts_sha256": "eccfd0e7536755ccb4746b41280794580c806cb8f87560ffff1378ac995facbe",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a35446104cba200cd2d50096840150206e3d9c43bb54d9dd17189b83af012643"
+  },
+  "physical_metadata_sha256": "d9ee0123cca207628ee884eae01d6fa5386653b2a8ac86c3bad88019fc8911fb"
+}

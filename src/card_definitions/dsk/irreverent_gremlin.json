@@ -1,0 +1,12 @@
+{
+  "name": "Irreverent Gremlin",
+  "catalogue_id": 2237,
+  "oracle_id": "44594004-52e7-4ce6-8eb0-61f72fd9c73b",
+  "facts_sha256": "2c33e6eebd5590bfd1920b747aa1cc7b76499fea7a0619b64983bd2af647db7f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0bb73da10c795ef8f16ecb18c503006a352b127029640244ab2286d2029e660a"
+  },
+  "physical_metadata_sha256": "6f4f73f9db86ef677b463e49cc4af6c09b4c6266ccfb84c74dad933e347690aa"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Item Shopkeep",
+  "catalogue_id": 2241,
+  "oracle_id": "7532f0ea-9d13-43ca-9b7d-2d22f2a66017",
+  "facts_sha256": "ff0b7f2a355849ecef6c4f1d5bc875866a735150cb28532982d3e0f4cc47ab2b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "59d773f6aaafcf215e63de63a19938d5139a2822e6cbac8b1ddc1728965c3a6d"
+  },
+  "physical_metadata_sha256": "2cf0d70c915a0303018483e94bc4c9815cdca779ba55164832226beffd3ec0ea"
+}

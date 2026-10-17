@@ -1,0 +1,12 @@
+{
+  "name": "Meteor Golem",
+  "catalogue_id": 2731,
+  "oracle_id": "d9f11aa1-9219-42a8-85a9-a8f204160706",
+  "facts_sha256": "e491372aa8007cca29df6f161c940f87c3080f318e5e436fde863ae20770c2f0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "10c218423facd62279f3e73405b09fd9a8a0404f1e657a9683ca5c5ecbdbafe6"
+  },
+  "physical_metadata_sha256": "752166199e76cca81659aaf74f394cf54cb5975463e1a2a009c0b092a3fb30ed"
+}

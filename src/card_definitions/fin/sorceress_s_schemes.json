@@ -1,0 +1,12 @@
+{
+  "name": "Sorceress's Schemes",
+  "catalogue_id": 3969,
+  "oracle_id": "945e56b9-709f-4bb3-8a6b-0a04d9202a03",
+  "facts_sha256": "9bf66888d69e31ba5a4d8cfa8fe8e72d850d7b046ded71173df2475464d6dc8e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5819e2914aaaf6e1376c4e70d45e3cc92f848398d3f16f865e98fc23797871ff"
+  },
+  "physical_metadata_sha256": "8e987d2219efb30b0592e489db938ac80592fcbea5b527e0895897add15649f4"
+}

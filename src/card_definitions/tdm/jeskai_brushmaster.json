@@ -1,0 +1,12 @@
+{
+  "name": "Jeskai Brushmaster",
+  "catalogue_id": 2269,
+  "oracle_id": "eff690a7-c2c7-4750-894c-0667d3151165",
+  "facts_sha256": "ae311d036280bb1108938fb9de438f1d8f3107e6f434a2e23cca85e15f22ef4a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "57af9866441ec97cd11462e113367de27dd65c76724a096899ab2af27d1d9edc"
+  },
+  "physical_metadata_sha256": "dca13f181d4c57bc8c90af8d9dc2e2353e8a37b5ed9bd8c40eb1471cf26383bb"
+}
