@@ -220,10 +220,10 @@ fn activation_gain_upper(ability: &ActivatedAbility, counters: Counters, life: i
     if cost.life > 0 {
         uses = uses.min(life.max(0) as u128 / u128::from(cost.life));
     }
-    if let Some((kind, amount)) = cost.remove {
-        if amount > 0 {
-            uses = uses.min(counters.available(kind) / u128::from(amount));
-        }
+    if let Some((kind, amount)) = cost.remove
+        && amount > 0
+    {
+        uses = uses.min(counters.available(kind) / u128::from(amount));
     }
     uses.saturating_mul(gain)
 }
