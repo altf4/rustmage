@@ -1708,6 +1708,13 @@ impl Game {
                     let amount = self.item_amount(amount, &item);
                     self.create_tokens(item.controller, token, amount, tapped);
                 }
+                Instruction::PutLandCards { maximum, tapped } => {
+                    let maximum = u32::try_from(self.item_amount(maximum, &item))
+                        .capacity("land selection limit exhausted");
+                    if self.start_land_selection(&item, maximum, tapped) {
+                        return;
+                    }
+                }
                 Instruction::PutHandLand { tapped } => {
                     if self.start_hand_land(&item, tapped) {
                         return;
@@ -2086,6 +2093,9 @@ impl Game {
                         })
                         .collect();
                     self.effect_counters(affected, replacements::ResumeMode::Program);
+                }
+                Instruction::PutPowerExcessCounters { filter } => {
+                    self.put_power_excess_counters(&item, filter);
                 }
                 Instruction::DoubleCounters => {
                     // Doubling puts the existing quantity of each kind on the object.

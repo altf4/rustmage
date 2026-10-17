@@ -1,5 +1,6 @@
 //! Exact-incarnation attachment links and continuous Equipment bonuses.
 use super::*;
+use crate::cards::StaticAbilityFragment;
 impl Game {
     /// CR303.4b: attachment, irrespective of Aura controller or pending SBA,
     /// defines enchanted. Equipment and stale recipient incarnations do not.
@@ -33,9 +34,32 @@ impl Game {
             return (stats, keywords);
         }
         let target = self.object_ref(id);
+        let evaluation = self.evaluated_abilities();
         for &source in &self.state.attachment_sources {
             let object = &self.state.objects[source as usize];
             if object.attached_to == Some(target) && !self.is_creature(source) {
+                if let Some(evaluation) = &evaluation {
+                    for (index, group) in object.card.static_ability_groups().iter().enumerate() {
+                        if !evaluation.group_available(self.object_ref(source), index) {
+                            continue;
+                        }
+                        for fragment in group.fragments {
+                            match *fragment {
+                                StaticAbilityFragment::AttachmentStats(value) => stats += value,
+                                StaticAbilityFragment::AttachmentKeywords(value) => {
+                                    keywords = keywords.union(value)
+                                }
+                                StaticAbilityFragment::AttachedTurnKeywords(value)
+                                    if object.controller == self.state.active =>
+                                {
+                                    keywords = keywords.union(value)
+                                }
+                                _ => (),
+                            }
+                        }
+                    }
+                    continue;
+                }
                 let spec = object.card.attachment_bonus().unwrap();
                 stats += spec.stats;
                 keywords = keywords.union(spec.keywords);

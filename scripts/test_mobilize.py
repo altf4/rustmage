@@ -29,9 +29,11 @@ class MobilizeCompilerTests(unittest.TestCase):
         for name in NAMES:
             self.assertIn(name, supported)
             self.assertIsNotNone(g.mobilize_body(g.extract_stat_rules(self.rows[name])[0]), name)
+        self.assertIn('Voice of Victory', supported)
+        self.assertFalse(self.implemented(dict(self.rows['Voice of Victory'],oracle_text=self.rows['Voice of Victory']['oracle_text']+'\nDiscover 4.')))
         victor = self.rows['Reigning Victor']
         self.assertEqual(len(g.spell_cost_options(victor['mana_cost'])), 8)
-        for name in ['Bone-Cairn Butcher', 'Venerated Stormsinger', 'Voice of Victory', "Zurgo, Thunder's Decree"]:
+        for name in ['Bone-Cairn Butcher', 'Venerated Stormsinger', "Zurgo, Thunder's Decree"]:
             self.assertNotIn(name, supported)
 
     def test_unknown_dynamic_counts_duplicate_declarations_and_residuals_reject(self):

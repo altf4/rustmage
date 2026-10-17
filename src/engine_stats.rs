@@ -2,6 +2,7 @@
 //! setters, then additive modifiers. Unsupported switching/dependency effects
 //! remain gated by complete-text admission, never approximated by deltas.
 use super::*;
+use crate::cards::StaticAbilityFragment;
 
 impl Game {
     pub(super) fn register_battlefield_sources(&mut self, id: CardId) {
@@ -145,6 +146,10 @@ impl Game {
                 .entry_trigger_suppression()
                 != 0
             || self.state.objects[id as usize].card.opponent_entry_tapped() != 0
+            || self.state.objects[id as usize]
+                .card
+                .static_cast_restriction()
+                != 0
             || !self.state.objects[id as usize]
                 .card
                 .cast_timing_grants()
@@ -178,7 +183,8 @@ impl Game {
     pub(super) fn stats(&self, id: CardId) -> Stats {
         self.stats_without_hand(id, None)
     }
-    pub(super) fn stats_without_hand(&self, id: CardId, departing: Option<CardId>) -> Stats {
+    // CR208.4b: characteristic definitions and setters, before modifiers/counters.
+    pub(super) fn base_stats_without_hand(&self, id: CardId, departing: Option<CardId>) -> Stats {
         let object = &self.state.objects[id as usize];
         let mut stats = if let Some((power, toughness)) = object.card.vehicle_stats() {
             if !self.is_creature(id) {
@@ -195,7 +201,11 @@ impl Game {
             }
         };
         // Layer 7a applies in every zone, before setters and additive modifiers.
-        if let Some(base) = object.card.dynamic_stats() {
+        if let Some(base) = object.card.dynamic_stats()
+            && self.continuous_fragment_available(id, |fragment| {
+                matches!(fragment, StaticAbilityFragment::DynamicStats(..))
+            })
+        {
             let reference = self.object_ref(id);
             let power = base.power.map(|expr| {
                 self.stat_expression_without_hand(expr, reference, object.controller, departing)
@@ -222,6 +232,26 @@ impl Game {
         if battlefield_creature {
             stats = self.apply_base_stat_layers(id, stats, departing);
         }
+        stats
+    }
+
+    pub(super) fn stats_without_hand(&self, id: CardId, departing: Option<CardId>) -> Stats {
+        self.layered_stats_without_hand(id, departing).1
+    }
+    pub(super) fn layered_stats_without_hand(
+        &self,
+        id: CardId,
+        departing: Option<CardId>,
+    ) -> (Stats, Stats) {
+        let object = &self.state.objects[id as usize];
+        let base = self.base_stats_without_hand(id, departing);
+        // A Vehicle has no effective creature stats while it is not a creature.
+        // Counters remain on it, ready for a later successful crew.
+        if object.card.vehicle_stats().is_some() && !self.is_creature(id) {
+            return (base, base);
+        }
+        let mut stats = base;
+        let battlefield_creature = object.zone == Zone::Battlefield && self.is_creature(id);
         if matches!(object.card.effect(), Effect::Creature(..))
             || object.card.vehicle_stats().is_some()
             || object.card.dynamic_stats().is_some()
@@ -253,7 +283,7 @@ impl Game {
                 .capacity(toughness_resource);
         }
         if !battlefield_creature {
-            return stats;
+            return (base, stats);
         }
         stats += self.live_static_bonus(id);
         stats += self.attachment_bonus(id).0;
@@ -261,7 +291,13 @@ impl Game {
         // maintain it, and snapshots own it; no derived stat cache needs invalidation.
         for &source in &self.state.static_sources {
             let object = &self.state.objects[source as usize];
-            for modifier in object.card.scaling_modifiers() {
+            for (index, modifier) in object.card.scaling_modifiers().iter().enumerate() {
+                if !self.continuous_fragment_available(source, |fragment| {
+                    matches!(fragment,
+                    StaticAbilityFragment::ScalingModifier(slot, _) if usize::from(*slot) == index)
+                }) {
+                    continue;
+                }
                 let applies = match modifier.subject {
                     Subject::Source => source == id,
                     Subject::Attached => {
@@ -292,7 +328,13 @@ impl Game {
                     };
                 }
             }
-            for modifier in object.card.static_modifiers() {
+            for (index, modifier) in object.card.static_modifiers().iter().enumerate() {
+                if !self.continuous_fragment_available(source, |fragment| {
+                    matches!(fragment,
+                    StaticAbilityFragment::StaticModifier(slot, _) if usize::from(*slot) == index)
+                }) {
+                    continue;
+                }
                 if (!modifier.own_turn || self.state.active == object.controller)
                     && (!modifier.requires_life_gain
                         || self.state.players[object.controller.index()].life_gained_this_turn > 0)
@@ -307,7 +349,9 @@ impl Game {
                 }
             }
             if !object.card.enchanted_modifiers().is_empty() && self.is_enchanted(id) {
-                for modifier in object.card.enchanted_modifiers() {
+                for (index, modifier) in object.card.enchanted_modifiers().iter().enumerate() {
+                    if !self.continuous_fragment_available(source, |fragment| matches!(fragment,
+                        StaticAbilityFragment::EnchantedModifier(slot, _) if usize::from(*slot) == index)) { continue; }
                     if self.creature_matches(
                         modifier.filter,
                         object.controller,
@@ -319,6 +363,6 @@ impl Game {
                 }
             }
         }
-        stats
+        (base, stats)
     }
 }

@@ -59,9 +59,11 @@ class LiveBaseCompilerTests(unittest.TestCase):
   import copy
   from scripts.catalogue_preservation import canonical,assert_union
   parent='61a7d0cef4b10591958cea4391c553db4c2c07ff';physical={c['oracle_id']:c['name']for c in self.all}
-  old=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',parent+':src/generated/catalogue.rs'],text=True),physical);new=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  old=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',parent+':src/generated/catalogue.rs'],text=True),physical);new=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show','2726465:src/generated/catalogue.rs'],text=True),physical);current=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
   helpers={('live_static_effects',n+'#0')for n in self.names}|{('equipment','Aettir and Priwen#0'),('aura','Burden of Proof#0')};args=dict(changed={n+'#0'for n in self.names},added=set(),helpers=helpers,aliases={})
   proof=assert_union(old,new,**args);self.assertEqual(proof['preserved_definitions'],5328);self.assertEqual(proof['prior_helpers'],918)
+  for name in self.names:self.assertEqual(current['definitions'][name+'#0'],new['definitions'][name+'#0'])
+  for helper in helpers:self.assertEqual(current['helpers'][helper],new['helpers'][helper])
   mutant=copy.deepcopy(new);mutant['definitions']['Plains#0']='unrelated mutation'
   with self.assertRaises(AssertionError):assert_union(old,mutant,**args)
 

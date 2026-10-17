@@ -26,6 +26,7 @@ pub(super) struct RoleState {
     pub stat_subjects: Vec<ResolvedStatSubjectView>,
     pub ability_timestamps: Vec<AbilitySourceTimestampView>,
     pub keyword_effects: Vec<KeywordEffectView>,
+    pub ability_removal_sources: Vec<ObjectRef>,
 }
 impl RoleState {
     pub fn bytes(&self) -> usize {
@@ -36,6 +37,7 @@ impl RoleState {
             + self.stat_subjects.len() * std::mem::size_of::<ResolvedStatSubjectView>()
             + self.ability_timestamps.len() * std::mem::size_of::<AbilitySourceTimestampView>()
             + self.keyword_effects.len() * std::mem::size_of::<KeywordEffectView>()
+            + self.ability_removal_sources.len() * std::mem::size_of::<ObjectRef>()
     }
 }
 impl Game {
@@ -188,6 +190,12 @@ impl Game {
                         && self.state.objects[v.aura.card as usize].card.role()
                             == Some(RoleKind::Cursed)
                         && self.state.objects[v.aura.card as usize].attached_to == Some(recipient)
+                        && self.continuous_fragment_available(v.aura.card, |fragment| {
+                            matches!(
+                                fragment,
+                                crate::cards::StaticAbilityFragment::PredefinedRoleBase
+                            )
+                        })
                 })
                 .map(|v| v.timestamp)
                 .max()

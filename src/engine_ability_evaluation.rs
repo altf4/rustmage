@@ -302,6 +302,37 @@ impl Game {
     pub(super) fn printed_abilities_available(&self, id: CardId) -> bool {
         CharacteristicWorld::printed_abilities_available(self, id)
     }
+    pub(super) fn continuous_fragment_available(
+        &self,
+        source: CardId,
+        matches: impl Fn(&StaticAbilityFragment) -> bool,
+    ) -> bool {
+        if !self.on_battlefield(source) {
+            return true;
+        }
+        let Some(evaluation) = self.evaluated_abilities() else {
+            return true;
+        };
+        let reference = self.object_ref(source);
+        let mut bound = false;
+        let mut available = false;
+        for (index, group) in self.state.objects[source as usize]
+            .card
+            .static_ability_groups()
+            .iter()
+            .enumerate()
+        {
+            if group.fragments.iter().any(&matches) {
+                bound = true;
+                available |= evaluation.group_available(reference, index);
+            }
+        }
+        assert!(
+            bound,
+            "continuous helper has no immutable source-group identity"
+        );
+        available
+    }
     pub(super) fn ability_availability(&self, id: CardId) -> Option<Box<AbilityAvailabilityView>> {
         if !self.on_battlefield(id) {
             return None;

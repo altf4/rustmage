@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "8f0d1535f3001e6bcf1ab748a41eae7bd5ec186b25217cf66908502a3de80c6e",
+  "catalogue_version": "7f2f9bbbe53ee8f3b8e989e59575647c96dd559768b09f59bc4fcd32248508c7",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1972,
-  "implemented_total": 1978,
-  "token_definitions": 95,
+  "implemented_standard_cards": 1977,
+  "implemented_total": 1983,
+  "token_definitions": 96,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -3004,8 +3004,8 @@
     {
       "name": "Bonny Pall, Clearcutter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Boom Box",
@@ -14554,8 +14554,8 @@
     {
       "name": "Kutzil, Malamet Exemplar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Kwia Vigorbloom",
@@ -23932,8 +23932,8 @@
     {
       "name": "Sovereign Okinec Ahau",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Sower of Chaos",
@@ -29572,7 +29572,7 @@
     {
       "name": "Voice of Victory",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -30700,8 +30700,8 @@
     {
       "name": "Worldsoul's Rage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Worldwalker Helm",

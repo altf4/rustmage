@@ -52,4 +52,5 @@ pub(crate) enum StaticAbilityFragment {
     CombatRestriction(u16, CombatRestriction),
     EntryTriggerSuppression(u16, u16),
     OpponentEntryTapped(u16, u16),
+    StaticCastRestriction(u16, u8),
 }

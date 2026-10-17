@@ -25,7 +25,7 @@ class LiveStaticPublicTests(unittest.TestCase):
     if head['outcome']is not None:
      self.assertEqual(stage,'finish',(name,variant,p,seed,stage,iteration));self.assertTrue(paid);self.assertTrue(effect_seen)
      return dict(name=name,variant=variant,player=p,frames=frames,paid=True)
-    o=g.observe(head['actor']);actor=o['actor'];self.assertEqual((o['schema'],o['catalogue']),(100,FP));objects={v['id']:v for v in o['objects']};field=[v for v in objects.values()if v['zone']=='Battlefield'];mine=[v for v in field if v['controller']==p];foes=[v for v in field if v['controller']==q]
+    o=g.observe(head['actor']);actor=o['actor'];self.assertEqual((o['schema'],o['catalogue']),(104,FP));objects={v['id']:v for v in o['objects']};field=[v for v in objects.values()if v['zone']=='Battlefield'];mine=[v for v in field if v['controller']==p];foes=[v for v in field if v['controller']==q]
     ally=next((v for v in mine if v['card']=='Bear Cub'),None);foe=next((v for v in foes if v['card']=='Bear Cub'),None);detective=next((v for v in mine if v['card']=='April, Reporter of the Weird'),None);foreign=next((v for v in foes if v['card']=='April, Reporter of the Weird'),None);body=objects.get(source)
     quiet=o['decision']=='priority'and not o['stack']and not o['announcing']and not o['resolving'];main=actor==p and o['active']==p and o['step']=='Main1'
     ready=ally is not None and foe is not None and detective is not None and foreign is not None and len([v for v in mine if v['card']in BASICS])>=9

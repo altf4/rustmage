@@ -161,3 +161,33 @@ Complete native validation passes1906+12 again (24.126s,924 fixed inputs), with
 224,165,888 allocated terminal bytes cleaned and both SO identities preserved.
 No accepted card emits the removal fragment yet; continuous helper suppression,
 untap restrictions and the full four physical bodies remain required.
+
+## Actual schema103 parent composition
+
+The branch now composes merged main2812c74 (1,977 executable Standard cards,
+schema103), including complete joint hand/land selection and all three base-power
+consumers. Prototype observation schema104 adds optional ability identities. Every
+inherited Python policy change is a schema-assertion literal only, with normalized
+AST equality verified. No inherited casting guard or raw-authentication route was
+removed. Historical modal and base-power union proofs retain their exact delivered
+commits and bind the current owned programs/helpers separately; the first31-method
+run correctly failed its still-current helper-set assertion before that historical
+context correction. The corrected33-method affected source suite passes5.202s.
+
+Strict actual-parent preservation retains all5,333 definitions,928 existing helper
+arms,96 token recipes, colors, aliases, flags and the emblem. Exactly772 new static
+origin helper rows are added, including the inherited casting restriction and the
+legendary token's layer7a CDA. No executable program or admission changes. A durable
+unrelated-mutation control rejects; every token CDA is checked for a source identity.
+
+Static base setters, layer7a definitions, additive providers, live clauses and
+attachment aggregates now consult their precise groups. Earlier-started Job effects
+continue; unrelated abilities and pure later-layer providers can cease. A dedicated
+sparse removal-provider index keeps the common no-removal check constant-time and
+allows virtual presence changes without caching real-game outcomes.
+
+Complete native validation on the frozen actual-parent source passes1,920 unit and12
+integration tests in26.823s. All937 tracked inputs remain fixed. Terminal cleanup
+reclaims225,583,104 allocated bytes while preserving both SO paths/hashes. This is
+foundation/integration validation: the four priority Auras remain gated, and the
+remaining rule providers and full printed bodies still require implementation.

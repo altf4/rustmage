@@ -150,7 +150,8 @@ def _continuous_groups(card, parser):
                 (parser.extract_target_cost_reduction, 'target_cost_reduction', False),
                 (parser.extract_combat_restriction, 'combat_restriction', False),
                 (parser.extract_entry_trigger_suppression, 'entry_trigger_suppression', False),
-                (parser.extract_opponent_entry_tapped, 'opponent_entry_tapped', False)):
+                (parser.extract_opponent_entry_tapped, 'opponent_entry_tapped', False),
+                (parser.extract_static_cast_restriction, 'static_cast_restriction', False)):
             _, value = extract(one)
             if value is not None and value != 0:
                 fragments.extend(Fragment(kind, Layer.RULE, row) for row in (value if plural else [value]))
@@ -219,7 +220,7 @@ def rust_groups(card, parser, abilities):
         'replacement_effects': 'Replacement', 'cast_timing_grants': 'CastTiming',
         'cost_reductions': 'CostReduction', 'target_cost_reduction': 'TargetCostReduction',
         'combat_restriction': 'CombatRestriction', 'entry_trigger_suppression': 'EntryTriggerSuppression',
-        'opponent_entry_tapped': 'OpponentEntryTapped',
+        'opponent_entry_tapped': 'OpponentEntryTapped', 'static_cast_restriction': 'StaticCastRestriction',
     }
     layers = {Layer.TYPE: 'Type', Layer.COLOR: 'Color', Layer.ABILITY: 'Ability',
               Layer.CDA: 'Cda', Layer.BASE: 'Base', Layer.MODIFY: 'Modify', Layer.RULE: 'Rule'}

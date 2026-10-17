@@ -2,7 +2,7 @@
 //! The overlay decides presence, control, counters and life; no cached ability
 //! status from the real game is carried across a virtual sacrifice or payment.
 use super::*;
-use crate::cards::{LiveStatRecipients, LiveStaticEffect, StaticAbilityFragment};
+use crate::cards::{LiveStatRecipients, LiveStaticEffect};
 
 pub(super) trait CharacteristicWorld {
     fn game(&self) -> &Game;
@@ -13,15 +13,9 @@ pub(super) trait CharacteristicWorld {
 
     fn has_ability_removal(&self) -> bool {
         self.game().state.roles.as_ref().is_some_and(|state| {
-            state.ability_timestamps.iter().any(|row| {
-                let object = self.object(row.source.card);
-                object.zone == Zone::Battlefield
-                    && self.reference(row.source.card) == row.source
-                    && object.card.static_ability_groups().iter().any(|group| {
-                        group.fragments.iter().any(|fragment| {
-                            matches!(fragment, StaticAbilityFragment::RemoveAttachedAbilities)
-                        })
-                    })
+            state.ability_removal_sources.iter().any(|&source| {
+                self.object(source.card).zone == Zone::Battlefield
+                    && self.reference(source.card) == source
             })
         })
     }

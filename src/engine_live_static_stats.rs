@@ -2,7 +2,7 @@
 use super::*;
 #[cfg(test)]
 use crate::cards::LiveStatRecipients;
-use crate::cards::{LiveStatValue, LiveStaticEffect};
+use crate::cards::{LiveStatValue, LiveStaticEffect, StaticAbilityFragment};
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct LiveStaticSourceView {
@@ -59,9 +59,14 @@ impl Game {
         &self,
         row: &LiveStaticSourceView,
         effect: &LiveStaticEffect,
+        index: usize,
         id: CardId,
     ) -> bool {
-        ability_world::CharacteristicWorld::live_applies(self, row.source, effect, id)
+        self.continuous_fragment_available(row.source.card, |fragment| matches!(fragment,
+            StaticAbilityFragment::LiveBase(slot, _) | StaticAbilityFragment::LiveBonus(slot, _)
+            | StaticAbilityFragment::LiveKeywords(slot, _) | StaticAbilityFragment::LiveBlockRestriction(slot, _)
+            if usize::from(*slot) == index))
+            && ability_world::CharacteristicWorld::live_applies(self, row.source, effect, id)
     }
 
     fn live_stat_value(&self, value: LiveStatValue, source: ObjectRef) -> i128 {
@@ -81,8 +86,8 @@ impl Game {
     ) -> Stats {
         if let Some(r) = &self.state.roles {
             for row in &r.live_static {
-                for effect in row.effects {
-                    if !self.live_static_applies(row, effect, id) {
+                for (index, effect) in row.effects.iter().enumerate() {
+                    if !self.live_static_applies(row, effect, index, id) {
                         continue;
                     }
                     if let Some(power) = effect.power
@@ -106,8 +111,8 @@ impl Game {
         let mut stats = Stats::default();
         if let Some(r) = &self.state.roles {
             for row in &r.live_static {
-                for effect in row.effects {
-                    if self.live_static_applies(row, effect, id) {
+                for (index, effect) in row.effects.iter().enumerate() {
+                    if self.live_static_applies(row, effect, index, id) {
                         stats += Stats {
                             power: effect.bonus_power,
                             toughness: effect.bonus_toughness,
@@ -122,8 +127,8 @@ impl Game {
         let mut keywords = Keywords::NONE;
         if let Some(r) = &self.state.roles {
             for row in &r.live_static {
-                for effect in row.effects {
-                    if self.live_static_applies(row, effect, id) {
+                for (index, effect) in row.effects.iter().enumerate() {
+                    if self.live_static_applies(row, effect, index, id) {
                         keywords = keywords.union(effect.keywords);
                     }
                 }
@@ -134,8 +139,8 @@ impl Game {
     pub(super) fn live_static_forbids_block(&self, blocker: CardId, attacker: CardId) -> bool {
         self.state.roles.as_ref().is_some_and(|r| {
             r.live_static.iter().any(|row| {
-                row.effects.iter().any(|effect| {
-                    self.live_static_applies(row, effect, blocker)
+                row.effects.iter().enumerate().any(|(index, effect)| {
+                    self.live_static_applies(row, effect, index, blocker)
                         && effect.cannot_block_subtype.is_some_and(|subtype| {
                             self.state.objects[attacker as usize]
                                 .card

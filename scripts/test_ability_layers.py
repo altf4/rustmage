@@ -61,7 +61,7 @@ class AbilityLayerIdentityTests(unittest.TestCase):
                     'enchanted_modifiers', 'counter_keyword_grants', 'dynamic_stats',
                     'base_stat_setter', 'attached_subtype', 'replacement_effects',
                     'cast_timing_grants', 'cost_reductions', 'target_cost_reduction',
-                    'combat_restriction', 'entry_trigger_suppression', 'opponent_entry_tapped'}
+                    'combat_restriction', 'entry_trigger_suppression', 'opponent_entry_tapped', 'static_cast_restriction'}
         checked = 0
         for card in cards:
             key = card['name'] + '#0'
@@ -82,7 +82,7 @@ class AbilityLayerIdentityTests(unittest.TestCase):
                     if family == 'attached_subtype':
                         self.assertEqual(len(values), 1)
                         actual = 'Some(' + json.dumps(values[0]) + '),'
-                    elif family in ('entry_trigger_suppression', 'opponent_entry_tapped'):
+                    elif family in ('entry_trigger_suppression', 'opponent_entry_tapped', 'static_cast_restriction'):
                         self.assertEqual(len(values), 1)
                         actual = str(values[0]) + ','
                     elif family == 'target_cost_reduction':
@@ -205,6 +205,39 @@ class AbilityLayerIdentityTests(unittest.TestCase):
                     self.assertTrue(any(f.kind == 'attachment_trigger' for f in groups[0].fragments))
                 self.assertIn(groups[0].raw, self.cards[name]['oracle_text'])
 
+
+
+class OriginParentPreservationTests(unittest.TestCase):
+    def test_every_actual_parent_program_and_recipe_is_preserved(self):
+        import subprocess, copy
+        from scripts.catalogue_preservation import assert_union
+        cards = json.loads((g.ROOT / 'data/standard/cards.json').read_text())['cards']
+        physical = {card['oracle_id']: card['name'] for card in cards}
+        before = canonical(subprocess.check_output(['git', '-C', str(g.ROOT), 'show', '2812c749b63b38d10572bf96baacd527464852de:src/generated/catalogue.rs'], text=True), physical)
+        after = canonical((g.ROOT / 'src/generated/catalogue.rs').read_text(), physical)
+        origins = {key for key in after['helpers'] if key[0] == 'static_ability_groups'}
+        self.assertEqual(len(origins), 772)
+        args = dict(changed=set(), added=set(), helpers=origins, aliases={})
+        proof = assert_union(before, after, **args)
+        self.assertEqual(proof['preserved_definitions'], 5333)
+        self.assertEqual(proof['prior_helpers'], 928)
+        self.assertEqual(proof['token_recipes'], 96)
+        mutant = copy.deepcopy(after)
+        mutant['definitions']['Plains#0'] = 'unrelated mutation'
+        with self.assertRaises(AssertionError): assert_union(before, mutant, **args)
+
+    def test_every_token_characteristic_definition_retains_its_layer7a_identity(self):
+        cards = json.loads((g.ROOT / 'data/standard/cards.json').read_text())['cards']
+        catalogue = canonical((g.ROOT / 'src/generated/catalogue.rs').read_text(), {card['oracle_id']:card['name'] for card in cards})
+        count = 0
+        for (family, key), value in catalogue['helpers'].items():
+            if family != 'dynamic_stats' or not key.startswith('@token/'): continue
+            self.assertTrue(value.startswith('Some(') and value.endswith('),'))
+            origin = catalogue['helpers'][('static_ability_groups', key)]
+            self.assertIn('first_layer: AbilityLayer::Cda', origin)
+            self.assertIn('StaticAbilityFragment::DynamicStats(0, ' + value[5:-2] + ')', origin)
+            count += 1
+        self.assertGreaterEqual(count, 1)
 
 
 class PredefinedRoleOriginTests(unittest.TestCase):

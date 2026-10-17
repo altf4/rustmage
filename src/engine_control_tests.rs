@@ -117,7 +117,7 @@ fn korvold_grants(actor: Player) -> (Game, [CardId; 3]) {
     )
 }
 
-fn korvold_grants_for(actor: Player, names: [&str; 3]) -> (Game, [CardId; 3]) {
+pub(super) fn korvold_grants_for(actor: Player, names: [&str; 3]) -> (Game, [CardId; 3]) {
     let mut g = setup(actor);
     let cards = names.map(|name| {
         spawn(

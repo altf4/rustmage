@@ -31,7 +31,7 @@ mod gift;
 mod gift_tests;
 pub use gift::{GiftContext, GiftDeclaration};
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 102;
+pub const OBSERVATION_SCHEMA: u32 = 104;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
 #[path = "engine_mobilize.rs"]
@@ -136,6 +136,8 @@ mod ability_timeline;
 #[path = "engine_ability_world.rs"]
 mod ability_world;
 pub use ability_timeline::{AbilitySourceTimestampView, KeywordEffectOrigin, KeywordEffectView};
+#[path = "engine_base_power.rs"]
+mod base_power;
 #[path = "engine_base_stats.rs"]
 mod base_stats;
 pub use base_stats::{BaseStatsEffectView, ResolvedStatSubjectView};
@@ -335,6 +337,8 @@ define_actions! {
     ChooseMobilizeDefender { defender: CombatDefender },
     PutHandCreature { object: ObjectRef },
     PutHandLand { object: ObjectRef },
+    SelectLand { object: ObjectRef },
+    FinishLandSelection,
     DeclineHandEntry,
     ChooseHandDefender { defender: CombatDefender },
     ChooseSaddler { object: ObjectRef },
@@ -969,6 +973,7 @@ struct DamageChoice {
 pub struct DamageFacts {
     pub kinds: u16,
     pub power: i128,
+    pub power_above_base: bool,
     pub granted_subtypes: GrantedSubtypes,
     pub card: Card,
     pub battlefield: bool,
@@ -982,6 +987,7 @@ impl DamageFacts {
         Self {
             kinds: view.kinds,
             power: view.power,
+            power_above_base: view.power_above_base,
             granted_subtypes: view.granted_subtypes,
             card: view.card,
             battlefield: view.zone == Zone::Battlefield,
@@ -1300,6 +1306,8 @@ pub struct ObjectView {
     pub attacking: bool,
     pub power: i128,
     pub toughness: i128,
+    /// Frozen effective power exceeds its CR208.4b base, before damage/departure.
+    pub power_above_base: bool,
     pub keywords: Keywords,
     pub token: Option<&'static TokenInfo>,
     pub emblem: Option<&'static EmblemInfo>,
@@ -2149,7 +2157,13 @@ impl Game {
             }
             Pending::EffectChoice { player } => {
                 let choice = s.resolving.as_ref().unwrap().choice.as_ref().unwrap();
+                if matches!(choice.kind, EffectChoiceKind::LandCards { .. })
+                    && emit(Action::FinishLandSelection)
+                {
+                    return true;
+                }
                 if choice.skip_to.is_some()
+                    && !matches!(choice.kind, EffectChoiceKind::LandCards { .. })
                     && emit(
                         if matches!(
                             choice.kind,
@@ -2169,6 +2183,7 @@ impl Game {
                         let action = match choice.kind {
                             EffectChoiceKind::HandCreature => Action::PutHandCreature { object },
                             EffectChoiceKind::HandLand { .. } => Action::PutHandLand { object },
+                            EffectChoiceKind::LandCards { .. } => Action::SelectLand { object },
                             EffectChoiceKind::Sacrifice => Action::Sacrifice { object },
                             EffectChoiceKind::Discard => Action::Discard { card: object.card },
                             _ => unreachable!("forage has its own choice"),
@@ -2266,6 +2281,8 @@ impl Game {
                 let sorcery = actor == s.active
                     && matches!(s.step, Step::Main1 | Step::Main2)
                     && s.stack.is_empty();
+                let casting_prohibited =
+                    s.casting_prohibited || self.static_casting_prohibited(actor);
                 for (i, obj) in s.objects.iter().enumerate() {
                     let card = i as CardId;
                     let authorized_origin = match obj.zone {
@@ -2307,7 +2324,7 @@ impl Game {
                     {
                         return true;
                     }
-                    if s.casting_prohibited {
+                    if casting_prohibited {
                         if obj.card.is_land()
                             && sorcery
                             && (obj.zone == Zone::Hand || self.can_play_exiled(actor, card))
@@ -3411,8 +3428,12 @@ impl Game {
                 }
                 self.advance_damage_choices();
             }
-            Action::PutHandCreature { object } | Action::PutHandLand { object } => {
-                self.choose_effect_object(actor, object)
+            Action::PutHandCreature { object }
+            | Action::PutHandLand { object }
+            | Action::SelectLand { object } => self.choose_effect_object(actor, object),
+            Action::FinishLandSelection => {
+                self.finish_land_selection();
+                self.run_program();
             }
             Action::DeclineHandEntry => self.decline_effect_payment(),
             Action::ChooseHandDefender { defender } => self.choose_hand_defender(defender),
@@ -3579,13 +3600,10 @@ impl Game {
             obj.card
         };
         let inset = definition.inset_parent().is_some();
-        let stats = if inset {
-            Stats {
-                power: 0,
-                toughness: 0,
-            }
+        let (base, stats) = if inset {
+            (Stats::default(), Stats::default())
         } else {
-            self.stats(id)
+            self.layered_stats_without_hand(id, None)
         };
         ObjectView {
             abilities: self.ability_availability(id),
@@ -3611,6 +3629,9 @@ impl Game {
             attacking: self.state.attackers.iter().any(|a| a.card == id),
             power: stats.power,
             toughness: stats.toughness,
+            power_above_base: obj.zone == Zone::Battlefield
+                && self.is_creature(id)
+                && stats.power > base.power,
             keywords: if inset {
                 definition.info().keywords
             } else {
@@ -4495,7 +4516,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            casting_prohibited: s.casting_prohibited,
+            casting_prohibited: s.casting_prohibited || self.static_casting_prohibited(viewer),
             replacement_choice: self.replacement_choice(viewer),
             created_token_choice: self.created_token_choice(),
             mana_payment: owns_choice.then(|| self.mana_payment_domain()).flatten(),
