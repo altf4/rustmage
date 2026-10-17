@@ -19,6 +19,25 @@ impl Game {
         tapped: bool,
         defenders: Option<&[CombatDefender]>,
     ) -> Vec<ObjectRef> {
+        self.create_token_batch_capture(
+            controller,
+            token,
+            amount,
+            tapped,
+            defenders,
+            defenders.is_some(),
+        )
+    }
+    #[allow(clippy::too_many_arguments)] // Optional capture avoids allocating refs for ordinary token batches.
+    pub(super) fn create_token_batch_capture(
+        &mut self,
+        controller: Player,
+        token: Card,
+        amount: u128,
+        tapped: bool,
+        defenders: Option<&[CombatDefender]>,
+        capture: bool,
+    ) -> Vec<ObjectRef> {
         assert!(token.is_token(), "token instruction requires a factory");
         // Quantities are resolved once before any newcomer exists. Fail before
         // mutation if the entire simultaneous batch cannot fit the identity arena.
@@ -117,7 +136,7 @@ impl Game {
         }
         // Every newcomer exists before any entry event inspects the battlefield.
         self.finish_zone_events(&events, &[]);
-        if defenders.is_some() {
+        if capture {
             events.iter().map(|e| e.after).collect()
         } else {
             Vec::new()

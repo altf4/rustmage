@@ -47,7 +47,8 @@ impl Game {
             && (!f.nonland || !o.card.is_land())
             && (!f.other || object != choice.source)
             && f.tokens.is_none_or(|token| o.card.is_token() == token)
-            && f.subtype.is_none_or(|subtype| o.card.has_subtype(subtype))
+            && f.subtype
+                .is_none_or(|subtype| self.has_subtype(object.card, subtype))
     }
 
     pub(super) fn start_greatest_power_choice(&mut self, item: &SpellView) -> bool {

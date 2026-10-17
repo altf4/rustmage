@@ -44,6 +44,7 @@ impl Game {
     pub(super) fn damage_facts(&self, id: CardId) -> DamageFacts {
         let object = &self.state.objects[id as usize];
         DamageFacts {
+            granted_subtypes: self.granted_subtypes(id),
             card: object.card,
             battlefield: object.zone == Zone::Battlefield,
             counter: object.counters.plus_one > 0
@@ -84,7 +85,7 @@ impl Game {
                     && (!filter.other || dealer.reference != source.reference)
                     && filter
                         .subtype
-                        .is_none_or(|subtype| facts.card.has_subtype(subtype))
+                        .is_none_or(|subtype| facts.has_subtype(subtype))
                     && dealer.keywords.contains(filter.keyword)
                     && (!filter.attacking || facts.attacking)
                     && filter

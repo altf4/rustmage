@@ -1,4 +1,5 @@
 use crate::capacity::CapacityExt;
+use crate::engine::GrantedSubtypes;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 /// Compact catalogue identity. The immutable definitions are shared across all
@@ -350,6 +351,9 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    JobSelect {
+        token: Card,
+    },
     MayPayMana {
         cost: ManaCost,
         skip: usize,
@@ -680,10 +684,10 @@ pub(crate) struct CreatureFilter {
 }
 
 impl CreatureFilter {
-    /// Earlier-layer facts only. Effective keywords are checked separately.
-    pub(crate) fn matches_intrinsic(
+    pub(crate) fn matches_characteristics(
         self,
         card: Card,
+        added: GrantedSubtypes,
         yours: bool,
         same: bool,
         attacking: bool,
@@ -693,7 +697,9 @@ impl CreatureFilter {
             1 => !yours,
             _ => true,
         }) && (!self.other || !same)
-            && self.subtype.is_none_or(|subtype| card.has_subtype(subtype))
+            && self
+                .subtype
+                .is_none_or(|subtype| card.has_subtype(subtype) || added.contains(subtype))
             && (!self.attacking || attacking)
             && self.tokens.is_none_or(|tokens| card.is_token() == tokens)
             && (!self.artifact || card.is_artifact())
@@ -712,9 +718,10 @@ pub(crate) struct KeywordGrant {
     pub keywords: Keywords,
 }
 impl KeywordGrant {
-    pub(crate) fn matches(
+    pub(crate) fn matches_characteristics(
         self,
         card: Card,
+        added: GrantedSubtypes,
         yours: bool,
         same: bool,
         attacking: bool,
@@ -729,7 +736,7 @@ impl KeywordGrant {
             && (!self.source_only || same)
             // A tribal noun may also describe a noncreature kindred permanent.
             && (self.filter.subtype.is_some() || card.is_creature())
-            && self.filter.matches_intrinsic(card, yours, same, attacking)
+            && self.filter.matches_characteristics(card, added, yours, same, attacking)
     }
 }
 
@@ -1195,11 +1202,6 @@ impl ActivationGuard {
             Self::ControlSubtypeAny(types) => types,
         }
     }
-    pub(crate) fn matches_card(self, card: Card) -> bool {
-        self.subtypes()
-            .iter()
-            .any(|subtype| card.has_subtype(subtype))
-    }
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct ActivatedAbility {
@@ -1363,11 +1365,17 @@ pub type Mana = [u32; 6];
 impl Card {
     /// Intrinsic colors (W=1, U=2, B=4, R=8, G=16), including both hybrid halves
     /// and token colors. Unsupported multiple-face identities describe the front.
+    pub(crate) fn attached_turn_keywords(self) -> Keywords {
+        generated::attached_turn_keywords(self)
+    }
+    pub(crate) fn attached_subtype(self) -> Option<&'static str> {
+        generated::attached_subtype(self)
+    }
     pub fn colors(self) -> u8 {
         generated::COLORS[self.index()]
     }
     /// Intrinsic subtype membership in every zone. Dynamic type/ability-changing
-    /// effects remain gated; changeling adds creature types, never other subtypes.
+    /// effects use Game/ObjectView membership; changeling adds creature types, never other subtypes.
     pub fn has_subtype(self, subtype: &str) -> bool {
         self.keywords().contains(Keywords::CHANGELING) && is_creature_type(subtype)
             || printed_subtype(self.info().type_line, subtype)

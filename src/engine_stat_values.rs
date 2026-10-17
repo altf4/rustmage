@@ -8,6 +8,7 @@ impl Game {
         owner: Player,
         id: CardId,
         o: &Object,
+        subtypes: &impl Fn(CardId) -> GrantedSubtypes,
     ) -> bool {
         let zone = match filter.zone {
             CountZone::Battlefield => Zone::Battlefield,
@@ -28,7 +29,9 @@ impl Game {
             && (!filter.cards_only || !o.card.is_token())
             && (filter.kind == 0 || o.card.kind_mask() & filter.kind != 0)
             && o.card.kind_mask() & filter.exclude == 0
-            && filter.subtype.is_none_or(|s| o.card.has_subtype(s))
+            && filter
+                .subtype
+                .is_none_or(|s| o.card.has_subtype(s) || subtypes(id).contains(s))
             && (!filter.basic || o.card.is_basic_land())
     }
     pub(super) fn stat_value(&self, value: StatValue, source: ObjectRef, owner: Player) -> i128 {
@@ -43,6 +46,7 @@ impl Game {
                     .enumerate()
                     .map(|(id, o)| (id as CardId, o))
             },
+            &|id| self.granted_subtypes(id),
             self.state.players[owner.index()].life,
             self.state.attack_declared
                 && self.state.attackers.iter().any(|a| a.card == source.card),
@@ -50,12 +54,14 @@ impl Game {
     }
     /// The same earlier-layer evaluator serves concrete state and a borrowed
     /// counterfactual object overlay. No derived keywords or stats are queried.
+    #[allow(clippy::too_many_arguments)] // explicit borrowed type and object overlays
     pub(super) fn stat_value_with<'a, F, I>(
         &self,
         value: StatValue,
         source: ObjectRef,
         owner: Player,
         objects: &F,
+        subtypes: &impl Fn(CardId) -> GrantedSubtypes,
         life: i128,
         attacking: bool,
     ) -> i128
@@ -65,7 +71,8 @@ impl Game {
     {
         match value {
             StatValue::Not(value) => i128::from(
-                self.stat_value_with(*value, source, owner, objects, life, attacking) == 0,
+                self.stat_value_with(*value, source, owner, objects, subtypes, life, attacking)
+                    == 0,
             ),
             StatValue::NonlandEntriesThisTurn => {
                 i128::from(self.state.players[owner.index()].nonland_permanents_entered_this_turn)
@@ -98,11 +105,12 @@ impl Game {
             ),
             StatValue::Tokens(filter) => objects()
                 .filter(|&(id, o)| {
-                    o.card.is_token() && Self::count_object_matches(filter, source, owner, id, o)
+                    o.card.is_token()
+                        && Self::count_object_matches(filter, source, owner, id, o, subtypes)
                 })
                 .count() as i128,
             StatValue::AtLeast { value, minimum } => i128::from(
-                self.stat_value_with(*value, source, owner, objects, life, attacking)
+                self.stat_value_with(*value, source, owner, objects, subtypes, life, attacking)
                     >= i128::from(minimum),
             ),
             StatValue::SpellsCastThisTurn => {
@@ -113,7 +121,9 @@ impl Game {
             }
             StatValue::ControllerLife => life,
             StatValue::Colors(filter) | StatValue::CardTypes(filter) => objects()
-                .filter(|&(id, o)| Self::count_object_matches(filter, source, owner, id, o))
+                .filter(|&(id, o)| {
+                    Self::count_object_matches(filter, source, owner, id, o, subtypes)
+                })
                 .fold(0u16, |mask, (_, object)| {
                     mask | if matches!(value, StatValue::Colors(_)) {
                         u16::from(object.card.colors())
@@ -125,13 +135,17 @@ impl Game {
                 as i128,
             StatValue::Count(filter) => i128::try_from(
                 objects()
-                    .filter(|&(id, o)| Self::count_object_matches(filter, source, owner, id, o))
+                    .filter(|&(id, o)| {
+                        Self::count_object_matches(filter, source, owner, id, o, subtypes)
+                    })
                     .count(),
             )
             .capacity("stat count exhausted"),
             StatValue::DistinctNames(filter) => {
                 let mut names: Vec<_> = objects()
-                    .filter(|&(id, o)| Self::count_object_matches(filter, source, owner, id, o))
+                    .filter(|&(id, o)| {
+                        Self::count_object_matches(filter, source, owner, id, o, subtypes)
+                    })
                     .map(|(_, object)| {
                         object
                             .card
@@ -145,14 +159,16 @@ impl Game {
             }
             StatValue::CountUnion(filters) => objects()
                 .filter(|&(id, o)| {
-                    filters
-                        .iter()
-                        .any(|&filter| Self::count_object_matches(filter, source, owner, id, o))
+                    filters.iter().any(|&filter| {
+                        Self::count_object_matches(filter, source, owner, id, o, subtypes)
+                    })
                 })
                 .count() as i128,
             StatValue::GreatestManaValue(filter) => i128::from(
                 objects()
-                    .filter(|&(id, o)| Self::count_object_matches(filter, source, owner, id, o))
+                    .filter(|&(id, o)| {
+                        Self::count_object_matches(filter, source, owner, id, o, subtypes)
+                    })
                     .map(|(_, o)| o.card.fixed_mana_value())
                     .max()
                     .unwrap_or(0),
@@ -163,7 +179,9 @@ impl Game {
                 .count_ones() as i128,
             StatValue::Sum(values) => values
                 .iter()
-                .map(|&value| self.stat_value_with(value, source, owner, objects, life, attacking))
+                .map(|&value| {
+                    self.stat_value_with(value, source, owner, objects, subtypes, life, attacking)
+                })
                 .try_fold(0i128, i128::checked_add)
                 .capacity("stat sum exhausted"),
         }

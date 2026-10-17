@@ -76,12 +76,12 @@ impl Game {
         let (value, minimum, maximum) = match guard {
             StepGuard::Always => return true,
             StepGuard::Outlaw => {
-                return self.state.objects.iter().any(|o| {
+                return self.state.objects.iter().enumerate().any(|(id, o)| {
                     o.owner == player
                         && o.zone == Zone::Battlefield
                         && ["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"]
                             .iter()
-                            .any(|s| o.card.has_subtype(s))
+                            .any(|s| self.has_subtype(id as CardId, s))
                 });
             }
             StepGuard::Expression {

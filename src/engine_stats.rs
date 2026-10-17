@@ -140,8 +140,9 @@ impl Game {
         let object = &self.state.objects[id as usize];
         object.zone == Zone::Battlefield
             && object.card.is_creature()
-            && filter.matches_intrinsic(
+            && filter.matches_characteristics(
                 object.card,
+                self.granted_subtypes(id),
                 object.owner == controller,
                 self.object_ref(id) == source,
                 self.state.attackers.iter().any(|a| a.card == id),

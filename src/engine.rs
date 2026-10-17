@@ -12,11 +12,15 @@ use crate::cards::{
 mod saddle;
 pub use saddle::SaddleChoiceView;
 /// Version of the public observation structure, including Mobilize and private Endure decisions.
-pub const OBSERVATION_SCHEMA: u32 = 70;
+pub const OBSERVATION_SCHEMA: u32 = 71;
 
 #[path = "engine_mobilize.rs"]
 mod mobilize;
 pub use mobilize::{DelayedSacrificeView, MobilizeChoiceView};
+
+#[path = "engine_subtypes.rs"]
+mod subtypes;
+pub use subtypes::GrantedSubtypes;
 
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
@@ -762,6 +766,7 @@ struct DamageChoice {
 /// that deal damage from their hand or as spells.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 pub struct DamageFacts {
+    pub granted_subtypes: GrantedSubtypes,
     pub card: Card,
     pub battlefield: bool,
     pub counter: bool,
@@ -772,6 +777,7 @@ pub struct DamageFacts {
 impl DamageFacts {
     fn from_view(view: &ObjectView) -> Self {
         Self {
+            granted_subtypes: view.granted_subtypes,
             card: view.card,
             battlefield: view.zone == Zone::Battlefield,
             counter: view.counters.total() > 0,
@@ -1022,6 +1028,7 @@ pub struct EndureChoiceView {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ObjectView {
+    pub granted_subtypes: GrantedSubtypes,
     pub saddled: bool,
     pub id: CardId,
     pub reference: ObjectRef,
@@ -2960,6 +2967,7 @@ impl Game {
         let obj = &self.state.objects[id as usize];
         let stats = self.stats(id);
         ObjectView {
+            granted_subtypes: self.granted_subtypes(id),
             saddled: self.is_saddled(self.object_ref(id)),
             id,
             reference: self.object_ref(id),
@@ -4709,3 +4717,7 @@ mod celebration_tests;
 #[cfg(test)]
 #[path = "engine_mobilize_tests.rs"]
 mod mobilize_tests;
+
+#[cfg(test)]
+#[path = "engine_job_select_tests.rs"]
+mod job_select_tests;
