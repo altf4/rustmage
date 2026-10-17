@@ -968,6 +968,39 @@ impl Game {
             | StackKind::DelayedWarpExile => unreachable!(),
         }
     }
+    /// Complete coupled allocation constraints after every nonmana selection.
+    pub fn mana_payment_domain(&self) -> Option<ManaPaymentDomain> {
+        if !matches!(
+            self.state.pending,
+            Pending::PayCosts { .. } | Pending::Convoke { .. }
+        ) {
+            return None;
+        }
+        let a = self.state.announcing.as_ref()?;
+        let pool = self.state.players[a.item.controller.index()].mana;
+        let (required, generic) = if let Some(frame) = &a.convoke {
+            if !frame
+                .selected
+                .iter()
+                .all(|s| self.convoke_eligible(a.item.controller, s.object))
+            {
+                return None;
+            }
+            (frame.remaining.colored, frame.remaining.generic)
+        } else {
+            let goal = self.funding_goal(a);
+            let state = FundingState::from_game(self, goal);
+            if !state.obligations(goal) || a.evidence.as_ref().is_some_and(|e| !e.complete) {
+                return None;
+            }
+            (goal.required, goal.generic)
+        };
+        payable(pool.map(u128::from), required, generic).then_some(ManaPaymentDomain {
+            available: pool,
+            required,
+            generic,
+        })
+    }
     pub(super) fn visit_cost_payment(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
         let announcement = self.state.announcing.as_ref().unwrap();
         let goal = self.funding_goal(announcement);
@@ -975,12 +1008,13 @@ impl Game {
             && announcement.item.source_card.has_convoke();
         let state = FundingState::from_game_with_convoke(self, goal, convoke);
         let mut done = false;
-        if state.obligations(goal) && announcement.evidence.as_ref().is_none_or(|e| e.complete) {
-            funding_payments(state.mana, goal.required, goal.generic, |payment| {
+        if state.obligations(goal)
+            && announcement.evidence.as_ref().is_none_or(|e| e.complete)
+            && let Some(domain) = self.mana_payment_domain()
+        {
+            domain.representatives(|payment| {
                 if !done {
-                    done = emit(Action::PayCosts {
-                        payment: concrete_payment(payment),
-                    });
+                    done = emit(Action::PayCosts { payment });
                 }
             });
         }

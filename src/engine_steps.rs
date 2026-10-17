@@ -54,7 +54,8 @@ impl Game {
         match condition {
             TriggerCondition::Granted(event)
             | TriggerCondition::OncePerTurn(event)
-            | TriggerCondition::DuringOpponentsTurn(event) => {
+            | TriggerCondition::DuringOpponentsTurn(event)
+            | TriggerCondition::ManaSpent { event, .. } => {
                 self.trigger_guards_hold(*event, player, source, tapped)
             }
             TriggerCondition::InterveningIf { guard, event } => {

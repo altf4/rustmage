@@ -5,10 +5,11 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,731 have executable rules so far.
+knows all 5,164 pinned Standard identities; 1,751 have executable rules so far.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
+[Actual cast payments](docs/cast-payments.md) adds twenty complete bodies, exact color allocation, Opus, Increment and Converge.
 [Warp](docs/warp.md) adds twelve complete Warp bodies plus two shared-rule bodies, with paid casting, counterable delayed exile and exact paid recast permissions.
 [Crew and Vehicles](docs/crew-vehicles.md) add24 complete bodies with private exact power costs, live battlefield animation, printed spell identity and sparse owned rollback state.
 [Job Select](docs/job-select.md) adds all sixteen complete Equipment bodies with live subtype grants,
@@ -64,7 +65,7 @@ pre-event replacement timing, token entry and opponent-entry life triggers.
 [Owned entering-object context](docs/entering-object-context.md) adds
 Good-Fortune Unicorn, Serra Redeemer and Wartime Protestors with exact
 non-targeted references and snapshot-safe counters/haste. Observations use schema
-73 (`rustmage::OBSERVATION_SCHEMA`); earlier milestone pages retain their original
+74 (`rustmage::OBSERVATION_SCHEMA`); earlier milestone pages retain their original
 schema and measurements. [Entry predicates](docs/entry-predicates.md) add nine complete bodies
 with entry-time power thresholds, subtype unions, outlaw and kind-or-subtype
 conditions, including Impact Tremors and Warleader's Call.

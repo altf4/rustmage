@@ -45,6 +45,11 @@ impl Game {
         let object = &self.state.objects[id as usize];
         DamageFacts {
             kinds: self.current_kinds(id),
+            power: if object.zone == Zone::Battlefield && self.is_creature(id) {
+                self.stats(id).power
+            } else {
+                0
+            },
             granted_subtypes: self.granted_subtypes(id),
             card: object.card,
             battlefield: object.zone == Zone::Battlefield,

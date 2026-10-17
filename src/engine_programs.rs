@@ -292,7 +292,8 @@ impl Game {
             let yours = source.owner == entered.owner;
             for (index, ability) in source.card.triggers().iter().enumerate() {
                 let matched = match ability.condition.event() {
-                    TriggerCondition::Granted(_)
+                    TriggerCondition::ManaSpent { .. }
+                    | TriggerCondition::Granted(_)
                     | TriggerCondition::OncePerTurn(_)
                     | TriggerCondition::DuringOpponentsTurn(_)
                     | TriggerCondition::InterveningIf { .. } => {
@@ -445,6 +446,7 @@ impl Game {
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
             crew: None,
+            cast_event: None,
             delayed_sacrifice: None,
             delayed_warp_exile: None,
             x: None,
@@ -562,6 +564,16 @@ impl Game {
         let count = &mut self.state.players[caster.index()].spells_cast_this_turn;
         *count = count.checked_add(1).capacity("spell count exhausted");
         let ordinal = *count;
+        let cast_event = stack.and_then(|i| {
+            let item = &self.state.stack[i];
+            item.cast.map(|cast| CastPaymentEvent {
+                stack_id: item.id,
+                object: item.object,
+                card: item.source_card,
+                controller: item.controller,
+                payment: cast.payment,
+            })
+        });
         let sources = self.indexed_trigger_sources(&self.state.cast_sources);
         for (source, grant) in sources {
             let definition = grant.as_ref().map_or(source.card, |g| g.granting_card);
@@ -578,6 +590,11 @@ impl Game {
                         CastRelation::Any => true,
                     };
                     if related
+                        && self.cast_payment_condition(
+                            ability.condition,
+                            source.reference,
+                            cast_event.as_ref(),
+                        )
                         && (!ability.condition.requires_opponents_turn()
                             || self.state.active != source.owner)
                         && self.cast_filter_matches_value(
@@ -592,8 +609,11 @@ impl Game {
                                 .unwrap_or(&[]),
                         )
                         && wanted.is_none_or(|wanted| wanted == ordinal)
+                        && self.queue_trigger_from(&source, index, grant.map(Box::new))
+                        && ability.condition.mana_spent_rule().is_some()
                     {
-                        self.queue_trigger_from(&source, index, grant.map(Box::new));
+                        self.state.pending_triggers.last_mut().unwrap().cast_event =
+                            cast_event.map(Box::new);
                     }
                 }
             }
@@ -811,12 +831,16 @@ impl Game {
     pub(super) fn resolve_top(&mut self) {
         let mut item = self.state.stack.pop().unwrap();
         if let StackKind::TriggeredAbility { ability } = item.kind
-            && !self.trigger_guards_hold(
+            && (!self.cast_payment_condition(
+                item.trigger_definition().triggers()[ability as usize].condition,
+                item.object,
+                item.cast_event.as_deref(),
+            ) || !self.trigger_guards_hold(
                 item.trigger_definition().triggers()[ability as usize].condition,
                 item.controller,
                 item.object,
                 item.source_tapped,
-            )
+            ))
         {
             self.give_priority();
             return;
@@ -853,6 +877,7 @@ impl Game {
                         self.enters_tapped(item.card),
                     );
                     movement.attachment = Some(target);
+                    movement.cast_payment = item.cast.map(|c| c.payment);
                     movement.warp_controller = item
                         .cast
                         .filter(|c| c.method == CastMethod::Warp)
@@ -868,6 +893,13 @@ impl Game {
                             || c.bargain == Some(true)
                             || c.evidence == Some(true)
                             || c.method == CastMethod::Warp
+                            || item.source_card.entry_counter_rules().iter().any(|r| {
+                                matches!(
+                                    r.amount,
+                                    EntryCounterAmount::ColorsSpent
+                                        | EntryCounterAmount::IfNotCastOrZero(_)
+                                )
+                            })
                     }) || item.x.is_some()
                     {
                         let mut movement = self.entry_move(
@@ -879,6 +911,7 @@ impl Game {
                             .cast
                             .filter(|c| c.method == CastMethod::Warp)
                             .map(|_| item.controller);
+                        movement.cast_payment = item.cast.map(|c| c.payment);
                         movement.offspring_paid =
                             item.cast.is_some_and(|c| c.offspring == Some(true));
                         movement.kicked = item.cast.is_some_and(|c| c.kicker == Some(true));
@@ -1028,6 +1061,40 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::IfManaSpent {
+                    minimum,
+                    maximum,
+                    skip,
+                } => {
+                    let amount = self
+                        .item_cast_payment(&item)
+                        .into_iter()
+                        .map(u64::from)
+                        .sum::<u64>();
+                    if !minimum.is_none_or(|v| amount >= v) || !maximum.is_none_or(|v| amount <= v)
+                    {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
+                Instruction::CounterThenDrawIfDiscounted => {
+                    for bound in &item.targets {
+                        if let Target::Spell(card) = bound.target
+                            && let Some(victim) = self.state.stack.iter().find(|v| {
+                                v.kind == StackKind::Spell
+                                    && v.card == card
+                                    && Some(v.object) == bound.object
+                            })
+                        {
+                            let draw =
+                                victim.cast.map_or(0, CastInfo::mana_spent) < victim.mana_value();
+                            let id = victim.id;
+                            self.counter_stack_item(id, false);
+                            if draw {
+                                self.draw_many(item.controller, 1);
+                            }
+                        }
+                    }
+                }
                 Instruction::Mobilize { token, amount } => {
                     let count = self.amount_value(amount, item.object, item.controller);
                     if self.start_mobilize(token, count, &item) {
@@ -1485,10 +1552,17 @@ impl Game {
                     self.lose_life(item.controller.other(), amount);
                     self.gain_life(item.controller, amount);
                 }
-                Instruction::Discard(set, amount) => {
+                Instruction::Discard(set, _) | Instruction::DiscardScaled(set, _) => {
+                    let amount = match instruction {
+                        Instruction::Discard(_, n) => usize::from(n),
+                        Instruction::DiscardScaled(_, value) => {
+                            usize::try_from(self.item_amount(value, &item))
+                                .capacity("discard amount exhausted")
+                        }
+                        _ => unreachable!(),
+                    };
                     for player in self.program_players(set, &item) {
-                        self.state.resolving.as_mut().unwrap().discards[player.index()] =
-                            usize::from(amount);
+                        self.state.resolving.as_mut().unwrap().discards[player.index()] = amount;
                     }
                 }
                 Instruction::CreateEmblem(factory) => self.create_emblem(item.controller, factory),

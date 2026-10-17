@@ -216,7 +216,10 @@ impl Game {
     ) -> u128 {
         match value {
             AmountValue::Fixed(n) => u128::from(n),
-            AmountValue::ChosenX => 0, // Off-stack expressions have no cast parameter.
+            AmountValue::ChosenX
+            | AmountValue::ManaSpent
+            | AmountValue::ColorsSpent
+            | AmountValue::SourcePower => 0, // Off-stack expressions have no cast parameter.
             AmountValue::Stat(value) => self.stat_value(value, source, owner).max(0) as u128,
             AmountValue::CardsDiscardedThisTurn => {
                 u128::from(self.state.players[owner.index()].cards_discarded_this_turn)

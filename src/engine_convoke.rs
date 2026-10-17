@@ -99,7 +99,7 @@ pub(super) fn payable(pool: [u128; 6], required: Mana, generic: u32, masks: &[u6
     left == 0
 }
 impl Game {
-    fn convoke_eligible(&self, p: Player, r: ObjectRef) -> bool {
+    pub(super) fn convoke_eligible(&self, p: Player, r: ObjectRef) -> bool {
         self.state.objects.get(r.card as usize).is_some_and(|o| {
             o.generation == r.generation
                 && o.owner == p
@@ -183,11 +183,13 @@ impl Game {
         }
         let pool = self.state.players[p.index()].mana;
         let mut done = false;
-        payments(pool, f.remaining.colored, f.remaining.generic, |payment| {
-            if !done {
-                done = emit(Action::PayCosts { payment });
-            }
-        });
+        if let Some(domain) = self.mana_payment_domain() {
+            domain.representatives(|payment| {
+                if !done {
+                    done = emit(Action::PayCosts { payment });
+                }
+            });
+        }
         if done {
             return true;
         }

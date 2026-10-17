@@ -1772,8 +1772,12 @@ class CatalogueCompilerTests(unittest.TestCase):
             extra=dict(card,oracle_text=card['oracle_text']+'\nWhenever you cast a spell, discover 3.')
             self.assertIsNone(generate.spell_program_template(extra),name)
             self.assertIsNone(generate.permanent_program_template(extra),name)
-        for name in ['Dazzling Denial','Spell Stutter','An Offer You Can\'t Refuse','Unravel']:
+        for name in ['Dazzling Denial','Spell Stutter','An Offer You Can\'t Refuse']:
             self.assertNotIn(name,supported)
+        self.assertIn('Unravel', supported)
+        unravel = next(c for c in rows['cards'] if c['name'] == 'Unravel')
+        self.assertIsNotNone(generate.spell_program_template(unravel))
+        self.assertIsNone(generate.spell_program_template(dict(unravel, oracle_text=unravel['oracle_text'] + '\nDiscover 3.')))
 
     def test_guarded_blocks_keep_only_the_first_sentence_conditional_and_else_offsets_exact(self):
         p=generate.statement_program('If you control an Elf, draw a card. You gain 2 life.')

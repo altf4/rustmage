@@ -336,6 +336,7 @@ impl Game {
         self.state.passes = 0;
         SpellView {
             crew: None,
+            cast_event: None,
             delayed_sacrifice: None,
             delayed_warp_exile: None,
             x: None,
