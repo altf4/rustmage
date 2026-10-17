@@ -11,6 +11,15 @@ pub(super) trait CharacteristicWorld {
     fn gained_life(&self, player: Player) -> bool;
     fn attacking(&self, id: CardId) -> bool;
 
+    fn death_baron_applies(&self, source: ObjectRef, id: CardId) -> bool {
+        let target = self.object(id);
+        target.zone == Zone::Battlefield
+            && self.kinds(id) & 1 != 0
+            && target.controller == self.object(source.card).controller
+            && ((target.card.has_subtype("Skeleton") || self.subtypes(id).contains("Skeleton"))
+                || (self.reference(id) != source
+                    && (target.card.has_subtype("Zombie") || self.subtypes(id).contains("Zombie"))))
+    }
     fn has_ability_removal(&self) -> bool {
         self.game().state.roles.as_ref().is_some_and(|state| {
             state.ability_removal_sources.iter().any(|&source| {

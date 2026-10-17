@@ -3,10 +3,35 @@
   "catalogue_id": 1219,
   "oracle_id": "30d0d75f-e94c-460b-b957-9f1d655c0f65",
   "facts_sha256": "3ebeb8609960c92096647c7dc32e7aa29cbd9c0ff5e20c683199dfd687559fdd",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7b95c4ab8704f49f4f088d068f2132d6629a4ab392c407e977b53f90024f41eb"
   },
-  "physical_metadata_sha256": "c87e15e1924623482ca50a21de5e79716d9ea60c0691f14c1368b2953fe53f0f"
+  "physical_metadata_sha256": "c87e15e1924623482ca50a21de5e79716d9ea60c0691f14c1368b2953fe53f0f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DwynenGiltLeafDaen.java",
+  "java_sha256": "9ea3251590c89f2f0ab5a69ef2bec0fb86460bd8b58684e6838d982cc7e463b3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    }
+  ]
 }

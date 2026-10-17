@@ -3,10 +3,25 @@
   "catalogue_id": 1001,
   "oracle_id": "99024aa8-5687-4d38-8a4b-feef42d6c1ff",
   "facts_sha256": "48dbba3070b4b59458977c9bd178cd97ffc7d31024a534fbbc133b2c51d87e69",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1ed02c0874acf4bdd32139055dc9cbcdc9cd929e69c681f7857321bd88f37e35"
   },
-  "physical_metadata_sha256": "26488efa55bf0ae12f283c143a8d529df22b51278cf5d7f5f30079902ac9e8c3"
+  "physical_metadata_sha256": "26488efa55bf0ae12f283c143a8d529df22b51278cf5d7f5f30079902ac9e8c3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DeathBaron.java",
+  "java_sha256": "160b091dc0ce2255d515d9502359a71328013cc7ed7c9dd65893f88f9d8e1932",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    }
+  ]
 }

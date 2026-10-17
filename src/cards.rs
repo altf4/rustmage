@@ -909,6 +909,8 @@ pub(crate) enum StatValue {
     NonlandEntriesThisTurn,
     SourceAttacking,
     AttackingCreatures,
+    AttackingSubtype(&'static str),
+    OtherNamedCreatures(&'static str),
     /// Unqualified all-player count; distinct from controller-owned attackers.
     AllAttackingCreatures,
     SourceModified,

@@ -304,6 +304,7 @@ impl<'g> FundingState<'g> {
                         && (object.card.attachment_bonus().is_some()
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
+                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
                             || object.controller == goal.actor
                                 && subtypes
                                     .iter()
@@ -404,6 +405,35 @@ impl<'g> FundingState<'g> {
                     for &(kind, grant) in source.object.card.counter_keyword_grants() {
                         if target.object.counters.get(kind) > 0 {
                             keywords = keywords.union(grant);
+                        }
+                    }
+                }
+                for group in source.object.card.static_ability_groups() {
+                    for fragment in group.fragments {
+                        match *fragment {
+                            crate::cards::StaticAbilityFragment::DeathBaronLord
+                                if ability_world::CharacteristicWorld::death_baron_applies(
+                                    self,
+                                    ObjectRef {
+                                        card: source.id,
+                                        generation: source.object.generation,
+                                    },
+                                    target.id,
+                                ) =>
+                            {
+                                keywords = keywords.union(Keywords::DEATHTOUCH)
+                            }
+                            crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(
+                                kind,
+                                grant,
+                            ) if source.object.controller == self.active
+                                && target.object.controller == source.object.controller
+                                && self.kinds(target) & 1 != 0
+                                && target.object.counters.get(kind) > 0 =>
+                            {
+                                keywords = keywords.union(grant)
+                            }
+                            _ => (),
                         }
                     }
                 }

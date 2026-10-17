@@ -111,10 +111,23 @@ impl Game {
         {
             self.state.cast_sources.push(id);
         }
-        if !self.state.objects[id as usize]
+        if self.state.objects[id as usize]
             .card
-            .replacement_effects()
-            .is_empty()
+            .static_ability_groups()
+            .iter()
+            .any(|group| {
+                group.fragments.iter().any(|fragment| {
+                    matches!(
+                        fragment,
+                        crate::cards::StaticAbilityFragment::DeathBaronLord
+                            | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..)
+                    )
+                })
+            })
+            || !self.state.objects[id as usize]
+                .card
+                .replacement_effects()
+                .is_empty()
             || !self.state.objects[id as usize]
                 .card
                 .enchanted_modifiers()

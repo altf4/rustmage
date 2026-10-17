@@ -56,6 +56,9 @@ pub(crate) enum StaticAbilityFragment {
     ScalingModifier(u16, ScalingModifier),
     EnchantedModifier(u16, EnchantedModifier),
     CounterKeyword(u16, CounterKind, Keywords),
+    /// One union effect: Skeletons and other Zombies, never twice for changeling.
+    DeathBaronLord,
+    CounterKeywordOwnTurn(CounterKind, Keywords),
     DynamicStats(u16, DynamicStats),
     BaseStatSetter(u16, BaseStatSetter),
     LiveBase(u16, LiveStaticEffect),

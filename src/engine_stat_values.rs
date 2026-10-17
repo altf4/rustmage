@@ -119,6 +119,23 @@ impl Game {
                         && self.state.attackers.iter().any(|a| a.card == *id)
                 })
                 .count() as i128,
+            StatValue::AttackingSubtype(subtype) => objects()
+                .filter(|(id, o)| {
+                    o.controller == owner
+                        && o.zone == Zone::Battlefield
+                        && (o.card.has_subtype(subtype) || subtypes(*id).contains(subtype))
+                        && self.state.attackers.iter().any(|a| a.card == *id)
+                })
+                .count() as i128,
+            StatValue::OtherNamedCreatures(name) => objects()
+                .filter(|(id, o)| {
+                    o.controller == owner
+                        && o.zone == Zone::Battlefield
+                        && kinds(*id, o) & 1 != 0
+                        && o.card.name() == name
+                        && (*id != source.card || o.generation != source.generation)
+                })
+                .count() as i128,
             StatValue::AllAttackingCreatures => objects()
                 .filter(|(id, o)| {
                     o.zone == Zone::Battlefield

@@ -5763,3 +5763,7 @@ mod fdn_targeted_seven_tests;
 #[cfg(test)]
 #[path = "engine_fdn_utility_seven_tests.rs"]
 mod fdn_utility_seven_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_tribal_seven_tests.rs"]
+mod fdn_tribal_seven_tests;

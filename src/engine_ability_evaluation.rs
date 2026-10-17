@@ -103,6 +103,22 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 mana: Vec::new(),
             });
         }
+        StaticAbilityFragment::DeathBaronLord => {
+            if !world.death_baron_applies(source, id) {
+                return None;
+            }
+            Keywords::DEATHTOUCH
+        }
+        StaticAbilityFragment::CounterKeywordOwnTurn(kind, value) => {
+            if provider.controller != world.game().state.active
+                || !own
+                || world.kinds(id) & 1 == 0
+                || target.counters.get(kind) == 0
+            {
+                return None;
+            }
+            value
+        }
         StaticAbilityFragment::CounterKeyword(_, kind, value) => {
             if !own || world.kinds(id) & 1 == 0 || target.counters.get(kind) == 0 {
                 return None;
@@ -192,6 +208,8 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::AttachmentTrigger(..)
                         | StaticAbilityFragment::AttachmentMana(..)
                         | StaticAbilityFragment::CounterKeyword(..)
+                        | StaticAbilityFragment::CounterKeywordOwnTurn(..)
+                        | StaticAbilityFragment::DeathBaronLord
                         | StaticAbilityFragment::KeywordGrant(..)
                         | StaticAbilityFragment::LiveKeywords(..)
                 )
