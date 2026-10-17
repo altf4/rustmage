@@ -60,3 +60,13 @@ correctness.
 The [eight-pair Adventure candidate](adventure-land-targets.md) adds accumulating turn-bound land allowances and complete typed target movement/protection variants. Its combined coverage is 1,825/5,164, with 3,339 still gated. Validation passes: 1,710 native tests, all-target Clippy, all 388 unique compiler/data/provenance checks, 247 unique fresh public API methods and 100 natural Standard games with 79,608 owned frames / 159,216 denials. Two independent nonauthor final-head reviews remain required.
 
 The [ownership/controller candidate](ownership-control.md) composes that merged Adventure delivery and completes Korvold and the Noble Thief. Coverage is 1,826/5,164 with 3,338 gated, all 27 Adventure and 13 Omen pairs retained, and observation schema82. Frozen runtime validation passes all 1,724 native tests, all-target Clippy, 403 unique compiler/provenance methods and 249 unique public checkpoint methods. The two subsequently revised policy methods pass from an isolated final export, as do 100 natural Standard games with all sixteen inset route/seat vectors, 80,698 owned replays and 161,396 per-decision denials. Exact source/library and policy scopes, plus required independent nonauthor reviews, are tracked in the [PR 284 review record](review-pr-284.md). This initial stage leaves issue #265 open for broader changing-control bodies and layers.
+
+The [Role composition](role-auras.md) brings reviewed candidate coverage to
+1,862/5,164 (3,302 gated), with 37 Adventure and 13 Omen helpers, 94 token factories
+and observation schema85. All 1,748 native tests and Clippy pass. The frozen
+420-method compiler/provenance checkpoint and 254-method public checkpoint pass;
+the subsequently added Tombstone payment method passes separately on identical
+production. One hundred natural Standard games cover all 24 Role body/seat
+vectors with 81,882 owned frames and 163,764 denials. The
+[PR289 record](review-pr-289.md) keeps exact source scopes and final review gates
+explicit. The full all-Standard, rules and training goal remains incomplete.

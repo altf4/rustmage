@@ -52,6 +52,7 @@ pub struct TokenGroupView {
 pub(super) enum TokenCompletion {
     None,
     JobAttach(ObjectRef),
+    RoleAttach(ObjectRef),
     Mobilize,
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -620,12 +621,22 @@ impl Game {
                             } else {
                                 let capture =
                                     matches!(batch.completion, TokenCompletion::JobAttach(_));
-                                let created = self.create_token_groups(
-                                    batch.player,
-                                    &batch.groups,
-                                    None,
-                                    capture,
-                                );
+                                let created = if let TokenCompletion::RoleAttach(recipient) =
+                                    batch.completion
+                                {
+                                    self.create_attached_role_groups(
+                                        batch.player,
+                                        &batch.groups,
+                                        recipient,
+                                    )
+                                } else {
+                                    self.create_token_groups(
+                                        batch.player,
+                                        &batch.groups,
+                                        None,
+                                        capture,
+                                    )
+                                };
                                 if let TokenCompletion::JobAttach(source) = batch.completion {
                                     let eligible = created
                                         .into_iter()

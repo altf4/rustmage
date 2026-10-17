@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "df39fdccc7a5d94c9778e482871b82dcc587619e389278c4835b98e81ce002ed",
+  "catalogue_version": "481a956ca3c658dbe8660a4c6a4bd06a0135e30880744fc0f0f57860302a78aa",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1850,
-  "implemented_total": 1856,
-  "token_definitions": 88,
+  "implemented_standard_cards": 1862,
+  "implemented_total": 1868,
+  "token_definitions": 94,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -2362,8 +2362,8 @@
     {
       "name": "Besotted Knight // Betroth the Beast",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Bespoke Battlegarb",
@@ -4354,8 +4354,8 @@
     {
       "name": "Charmed Clothier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Charmed Sleep",
@@ -4372,8 +4372,8 @@
     {
       "name": "Charming Scoundrel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Charred Foyer // Warped Space",
@@ -4948,8 +4948,8 @@
     {
       "name": "Conceited Witch // Price of Beauty",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Conciliator's Duelist",
@@ -7840,8 +7840,8 @@
     {
       "name": "Embereth Veteran",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Emberheart Challenger",
@@ -8992,8 +8992,8 @@
     {
       "name": "Ferocious Werefox // Guard Change",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Ferocity of the Hunt",
@@ -15154,8 +15154,8 @@
     {
       "name": "Living Lectern",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Living Library",
@@ -20638,8 +20638,8 @@
     {
       "name": "Redtooth Genealogist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Redtooth Vanguard",
@@ -21640,8 +21640,8 @@
     {
       "name": "Royal Treatment",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Rubble Rouser",
@@ -24358,8 +24358,8 @@
     {
       "name": "Spiteful Hexmage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Spitfire Lagac",
@@ -24382,8 +24382,8 @@
     {
       "name": "Splashy Spellcaster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Splatter Technique",
@@ -29104,8 +29104,8 @@
     {
       "name": "Vantress Transmuter // Croaking Curse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Variable Chaser // Arc of Fortune",
@@ -31106,6 +31106,6 @@
       "implementation": null
     }
   ],
-  "adventure_definitions": 33,
+  "adventure_definitions": 37,
   "omen_definitions": 13
 }

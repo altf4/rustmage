@@ -390,6 +390,10 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    CreateRole {
+        token: Card,
+        subject: Subject,
+    },
     IfManaSpent {
         minimum: Option<u64>,
         maximum: Option<u64>,
@@ -1082,6 +1086,7 @@ pub(crate) enum StepValue {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StepGuard {
+    SourceToughnessAtMost(u16),
     Outlaw,
     Always,
     Attacked,
@@ -1679,6 +1684,9 @@ impl Card {
     pub(crate) fn equipment(self) -> Option<EquipmentSpec> {
         generated::equipment(self)
     }
+    pub(crate) fn role(self) -> Option<RoleKind> {
+        generated::role(self)
+    }
     pub(crate) fn aura(self) -> Option<AuraSpec> {
         generated::aura(self)
     }
@@ -1961,4 +1969,15 @@ mod subtype_tests {
             assert!(!is_creature_type(typ));
         }
     }
+}
+
+/// Predefined Role characteristics are rules data, independent of printed card names.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum RoleKind {
+    Cursed,
+    Monster,
+    Royal,
+    Sorcerer,
+    Wicked,
+    YoungHero,
 }
