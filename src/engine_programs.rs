@@ -433,7 +433,8 @@ impl Game {
             let yours = source.controller == entered.controller;
             for (index, ability) in source.card.triggers().iter().enumerate() {
                 let matched = match ability.condition.event() {
-                    TriggerCondition::ManaSpent { .. }
+                    TriggerCondition::InZone { .. }
+                    | TriggerCondition::ManaSpent { .. }
                     | TriggerCondition::Granted(_)
                     | TriggerCondition::OncePerTurn(_)
                     | TriggerCondition::DuringOpponentsTurn(_)
@@ -644,6 +645,26 @@ impl Game {
             .filter(|event| event.granted)
             .map_or(source.card, |event| event.granting_card);
         let condition = definition.triggers()[index].condition;
+        // Graveyard observers must not enable unqualified battlefield abilities.
+        // Self-discard/cycling dispatch deliberately uses the destination object,
+        // so those events remain valid there. An explicit origin always wins.
+        let destination_event = matches!(
+            condition.event(),
+            TriggerCondition::SelfDiscarded | TriggerCondition::SelfCycled
+        );
+        let origin_matches = condition.origin().map_or(
+            source.zone != Zone::Graveyard || destination_event,
+            |origin| {
+                source.zone
+                    == match origin {
+                        TargetZone::Battlefield => Zone::Battlefield,
+                        TargetZone::Graveyard => Zone::Graveyard,
+                    }
+            },
+        );
+        if !origin_matches {
+            return false;
+        }
         if condition.is_granted() != event.as_ref().is_some_and(|e| e.granted) {
             return false;
         }
@@ -1158,7 +1179,6 @@ impl Game {
         }
         let was_targeted = !item.targets.is_empty();
         let spec = self.target_spec(&item);
-        let target_source = item.target_source();
         // Preserve the whole original target set for relational legality. A departed
         // target still contributes its last controller, even though it cannot move.
         // The empty common case allocates nothing.
@@ -1168,13 +1188,16 @@ impl Game {
             .copied()
             .filter(|bound| !self.resolution_target_relations_hold(&item, *bound, spec))
             .collect();
-        item.targets.retain(|bound| {
+        // Retain the existing allocation while borrowing the packet's source facts.
+        let mut targets = std::mem::take(&mut item.targets);
+        targets.retain(|bound| {
             !relation_illegal.contains(bound)
                 && self.same_target_object(*bound)
-                && spec.group(bound.group).is_some_and(|group| {
-                    self.target_matches(group.rule, item.controller, target_source, bound.target)
-                })
+                && spec
+                    .group(bound.group)
+                    .is_some_and(|group| self.item_target_matches(&item, group.rule, bound.target))
         });
+        item.targets = targets;
         let valid = !was_targeted || !item.targets.is_empty();
         if !valid {
             if item.kind == StackKind::Spell {
@@ -1203,6 +1226,7 @@ impl Game {
                     let mut movement = self.entry_move(item.card, Zone::Battlefield, false);
                     movement.attachment = Some(target);
                     movement.cast_payment = item.cast.map(|c| c.payment);
+                    movement.cast_origin = item.cast.map(|c| c.origin);
                     movement.gift = item.gift_context().map(Box::new);
                     movement.warp_controller = item
                         .cast
@@ -1228,6 +1252,7 @@ impl Game {
                                 )
                             })
                     }) || item.x.is_some()
+                        || !item.source_card.hand_cast_entry_counters().is_empty()
                         || item.source_card.entry_choice().is_some()
                         || self.has_entry_counter_replacements(item.source_card)
                     {
@@ -1237,6 +1262,7 @@ impl Game {
                             .filter(|c| c.method == CastMethod::Warp)
                             .map(|_| item.controller);
                         movement.cast_payment = item.cast.map(|c| c.payment);
+                        movement.cast_origin = item.cast.map(|c| c.origin);
                         movement.offspring_paid =
                             item.cast.is_some_and(|c| c.offspring == Some(true));
                         movement.kicked = item.cast.is_some_and(|c| c.kicker == Some(true));
@@ -1260,6 +1286,12 @@ impl Game {
                 }
             },
         };
+        if program
+            .iter()
+            .any(|i| matches!(i, Instruction::IfThisAbilityResolutionNumber { .. }))
+        {
+            self.record_ability_resolution(&item);
+        }
         assert!(self.state.resolving.is_none());
         self.state.resolving = Some(Resolution {
             explore: None,
@@ -1435,6 +1467,11 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::IfThisAbilityResolutionNumber { number, skip } => {
+                    if self.ability_resolution_number(&item) != number {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
                 Instruction::GiveGift => self.give_gift(&item),
                 Instruction::ReturnSpellToHand => self.return_targeted_spells_to_hand(&item),
                 Instruction::ProhibitCastingThisTurn => self.state.casting_prohibited = true,
@@ -1797,6 +1834,21 @@ impl Game {
                         && self.state.objects[item.card as usize].zone == zone
                     {
                         self.move_object(item.card, Zone::Hand);
+                    }
+                }
+                Instruction::PutSourceOnLibraryTop { origin } => {
+                    let zone = match origin {
+                        TargetZone::Battlefield => Zone::Battlefield,
+                        TargetZone::Graveyard => Zone::Graveyard,
+                    };
+                    if self.object_ref(item.card) == item.object
+                        && self.state.objects[item.card as usize].zone == zone
+                    {
+                        let owner = self.state.objects[item.card as usize].owner;
+                        let event = self.move_object(item.card, Zone::Library);
+                        if event.moved && event.destination == Zone::Library {
+                            self.remember_library_top(owner, event.after);
+                        }
                     }
                 }
                 Instruction::ReturnSourceToBattlefield { tapped } => {

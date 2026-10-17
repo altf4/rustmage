@@ -198,6 +198,8 @@ impl Player {
     }
 }
 
+#[path = "engine_ability_resolutions.rs"]
+mod ability_resolutions;
 #[cfg(test)]
 #[path = "engine_activation_guard_tests.rs"]
 mod activation_guard_tests;
@@ -213,6 +215,7 @@ mod entry_life_tests;
 #[cfg(test)]
 #[path = "engine_identity_tests.rs"]
 mod identity_tests;
+pub use ability_resolutions::AbilityResolutionView;
 #[path = "engine_programs.rs"]
 mod programs;
 use programs::Resolution;
@@ -1103,6 +1106,12 @@ pub struct DamageFacts {
     pub attacking: bool,
 }
 impl DamageFacts {
+    /// Frozen source colors. With the currently admitted layer-five effects these
+    /// are intrinsic to the captured effective card. Color-changing mechanics must
+    /// extend this LKI query together with CharacteristicWorld::colors.
+    pub(super) fn colors(&self) -> u8 {
+        self.card.colors()
+    }
     fn from_view(view: &ObjectView) -> Self {
         Self {
             controller: view.controller,
@@ -1340,6 +1349,7 @@ struct State {
     objects: SharedVec<Object>,
     named_counters: Option<SharedVec<live_counters::NamedCounterRow>>,
     entry_values: entry_choices::Rows,
+    ability_resolutions: ability_resolutions::Rows,
     attacked_this_turn: SharedVec<ObjectRef>,
     creatures_died_this_turn: u64,
     free_tokens: Vec<CardId>,
@@ -1692,6 +1702,7 @@ pub struct Observation {
     pub delayed_warp_exiles: Vec<DelayedWarpExileView>,
     pub plot_payment: Option<PlotPaymentView>,
     pub triggered_this_turn: Vec<TriggerUse>,
+    pub ability_resolutions: Vec<AbilityResolutionView>,
     pub role_choices: Vec<RoleGroupView>,
     pub role_timestamps: Vec<RoleTimestampView>,
     pub base_stat_effects: Vec<BaseStatsEffectView>,
@@ -1861,6 +1872,7 @@ impl Game {
                 objects: objects.into(),
                 named_counters: None,
                 entry_values: None,
+                ability_resolutions: None,
                 attacked_this_turn: Vec::new().into(),
                 creatures_died_this_turn: 0,
                 free_tokens: Vec::new(),
@@ -3044,10 +3056,9 @@ impl Game {
                     return true;
                 }
                 if count < announcement.spec.max {
-                    return self.visit_targets(
+                    return self.visit_item_targets(
+                        &announcement.item,
                         announcement.spec.rule,
-                        actor,
-                        announcement.item.target_source(),
                         |target| {
                             self.target_group_compatible(
                                 announcement.spec.rule,
@@ -4074,6 +4085,14 @@ impl Game {
             before.zone, destination,
             "same-zone moves are ordering operations"
         );
+        if before.zone == Zone::Graveyard
+            && before.card.triggers().iter().any(|a| {
+                a.condition.origin() == Some(TargetZone::Graveyard)
+                    && matches!(a.condition.event(), TriggerCondition::AtStep { .. })
+            })
+        {
+            self.state.step_sources.retain(|&source| source != id);
+        }
         self.capture_source_counter_departure(&before);
         self.clear_entry_value(before.reference);
         if before.zone == Zone::Battlefield {
@@ -4246,6 +4265,8 @@ impl Game {
             let (owner, card) = entry_identity;
             self.record_nonland_entry(owner, card);
             self.register_battlefield_sources(id);
+        } else if destination == Zone::Graveyard {
+            self.register_graveyard_sources(id);
         }
         if revealed_top && before.zone == Zone::Library && destination == Zone::Hand {
             let reference = self.object_ref(id);
@@ -4317,6 +4338,7 @@ impl Game {
     fn begin_turn(&mut self) {
         self.clear_crew_history();
         self.state.triggered_this_turn.clear();
+        self.state.ability_resolutions = None;
         self.state.attacked_this_turn.clear();
         self.state.creatures_died_this_turn = 0;
         for player in &mut self.state.players {
@@ -4982,6 +5004,10 @@ impl Game {
                 .filter(|p| p.controller == viewer)
                 .copied(),
             triggered_this_turn: s.triggered_this_turn.clone(),
+            ability_resolutions: s
+                .ability_resolutions
+                .as_ref()
+                .map_or_else(Vec::new, |rows| rows.to_vec()),
             role_choices: s
                 .sba_batch
                 .as_ref()
@@ -5285,6 +5311,7 @@ impl Game {
             + s.objects.len() * std::mem::size_of::<Object>()
             + live_counters::owned_bytes(&s.named_counters)
             + entry_choices::owned_bytes(&s.entry_values)
+            + ability_resolutions::owned_bytes(&s.ability_resolutions)
             + s.announcing
                 .as_ref()
                 .map_or(0, |a| a.counter_payment.owned_bytes())
@@ -6189,3 +6216,15 @@ mod fdn_control_two_tests;
 #[cfg(test)]
 #[path = "engine_fdn_death_demon_three_tests.rs"]
 mod fdn_death_demon_three_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_bounded_side_core_tests.rs"]
+mod fdn_bounded_side_core_tests;
+
+#[cfg(test)]
+#[path = "engine_graveyard_origin_tests.rs"]
+mod graveyard_origin_tests;
+
+#[cfg(test)]
+#[path = "engine_qualified_hexproof_tests.rs"]
+mod qualified_hexproof_tests;

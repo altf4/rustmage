@@ -24,6 +24,8 @@ pub(super) struct EntryMove {
     pub life_paid: Option<bool>,
     pub offspring_paid: bool,
     pub cast_payment: Option<Mana>,
+    /// Explicit origin of an actual spell cast; absent for reanimation/put effects.
+    pub cast_origin: Option<Zone>,
     pub warp_controller: Option<Player>,
     pub kicked: bool,
     pub bargained: bool,
@@ -181,6 +183,7 @@ impl Game {
             life_paid: None,
             offspring_paid: false,
             cast_payment: None,
+            cast_origin: None,
             warp_controller: None,
             kicked: false,
             bargained: false,
@@ -245,6 +248,12 @@ impl Game {
                 movement.cast_payment,
                 movement.controller,
             );
+            if movement.destination == Zone::Battlefield && movement.cast_origin == Some(Zone::Hand)
+            {
+                for &(kind, amount) in movement.before.card.hand_cast_entry_counters() {
+                    movement.counters.add(kind, amount);
+                }
+            }
             if movement.destination == Zone::Battlefield
                 && let Some((kind, amount)) = movement.effect_counter
             {

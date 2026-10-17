@@ -8,5 +8,38 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4af4629d81499ff318e676659caa4035db0bd355cde997eda3d0ed0a941c4ae3"
   },
-  "physical_metadata_sha256": "87775c2e86208375e50b3678281676301fcee24deed9f782750c3e917c286f42"
+  "physical_metadata_sha256": "87775c2e86208375e50b3678281676301fcee24deed9f782750c3e917c286f42",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GateColossus.java",
+  "java_sha256": "cde028fe778f22f89619466e675c0e8307ecba3c7bc331eb1dfc8f7ae7633984",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+      "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibrarySourceEffect.java",
+      "sha256": "5e76db8fe7b94569386dcef494e42fc41dca45d977abfd034bd76fa2973c237a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/AffinityAbility.java",
+      "sha256": "b1b523671266f687df90eb3003d186bb0f68f9ca99ccaffe675f25ed11f40547"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DauntAbility.java",
+      "sha256": "c993aad0af01a2479b23a8752136b1fda361fc28da3e1b921be9d6d945906a02"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByCreaturesSourceEffect.java",
+      "sha256": "db532584552c032f8fed7fb9a2cb025e45f58c4710c0d3bb1406f6aab7a338f5"
+    }
+  ],
+  "remaining_obligations": [
+    "Complete-card consumer acceptance and independent batch reviews remain pending; this core fixture is not admitted."
+  ]
 }

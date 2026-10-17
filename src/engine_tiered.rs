@@ -42,7 +42,7 @@ impl Game {
     }
     pub(super) fn mode_choice_fundable(&self, a: &Announcement, index: usize) -> bool {
         let mode = &a.item.modes().expect("modal announcement")[index];
-        if !self.targets_available(mode.targets, a.item.controller, a.item.target_source()) {
+        if !self.item_targets_available(&a.item, mode.targets) {
             return false;
         }
         if a.item.source_card.tiered_costs().is_none() {

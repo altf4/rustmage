@@ -52,6 +52,8 @@ pub(crate) struct GiftSpec {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetGroupConstraint {
     SameGraveyard,
+    /// Attached to the exact object selected in another target group.
+    AttachedToGroup(u16),
     DifferentControllers,
 }
 
@@ -541,6 +543,11 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    /// Skip instructions unless this is the specified successful resolution this turn.
+    IfThisAbilityResolutionNumber {
+        number: u64,
+        skip: usize,
+    },
     PutPowerExcessCounters {
         filter: CreatureFilter,
     },
@@ -754,6 +761,9 @@ pub(crate) enum Instruction {
         unpaid_skip: usize,
     },
     ReturnSourceToHand(TargetZone),
+    PutSourceOnLibraryTop {
+        origin: TargetZone,
+    },
     ReturnSourceToBattlefield {
         tapped: bool,
     },
@@ -1084,6 +1094,11 @@ pub(crate) enum ResolvedStatValue {
     EnteringPower,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum SourceCharacteristicFilter {
+    Color(ChoiceColor),
+    Instant,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StatValue {
     Fixed(u16),
     TappedCount(CountFilter),
@@ -1107,6 +1122,15 @@ pub(crate) enum StatValue {
     LifeGainOccurredThisTurn,
     LifeGainedThisTurn,
     ControllerLife,
+    /// Boolean threshold relative to the rules configuration, not a printed 20.
+    ControllerLifeAboveStarting {
+        minimum: u16,
+    },
+    /// Boolean presence, rather than number of distinct colors.
+    HasColor {
+        filter: CountFilter,
+        color: ChoiceColor,
+    },
     Count(CountFilter),
     GreatestManaValue(CountFilter),
     DistinctNames(CountFilter),
@@ -1820,6 +1844,11 @@ pub(crate) enum EntryPredicate {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    /// Explicit printed source zone; legacy events keep their existing origins.
+    InZone {
+        zone: TargetZone,
+        event: &'static TriggerCondition,
+    },
     /// Historical lore threshold crossing; never a live resolution recheck.
     Chapter {
         number: u16,
@@ -1972,12 +2001,25 @@ pub(crate) enum TriggerCondition {
 }
 
 impl TriggerCondition {
+    pub(crate) fn origin(self) -> Option<TargetZone> {
+        match self {
+            Self::InZone { zone, .. } => Some(zone),
+            Self::Granted(event)
+            | Self::OncePerTurn(event)
+            | Self::DuringOpponentsTurn(event)
+            | Self::ManaSpent { event, .. }
+            | Self::When { event, .. }
+            | Self::InterveningIf { event, .. } => event.origin(),
+            _ => None,
+        }
+    }
     pub(crate) fn mana_spent_rule(self) -> Option<(u64, bool)> {
         match self {
             Self::ManaSpent {
                 minimum, increment, ..
             } => Some((minimum, increment)),
-            Self::Granted(e)
+            Self::InZone { event: e, .. }
+            | Self::Granted(e)
             | Self::OncePerTurn(e)
             | Self::DuringOpponentsTurn(e)
             | Self::When { event: e, .. }
@@ -1989,7 +2031,8 @@ impl TriggerCondition {
     pub(crate) fn is_granted(self) -> bool {
         match self {
             Self::Granted(_) | Self::GrantedAttacks => true,
-            Self::OncePerTurn(e)
+            Self::InZone { event: e, .. }
+            | Self::OncePerTurn(e)
             | Self::DuringOpponentsTurn(e)
             | Self::When { event: e, .. }
             | Self::InterveningIf { event: e, .. }
@@ -2000,7 +2043,8 @@ impl TriggerCondition {
     pub(crate) fn requires_opponents_turn(self) -> bool {
         match self {
             Self::DuringOpponentsTurn(_) => true,
-            Self::Granted(event)
+            Self::InZone { event, .. }
+            | Self::Granted(event)
             | Self::OncePerTurn(event)
             | Self::ManaSpent { event, .. }
             | Self::When { event, .. }
@@ -2010,7 +2054,8 @@ impl TriggerCondition {
     }
     pub(crate) fn event(self) -> Self {
         match self {
-            Self::Granted(event)
+            Self::InZone { event, .. }
+            | Self::Granted(event)
             | Self::OncePerTurn(event)
             | Self::DuringOpponentsTurn(event)
             | Self::When { event, .. }
@@ -2022,7 +2067,8 @@ impl TriggerCondition {
     pub(crate) fn once_per_turn(self) -> bool {
         match self {
             Self::OncePerTurn(_) => true,
-            Self::Granted(event)
+            Self::InZone { event, .. }
+            | Self::Granted(event)
             | Self::When { event, .. }
             | Self::InterveningIf { event, .. }
             | Self::ManaSpent { event, .. }
@@ -2503,7 +2549,11 @@ impl Card {
         generated::DEFINITIONS[self.0 as usize].basic
     }
     pub fn is_instant(self) -> bool {
-        generated::DEFINITIONS[self.0 as usize].kind & 8 != 0
+        Self::kinds_are_instant(self.kind_mask())
+    }
+    /// One canonical Instant-kind interpretation for printed and live type queries.
+    pub(crate) const fn kinds_are_instant(kinds: u16) -> bool {
+        kinds & 8 != 0
     }
     pub(crate) fn effect(self) -> Effect {
         generated::DEFINITIONS[self.0 as usize].effect
@@ -2557,6 +2607,11 @@ impl Card {
     }
     pub(crate) fn chosen_entry_counters(self) -> Option<CounterKind> {
         authored::RULES[self.index()].extras.chosen_entry_counters
+    }
+    pub(crate) fn hand_cast_entry_counters(self) -> &'static [(CounterKind, u64)] {
+        authored::RULES[self.index()]
+            .extras
+            .hand_cast_entry_counters
     }
     pub(crate) fn entry_counter_rules(self) -> &'static [EntryCounterRule] {
         generated::entry_counter_rules(self)

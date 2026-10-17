@@ -59,7 +59,8 @@ impl Game {
                 self.step_guard(guard, player, source, tapped)
                     && self.trigger_time_guards_hold(*event, player, source, tapped)
             }
-            TriggerCondition::Granted(event)
+            TriggerCondition::InZone { event, .. }
+            | TriggerCondition::Granted(event)
             | TriggerCondition::OncePerTurn(event)
             | TriggerCondition::DuringOpponentsTurn(event)
             | TriggerCondition::ManaSpent { event, .. }
@@ -77,7 +78,8 @@ impl Game {
         tapped: bool,
     ) -> bool {
         match condition {
-            TriggerCondition::When { event, .. }
+            TriggerCondition::InZone { event, .. }
+            | TriggerCondition::When { event, .. }
             | TriggerCondition::Granted(event)
             | TriggerCondition::OncePerTurn(event)
             | TriggerCondition::DuringOpponentsTurn(event)

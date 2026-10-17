@@ -4,6 +4,20 @@
 use super::*;
 
 impl Game {
+    // Reuse the existing owned step index; no new arena field or empty buffer.
+    pub(super) fn register_graveyard_sources(&mut self, id: CardId) {
+        if self.state.objects[id as usize]
+            .card
+            .triggers()
+            .iter()
+            .any(|ability| {
+                ability.condition.origin() == Some(TargetZone::Graveyard)
+                    && matches!(ability.condition.event(), TriggerCondition::AtStep { .. })
+            })
+        {
+            self.state.step_sources.push(id);
+        }
+    }
     pub(super) fn register_battlefield_sources(&mut self, id: CardId) {
         self.register_static_base_stats(id);
         self.register_live_static_source(id);
@@ -100,10 +114,11 @@ impl Game {
             .triggers()
             .iter()
             .any(|ability| {
-                matches!(
-                    ability.condition.event(),
-                    TriggerCondition::AtStep { .. } | TriggerCondition::Chapter { .. }
-                )
+                ability.condition.origin() != Some(TargetZone::Graveyard)
+                    && matches!(
+                        ability.condition.event(),
+                        TriggerCondition::AtStep { .. } | TriggerCondition::Chapter { .. }
+                    )
             })
         {
             self.state.step_sources.push(id);

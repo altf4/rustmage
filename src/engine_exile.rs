@@ -161,7 +161,14 @@ impl Game {
                 .objects
                 .iter()
                 .enumerate()
-                .filter(|(_, o)| o.zone == Zone::Battlefield && !o.card.triggers().is_empty())
+                .filter(|(_, o)| {
+                    (o.zone == Zone::Battlefield && !o.card.triggers().is_empty())
+                        || (o.zone == Zone::Graveyard
+                            && o.card
+                                .triggers()
+                                .iter()
+                                .any(|a| a.condition.origin() == Some(TargetZone::Graveyard)))
+                })
                 .map(|(i, _)| self.object_view(i as CardId))
                 .collect()
         } else {

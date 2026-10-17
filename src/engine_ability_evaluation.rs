@@ -109,7 +109,12 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             Keywords::DEATHTOUCH
         }
-        StaticAbilityFragment::SourceCounterSubtype {
+        StaticAbilityFragment::SourceCounterKeywords {
+            kind,
+            minimum,
+            keywords,
+        }
+        | StaticAbilityFragment::SourceCounterSubtype {
             kind,
             minimum,
             keywords,
@@ -216,7 +221,8 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
             let provides = origin.fragments.iter().any(|f| {
                 matches!(
                     f,
-                    StaticAbilityFragment::SourceCounterSubtype { .. }
+                    StaticAbilityFragment::SourceCounterKeywords { .. }
+                        | StaticAbilityFragment::SourceCounterSubtype { .. }
                         | StaticAbilityFragment::AttachmentKeywords(..)
                         | StaticAbilityFragment::AttachedTurnKeywords(..)
                         | StaticAbilityFragment::AttachmentTrigger(..)

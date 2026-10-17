@@ -65,6 +65,7 @@ impl Game {
             &|id| self.granted_subtypes(id),
             &|id, o| self.object_kinds(id, o),
             &|id| self.object_name(id),
+            &|id| ability_world::CharacteristicWorld::colors(self, id),
             &|id| self.counter_amounts(id).has_any(),
             self.state.players[owner.index()].life,
             self.state.attack_declared
@@ -83,6 +84,7 @@ impl Game {
         subtypes: &impl Fn(CardId) -> GrantedSubtypes,
         kinds: &impl Fn(CardId, &Object) -> u16,
         names: &impl Fn(CardId) -> &'static str,
+        colors: &impl Fn(CardId) -> u8,
         has_counters: &impl Fn(CardId) -> bool,
         life: i128,
         attacking: bool,
@@ -108,6 +110,7 @@ impl Game {
                     subtypes,
                     kinds,
                     names,
+                    colors,
                     has_counters,
                     life,
                     attacking,
@@ -189,6 +192,7 @@ impl Game {
                     subtypes,
                     kinds,
                     names,
+                    colors,
                     has_counters,
                     life,
                     attacking,
@@ -205,6 +209,13 @@ impl Game {
                     .capacity("life gain count representation exhausted")
             }
             StatValue::ControllerLife => life,
+            StatValue::ControllerLifeAboveStarting { minimum } => {
+                i128::from(life >= STARTING_LIFE + i128::from(minimum))
+            }
+            StatValue::HasColor { filter, color } => i128::from(objects().any(|(id, o)| {
+                Self::count_object_matches(filter, source, owner, id, o, subtypes, kinds)
+                    && colors(id) & (1u8 << color.index()) != 0
+            })),
             StatValue::Colors(filter) | StatValue::CardTypes(filter) => objects()
                 .filter(|&(id, o)| {
                     Self::count_object_matches(filter, source, owner, id, o, subtypes, kinds)
@@ -279,6 +290,7 @@ impl Game {
                         subtypes,
                         kinds,
                         names,
+                        colors,
                         has_counters,
                         life,
                         attacking,

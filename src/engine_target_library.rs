@@ -35,14 +35,7 @@ impl Game {
             && self
                 .target_spec(item)
                 .group(bound.group)
-                .is_some_and(|spec| {
-                    self.target_matches(
-                        spec.rule,
-                        item.controller,
-                        item.target_source(),
-                        bound.target,
-                    )
-                })
+                .is_some_and(|spec| self.item_target_matches(item, spec.rule, bound.target))
     }
     pub(super) fn move_target_to_library(
         &mut self,

@@ -38,6 +38,7 @@ pub(crate) enum StaticAbilityFragment {
     ChosenCreatureType,
     ChosenModifier(ChosenModifier),
     PlayerHexproof,
+    QualifiedHexproof(SourceCharacteristicFilter),
     ControlledSpellsUncounterable(u16),
     LifeGainAdditional(u16),
     CantGainLife,
@@ -50,6 +51,11 @@ pub(crate) enum StaticAbilityFragment {
     RemoveAttachedAbilities,
     AttachedUntap(UntapRestriction),
     SelfUntap(UntapRestriction),
+    SourceCounterKeywords {
+        kind: CounterKind,
+        minimum: u64,
+        keywords: Keywords,
+    },
     SourceCounterSubtype {
         kind: CounterKind,
         minimum: u64,
