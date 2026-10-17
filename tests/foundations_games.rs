@@ -27,31 +27,76 @@ fn deck(land: &str, names: &[&str]) -> Vec<Card> {
 #[test]
 fn foundations_five_color_full_games_and_owned_search_replay() {
     let mut decks = [
-        deck("Plains", &[
-            "Angel of Vitality", "Exemplar of Light", "Fiendish Panda",
-            "Raise the Past", "Leonin Vanguard", "Hare Apparent",
-            "Healer's Hawk", "Inspiring Overseer", "Stroke of Midnight",
-        ]),
-        deck("Island", &[
-            "Run Away Together", "Inspiration from Beyond", "Trygon Predator",
-            "Fog Bank", "Corsair Captain", "High Fae Trickster",
-            "Exclusion Mage", "Unsummon", "Harbinger of the Tides",
-        ]),
-        deck("Swamp", &[
-            "Bloodthirsty Conqueror", "Vengeful Bloodwitch", "Midnight Snack",
-            "Duress", "Pilfer", "Feed the Swarm", "Dread Summons",
-            "Massacre Wurm", "Tragic Banshee",
-        ]),
-        deck("Mountain", &[
-            "Involuntary Employment", "Giant Cindermaw", "Heartfire Immolator",
-            "Goblin Smuggler", "Bulk Up", "Hidetsugu's Second Rite",
-            "Burst Lightning", "Ruby, Daring Tracker", "Feldon's Cane",
-        ]),
-        deck("Forest", &[
-            "Primal Might", "Maelstrom Pulse", "Rise of the Dark Realms",
-            "Llanowar Elves", "Elvish Archdruid", "Dwynen, Gilt-Leaf Daen",
-            "Inspiring Call", "Affectionate Indrik", "Heroes' Bane",
-        ]),
+        deck(
+            "Plains",
+            &[
+                "Angel of Vitality",
+                "Exemplar of Light",
+                "Fiendish Panda",
+                "Raise the Past",
+                "Leonin Vanguard",
+                "Hare Apparent",
+                "Healer's Hawk",
+                "Inspiring Overseer",
+                "Stroke of Midnight",
+            ],
+        ),
+        deck(
+            "Island",
+            &[
+                "Run Away Together",
+                "Inspiration from Beyond",
+                "Trygon Predator",
+                "Fog Bank",
+                "Corsair Captain",
+                "High Fae Trickster",
+                "Exclusion Mage",
+                "Unsummon",
+                "Harbinger of the Tides",
+            ],
+        ),
+        deck(
+            "Swamp",
+            &[
+                "Bloodthirsty Conqueror",
+                "Vengeful Bloodwitch",
+                "Midnight Snack",
+                "Duress",
+                "Pilfer",
+                "Feed the Swarm",
+                "Dread Summons",
+                "Massacre Wurm",
+                "Tragic Banshee",
+            ],
+        ),
+        deck(
+            "Mountain",
+            &[
+                "Involuntary Employment",
+                "Giant Cindermaw",
+                "Heartfire Immolator",
+                "Goblin Smuggler",
+                "Bulk Up",
+                "Hidetsugu's Second Rite",
+                "Burst Lightning",
+                "Ruby, Daring Tracker",
+                "Feldon's Cane",
+            ],
+        ),
+        deck(
+            "Forest",
+            &[
+                "Primal Might",
+                "Maelstrom Pulse",
+                "Rise of the Dark Realms",
+                "Llanowar Elves",
+                "Elvish Archdruid",
+                "Dwynen, Gilt-Leaf Daen",
+                "Inspiring Call",
+                "Affectionate Indrik",
+                "Heroes' Bane",
+            ],
+        ),
     ];
     // Supply printed off-color costs within the Foundations inventory.
     for land in &mut decks[0][..8] {
@@ -152,11 +197,7 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
         }
     }
     assert!(triggered && token && combat);
-    for name in [
-        "Run Away Together",
-        "Involuntary Employment",
-        "Pilfer",
-    ] {
+    for name in ["Run Away Together", "Involuntary Employment", "Pilfer"] {
         assert!(
             new_spells.contains(name),
             "new card was not cast in full games: {name}"
