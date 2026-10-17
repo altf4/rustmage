@@ -336,6 +336,28 @@ fn beluna_uses_actual_spell_face_and_glamdring_locks_layered_power_before_mana_s
             g.reduced_spell_cost(p, bear, base_cost(&g, bear)).generic,
             1
         );
+        let artifact = named(&mut g, p, NAMES[5], Zone::Hand);
+        assert_eq!(
+            g.reduced_spell_cost(p, artifact, base_cost(&g, artifact))
+                .generic,
+            1
+        );
+        let omen = named(&mut g, p, "Bloomvine Regent // Claim Territory", Zone::Hand);
+        assert_eq!(
+            g.reduced_spell_cost(p, omen, base_cost(&g, omen)).generic,
+            3
+        );
+        let enemy = named(
+            &mut g,
+            p.other(),
+            "Beanstalk Wurm // Plant Beans",
+            Zone::Hand,
+        );
+        assert_eq!(
+            g.reduced_spell_cost(p.other(), enemy, base_cost(&g, enemy))
+                .generic,
+            4
+        );
         let definition = g.state.objects[spell as usize]
             .card
             .adventure_spell()
@@ -371,6 +393,12 @@ fn beluna_uses_actual_spell_face_and_glamdring_locks_layered_power_before_mana_s
             g.reduced_spell_cost(p, spell, base_cost(&g, spell)).generic,
             0
         );
+        g.state.objects[bunny as usize].growth.power = -5;
+        assert_eq!(
+            g.reduced_spell_cost(p, spell, base_cost(&g, spell)).generic,
+            2
+        );
+        g.state.objects[bunny as usize].growth.power = 0;
         g.state.players[p.index()].mana = [0; 6];
         act(&mut g, Action::AnnounceCast { card: spell });
         let request = g.observe(p).payment_request.unwrap();
@@ -506,5 +534,76 @@ fn recovered_normals_keep_threshold_mana_discard_bounce_and_real_landfall_lord_b
                 .count(),
             hand
         );
+    }
+}
+
+#[test]
+fn no_eligible_milled_card_never_forces_illegal_choice_and_all_recovery_excludes_omen_and_old_grave()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        for _ in 0..4 {
+            named(&mut g, p, "Forest", Zone::Library);
+        }
+        let source = named(&mut g, p, NAMES[2], Zone::Hand);
+        act(&mut g, Action::AnnounceAdventure { card: source });
+        settle(&mut g);
+        assert!(g.observe(p).milled_choice.is_none());
+        assert_eq!(g.state.objects[source as usize].zone, Zone::Exile);
+
+        let mut g = setup(p);
+        let old = named(&mut g, p, NAMES[0], Zone::Graveyard);
+        let omen = named(
+            &mut g,
+            p,
+            "Bloomvine Regent // Claim Territory",
+            Zone::Library,
+        );
+        let ordinary = named(&mut g, p, "Shock", Zone::Library);
+        let adventure = named(&mut g, p, NAMES[2], Zone::Library);
+        for _ in 0..4 {
+            named(&mut g, p, "Forest", Zone::Library);
+        }
+        let source = named(&mut g, p, NAMES[4], Zone::Hand);
+        act(&mut g, Action::AnnounceAdventure { card: source });
+        settle(&mut g);
+        assert_eq!(g.state.objects[adventure as usize].zone, Zone::Hand);
+        for id in [old, omen, ordinary] {
+            assert_eq!(g.state.objects[id as usize].zone, Zone::Graveyard);
+        }
+        assert!(
+            g.observe(p.other())
+                .known_hand
+                .contains(&g.object_ref(adventure))
+        );
+
+        let mut g = setup(p);
+        let chosen = named(&mut g, p, "Shock", Zone::Library);
+        for _ in 0..3 {
+            named(&mut g, p, "Forest", Zone::Library);
+        }
+        let source = named(&mut g, p, NAMES[1], Zone::Hand);
+        choice(&mut g, source);
+        let capture = g.object_ref(chosen);
+        g.move_object(chosen, Zone::Hand);
+        // A hidden replacement destination cannot appear in the public batch
+        // continuation, even when the card's new physical identity is known.
+        let hidden = g.object_ref(chosen);
+        *g.state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .milled
+            .iter_mut()
+            .find(|r| r.card == chosen)
+            .unwrap() = hidden;
+        let v = g.observe(p).milled_choice.unwrap();
+        assert!(!v.milled.contains(&hidden));
+        assert!(v.candidates.is_empty());
+        reject(&mut g, Action::SelectMilled { object: capture });
+        reject(&mut g, Action::SelectMilled { object: hidden });
+        act(&mut g, Action::FinishMilledSelection);
+        settle(&mut g);
+        assert_eq!(g.state.objects[chosen as usize].zone, Zone::Hand);
     }
 }

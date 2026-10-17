@@ -990,7 +990,8 @@ impl CastFilter {
         match self {
             Self::Any => true,
             Self::PermanentAdventure => {
-                card.adventure_spell().is_some() && card.kind_mask() & (1 | 2 | 16 | 32 | 64) != 0
+                card.adventure_spell().is_some()
+                    && card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256) != 0
             }
             // Contextual cast observers use Game::cast_filter_matches instead.
             Self::Targeted { .. } => false,
