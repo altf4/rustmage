@@ -405,6 +405,8 @@ impl Game {
                     TargetPredicate::WithoutKeyword(keyword) => {
                         !self.keywords(id).contains(keyword)
                     }
+                    TargetPredicate::WithoutKinds(kinds) => self.current_kinds(id) & kinds == 0,
+                    TargetPredicate::WithoutSubtype(subtype) => !self.has_subtype(id, subtype),
                     TargetPredicate::Token => object.card.is_token(),
                     TargetPredicate::Subtype(subtype) => self.has_subtype(id, subtype),
                     TargetPredicate::Permanent => {

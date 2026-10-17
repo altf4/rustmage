@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "2480cc08e157a033b820dc5f7be65c6b5bf0ae1214f548a9e60d2bf012f213a7",
+  "catalogue_version": "7435d4dee1e84a7345dc91812ac8583eae8dccd3c37658ca42fb29211bc9a62d",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1879,
-  "implemented_total": 1885,
+  "implemented_standard_cards": 1886,
+  "implemented_total": 1892,
   "token_definitions": 94,
   "emblem_definitions": 1,
   "cards": [
@@ -868,8 +868,8 @@
     {
       "name": "Amazing Acrobatics",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Ambitious Augmenter",
@@ -4750,8 +4750,8 @@
     {
       "name": "Coeurl",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Cogwork Wrestler",
@@ -6106,8 +6106,8 @@
     {
       "name": "Decoy Ploy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Dedicated Commons",
@@ -11422,8 +11422,8 @@
     {
       "name": "Guerrilla Gorilla",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Guidelight Matrix",
@@ -18472,8 +18472,8 @@
     {
       "name": "Overwhelming Surge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Overwrite the Multiverse",
@@ -21406,8 +21406,8 @@
     {
       "name": "Rock Soldiers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Rockalanche",
@@ -24814,8 +24814,8 @@
     {
       "name": "Sterling Keykeeper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Sterling Supplier",

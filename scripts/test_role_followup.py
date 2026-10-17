@@ -97,8 +97,8 @@ class RoleFollowupTests(unittest.TestCase):
     variants.append(text[:index]+'((You win the game.)) '+text[index:])
    for variant in variants:
     self.assertFalse(self.compile_one(dict(card,oracle_text=variant))[1]['implemented'],(card['name'],variant))
- def test_exact_twelve_admissions_preserve_every_prior_program_and_recipe(self):
-  old=subprocess.check_output(['git','-C',str(g.ROOT),'show','c41c060c024626843b17cf292aab838d36fd6eb1:src/generated/catalogue.rs'],text=True);new=(g.ROOT/'src/generated/catalogue.rs').read_text()
+ def test_historical_twelve_admissions_preserve_every_prior_program_and_recipe(self):
+  old=subprocess.check_output(['git','-C',str(g.ROOT),'show','c41c060c024626843b17cf292aab838d36fd6eb1:src/generated/catalogue.rs'],text=True);new=subprocess.check_output(['git','-C',str(g.ROOT),'show','ce4b0c104a8e0dbc0a76753a03608eb7bc4618be:src/generated/catalogue.rs'],text=True)
   defs=lambda t:[l for l in t.splitlines() if l.lstrip().startswith('Definition {')]
   before,after=defs(old),defs(new);self.assertEqual(len(before),5331);self.assertEqual(len(after),5331)
   changed=[(a,b) for a,b in zip(before,after) if a!=b];self.assertEqual(len(changed),12)

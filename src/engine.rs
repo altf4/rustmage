@@ -5373,6 +5373,10 @@ mod role_tests;
 #[cfg(test)]
 #[path = "engine_enchanted_draw_tests.rs"]
 mod enchanted_draw_tests;
+
 #[cfg(test)]
 #[path = "engine_role_followup_tests.rs"]
 mod role_followup_tests;
+#[cfg(test)]
+#[path = "engine_target_exclusion_tests.rs"]
+mod target_exclusion_tests;
