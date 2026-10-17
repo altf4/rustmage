@@ -1,7 +1,7 @@
 """Naturally drawn, fully paid resolved-stat consumers with owned replay."""
 import json,os,unittest
 from pathlib import Path
-from rustmage import Game
+from rustmage import OBSERVATION_SCHEMA, Game
 import test_role_consumers as replay
 FP=json.loads((Path(__file__).resolve().parents[1]/'data/standard/coverage.json').read_text())['catalogue_version']
 CASES=[('Genemorph Imago',True),('Moon Girl and Devil Dinosaur',True),('Belligerent Yearling',True),('Belligerent Yearling',False),('PuPu UFO',True),('Atomic Microsizer',True)]
@@ -24,7 +24,7 @@ class ResolvedBasePublicTests(unittest.TestCase):
     head=g.observe('P0')
     if head['outcome']is not None:
      self.assertEqual(stage,'finish',(name,p,seed,stage,iteration));self.assertTrue(paid);self.assertTrue(effect);return dict(name=name,accept=accept,seat=p,seed=seed,frames=frames)
-    o=g.observe(head['actor']);actor=o['actor'];self.assertEqual((o['schema'],o['catalogue']),(103,FP));objects={v['id']:v for v in o['objects']};field=[v for v in objects.values()if v['zone']=='Battlefield'];mine=[v for v in field if v['controller']==p];body=objects.get(source);subject_view=objects.get(subject)
+    o=g.observe(head['actor']);actor=o['actor'];self.assertEqual((o['schema'],o['catalogue']),(OBSERVATION_SCHEMA,FP));objects={v['id']:v for v in o['objects']};field=[v for v in objects.values()if v['zone']=='Battlefield'];mine=[v for v in field if v['controller']==p];body=objects.get(source);subject_view=objects.get(subject)
     def hand(player):return [v for v in g.observe(player)['objects']if v['zone']=='Hand'and v['owner']==player]
     def available(player):
      budget=list(o['players'][int(player[-1])]['mana'])
@@ -108,7 +108,7 @@ class ResolvedBasePublicTests(unittest.TestCase):
   with Game([own,enemy]if p=='P0'else[enemy,own],seed=seed,starting_player=p,deck_rules='Standard',library=library or os.environ.get('RUSTMAGE_TEST_LIBRARY'))as g:
    source=bear=selected=None;stage='setup';turn=None;frames=0;cast_paid=False;power_paid=False;equip_paid=False;hand_seen=False;effect=False;captured=None
    for iteration in range(35000):
-    head=g.observe('P0');self.assertEqual((head['schema'],head['catalogue']),(103,FP))
+    head=g.observe('P0');self.assertEqual((head['schema'],head['catalogue']),(OBSERVATION_SCHEMA,FP))
     if head['outcome']is not None:
      self.assertEqual(stage,'finish',(name,p,seed,stage,iteration));self.assertTrue(cast_paid);self.assertTrue(effect);self.assertTrue(power_paid if name=='PuPu UFO'else equip_paid);return dict(name=name,seat=p,seed=seed,frames=frames)
     o=g.observe(head['actor']);actor=o['actor'];objects={v['id']:v for v in o['objects']};field=[v for v in objects.values()if v['zone']=='Battlefield'];mine=[v for v in field if v['controller']==p];hand=[v for v in g.observe(p)['objects']if v['zone']=='Hand'and v['owner']==p];body=objects.get(source);bearbody=objects.get(bear);quiet=o['decision']=='priority'and not o['stack']and not o['announcing']and not o['resolving'];towncount=sum(v['card']in towns for v in mine);mana=sum(o['players'][int(p[-1])]['mana'])+sum(v['card']in lands and not v['tapped']for v in mine);handtown=[v for v in hand if v['card']in towns]

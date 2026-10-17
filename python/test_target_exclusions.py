@@ -1,7 +1,7 @@
 """Real paid complete filter/modal bodies in naturally drawn Standard games."""
 import json,os,unittest
 from pathlib import Path
-from rustmage import Game
+from rustmage import OBSERVATION_SCHEMA, Game
 import test_role_consumers as roles
 EXPECTED=json.loads((Path(__file__).resolve().parents[1]/'data/standard/coverage.json').read_text())['catalogue_version']
 BASICS=['Plains','Island','Swamp','Mountain','Forest']
@@ -28,7 +28,7 @@ class TargetExclusionTests(unittest.TestCase):
     o=g.observe('P0')
     if o['outcome'] is not None:
      self.assertTrue(proved,(name,p,mode,seed,stage,iteration));return dict(name=name,player=p,mode=mode,frames=frames,paid=paid)
-    o=g.observe(o['actor']);actor=o['actor'];self.assertEqual((o['schema'],o['catalogue']),(103,EXPECTED));objects={v['id']:v for v in o['objects']};private=g.observe(p);hand=[v for v in private['objects'] if v['zone']=='Hand' and v['owner']==p];own=[v for v in objects.values() if v['zone']=='Battlefield' and v['controller']==p];foes=[v for v in objects.values() if v['zone']=='Battlefield' and v['controller']==q];quiet=o['decision']=='priority' and not o['stack'] and not o['announcing'] and not o['resolving']
+    o=g.observe(o['actor']);actor=o['actor'];self.assertEqual((o['schema'],o['catalogue']),(OBSERVATION_SCHEMA,EXPECTED));objects={v['id']:v for v in o['objects']};private=g.observe(p);hand=[v for v in private['objects'] if v['zone']=='Hand' and v['owner']==p];own=[v for v in objects.values() if v['zone']=='Battlefield' and v['controller']==p];foes=[v for v in objects.values() if v['zone']=='Battlefield' and v['controller']==q];quiet=o['decision']=='priority' and not o['stack'] and not o['announcing'] and not o['resolving']
     if stage=='setup':
      body=next((v['id'] for v in foes if v['card']=='Bear Cub'),None);artifact=next((v['id'] for v in foes if v['card']=='Basilisk Collar'),None)
      hero=next((v['id'] for v in objects.values() if v['zone']=='Graveyard' and v['owner']==p and v['card']=='Agent of Atlas'),None);villain=next((v['id'] for v in objects.values() if v['zone']=='Graveyard' and v['owner']==p and v['card']=='Common Crook'),None)

@@ -1,6 +1,6 @@
 """Real paid replacement sources, residual actions and owned continuations."""
 import unittest
-from rustmage import Game,EngineError
+from rustmage import OBSERVATION_SCHEMA, Game,EngineError
 NAMES=['Doubling Season','Exalted Sunborn','Loading Zone','Michelangelo, Weirdness to 11','Yoshimaru, Beloved Companion','Caradora, Heart of Alacria','Quina, Qu Gourmet','Draconic Visitor','Bartolomé del Presidio']
 BASICS=['Plains','Island','Swamp','Mountain','Forest']
 class ReplacementTests(unittest.TestCase):
@@ -38,7 +38,7 @@ class ReplacementTests(unittest.TestCase):
      if i==5:self.assertTrue(search);self.assertTrue(any(v['owner']==p and v['zone']=='Hand' and v['card']=='Alacrian Jaguar' for v in objs.values()))
      baseline=dict(tokens=sum(v.get('token') is not None for v in ownbf),counter=int(bear['counters']['plus_one']),library=o['players'][pi]['library_count'])
     if done and quiet:
-     self.assertEqual(o['schema'],103)
+     self.assertEqual(o['schema'],OBSERVATION_SCHEMA)
      if mode=='job':self.assertEqual(objs[job]['attached_to'],selected);recipient=objs[selected['card']];self.assertIn('Bard',recipient['granted_subtypes']);self.assertEqual(recipient['token']['subtypes'],'Frog' if first else 'Hero');return
      if mode=='counter':self.assertEqual(int(bear['counters']['plus_one']),baseline['counter']+(3 if first else 4));self.assertGreater(replacements,0);return
      if mode=='token':self.assertEqual(sum(v.get('token') is not None for v in ownbf),baseline['tokens']+(3 if first else 4));self.assertGreater(replacements,0);return

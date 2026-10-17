@@ -1,7 +1,7 @@
 """Complete combat-restriction bodies in naturally drawn legal Standard games."""
 import json,os,unittest
 from pathlib import Path
-from rustmage import Game
+from rustmage import OBSERVATION_SCHEMA, Game
 from test_role_consumers import RoleConsumerTests
 FP=json.loads((Path(__file__).resolve().parents[1]/'data/standard/coverage.json').read_text())['catalogue_version']
 NAMES=['Pacifism','Mouser Mark III','Tiger-Dillo','Technodrome','The Lion-Turtle']
@@ -23,7 +23,7 @@ class CombatRestrictionTests(unittest.TestCase):
     head=g.observe('P0')
     if head['outcome'] is not None:
      self.assertEqual(stage,'finish',(name,p,seed,stage,iteration));self.assertTrue(source_paid);self.assertGreater(paid,0);return dict(name=name,player=p,frames=frames,paid=paid)
-    o=g.observe(head['actor']);actor=o['actor'];self.assertEqual((o['schema'],o['catalogue']),(103,FP));objects={v['id']:v for v in o['objects']};own=[v for v in objects.values() if v['zone']=='Battlefield' and v['controller']==p];foes=[v for v in objects.values() if v['zone']=='Battlefield' and v['controller']==q];hand=[v for v in g.observe(p)['objects'] if v['zone']=='Hand' and v['owner']==p];body=objects.get(source);ally=next((v for v in own if v['card']=='Bear Cub'),None);foe=next((v for v in foes if v['card']=='Bear Cub'),None);artifact=next((v for v in own if v['card']=='Candy Trail'),None);quiet=o['decision']=='priority' and not o['stack'] and not o['announcing'] and not o['resolving'];main=actor==p and o['active']==p and o['step']=='Main1'
+    o=g.observe(head['actor']);actor=o['actor'];self.assertEqual((o['schema'],o['catalogue']),(OBSERVATION_SCHEMA,FP));objects={v['id']:v for v in o['objects']};own=[v for v in objects.values() if v['zone']=='Battlefield' and v['controller']==p];foes=[v for v in objects.values() if v['zone']=='Battlefield' and v['controller']==q];hand=[v for v in g.observe(p)['objects'] if v['zone']=='Hand' and v['owner']==p];body=objects.get(source);ally=next((v for v in own if v['card']=='Bear Cub'),None);foe=next((v for v in foes if v['card']=='Bear Cub'),None);artifact=next((v for v in own if v['card']=='Candy Trail'),None);quiet=o['decision']=='priority' and not o['stack'] and not o['announcing'] and not o['resolving'];main=actor==p and o['active']==p and o['step']=='Main1'
     lessons=[v for v in objects.values() if v['zone']=='Graveyard' and v['owner']==p and v['card'] in ['Abandon Attachments','Fancy Footwork']]
     if stage=='waitbody' and quiet and body is not None and body['zone']=='Battlefield':
      self.assertTrue(source_paid);self.assertEqual((body['owner'],body['controller']),(p,p))

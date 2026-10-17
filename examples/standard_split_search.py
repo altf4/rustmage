@@ -9,7 +9,7 @@ import sys
 import unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'python'))
-from rustmage import Game,EngineError
+from rustmage import OBSERVATION_SCHEMA, Game,EngineError
 from test_adventure import AdventureTests
 BLOOM='Bloomvine Regent // Claim Territory'
 TROOP='Troop of Ponies'
@@ -24,7 +24,7 @@ class SplitStandard(unittest.TestCase):
   deck=['Forest']*32+sum(([n]*4 for n in [name,'Bear Cub','Chrome Companion',SAGU,'Bygone Colossus','Snakeskin Veil','Thrill of Possibility']),[])
   self.assertEqual(len(deck),60)
   with Game([deck,deck],seed=seed,starting_player=p,deck_rules='Standard',library=library)as g:
-   self.assertEqual(g.observe('P0')['catalogue'],EXPECTED_CATALOGUE);self.assertEqual(g.observe('P0')['schema'],103)
+   self.assertEqual(g.observe('P0')['catalogue'],EXPECTED_CATALOGUE);self.assertEqual(g.observe('P0')['schema'],OBSERVATION_SCHEMA)
    stage='setup';source=None;descriptor=False;base=None;chosen=[];destination=None;attacked=False;private=0;reveals=0;dragon=None;opponent_dragon=None
    for iteration in range(30000):
     o=g.observe('P0')
@@ -32,7 +32,7 @@ class SplitStandard(unittest.TestCase):
      self.assertEqual(stage,'finish',(route,p,seed,stage,iteration))
      if route!='omen':self.assertTrue(attacked)
      return dict(decisions=iteration,private=private,reveals=reveals,outcome=o['outcome'])
-    o=g.observe(o['actor']);self.assertEqual(o['schema'],103);actor=o['actor'];objects={v['id']:v for v in o['objects']};body=objects.get(source)
+    o=g.observe(o['actor']);self.assertEqual(o['schema'],OBSERVATION_SCHEMA);actor=o['actor'];objects={v['id']:v for v in o['objects']};body=objects.get(source)
     quiet=o['decision']=='priority'and not o['stack']and not o['announcing']and not o['resolving']
     if stage=='normal'and quiet:
      self.assertTrue(descriptor);self.assertEqual(body['zone'],'Battlefield')

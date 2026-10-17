@@ -2,7 +2,7 @@
 import json
 from pathlib import Path
 import unittest
-from rustmage import EngineError, Game
+from rustmage import OBSERVATION_SCHEMA, EngineError, Game
 
 NAMES = ['Circuitous Route', 'Map the Frontier', 'Dragonstorm Forecaster', 'Magitek Infantry', 'Honored Knight-Captain', 'Mystical Teachings', 'Glimpse the Core', 'Radioactive Spider', 'Spinewoods Armadillo', 'Call the Mountain Chocobo', 'Chocobo Racetrack', 'Gysahl Greens', 'Harvester of Misery', 'Outcaster Greenblade', 'Pia, Aether Ascetic', 'Simulacrum Shaper', 'Solemn Simulacrum', 'Steel Wrecking Ball', 'Sureshot Sower']
 FACTS = {c['name']: c for c in json.loads((Path(__file__).resolve().parents[1] / 'data/standard/cards.json').read_text())['cards']}
@@ -325,7 +325,7 @@ class ExactSearchTests(unittest.TestCase):
                     baseline = obs
                     tokens_before = len([v for v in own if v['token'] and v['token']['subtypes'] == 'Bird'])
                 after = self.replay(game, obs, j)
-                self.assertEqual(after['schema'], 103)
+                self.assertEqual(after['schema'], OBSERVATION_SCHEMA)
                 if ann and ann['source_card'] == name and action['kind'] == 'PayCosts' and i in HAND and not cast:
                     self.assertEqual(next(v for v in after['objects'] if v['id'] == source_id)['zone'], 'Graveyard')
                     self.assertEqual(after['players'][int(seat[1])]['cards_discarded_this_turn'], obs['players'][int(seat[1])]['cards_discarded_this_turn'] + 1)

@@ -1,7 +1,7 @@
 """Complete base-stat bodies, naturally drawn and paid in Standard games."""
 import json,os,unittest
 from pathlib import Path
-from rustmage import Game
+from rustmage import OBSERVATION_SCHEMA, Game
 from test_role_consumers import RoleConsumerTests
 FP=json.loads((Path(__file__).resolve().parents[1]/'data/standard/coverage.json').read_text())['catalogue_version']
 CASES=[('Doc Ock, Sinister Scientist',None,True),('Mirkwood Meditator',None,True),('Mirkwood Meditator',None,False),('Multiply by Zero',None,True),('Perfected Theory',0,True),('Perfected Theory',1,True),('Quandrix Charm',0,True),('Quandrix Charm',0,False),('Quandrix Charm',1,True),('Quandrix Charm',2,True),('Snowmelt Stag',None,True),('Turtle-Duck',None,True),('Water Wings',None,True),('Gateway Sneak',None,True),('Snooping Page',None,True)]
@@ -24,7 +24,7 @@ class BaseStatPublicTests(unittest.TestCase):
     head=g.observe('P0')
     if head['outcome'] is not None:
      self.assertEqual(stage,'finish',(name,p,seed,stage,iteration));self.assertTrue(source_paid);self.assertTrue(effect_seen);return dict(name=name,mode=mode,accept=accept,player=p,frames=frames,paid=paid)
-    o=g.observe(head['actor']);actor=o['actor'];self.assertEqual((o['schema'],o['catalogue']),(103,FP));objects={v['id']:v for v in o['objects']};field=[v for v in objects.values() if v['zone']=='Battlefield'];mine=[v for v in field if v['controller']==p];foes=[v for v in field if v['controller']==q];hand=[v for v in g.observe(actor)['objects'] if v['zone']=='Hand' and v['owner']==actor]
+    o=g.observe(head['actor']);actor=o['actor'];self.assertEqual((o['schema'],o['catalogue']),(OBSERVATION_SCHEMA,FP));objects={v['id']:v for v in o['objects']};field=[v for v in objects.values() if v['zone']=='Battlefield'];mine=[v for v in field if v['controller']==p];foes=[v for v in field if v['controller']==q];hand=[v for v in g.observe(actor)['objects'] if v['zone']=='Hand' and v['owner']==actor]
     ally=next((v for v in mine if v['card']=='Bear Cub'),None);foe=next((v for v in foes if v['card']=='Bear Cub'),None);villain=next((v for v in mine if v['card']=='Common Crook'),None);enchantment=next((v for v in foes if v['card']=='Pacifism'),None);body=objects.get(source)
     quiet=o['decision']=='priority' and not o['stack'] and not o['announcing'] and not o['resolving'];main=actor==p and o['active']==p and o['step']=='Main1';ready=ally is not None and foe is not None and any(v['zone']=='Hand' and v['owner']==p and v['card']==name for v in g.observe(p)['objects']) and len([v for v in mine if v['card'] in BASICS+['Azorius Guildgate']])>=8
     if body is not None and body['zone']=='Battlefield' and name=='Snowmelt Stag':self.assertEqual((body['power'],body['toughness']),(5,2) if o['active']==p else (2,5));self.assertTrue(body['keywords']&8)

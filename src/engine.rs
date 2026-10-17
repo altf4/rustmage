@@ -31,7 +31,9 @@ mod gift;
 mod gift_tests;
 pub use gift::{GiftContext, GiftDeclaration};
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 105;
+#[path = "observation_schema.rs"]
+mod observation_schema;
+pub const OBSERVATION_SCHEMA: u32 = observation_schema::VERSION;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
 #[path = "engine_mobilize.rs"]
