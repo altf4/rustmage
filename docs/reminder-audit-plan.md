@@ -27,7 +27,7 @@ The baseline AST inventory has 26 parenthesis-related regex sites. Twenty use th
 | `extract_stat_rules` | Consumed scaling/characteristic clauses need their own grammar; raw reminders must not disappear while extracting the recognized clause. |
 | `static_permanent_template` | Whole-body normalization needs authenticated keyword grants, predicates, type references and semantic action reminders. |
 | `evidence_text` | The fixed-evidence body matcher normalizes parentheticals. Bind repeated thresholds, collection costs, subjects and optional branches before recognizing the body. |
-| `scalar_x_body` | Generic scalar bodies normalize reminders; the strict newer selected-face route has additional raw checks, but those do not authenticate all inherited scalar bodies. |
+| `scalar_x_body` | Generic scalar bodies normalize reminders; each scalar admission path requires raw authentication; a specialized selector's checks do not authenticate other inherited scalar bodies. |
 | `trigger_creature_template` | Authenticate keyword, action, counter, token and trigger explanations in their exact instruction context. |
 | `spell_program_template`, `modal_spell_template` | Every mode/instruction must compile fully, but reminder normalization can still discard unknown clauses. Bind the reminder to the instruction it explains. |
 | `aura_template`, `equipment_template` | Attachment Ward routes have explicit raw reminder checks. Other attachment bodies, keyword grants, equip costs and token/job mechanics need their own complete grammar audit. |
@@ -60,3 +60,9 @@ The inventory assigns every observed form to one semantic family. Related famili
 For each future production, use genuine published contexts plus independently renamed semantic equivalents. Check its emitted program and parameters, not just an `implemented` flag. Negative controls must include unknown parenthetical sentences, altered known explanations, nested and unbalanced groups, an insertion inside a keyword/action, familiar prose stolen from another mechanic, moved reminders, wrong recipient/owner, wrong repeated counts or costs, and wrong token/type context.
 
 Every phase needs canonical preservation of all admitted definitions, helper arms, colors, recipes and emblems, or a specific report of a prior incomplete admission being corrected or gated. Keep the full compiler suite and relevant native/public rules checks scoped to the exact source and immutable library fingerprints. Issue #261 stays open until every actual admission path has closed grammar.
+
+## Current composition evidence
+
+The initial frozen grammar source `8bd0afc833a3c33b3d76b2eda85eb3bfc65d9325` passed all 375 unique compiler methods in 492.686 seconds, six focused compiler methods, 1,678 native tests, all-target Clippy and six fresh optimized-library public API methods. Its schema-79/fingerprint-356326 library evidence belongs to that original 5,300-definition parent.
+
+Composed source `039e92a` includes merged main and the metadata-admission parent. All 5,303 actual parent definitions, colors, recipes, emblems and helper arms are canonically unchanged except fingerprint `b52768b3b9133f35a1450780ba1bb837c372430ef1441b5a53f5a2c172e51c9c`; inherited observation schema is 80. All 44 focused grammar/metadata/timing/Omen/selected-X/graveyard/split-search compiler methods pass in 2.192 seconds with the pinned Java source configured and no skips. Further composed compiler and fresh-library validation remain pending; this is not final approval. No new runtime engine code is introduced beyond the already validated composed metadata parent.
