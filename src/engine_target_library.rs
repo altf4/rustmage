@@ -36,7 +36,12 @@ impl Game {
                 .target_spec(item)
                 .group(bound.group)
                 .is_some_and(|spec| {
-                    self.target_matches(spec.rule, item.controller, item.object, bound.target)
+                    self.target_matches(
+                        spec.rule,
+                        item.controller,
+                        item.target_source(),
+                        bound.target,
+                    )
                 })
     }
     pub(super) fn move_target_to_library(
@@ -91,7 +96,7 @@ impl Game {
         }
         self.state.resolving.as_mut().unwrap().target_library =
             Some(Box::new(TargetLibraryChoice {
-                source: item.object,
+                source: item.target_source(),
                 controller: item.controller,
                 targets,
             }));

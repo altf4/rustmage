@@ -3,7 +3,7 @@
   "as_of": "2026-10-16",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "rules": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
-  "scope": "All 88 snapshot adventure-layout records; 36 admitted true Adventure pairs and 39 other Adventures gated. All 13 distinct Omen pairs are now admitted by their independent Omen wrapper. Full source files are hashed. Admitted entries include direct imported semantic dependencies and the audited shared face/permission infrastructure; this does not claim every transitive Java dependency was rewritten.",
+  "scope": "All 88 snapshot adventure-layout records; 40 admitted true Adventure pairs and 35 other Adventures gated. All 13 distinct Omen pairs are now admitted by their independent Omen wrapper. Full source files are hashed. Admitted entries include direct imported semantic dependencies and the audited shared face/permission infrastructure; this does not claim every transitive Java dependency was rewritten.",
   "cards": [
     {
       "name": "An Unexpected Party // At the Door",
@@ -519,11 +519,47 @@
         }
       ],
       "mechanic": "Adventure",
-      "status": "gated_incomplete_residual",
+      "status": "complete_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/b/BesottedKnight.java",
           "java_sha256": "0c406c2316696e82f2d9784db9ed2d495596de5d38013bf6f03a4a4182a2092f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/CursedRoleToken.java",
+          "java_sha256": "a02cb2b2e1acef2e2ecbdcdd60b316b34c863db9a6c2bd62a720b9333a016b60"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/MonsterRoleToken.java",
+          "java_sha256": "67671911409c2865887315ecffbbe4018ad96147a0116ccfb2aff786773ffdd8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/RoyalRoleToken.java",
+          "java_sha256": "8779b4cf1b5485c5d14726215d91c3d73e24bb7dd0ffbcbe0e8866f6a555b5fc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/SorcererRoleToken.java",
+          "java_sha256": "5a85faa436c027f40d6efe841502a2f65c1667d246ae3af83e8955fc62ba7b35"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/WickedRoleToken.java",
+          "java_sha256": "0e4e26d1d998d36c57f3780153647f6fdabf50c1fa5b3e30ebbe5df5439a8883"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/YoungHeroRoleToken.java",
+          "java_sha256": "52b61f8b2cd0270cc1f45a672871f89eaa80f3b1b56933f6570f6e1daa3fdd09"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/RoleType.java",
+          "java_sha256": "dbf5a947685f6d81c10d8f4245efd85bd2ff637851682abf5a361f5b84744d1d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateRoleAttachedSourceEffect.java",
+          "java_sha256": "d02f77031cae94148cc31a006a79605f0c87a485546d973c17b463c1bed8fa55"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateRoleAttachedTargetEffect.java",
+          "java_sha256": "2a528a7a2d1e4a1c369adcc6b28b1761c279b3dfbfd922df38b53b1ac090adb3"
         }
       ]
     },
@@ -908,11 +944,47 @@
         }
       ],
       "mechanic": "Adventure",
-      "status": "gated_incomplete_residual",
+      "status": "complete_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/c/ConceitedWitch.java",
           "java_sha256": "cb760bc93dd220c70eaa755781c42fde16423174d8108d2d8d712736aa6553ee"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/CursedRoleToken.java",
+          "java_sha256": "a02cb2b2e1acef2e2ecbdcdd60b316b34c863db9a6c2bd62a720b9333a016b60"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/MonsterRoleToken.java",
+          "java_sha256": "67671911409c2865887315ecffbbe4018ad96147a0116ccfb2aff786773ffdd8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/RoyalRoleToken.java",
+          "java_sha256": "8779b4cf1b5485c5d14726215d91c3d73e24bb7dd0ffbcbe0e8866f6a555b5fc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/SorcererRoleToken.java",
+          "java_sha256": "5a85faa436c027f40d6efe841502a2f65c1667d246ae3af83e8955fc62ba7b35"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/WickedRoleToken.java",
+          "java_sha256": "0e4e26d1d998d36c57f3780153647f6fdabf50c1fa5b3e30ebbe5df5439a8883"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/YoungHeroRoleToken.java",
+          "java_sha256": "52b61f8b2cd0270cc1f45a672871f89eaa80f3b1b56933f6570f6e1daa3fdd09"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/RoleType.java",
+          "java_sha256": "dbf5a947685f6d81c10d8f4245efd85bd2ff637851682abf5a361f5b84744d1d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateRoleAttachedSourceEffect.java",
+          "java_sha256": "d02f77031cae94148cc31a006a79605f0c87a485546d973c17b463c1bed8fa55"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateRoleAttachedTargetEffect.java",
+          "java_sha256": "2a528a7a2d1e4a1c369adcc6b28b1761c279b3dfbfd922df38b53b1ac090adb3"
         }
       ]
     },
@@ -1163,11 +1235,47 @@
         }
       ],
       "mechanic": "Adventure",
-      "status": "gated_incomplete_residual",
+      "status": "complete_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/f/FerociousWerefox.java",
           "java_sha256": "7dd81e3c51cd943d715b9a444f72eddfe0961a9e81c130b56b541b8edc53dbdc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/CursedRoleToken.java",
+          "java_sha256": "a02cb2b2e1acef2e2ecbdcdd60b316b34c863db9a6c2bd62a720b9333a016b60"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/MonsterRoleToken.java",
+          "java_sha256": "67671911409c2865887315ecffbbe4018ad96147a0116ccfb2aff786773ffdd8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/RoyalRoleToken.java",
+          "java_sha256": "8779b4cf1b5485c5d14726215d91c3d73e24bb7dd0ffbcbe0e8866f6a555b5fc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/SorcererRoleToken.java",
+          "java_sha256": "5a85faa436c027f40d6efe841502a2f65c1667d246ae3af83e8955fc62ba7b35"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/WickedRoleToken.java",
+          "java_sha256": "0e4e26d1d998d36c57f3780153647f6fdabf50c1fa5b3e30ebbe5df5439a8883"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/YoungHeroRoleToken.java",
+          "java_sha256": "52b61f8b2cd0270cc1f45a672871f89eaa80f3b1b56933f6570f6e1daa3fdd09"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/RoleType.java",
+          "java_sha256": "dbf5a947685f6d81c10d8f4245efd85bd2ff637851682abf5a361f5b84744d1d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateRoleAttachedSourceEffect.java",
+          "java_sha256": "d02f77031cae94148cc31a006a79605f0c87a485546d973c17b463c1bed8fa55"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateRoleAttachedTargetEffect.java",
+          "java_sha256": "2a528a7a2d1e4a1c369adcc6b28b1761c279b3dfbfd922df38b53b1ac090adb3"
         }
       ]
     },
@@ -3446,11 +3554,47 @@
         }
       ],
       "mechanic": "Adventure",
-      "status": "gated_incomplete_residual",
+      "status": "complete_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/v/VantressTransmuter.java",
           "java_sha256": "0dcefad8542436c67f6b10608fc78923c836a5e33f868ee44ba01d3f565f21c0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/CursedRoleToken.java",
+          "java_sha256": "a02cb2b2e1acef2e2ecbdcdd60b316b34c863db9a6c2bd62a720b9333a016b60"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/MonsterRoleToken.java",
+          "java_sha256": "67671911409c2865887315ecffbbe4018ad96147a0116ccfb2aff786773ffdd8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/RoyalRoleToken.java",
+          "java_sha256": "8779b4cf1b5485c5d14726215d91c3d73e24bb7dd0ffbcbe0e8866f6a555b5fc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/SorcererRoleToken.java",
+          "java_sha256": "5a85faa436c027f40d6efe841502a2f65c1667d246ae3af83e8955fc62ba7b35"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/WickedRoleToken.java",
+          "java_sha256": "0e4e26d1d998d36c57f3780153647f6fdabf50c1fa5b3e30ebbe5df5439a8883"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/YoungHeroRoleToken.java",
+          "java_sha256": "52b61f8b2cd0270cc1f45a672871f89eaa80f3b1b56933f6570f6e1daa3fdd09"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/RoleType.java",
+          "java_sha256": "dbf5a947685f6d81c10d8f4245efd85bd2ff637851682abf5a361f5b84744d1d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateRoleAttachedSourceEffect.java",
+          "java_sha256": "d02f77031cae94148cc31a006a79605f0c87a485546d973c17b463c1bed8fa55"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateRoleAttachedTargetEffect.java",
+          "java_sha256": "2a528a7a2d1e4a1c369adcc6b28b1761c279b3dfbfd922df38b53b1ac090adb3"
         }
       ]
     },
@@ -3815,11 +3959,11 @@
     }
   ],
   "counts": {
-    "admitted": 27,
-    "gated_adventure": 48,
+    "admitted": 31,
+    "gated_adventure": 44,
     "admitted_omen": 13,
     "gated_omen": 0,
-    "source_records": 284,
-    "unique_java_files": 182
+    "source_records": 320,
+    "unique_java_files": 191
   }
 }

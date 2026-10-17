@@ -26,7 +26,7 @@ class EndureCompilerTests(unittest.TestCase):
         for amount in [1, 2, 3]:
             self.assertIn(f'Endure {{ amount: {amount}, token: Card(', rust)
         self.assertIn('MayPayMana { cost: ManaCost { colored: [1, 0, 0, 0, 0, 0], generic: 1 }, skip: 1 }', rust)
-        self.assertEqual(report['token_definitions'], 88)
+        self.assertEqual(report['token_definitions'], 94)
         # Components are u32; a total above u32 is still legal when each distinct
         # component fits. Only overflow within a component must be rejected.
         card = next(c for c in snapshot['cards'] if c['name'] == 'Fortress Kin-Guard')

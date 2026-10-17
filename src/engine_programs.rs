@@ -274,7 +274,7 @@ impl Game {
                         _ => false,
                     };
                     if matched {
-                        self.queue_trigger(source, index);
+                        self.queue_zone_trigger(source, index, event);
                     }
                 }
             }
@@ -396,7 +396,7 @@ impl Game {
                         yours && !same && entered.card.is_artifact()
                     }
                 };
-                if matched && self.queue_trigger(source, index) {
+                if matched && self.queue_zone_trigger(source, index, event) {
                     if same && source.card.x_symbols() > 0 {
                         self.state.pending_triggers.last_mut().unwrap().x = Some(event.x);
                     }
@@ -413,6 +413,35 @@ impl Game {
                 }
             }
         }
+    }
+
+    fn queue_zone_trigger(
+        &mut self,
+        source: &ObjectView,
+        index: usize,
+        event: &ZoneChange,
+    ) -> bool {
+        if !self.queue_trigger(source, index) {
+            return false;
+        }
+        // Only the movement which actually triggered this ability may bind its
+        // new source. Unrelated simultaneous observer deaths do not qualify.
+        if event.moved
+            && event.before.reference == source.reference
+            && matches!(
+                event.destination,
+                Zone::Battlefield | Zone::Stack | Zone::Graveyard | Zone::Exile | Zone::Command
+            )
+        {
+            self.state.pending_triggers.last_mut().unwrap().source_move =
+                Some(Box::new(TriggerSourceMoveView {
+                    before: event.before.reference,
+                    after: event.after,
+                    origin: event.before.zone,
+                    destination: event.destination,
+                }));
+        }
+        true
     }
 
     pub(super) fn queue_trigger(&mut self, source: &ObjectView, index: usize) -> bool {
@@ -456,6 +485,7 @@ impl Game {
         }
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
+            source_move: None,
             crew: None,
             cast_event: None,
             delayed_sacrifice: None,
@@ -902,10 +932,11 @@ impl Game {
         }
         let was_targeted = !item.targets.is_empty();
         let spec = self.target_spec(&item);
+        let target_source = item.target_source();
         item.targets.retain(|bound| {
             self.same_target_object(*bound)
                 && spec.group(bound.group).is_some_and(|group| {
-                    self.target_matches(group.rule, item.controller, item.object, bound.target)
+                    self.target_matches(group.rule, item.controller, target_source, bound.target)
                 })
         });
         let valid = !was_targeted || !item.targets.is_empty();
@@ -1587,6 +1618,9 @@ impl Game {
                     if self.start_discard_mana_value_life(&item) {
                         return;
                     }
+                }
+                Instruction::CreateRole { token, subject } => {
+                    self.resolve_role(&item, token, subject);
                 }
                 Instruction::JobSelect { token } => {
                     self.stage_token_creation(

@@ -17,6 +17,7 @@ pub(super) struct SbaBatch {
     pairs: Vec<(ObjectRef, u64)>,
     lost: [bool; 2],
     pub groups: Vec<LegendGroup>,
+    pub roles: Vec<RoleGroupView>,
 }
 impl SbaBatch {
     pub fn bytes(&self) -> usize {
@@ -24,6 +25,9 @@ impl SbaBatch {
             + (self.deaths.len() + self.ceased.len()) * std::mem::size_of::<CardId>()
             + self.pairs.len() * std::mem::size_of::<(ObjectRef, u64)>()
             + self.detached.len() * std::mem::size_of::<ObjectRef>()
+            + self.roles.len() * std::mem::size_of::<RoleGroupView>()
+            + self.roles.iter().map(|g| g.objects.len()).sum::<usize>()
+                * std::mem::size_of::<ObjectRef>()
             + self.groups.len() * std::mem::size_of::<LegendGroup>()
             + self.groups.iter().map(|g| g.objects.len()).sum::<usize>()
                 * std::mem::size_of::<ObjectRef>()
@@ -38,6 +42,7 @@ impl Game {
             detached: Vec::new(),
             pairs: Vec::new(),
             groups: Vec::new(),
+            roles: Vec::new(),
             lost: self
                 .state
                 .players
@@ -108,6 +113,7 @@ impl Game {
                 }
             }
         }
+        batch.roles = self.collect_role_choices(&mut batch.deaths);
         batch
     }
 
@@ -118,6 +124,7 @@ impl Game {
             || !b.ceased.is_empty()
             || !b.pairs.is_empty()
             || !b.groups.is_empty()
+            || !b.roles.is_empty()
             || b.lost.iter().any(|&lost| lost)
     }
     pub(super) fn state_based_actions(&mut self) {
@@ -134,6 +141,7 @@ impl Game {
                 || !batch.ceased.is_empty()
                 || !batch.pairs.is_empty()
                 || !batch.groups.is_empty()
+                || !batch.roles.is_empty()
                 || batch.lost.iter().any(|&lost| lost);
             // The check consumes this interval's deathtouch history, even when
             // indestructible prevents destruction. New entrants start clear.
@@ -143,10 +151,9 @@ impl Game {
             if !changed {
                 return;
             }
-            let choice = batch.groups.first().map(|group| group.controller);
-            if let Some(player) = choice {
+            if !batch.groups.is_empty() || !batch.roles.is_empty() {
                 self.state.sba_batch = Some(Box::new(batch));
-                self.state.pending = Pending::Legend { player };
+                self.advance_sba_choices();
                 return;
             }
             self.commit_sba_batch(batch);
@@ -164,14 +171,31 @@ impl Game {
             .find(|group| group.keep.is_none() && group.objects.contains(&object))
             .unwrap();
         group.keep = Some(object);
-        if let Some(group) = batch.groups.iter().find(|group| group.keep.is_none()) {
-            self.state.pending = Pending::Legend {
-                player: group.controller,
-            };
-        } else {
-            let batch = *self.state.sba_batch.take().unwrap();
-            self.commit_sba_batch(batch);
+        self.advance_sba_choices();
+    }
+
+    pub(super) fn advance_sba_choices(&mut self) {
+        let batch = self.state.sba_batch.as_ref().unwrap();
+        for player in [self.state.active, self.state.active.other()] {
+            if batch
+                .groups
+                .iter()
+                .any(|g| g.controller == player && g.keep.is_none())
+            {
+                self.state.pending = Pending::Legend { player };
+                return;
+            }
+            if batch
+                .roles
+                .iter()
+                .any(|g| g.controller == player && g.keep.is_none())
+            {
+                self.state.pending = Pending::Role { player };
+                return;
+            }
         }
+        let batch = *self.state.sba_batch.take().unwrap();
+        self.commit_sba_batch(batch);
     }
 
     fn commit_sba_batch(&mut self, mut batch: SbaBatch) {
@@ -184,6 +208,14 @@ impl Game {
                     .filter(|&&object| object != keep)
                     .map(|object| object.card),
             );
+        }
+        for group in &batch.roles {
+            let keep = group
+                .keep
+                .expect("every Role choice precedes the simultaneous event");
+            batch
+                .deaths
+                .extend(group.objects.iter().filter(|&&r| r != keep).map(|r| r.card));
         }
         batch.deaths.sort_unstable();
         batch.deaths.dedup();

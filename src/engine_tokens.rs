@@ -45,6 +45,41 @@ impl Game {
         defenders: Option<&[CombatDefender]>,
         capture: bool,
     ) -> Vec<ObjectRef> {
+        self.create_token_groups_attached(controller, groups, defenders, capture, None)
+    }
+    pub(super) fn create_token_groups_attached(
+        &mut self,
+        controller: Player,
+        groups: &[TokenGroupView],
+        defenders: Option<&[CombatDefender]>,
+        capture: bool,
+        attachment: Option<ObjectRef>,
+    ) -> Vec<ObjectRef> {
+        // Ordinary token batches borrow their groups without a new allocation.
+        let groups: std::borrow::Cow<'_, [TokenGroupView]> = if attachment.is_none() {
+            std::borrow::Cow::Borrowed(groups)
+        } else {
+            std::borrow::Cow::Owned(
+                groups
+                    .iter()
+                    .copied()
+                    .filter(|g| {
+                        g.token.role().is_none()
+                            || attachment
+                                .is_some_and(|r| self.aura_can_enchant(g.token, controller, r))
+                    })
+                    .collect(),
+            )
+        };
+        let timestamp = if attachment.is_some()
+            && groups
+                .iter()
+                .any(|g| g.token.role().is_some() && g.amount > 0)
+        {
+            Some(self.next_role_timestamp())
+        } else {
+            None
+        };
         let total = groups
             .iter()
             .try_fold(0u128, |n, g| {
@@ -80,7 +115,7 @@ impl Game {
             .try_reserve(fresh)
             .capacity("object allocation exhausted");
         let mut index = 0;
-        for group in groups {
+        for group in groups.iter() {
             let token = group.token;
             let tapped = group.tapped || self.opponent_entry_requires_tapped(token, controller);
             for _ in 0..group.amount {
@@ -135,6 +170,11 @@ impl Game {
                         defender: Some(d[index]),
                         blocked: false,
                     });
+                }
+                if token.role().is_some() {
+                    let recipient = attachment.expect("Role creation requires an attachment");
+                    self.state.objects[id as usize].attached_to = Some(recipient);
+                    self.record_role(self.object_ref(id), recipient, timestamp.unwrap());
                 }
                 self.record_nonland_entry(controller, token);
                 self.register_battlefield_sources(id);

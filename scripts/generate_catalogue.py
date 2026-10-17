@@ -389,6 +389,69 @@ def scaled_token_program(text):
     return [re.sub(r'amount: [0-9]+', 'amount: '+value, program[0],count=1).replace('CreateTokens {','CreateTokensScaled {',1)]
 
 
+ROLE_BODIES = {
+    'Cursed': 'Enchanted creature is 1/1.',
+    'Monster': 'Enchanted creature gets +1/+1 and has trample.',
+    'Royal': 'Enchanted creature gets +1/+1 and has ward {1}.',
+    'Sorcerer': 'Enchanted creature gets +1/+1 and has "Whenever this creature attacks, scry 1."',
+    'Wicked': 'Enchanted creature gets +1/+1. When this Aura is put into a graveyard from the battlefield, each opponent loses 1 life.',
+    'Young Hero': 'Enchanted creature has "Whenever this creature attacks, if its toughness is 3 or less, put a +1/+1 counter on it."',
+}
+
+
+def role_route(text):
+    """Detection can erase prose; production authentication always uses raw text."""
+    while isinstance(text,str):
+        if re.search(r'\bRole\s+token\b',text,re.IGNORECASE):return True
+        stripped=re.sub(r'\([^()]*\)', '', text)
+        if stripped==text:return False
+        text=stripped
+    return False
+
+
+def role_reminder_text(text):
+    """Authenticate complete predefined characteristics before presentation removal."""
+    for kind, body in ROLE_BODIES.items():
+        prefix = 'If you control another Role on it, put that one into the graveyard. '
+        # These two printed presentations describe the same predefined Role.
+        bodies = [body, prefix + body]
+        if kind == 'Wicked':
+            bodies += [v.replace('this Aura', 'this enchantment') for v in bodies]
+        for accepted in bodies:
+            pattern = r'(' + re.escape(kind) + r' Role token attached to [^.]+\.)( Activate only as a sorcery\.)? \(' + re.escape(accepted) + r'\)'
+            text = re.sub(pattern, r'\1\2', text)
+    return text
+
+
+def role_program(text):
+    if not isinstance(text,str): return None
+    body = text
+    before = []
+    fixed_rule = None
+    if body.startswith('tap target creature. '):
+        body = body[len('tap target creature. '):]; before = ['Tap']; fixed_rule = 'Creature'
+    elif body.startswith('target creature you control gains hexproof until end of turn. '):
+        body = body[len('target creature you control gains hexproof until end of turn. '):]
+        before = [f'GrantKeywords {{ subject: Subject::Targets, keywords: Keywords({KEYWORDS["hexproof"]}) }}']; fixed_rule = 'CreatureYou'
+    elif body.startswith('draw a card. '):
+        body = body[len('draw a card. '):]; before = ['Draw(PlayerSet::Controller, 1)']
+    body = body[0].lower() + body[1:] if body else body
+    m = re.fullmatch(r'create a (Cursed|Monster|Royal|Sorcerer|Wicked|Young Hero) Role token attached to (target creature(?: you control)?|another target creature(?: you control)?|up to one other target creature you control|it|that creature)\.', body)
+    if not m:return None
+    kind, recipient = m.groups()
+    rules = {'target creature':'Creature','target creature you control':'CreatureYou','another target creature':'OtherCreature','another target creature you control':'OtherCreatureYou','up to one other target creature you control':('OtherCreatureYou',0,1)}
+    rule = rules.get(recipient)
+    if rule is None:
+        if fixed_rule is None:return None
+        rule = fixed_rule
+    elif fixed_rule is not None and rule != fixed_rule:return None
+    factory = {'role':kind, 'name':kind, 'subtypes':'Aura Role', 'colors':0, 'keywords':0}
+    key = hashlib.sha256(json.dumps(factory,sort_keys=True).encode()).hexdigest()[:24]
+    if key in TOKEN_DEFS and TOKEN_DEFS[key] != factory:raise ValueError('token factory collision')
+    TOKEN_DEFS[key] = factory
+    return rule, [*before, f'CreateRole {{ token: __TOKEN_{key}__, subject: Subject::Targets }}']
+
+
 def token_program(text):
     """Fixed fully-described creature tokens only; no inferred predefined abilities."""
     if not isinstance(text, str):
@@ -2067,10 +2130,8 @@ def recovery_target_program(text):
     if match is None:
         return None
     action, cardinality, noun, destination, where = match.groups()
-    # Death-trigger source references currently retain the former incarnation.
-    # 'Another' in a graveyard needs a validated physical-source exclusion.
-    if cardinality == 'another target':
-        return None
+    # Zone-trigger packets bind their exact first public destination separately
+    # from source LKI, so `other` excludes that incarnation, never every CardId.
     if (action == 'return') != (where is None):
         return None
     noun = noun or ''
@@ -2166,6 +2227,7 @@ def targeted_program(text):
     if 'another target attacking creature you control' in text:
         result=targeted_program(text.replace('another target attacking creature you control','another target creature you control',1))
         return ('OtherCreatureAttackingYou',result[1]) if result and result[0]=='OtherCreatureYou' else None
+    if result:=role_program(text):return result
     if result:=target_subject_conditional(text):return result
     for subject,rule in [('another target attacking creature you control','OtherCreatureAttackingYou'),('target attacking creature','CreatureAttacking'),('target attacking Goblin you control','GoblinAttackingYou')]:
         if text.startswith(subject+' '):
@@ -3975,6 +4037,7 @@ def adventure_faces(card, mechanic="Adventure"):
         # Only audited reminder text may pass to generic face templates, which
         # historically strip parentheticals. Unknown clauses are not reminders
         # merely because a data source puts them inside parentheses.
+        text = role_reminder_text(text)
         checked = text.replace(
             'Food token. (It\'s an artifact with "{2}, {T}, Sacrifice this token: You gain 3 life.")',
             'Food token.')
@@ -4366,6 +4429,11 @@ def compile_catalogue(snapshot, target):
             else:
                 effect,keywords,abilities=saga
                 activations=[];enters=[0,0,0]
+        role_raw = original.get('oracle_text','')
+        if role_route(role_raw):
+            checked_role = role_reminder_text(role_raw)
+            checked_role = checked_role.replace("Menace (This creature can't be blocked except by two or more creatures.)", 'Menace')
+            if '(' in checked_role or ')' in checked_role: effect='Unsupported'
         if attachment_ward_route(original) and not attachment_ward_reminders_valid(original):
             effect='Unsupported'
         # New split-search consumers are whole bodies. The older permanent
@@ -4520,6 +4588,7 @@ def compile_catalogue(snapshot, target):
     used_tokens = sorted(set(re.findall(r'__TOKEN_([0-9a-f]+)__', '\n'.join(definitions+replacement_rows))))
     token_base = len(names)
     token_infos = []
+    role_rows = []
     for offset, key in enumerate(used_tokens):
         factory = TOKEN_DEFS[key]
         index = token_base + offset
@@ -4546,7 +4615,15 @@ def compile_catalogue(snapshot, target):
             continue
 
         predefined = factory.get('predefined')
-        if predefined:
+        if factory.get('role'):
+            role = factory['role']
+            effect, token_abilities = 'Permanent', []
+            type_line, kind = 'Enchantment — Aura Role', 32
+            bonus = 0 if role in ('Cursed','Young Hero') else 1
+            keywords = KEYWORDS['trample'] if role == 'Monster' else 0
+            aura_rows.append(f'        {index} => Some(AuraSpec {{ kinds: 1, relation: -1, bonus: EquipmentSpec {{ stats: Stats {{ power: {bonus}, toughness: {bonus} }}, keywords: Keywords({keywords}) }} }}),')
+            role_rows.append(f'        {index} => Some(RoleKind::{role.replace(" ", "")}),')
+        elif predefined:
             effect, _, _, token_abilities, _ = permanent_program_template({
                 'layout': 'normal', 'type_line': 'Artifact', 'mana_cost': '{0}',
                 'oracle_text': PREDEFINED[predefined]})
@@ -4558,6 +4635,14 @@ def compile_catalogue(snapshot, target):
             effect = f"Creature({factory['power']}, {factory['toughness']})"
             token_abilities = []
         token_triggers='&[]'
+        role = factory.get('role')
+        role_triggers = []
+        if role == 'Royal': role_triggers = attachment_grants('ward {1}')[1]
+        elif role == 'Sorcerer': role_triggers = [('GrantedAttacks',['Scry(1)'],'None')]
+        elif role == 'Young Hero': role_triggers = [('InterveningIf { guard: StepGuard::SourceToughnessAtMost(3), event: &TriggerCondition::GrantedAttacks }',['PutCounters { subject: Subject::Source, kind: CounterKind::PlusOne, amount: 1 }'],'None')]
+        elif role == 'Wicked': role_triggers = [('SelfDies',['LoseLife(PlayerSet::Opponent, 1)'],'None')]
+        if role_triggers:
+            token_triggers='&['+', '.join('TriggeredAbility { condition: TriggerCondition::'+condition+', targets: '+rust_targets(rule)+', program: '+rust_program(program)+' }' for condition,program,rule in role_triggers)+']'
         if factory.get('landfall_growth'):
             p,t=factory['landfall_growth']
             token_triggers='&[TriggeredAbility { condition: TriggerCondition::LandEntersYou, targets: TargetPlan::Single(TargetSpec::NONE), program: '+rust_program([grow_instruction('Source',p,t)])+' }]'
@@ -4606,6 +4691,7 @@ def compile_catalogue(snapshot, target):
     for index, (name, _, _, _) in enumerate(LEGACY):
         lines.append(f'    pub const {name.replace(" ", "")}: Card = Card({index});')
     lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn equipment(card: Card) -> Option<EquipmentSpec> {', '    match card.0 {', *equipment_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn aura(card: Card) -> Option<AuraSpec> {', '    match card.0 {', *aura_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn role(card: Card) -> Option<RoleKind> {', '    match card.0 {', *role_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn plot_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *plot_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn adventure_identity(card: Card) -> Option<&'static str> {", '    match card.0 {',
               *(f'        {names.index(parent)} => Some({json.dumps(parent,ensure_ascii=False)}),' for parent in inset_pairs), '        _ => None,', '    }', '}', '']

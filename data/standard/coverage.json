@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "ca9d41af88ffc5b636ec436798c65d1d324e80ac78303b2f492af6546a2d3f69",
+  "catalogue_version": "ae9341c9c41531cb667cc2bb0f290e97970840d79bbf9113283a34468863b368",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1853,
-  "implemented_total": 1859,
-  "token_definitions": 88,
+  "implemented_standard_cards": 1866,
+  "implemented_total": 1872,
+  "token_definitions": 94,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -2362,8 +2362,8 @@
     {
       "name": "Besotted Knight // Betroth the Beast",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Bespoke Battlegarb",
@@ -4354,8 +4354,8 @@
     {
       "name": "Charmed Clothier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Charmed Sleep",
@@ -4372,8 +4372,8 @@
     {
       "name": "Charming Scoundrel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Charred Foyer // Warped Space",
@@ -4948,8 +4948,8 @@
     {
       "name": "Conceited Witch // Price of Beauty",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Conciliator's Duelist",
@@ -7840,8 +7840,8 @@
     {
       "name": "Embereth Veteran",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Emberheart Challenger",
@@ -8992,8 +8992,8 @@
     {
       "name": "Ferocious Werefox // Guard Change",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Ferocity of the Hunt",
@@ -15154,8 +15154,8 @@
     {
       "name": "Living Lectern",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Living Library",
@@ -17122,8 +17122,8 @@
     {
       "name": "Morcant's Loyalist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Morlun, Devourer of Spiders",
@@ -20638,8 +20638,8 @@
     {
       "name": "Redtooth Genealogist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Redtooth Vanguard",
@@ -21640,8 +21640,8 @@
     {
       "name": "Royal Treatment",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Rubble Rouser",
@@ -24358,8 +24358,8 @@
     {
       "name": "Spiteful Hexmage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Spitfire Lagac",
@@ -24382,8 +24382,8 @@
     {
       "name": "Splashy Spellcaster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Splatter Technique",
@@ -29104,8 +29104,8 @@
     {
       "name": "Vantress Transmuter // Croaking Curse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Variable Chaser // Arc of Fortune",
@@ -31106,6 +31106,6 @@
       "implementation": null
     }
   ],
-  "adventure_definitions": 36,
+  "adventure_definitions": 40,
   "omen_definitions": 13
 }

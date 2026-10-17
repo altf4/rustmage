@@ -1,0 +1,178 @@
+//! Snapshot-owned Role timestamps and predefined attachment creation (CR303.7/704.5).
+use super::*;
+use crate::cards::RoleKind;
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct RoleTimestampView {
+    pub aura: ObjectRef,
+    pub recipient: ObjectRef,
+    pub timestamp: u64,
+}
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct RoleGroupView {
+    pub controller: Player,
+    pub recipient: ObjectRef,
+    pub objects: Vec<ObjectRef>,
+    pub keep: Option<ObjectRef>,
+}
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub(super) struct RoleState {
+    clock: u64,
+    pub attached: Vec<RoleTimestampView>,
+}
+impl RoleState {
+    pub fn bytes(&self) -> usize {
+        std::mem::size_of::<Self>() + self.attached.len() * std::mem::size_of::<RoleTimestampView>()
+    }
+}
+impl Game {
+    pub(super) fn next_role_timestamp(&mut self) -> u64 {
+        let r = self.state.roles.get_or_insert_with(Default::default);
+        r.clock = r.clock.checked_add(1).capacity("Role timestamps exhausted");
+        r.clock
+    }
+    pub(super) fn record_role(&mut self, aura: ObjectRef, recipient: ObjectRef, timestamp: u64) {
+        let r = self.state.roles.get_or_insert_with(Default::default);
+        r.attached.retain(|v| v.aura != aura);
+        r.attached.push(RoleTimestampView {
+            aura,
+            recipient,
+            timestamp,
+        });
+    }
+    pub(super) fn forget_role(&mut self, aura: ObjectRef) {
+        if let Some(r) = &mut self.state.roles {
+            r.attached.retain(|v| v.aura != aura);
+        }
+    }
+    pub(super) fn has_cursed_role(&self, recipient: ObjectRef) -> bool {
+        self.state.roles.as_ref().is_some_and(|r| {
+            r.attached.iter().any(|v| {
+                v.recipient == recipient
+                    && self.on_battlefield(v.aura.card)
+                    && self.object_ref(v.aura.card) == v.aura
+                    && self.state.objects[v.aura.card as usize].card.role()
+                        == Some(RoleKind::Cursed)
+                    && self.state.objects[v.aura.card as usize].attached_to == Some(recipient)
+            })
+        })
+    }
+    pub(super) fn resolve_role(&mut self, item: &SpellView, token: Card, subject: Subject) {
+        assert!(
+            token.role().is_some(),
+            "Role instruction requires a predefined Role factory"
+        );
+        let recipients: Vec<_> = match subject {
+            Subject::Source => (self.on_battlefield(item.card)
+                && self.object_ref(item.card) == item.object)
+                .then_some(item.object)
+                .into_iter()
+                .collect(),
+            Subject::Attached => self
+                .attached_subject(item)
+                .map(|id| self.object_ref(id))
+                .into_iter()
+                .collect(),
+            Subject::Entering => self
+                .entering_subject(item)
+                .map(|id| self.object_ref(id))
+                .into_iter()
+                .collect(),
+            Subject::Targets => item
+                .targets
+                .iter()
+                .filter(|&&b| self.same_target_object(b))
+                .filter_map(|b| {
+                    if let Target::Card(id) = b.target {
+                        Some(self.object_ref(id))
+                    } else {
+                        None
+                    }
+                })
+                .collect(),
+        };
+        for recipient in recipients {
+            if self.aura_can_enchant(token, item.controller, recipient) {
+                self.stage_token_creation(
+                    item.controller,
+                    token,
+                    1,
+                    false,
+                    replacements::TokenCompletion::RoleAttach(recipient),
+                );
+            }
+        }
+    }
+    pub(super) fn create_attached_role_groups(
+        &mut self,
+        controller: Player,
+        groups: &[TokenGroupView],
+        recipient: ObjectRef,
+    ) -> Vec<ObjectRef> {
+        self.create_token_groups_attached(controller, groups, None, false, Some(recipient))
+    }
+    /// All roles participate even if another SBA would simultaneously remove one.
+    /// Only malformed/illegal attachments are excluded by the enchantment rule.
+    pub(super) fn collect_role_choices(&self, deaths: &mut Vec<CardId>) -> Vec<RoleGroupView> {
+        let Some(state) = &self.state.roles else {
+            return Vec::new();
+        };
+        let mut groups: Vec<(Player, ObjectRef, Vec<&RoleTimestampView>)> = Vec::new();
+        for v in &state.attached {
+            if !self.on_battlefield(v.aura.card) || self.object_ref(v.aura.card) != v.aura {
+                continue;
+            }
+            let aura = &self.state.objects[v.aura.card as usize];
+            if aura.attached_to != Some(v.recipient)
+                || !self.aura_can_enchant(aura.card, aura.controller, v.recipient)
+            {
+                continue;
+            }
+            if let Some(g) = groups
+                .iter_mut()
+                .find(|g| g.0 == aura.controller && g.1 == v.recipient)
+            {
+                g.2.push(v);
+            } else {
+                groups.push((aura.controller, v.recipient, vec![v]));
+            }
+        }
+        let mut choices = Vec::new();
+        for (controller, recipient, roles) in groups {
+            if roles.len() < 2 {
+                continue;
+            }
+            let newest = roles.iter().map(|v| v.timestamp).max().unwrap();
+            deaths.extend(
+                roles
+                    .iter()
+                    .filter(|v| v.timestamp < newest)
+                    .map(|v| v.aura.card),
+            );
+            let objects: Vec<_> = roles
+                .iter()
+                .filter(|v| v.timestamp == newest)
+                .map(|v| v.aura)
+                .collect();
+            if objects.len() > 1 {
+                choices.push(RoleGroupView {
+                    controller,
+                    recipient,
+                    objects,
+                    keep: None,
+                });
+            }
+        }
+        choices
+    }
+    pub(super) fn keep_role(&mut self, object: ObjectRef) {
+        let batch = self.state.sba_batch.as_mut().unwrap();
+        batch
+            .roles
+            .iter_mut()
+            .find(|g| g.keep.is_none() && g.objects.contains(&object))
+            .unwrap()
+            .keep = Some(object);
+        self.advance_sba_choices();
+    }
+}

@@ -30,3 +30,26 @@ class AdventureEventCompilerTests(unittest.TestCase):
  def test_event_predicates_bind_typed_history_caster_and_declaration(self):
   for i,expected in enumerate(['InstantSorceryOrdinal(1)','CastingPlayer','SelfAttacksAlone']):
    c=self.rows[NAMES[i]];report=g.compile_catalogue(dict(cards=[c],card_count=1,cards_sha256=hashlib.sha256(json.dumps([c],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()),dict(banned_card_names=[]));self.assertIn(expected,report[0])
+ def test_exact_merged_parent_union_preserves_every_unrelated_program_and_factory(self):
+  import subprocess
+  from catalogue_preservation import canonical, assert_union
+  parent='ce9a90a1867ce741387d3ed0a1aac0aa1592ca08'
+  old=subprocess.check_output(['git','-C',str(g.ROOT),'show',parent+':src/generated/catalogue.rs'],text=True)
+  physical={c['oracle_id']:c['name'] for c in self.rows.values()}
+  changed={name+'#0' for name in NAMES}
+  insets={self.rows[name]['card_faces'][1]['name']+'#0' for name in NAMES}
+  helpers={(fn,name+'#0') for fn in ['adventure_identity','adventure_spell'] for name in NAMES}
+  helpers|={('adventure_parent',name) for name in insets}
+  aliases={'@adventure/'+self.rows[name]['oracle_id']:self.rows[name]['card_faces'][1]['name']+'#0' for name in NAMES}
+  aliases.update({self.rows[name]['card_faces'][1]['name']:self.rows[name]['card_faces'][1]['name']+'#0' for name in NAMES})
+  aliases.update({self.rows[name]['card_faces'][0]['name']:name+'#0' for name in NAMES})
+  before=canonical(old,physical);after=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  report=assert_union(before,after,changed=changed,added=insets,helpers=helpers,aliases=aliases)
+  # An unrelated admission, changed old helper, factory or inline flag must fail.
+  for section,key in [('definitions','Plains#0'),('helpers',next(iter(before['helpers']))),('tokens',next(iter(before['tokens']))),('flags',next(iter(before['flags'])))]:
+   mutant=copy.deepcopy(after);mutant[section][key]='unauthorized change'
+   with self.assertRaises(AssertionError):assert_union(before,mutant,changed=changed,added=insets,helpers=helpers,aliases=aliases)
+  self.assertEqual(report['prior_definitions'],5328)
+  self.assertEqual(report['current_definitions'],5331)
+  self.assertEqual(report['token_recipes'],94)
+  self.assertEqual(report['inline_flag_tables'],3)
