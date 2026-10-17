@@ -48,7 +48,7 @@ class JointLandTests(unittest.TestCase):
     def payable(n,player,extra=0):
      tokens=re.findall(r'\{([0-9WUBRGC]+)\}',FACTS[n].get('mana_cost',''));colors=[tokens.count(c)for c in'WUBRGC'];mana=budget(player);return all(a>=b for a,b in zip(mana,colors))and sum(mana)>=sum(colors)+sum(int(c)for c in tokens if c.isdecimal())+extra
     body=objects.get(source);hand_lands=[v for v in hand(p)if v['card']in BASICS];grave_lands=[v for v in grave(p)if v['card']in BASICS];need_grave=selection in['both','grave'];ready_bear=any(v['card']=='Bear Cub'and not v['summoning_sick']for v in board(p))
-    ready=quiet and payable(name,p,x or 0)and sum(v['card']in BASICS for v in board(p))>=7 and len(hand_lands)>=2 and(not need_grave or grave_lands)and(not bonny or ready_bear)
+    ready=quiet and payable(name,p,x or 0)and sum(v['card']in BASICS for v in board(p))>=7 and len(hand_lands)>=int(selection in['both','subset','hand']) and(not need_grave or grave_lands)and(not bonny or ready_bear)
     if quiet and stage=='wait_body':
      self.assertEqual(body['zone'],'Battlefield');self.assertTrue(body['keywords']&2);self.assertTrue(paid);stage='attack'
     if quiet and stage=='wait_effect':
@@ -95,6 +95,8 @@ class JointLandTests(unittest.TestCase):
      if k in['Discard','Bottom']:
       if actor==p and stage!='finish'and n==name and sum(v['card']==n for v in hand(p))<=1:return -1000
       if actor==p and stage=='setup'and need_grave and not grave_lands and n in BASICS:return 2500
+      if actor==p and stage!='finish'and n in BASICS and len(hand_lands)<=2:return -1000
+      if actor==p and stage=='setup'and bonny and n=='Bear Cub'and not any(v['card']=='Bear Cub'for v in board(p))and sum(v['card']==n for v in hand(p))<=1:return -1000
       return 1500
      if k=='Pass':return 0
      return 1000
