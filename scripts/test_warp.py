@@ -15,7 +15,7 @@ class WarpCompilerTests(unittest.TestCase):
  def test_twelve_warp_and_two_collateral_bodies_with_complete_residuals(self):
   for n in NAMES+['Runaway Boulder','Waylaying Pirates']:
    with self.subTest(name=n):self.assertTrue(self.admitted(self.rows[n]));self.assertFalse(self.admitted(dict(self.rows[n],oracle_text=self.rows[n]['oracle_text']+'\nDiscover 3.')))
-  gated=[c for c in self.rows.values() if 'Warp' in c.get('keywords',[]) and c['name']not in NAMES];self.assertEqual(len(gated),20)
+  gated=[c for c in self.rows.values() if 'Warp' in c.get('keywords',[]) and c['name']not in NAMES+['Exalted Sunborn','Loading Zone']];self.assertEqual(len(gated),18)
   for c in gated:self.assertFalse(self.admitted(c),c['name'])
  def test_warp_costs_full_declaration_and_later_selectors_stay_closed(self):
   extra=[next(l for l in self.rows['Appeal to Eirdu']['oracle_text'].splitlines() if l.startswith('Convoke ')),self.rows['Candy Grapple']['oracle_text'].splitlines()[0],next(l for l in self.rows["Djinn of Fool's Fall"]['oracle_text'].splitlines() if l.startswith('Plot ')),'Kicker {1}','Offspring {1}','Flashback {1}','Cycling {1}','Saddle 1','Mobilize 1','When this creature enters, it endures 1.','As an additional cost to cast this spell, collect evidence 6.']

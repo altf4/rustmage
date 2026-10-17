@@ -23,6 +23,7 @@ pub(super) struct DelayedBatch {
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct MobilizePlan {
+    groups: Vec<TokenGroupView>,
     token: Card,
     amount: usize,
     defenders: Vec<CombatDefender>,
@@ -31,6 +32,7 @@ pub(super) struct MobilizePlan {
 pub struct MobilizeChoiceView {
     pub source: ObjectRef,
     pub token: Card,
+    pub tokens: Vec<TokenGroupView>,
     pub amount: usize,
     pub defenders: Vec<CombatDefender>,
 }
@@ -40,6 +42,7 @@ impl Game {
         Some(MobilizeChoiceView {
             source: self.state.resolving.as_ref()?.item.object,
             token: f.token,
+            tokens: f.groups.clone(),
             amount: f.amount,
             defenders: f.defenders.clone(),
         })
@@ -85,7 +88,23 @@ impl Game {
         false
     }
     pub(super) fn start_mobilize(&mut self, token: Card, count: u128, item: &SpellView) -> bool {
-        let amount = usize::try_from(count).capacity("mobilize count representation exhausted");
+        self.stage_token_creation(
+            item.controller,
+            token,
+            count,
+            true,
+            replacements::TokenCompletion::Mobilize,
+        );
+        self.advance_replacements(false)
+    }
+    pub(super) fn start_mobilize_groups(&mut self, groups: Vec<TokenGroupView>) -> bool {
+        let item = &self.state.resolving.as_ref().unwrap().item;
+        let token = groups[0].token;
+        let total = groups
+            .iter()
+            .try_fold(0u128, |n, g| n.checked_add(g.amount))
+            .capacity("mobilize count exhausted");
+        let amount = usize::try_from(total).capacity("mobilize count representation exhausted");
         let fresh = amount.saturating_sub(self.state.free_tokens.len());
         (self.state.objects.len() as u128)
             .checked_add(fresh as u128)
@@ -108,6 +127,7 @@ impl Game {
         }
         self.state.mobilize = Some(Box::new(MobilizePlan {
             token,
+            groups,
             amount,
             defenders,
         }));
@@ -138,13 +158,7 @@ impl Game {
                 .iter()
                 .all(|&d| self.mobilize_defender_valid(item.controller, d))
         );
-        let tokens = self.create_token_batch(
-            item.controller,
-            f.token,
-            f.amount as u128,
-            true,
-            Some(&f.defenders),
-        );
+        let tokens = self.create_token_groups(item.controller, &f.groups, Some(&f.defenders), true);
         if tokens.is_empty() {
             return;
         }
@@ -242,6 +256,7 @@ impl Game {
         self.state.mobilize.as_ref().map_or(0, |f| {
             std::mem::size_of::<MobilizePlan>()
                 + f.defenders.len() * std::mem::size_of::<CombatDefender>()
+                + f.groups.len() * std::mem::size_of::<TokenGroupView>()
         }) + self.state.delayed_sacrifices.as_ref().map_or(0, |b| {
             std::mem::size_of::<Vec<DelayedBatch>>()
                 + b.iter()

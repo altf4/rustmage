@@ -901,6 +901,7 @@ impl Game {
                                 )
                             })
                     }) || item.x.is_some()
+                        || self.has_entry_counter_replacements(item.source_card)
                     {
                         let mut movement = self.entry_move(
                             item.card,
@@ -1002,6 +1003,9 @@ impl Game {
 
     pub(super) fn run_program(&mut self) {
         loop {
+            if self.advance_replacements(false) {
+                return;
+            }
             if self.state.entry_batch.is_some()
                 || self
                     .state
@@ -1146,15 +1150,7 @@ impl Game {
                         .copied()
                         .filter(|b| self.same_target_object(*b))
                         .collect::<Vec<_>>();
-                    for bound in targets {
-                        if let Target::Card(id) = bound.target {
-                            let controller = self.state.objects[id as usize].owner;
-                            if !self.keywords(id).contains(Keywords::INDESTRUCTIBLE) {
-                                self.move_target_batch(&[bound], Zone::Graveyard);
-                            }
-                            self.create_tokens(controller, token, u128::from(amount), false);
-                        }
-                    }
+                    self.destroy_and_create(targets, token, amount);
                 }
                 Instruction::CollectEvidence { threshold, skip } => {
                     if self.start_resolution_evidence(threshold, skip, false) {
@@ -1492,17 +1488,13 @@ impl Game {
                     }
                 }
                 Instruction::JobSelect { token } => {
-                    let created = self.create_token_batch_capture(
+                    self.stage_token_creation(
                         item.controller,
                         token,
                         1,
                         false,
-                        None,
-                        true,
+                        replacements::TokenCompletion::JobAttach(item.object),
                     );
-                    for target in created {
-                        self.attach_equipment(item.object, target);
-                    }
                 }
                 Instruction::CreateTokens {
                     token,
@@ -1789,12 +1781,11 @@ impl Game {
                 }
                 Instruction::PutDiscardCounters(kind) => {
                     if self.on_battlefield(item.card) && self.object_ref(item.card) == item.object {
-                        self.state.objects[item.card as usize].counters.add(
+                        self.effect_counter(
+                            item.card,
                             kind,
-                            item.discard_event
-                                .expect("discard-sized effect requires event")
-                                .amount
-                                .into(),
+                            item.discard_event.expect("discard event").amount.into(),
+                            replacements::ResumeMode::Program,
                         );
                     }
                 }
@@ -1803,43 +1794,39 @@ impl Game {
                     kind,
                     amount,
                 } => {
-                    // One instruction fixes the entire affected set before any counters change.
                     let affected: Vec<_> = (0..self.state.objects.len())
                         .map(|id| id as CardId)
                         .filter(|&id| {
                             self.creature_matches(filter, item.controller, item.object, id)
                         })
+                        .map(|id| {
+                            let mut c = Counters::default();
+                            c.add(kind, u64::from(amount));
+                            (self.object_ref(id), c)
+                        })
                         .collect();
-                    for id in affected {
-                        self.state.objects[id as usize]
-                            .counters
-                            .add(kind, u64::from(amount));
-                    }
+                    self.effect_counters(affected, replacements::ResumeMode::Program);
                 }
                 Instruction::DoubleCounters => {
-                    for bound in &item.targets {
-                        if self.same_target_object(*bound)
-                            && let Target::Card(id) = bound.target
-                        {
-                            let counters = &mut self.state.objects[id as usize].counters;
-                            counters.plus_one = counters
-                                .plus_one
-                                .checked_mul(2)
-                                .capacity("counter representation exhausted");
-                            counters.minus_one = counters
-                                .minus_one
-                                .checked_mul(2)
-                                .capacity("counter representation exhausted");
-                            counters.stun = counters
-                                .stun
-                                .checked_mul(2)
-                                .capacity("counter representation exhausted");
-                            counters.loyalty = counters
-                                .loyalty
-                                .checked_mul(2)
-                                .capacity("counter representation exhausted");
-                        }
-                    }
+                    // Doubling puts the existing quantity of each kind on the object.
+                    // Replacement effects modify that added quantity, not the old total.
+                    let changes = item
+                        .targets
+                        .iter()
+                        .filter_map(|b| {
+                            if !self.same_target_object(*b) {
+                                return None;
+                            }
+                            let Target::Card(id) = b.target else {
+                                return None;
+                            };
+                            Some((
+                                self.object_ref(id),
+                                self.state.objects[id as usize].counters,
+                            ))
+                        })
+                        .collect();
+                    self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
                 Instruction::PutCounters { .. } | Instruction::PutCountersScaled { .. } => {
                     let (subject, kind, amount) = match instruction {
@@ -1860,36 +1847,43 @@ impl Game {
                         ),
                         _ => unreachable!(),
                     };
-                    match subject {
-                        Subject::Entering => {
-                            if let Some(id) = self.entering_subject(&item) {
-                                self.state.objects[id as usize].counters.add(kind, amount);
-                            }
-                        }
-                        Subject::Attached => {
-                            if let Some(id) = self.attached_subject(&item) {
-                                self.state.objects[id as usize].counters.add(kind, amount);
-                            }
-                        }
+                    let ids: Vec<_> = match subject {
+                        Subject::Entering => self.entering_subject(&item).into_iter().collect(),
+                        Subject::Attached => self.attached_subject(&item).into_iter().collect(),
                         Subject::Source => {
                             if self.on_battlefield(item.card)
                                 && self.object_ref(item.card) == item.object
                             {
-                                self.state.objects[item.card as usize]
-                                    .counters
-                                    .add(kind, amount);
+                                vec![item.card]
+                            } else {
+                                Vec::new()
                             }
                         }
-                        Subject::Targets => {
-                            for bound in &item.targets {
-                                if self.same_target_object(*bound)
-                                    && let Target::Card(id) = bound.target
-                                {
-                                    self.state.objects[id as usize].counters.add(kind, amount);
+                        Subject::Targets => item
+                            .targets
+                            .iter()
+                            .filter_map(|b| {
+                                if self.same_target_object(*b) {
+                                    if let Target::Card(id) = b.target {
+                                        Some(id)
+                                    } else {
+                                        None
+                                    }
+                                } else {
+                                    None
                                 }
-                            }
-                        }
-                    }
+                            })
+                            .collect(),
+                    };
+                    let changes = ids
+                        .into_iter()
+                        .map(|id| {
+                            let mut c = Counters::default();
+                            c.add(kind, amount);
+                            (self.object_ref(id), c)
+                        })
+                        .collect();
+                    self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
                 Instruction::Tap | Instruction::Untap => {
                     if instruction == Instruction::Untap {

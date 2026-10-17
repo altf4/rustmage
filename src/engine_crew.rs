@@ -859,4 +859,85 @@ mod core_tests {
         child.restore(&saved).unwrap();
         assert!(child.object_view(id).is_creature());
     }
+
+    #[test]
+    fn composed_paid_creature_target_and_counter_replacements_use_animated_vehicle_kinds() {
+        for p in [Player::P0, Player::P1] {
+            for loading_first in [false, true] {
+                let mut g = scenario();
+                g.state.active = p;
+                g.state.priority = p;
+                g.state.players[p.index()].mana = [30; 6];
+                let mut named = |name, zone| spawn(&mut g, p, Card::from_name(name).unwrap(), zone);
+                let vehicle = named("Cultivator's Caravan", Zone::Battlefield);
+                let a = named("Bear Cub", Zone::Battlefield);
+                let b = named("Bear Cub", Zone::Battlefield);
+                let michelangelo = named("Michelangelo, Weirdness to 11", Zone::Battlefield);
+                let loading = named("Loading Zone", Zone::Battlefield);
+                let spell = named("Snakeskin Veil", Zone::Hand);
+                let cast = Action::Cast {
+                    card: spell,
+                    target: Some(Target::Card(vehicle)),
+                    payment: [0, 0, 0, 0, 1, 0],
+                };
+                let before = g.snapshot();
+                let revision = g.revision();
+                assert_eq!(g.apply(p, cast.clone()), Err(Error::IllegalAction));
+                assert_eq!(g.snapshot(), before);
+                assert_eq!(g.revision(), revision);
+                begin(&mut g, vehicle);
+                contribute(&mut g, a);
+                contribute(&mut g, b);
+                replay(&mut g, Action::FinishCrew);
+                settle(&mut g);
+                assert!(g.is_creature(vehicle));
+                assert!(!g.state.objects[vehicle as usize].card.is_creature());
+                replay(&mut g, cast);
+                let packet = g.state.stack.last().unwrap();
+                assert_eq!(packet.cast.unwrap().payment, [0, 0, 0, 0, 1, 0]);
+                replay(&mut g, Action::Pass);
+                replay(&mut g, Action::Pass);
+                let frame = g
+                    .observe(p)
+                    .replacement_choice
+                    .expect("both live creature filters apply");
+                assert_eq!(frame.effects.len(), 2);
+                let public = g
+                    .observe(p.other())
+                    .replacement_choice
+                    .expect("battlefield counter event is public");
+                assert_eq!(
+                    serde_json::to_value(&frame).unwrap(),
+                    serde_json::to_value(&public).unwrap()
+                );
+                let first = if loading_first { loading } else { michelangelo };
+                let choice = g.legal_actions().into_iter().find(|a| matches!(a,Action::ChooseReplacement { source,.. } if source.card == first)).unwrap();
+                let before = g.snapshot();
+                let revision = g.revision();
+                assert!(g.apply(p.other(), choice.clone()).is_err());
+                assert_eq!(g.snapshot(), before);
+                assert_eq!(g.revision(), revision);
+                let mut child = {
+                    let parent = g.clone();
+                    let child = parent.clone();
+                    drop(parent);
+                    child
+                };
+                child.apply(p, choice.clone()).unwrap();
+                g.apply(p, choice.clone()).unwrap();
+                assert_eq!(g.snapshot(), child.snapshot());
+                g.restore(&before).unwrap();
+                g.apply(p, choice).unwrap();
+                assert_eq!(g.snapshot(), child.snapshot());
+                settle(&mut g);
+                settle(&mut child);
+                assert_eq!(g.snapshot(), child.snapshot());
+                assert_eq!(
+                    g.state.objects[vehicle as usize].counters.plus_one,
+                    if loading_first { 3 } else { 4 }
+                );
+                assert!(g.keywords(vehicle).contains(Keywords::HEXPROOF));
+            }
+        }
+    }
 }

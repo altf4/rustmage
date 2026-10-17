@@ -26,14 +26,20 @@ pub(super) struct EntryBatch {
     pub moves: Vec<EntryMove>,
     pub choices: Vec<usize>,
     pub next: usize,
+    pub counter_next: usize,
+    pub counter_order: Vec<usize>,
     pub resume: Option<Pending>,
     pub shuffle_after: Option<Player>,
+    /// A surrounding effect waits for this immediate entry before its next event.
+    pub replacement_resume: Option<Box<replacements::ReplacementState>>,
 }
 impl EntryBatch {
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.moves.len() * std::mem::size_of::<EntryMove>()
             + self.choices.len() * std::mem::size_of::<usize>()
+            + self.counter_order.len() * std::mem::size_of::<usize>()
+            + self.replacement_resume.as_ref().map_or(0, |f| f.bytes())
     }
 }
 #[derive(Clone, Debug, Serialize)]
@@ -189,18 +195,56 @@ impl Game {
             .map(|(i, _)| i)
             .collect();
         choices.sort_by_key(|&i| (moves[i].before.owner != self.state.active, i));
+        // Counter replacement choices are APNAP independently of the move order.
+        // Preserve moves and existing Aura/life indices for the simultaneous commit.
+        let mut counter_order = moves
+            .iter()
+            .enumerate()
+            .filter(|(_, m)| m.destination == Zone::Battlefield && m.counters.total() > 0)
+            .map(|(i, _)| i)
+            .collect::<Vec<_>>();
+        counter_order.sort_by_key(|&i| (moves[i].before.owner != self.state.active, i));
         let batch = EntryBatch {
             moves,
             choices,
             next: 0,
+            counter_next: 0,
+            counter_order,
             resume: None,
             shuffle_after,
+            replacement_resume: None,
         };
-        if batch.choices.is_empty() {
+        let counter_replacements = batch.moves.iter().any(|m| {
+            m.destination == Zone::Battlefield
+                && m.counters.total() > 0
+                && (!m.before.card.replacement_effects().is_empty()
+                    || self.state.static_sources.iter().any(|&id| {
+                        self.state.objects[id as usize]
+                            .card
+                            .replacement_effects()
+                            .iter()
+                            .any(|e| matches!(e, crate::cards::ReplacementSpec::Counters { .. }))
+                    }))
+        });
+        if batch.choices.is_empty() && !counter_replacements {
             self.commit_entries(batch);
         } else {
             self.state.entry_batch = Some(Box::new(batch));
         }
+    }
+    pub(super) fn has_entry_counter_replacements(&self, card: Card) -> bool {
+        (card.enters_counters().total() > 0 || !card.entry_counter_rules().is_empty())
+            && (card
+                .replacement_effects()
+                .iter()
+                .any(|e| matches!(e, crate::cards::ReplacementSpec::Counters { .. }))
+                || self.state.static_sources.iter().any(|&id| {
+                    self.state.objects[id as usize]
+                        .card
+                        .replacement_effects()
+                        .iter()
+                        .any(|e| matches!(e, crate::cards::ReplacementSpec::Counters { .. }))
+                }))
     }
     pub(super) fn pre_entry_counters(&self, before: &ObjectView, destination: Zone) -> Counters {
         self.pre_entry_counters_with_payment(before, destination, None)
@@ -361,10 +405,42 @@ impl Game {
                 }
                 batch.next += 1;
             }
-            let batch = *self.state.entry_batch.take().unwrap();
+            while self.state.entry_batch.as_ref().unwrap().counter_next
+                < self.state.entry_batch.as_ref().unwrap().counter_order.len()
+            {
+                let batch = self.state.entry_batch.as_mut().unwrap();
+                let index = batch.counter_order[batch.counter_next];
+                batch.counter_next += 1;
+                let m = &batch.moves[index];
+                if m.destination != Zone::Battlefield || m.skipped || m.counters.total() == 0 {
+                    continue;
+                }
+                let p = replacements::CounterPlacement {
+                    object: m.before.reference,
+                    card: m.before.card,
+                    owner: m.before.owner,
+                    subtypes: GrantedSubtypes::default(),
+                    kind: m.before.card.kind_mask(),
+                    amount: m.counters,
+                    effect: true,
+                    entry_index: Some(index),
+                    private: !visible(m, m.before.owner.other(), &self.state.known_hand),
+                };
+                self.stage_counter_placements(vec![p], replacements::ResumeMode::Entry);
+                if self.advance_replacements(false) {
+                    return true;
+                }
+            }
+            let mut batch = *self.state.entry_batch.take().unwrap();
             self.state.pending = batch.resume.clone().unwrap();
+            let replacement_resume = batch.replacement_resume.take();
             self.commit_entries(batch);
-            if self.state.resolving.is_some() {
+            if let Some(outer) = replacement_resume {
+                self.state.replacements = Some(outer);
+                if self.advance_replacements(true) {
+                    return true;
+                }
+            } else if self.state.resolving.is_some() {
                 self.run_program();
             }
             if self
