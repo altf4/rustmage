@@ -239,7 +239,11 @@ fn subtype_layers_lasting_replacement_survives_cleanup_but_never_rebinds_old_tar
         let target = named(&mut g, p, "Bear Cub", Zone::Battlefield);
         let source = named(&mut g, p, "Shock", Zone::Hand);
         let mut item = g.cast_item(p, source, [0; 6]);
-        item.targets.push(BoundTarget { group: 0, target: Target::Card(target), object: Some(g.object_ref(target)) });
+        item.targets.push(BoundTarget {
+            group: 0,
+            target: Target::Card(target),
+            object: Some(g.object_ref(target)),
+        });
         g.set_creature_types(&item, Subject::Targets, &["Werewolf"]);
         let snap = g.snapshot();
         g.finish_cleanup();

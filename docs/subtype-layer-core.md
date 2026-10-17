@@ -35,3 +35,6 @@ implemented here and it remains unsupported. Mild-Mannered Librarian likewise
 remains gated; its activation, counters and draw are separate consumer work.
 Source pins are recorded in `subtype-layer-core-sources.json` and the Squire
 provenance. No additional complete cards are claimed by this core change.
+
+Rules references: [Comprehensive Rules, 613.6–613.8](https://media.wizards.com/2024/downloads/MagicCompRules%2004102024.pdf)
+and [Foundations release notes](https://media.wizards.com/2024/downloads/FDN_Release_Notes_dPeeQG7XyE/EN_FDN%20Release%20Notes%2008282024.pdf).

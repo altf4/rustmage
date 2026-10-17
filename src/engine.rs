@@ -6088,8 +6088,8 @@ mod fdn_library_eight_tests;
 mod object_name_tests;
 
 #[cfg(test)]
-#[path = "engine_subtype_layers_tests.rs"]
-mod subtype_layers_tests;
-#[cfg(test)]
 #[path = "engine_attack_requirement_tests.rs"]
 mod attack_requirement_tests;
+#[cfg(test)]
+#[path = "engine_subtype_layers_tests.rs"]
+mod subtype_layers_tests;
