@@ -28,16 +28,24 @@ class TemporaryDeathConsumerTests(unittest.TestCase):
   m=json.loads((g.ROOT/'docs/temporary-death-consumers.json').read_text())
   for row in m['cards']:
    if row['name'] not in NAMES:self.assertFalse(self.compile(self.cards[row['name']])[1],row['name'])
- def test_actual_parent_exact_declared_family_only(self):
+ def test_historical_nine_delivery_and_current_owned_programs(self):
   from scripts.catalogue_preservation import canonical,assert_union
-  physical={c['oracle_id']:c['name'] for c in self.cards.values()};before=subprocess.check_output(['git','-C',str(g.ROOT),'show','5d103e7a3172e4742687d3f77f3ed814264b1532:src/generated/catalogue.rs'],text=True)
-  prior=canonical(before,physical);after=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
-  token='@token/f144ea316833bbffad6fa831'
-  self.assertEqual({k:v for k,v in after['tokens'].items() if k not in prior['tokens']},{token:'TokenInfo { factory_identity: "@token/f144ea316833bbffad6fa831", name: "Detective Token", subtypes: "Detective", colors: 3 },'})
-  self.assertTrue(all(after['tokens'].get(k)==v for k,v in prior['tokens'].items()))
-  checked=copy.deepcopy(after);checked['tokens']=prior['tokens']
-  proof=assert_union(prior,checked,changed={n+'#0' for n in NAMES},added={token+'#0'},helpers={('warp_cost','Perigee Beckoner#0'),('aura','Convenient Target#0')},aliases={token:token+'#0'})
-  self.assertEqual(proof['preserved_definitions'],5322)
+  physical={c['oracle_id']:c['name'] for c in self.cards.values()}
+  load=lambda ref:canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',ref+':src/generated/catalogue.rs'],text=True),physical)
+  prior=load('5d103e7a3172e4742687d3f77f3ed814264b1532');delivered=load('471a7169e6ab1e00d6eeb35934ae4343a3bd6c67')
+  token='@token/f144ea316833bbffad6fa831';helpers={('warp_cost','Perigee Beckoner#0'),('aura','Convenient Target#0')}
+  self.assertEqual({k:v for k,v in delivered['tokens'].items() if k not in prior['tokens']},{token:'TokenInfo { factory_identity: "@token/f144ea316833bbffad6fa831", name: "Detective Token", subtypes: "Detective", colors: 3 },'})
+  self.assertTrue(all(delivered['tokens'].get(k)==v for k,v in prior['tokens'].items()))
+  checked=copy.deepcopy(delivered);checked['tokens']=prior['tokens']
+  options=dict(changed={n+'#0' for n in NAMES},added={token+'#0'},helpers=helpers,aliases={token:token+'#0'})
+  proof=assert_union(prior,checked,**options);self.assertEqual(proof['preserved_definitions'],5322)
+  current=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  for key in {n+'#0' for n in NAMES}|{token+'#0'}:
+   self.assertEqual(current['definitions'][key],delivered['definitions'][key]);self.assertEqual(current['colors'][key],delivered['colors'][key])
+  for key in helpers:self.assertEqual(current['helpers'][key],delivered['helpers'][key])
+  self.assertEqual(current['tokens'][token],delivered['tokens'][token]);self.assertEqual(current['aliases'][token],token+'#0')
+  mutant=copy.deepcopy(checked);mutant['definitions']['Plains#0']='unrelated mutation'
+  with self.assertRaises(AssertionError):assert_union(prior,mutant,**options)
  def test_full_inventory_source_pin_and_actual_card_facts(self):
   m=json.loads((g.ROOT/'docs/temporary-death-consumers.json').read_text());self.assertEqual(len(m['cards']),24);self.assertEqual(m['java_revision'],'492369c7844b8d76479f0393ff9eb6b0b0cf30d7')
   seen=set()

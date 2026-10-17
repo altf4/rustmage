@@ -1,0 +1,111 @@
+{
+  "parent": "8dd395286661963d1d1d98a2d384f2f5ab62d620",
+  "own_checkpoint": "64a9806",
+  "canonical": {
+    "prior_definitions": 5331,
+    "current_definitions": 5331,
+    "changed_definitions": [
+      "Bilbo's Gambit#0",
+      "Blooming Blast#0",
+      "Consumed by Greed#0",
+      "Crumb and Get It#0",
+      "Dawn's Truce#0",
+      "Dewdrop Cure#0",
+      "Into the Flood Maw#0",
+      "Long River's Pull#0",
+      "Longstalk Brawl#0",
+      "Mind Spiral#0",
+      "Nocturnal Hunger#0",
+      "Peerless Recycling#0",
+      "Sazacap's Brew#0",
+      "Scrapshooter#0",
+      "Valley Rally#0",
+      "Wear Down#0",
+      "Wildfire Howl#0"
+    ],
+    "added_definitions": [],
+    "preserved_definitions": 5314,
+    "prior_helpers": 888,
+    "new_helpers": [
+      [
+        "additional_cost",
+        "Sazacap's Brew#0"
+      ],
+      [
+        "gift",
+        "Bilbo's Gambit#0"
+      ],
+      [
+        "gift",
+        "Blooming Blast#0"
+      ],
+      [
+        "gift",
+        "Consumed by Greed#0"
+      ],
+      [
+        "gift",
+        "Crumb and Get It#0"
+      ],
+      [
+        "gift",
+        "Dawn's Truce#0"
+      ],
+      [
+        "gift",
+        "Dewdrop Cure#0"
+      ],
+      [
+        "gift",
+        "Into the Flood Maw#0"
+      ],
+      [
+        "gift",
+        "Long River's Pull#0"
+      ],
+      [
+        "gift",
+        "Longstalk Brawl#0"
+      ],
+      [
+        "gift",
+        "Mind Spiral#0"
+      ],
+      [
+        "gift",
+        "Nocturnal Hunger#0"
+      ],
+      [
+        "gift",
+        "Peerless Recycling#0"
+      ],
+      [
+        "gift",
+        "Sazacap's Brew#0"
+      ],
+      [
+        "gift",
+        "Scrapshooter#0"
+      ],
+      [
+        "gift",
+        "Valley Rally#0"
+      ],
+      [
+        "gift",
+        "Wear Down#0"
+      ],
+      [
+        "gift",
+        "Wildfire Howl#0"
+      ]
+    ],
+    "prior_colors": 5331,
+    "inline_flag_tables": 3,
+    "token_recipes": 94,
+    "emblem_recipes": 1,
+    "prior_aliases": 5437,
+    "result": "PASS"
+  },
+  "all17_own_programs_and18_helpers_identical": true
+}

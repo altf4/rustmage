@@ -427,3 +427,63 @@ fn consumers_real_lantern_removes_first_grave_binding_without_suspecting_new_zon
         assert!(g.state.suspected.is_none());
     }
 }
+
+#[test]
+fn consumers_parent_death_exile_suppresses_presumed_return_and_galuf_death_packets() {
+    for p in [Player::P0, Player::P1] {
+        for grant in ["Presumed Dead", "Galuf's Final Act"] {
+            let (mut g, [source, _, _]) = foreign_grants(p, ["Grizzly Bears", "Bygone Colossus", "Forest"]);
+            priority(&mut g, p);
+            act(&mut g, Action::AnnounceExile { card: source });
+            drive(&mut g, None);
+            assert_eq!((g.object_view(source).owner, g.object_view(source).controller), (p.other(), p));
+            let recipient = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+            let before = g.object_ref(source);
+            let deaths = g.state.creatures_died_this_turn;
+            paid(&mut g, p, grant, Some(Target::Card(source)));
+            paid(&mut g, p, "Scorching Dragonfire", Some(Target::Card(source)));
+            assert_eq!(g.object_view(source).zone, Zone::Exile);
+            assert_eq!(g.object_view(source).owner, p.other());
+            assert_ne!(g.object_ref(source), before);
+            assert_eq!(g.state.creatures_died_this_turn, deaths);
+            assert_eq!(g.state.objects[recipient as usize].counters.plus_one, 0);
+            assert!(g.state.temporary_abilities.is_none());
+            assert!(g.state.suspected.is_none());
+            assert!(g.state.death_exile_replacements.is_none());
+            assert!(g.state.stack.is_empty());
+        }
+    }
+}
+
+#[test]
+fn consumers_parent_gift_foreign_promise_does_not_follow_presumed_owner_return() {
+    for p in [Player::P0, Player::P1] {
+        let q = p.other();
+        let (mut g, [source, _, _]) = foreign_grants(p, ["Scrapshooter", "Bygone Colossus", "Forest"]);
+        // Fresh library witnesses ensure the real Gift can draw without a deck-loss fixture.
+        for _ in 0..8 { named(&mut g, q, "Forest", Zone::Library); }
+        let season = named(&mut g, q, "Doubling Season", Zone::Battlefield);
+        let hand_before = g.state.objects.iter().filter(|o| o.owner == q && o.zone == Zone::Hand).count();
+        priority(&mut g, p);
+        act(&mut g, Action::AnnounceExile { card: source });
+        act(&mut g, Action::ChooseGift { beneficiary: Some(q) });
+        drive(&mut g, Some(Target::Card(season)));
+        assert_eq!(g.object_view(source).controller, p);
+        assert_eq!(g.object_view(source).owner, q);
+        assert_eq!(g.object_view(season).zone, Zone::Graveyard);
+        assert_eq!(g.state.objects.iter().filter(|o| o.owner == q && o.zone == Zone::Hand).count(), hand_before + 1);
+        let entry = g.object_ref(source);
+        paid(&mut g, p, "Presumed Dead", Some(Target::Card(source)));
+        paid(&mut g, p, "Murder", Some(Target::Card(source)));
+        assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(source).controller, q);
+        assert_eq!(g.object_view(source).owner, q);
+        assert_ne!(g.object_ref(source), entry);
+        assert!(g.is_suspected(source));
+        assert_eq!(g.stats(source).power, 4);
+        assert!(!g.object_view(source).tapped);
+        assert_eq!(g.state.objects.iter().filter(|o| o.owner == q && o.zone == Zone::Hand).count(), hand_before + 1);
+        assert!(g.state.stack.is_empty());
+        assert!(g.state.pending_triggers.is_empty());
+    }
+}

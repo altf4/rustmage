@@ -325,7 +325,7 @@ class ExactSearchTests(unittest.TestCase):
                     baseline = obs
                     tokens_before = len([v for v in own if v['token'] and v['token']['subtypes'] == 'Bird'])
                 after = self.replay(game, obs, j)
-                self.assertEqual(after['schema'], 91)
+                self.assertEqual(after['schema'], 95)
                 if ann and ann['source_card'] == name and action['kind'] == 'PayCosts' and i in HAND and not cast:
                     self.assertEqual(next(v for v in after['objects'] if v['id'] == source_id)['zone'], 'Graveyard')
                     self.assertEqual(after['players'][int(seat[1])]['cards_discarded_this_turn'], obs['players'][int(seat[1])]['cards_discarded_this_turn'] + 1)

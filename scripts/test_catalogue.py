@@ -2239,11 +2239,12 @@ class CatalogueCompilerTests(unittest.TestCase):
         target=json.loads((generate.ROOT/'data/targets/standard-2026-10-15.json').read_text())
         rust,coverage=generate.compile_catalogue(rows,target)
         supported={c['name'] for c in coverage['cards'] if c['implemented']}
-        for name in ['Corrupted Conviction','Final Vengeance','Thrill of Possibility']:
+        for name in ['Corrupted Conviction','Final Vengeance','Thrill of Possibility',"Sazacap's Brew"]:
             self.assertIn(name,supported)
         for name in ['Grab the Prize','Pumpkin Bombardment','Souls Lost','Fear of Isolation']:
             self.assertNotIn(name,supported)
-        self.assertEqual(rust.count('=> Some(AdditionalCost {'),11)
+        # Complete Sazacap's Brew adds its mandatory caster-owned discard.
+        self.assertEqual(rust.count('=> Some(AdditionalCost {'),12)
         prefix='As an additional cost to cast this spell, '
         for cost in ['discard two cards.','you may discard a card.','sacrifice two creatures.',
                      'discard a card or pay {2}.','sacrifice an artifact or pay {2}.',

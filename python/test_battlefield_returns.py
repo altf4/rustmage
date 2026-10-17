@@ -22,7 +22,7 @@ class BattlefieldReturnTests(unittest.TestCase):
     head=g.observe('P0')
     if head['outcome'] is not None:
      self.assertEqual(stage,'finish',(name,p,seed,stage,iteration));self.assertGreater(paid,0);return dict(name=name,player=p,frames=frames,paid=paid)
-    o=g.observe(head['actor']);actor=o['actor'];self.assertEqual((o['schema'],o['catalogue']),(91,FP));objects={v['id']:v for v in o['objects']};own=[v for v in objects.values() if v['zone']=='Battlefield' and v['controller']==p];foes=[v for v in objects.values() if v['zone']=='Battlefield' and v['controller']==q];hand=[v for v in g.observe(p)['objects'] if v['zone']=='Hand' and v['owner']==p];quiet=o['decision']=='priority' and not o['stack'] and not o['announcing'] and not o['resolving']
+    o=g.observe(head['actor']);actor=o['actor'];self.assertEqual((o['schema'],o['catalogue']),(95,FP));objects={v['id']:v for v in o['objects']};own=[v for v in objects.values() if v['zone']=='Battlefield' and v['controller']==p];foes=[v for v in objects.values() if v['zone']=='Battlefield' and v['controller']==q];hand=[v for v in g.observe(p)['objects'] if v['zone']=='Hand' and v['owner']==p];quiet=o['decision']=='priority' and not o['stack'] and not o['announcing'] and not o['resolving']
     if stage=='wait' and quiet:
      self.assertEqual(objects[source]['zone'],'Graveyard')
      for before in group:

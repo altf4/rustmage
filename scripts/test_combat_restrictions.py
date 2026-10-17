@@ -33,7 +33,7 @@ class CombatRestrictionTests(unittest.TestCase):
   aura=dict(self.cards['Pacifism'],oracle_text="Flash\nEnchant creature\nEnchanted creature can't attack or block.");self.assertTrue(self.compile(aura)[1])
   for name in ['Cooped Up','Path to Redemption','Uneasy Alliance','Petrify','Sab-Sunen, Luxa Embodied','Patchwork Beastie']:
    c=next(c for c in json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards'] if c['name']==name);self.assertFalse(self.compile(c)[1],name)
- def test_exact_five_preserve_every_old_row_and_helper(self):
+ def test_historical_five_preservation_and_current_complete_programs(self):
   from scripts.catalogue_preservation import canonical,assert_union
   old=subprocess.check_output(['git','-C',str(g.ROOT),'show','b39084973f5e4d1d347f99322080c315df2fc7bc:src/generated/catalogue.rs'],text=True);physical={c['oracle_id']:c['name'] for c in json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards']};before=canonical(old,physical);delivered=subprocess.check_output(['git','-C',str(g.ROOT),'show','5d103e7a3172e4742687d3f77f3ed814264b1532:src/generated/catalogue.rs'],text=True);after=canonical(delivered,physical);helpers={('combat_restriction',n+'#0') for n in NAMES}|{('aura','Pacifism#0')};report=assert_union(before,after,changed={n+'#0' for n in NAMES},added=set(),helpers=helpers,aliases={});self.assertEqual(report['preserved_definitions'],5326)
   current=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
