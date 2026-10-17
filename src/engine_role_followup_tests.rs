@@ -111,13 +111,12 @@ fn pick(g: &Game, targets: &[Target], pay: bool, bargain: Option<CardId>, discar
             return a.clone();
         }
     }
-    if !discard {
-        if let Some(a) = actions
+    if !discard
+        && let Some(a) = actions
             .iter()
             .find(|a| matches!(a, Action::DeclineEffectPayment))
-        {
-            return a.clone();
-        }
+    {
+        return a.clone();
     }
     if let Some(a) = actions.iter().find(|a| matches!(a, Action::FinishTargets)) {
         return a.clone();
@@ -194,14 +193,27 @@ fn total_roles(g: &Game, kind: RoleKind) -> usize {
 fn complete_case(p: Player, index: usize, foreign: bool) {
     let name = NAMES[index];
     let mut g = setup(p);
-    let ally = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let ally = named(
+        &mut g,
+        if foreign { p.other() } else { p },
+        "Bear Cub",
+        Zone::Battlefield,
+    );
+    g.state.objects[ally as usize].controller = p;
     let foe = named(
         &mut g,
-        p.other(),
+        if foreign { p } else { p.other() },
         if index == 9 { "Bear Cub" } else { "Hill Giant" },
         Zone::Battlefield,
     );
-    let fodder = named(&mut g, p, "Candy Trail", Zone::Battlefield);
+    g.state.objects[foe as usize].controller = p.other();
+    let fodder = named(
+        &mut g,
+        if foreign { p.other() } else { p },
+        "Candy Trail",
+        Zone::Battlefield,
+    );
+    g.state.objects[fodder as usize].controller = p;
     let before = g.state.players[p.index()].mana.iter().sum::<u32>();
     let opponent_hand = g.hand_count(p.other());
     let before_draw = g.state.players[p.index()].cards_drawn_this_turn;
@@ -758,6 +770,31 @@ fn bargain_requires_actual_sacrifice_and_does_not_inherit_on_reentry_but_old_tri
                 usize::from(bargain)
             );
             assert_eq!(g.on_battlefield(fodder), !bargain);
+        }
+    }
+}
+
+#[test]
+fn whisper_player_group_remains_live_when_optional_role_incarnation_is_lost() {
+    for p in [Player::P0, Player::P1] {
+        for choose_role in [false, true] {
+            let mut g = setup(p);
+            let ally = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            g.state.objects[ally as usize].controller = p;
+            let hand = g.hand_count(p.other());
+            announce(&mut g, p, "Eriette's Whisper", true);
+            let mut targets = vec![Target::Player(p.other())];
+            if choose_role {
+                targets.push(Target::Card(ally));
+            }
+            finish_announcement(&mut g, &targets, None);
+            if choose_role {
+                g.move_object(ally, Zone::Hand);
+                reenter_under(&mut g, ally, p);
+            }
+            drive(&mut g, &[], true, None, true);
+            assert_eq!(hand - g.hand_count(p.other()), 2);
+            assert_eq!(total_roles(&g, RoleKind::Wicked), 0);
         }
     }
 }

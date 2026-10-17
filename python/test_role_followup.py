@@ -117,9 +117,11 @@ class RoleFollowupTests(unittest.TestCase):
       wanted=[{'Card':target}]
       if i in [0,2,3,7,9]:wanted.append({'Card':primary})
       if i==4:wanted.append({'Player':q})
-      return 3200 if a['target'] in wanted else -1000
+      if i in [0,2,3,7,9] and a['target']=={'Card':primary}:return 3200
+      if i==4 and a['target']=={'Player':q}:return 3200
+      return 3100 if a['target'] in wanted else -1000
      if k=='ChooseBargain':return 3200 if a['sacrifice'] is not None and objects[a['sacrifice']['card']]['card']=='Candy Trail' else -1000
-     if k=='DeclineResolutionMana':return -1000
+     if k=='DeclineResolutionMana':return 1000
      if k=='PayResolutionMana':return 3200
      if k=='DeclineEffectPayment':return 3200 if i==11 and decline else -1000
      if k=='PlayLand':return 2200-20*sum(v['zone']=='Battlefield' and v['controller']==actor and v['card']==n for v in objects.values())
@@ -128,7 +130,7 @@ class RoleFollowupTests(unittest.TestCase):
      if k in ['Discard','Bottom']:
       if actor==p and stage=='setup' and n==name and sum(v['card']==n for v in hand)<=1:return -1000
       return 2200 if n in ['Candy Trail','Thrill of Possibility','Quick Study','Bygone Colossus','Chrome Companion'] else 1000
-     if k=='Attack':return 3000 if stage=='finish' else -1000
+     if k=='Attack':return 3600 if stage=='finish' else -1000
      if k=='Block':return -1000
      if k=='Pass':return 0
      return 1000
