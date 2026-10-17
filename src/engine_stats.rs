@@ -129,6 +129,7 @@ impl Game {
                 .entry_trigger_suppression()
                 != 0
             || self.state.objects[id as usize].card.opponent_entry_tapped() != 0
+            || !self.state.objects[id as usize].card.cast_timing_grants().is_empty()
         {
             self.state.static_sources.push(id);
         }
