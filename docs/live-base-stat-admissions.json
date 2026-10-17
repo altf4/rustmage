@@ -1,0 +1,667 @@
+{
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "prototype_parent": "19e4602b436b7aa8c9708f28f87fe288985c9377",
+  "status": "Source audit only; zero new admissions at this checkpoint.",
+  "proposed_complete": [
+    "Maha, Its Feathers Night",
+    "Archon of the Wild Rose",
+    "Aettir and Priwen",
+    "Burden of Proof"
+  ],
+  "cards": [
+    {
+      "name": "Maha, Its Feathers Night",
+      "java_source": "Mage.Sets/src/mage/cards/m/MahaItsFeathersNight.java",
+      "java_sha256": "1af8f9cab29ba4b44634870e02aa6aa0655e3cd2a561c8ebd8cdb0198cafd165",
+      "explicit_imports": [
+        "mage.MageInt",
+        "mage.abilities.Ability",
+        "mage.abilities.common.SimpleStaticAbility",
+        "mage.abilities.costs.common.DiscardCardCost",
+        "mage.abilities.effects.ContinuousEffectImpl",
+        "mage.abilities.keyword.FlyingAbility",
+        "mage.abilities.keyword.TrampleAbility",
+        "mage.abilities.keyword.WardAbility",
+        "mage.cards.CardImpl",
+        "mage.cards.CardSetInfo",
+        "mage.filter.StaticFilters",
+        "mage.game.Game",
+        "mage.game.permanent.Permanent",
+        "java.util.UUID"
+      ],
+      "wildcard_imports": [
+        "mage.constants.*"
+      ],
+      "direct_import_sources": [
+        {
+          "import": "mage.MageInt",
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "import": "mage.abilities.Ability",
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "import": "mage.abilities.common.SimpleStaticAbility",
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "import": "mage.abilities.costs.common.DiscardCardCost",
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+          "java_sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+        },
+        {
+          "import": "mage.abilities.effects.ContinuousEffectImpl",
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "import": "mage.abilities.keyword.FlyingAbility",
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "import": "mage.abilities.keyword.TrampleAbility",
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+          "java_sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+        },
+        {
+          "import": "mage.abilities.keyword.WardAbility",
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        },
+        {
+          "import": "mage.cards.CardImpl",
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "import": "mage.cards.CardSetInfo",
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "import": "mage.filter.StaticFilters",
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "import": "mage.game.Game",
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "import": "mage.game.permanent.Permanent",
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        }
+      ],
+      "facts": {
+        "oracle_id": "129476ae-9dab-4e04-8e8e-f249afd56ff9",
+        "name": "Maha, Its Feathers Night",
+        "layout": "normal",
+        "mana_cost": "{3}{B}{B}",
+        "cmc": 5.0,
+        "type_line": "Legendary Creature — Elemental Bird",
+        "oracle_text": "Flying, trample\nWard—Discard a card.\nCreatures your opponents control have base toughness 1.",
+        "power": "6",
+        "toughness": "5",
+        "colors": [
+          "B"
+        ],
+        "color_identity": [
+          "B"
+        ],
+        "keywords": [
+          "Flying",
+          "Trample",
+          "Ward"
+        ],
+        "reference_printing": {
+          "id": "cf3320ec-c4e8-405a-982d-e009c58c9e21",
+          "set": "blb",
+          "collector_number": "100",
+          "released_at": "2024-08-02"
+        }
+      }
+    },
+    {
+      "name": "Archon of the Wild Rose",
+      "java_source": "Mage.Sets/src/mage/cards/a/ArchonOfTheWildRose.java",
+      "java_sha256": "55337f00339d5ffec06c0f5ba0709e5cb019c03e02b36964b1e353aca6247a7f",
+      "explicit_imports": [
+        "mage.MageInt",
+        "mage.abilities.Ability",
+        "mage.abilities.common.SimpleStaticAbility",
+        "mage.abilities.effects.common.continuous.GainAbilityAllEffect",
+        "mage.abilities.effects.common.continuous.SetBasePowerToughnessAllEffect",
+        "mage.abilities.keyword.FlyingAbility",
+        "mage.cards.CardImpl",
+        "mage.cards.CardSetInfo",
+        "mage.constants.CardType",
+        "mage.constants.Duration",
+        "mage.constants.SubType",
+        "mage.filter.common.FilterControlledCreaturePermanent",
+        "mage.filter.predicate.mageobject.AnotherPredicate",
+        "mage.filter.predicate.permanent.EnchantedBySourceControllerPredicate",
+        "java.util.UUID"
+      ],
+      "wildcard_imports": [],
+      "direct_import_sources": [
+        {
+          "import": "mage.MageInt",
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "import": "mage.abilities.Ability",
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "import": "mage.abilities.common.SimpleStaticAbility",
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "import": "mage.abilities.effects.common.continuous.GainAbilityAllEffect",
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAllEffect.java",
+          "java_sha256": "fccf43cbeaa763aae8a75efc3f28c5e33dcd045398d9b1cf6a97270e4a9000e4"
+        },
+        {
+          "import": "mage.abilities.effects.common.continuous.SetBasePowerToughnessAllEffect",
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessAllEffect.java",
+          "java_sha256": "4373b95198b2cca2412c8177f9cd5a1d4ee9d4e2d32a7d4d5e45cabe7ba7f685"
+        },
+        {
+          "import": "mage.abilities.keyword.FlyingAbility",
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "import": "mage.cards.CardImpl",
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "import": "mage.cards.CardSetInfo",
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "import": "mage.constants.CardType",
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "import": "mage.constants.Duration",
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "import": "mage.constants.SubType",
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "import": "mage.filter.common.FilterControlledCreaturePermanent",
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+          "java_sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+        },
+        {
+          "import": "mage.filter.predicate.mageobject.AnotherPredicate",
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+          "java_sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+        },
+        {
+          "import": "mage.filter.predicate.permanent.EnchantedBySourceControllerPredicate",
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/EnchantedBySourceControllerPredicate.java",
+          "java_sha256": "4f10f33395c7325709341187efc51f11276fbfec18cc9ea3bf29c94e3c1d765d"
+        }
+      ],
+      "facts": {
+        "oracle_id": "180efbd4-0f77-41cc-8ae2-2e6ccf853d10",
+        "name": "Archon of the Wild Rose",
+        "layout": "normal",
+        "mana_cost": "{2}{W}{W}",
+        "cmc": 4.0,
+        "type_line": "Creature — Archon",
+        "oracle_text": "Flying\nOther creatures you control that are enchanted by Auras you control have base power and toughness 4/4 and have flying.",
+        "power": "4",
+        "toughness": "4",
+        "colors": [
+          "W"
+        ],
+        "color_identity": [
+          "W"
+        ],
+        "keywords": [
+          "Flying"
+        ],
+        "reference_printing": {
+          "id": "00174be7-0dc8-43b9-81b6-f25a8c3fb4eb",
+          "set": "woe",
+          "collector_number": "1",
+          "released_at": "2023-09-08"
+        }
+      }
+    },
+    {
+      "name": "Aettir and Priwen",
+      "java_source": "Mage.Sets/src/mage/cards/a/AettirAndPriwen.java",
+      "java_sha256": "d298ada36a0be1040c8a6d880be5e23471324d68243c7f6d0cff0f71a5e71567",
+      "explicit_imports": [
+        "mage.abilities.Ability",
+        "mage.abilities.common.SimpleStaticAbility",
+        "mage.abilities.effects.ContinuousEffectImpl",
+        "mage.abilities.keyword.EquipAbility",
+        "mage.cards.CardImpl",
+        "mage.cards.CardSetInfo",
+        "mage.game.Controllable",
+        "mage.game.Game",
+        "mage.game.permanent.Permanent",
+        "mage.players.Player",
+        "java.util.Optional",
+        "java.util.UUID"
+      ],
+      "wildcard_imports": [
+        "mage.constants.*"
+      ],
+      "direct_import_sources": [
+        {
+          "import": "mage.abilities.Ability",
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "import": "mage.abilities.common.SimpleStaticAbility",
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "import": "mage.abilities.effects.ContinuousEffectImpl",
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "import": "mage.abilities.keyword.EquipAbility",
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+          "java_sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+        },
+        {
+          "import": "mage.cards.CardImpl",
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "import": "mage.cards.CardSetInfo",
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "import": "mage.game.Controllable",
+          "java_source": "Mage/src/main/java/mage/game/Controllable.java",
+          "java_sha256": "30e2db791a5413834499bfb832d6223bbbd44771ea0dd6a78909ef86f5afad2d"
+        },
+        {
+          "import": "mage.game.Game",
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "import": "mage.game.permanent.Permanent",
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "import": "mage.players.Player",
+          "java_source": "Mage/src/main/java/mage/players/Player.java",
+          "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f"
+        }
+      ],
+      "facts": {
+        "oracle_id": "19d8937e-23fb-4758-a306-0e7af9bb44c4",
+        "name": "Aettir and Priwen",
+        "layout": "normal",
+        "mana_cost": "{6}",
+        "cmc": 6.0,
+        "type_line": "Legendary Artifact — Equipment",
+        "oracle_text": "Equipped creature has base power and toughness X/X, where X is your life total.\nEquip {5}",
+        "colors": [],
+        "color_identity": [],
+        "keywords": [
+          "Equip"
+        ],
+        "reference_printing": {
+          "id": "038710ca-c756-4e66-a9de-278e676c9f5b",
+          "set": "fin",
+          "collector_number": "253",
+          "released_at": "2025-06-13"
+        }
+      }
+    },
+    {
+      "name": "Burden of Proof",
+      "java_source": "Mage.Sets/src/mage/cards/b/BurdenOfProof.java",
+      "java_sha256": "99934049547bd7ab8030c6e7fa81e99dc18079b702d5e7ccef953fcfccb5fa79",
+      "explicit_imports": [
+        "mage.abilities.Ability",
+        "mage.abilities.common.SimpleStaticAbility",
+        "mage.abilities.condition.Condition",
+        "mage.abilities.condition.InvertCondition",
+        "mage.abilities.condition.common.AttachedToMatchesFilterCondition",
+        "mage.abilities.decorator.ConditionalRestrictionEffect",
+        "mage.abilities.effects.ContinuousEffectImpl",
+        "mage.abilities.effects.common.AttachEffect",
+        "mage.abilities.effects.common.combat.CantBlockAttachedEffect",
+        "mage.abilities.keyword.EnchantAbility",
+        "mage.abilities.keyword.FlashAbility",
+        "mage.cards.CardImpl",
+        "mage.cards.CardSetInfo",
+        "mage.filter.common.FilterControlledPermanent",
+        "mage.filter.common.FilterCreaturePermanent",
+        "mage.game.Game",
+        "mage.game.permanent.Permanent",
+        "mage.target.TargetPermanent",
+        "mage.target.common.TargetCreaturePermanent",
+        "java.util.Objects",
+        "java.util.Optional",
+        "java.util.UUID"
+      ],
+      "wildcard_imports": [
+        "mage.constants.*"
+      ],
+      "direct_import_sources": [
+        {
+          "import": "mage.abilities.Ability",
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "import": "mage.abilities.common.SimpleStaticAbility",
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "import": "mage.abilities.condition.Condition",
+          "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+          "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+        },
+        {
+          "import": "mage.abilities.condition.InvertCondition",
+          "java_source": "Mage/src/main/java/mage/abilities/condition/InvertCondition.java",
+          "java_sha256": "3bd5731d01a01bb9951b6fef270b5b71cb926f26e6af0ae5b726f0463fc313c8"
+        },
+        {
+          "import": "mage.abilities.condition.common.AttachedToMatchesFilterCondition",
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/AttachedToMatchesFilterCondition.java",
+          "java_sha256": "69e99b360f6f254edc94b5486344df3216a973bb69c05cb9a5817ef9c520895d"
+        },
+        {
+          "import": "mage.abilities.decorator.ConditionalRestrictionEffect",
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalRestrictionEffect.java",
+          "java_sha256": "1fa2a1d2f8bdcfdd9e3b62d643b7c07d1dd174162686bdff05615432d5e28aa8"
+        },
+        {
+          "import": "mage.abilities.effects.ContinuousEffectImpl",
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "import": "mage.abilities.effects.common.AttachEffect",
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        },
+        {
+          "import": "mage.abilities.effects.common.combat.CantBlockAttachedEffect",
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockAttachedEffect.java",
+          "java_sha256": "9247a344a1d2e481cbca3fd3517d7be789c69e80693b46d3c9938242f0080e9b"
+        },
+        {
+          "import": "mage.abilities.keyword.EnchantAbility",
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "import": "mage.abilities.keyword.FlashAbility",
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+          "java_sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+        },
+        {
+          "import": "mage.cards.CardImpl",
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "import": "mage.cards.CardSetInfo",
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "import": "mage.filter.common.FilterControlledPermanent",
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+          "java_sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+        },
+        {
+          "import": "mage.filter.common.FilterCreaturePermanent",
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "import": "mage.game.Game",
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "import": "mage.game.permanent.Permanent",
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "import": "mage.target.TargetPermanent",
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "import": "mage.target.common.TargetCreaturePermanent",
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ],
+      "facts": {
+        "oracle_id": "d1767573-713d-4f63-a09d-e94150655093",
+        "name": "Burden of Proof",
+        "layout": "normal",
+        "mana_cost": "{1}{U}",
+        "cmc": 2.0,
+        "type_line": "Enchantment — Aura",
+        "oracle_text": "Flash\nEnchant creature\nEnchanted creature gets +2/+2 as long as it's a Detective you control. Otherwise, it has base power and toughness 1/1 and can't block Detectives.",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [
+          "Enchant",
+          "Flash"
+        ],
+        "reference_printing": {
+          "id": "4ea29c34-4b55-4170-9120-0a8dda61f2eb",
+          "set": "mkm",
+          "collector_number": "42",
+          "released_at": "2024-02-09"
+        }
+      }
+    }
+  ],
+  "source_records": 60,
+  "unique_source_count": 40,
+  "unique_sources": [
+    {
+      "java_source": "Mage.Sets/src/mage/cards/a/AettirAndPriwen.java",
+      "java_sha256": "d298ada36a0be1040c8a6d880be5e23471324d68243c7f6d0cff0f71a5e71567"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/a/ArchonOfTheWildRose.java",
+      "java_sha256": "55337f00339d5ffec06c0f5ba0709e5cb019c03e02b36964b1e353aca6247a7f"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/b/BurdenOfProof.java",
+      "java_sha256": "99934049547bd7ab8030c6e7fa81e99dc18079b702d5e7ccef953fcfccb5fa79"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/m/MahaItsFeathersNight.java",
+      "java_sha256": "1af8f9cab29ba4b44634870e02aa6aa0655e3cd2a561c8ebd8cdb0198cafd165"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/MageInt.java",
+      "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+      "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+      "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/condition/InvertCondition.java",
+      "java_sha256": "3bd5731d01a01bb9951b6fef270b5b71cb926f26e6af0ae5b726f0463fc313c8"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/condition/common/AttachedToMatchesFilterCondition.java",
+      "java_sha256": "69e99b360f6f254edc94b5486344df3216a973bb69c05cb9a5817ef9c520895d"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+      "java_sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalRestrictionEffect.java",
+      "java_sha256": "1fa2a1d2f8bdcfdd9e3b62d643b7c07d1dd174162686bdff05615432d5e28aa8"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+      "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockAttachedEffect.java",
+      "java_sha256": "9247a344a1d2e481cbca3fd3517d7be789c69e80693b46d3c9938242f0080e9b"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAllEffect.java",
+      "java_sha256": "fccf43cbeaa763aae8a75efc3f28c5e33dcd045398d9b1cf6a97270e4a9000e4"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessAllEffect.java",
+      "java_sha256": "4373b95198b2cca2412c8177f9cd5a1d4ee9d4e2d32a7d4d5e45cabe7ba7f685"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "java_sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "java_sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "java_sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+      "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+      "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+      "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+      "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+      "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+      "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+      "java_sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+      "java_sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+      "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+      "java_sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/EnchantedBySourceControllerPredicate.java",
+      "java_sha256": "4f10f33395c7325709341187efc51f11276fbfec18cc9ea3bf29c94e3c1d765d"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/Controllable.java",
+      "java_sha256": "30e2db791a5413834499bfb832d6223bbbd44771ea0dd6a78909ef86f5afad2d"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/Game.java",
+      "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+      "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/players/Player.java",
+      "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "unresolved_explicit_internal_imports": [],
+  "provenance_scope": "Complete root implementations and resolvable explicit direct imports, not a transitive implementation claim."
+}
