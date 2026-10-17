@@ -59,3 +59,18 @@ pass. Standalone compiler/public/Standard evidence above remains attributed to i
 standalone source; fresh combined-library acceptance and composition with the
 replacement branch are still pending. This is an intermediate draft checkpoint,
 not final integrated approval or a claim that the all-Standard goal is complete.
+
+The fresh interim composition library at `b43d3cd` has SHA256
+`2d11ecceae5e160b8aeef4f49de6cc6637eed23d96d5cb2a0bb16bfce85176c8`.
+Root explicitly pins its immutable path and asserts schema75 before running the
+Crew and cast-payment public modules together: five methods, 96 paid scenarios,
+all pass in 116.780 seconds. Both exact compiled Standard drivers also pass:
+Crew100 reproduces 95,925 replays/parent-closed branches, 6,247 private frames,
+108,419 denials and all cast/Crew/entry/attack/residual vectors; payment100
+reproduces 104,413 replays/parent-closed branches, 1,330 private frames, 208,826
+denials and all eighty effect cells. All two hundred games end naturally.
+Initial logical state is 20,280 bytes; maxima are 23,516 (Crew) and 23,552
+(payment). These focused combined results supplement the 1,608 native tests;
+they do not stand in for the pending final full collections after replacement
+composition. Evidence logs are `/tmp/rustmage-root253-public-focused.log` and
+`/tmp/rustmage-root253-standard-{crew,payments}.log`.
