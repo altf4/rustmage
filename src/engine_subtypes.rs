@@ -36,15 +36,13 @@ impl GrantedSubtypes {
                 .is_some_and(|i| self.added & (1 << i) != 0)
     }
     pub(crate) fn has(self, card: Card, subtype: &str) -> bool {
-        self.contains(subtype)
-            || if crate::cards::is_creature_type(subtype) {
-                self.creature_types.map_or_else(
-                    || card.has_subtype(subtype),
-                    |types| types.contains(&subtype),
-                )
-            } else {
-                card.has_subtype(subtype)
-            }
+        // Preserve the ordinary-card hot path: no taxonomy lookup, and printed
+        // membership short-circuits the additional-type mask as before.
+        if self.creature_types.is_some() && crate::cards::is_creature_type(subtype) {
+            self.contains(subtype)
+        } else {
+            card.has_subtype(subtype) || self.contains(subtype)
+        }
     }
     fn replace_creature_types(&mut self, types: &'static [&'static str]) {
         self.added = 0;
