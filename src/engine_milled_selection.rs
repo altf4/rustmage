@@ -148,7 +148,7 @@ impl Game {
             return false;
         }
         if spec.count == MilledCount::All {
-            self.move_milled_selection(&eligible, spec.destination);
+            self.move_milled_selection(player, &eligible, spec.destination);
             return self.state.entry_batch.is_some();
         }
         self.state.resolving.as_mut().unwrap().milled_selection = Some(Box::new(MilledSelection {
@@ -192,10 +192,15 @@ impl Game {
             .into_iter()
             .filter(|&object| self.milled_matches(choice.player, choice.spec.filter, object))
             .collect();
-        self.move_milled_selection(&selected, choice.spec.destination);
+        self.move_milled_selection(choice.player, &selected, choice.spec.destination);
         self.run_program();
     }
-    fn move_milled_selection(&mut self, selected: &[ObjectRef], destination: MilledDestination) {
+    fn move_milled_selection(
+        &mut self,
+        player: Player,
+        selected: &[ObjectRef],
+        destination: MilledDestination,
+    ) {
         // A public replacement destination can be the stack. Removing its spell
         // packet is movement, not a counter event. Hidden destinations never enter
         // this continuation and no old-generation object can be recovered.
@@ -214,10 +219,16 @@ impl Game {
         if destination == Zone::Battlefield {
             let moves = ids
                 .into_iter()
-                .map(|id| self.entry_move(id, destination, self.enters_tapped(id)))
+                .map(|id| {
+                    let mut incoming =
+                        self.entry_move(id, destination, self.enters_tapped_for(id, player));
+                    incoming.controller = player;
+                    incoming
+                })
                 .collect();
             // Existing entry continuation handles mandatory Aura attachment and
-            // retains an impossible Aura in its actual previous public zone.
+            // retains an impossible Aura in its previous public zone, except
+            // an Aura on the stack goes to its owner's graveyard (CR303.4g).
             self.stage_entries(moves, None);
         } else {
             let events = self.move_objects_raw(&ids, destination);

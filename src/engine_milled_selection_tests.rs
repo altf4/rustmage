@@ -838,3 +838,47 @@ fn actual_korvold_foreign_mill_pairs_use_casters_batch_choices_and_later_normal_
         }
     }
 }
+
+#[test]
+fn fetch_quest_captured_stack_entry_uses_putting_player_for_control_and_tapped_context() {
+    for p in [Player::P0, Player::P1] {
+        for authority in [p, p.other()] {
+            let mut g = setup(p);
+            named(
+                &mut g,
+                authority,
+                "Authority of the Consuls",
+                Zone::Battlefield,
+            );
+            let id = named(&mut g, p, "Bear Cub", Zone::Library);
+            for _ in 0..6 {
+                named(&mut g, p, "Forest", Zone::Library);
+            }
+            let source = named(&mut g, p, NAMES[0], Zone::Hand);
+            choice(&mut g, source);
+            // Capture the public destination of this exact milled incarnation.
+            // No admitted replacement currently produces Stack: exercise that
+            // supported continuation boundary without inventing such a source.
+            let item = g.cast_item(p.other(), id, [0; 6]);
+            g.state.stack.push(item);
+            let captured = g.object_ref(id);
+            *g.state
+                .resolving
+                .as_mut()
+                .unwrap()
+                .milled
+                .iter_mut()
+                .find(|r| r.card == id)
+                .unwrap() = captured;
+            assert_eq!(g.state.objects[id as usize].controller, p.other());
+            act(&mut g, Action::SelectMilled { object: captured });
+            settle(&mut g);
+            let entered = &g.state.objects[id as usize];
+            assert_eq!(entered.zone, Zone::Battlefield);
+            assert_eq!(entered.owner, p);
+            assert_eq!(entered.controller, p);
+            assert_eq!(entered.tapped, authority != p);
+            assert!(g.state.stack.is_empty());
+        }
+    }
+}
