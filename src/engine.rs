@@ -5903,3 +5903,7 @@ mod fdn_life_seven_tests;
 #[cfg(test)]
 #[path = "engine_fdn_private_seven_tests.rs"]
 mod fdn_private_seven_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_zone_seven_tests.rs"]
+mod fdn_zone_seven_tests;
