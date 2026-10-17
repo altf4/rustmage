@@ -949,3 +949,56 @@ fn joint_land_all_entry_replacement_choices_precede_one_simultaneous_commit() {
         drive(&mut g, None, 0, None);
     }
 }
+
+#[test]
+fn joint_land_foreign_bonny_attack_packet_keeps_controller_after_paid_source_bounce() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, [bonny, _, _]) = super::control_tests::korvold_grants_for(
+            p,
+            ["Bonny Pall, Clearcutter", "Forest", "Forest"],
+        );
+        named(&mut g, p, "Forest", Zone::Battlefield);
+        named(&mut g, p, "Shock", Zone::Library);
+        let land = named(&mut g, p, "Island", Zone::Graveyard);
+        let foreign = named(&mut g, p.other(), "Mountain", Zone::Graveyard);
+        checked(&mut g, Action::AnnounceExile { card: bonny });
+        drive(&mut g, None, 0, None);
+        let drawn = g.state.players[p.index()].cards_drawn_this_turn;
+        let bear = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        checked(&mut g, Action::Attack { card: bear });
+        checked(&mut g, Action::FinishAttackers);
+        for _ in 0..200 {
+            if g.state.pending == Pending::Priority
+                && g.state.stack.iter().any(|item| item.card == bonny)
+                && g.actor() == Some(p)
+            {
+                break;
+            }
+            next(&mut g, None, 0, None);
+        }
+        assert!(g.state.stack.iter().any(|item| item.card == bonny));
+        let response = named(&mut g, p, "Unsummon", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: response });
+        for _ in 0..200 {
+            if joint_choice(&g) {
+                break;
+            }
+            next(&mut g, None, 0, Some(Target::Card(bonny)));
+        }
+        assert!(joint_choice(&g));
+        assert_eq!(g.object_view(bonny).zone, Zone::Hand);
+        assert_eq!(g.object_view(bonny).owner, p.other());
+        assert_eq!(g.actor(), Some(p));
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, drawn + 1);
+        let object = g.object_ref(foreign);
+        reject(&mut g, Action::SelectLand { object });
+        let object = g.object_ref(land);
+        checked(&mut g, Action::SelectLand { object });
+        drive(&mut g, None, 0, None);
+        assert_eq!(g.object_view(land).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(land).controller, p);
+        assert_eq!(g.object_view(land).owner, p);
+    }
+}

@@ -66,3 +66,11 @@ retains its full no-nested-counter audit for every factory. These attempts are
 not passing gate claims. Final
 native/Clippy/compiler/public/100-game validation, actual-parent composition and
 two independent nonauthor reviews remain required before merge.
+
+A subsequent test-only checkpoint adds a seventh paid native group, passing both
+seats in0.15s: actual Korvold permits casting the foreign-owned Bonny, an ordinary
+attack queues its ability, and paid Unsummon returns Bonny to its physical owner's
+hand before the trigger resolves. The independent packet still draws for its
+historical controller and offers only that player's lands. The original six-group
+full-native/Clippy proof remains scoped to its earlier source; no executable
+production input changed for this additional test.
