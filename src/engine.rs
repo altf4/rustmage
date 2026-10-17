@@ -30,7 +30,7 @@ mod gift;
 mod gift_tests;
 pub use gift::{GiftContext, GiftDeclaration};
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 96;
+pub const OBSERVATION_SCHEMA: u32 = 100;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
 #[path = "engine_mobilize.rs"]
@@ -126,6 +126,9 @@ pub use roles::{RoleGroupView, RoleTimestampView};
 #[path = "engine_base_stats.rs"]
 mod base_stats;
 pub use base_stats::BaseStatsEffectView;
+#[path = "engine_live_static_stats.rs"]
+mod live_static_stats;
+pub use live_static_stats::LiveStaticSourceView;
 #[path = "engine_search.rs"]
 mod search;
 pub use explore::{ExploreChoiceView, ExploreEventView, ExplorerView, RevealedLibraryCard};
@@ -1503,6 +1506,7 @@ pub struct Observation {
     pub role_choices: Vec<RoleGroupView>,
     pub role_timestamps: Vec<RoleTimestampView>,
     pub base_stat_effects: Vec<BaseStatsEffectView>,
+    pub live_static_sources: Vec<LiveStaticSourceView>,
     pub legend_choices: Vec<LegendGroupView>,
     pub stack: Vec<SpellView>,
     pub resolving: Option<SpellView>,
@@ -3846,6 +3850,7 @@ impl Game {
         if before.zone == Zone::Battlefield {
             self.forget_role(before.reference);
             self.forget_base_stats(before.reference);
+            self.forget_live_static_source(before.reference);
             // Abilities use the source's actual last-known keywords if it leaves,
             // including gains made after that ability was announced.
             for item in self
@@ -4623,6 +4628,11 @@ impl Game {
                 .roles
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.base_stats.clone()),
+            live_static_sources: self
+                .state
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.live_static.clone()),
             role_timestamps: s
                 .roles
                 .as_ref()

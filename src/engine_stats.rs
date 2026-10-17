@@ -6,6 +6,7 @@ use super::*;
 impl Game {
     pub(super) fn register_battlefield_sources(&mut self, id: CardId) {
         self.register_static_base_stats(id);
+        self.register_live_static_source(id);
         if self.state.objects[id as usize]
             .card
             .attachment_bonus()
@@ -250,6 +251,7 @@ impl Game {
         if !battlefield_creature {
             return stats;
         }
+        stats += self.live_static_bonus(id);
         stats += self.attachment_bonus(id).0;
         // Only the small live-source index is traversed. Central zone transitions
         // maintain it, and snapshots own it; no derived stat cache needs invalidation.

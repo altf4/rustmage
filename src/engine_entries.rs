@@ -378,6 +378,7 @@ impl Game {
         // Continuous attachment effects already exist when entry events inspect the world.
         for (source, target) in attachments {
             self.state.objects[source.card as usize].attached_to = Some(target);
+            self.retimestamp_live_static_source(source);
             if self.state.objects[source.card as usize]
                 .card
                 .role()

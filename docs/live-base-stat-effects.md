@@ -41,3 +41,13 @@ drop, replay, restore, both observations and rejected illegal actor/revision act
 Whole-body lowering, raw/reminder authentication, actual-parent canonical proof,
 paid both-seat Standard vectors, fixed100 workloads and two independent NONAUTHOR
 exact-final-head reviews remain required. No current source name grants admission.
+
+## Sparse runtime prototype (zero new admissions)
+
+A typed live-source registry now sits inside the existing optional Role state.
+Primitive tests cover current controller/late entrants, Aura controller versus owner
+and Equipment, signed life values, Detective conditions, and owned snapshot/restore.
+The catalogue method intentionally returns an empty slice for every card. These
+are primitive tests using synthetic effect specifications, not paid execution of
+the four audited card bodies. Whole-body lowering and simultaneous timestamp
+choices remain pending; no runtime validation has yet been claimed.

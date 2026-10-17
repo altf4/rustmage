@@ -152,6 +152,6 @@ impl Game {
                 }
             }
         }
-        stats
+        self.apply_live_base_stat_layers(id, stats, &mut power_time, &mut toughness_time)
     }
 }
