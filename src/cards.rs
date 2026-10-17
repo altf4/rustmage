@@ -737,6 +737,7 @@ impl KeywordGrant {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct StaticModifier {
+    pub own_turn: bool,
     pub requires_life_gain: bool,
     pub filter: CreatureFilter,
     pub stats: Stats,

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "7875762d9632c8033abfef3727fabfe3437a5f33336888ea9cb1d0caed777dd8",
+  "catalogue_version": "e9dfb143984b1dd55f00bc62965b2289e6f2647cde71841a38e9d021125d9904",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1685,
-  "implemented_total": 1691,
+  "implemented_standard_cards": 1691,
+  "implemented_total": 1697,
   "token_definitions": 83,
   "emblem_definitions": 1,
   "cards": [
@@ -7144,8 +7144,8 @@
     {
       "name": "Drix Fatemaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Drogskol Reaver",
@@ -16216,8 +16216,8 @@
     {
       "name": "Mechanozoa",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Meddling Youths",
@@ -16282,8 +16282,8 @@
     {
       "name": "Memorial Team Leader",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Memorial Vault",
@@ -17830,8 +17830,8 @@
     {
       "name": "Nova Hellkite",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Novel Nunchaku",
@@ -21730,8 +21730,8 @@
     {
       "name": "Runaway Boulder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Rune-Brand Juggler",
@@ -30112,8 +30112,8 @@
     {
       "name": "Waylaying Pirates",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Wayspeaker Bodyguard",

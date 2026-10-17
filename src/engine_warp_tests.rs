@@ -1,6 +1,6 @@
 use super::tests::{act, scenario, spawn};
 use super::*;
-const NAMES: [&str; 8] = [
+const NAMES: [&str; 12] = [
     "Bygone Colossus",
     "Eusocial Engineering",
     "Germinating Wurm",
@@ -9,6 +9,10 @@ const NAMES: [&str; 8] = [
     "Sinister Cryologist",
     "Starbreach Whale",
     "Weftblade Enhancer",
+    "Drix Fatemaker",
+    "Mechanozoa",
+    "Memorial Team Leader",
+    "Nova Hellkite",
 ];
 fn named(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
     let card = Card::from_name(name).unwrap();
@@ -114,6 +118,7 @@ fn next_main(g: &mut Game, p: Player) {
 }
 fn paid(g: &mut Game, id: CardId, warp: bool) {
     let p = g.actor().unwrap();
+    let delayed_before = g.observe(p).delayed_warp_exiles.len();
     let origin = g.state.objects[id as usize].zone;
     let card = g.state.objects[id as usize].card;
     let before = g.state.players[p.index()]
@@ -168,10 +173,10 @@ fn paid(g: &mut Game, id: CardId, warp: bool) {
                 .sum::<u64>(),
         u64::from(cost.generic) + cost.colored.iter().map(|n| u64::from(*n)).sum::<u64>()
     );
-    assert!(g.observe(p).delayed_warp_exiles.is_empty());
+    assert_eq!(g.observe(p).delayed_warp_exiles.len(), delayed_before);
 }
 #[test]
-fn all_eight_complete_bodies_normal_warp_and_later_paid_recast_both_seats() {
+fn all_twelve_complete_bodies_normal_warp_and_later_paid_recast_both_seats() {
     for p in [Player::P0, Player::P1] {
         for warped in [false, true] {
             for (i, name) in NAMES.iter().enumerate() {
@@ -260,6 +265,29 @@ fn all_eight_complete_bodies_normal_warp_and_later_paid_recast_both_seats() {
                                 g.state.objects[enemy as usize].counters.plus_one,
                                 counters[1] + 1
                             );
+                        }
+                        8 => {
+                            assert_eq!(
+                                g.state.objects[ally as usize].counters.plus_one,
+                                counters[0] + 1
+                            );
+                            assert!(g.keywords(ally).contains(Keywords::TRAMPLE));
+                            assert!(!g.keywords(enemy).contains(Keywords::TRAMPLE));
+                            assert!(!g.keywords(id).contains(Keywords::TRAMPLE));
+                        }
+                        9 => {
+                            assert!(g.state.objects[enemy as usize].tapped);
+                            assert_eq!(g.state.objects[enemy as usize].counters.stun, 1);
+                        }
+                        10 => {
+                            assert_eq!(g.stats(ally).power, 11);
+                            assert_eq!(g.stats(id).power, 4);
+                            assert_eq!(g.stats(enemy).power, 2);
+                        }
+                        11 => {
+                            assert!(g.keywords(id).contains(Keywords::FLYING));
+                            assert!(g.keywords(id).contains(Keywords::HASTE));
+                            assert_eq!(g.state.objects[enemy as usize].damage, 1);
                         }
                         _ => unreachable!(),
                     }
@@ -368,5 +396,274 @@ fn warped_permission_is_not_free_not_warp_not_plot_and_never_inherited() {
         assert_ne!(g.object_ref(id), old);
         assert!(g.observe(p).warped_cards.is_empty());
         reject(&mut g, Action::AnnounceExile { card: id });
+    }
+}
+
+#[test]
+fn real_joint_mana_sacrifice_funds_warp_without_double_using_the_same_mana() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let pizza = named(&mut g, p, "Omni-Cheese Pizza", Zone::Battlefield);
+        let id = named(&mut g, p, "Germinating Wurm", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        let before = g.snapshot();
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceWarp { card: id })
+        );
+        assert_eq!(g.snapshot(), before);
+        reject(&mut g, Action::AnnounceWarp { card: id });
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+        let source = g.object_ref(id);
+        replay(&mut g, Action::AnnounceWarp { card: id });
+        assert_ne!(g.object_ref(id), source);
+        assert_eq!(g.state.objects[id as usize].zone, Zone::Stack);
+        assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 0);
+        let a=g.legal_actions().into_iter().find(|a|matches!(a,Action::ActivateMana{card,production,..}if *card==pizza&&production[4]==1)).unwrap();
+        replay(&mut g, a);
+        assert_eq!(g.state.objects[pizza as usize].zone, Zone::Graveyard);
+        let a = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        replay(&mut g, a);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 1);
+        settle(&mut g);
+        assert_eq!(g.observe(p).delayed_warp_exiles.len(), 1);
+    }
+}
+#[test]
+fn normal_timing_wrong_actor_and_real_warp_funding_queries_are_pure() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = named(&mut g, p, "Germinating Wurm", Zone::Hand);
+        for step in [Step::Upkeep, Step::BeginCombat, Step::End] {
+            g.state.step = step;
+            reject(&mut g, Action::AnnounceWarp { card: id });
+        }
+        g.state.step = Step::Main1;
+        g.state.active = p.other();
+        reject(&mut g, Action::AnnounceWarp { card: id });
+        g.state.active = p;
+        let before = g.snapshot();
+        let rev = g.revision();
+        assert_eq!(
+            g.apply(p.other(), Action::AnnounceWarp { card: id }),
+            Err(Error::WrongActor)
+        );
+        assert_eq!(g.snapshot(), before);
+        assert_eq!(g.revision(), rev);
+        g.state.players[p.index()].mana = [20, 0, 0, 0, 0, 0];
+        reject(&mut g, Action::AnnounceWarp { card: id });
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 2, 0];
+        let before = g.snapshot();
+        let a = g.legal_actions();
+        assert_eq!(g.legal_actions(), a);
+        assert!(a.contains(&Action::AnnounceWarp { card: id }));
+        assert!(!a.contains(&Action::AnnounceCast { card: id }));
+        assert_eq!(g.snapshot(), before);
+    }
+}
+#[test]
+fn two_warp_casts_of_same_card_keep_distinct_delayed_subjects_and_one_real_permission() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = named(&mut g, p, "Germinating Wurm", Zone::Hand);
+        paid(&mut g, id, true);
+        settle(&mut g);
+        let first = g.object_ref(id);
+        g.move_object(id, Zone::Hand);
+        paid(&mut g, id, true);
+        settle(&mut g);
+        let second = g.object_ref(id);
+        assert_ne!(first, second);
+        let regs = g.observe(p).delayed_warp_exiles;
+        assert_eq!(regs.len(), 2);
+        assert_ne!(regs[0].id, regs[1].id);
+        assert_eq!(regs[0].source, first);
+        assert_eq!(regs[1].source, second);
+        to_end(&mut g);
+        settle(&mut g);
+        let cards = g.observe(p).warped_cards;
+        assert_eq!(cards.len(), 1);
+        assert_eq!(cards[0].object, g.object_ref(id));
+        assert_eq!(g.state.objects[id as usize].zone, Zone::Exile);
+    }
+}
+#[test]
+fn queued_warp_delayed_ability_does_not_follow_a_later_incarnation() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = named(&mut g, p, "Germinating Wurm", Zone::Hand);
+        paid(&mut g, id, true);
+        settle(&mut g);
+        let old = g.object_ref(id);
+        to_end(&mut g);
+        while matches!(g.state.pending, Pending::OrderTriggers { .. }) {
+            pick(&mut g);
+        }
+        assert!(
+            g.state
+                .stack
+                .iter()
+                .any(|s| s.kind == StackKind::DelayedWarpExile)
+        );
+        g.move_object(id, Zone::Hand);
+        g.move_object(id, Zone::Battlefield);
+        assert_ne!(g.object_ref(id), old);
+        settle(&mut g);
+        assert_eq!(g.state.objects[id as usize].zone, Zone::Battlefield);
+        assert!(g.state.warp.is_none());
+    }
+}
+#[test]
+fn warp_created_after_end_started_waits_for_next_end_and_gates_actual_exile_turn() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        g.begin_step(Step::End);
+        let id = named(&mut g, p, "Germinating Wurm", Zone::Hand);
+        g.state.objects[id as usize].gained_keywords = Keywords::FLASH;
+        let cast_turn = g.state.turn;
+        paid(&mut g, id, true);
+        settle(&mut g);
+        assert_eq!(g.state.objects[id as usize].zone, Zone::Battlefield);
+        assert_eq!(g.observe(p).delayed_warp_exiles.len(), 1);
+        for _ in 0..150 {
+            if g.state.turn > cast_turn && g.state.step == Step::End {
+                break;
+            }
+            pick(&mut g);
+        }
+        assert!(g.state.turn > cast_turn);
+        settle(&mut g);
+        let card = g.observe(p).warped_cards[0];
+        assert!(card.exiled_turn > cast_turn);
+        assert_eq!(card.exiled_turn, g.state.turn);
+        assert!(!g.can_cast_warped(p, id));
+        next_main(&mut g, p);
+        assert!(g.can_cast_warped(p, id));
+    }
+}
+#[test]
+fn registration_queue_and_late_exile_capacity_failures_restore_owned_state() {
+    for p in [Player::P0, Player::P1] {
+        for stage in 0..3 {
+            let mut g = setup(p);
+            let id = named(&mut g, p, "Germinating Wurm", Zone::Hand);
+            paid(&mut g, id, true);
+            if stage == 0 {
+                replay(&mut g, Action::Pass);
+                g.state.next_stack_id = u64::MAX;
+            } else {
+                settle(&mut g);
+                if stage == 1 {
+                    g.state.step = Step::Main2;
+                    replay(&mut g, Action::Pass);
+                    g.state.next_stack_id = u64::MAX;
+                } else {
+                    to_end(&mut g);
+                    while matches!(g.state.pending, Pending::OrderTriggers { .. }) {
+                        pick(&mut g);
+                    }
+                    g.state.objects[id as usize].generation = u64::MAX;
+                    let item = g
+                        .state
+                        .stack
+                        .iter_mut()
+                        .find(|s| s.kind == StackKind::DelayedWarpExile)
+                        .unwrap();
+                    item.delayed_warp_exile.as_mut().unwrap().source.generation = u64::MAX;
+                    replay(&mut g, Action::Pass);
+                }
+            }
+            let before = g.snapshot();
+            let rev = g.revision();
+            let actor = g.actor().unwrap();
+            assert!(
+                matches!(
+                    g.apply(actor, Action::Pass),
+                    Err(Error::CapacityExceeded(_))
+                ),
+                "stage{stage}"
+            );
+            assert_eq!(g.snapshot(), before);
+            assert_eq!(g.revision(), rev);
+        }
+    }
+}
+#[test]
+fn conditional_static_grants_follow_source_counters_and_live_turn_then_leave() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let ally = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let enemy = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let drix = named(&mut g, p, "Drix Fatemaker", Zone::Hand);
+        paid(&mut g, drix, true);
+        settle(&mut g);
+        assert!(g.keywords(ally).contains(Keywords::TRAMPLE));
+        assert!(!g.keywords(enemy).contains(Keywords::TRAMPLE));
+        g.state.objects[ally as usize].counters.plus_one = 0;
+        assert!(!g.keywords(ally).contains(Keywords::TRAMPLE));
+        g.state.objects[ally as usize].counters.plus_one = 1;
+        g.move_object(drix, Zone::Exile);
+        assert!(!g.keywords(ally).contains(Keywords::TRAMPLE));
+        assert!(g.observe(p).warped_cards.is_empty());
+        let leader = named(&mut g, p, "Memorial Team Leader", Zone::Hand);
+        paid(&mut g, leader, false);
+        settle(&mut g);
+        assert_eq!(g.stats(ally).power, 4);
+        g.state.active = p.other();
+        assert_eq!(g.stats(ally).power, 3);
+        assert_eq!(g.stats(enemy).power, 2);
+        g.state.active = p;
+        assert_eq!(g.stats(ally).power, 4);
+        g.move_object(leader, Zone::Graveyard);
+        assert_eq!(g.stats(ally).power, 3);
+    }
+}
+#[test]
+fn both_collateral_complete_bodies_keep_flash_cycling_and_intervening_if() {
+    for p in [Player::P0, Player::P1] {
+        for artifact in [false, true] {
+            let mut g = setup(p);
+            let target = named(&mut g, p.other(), "Candy Trail", Zone::Battlefield);
+            if artifact {
+                named(&mut g, p, "Candy Trail", Zone::Battlefield);
+            }
+            let id = named(&mut g, p, "Waylaying Pirates", Zone::Hand);
+            paid(&mut g, id, false);
+            settle(&mut g);
+            assert_eq!(g.state.objects[target as usize].tapped, artifact);
+            assert_eq!(
+                g.state.objects[target as usize].counters.stun,
+                u64::from(artifact)
+            );
+        }
+        let mut g = setup(p);
+        let target = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+        let id = named(&mut g, p, "Runaway Boulder", Zone::Hand);
+        g.state.step = Step::End;
+        paid(&mut g, id, false);
+        settle(&mut g);
+        assert_eq!(g.state.objects[target as usize].damage, 6);
+        assert_eq!(g.state.objects[id as usize].zone, Zone::Battlefield);
+        let cycle = named(&mut g, p, "Runaway Boulder", Zone::Hand);
+        let library = g.state.players[p.index()].library.len();
+        replay(
+            &mut g,
+            Action::AnnounceActivate {
+                card: cycle,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        while g.state.announcing.is_some() {
+            pick(&mut g);
+        }
+        settle(&mut g);
+        assert_eq!(g.state.objects[cycle as usize].zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].library.len(), library - 1);
     }
 }

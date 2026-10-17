@@ -658,6 +658,17 @@ def extract_stat_rules(card):
     return proxy,base,scales
 
 
+def extract_counter_grants(card):
+    if card.get('layout')!='normal' or not isinstance(card.get('oracle_text'),str):return card,[]
+    body,grants=[],[]
+    for line in card['oracle_text'].splitlines():
+        m=re.fullmatch(r'Each creature you control with a \+1/\+1 counter on it has (.+)\.',line)
+        if m and (keywords:=keyword_list(m[1].casefold())) is not None:
+            grants.append(f'(CounterKind::PlusOne, Keywords({keywords}))')
+        else:body.append(line)
+    return dict(card,oracle_text='\n'.join(body)),grants
+
+
 def static_permanent_template(card):
     if not isinstance(card.get('oracle_text'), str): return None
     body, modifiers, grants = [], [], []
@@ -696,14 +707,13 @@ def static_permanent_template(card):
             grants.append(extra);continue
         m = re.fullmatch(r'(.+) get ([+-][0-9]+)/([+-][0-9]+)(?: and have (.+))?\.', line)
         if m:
-            if own_turn: return None
             filt = creature_filter(m[1])
             if filt is None or max(abs(int(m[2])), abs(int(m[3]))) > 32767: return None
             if m[4]:
                 extra=grant(m[1],m[4],False,requires_life_gain)
                 if extra is None: return None
                 grants.append(extra)
-            modifiers.append(f'StaticModifier {{ requires_life_gain: {str(requires_life_gain).lower()}, filter: {filt}, stats: Stats {{ power: {int(m[2])}, toughness: {int(m[3])} }} }}')
+            modifiers.append(f'StaticModifier {{ own_turn: {str(own_turn).lower()}, requires_life_gain: {str(requires_life_gain).lower()}, filter: {filt}, stats: Stats {{ power: {int(m[2])}, toughness: {int(m[3])} }} }}')
         elif m:=re.fullmatch(r'(.+) (?:have|has) (.+)\.',line):
             extra=grant(m[1],m[2],own_turn,requires_life_gain)
             if extra is None: return None
@@ -1600,6 +1610,7 @@ for _name, _zone, _kinds, _relation, _other, _nonland in [
     ('Artifact', 'Battlefield', 16, -1, False, False),
     ('ArtifactCreature', 'Battlefield', 17, -1, False, False),
     ('ArtifactCreatureYou', 'Battlefield', 17, 0, False, False),
+    ('ArtifactCreatureOpponent', 'Battlefield', 17, 1, False, False),
     ('Enchantment', 'Battlefield', 32, -1, False, False),
     ('ArtifactEnchantment', 'Battlefield', 48, -1, False, False),
     ('ArtifactEnchantmentOpponent', 'Battlefield', 48, 1, False, False),
@@ -1704,6 +1715,7 @@ for _name, _members in [
 FIXED_DAMAGE_SUBJECTS = {
     'any target':'Any',
     'target creature':'Creature',
+    'target creature an opponent controls':'CreatureOpponent',
     'target creature or planeswalker':'CreaturePlaneswalker',
     'target opponent':'Opponent',
     'target player':'Player',
@@ -1926,8 +1938,8 @@ def targeted_program(text):
         if rule:=object_subjects.get(m[3]):
             spec=(rule,0,1) if m[2] else (rule,1,1) if rule=='Creature' else rule
             return spec,[m[1].capitalize()]
-    if m:=re.fullmatch(r'tap target creature an opponent controls and put (a|one|two|three) stun counters? on it\.',text):
-        return 'CreatureOpponent',['Tap',counter_instruction('Targets',m[1],'stun')]
+    if m:=re.fullmatch(r'tap (target creature|target artifact or creature) an opponent controls and put (a|one|two|three) stun counters? on it\.',text):
+        return ('CreatureOpponent' if m[1]=='target creature' else 'ArtifactCreatureOpponent'),['Tap',counter_instruction('Targets',m[2],'stun')]
     if m:=re.fullmatch(r'([^.]+) if you gained life this turn\.',text):
         result=targeted_program(m[1]+'.')
         return (result[0],[f'If {{ guard: StepGuard::GainedLife, skip: {len(result[1])} }}',*result[1]]) if result else None
@@ -3382,6 +3394,7 @@ def compile_catalogue(snapshot, target):
         card, plot = extract_plot(card)
         warp_seen = any(line.startswith('Warp') for line in card.get('oracle_text','').splitlines())
         card, warp = extract_warp(card)
+        card, extra_counter_grants = extract_counter_grants(card) if kicker is None and offspring is None else (card,[])
         card, evidence = extract_evidence(card)
         card, additional = extract_additional_cost(card)
         card, target_reduction = extract_target_cost_reduction(card)
@@ -3549,6 +3562,7 @@ def compile_catalogue(snapshot, target):
                 offspring_rows.append(f'        {index} => Some({offspring}),')
                 offspring_copy_rows.append(f'        {index} => Some(__TOKEN_{offspring_key}__),')
             if flashback is not None: flashback_rows.append(f'        {index} => Some({flashback}),')
+            if extra_counter_grants: counter_grant_rows.append(f'        {index} => &[{", ".join(extra_counter_grants)}],')
             if plot is not None: plot_rows.append(f'        {index} => Some({plot}),')
             if warp is not None: warp_rows.append(f'        {index} => Some({warp}),')
             if entry_suppression: entry_suppression_rows.append(f'        {index} => {entry_suppression},')
