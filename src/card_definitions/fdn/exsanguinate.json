@@ -8,7 +8,7 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "27d92feac3c4ff42e7366bb1540f0b9a6d6ac8e302aa27aba3d4567fad07a946"
   },
-  "physical_metadata_sha256": "4fb610f3b24dfd7694d0e092d62e0e99355c1dc0ddbad43b7ece6112f1d4f2d8",
+  "physical_metadata_sha256": "bac371ffd617abf613fb6164381a665545b97ac4cdfc1b5036ed4e4960e537bf",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/e/Exsanguinate.java",
   "java_sha256": "1cf55855924d227ea8aacba92c4fa0dd16edc300186b0a3fe3e6650897b51dc7",
