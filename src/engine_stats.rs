@@ -239,6 +239,11 @@ impl Game {
     ) -> (Stats, Stats) {
         let object = &self.state.objects[id as usize];
         let base = self.base_stats_without_hand(id, departing);
+        // A Vehicle has no effective creature stats while it is not a creature.
+        // Counters remain on it, ready for a later successful crew.
+        if object.card.vehicle_stats().is_some() && !self.is_creature(id) {
+            return (base, base);
+        }
         let mut stats = base;
         let battlefield_creature = object.zone == Zone::Battlefield && self.is_creature(id);
         if matches!(object.card.effect(), Effect::Creature(..))

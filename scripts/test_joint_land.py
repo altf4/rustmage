@@ -48,12 +48,13 @@ class JointLandTests(unittest.TestCase):
   new_recipes=set(after['tokens'])-set(before['tokens']);self.assertEqual(new_recipes,{key.removesuffix('#0')})
   self.assertIn('name: "Beau", subtypes: "Ox", colors: 2',after['tokens'][key.removesuffix('#0')])
   self.assertTrue(all(after['tokens'].get(k)==v for k,v in before['tokens'].items()))
+  delivered_tokens=copy.deepcopy(after['tokens'])
   after=copy.deepcopy(after);after['tokens']=copy.deepcopy(before['tokens'])
   proof=assert_union(before,after,changed={"Worldsoul's Rage#0",'Bonny Pall, Clearcutter#0'},added=new,helpers={('dynamic_stats',key),('x_symbols',"Worldsoul's Rage#0")},aliases={key.removesuffix('#0'):key})
   self.assertEqual(proof['prior_helpers'],924)
   for name in ["Worldsoul's Rage#0",'Bonny Pall, Clearcutter#0',key]:self.assertEqual(current['definitions'][name],after['definitions'][name])
   for helper in [('dynamic_stats',key),('x_symbols',"Worldsoul's Rage#0")]:self.assertEqual(current['helpers'][helper],after['helpers'][helper])
-  self.assertEqual(current['tokens'],after['tokens'])
+  self.assertEqual(current['tokens'],delivered_tokens)
   mutant=copy.deepcopy(after);mutant['definitions']['Plains#0']='unrelated mutation'
   with self.assertRaises(AssertionError):assert_union(before,mutant,changed={"Worldsoul's Rage#0",'Bonny Pall, Clearcutter#0'},added=new,helpers={('dynamic_stats',key),('x_symbols',"Worldsoul's Rage#0")},aliases={key.removesuffix('#0'):key})
  def test_remaining_four_full_bodies_stay_gated(self):

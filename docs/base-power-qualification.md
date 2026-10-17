@@ -93,3 +93,17 @@ union similarly remains fixed while its two current bodies/Beau/helpers stay bou
 Python conflicts are resolved only after verifying that both sides differ solely
 in schema literals; parent policy logic is retained. Final composed gates remain
 pending until actually executed.
+
+The first actual-parent69-method affected run passed68 and exposed an assertion
+ordering mistake in the newly adapted joint-land historical test: its temporary
+normalized95-recipe map was compared to the actual96-recipe delivery. The proof
+now preserves the original96 map for current comparison; exact historical union
+and unrelated mutation checks remain unchanged.
+
+At0922ace the full native run passed1,912/1,913unit tests and caught a real
+regression: extracting the base boundary moved the early return for uncrewed
+Vehicles, so retained counters incorrectly appeared as effective creature stats.
+The layered query now returns before modifiers for a noncreature Vehicle, retaining
+its actual counters. The existing Crew assertion is unchanged. The0922 optimized
+library built successfully but is not represented as accepted public/final output.
+All925inputs stayed fixed and both jobs closed/SO-cleaned before this correction.
