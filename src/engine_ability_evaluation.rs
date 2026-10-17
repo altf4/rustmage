@@ -191,7 +191,9 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
     for (i, _) in game.state.objects.iter().enumerate() {
         let id = i as CardId;
         let object = world.object(id);
-        if object.zone != Zone::Battlefield {
+        if object.zone != Zone::Battlefield
+            && !(object.zone == Zone::Command && object.card.is_emblem())
+        {
             continue;
         }
         let source = world.reference(id);

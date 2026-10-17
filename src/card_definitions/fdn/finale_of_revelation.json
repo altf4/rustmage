@@ -3,10 +3,13 @@
   "catalogue_id": 1511,
   "oracle_id": "755bd5d8-67f1-4f24-a4e8-d98edf2f2e03",
   "facts_sha256": "f410618fe77637027cf54a59a1e9328b5eb73f7cad920de17ce6b5c8bb5b8b9b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "30f13e4a251ea82214974572dc1360727e91acaaa28e27956a277aab82ad1304"
   },
-  "physical_metadata_sha256": "eef665dccebd39b34946a1e5362c73140c365b745c11efcf379de43e235d8df1"
+  "physical_metadata_sha256": "a9574c958b90cdbb9d34eb929fc9d3a1701403c6606f06aa58a35d93966526f5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FinaleOfRevelation.java",
+  "java_sha256": "79eaf7c7db116b2898b5271e4499550ecb1462ad9d313241291210743a136ba9"
 }

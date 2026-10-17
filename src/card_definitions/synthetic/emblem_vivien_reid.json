@@ -1,0 +1,11 @@
+{
+  "name": "@emblem/vivien_reid",
+  "catalogue_id": 5338,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "ff8b0f5e350ed8c28ee9532fb64adc9ae865546efff5e1b1bf2d1a7e3609ca39",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/command/emblems/VivienReidEmblem.java",
+  "java_sha256": "659cefad6f3361b2a3a14b4d0dda36a14152b00036576c267a4431cab67691f7"
+}
