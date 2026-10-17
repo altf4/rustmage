@@ -2232,8 +2232,8 @@ for _name, _members in [
 ]:
     TARGET_RULES[_name] = 'TargetRule::Union(&[' + ', '.join(TARGET_RULES[member] for member in _members) + '])'
 
-TARGET_RULES['BlackGreenCreaturePlaneswalker'] = 'TargetRule::Filtered { base: &'+TARGET_RULES['CreaturePlaneswalker']+', predicate: TargetPredicate::Colors(20) }'
-TARGET_RULES['ArtifactToken'] = 'TargetRule::Filtered { base: &'+TARGET_RULES['Artifact']+', predicate: TargetPredicate::Token }'
+TARGET_RULES['BlackGreenCreaturePlaneswalker'] = 'TargetRule::Filtered { base: &'+TARGET_RULES['CreaturePlaneswalker']+', predicate: &TargetPredicate::Colors(20) }'
+TARGET_RULES['ArtifactToken'] = 'TargetRule::Filtered { base: &'+TARGET_RULES['Artifact']+', predicate: &TargetPredicate::Token }'
 
 FIXED_DAMAGE_SUBJECTS = {
     'target black or green creature or planeswalker':'BlackGreenCreaturePlaneswalker',
