@@ -1,0 +1,2656 @@
+{
+  "schema": 1,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "scope": "All 23 pinned Gift full bodies and exact resolvable direct Java imports, including full wildcard package files. Shared Gift protocol sources pinned separately. This does not claim all transitive Java dependencies were rewritten. This audit inventory is never an admission input.",
+  "cards": [
+    {
+      "name": "Bilbo's Gambit",
+      "status": "pending_complete_kernel",
+      "oracle_id": "ef71ef07-8a35-41ec-a851-d95e9e3a221b",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{1}{W}",
+        "type_line": "Instant",
+        "oracle_text": "Gift a Treasure (You may promise an opponent a gift as you cast this spell. If you do, they create a Treasure token before its other effects. It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")\nReturn target spell to its owner's hand. If the gift was promised, players can't cast spells this turn.",
+        "colors": [
+          "W"
+        ],
+        "keywords": [
+          "Gift",
+          "Treasure"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BilbosGambit.java",
+          "java_sha256": "4dfbc18a56d083e62611404527cf58d7c7480a4031f98c8389285e318a24a291"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageObject.java",
+          "java_sha256": "061a5412bcd48f83d961a10c987ddb072ab3ed3712ba70135305fb88565fa55a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+          "java_sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousRuleModifyingEffectImpl.java",
+          "java_sha256": "0f9822b6683144489e62ea1fa0e99c8e1e928479c90f8941e3794d57044e5948"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AddContinuousEffectToGame.java",
+          "java_sha256": "3647d2fb3d84fed968d2b45c43d33d706a712ec4dc4f9ba7aa39d39cc3efa31e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+          "java_sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+          "java_sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/GiftType.java",
+          "java_sha256": "0d0f7dc6e0fa94f5f11eef293d59604bc558bc6dff9de5bde8eda8d51ddde004"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/events/GameEvent.java",
+          "java_sha256": "3df463d33eff295607e700578e547cef896cf183e1dba3c41131a353f53cb7dc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetSpell.java",
+          "java_sha256": "349d67f29235bc2e3ad846c3b177f18dc1097e87e80327a77c852667289f94cc"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    },
+    {
+      "name": "Blooming Blast",
+      "status": "pending_complete_kernel",
+      "oracle_id": "2e5b8973-4f6e-4abe-bbbe-81fdca784997",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{1}{R}",
+        "type_line": "Instant",
+        "oracle_text": "Gift a Treasure (You may promise an opponent a gift as you cast this spell. If you do, they create a Treasure token before its other effects. It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")\nBlooming Blast deals 2 damage to target creature. If the gift was promised, Blooming Blast also deals 3 damage to that creature's controller.",
+        "colors": [
+          "R"
+        ],
+        "keywords": [
+          "Gift",
+          "Treasure"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BloomingBlast.java",
+          "java_sha256": "099b6ff447c135807cdab24affb94386622d0cb1face1f684b6fc31a8f01ed14"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+          "java_sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetControllerEffect.java",
+          "java_sha256": "3840f10d46eb873900ab403a544a466553ac695a889f4276165cc1b4c2510edf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+          "java_sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/GiftType.java",
+          "java_sha256": "0d0f7dc6e0fa94f5f11eef293d59604bc558bc6dff9de5bde8eda8d51ddde004"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    },
+    {
+      "name": "Coiling Rebirth",
+      "status": "pending_complete_kernel",
+      "oracle_id": "27a91ebd-39f4-432d-b6cc-cd86b4a3979a",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{3}{B}{B}",
+        "type_line": "Sorcery",
+        "oracle_text": "Gift a card (You may promise an opponent a gift as you cast this spell. If you do, they draw a card before its other effects.)\nReturn target creature card from your graveyard to the battlefield. Then if the gift was promised and that creature isn't legendary, create a token that's a copy of that creature, except it's 1/1.",
+        "colors": [
+          "B"
+        ],
+        "keywords": [
+          "Gift"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CoilingRebirth.java",
+          "java_sha256": "19e1408ec2f6d68b08baf2d0018763928c6e93a02b6fe88d910576e73c4d53c6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+          "java_sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenCopyTargetEffect.java",
+          "java_sha256": "d04e58fdcda406a60d92c760243fca54440f13ec1fc94517c97eb9b360b9a158"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+          "java_sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/Card.java",
+          "java_sha256": "86b9a512358a5c6814e62bc2f9cff87be07cf5a248e313686c137f0b76b798b0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/GiftType.java",
+          "java_sha256": "0d0f7dc6e0fa94f5f11eef293d59604bc558bc6dff9de5bde8eda8d51ddde004"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Zone.java",
+          "java_sha256": "4d8040e25af69a6e12c441a029b7cb44f1115d1016148738eafa4d2096f5610e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/Player.java",
+          "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+          "java_sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+          "java_sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/util/CardUtil.java",
+          "java_sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    },
+    {
+      "name": "Consumed by Greed",
+      "status": "pending_complete_kernel",
+      "oracle_id": "b548578c-4910-402c-8e78-498924e0a9be",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{1}{B}{B}",
+        "type_line": "Instant",
+        "oracle_text": "Gift a card (You may promise an opponent a gift as you cast this spell. If you do, they draw a card before its other effects.)\nTarget opponent sacrifices a creature with the greatest power among creatures they control. If the gift was promised, return target creature card from your graveyard to your hand.",
+        "colors": [
+          "B"
+        ],
+        "keywords": [
+          "Gift"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/ConsumedByGreed.java",
+          "java_sha256": "fe57d530e20a80cae508d09cf8af0e108e19e9f0381d18a387a3f25129bf084b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+          "java_sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+          "java_sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/SacrificeEffect.java",
+          "java_sha256": "c6d6af5f7c0f53c978e092e82dd8123b8da86ae9d5c3ec21321b28ecea0cd967"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+          "java_sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/GiftType.java",
+          "java_sha256": "0d0f7dc6e0fa94f5f11eef293d59604bc558bc6dff9de5bde8eda8d51ddde004"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/GreatestPowerControlledPredicate.java",
+          "java_sha256": "886d9b6e0dccfb4b4300fcc924c6a72c5417cce32dd7057d172ceb2dec5f3e21"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+          "java_sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+          "java_sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetadjustment/ConditionalTargetAdjuster.java",
+          "java_sha256": "3f26037edef7dba84184c3329f743861ec80b030433187ea3d72f71a2cb7d1ac"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/SecondTargetPointer.java",
+          "java_sha256": "135cc53e0202fad251c5902855c6001ba5de1d05fb4dd4341c7f8a17ecec4ef2"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    },
+    {
+      "name": "Cruelclaw's Heist",
+      "status": "pending_complete_kernel",
+      "oracle_id": "7a0bc265-6b40-48d6-a588-c9624df7d1bc",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{B}{B}",
+        "type_line": "Sorcery",
+        "oracle_text": "Gift a card (You may promise an opponent a gift as you cast this spell. If you do, they draw a card before its other effects.)\nTarget opponent reveals their hand. You choose a nonland card from it. Exile that card. If the gift was promised, you may cast that card for as long as it remains exiled, and mana of any type can be spent to cast it.",
+        "colors": [
+          "B"
+        ],
+        "keywords": [
+          "Gift"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CruelclawsHeist.java",
+          "java_sha256": "470fa50c4da13a69a774b30dea7686da40631cdcf2b1c3b7b09860c3405b6253"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+          "java_sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+          "java_sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/AdventureCard.java",
+          "java_sha256": "b9a7b04e6575138b44c3aae159b47b1c2e11bc221bb4f2a301cc4a944dc31b8b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/AdventureSpellCard.java",
+          "java_sha256": "0267f0994ee62c311d6d160c9709f110715cd736f1528429cbb3de6fff03c592"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/ArtRect.java",
+          "java_sha256": "b9b0f83f271020f95668f838ae2fc72e74cf5b88110440b16c73d8525e690098"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/Card.java",
+          "java_sha256": "86b9a512358a5c6814e62bc2f9cff87be07cf5a248e313686c137f0b76b798b0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardGraphicInfo.java",
+          "java_sha256": "66ed9c48b2d88f09eb7eb9d34de53a90bd67df41b59287a360c7407c0081f899"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardWithHalves.java",
+          "java_sha256": "c61378c9a6527657b209fe3e8b4c084865e001c648b07fda711e3d31a2d50af4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardWithSpellOption.java",
+          "java_sha256": "370a50d75c092a9cb5b0f3111af32fc2895479fb3f14f656267685bc9d09dea0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/Cards.java",
+          "java_sha256": "2ceaf2939456fd7356ea668af3c3aa642d7319455cf24ebf690109dce09db3d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardsImpl.java",
+          "java_sha256": "e3a32dd4f367a6429bd83cb8c1a1890e314b5dfbbedf8d61f4251797646dc1e0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/DoubleFacedCard.java",
+          "java_sha256": "84cf08e3f8ac922aadb4856757341b6cbdf9db66e8b2401b43b9be9ee0316db0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/DoubleFacedCardHalf.java",
+          "java_sha256": "238869dbb53fc008cf0cf72225f9c983040317b4e7979acfd01db5114772f5e2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/ExpansionSet.java",
+          "java_sha256": "ef8a0ca3a1bfd0bbbf04d1165e1e96cb8b2900af42870572ff3b0532344cab5a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/FrameStyle.java",
+          "java_sha256": "c363a6c2e4852f24892050bdf6264152b2b45c5bff025408d4c61516eeebb7e9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/LevelerCard.java",
+          "java_sha256": "23d343d8069480c9f8ee1dd4f00727f17c7d7cbc6decd707308625d5e488a349"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/MeldCard.java",
+          "java_sha256": "738306a815285c24a02c70744a94ff13dbba77410cad554e11cc739888b5eeff"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/ModalDoubleFacedCard.java",
+          "java_sha256": "e5f3411b714da1f2b68d5003bc2bb7ef39a1fafbd3fef94fb69fdef21a8d0edb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/ModalDoubleFacedCardHalf.java",
+          "java_sha256": "37d2bee15a7f11769410f0a6caee99e41a9eeaad0daa965aa3d12600bf11f59f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/OmenCard.java",
+          "java_sha256": "23ab5ce7824ef4ff96e68a43e16b9cc29fe9e5f03e447653d981da346fb5fcba"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/OmenSpellCard.java",
+          "java_sha256": "a103edc55f20408a67f69a0be9d1c5d5d08133c3b25d43fde7614bee966678ba"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/PrepareCard.java",
+          "java_sha256": "4253f1faea1e81d465ae3a68f0645c1f62e3d5e636727d40c0ba83fff5abd030"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/PrepareSpellCard.java",
+          "java_sha256": "d44b2de46baa68db903d8d5d9ab989bc3d4075e3dc03b3eab5a6b6d14f8d1872"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/PreparedSpellCopy.java",
+          "java_sha256": "47b70902962be18fa763cc8854b371c9a36072815ae3dc5c67319bde72667c95"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/RoomCard.java",
+          "java_sha256": "2875166eb64fdf499dbd85aa6d3bf840daec5ca5576e24f085317b93c7042e67"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/RoomCardHalf.java",
+          "java_sha256": "894e49c843a974560784d41f35798d65753f54e8aee209b0552142b3ccb5471f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/RoomCardHalfImpl.java",
+          "java_sha256": "19821772af233ed3b9a52ac70a130347adbda6b8bfda982554a92288e3445dc7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/Sets.java",
+          "java_sha256": "89dbac1fceeeee859f16460dc1d67f6435f8bf4ff99aaae5a5965b5ee2cb8daa"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/SpellOptionCard.java",
+          "java_sha256": "f5ff4b85e6a90c3a131c70c3bc5b9f77bddc4290fd6c2d24723b8497cd716dc0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/SpellOptionCardSpellAbility.java",
+          "java_sha256": "f5f7a36e1184ee08bce58dd3f61a9f83375b6c597a5aedae4a37ef64a35131a5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/SplitCard.java",
+          "java_sha256": "c3ef91c49ed0a4c64334851d2a5f1ed3eb3e60b1d4aab43c17fe1b01a82bd3c1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/SplitCardHalf.java",
+          "java_sha256": "0fe27cc7e207f2eb82ea92d0d1470188af0276bb444d23345dbb9cdf02f50bdb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/SplitCardHalfImpl.java",
+          "java_sha256": "16b0a5b9549eccbc23f177b9da331e1c1fc407165f3b28254837328d7d9bf326"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/SubCard.java",
+          "java_sha256": "2e54eb9e17b785cf4b60be31fbb879d65e6466e98893c33d35c3dfb685045aed"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/TransformingDoubleFacedCard.java",
+          "java_sha256": "88d793500dc62ce3e2f672a6977b8ce38a603878244c82c564911611aeb2d5fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/TransformingDoubleFacedCardHalf.java",
+          "java_sha256": "652352a9c9d3b9bc3287fe3894a4638e6892ba7bed44f14c731d62ca3b41422e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AbilityType.java",
+          "java_sha256": "1a4d39e2a07683fae30c0bdf87dd99abdad842a026bb84f4c379eae3182d0c17"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AbilityWord.java",
+          "java_sha256": "d71138cdcee404732e2f78b64762f4c82dcc64d44324db381a40d113b08562a5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AffinityType.java",
+          "java_sha256": "eca2c84794fab5e694c45df079ecf553e13433f38dbf122d75579c3a591c215d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AsThoughEffectType.java",
+          "java_sha256": "8436ccff09091fa30fcd4578c489b528585b87a99a6fd2a2a5229e1d39256e5d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AttachmentType.java",
+          "java_sha256": "7931287bfa8563637d894de3e49b3d5fb3f15da417940ef4cc0c416f20976d24"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/BeholdType.java",
+          "java_sha256": "b9b6ef548969c8e1bbde48ec05adb6ae62139ab3fbdd72a91f8154817dc17c2c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CastManaAdjustment.java",
+          "java_sha256": "1a6abea87ac6a1b1d0f846654882fcd4792f06d20abc79210be81ac3fdfa665e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ColoredManaSymbol.java",
+          "java_sha256": "985f250903ee7c0a37c9809833d1b93d66ebafab3debe98d1a74be9bb2a973c8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CommanderCardType.java",
+          "java_sha256": "c7a4f91dda2d5daa0a74a3011b2c20d777f08e75eefd418ebdc5d33251adf2d0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ComparisonType.java",
+          "java_sha256": "33b0abc2b4214ece7d2f842b9f000d967dd8fb4e6cb073cb34eeab7e304731ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CostModificationType.java",
+          "java_sha256": "5f8f4a6e1b5b904a07f60e76c5fafdb480dbe144f4ed4315d776304fdf62d871"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/DependencyType.java",
+          "java_sha256": "cd7a049f6a26d4efedd8076f351667bd1d0ef9ab852bab3fea5c168d01925735"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/EffectType.java",
+          "java_sha256": "9ce993610dba5e425c8b689450a75ca6c1835e1a90a4a146d33558e21d37f4f8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/EmptyNames.java",
+          "java_sha256": "5db998d76ddf796673751a1c7b897aa1e80430759bab79b7f03918b0a24f9742"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/EnlargeMode.java",
+          "java_sha256": "a7bfec8d3326f8f1f1d8f6576c8a5fef58ad4c9ca2b0c0e7cac9bbf5a08b0d3f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/EnterEventType.java",
+          "java_sha256": "fb5034daa92149a525d05033fe676fbc4e626882ccffa58d50b527185119f0ae"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/GiftType.java",
+          "java_sha256": "0d0f7dc6e0fa94f5f11eef293d59604bc558bc6dff9de5bde8eda8d51ddde004"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Layer.java",
+          "java_sha256": "25d5bf29b4ee00c00eb3b344ea1bafd7d3ee35f375124f757834651c6cf859dd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/MageObjectType.java",
+          "java_sha256": "e789caadca5f3d035673804a42b7eafc63afbc3443f5a50621c5ff5785bc4240"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ManaType.java",
+          "java_sha256": "479a939fd55b25ab18bcde985dfd2e37d23d4ee0dfec596d7eedee2f6fb5f281"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/MatchBufferTime.java",
+          "java_sha256": "659d398cb3b93a5b0c272bb55c3a6b062da172db9dc200e86f91258f31668f5c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/MatchTimeLimit.java",
+          "java_sha256": "e0e1de578c0ef6a92dcdf039225d2b7e2b6c75f8aa3d40f5680600df4ca48acb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ModeChoice.java",
+          "java_sha256": "684247554825e5e9970c81aefdb844d5d778c6bed45e305657f5fe398270126e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/MultiAmountType.java",
+          "java_sha256": "f577ba3bf847e53069f6f9bc1319a243cf4d36c4b3b1ac6c1ba6d0395bc932b8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/MultiplayerAttackOption.java",
+          "java_sha256": "2593924e7562dbadfc84e4c0f7a7b8c5e843126b0cb55665461bb4b0e041dab4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PartnerVariantType.java",
+          "java_sha256": "3ec16b839cd1657ceeae5e462b71ba02d6bfa438e48909982d175e4c112b9bfe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PhaseStep.java",
+          "java_sha256": "64cfd5ae855792ce11efc4801efc84fbfd2f82dc94221e05dcc702e4bf70ee84"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PlanarDieRollResult.java",
+          "java_sha256": "693f3c87403ea3746bbb79d3f80450ae6ff757740289532d4bf6c5895f48b5ec"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Planes.java",
+          "java_sha256": "837dca8920e7581b03bcb9bf97030f5226c0ceaa6b35a5a2f52ab47788c1efc1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PlayerAction.java",
+          "java_sha256": "322d9aa8d50b3d0591cf4beedc66418f5fb16b8ff2a1b1455d6fc52997be5876"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Pronoun.java",
+          "java_sha256": "8a86c9321011c1674421283bb6ad0da6e035712bbed78fd8fea60b49563743ff"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PutCards.java",
+          "java_sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/RangeOfInfluence.java",
+          "java_sha256": "3f98cb8b739579214bd84667d05826620650825ef9644087f323f5189f50844b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Rarity.java",
+          "java_sha256": "9921cb718a4f4795fcba77a3d6ceda6470464edb84ec301335efaba2ae18ffd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/RoleType.java",
+          "java_sha256": "dbf5a947685f6d81c10d8f4245efd85bd2ff637851682abf5a361f5b84744d1d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/RollDieType.java",
+          "java_sha256": "9b34996973a8fcd4fabd11c035cb964d673e4d43175bc24cfa39f0158438e25d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SagaChapter.java",
+          "java_sha256": "2a5bcf61b6a211a22ba02c94ee762bdb3f70ae6470df54d28b11f255142077f5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SetTargetPointer.java",
+          "java_sha256": "a8f2e34b69d3cf460248cf90b28dbea3bb31fa6c912d89a6fdb32b0fd46ad4e6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SetType.java",
+          "java_sha256": "13e48d6b5674e55ac29feaa49c50c339b997f60e59991e8f7f2de2c74f43d87b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SkillLevel.java",
+          "java_sha256": "fd502603de0ef5e65b99f5ddc2e145cb336661cd6e69bd3dda66f0942736e35a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SpellAbilityCastMode.java",
+          "java_sha256": "78847cdd437922b306cf2aa1a77e8aee1560c8510c4cdac352403ddd5496b3bc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SpellAbilityType.java",
+          "java_sha256": "d1c1d311389b1c51a17edd80f893bb4e4ecf72b1c5ef6cd3b547d58d3679b8ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubLayer.java",
+          "java_sha256": "1a6334ed026e868bf2a4fcd4def50cb6a414fe3a803ef0a65d788e647d4a1866"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubTypeSet.java",
+          "java_sha256": "7bb16d4562db9e5227f18b6840525700d49cdc4ce664f9a89f85d46785f550ff"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SuperType.java",
+          "java_sha256": "4ec4cf97e8c73dee7d1d0e4be9f4b90eb980dcdcd26698fcb610aed30da9e6cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TableState.java",
+          "java_sha256": "264be8a2ea2dee23aa82c16d0e04b8a53edae0dc1d2f96d4eae968dac9e75f62"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TargetController.java",
+          "java_sha256": "bd1591f2b4d3613a47bd6e509f92d688fea7c10d31a19ce7601ccba62cbba7f6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TimingRule.java",
+          "java_sha256": "ce29c2591308e309ec653a343d24ae0c1cdd477341ac1e060f7a6725d1269024"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TournamentPlayerState.java",
+          "java_sha256": "efb61269ec76c02aea9b56769e1ce53473fc1a3a4400b302c48a449059a9db44"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TurnPhase.java",
+          "java_sha256": "38002b047fd1ee80b41a65c846dad944fd376c68a0dd10f5928100abe9ba8ced"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/UseFirstManaAbilityMode.java",
+          "java_sha256": "812b6b81309c3282f0f8206f2b66a20e44bd0e49c222cb93d655a29c8c8ea6c2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/WatcherScope.java",
+          "java_sha256": "9ecb7ca3e5dbd9f5e0b16a52d0f2a64aaf09d38edd2d925e6a4ebb46df02d2c1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Zone.java",
+          "java_sha256": "4d8040e25af69a6e12c441a029b7cb44f1115d1016148738eafa4d2096f5610e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/Player.java",
+          "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetCard.java",
+          "java_sha256": "e4ac7e19f604b43a36475592a0d13f75fcd6e21b287a813a2381b9b42ca4740e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInHand.java",
+          "java_sha256": "0b88ed18c6053986dc57c50ac6363da0acacc35899724fae164813085a428f88"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+          "java_sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/util/CardUtil.java",
+          "java_sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    },
+    {
+      "name": "Crumb and Get It",
+      "status": "pending_complete_kernel",
+      "oracle_id": "93596258-bb44-4aa3-833d-9a0ab16b5ec1",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{W}",
+        "type_line": "Instant",
+        "oracle_text": "Gift a Food (You may promise an opponent a gift as you cast this spell. If you do, they create a Food token before its other effects. It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\nTarget creature you control gets +2/+2 until end of turn. If the gift was promised, that creature also gains indestructible until end of turn.",
+        "colors": [
+          "W"
+        ],
+        "keywords": [
+          "Gift",
+          "Food"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CrumbAndGetIt.java",
+          "java_sha256": "4f46dbaa45a8a49dadeabc8c1332cdf1cb801789a76585f641a19db8acbfb640"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+          "java_sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AddContinuousEffectToGame.java",
+          "java_sha256": "3647d2fb3d84fed968d2b45c43d33d706a712ec4dc4f9ba7aa39d39cc3efa31e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+          "java_sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+          "java_sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/GiftType.java",
+          "java_sha256": "0d0f7dc6e0fa94f5f11eef293d59604bc558bc6dff9de5bde8eda8d51ddde004"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    },
+    {
+      "name": "Dawn's Truce",
+      "status": "pending_complete_kernel",
+      "oracle_id": "37c06f89-db36-4937-9404-2b07cd22e1a6",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{1}{W}",
+        "type_line": "Instant",
+        "oracle_text": "Gift a card (You may promise an opponent a gift as you cast this spell. If you do, they draw a card before its other effects.)\nYou and permanents you control gain hexproof until end of turn. If the gift was promised, permanents you control also gain indestructible until end of turn.",
+        "colors": [
+          "W"
+        ],
+        "keywords": [
+          "Gift"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DawnsTruce.java",
+          "java_sha256": "413a4522b37a4247b31762361105b6c0adea00939692814fd3ff4b10e678a856"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+          "java_sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AddContinuousEffectToGame.java",
+          "java_sha256": "3647d2fb3d84fed968d2b45c43d33d706a712ec4dc4f9ba7aa39d39cc3efa31e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+          "java_sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControllerEffect.java",
+          "java_sha256": "745784dc889025c2006a64fe1b6a04dfde5aa2f18cafe51a92fd31696ad5f70d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+          "java_sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/HexproofAbility.java",
+          "java_sha256": "dd6ceb5e1dac42ece34947ba678be1057bf0f4ecc5e5eb24fc1995763954259a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+          "java_sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/GiftType.java",
+          "java_sha256": "0d0f7dc6e0fa94f5f11eef293d59604bc558bc6dff9de5bde8eda8d51ddde004"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    },
+    {
+      "name": "Dewdrop Cure",
+      "status": "pending_complete_kernel",
+      "oracle_id": "07634620-a83a-4ca0-8a60-2a21368a2661",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{2}{W}",
+        "type_line": "Sorcery",
+        "oracle_text": "Gift a card (You may promise an opponent a gift as you cast this spell. If you do, they draw a card before its other effects.)\nReturn up to two target creature cards each with mana value 2 or less from your graveyard to the battlefield. If the gift was promised, instead return up to three target creature cards each with mana value 2 or less from your graveyard to the battlefield.",
+        "colors": [
+          "W"
+        ],
+        "keywords": [
+          "Gift"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DewdropCure.java",
+          "java_sha256": "ddeffccc48abd24055650d5be11f70ac3b04030a5fe2e21d30ab5e94213f2a9c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+          "java_sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/InfoEffect.java",
+          "java_sha256": "48bac57c3707da691071b0fb266461819de4fbfef0608a0e1767de405a2eca4b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+          "java_sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+          "java_sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ComparisonType.java",
+          "java_sha256": "33b0abc2b4214ece7d2f842b9f000d967dd8fb4e6cb073cb34eeab7e304731ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/GiftType.java",
+          "java_sha256": "0d0f7dc6e0fa94f5f11eef293d59604bc558bc6dff9de5bde8eda8d51ddde004"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterCard.java",
+          "java_sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreatureCard.java",
+          "java_sha256": "ee796c20588a1c0975306824c57d1c173bfa54b4afaf8c3526aaf32e15d02739"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+          "java_sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+          "java_sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetadjustment/ConditionalTargetAdjuster.java",
+          "java_sha256": "3f26037edef7dba84184c3329f743861ec80b030433187ea3d72f71a2cb7d1ac"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    },
+    {
+      "name": "Into the Flood Maw",
+      "status": "pending_complete_kernel",
+      "oracle_id": "8cb36a67-9206-4665-a03f-64f52ba559c4",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{U}",
+        "type_line": "Instant",
+        "oracle_text": "Gift a tapped Fish (You may promise an opponent a gift as you cast this spell. If you do, they create a tapped 1/1 blue Fish creature token before its other effects.)\nReturn target creature an opponent controls to its owner's hand. If the gift was promised, instead return target nonland permanent an opponent controls to its owner's hand.",
+        "colors": [
+          "U"
+        ],
+        "keywords": [
+          "Gift"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/i/IntoTheFloodMaw.java",
+          "java_sha256": "3e03a1d99fbb704d55a31b9bd86b2b8df9c11d7fde6837248041efd3826d9085"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+          "java_sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+          "java_sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+          "java_sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/GiftType.java",
+          "java_sha256": "0d0f7dc6e0fa94f5f11eef293d59604bc558bc6dff9de5bde8eda8d51ddde004"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TargetController.java",
+          "java_sha256": "bd1591f2b4d3613a47bd6e509f92d688fea7c10d31a19ce7601ccba62cbba7f6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+          "java_sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+          "java_sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetadjustment/ConditionalTargetAdjuster.java",
+          "java_sha256": "3f26037edef7dba84184c3329f743861ec80b030433187ea3d72f71a2cb7d1ac"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    },
+    {
+      "name": "Kitnap",
+      "status": "pending_complete_kernel",
+      "oracle_id": "a1bd1e83-40ac-449f-838c-ef308f275a5d",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{2}{U}{U}",
+        "type_line": "Enchantment \u2014 Aura",
+        "oracle_text": "Gift a card (You may promise an opponent a gift as you cast this spell. If you do, when it enters, they draw a card.)\nEnchant creature\nWhen this Aura enters, tap enchanted creature. If the gift wasn't promised, put three stun counters on it.\nYou control enchanted creature.",
+        "colors": [
+          "U"
+        ],
+        "keywords": [
+          "Gift",
+          "Enchant"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/k/Kitnap.java",
+          "java_sha256": "3c863bc65deaf575f4c724401b03d916d563d17e9075a1613c6a5c5bbe9c5c48"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+          "java_sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapEnchantedEffect.java",
+          "java_sha256": "ec3b0885abf02638a5f0fa47926e753828840f1adc8307b8c4c3d85d97231f65"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/ControlEnchantedEffect.java",
+          "java_sha256": "84e8b3f040dcdbb7be851fb8b5fcfab3620c38514f3b80d811577f9cce34a9b8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAttachedEffect.java",
+          "java_sha256": "55e3fec3d9814fe3b997b35570bd5963d93b7ed65f65fa89dffef71f7d008be2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+          "java_sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/GiftType.java",
+          "java_sha256": "0d0f7dc6e0fa94f5f11eef293d59604bc558bc6dff9de5bde8eda8d51ddde004"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/counters/CounterType.java",
+          "java_sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    },
+    {
+      "name": "Long River's Pull",
+      "status": "pending_complete_kernel",
+      "oracle_id": "f1993767-1d07-49c8-b8dc-04ec9840a999",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{U}{U}",
+        "type_line": "Instant",
+        "oracle_text": "Gift a card (You may promise an opponent a gift as you cast this spell. If you do, they draw a card before its other effects.)\nCounter target creature spell. If the gift was promised, instead counter target spell.",
+        "colors": [
+          "U"
+        ],
+        "keywords": [
+          "Gift"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LongRiversPull.java",
+          "java_sha256": "cbfd35a3716eb4b54fd69ac95a0c52ff83c7868e21afebc582e2c41d316fcda3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+          "java_sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterTargetEffect.java",
+          "java_sha256": "49282767e8f8d631bb38ae1d35bc91a29ab2ae8173030e3a89d3da495c1cf233"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+          "java_sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/GiftType.java",
+          "java_sha256": "0d0f7dc6e0fa94f5f11eef293d59604bc558bc6dff9de5bde8eda8d51ddde004"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetSpell.java",
+          "java_sha256": "349d67f29235bc2e3ad846c3b177f18dc1097e87e80327a77c852667289f94cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetadjustment/ConditionalTargetAdjuster.java",
+          "java_sha256": "3f26037edef7dba84184c3329f743861ec80b030433187ea3d72f71a2cb7d1ac"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    },
+    {
+      "name": "Longstalk Brawl",
+      "status": "pending_complete_kernel",
+      "oracle_id": "adc8976a-0871-4fd6-9c4c-822ba9549b4b",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{G}",
+        "type_line": "Sorcery",
+        "oracle_text": "Gift a tapped Fish (You may promise an opponent a gift as you cast this spell. If you do, they create a tapped 1/1 blue Fish creature token before its other effects.)\nChoose target creature you control and target creature you don't control. Put a +1/+1 counter on the creature you control if the gift was promised. Then those creatures fight each other.",
+        "colors": [
+          "G"
+        ],
+        "keywords": [
+          "Gift",
+          "Fight"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LongstalkBrawl.java",
+          "java_sha256": "0a63ebfd83180fea79c27d64781e245493db9524080749802411c718749908b4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+          "java_sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/FightTargetsEffect.java",
+          "java_sha256": "e562370eb9b15a7fc0db16f44b32e8dce627719fc405b2bc09eb8dad21f8edc2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+          "java_sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/GiftType.java",
+          "java_sha256": "0d0f7dc6e0fa94f5f11eef293d59604bc558bc6dff9de5bde8eda8d51ddde004"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/counters/CounterType.java",
+          "java_sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    },
+    {
+      "name": "Mind Spiral",
+      "status": "pending_complete_kernel",
+      "oracle_id": "03e356ae-f1e8-4730-8d2b-b9e2f32db915",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{4}{U}",
+        "type_line": "Sorcery",
+        "oracle_text": "Gift a tapped Fish (You may promise an opponent a gift as you cast this spell. If you do, they create a tapped 1/1 blue Fish creature token before its other effects.)\nTarget player draws three cards. If the gift was promised, tap target creature an opponent controls and put a stun counter on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)",
+        "colors": [
+          "U"
+        ],
+        "keywords": [
+          "Gift"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MindSpiral.java",
+          "java_sha256": "8de32591f91aeceb2b073947dad211cfb8db2c9ad3d42b42b6c8006212bf8d57"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+          "java_sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardTargetEffect.java",
+          "java_sha256": "1d131bf3ff4ac75e46660190098938610581d961ad6d8f39e553c9c200f7a467"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+          "java_sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+          "java_sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/GiftType.java",
+          "java_sha256": "0d0f7dc6e0fa94f5f11eef293d59604bc558bc6dff9de5bde8eda8d51ddde004"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/counters/CounterType.java",
+          "java_sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPlayer.java",
+          "java_sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+          "java_sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetadjustment/ConditionalTargetAdjuster.java",
+          "java_sha256": "3f26037edef7dba84184c3329f743861ec80b030433187ea3d72f71a2cb7d1ac"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/SecondTargetPointer.java",
+          "java_sha256": "135cc53e0202fad251c5902855c6001ba5de1d05fb4dd4341c7f8a17ecec4ef2"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    },
+    {
+      "name": "Nocturnal Hunger",
+      "status": "pending_complete_kernel",
+      "oracle_id": "ed7f64d1-69ba-40f5-9863-3edba10e23c7",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{2}{B}",
+        "type_line": "Instant",
+        "oracle_text": "Gift a Food (You may promise an opponent a gift as you cast this spell. If you do, they create a Food token before its other effects. It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\nDestroy target creature. If the gift wasn't promised, you lose 2 life.",
+        "colors": [
+          "B"
+        ],
+        "keywords": [
+          "Gift",
+          "Food"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/n/NocturnalHunger.java",
+          "java_sha256": "b37db1b0c02d3d740d125d58c89a7c2a7282a4765ea9109ea09dc8f645bd7ba6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+          "java_sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+          "java_sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+          "java_sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+          "java_sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/GiftType.java",
+          "java_sha256": "0d0f7dc6e0fa94f5f11eef293d59604bc558bc6dff9de5bde8eda8d51ddde004"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    },
+    {
+      "name": "Parting Gust",
+      "status": "pending_complete_kernel",
+      "oracle_id": "367bb252-41e1-4f98-9d22-442dd332cccf",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{W}{W}",
+        "type_line": "Instant",
+        "oracle_text": "Gift a tapped Fish (You may promise an opponent a gift as you cast this spell. If you do, they create a tapped 1/1 blue Fish creature token before its other effects.)\nExile target nontoken creature. If the gift wasn't promised, return that card to the battlefield under its owner's control with a +1/+1 counter on it at the beginning of the next end step.",
+        "colors": [
+          "W"
+        ],
+        "keywords": [
+          "Gift"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PartingGust.java",
+          "java_sha256": "ed6bf892afefa0999e567a20df70d1caf7ea1c04ecf91cadb52eb97839d17c37"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/delayed/AtTheBeginOfNextEndStepDelayedTriggeredAbility.java",
+          "java_sha256": "9f3272690e0ade9a48526bd13165b3015a71d8bbed9d86a997af960d5f3214a5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+          "java_sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/Effect.java",
+          "java_sha256": "92f49363848fa1b18215e3a0d516923e10d917638a38e5bbad73f274f6a1e917"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+          "java_sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToBattlefieldUnderOwnerControlWithCounterTargetEffect.java",
+          "java_sha256": "d22c6075d029e898298f71e835d13b4eff3d5253b1f23fe46f49b1314175d766"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+          "java_sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/Card.java",
+          "java_sha256": "86b9a512358a5c6814e62bc2f9cff87be07cf5a248e313686c137f0b76b798b0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/GiftType.java",
+          "java_sha256": "0d0f7dc6e0fa94f5f11eef293d59604bc558bc6dff9de5bde8eda8d51ddde004"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/counters/CounterType.java",
+          "java_sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/TokenPredicate.java",
+          "java_sha256": "3213600d28e7e1f76d66cee4f781fb3eb01627759fa9306e22c42a6f6fb880da"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/Player.java",
+          "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+          "java_sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/util/CardUtil.java",
+          "java_sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+        }
+      ],
+      "external_imports": [
+        "java.util.LinkedHashSet",
+        "java.util.Objects",
+        "java.util.Set",
+        "java.util.UUID",
+        "java.util.stream.Collectors"
+      ]
+    },
+    {
+      "name": "Peerless Recycling",
+      "status": "pending_complete_kernel",
+      "oracle_id": "938c03fc-8adf-4c7a-8ae1-eca8401f7a83",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{1}{G}",
+        "type_line": "Instant",
+        "oracle_text": "Gift a card (You may promise an opponent a gift as you cast this spell. If you do, they draw a card before its other effects.)\nReturn target permanent card from your graveyard to your hand. If the gift was promised, instead return two target permanent cards from your graveyard to your hand.",
+        "colors": [
+          "G"
+        ],
+        "keywords": [
+          "Gift"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PeerlessRecycling.java",
+          "java_sha256": "a8bd0b1d02c6e335c231275b72601b308b44ee18976e1e5ac26e578e18447c2d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+          "java_sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+          "java_sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+          "java_sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/GiftType.java",
+          "java_sha256": "0d0f7dc6e0fa94f5f11eef293d59604bc558bc6dff9de5bde8eda8d51ddde004"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+          "java_sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetadjustment/ConditionalTargetAdjuster.java",
+          "java_sha256": "3f26037edef7dba84184c3329f743861ec80b030433187ea3d72f71a2cb7d1ac"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    },
+    {
+      "name": "Sazacap's Brew",
+      "status": "pending_complete_kernel",
+      "oracle_id": "ac7d1986-8388-4e4c-973e-d90382b12acf",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{1}{R}",
+        "type_line": "Instant",
+        "oracle_text": "Gift a tapped Fish (You may promise an opponent a gift as you cast this spell. If you do, they create a tapped 1/1 blue Fish creature token before its other effects.)\nAs an additional cost to cast this spell, discard a card.\nTarget player draws two cards. If the gift was promised, target creature you control gets +2/+0 until end of turn.",
+        "colors": [
+          "R"
+        ],
+        "keywords": [
+          "Gift"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SazacapsBrew.java",
+          "java_sha256": "c501611e84f26936c27dc75b53ffa4ce0cff09a45be4a52f0e542a2be65aa3e9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+          "java_sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+          "java_sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AddContinuousEffectToGame.java",
+          "java_sha256": "3647d2fb3d84fed968d2b45c43d33d706a712ec4dc4f9ba7aa39d39cc3efa31e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardTargetEffect.java",
+          "java_sha256": "1d131bf3ff4ac75e46660190098938610581d961ad6d8f39e553c9c200f7a467"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+          "java_sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/GiftType.java",
+          "java_sha256": "0d0f7dc6e0fa94f5f11eef293d59604bc558bc6dff9de5bde8eda8d51ddde004"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPlayer.java",
+          "java_sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetadjustment/ConditionalTargetAdjuster.java",
+          "java_sha256": "3f26037edef7dba84184c3329f743861ec80b030433187ea3d72f71a2cb7d1ac"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/SecondTargetPointer.java",
+          "java_sha256": "135cc53e0202fad251c5902855c6001ba5de1d05fb4dd4341c7f8a17ecec4ef2"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    },
+    {
+      "name": "Scrapshooter",
+      "status": "pending_complete_kernel",
+      "oracle_id": "235e3231-c5e5-4696-a867-705b2c4158fe",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{1}{G}{G}",
+        "type_line": "Creature \u2014 Raccoon Archer",
+        "oracle_text": "Gift a card (You may promise an opponent a gift as you cast this spell. If you do, when it enters, they draw a card.)\nReach\nWhen this creature enters, if the gift was promised, destroy target artifact or enchantment an opponent controls.",
+        "power": "4",
+        "toughness": "4",
+        "colors": [
+          "G"
+        ],
+        "keywords": [
+          "Reach",
+          "Gift"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/Scrapshooter.java",
+          "java_sha256": "0589da282bc7544db78978720ce76b3cd1846d174f8cbb5066fe3682c96bb3ff"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+          "java_sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+          "java_sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+          "java_sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+          "java_sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/GiftType.java",
+          "java_sha256": "0d0f7dc6e0fa94f5f11eef293d59604bc558bc6dff9de5bde8eda8d51ddde004"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TargetController.java",
+          "java_sha256": "bd1591f2b4d3613a47bd6e509f92d688fea7c10d31a19ce7601ccba62cbba7f6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterArtifactOrEnchantmentPermanent.java",
+          "java_sha256": "6a2926a1a496baaf1e453cafc25fb2c88e26d4e551e1c5caa0a9d928ab0c830f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    },
+    {
+      "name": "Starfall Invocation",
+      "status": "pending_complete_kernel",
+      "oracle_id": "7024532b-f99b-43a7-b0ed-5b3e7ec7592b",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{3}{W}{W}",
+        "type_line": "Sorcery",
+        "oracle_text": "Gift a card (You may promise an opponent a gift as you cast this spell. If you do, they draw a card before its other effects.)\nDestroy all creatures. If the gift was promised, return a creature card put into your graveyard this way to the battlefield under your control.",
+        "colors": [
+          "W"
+        ],
+        "keywords": [
+          "Gift"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StarfallInvocation.java",
+          "java_sha256": "12238a499d3467a7645af9647fe0b77f7d140955d8d6294efe4a61e3f000d028"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+          "java_sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+          "java_sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/AdventureCard.java",
+          "java_sha256": "b9a7b04e6575138b44c3aae159b47b1c2e11bc221bb4f2a301cc4a944dc31b8b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/AdventureSpellCard.java",
+          "java_sha256": "0267f0994ee62c311d6d160c9709f110715cd736f1528429cbb3de6fff03c592"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/ArtRect.java",
+          "java_sha256": "b9b0f83f271020f95668f838ae2fc72e74cf5b88110440b16c73d8525e690098"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/Card.java",
+          "java_sha256": "86b9a512358a5c6814e62bc2f9cff87be07cf5a248e313686c137f0b76b798b0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardGraphicInfo.java",
+          "java_sha256": "66ed9c48b2d88f09eb7eb9d34de53a90bd67df41b59287a360c7407c0081f899"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardWithHalves.java",
+          "java_sha256": "c61378c9a6527657b209fe3e8b4c084865e001c648b07fda711e3d31a2d50af4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardWithSpellOption.java",
+          "java_sha256": "370a50d75c092a9cb5b0f3111af32fc2895479fb3f14f656267685bc9d09dea0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/Cards.java",
+          "java_sha256": "2ceaf2939456fd7356ea668af3c3aa642d7319455cf24ebf690109dce09db3d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardsImpl.java",
+          "java_sha256": "e3a32dd4f367a6429bd83cb8c1a1890e314b5dfbbedf8d61f4251797646dc1e0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/DoubleFacedCard.java",
+          "java_sha256": "84cf08e3f8ac922aadb4856757341b6cbdf9db66e8b2401b43b9be9ee0316db0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/DoubleFacedCardHalf.java",
+          "java_sha256": "238869dbb53fc008cf0cf72225f9c983040317b4e7979acfd01db5114772f5e2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/ExpansionSet.java",
+          "java_sha256": "ef8a0ca3a1bfd0bbbf04d1165e1e96cb8b2900af42870572ff3b0532344cab5a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/FrameStyle.java",
+          "java_sha256": "c363a6c2e4852f24892050bdf6264152b2b45c5bff025408d4c61516eeebb7e9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/LevelerCard.java",
+          "java_sha256": "23d343d8069480c9f8ee1dd4f00727f17c7d7cbc6decd707308625d5e488a349"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/MeldCard.java",
+          "java_sha256": "738306a815285c24a02c70744a94ff13dbba77410cad554e11cc739888b5eeff"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/ModalDoubleFacedCard.java",
+          "java_sha256": "e5f3411b714da1f2b68d5003bc2bb7ef39a1fafbd3fef94fb69fdef21a8d0edb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/ModalDoubleFacedCardHalf.java",
+          "java_sha256": "37d2bee15a7f11769410f0a6caee99e41a9eeaad0daa965aa3d12600bf11f59f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/OmenCard.java",
+          "java_sha256": "23ab5ce7824ef4ff96e68a43e16b9cc29fe9e5f03e447653d981da346fb5fcba"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/OmenSpellCard.java",
+          "java_sha256": "a103edc55f20408a67f69a0be9d1c5d5d08133c3b25d43fde7614bee966678ba"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/PrepareCard.java",
+          "java_sha256": "4253f1faea1e81d465ae3a68f0645c1f62e3d5e636727d40c0ba83fff5abd030"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/PrepareSpellCard.java",
+          "java_sha256": "d44b2de46baa68db903d8d5d9ab989bc3d4075e3dc03b3eab5a6b6d14f8d1872"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/PreparedSpellCopy.java",
+          "java_sha256": "47b70902962be18fa763cc8854b371c9a36072815ae3dc5c67319bde72667c95"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/RoomCard.java",
+          "java_sha256": "2875166eb64fdf499dbd85aa6d3bf840daec5ca5576e24f085317b93c7042e67"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/RoomCardHalf.java",
+          "java_sha256": "894e49c843a974560784d41f35798d65753f54e8aee209b0552142b3ccb5471f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/RoomCardHalfImpl.java",
+          "java_sha256": "19821772af233ed3b9a52ac70a130347adbda6b8bfda982554a92288e3445dc7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/Sets.java",
+          "java_sha256": "89dbac1fceeeee859f16460dc1d67f6435f8bf4ff99aaae5a5965b5ee2cb8daa"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/SpellOptionCard.java",
+          "java_sha256": "f5ff4b85e6a90c3a131c70c3bc5b9f77bddc4290fd6c2d24723b8497cd716dc0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/SpellOptionCardSpellAbility.java",
+          "java_sha256": "f5f7a36e1184ee08bce58dd3f61a9f83375b6c597a5aedae4a37ef64a35131a5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/SplitCard.java",
+          "java_sha256": "c3ef91c49ed0a4c64334851d2a5f1ed3eb3e60b1d4aab43c17fe1b01a82bd3c1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/SplitCardHalf.java",
+          "java_sha256": "0fe27cc7e207f2eb82ea92d0d1470188af0276bb444d23345dbb9cdf02f50bdb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/SplitCardHalfImpl.java",
+          "java_sha256": "16b0a5b9549eccbc23f177b9da331e1c1fc407165f3b28254837328d7d9bf326"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/SubCard.java",
+          "java_sha256": "2e54eb9e17b785cf4b60be31fbb879d65e6466e98893c33d35c3dfb685045aed"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/TransformingDoubleFacedCard.java",
+          "java_sha256": "88d793500dc62ce3e2f672a6977b8ce38a603878244c82c564911611aeb2d5fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/TransformingDoubleFacedCardHalf.java",
+          "java_sha256": "652352a9c9d3b9bc3287fe3894a4638e6892ba7bed44f14c731d62ca3b41422e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AbilityType.java",
+          "java_sha256": "1a4d39e2a07683fae30c0bdf87dd99abdad842a026bb84f4c379eae3182d0c17"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AbilityWord.java",
+          "java_sha256": "d71138cdcee404732e2f78b64762f4c82dcc64d44324db381a40d113b08562a5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AffinityType.java",
+          "java_sha256": "eca2c84794fab5e694c45df079ecf553e13433f38dbf122d75579c3a591c215d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AsThoughEffectType.java",
+          "java_sha256": "8436ccff09091fa30fcd4578c489b528585b87a99a6fd2a2a5229e1d39256e5d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AttachmentType.java",
+          "java_sha256": "7931287bfa8563637d894de3e49b3d5fb3f15da417940ef4cc0c416f20976d24"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/BeholdType.java",
+          "java_sha256": "b9b6ef548969c8e1bbde48ec05adb6ae62139ab3fbdd72a91f8154817dc17c2c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CastManaAdjustment.java",
+          "java_sha256": "1a6abea87ac6a1b1d0f846654882fcd4792f06d20abc79210be81ac3fdfa665e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ColoredManaSymbol.java",
+          "java_sha256": "985f250903ee7c0a37c9809833d1b93d66ebafab3debe98d1a74be9bb2a973c8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CommanderCardType.java",
+          "java_sha256": "c7a4f91dda2d5daa0a74a3011b2c20d777f08e75eefd418ebdc5d33251adf2d0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ComparisonType.java",
+          "java_sha256": "33b0abc2b4214ece7d2f842b9f000d967dd8fb4e6cb073cb34eeab7e304731ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CostModificationType.java",
+          "java_sha256": "5f8f4a6e1b5b904a07f60e76c5fafdb480dbe144f4ed4315d776304fdf62d871"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/DependencyType.java",
+          "java_sha256": "cd7a049f6a26d4efedd8076f351667bd1d0ef9ab852bab3fea5c168d01925735"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/EffectType.java",
+          "java_sha256": "9ce993610dba5e425c8b689450a75ca6c1835e1a90a4a146d33558e21d37f4f8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/EmptyNames.java",
+          "java_sha256": "5db998d76ddf796673751a1c7b897aa1e80430759bab79b7f03918b0a24f9742"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/EnlargeMode.java",
+          "java_sha256": "a7bfec8d3326f8f1f1d8f6576c8a5fef58ad4c9ca2b0c0e7cac9bbf5a08b0d3f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/EnterEventType.java",
+          "java_sha256": "fb5034daa92149a525d05033fe676fbc4e626882ccffa58d50b527185119f0ae"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/GiftType.java",
+          "java_sha256": "0d0f7dc6e0fa94f5f11eef293d59604bc558bc6dff9de5bde8eda8d51ddde004"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Layer.java",
+          "java_sha256": "25d5bf29b4ee00c00eb3b344ea1bafd7d3ee35f375124f757834651c6cf859dd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/MageObjectType.java",
+          "java_sha256": "e789caadca5f3d035673804a42b7eafc63afbc3443f5a50621c5ff5785bc4240"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ManaType.java",
+          "java_sha256": "479a939fd55b25ab18bcde985dfd2e37d23d4ee0dfec596d7eedee2f6fb5f281"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/MatchBufferTime.java",
+          "java_sha256": "659d398cb3b93a5b0c272bb55c3a6b062da172db9dc200e86f91258f31668f5c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/MatchTimeLimit.java",
+          "java_sha256": "e0e1de578c0ef6a92dcdf039225d2b7e2b6c75f8aa3d40f5680600df4ca48acb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ModeChoice.java",
+          "java_sha256": "684247554825e5e9970c81aefdb844d5d778c6bed45e305657f5fe398270126e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/MultiAmountType.java",
+          "java_sha256": "f577ba3bf847e53069f6f9bc1319a243cf4d36c4b3b1ac6c1ba6d0395bc932b8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/MultiplayerAttackOption.java",
+          "java_sha256": "2593924e7562dbadfc84e4c0f7a7b8c5e843126b0cb55665461bb4b0e041dab4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PartnerVariantType.java",
+          "java_sha256": "3ec16b839cd1657ceeae5e462b71ba02d6bfa438e48909982d175e4c112b9bfe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PhaseStep.java",
+          "java_sha256": "64cfd5ae855792ce11efc4801efc84fbfd2f82dc94221e05dcc702e4bf70ee84"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PlanarDieRollResult.java",
+          "java_sha256": "693f3c87403ea3746bbb79d3f80450ae6ff757740289532d4bf6c5895f48b5ec"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Planes.java",
+          "java_sha256": "837dca8920e7581b03bcb9bf97030f5226c0ceaa6b35a5a2f52ab47788c1efc1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PlayerAction.java",
+          "java_sha256": "322d9aa8d50b3d0591cf4beedc66418f5fb16b8ff2a1b1455d6fc52997be5876"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Pronoun.java",
+          "java_sha256": "8a86c9321011c1674421283bb6ad0da6e035712bbed78fd8fea60b49563743ff"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PutCards.java",
+          "java_sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/RangeOfInfluence.java",
+          "java_sha256": "3f98cb8b739579214bd84667d05826620650825ef9644087f323f5189f50844b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Rarity.java",
+          "java_sha256": "9921cb718a4f4795fcba77a3d6ceda6470464edb84ec301335efaba2ae18ffd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/RoleType.java",
+          "java_sha256": "dbf5a947685f6d81c10d8f4245efd85bd2ff637851682abf5a361f5b84744d1d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/RollDieType.java",
+          "java_sha256": "9b34996973a8fcd4fabd11c035cb964d673e4d43175bc24cfa39f0158438e25d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SagaChapter.java",
+          "java_sha256": "2a5bcf61b6a211a22ba02c94ee762bdb3f70ae6470df54d28b11f255142077f5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SetTargetPointer.java",
+          "java_sha256": "a8f2e34b69d3cf460248cf90b28dbea3bb31fa6c912d89a6fdb32b0fd46ad4e6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SetType.java",
+          "java_sha256": "13e48d6b5674e55ac29feaa49c50c339b997f60e59991e8f7f2de2c74f43d87b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SkillLevel.java",
+          "java_sha256": "fd502603de0ef5e65b99f5ddc2e145cb336661cd6e69bd3dda66f0942736e35a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SpellAbilityCastMode.java",
+          "java_sha256": "78847cdd437922b306cf2aa1a77e8aee1560c8510c4cdac352403ddd5496b3bc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SpellAbilityType.java",
+          "java_sha256": "d1c1d311389b1c51a17edd80f893bb4e4ecf72b1c5ef6cd3b547d58d3679b8ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubLayer.java",
+          "java_sha256": "1a6334ed026e868bf2a4fcd4def50cb6a414fe3a803ef0a65d788e647d4a1866"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubTypeSet.java",
+          "java_sha256": "7bb16d4562db9e5227f18b6840525700d49cdc4ce664f9a89f85d46785f550ff"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SuperType.java",
+          "java_sha256": "4ec4cf97e8c73dee7d1d0e4be9f4b90eb980dcdcd26698fcb610aed30da9e6cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TableState.java",
+          "java_sha256": "264be8a2ea2dee23aa82c16d0e04b8a53edae0dc1d2f96d4eae968dac9e75f62"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TargetController.java",
+          "java_sha256": "bd1591f2b4d3613a47bd6e509f92d688fea7c10d31a19ce7601ccba62cbba7f6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TimingRule.java",
+          "java_sha256": "ce29c2591308e309ec653a343d24ae0c1cdd477341ac1e060f7a6725d1269024"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TournamentPlayerState.java",
+          "java_sha256": "efb61269ec76c02aea9b56769e1ce53473fc1a3a4400b302c48a449059a9db44"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TurnPhase.java",
+          "java_sha256": "38002b047fd1ee80b41a65c846dad944fd376c68a0dd10f5928100abe9ba8ced"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/UseFirstManaAbilityMode.java",
+          "java_sha256": "812b6b81309c3282f0f8206f2b66a20e44bd0e49c222cb93d655a29c8c8ea6c2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/WatcherScope.java",
+          "java_sha256": "9ecb7ca3e5dbd9f5e0b16a52d0f2a64aaf09d38edd2d925e6a4ebb46df02d2c1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Zone.java",
+          "java_sha256": "4d8040e25af69a6e12c441a029b7cb44f1115d1016148738eafa4d2096f5610e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/Player.java",
+          "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetCard.java",
+          "java_sha256": "e4ac7e19f604b43a36475592a0d13f75fcd6e21b287a813a2381b9b42ca4740e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+          "java_sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    },
+    {
+      "name": "Starforged Sword",
+      "status": "pending_complete_kernel",
+      "oracle_id": "2cdc1d82-30dc-4f0a-af20-33dde90269b1",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{4}",
+        "type_line": "Artifact \u2014 Equipment",
+        "oracle_text": "Gift a tapped Fish (You may promise an opponent a gift as you cast this spell. If you do, when it enters, they create a tapped 1/1 blue Fish creature token.)\nWhen this Equipment enters, if the gift was promised, attach this Equipment to target creature you control.\nEquipped creature gets +3/+3 and loses flying.\nEquip {3}",
+        "colors": [],
+        "keywords": [
+          "Gift",
+          "Equip"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StarforgedSword.java",
+          "java_sha256": "440bc18611edee04809f8e7630ff1c17c8d78b4e264769214e2f626228569061"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAttachToTarget.java",
+          "java_sha256": "e50af4bbb1c04c044c182d9d0acb58dcf41375d41a94e85a67fbcbfe39f2625b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+          "java_sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+          "java_sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAbilityAttachedEffect.java",
+          "java_sha256": "c985f7ff3bd59323a987f07d42eaa8d8020b382f4d73b34ecf25180b00c1b11c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+          "java_sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+          "java_sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AttachmentType.java",
+          "java_sha256": "7931287bfa8563637d894de3e49b3d5fb3f15da417940ef4cc0c416f20976d24"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/GiftType.java",
+          "java_sha256": "0d0f7dc6e0fa94f5f11eef293d59604bc558bc6dff9de5bde8eda8d51ddde004"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    },
+    {
+      "name": "Valley Rally",
+      "status": "pending_complete_kernel",
+      "oracle_id": "5b919920-b1b6-499b-a7fe-c630778a7831",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{2}{R}",
+        "type_line": "Instant",
+        "oracle_text": "Gift a Food (You may promise an opponent a gift as you cast this spell. If you do, they create a Food token before its other effects. It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\nCreatures you control get +2/+0 until end of turn. If the gift was promised, target creature you control gains first strike until end of turn.",
+        "colors": [
+          "R"
+        ],
+        "keywords": [
+          "Gift",
+          "Food"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/ValleyRally.java",
+          "java_sha256": "285b935445af85038867cb5bfa0b85c8d8d1ceafa6770fa41f736312cbdee062"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+          "java_sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AddContinuousEffectToGame.java",
+          "java_sha256": "3647d2fb3d84fed968d2b45c43d33d706a712ec4dc4f9ba7aa39d39cc3efa31e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+          "java_sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FirstStrikeAbility.java",
+          "java_sha256": "997831ae93b8f148ce96ac211e3e2a86e2df46403677fe1106d7c20554678235"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+          "java_sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/GiftType.java",
+          "java_sha256": "0d0f7dc6e0fa94f5f11eef293d59604bc558bc6dff9de5bde8eda8d51ddde004"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetadjustment/ConditionalTargetAdjuster.java",
+          "java_sha256": "3f26037edef7dba84184c3329f743861ec80b030433187ea3d72f71a2cb7d1ac"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    },
+    {
+      "name": "Wear Down",
+      "status": "pending_complete_kernel",
+      "oracle_id": "27905301-333e-4cdd-90cf-188159fcf8e9",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{1}{G}",
+        "type_line": "Sorcery",
+        "oracle_text": "Gift a card (You may promise an opponent a gift as you cast this spell. If you do, they draw a card before its other effects.)\nDestroy target artifact or enchantment. If the gift was promised, instead destroy two target artifacts and/or enchantments.",
+        "colors": [
+          "G"
+        ],
+        "keywords": [
+          "Gift"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WearDown.java",
+          "java_sha256": "abe454d4b915b9f7d2a3825dbc72f655b6da87cbcaee836a5917e8fcf191129e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+          "java_sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+          "java_sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+          "java_sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/GiftType.java",
+          "java_sha256": "0d0f7dc6e0fa94f5f11eef293d59604bc558bc6dff9de5bde8eda8d51ddde004"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetadjustment/ConditionalTargetAdjuster.java",
+          "java_sha256": "3f26037edef7dba84184c3329f743861ec80b030433187ea3d72f71a2cb7d1ac"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    },
+    {
+      "name": "Wildfire Howl",
+      "status": "pending_complete_kernel",
+      "oracle_id": "04fd8c1f-80e5-4b3d-b63e-7af6ccafbbaa",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{1}{R}{R}",
+        "type_line": "Sorcery",
+        "oracle_text": "Gift a card (You may promise an opponent a gift as you cast this spell. If you do, they draw a card before its other effects.)\nWildfire Howl deals 2 damage to each creature. If the gift was promised, instead Wildfire Howl deals 1 damage to any target and 2 damage to each creature.",
+        "colors": [
+          "R"
+        ],
+        "keywords": [
+          "Gift"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WildfireHowl.java",
+          "java_sha256": "c73b5368630b15a175a4f39a6f0192ec6634f7c5697b027a4f43b4d06d0b7a35"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+          "java_sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageAllEffect.java",
+          "java_sha256": "0b4150468bb32f733a8cbc6485ae511b5141e87a1efc8b744911d62a7648c313"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+          "java_sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/GiftType.java",
+          "java_sha256": "0d0f7dc6e0fa94f5f11eef293d59604bc558bc6dff9de5bde8eda8d51ddde004"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetAnyTarget.java",
+          "java_sha256": "94f28b8a4a9908ef9b7599805c0ac39faf0aae249231969cd51373db206ebf34"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetadjustment/ConditionalTargetAdjuster.java",
+          "java_sha256": "3f26037edef7dba84184c3329f743861ec80b030433187ea3d72f71a2cb7d1ac"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    }
+  ],
+  "shared_sources": [
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+      "java_sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/GiftType.java",
+      "java_sha256": "0d0f7dc6e0fa94f5f11eef293d59604bc558bc6dff9de5bde8eda8d51ddde004"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+      "java_sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+    }
+  ]
+}
