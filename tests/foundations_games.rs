@@ -26,7 +26,7 @@ fn deck(land: &str, names: &[&str]) -> Vec<Card> {
 
 #[test]
 fn foundations_five_color_full_games_and_owned_search_replay() {
-    let decks = [
+    let mut decks = [
         deck(
             "Plains",
             &[
@@ -35,9 +35,9 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
                 "Healer's Hawk",
                 "Helpful Hunter",
                 "Inspiring Overseer",
-                "Pacifism",
+                "Prayer of Binding",
                 "Adamant Will",
-                "Prideful Parent",
+                "Felidar Savior",
                 "Serra Angel",
             ],
         ),
@@ -45,12 +45,12 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
             "Island",
             &[
                 "Opt",
-                "Quick Study",
+                "Micromancer",
                 "Spectral Sailor",
-                "Elementalist Adept",
-                "Mocking Sprite",
+                "Corsair Captain",
+                "Starlight Snare",
                 "Exclusion Mage",
-                "Bigfin Bouncer",
+                "Pirate's Cutlass",
                 "Unsummon",
                 "Tempest Djinn",
             ],
@@ -60,26 +60,26 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
             &[
                 "Diregraf Ghoul",
                 "Infestation Sage",
-                "Vampire Interloper",
+                "Exsanguinate",
                 "Vampire Nighthawk",
-                "Skeleton Archer",
-                "Maalfeld Twins",
-                "Stab",
-                "Bake into a Pie",
-                "Moment of Craving",
+                "Rune-Scarred Demon",
+                "Arbiter of Woe",
+                "Sanguine Indulgence",
+                "Cemetery Recruitment",
+                "Vile Entomber",
             ],
         ),
         deck(
             "Mountain",
             &[
-                "Swab Goblin",
+                "Courageous Goblin",
                 "Brazen Scourge",
                 "Viashino Pyromancer",
                 "Dragon Fodder",
                 "Guttersnipe",
                 "Burst Lightning",
                 "Goblin Surprise",
-                "Boltwave",
+                "Ruby, Daring Tracker",
                 "Shivan Dragon",
             ],
         ),
@@ -88,21 +88,30 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
             &[
                 "Llanowar Elves",
                 "Bear Cub",
-                "Druid of the Cowl",
-                "Magnigoth Sentry",
+                "Elvish Archdruid",
+                "Fierce Empath",
                 "Thornweald Archer",
                 "Giant Growth",
-                "Gnarlid Colony",
+                "Garruk's Uprising",
                 "Aggressive Mammoth",
-                "Overrun",
+                "New Horizons",
             ],
         ),
     ];
+    // Ruby has a real two-color cost; Caves replaces basics without adding
+    // a fifth copy of any card or leaving this set's Standard-legal inventory.
+    for land in &mut decks[3][..12] {
+        *land = Card::from_name("Forest").unwrap();
+    }
+    for land in &mut decks[0][..4] {
+        *land = Card::from_name("Cryptic Caves").unwrap();
+    }
     let mut total_decisions = 0;
     let mut triggered = false;
     let mut token = false;
     let mut combat = false;
     let mut branches = 0;
+    let mut new_spells = BTreeSet::new();
     for pair in 0..decks.len() {
         for seed in [7, 41] {
             for starter in [Player::P0, Player::P1] {
@@ -134,6 +143,11 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
                     let action = actions[index].clone();
                     assert!(!matches!(action, Action::Concede));
                     let obs = game.observe(actor);
+                    for item in &obs.stack {
+                        if item.kind == StackKind::Spell {
+                            new_spells.insert(item.source_card.name());
+                        }
+                    }
                     triggered |= obs.stack.iter().any(|item| item.kind != StackKind::Spell);
                     token |= obs.objects.iter().any(|o| o.token.is_some());
                     combat |= !obs.attackers.is_empty();
@@ -178,6 +192,16 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
         }
     }
     assert!(triggered && token && combat);
+    for name in [
+        "Exsanguinate",
+        "Sanguine Indulgence",
+        "Cemetery Recruitment",
+    ] {
+        assert!(
+            new_spells.contains(name),
+            "new card was not cast in full games: {name}"
+        );
+    }
     assert!(branches >= 20);
     println!(
         "FDN initial matrix: 20 natural full games, {total_decisions} decisions, {branches} owned replay checks; 45 nonland card identities plus basics, not full-set acceptance"

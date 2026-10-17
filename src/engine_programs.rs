@@ -303,6 +303,7 @@ impl Game {
                     | TriggerCondition::Granted(_)
                     | TriggerCondition::OncePerTurn(_)
                     | TriggerCondition::DuringOpponentsTurn(_)
+                    | TriggerCondition::When { .. }
                     | TriggerCondition::InterveningIf { .. } => {
                         unreachable!("unwrapped event")
                     }
@@ -359,10 +360,18 @@ impl Game {
                                     && subtype.is_none_or(|t| entered.has_subtype(t))
                             }
                     }
-                    TriggerCondition::OtherFilteredEntersYou(predicate) => {
+                    TriggerCondition::OtherFilteredEntersYou(predicate)
+                    | TriggerCondition::FilteredEntersYou(predicate) => {
                         yours
-                            && !same
+                            && (!same
+                                || matches!(
+                                    ability.condition.event(),
+                                    TriggerCondition::FilteredEntersYou(_)
+                                ))
                             && match predicate {
+                                EntryPredicate::CreaturePowerAtLeast(minimum) => {
+                                    entered.is_creature() && entered.power >= i128::from(minimum)
+                                }
                                 EntryPredicate::CreaturePowerAtMost(maximum) => {
                                     entered.is_creature() && entered.power <= i128::from(maximum)
                                 }
@@ -500,7 +509,12 @@ impl Game {
             return false;
         }
 
-        if !self.trigger_guards_hold(
+        if !self.trigger_time_guards_hold(
+            condition,
+            source.controller,
+            source.reference,
+            source.tapped,
+        ) || !self.trigger_guards_hold(
             condition,
             source.controller,
             source.reference,
@@ -1631,7 +1645,8 @@ impl Game {
                         matches!(instruction, Instruction::Fight { .. }),
                     );
                 }
-                Instruction::AddMana(production) => match production {
+                Instruction::AddMana(production) => match production.in_world(self, item.card) {
+                    ManaProduction::CountSubtype { .. } => unreachable!("resolved production"),
                     ManaProduction::Fixed(mana) => self.add_mana(item.controller, mana),
                     ManaProduction::Choice { .. } => {
                         self.state.pending = Pending::EffectMana {
@@ -1641,10 +1656,23 @@ impl Game {
                         return;
                     }
                 },
-                Instruction::Search(spec) => {
+                Instruction::Search(spec) | Instruction::SearchRequired(spec) => {
+                    let minimum = if matches!(instruction, Instruction::SearchRequired(_)) {
+                        assert_eq!(
+                            spec.filter,
+                            crate::SearchFilter::Any,
+                            "required searches must not require finding a hidden quality"
+                        );
+                        usize::from(spec.maximum)
+                            .min(self.state.players[item.controller.index()].library.len())
+                            as u16
+                    } else {
+                        0
+                    };
                     self.state.resolving.as_mut().unwrap().search =
                         Some(Box::new(search::SearchChoice {
                             spec,
+                            minimum,
                             selected: Vec::new(),
                             battlefield: None,
                         }));
@@ -1824,8 +1852,14 @@ impl Game {
                 Instruction::DrainLifeScaled(value) => {
                     let amount = i128::try_from(self.item_amount(value, &item))
                         .capacity("life drain amount representation exhausted");
-                    self.lose_life(item.controller.other(), amount);
-                    self.gain_life(item.controller, amount);
+                    let opponent = item.controller.other();
+                    let before = self.state.players[opponent.index()].life_lost_this_turn;
+                    self.lose_life(opponent, amount);
+                    let lost = self.state.players[opponent.index()].life_lost_this_turn - before;
+                    self.gain_life(
+                        item.controller,
+                        i128::try_from(lost).capacity("life drain result exhausted"),
+                    );
                 }
                 Instruction::Discard(set, _) | Instruction::DiscardScaled(set, _) => {
                     let amount = match instruction {
@@ -2348,6 +2382,25 @@ impl Game {
                         })
                         .collect();
                     self.stage_entries(moves, None);
+                }
+                Instruction::ReturnToHandDrawForSubtype(subtype) => {
+                    // Capture the legal target before changing its incarnation.
+                    // The subtype condition is independent of a successful move.
+                    let draws = item
+                        .targets
+                        .iter()
+                        .filter(|&&bound| {
+                            self.same_target_object(bound)
+                                && match bound.target {
+                                    Target::Card(id) => {
+                                        self.state.objects[id as usize].card.has_subtype(subtype)
+                                    }
+                                    _ => false,
+                                }
+                        })
+                        .count();
+                    self.move_target_batch(&item.targets, Zone::Hand);
+                    self.draw_many(item.controller, draws as u128);
                 }
                 Instruction::Exile
                 | Instruction::Destroy

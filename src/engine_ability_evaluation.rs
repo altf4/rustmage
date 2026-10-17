@@ -2,8 +2,8 @@
 //! Static candidates stay registered while blank, so leaving the removal source
 //! restores them without a zone change or mutable derived cache.
 use super::ability_order::{
-    GrantedAbilityKey, LayerSixAction, LayerSixEffect, LayerSixGrant, LayerSixObject,
-    LayerSixResult, apply_layer_six,
+    GrantedAbilityKey, GrantedManaAbility, LayerSixAction, LayerSixEffect, LayerSixGrant,
+    LayerSixObject, LayerSixResult, apply_layer_six,
 };
 use super::ability_world::CharacteristicWorld;
 use super::*;
@@ -79,6 +79,19 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             value
         }
+        StaticAbilityFragment::AttachmentMana(production) => {
+            if !world.attachment_link(source, world.reference(id))
+                || world.kinds(source.card) & 1 != 0
+            {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: Vec::new(),
+                mana: vec![GrantedManaAbility { source, production }],
+            });
+        }
         StaticAbilityFragment::AttachmentTrigger(ability) => {
             if !world.attached(source, id) {
                 return None;
@@ -87,6 +100,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 recipient: id,
                 keywords: Keywords::NONE,
                 abilities: vec![key(ability)],
+                mana: Vec::new(),
             });
         }
         StaticAbilityFragment::CounterKeyword(_, kind, value) => {
@@ -127,6 +141,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
         recipient: id,
         keywords,
         abilities: Vec::new(),
+        mana: Vec::new(),
     })
 }
 
@@ -153,6 +168,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                 printed: true,
                 keywords: object.card.keywords(),
                 grants: Vec::new(),
+                mana: Vec::new(),
             }
         })
         .collect();
@@ -174,6 +190,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                     StaticAbilityFragment::AttachmentKeywords(..)
                         | StaticAbilityFragment::AttachedTurnKeywords(..)
                         | StaticAbilityFragment::AttachmentTrigger(..)
+                        | StaticAbilityFragment::AttachmentMana(..)
                         | StaticAbilityFragment::CounterKeyword(..)
                         | StaticAbilityFragment::KeywordGrant(..)
                         | StaticAbilityFragment::LiveKeywords(..)

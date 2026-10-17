@@ -62,6 +62,7 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
 struct FundingMove {
     resource: usize,
     ability: Option<u16>,
+    grantor: Option<ObjectRef>,
     payment: [u64; 6],
     counters: Counters,
     production: Mana,
@@ -220,10 +221,12 @@ fn source_obligations(
 /// ability. Converters may improve colors but cannot create spendable quantity.
 /// Overlapping resource/life/counter costs across abilities are deliberately
 /// counted independently: this can only overestimate what a legal path gains.
-fn activation_gain_upper(ability: &ActivatedAbility, counters: Counters, life: i128) -> u128 {
-    let Some(production) = ability.mana_production() else {
-        return 0;
-    };
+fn activation_gain_upper(
+    ability: &ActivatedAbility,
+    production: ManaProduction,
+    counters: Counters,
+    life: i128,
+) -> u128 {
     let mut produced = 0;
     production.visit(|mana| {
         produced = produced.max(mana.into_iter().map(u128::from).sum::<u128>());
@@ -271,7 +274,12 @@ impl<'g> FundingState<'g> {
         for object in &game.state.objects {
             if object.zone == Zone::Battlefield && object.controller == goal.actor {
                 for ability in object.card.activations() {
-                    if ability.mana_production().is_some() {
+                    if let Some(production) = ability.mana_production() {
+                        if let ManaProduction::CountSubtype { subtype, .. } = production
+                            && !subtypes.contains(&subtype)
+                        {
+                            subtypes.push(subtype);
+                        }
                         for subtype in ability.guard.subtypes() {
                             if !subtypes.contains(subtype) {
                                 subtypes.push(*subtype);
@@ -304,6 +312,7 @@ impl<'g> FundingState<'g> {
                                 && ((convoke
                                     && game.object_kinds(*id as CardId, object) & 1 != 0)
                                     || object.card.mana_color().is_some()
+                                    || game.object_kinds(*id as CardId, object) & 2 != 0
                                     || object
                                         .card
                                         .activations()
@@ -426,6 +435,17 @@ impl<'g> FundingState<'g> {
         match guard {
             ActivationGuard::Always => true,
             ActivationGuard::OwnTurn => self.active == actor,
+            ActivationGuard::ControlLandsAtLeast(minimum) => {
+                self.resources
+                    .iter()
+                    .filter(|r| {
+                        r.object.zone == Zone::Battlefield
+                            && r.object.controller == actor
+                            && self.kinds(r) & 2 != 0
+                    })
+                    .count()
+                    >= usize::from(minimum)
+            }
             ActivationGuard::ControlSubtypeAny(_) => self.resources.iter().any(|r| {
                 r.object.zone == Zone::Battlefield
                     && r.object.controller == actor
@@ -439,10 +459,29 @@ impl<'g> FundingState<'g> {
         let mut moves = Vec::new();
         for (resource, entry) in self.resources.iter().enumerate() {
             let object = &entry.object;
-            if object.zone != Zone::Battlefield
-                || object.controller != goal.actor
-                || !ability_world::CharacteristicWorld::printed_abilities_available(self, entry.id)
+            if object.zone != Zone::Battlefield || object.controller != goal.actor {
+                continue;
+            }
+            if !object.tapped
+                && (self.kinds(entry) & 1 == 0
+                    || !object.summoning_sick
+                    || self.keywords(entry).contains(Keywords::HASTE))
             {
+                for grant in ability_world::CharacteristicWorld::granted_mana(self, entry.id) {
+                    grant.production.visit(|production| {
+                        moves.push(FundingMove {
+                            resource,
+                            ability: None,
+                            grantor: Some(grant.source),
+                            payment: [0; 6],
+                            counters: Counters::default(),
+                            production,
+                        });
+                        false
+                    });
+                }
+            }
+            if !ability_world::CharacteristicWorld::printed_abilities_available(self, entry.id) {
                 continue;
             }
             if !object.tapped
@@ -456,6 +495,7 @@ impl<'g> FundingState<'g> {
                 moves.push(FundingMove {
                     resource,
                     ability: None,
+                    grantor: None,
                     payment: [0; 6],
                     counters: Counters::default(),
                     production,
@@ -491,10 +531,11 @@ impl<'g> FundingState<'g> {
                 }
                 activations::counter_payments(ability.cost, object.counters, |counters| {
                     funding_cost_payments(self.mana, ability.cost, |payment| {
-                        production.visit(|production| {
+                        production.in_world(self, entry.id).visit(|production| {
                             moves.push(FundingMove {
                                 resource,
                                 ability: Some(index as u16),
+                                grantor: None,
                                 payment,
                                 counters,
                                 production,
@@ -628,11 +669,44 @@ impl<'g> FundingState<'g> {
                     total = total.saturating_add(1);
                 }
             }
+            if !object.tapped {
+                for &source in &self.game.state.attachment_sources {
+                    let provider = ability_world::CharacteristicWorld::object(self, source);
+                    if provider.zone == Zone::Battlefield
+                        && provider.attached_to
+                            == Some(ObjectRef {
+                                card: resource.id,
+                                generation: object.generation,
+                            })
+                    {
+                        for group in provider.card.static_ability_groups() {
+                            for fragment in group.fragments {
+                                if let crate::cards::StaticAbilityFragment::AttachmentMana(
+                                    production,
+                                ) = fragment
+                                {
+                                    let mut maximum = 0;
+                                    production.visit(|mana| {
+                                        maximum =
+                                            maximum.max(mana.into_iter().map(u128::from).sum());
+                                        false
+                                    });
+                                    total = total.saturating_add(maximum);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             for ability in object.card.activations() {
                 // Tapped objects cannot pay tap costs in this closed search.
-                if !object.tapped || !ability.cost.tap {
+                if (!object.tapped || !ability.cost.tap) && ability.mana_production().is_some() {
                     total = total.saturating_add(activation_gain_upper(
                         ability,
+                        ability
+                            .mana_production()
+                            .unwrap()
+                            .in_world(self, resource.id),
                         object.counters,
                         self.life,
                     ));
@@ -663,6 +737,16 @@ impl<'g> FundingState<'g> {
                 && (self.kinds(resource) & 1 == 0
                     || !object.summoning_sick
                     || self.keywords(resource).contains(Keywords::HASTE));
+            if tap_ready {
+                for grant in ability_world::CharacteristicWorld::granted_mana(self, resource.id) {
+                    grant.production.visit(|mana| {
+                        for i in 0..6 {
+                            upper[i] = upper[i].saturating_add(u128::from(mana[i]));
+                        }
+                        false
+                    });
+                }
+            }
             if tap_ready && let Some(color) = object.card.mana_color() {
                 upper[color] = upper[color].saturating_add(1);
             }
@@ -706,7 +790,7 @@ impl<'g> FundingState<'g> {
                     uses = uses.min(u64::try_from(count / u128::from(amount)).unwrap_or(u64::MAX));
                 }
                 let mut maximum = [0u32; 6];
-                production.visit(|mana| {
+                production.in_world(self, resource.id).visit(|mana| {
                     for index in 0..6 {
                         maximum[index] = maximum[index].max(mana[index]);
                     }
@@ -830,6 +914,13 @@ impl<'g> FundingState<'g> {
     }
     fn action(&self, step: &FundingMove) -> Action {
         let card = self.resources[step.resource].id;
+        if let Some(grantor) = step.grantor {
+            return Action::TapGrantedMana {
+                card,
+                grantor,
+                production: step.production,
+            };
+        }
         match step.ability {
             Some(ability) => Action::ActivateMana {
                 card,
@@ -2046,3 +2137,7 @@ mod ability_world_tests {
         }
     }
 }
+
+#[cfg(test)]
+#[path = "engine_fdn_scaled_mana_tests.rs"]
+mod fdn_six_scaled_tests;

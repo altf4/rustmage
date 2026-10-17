@@ -195,11 +195,13 @@ pub(crate) enum PlayerSet {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ManaProduction {
     Fixed(Mana),
+    CountSubtype { color: u8, subtype: &'static str },
     Choice { mask: u8, amount: u32 },
 }
 impl ManaProduction {
     pub(crate) fn visit(self, mut emit: impl FnMut(Mana) -> bool) -> bool {
         match self {
+            Self::CountSubtype { .. } => panic!("dynamic mana requires a characteristic world"),
             Self::Fixed(mana) => emit(mana),
             Self::Choice { mask, amount } => {
                 for index in 0..6 {
@@ -253,6 +255,8 @@ pub(crate) struct LibrarySelectionSpec {
 /// Fixed qualities admitted by library-search instructions.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum SearchFilter {
+    Any,
+    ManaValue { minimum: u64, maximum: u64 },
     AnyOf(&'static [SearchFilter]),
     AllOf(&'static [SearchFilter]),
     Name(&'static str),
@@ -268,6 +272,10 @@ pub enum SearchFilter {
 impl SearchFilter {
     pub(crate) fn matches(self, card: Card) -> bool {
         match self {
+            Self::Any => true,
+            Self::ManaValue { minimum, maximum } => {
+                (minimum..=maximum).contains(&card.fixed_mana_value())
+            }
             Self::AnyOf(filters) => filters.iter().any(|filter| filter.matches(card)),
             Self::AllOf(filters) => filters.iter().all(|filter| filter.matches(card)),
             Self::Name(name) => card.token_info().map_or(card.name(), |info| info.name) == name,
@@ -287,6 +295,7 @@ impl SearchFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum SearchDestination {
+    Graveyard,
     /// Shuffle, then put the selected cards on top (last selected uppermost).
     Top,
     Hand,
@@ -645,6 +654,9 @@ pub(crate) enum Instruction {
     Scry(u16),
     Surveil(u16),
     Search(SearchSpec),
+    /// Unqualified search: find the maximum, or every remaining card if fewer.
+    /// Existing qualified searches retain their legal failure-to-find behavior.
+    SearchRequired(SearchSpec),
     SelectLibrary(LibrarySelectionSpec),
     Damage(i32),
     DamageScaled(AmountValue),
@@ -711,6 +723,8 @@ pub(crate) enum Instruction {
     ExileUntilSourceLeaves,
     ExileGraveyard(PlayerSet),
     ReturnToHand,
+    /// Capture a legal graveyard target's subtype, return it, then draw for a match.
+    ReturnToHandDrawForSubtype(&'static str),
     BottomLibrary,
     TopLibrary,
     AdditionalLandPlays(u64),
@@ -889,6 +903,7 @@ pub(crate) enum StatValue {
     },
     SpellsCastThisTurn,
     LifeGainOccurredThisTurn,
+    LifeGainedThisTurn,
     ControllerLife,
     Count(CountFilter),
     GreatestManaValue(CountFilter),
@@ -1334,6 +1349,7 @@ pub(crate) enum DamageSubject {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum EntryPredicate {
     CreaturePowerAtMost(i32),
+    CreaturePowerAtLeast(i32),
     SubtypeAny(&'static [&'static str]),
     KindOrSubtype { kinds: u16, subtype: &'static str },
 }
@@ -1362,6 +1378,11 @@ pub(crate) enum TriggerCondition {
     /// A cast-event qualification, not an intervening-if resolution guard.
     DuringOpponentsTurn(&'static TriggerCondition),
     OncePerTurn(&'static TriggerCondition),
+    /// Qualification checked only when the event occurs.
+    When {
+        guard: StepGuard,
+        event: &'static TriggerCondition,
+    },
     InterveningIf {
         guard: StepGuard,
         event: &'static TriggerCondition,
@@ -1452,6 +1473,7 @@ pub(crate) enum TriggerCondition {
         include_source: bool,
     },
     OtherFilteredEntersYou(EntryPredicate),
+    FilteredEntersYou(EntryPredicate),
     OtherCreatureEntersYou,
     CreatureEnters {
         relation: CastRelation,
@@ -1475,6 +1497,7 @@ impl TriggerCondition {
             Self::Granted(e)
             | Self::OncePerTurn(e)
             | Self::DuringOpponentsTurn(e)
+            | Self::When { event: e, .. }
             | Self::InterveningIf { event: e, .. } => e.mana_spent_rule(),
             _ => None,
         }
@@ -1485,6 +1508,7 @@ impl TriggerCondition {
             Self::Granted(_) | Self::GrantedAttacks => true,
             Self::OncePerTurn(e)
             | Self::DuringOpponentsTurn(e)
+            | Self::When { event: e, .. }
             | Self::InterveningIf { event: e, .. }
             | Self::ManaSpent { event: e, .. } => e.is_granted(),
             _ => false,
@@ -1496,6 +1520,7 @@ impl TriggerCondition {
             Self::Granted(event)
             | Self::OncePerTurn(event)
             | Self::ManaSpent { event, .. }
+            | Self::When { event, .. }
             | Self::InterveningIf { event, .. } => event.requires_opponents_turn(),
             _ => false,
         }
@@ -1505,6 +1530,7 @@ impl TriggerCondition {
             Self::Granted(event)
             | Self::OncePerTurn(event)
             | Self::DuringOpponentsTurn(event)
+            | Self::When { event, .. }
             | Self::InterveningIf { event, .. }
             | Self::ManaSpent { event, .. } => event.event(),
             event => event,
@@ -1514,6 +1540,7 @@ impl TriggerCondition {
         match self {
             Self::OncePerTurn(_) => true,
             Self::Granted(event)
+            | Self::When { event, .. }
             | Self::InterveningIf { event, .. }
             | Self::ManaSpent { event, .. }
             | Self::DuringOpponentsTurn(event) => event.once_per_turn(),
@@ -1565,11 +1592,12 @@ pub(crate) enum ActivationGuard {
     Always,
     OwnTurn,
     ControlSubtypeAny(&'static [&'static str]),
+    ControlLandsAtLeast(u16),
 }
 impl ActivationGuard {
     pub(crate) fn subtypes(self) -> &'static [&'static str] {
         match self {
-            Self::Always | Self::OwnTurn => &[],
+            Self::Always | Self::OwnTurn | Self::ControlLandsAtLeast(_) => &[],
             Self::ControlSubtypeAny(types) => types,
         }
     }
@@ -2039,7 +2067,8 @@ impl Card {
     pub(crate) fn x_entry_counters(self) -> bool {
         generated::x_entry_counters(self)
     }
-    pub(crate) fn fixed_mana_value(self) -> u64 {
+    /// Intrinsic mana value of the represented face; X is zero outside the stack.
+    pub fn fixed_mana_value(self) -> u64 {
         // The canonical equivalent takes every two-brid symbol's generic side;
         // a cheaper chosen payment never changes the printed mana value.
         let (colored, generic) = self.cost();

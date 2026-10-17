@@ -34,6 +34,7 @@ impl Card {
                             | StaticAbilityFragment::AttachmentKeywords(..)
                             | StaticAbilityFragment::AttachedTurnKeywords(..)
                             | StaticAbilityFragment::AttachmentTrigger(..)
+                            | StaticAbilityFragment::AttachmentMana(..)
                             | StaticAbilityFragment::CounterKeyword(..)
                             | StaticAbilityFragment::LiveKeywords(..)
                     )

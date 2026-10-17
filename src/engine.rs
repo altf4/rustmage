@@ -410,6 +410,8 @@ define_actions! {
     TapMana {
         card: CardId,
     },
+    // Mana ability granted to this permanent by an exact attached source.
+    TapGrantedMana { card: CardId, grantor: ObjectRef, production: Mana },
     AnnounceCast {
         card: CardId,
     },
@@ -1410,6 +1412,7 @@ pub struct LibraryChoiceView {
 #[derive(Clone, Debug, Serialize)]
 pub struct SearchChoiceView {
     pub filter: crate::SearchFilter,
+    pub minimum: u16,
     pub maximum: u16,
     pub destination: crate::SearchDestination,
     pub tapped: bool,
@@ -2330,6 +2333,11 @@ impl Game {
                     {
                         return true;
                     }
+                    if obj.zone == Zone::Battlefield
+                        && self.visit_granted_mana(card, actor, &mut emit)
+                    {
+                        return true;
+                    }
                     if matches!(obj.zone, Zone::Battlefield | Zone::Hand | Zone::Graveyard)
                         && self.visit_activations(card, actor, sorcery, &mut emit)
                     {
@@ -2951,7 +2959,9 @@ impl Game {
                         }
                     }
                 } else {
-                    if emit(Action::FinishSearch) {
+                    if choice.selected.len() >= usize::from(choice.minimum)
+                        && emit(Action::FinishSearch)
+                    {
                         return true;
                     }
                     if choice.selected.len() < usize::from(choice.spec.maximum) {
@@ -3125,6 +3135,13 @@ impl Game {
                 } else {
                     self.state.land_played = true;
                 }
+                self.state.passes = 0;
+            }
+            Action::TapGrantedMana {
+                card, production, ..
+            } => {
+                self.tap_objects(&[card]);
+                self.add_mana(actor, production);
                 self.state.passes = 0;
             }
             Action::TapMana { card } => {
@@ -4857,6 +4874,7 @@ impl Game {
                     .filter(|choice| choice.battlefield.is_none())
                     .map(|choice| SearchChoiceView {
                         filter: choice.spec.filter,
+                        minimum: choice.minimum,
                         maximum: choice.spec.maximum,
                         destination: choice.spec.destination,
                         tapped: choice.spec.tapped,
@@ -5707,3 +5725,19 @@ mod fdn_recursion_tests;
 #[cfg(test)]
 #[path = "engine_fdn_power_damage_tests.rs"]
 mod fdn_power_damage_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_tutor_tests.rs"]
+mod fdn_tutor_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_life_graveyard_tests.rs"]
+mod fdn_life_graveyard_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_lords_six_tests.rs"]
+mod fdn_lords_six_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_attachments_six_tests.rs"]
+mod fdn_attachments_six_tests;

@@ -54,6 +54,19 @@ impl Game {
         match guard {
             ActivationGuard::Always => true,
             ActivationGuard::OwnTurn => self.state.active == actor,
+            ActivationGuard::ControlLandsAtLeast(minimum) => {
+                self.state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|(id, o)| {
+                        o.zone == Zone::Battlefield
+                            && o.controller == actor
+                            && self.current_kinds(*id as CardId) & 2 != 0
+                    })
+                    .count()
+                    >= usize::from(minimum)
+            }
             ActivationGuard::ControlSubtypeAny(_) => {
                 self.state.objects.iter().enumerate().any(|(id, o)| {
                     o.zone == Zone::Battlefield
@@ -152,6 +165,36 @@ impl Game {
         true
     }
 
+    pub(super) fn visit_granted_mana(
+        &self,
+        card: CardId,
+        actor: Player,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        let object = &self.state.objects[card as usize];
+        if object.zone != Zone::Battlefield
+            || object.controller != actor
+            || object.tapped
+            || (self.is_creature(card)
+                && object.summoning_sick
+                && !self.keywords(card).contains(Keywords::HASTE))
+        {
+            return false;
+        }
+        for grant in ability_world::CharacteristicWorld::granted_mana(self, card) {
+            if grant.production.visit(|production| {
+                emit(Action::TapGrantedMana {
+                    card,
+                    grantor: grant.source,
+                    production,
+                })
+            }) {
+                return true;
+            }
+        }
+        false
+    }
+
     pub(super) fn visit_activations(
         &self,
         card: CardId,
@@ -222,7 +265,7 @@ impl Game {
                 );
                 if targets_available && fundable() {
                     let done = if let Some(production) = ability.mana_production() {
-                        production.visit(|production| {
+                        production.in_world(self, card).visit(|production| {
                             emit(Action::AnnounceMana {
                                 card,
                                 ability: index as u16,
@@ -264,7 +307,7 @@ impl Game {
                                 return;
                             }
                             if let Some(production) = ability.mana_production() {
-                                done = production.visit(|production| {
+                                done = production.in_world(self, card).visit(|production| {
                                     emit(Action::ActivateMana {
                                         card,
                                         ability: index as u16,

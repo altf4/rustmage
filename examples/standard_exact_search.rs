@@ -77,6 +77,10 @@ fn deck(i: usize) -> Vec<Card> {
 }
 fn matches(c: Card, f: SearchFilter) -> bool {
     match f {
+        SearchFilter::Any => true,
+        SearchFilter::ManaValue { minimum, maximum } => {
+            (minimum..=maximum).contains(&c.fixed_mana_value())
+        }
         SearchFilter::AnyOf(fs) => fs.iter().any(|f| matches(c, *f)),
         SearchFilter::AllOf(fs) => fs.iter().all(|f| matches(c, *f)),
         SearchFilter::Name(n) => c.name() == n,

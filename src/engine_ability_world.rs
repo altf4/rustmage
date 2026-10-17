@@ -57,6 +57,31 @@ pub(super) trait CharacteristicWorld {
             game.state.attack_declared && self.attacking(source),
         )
     }
+    fn granted_mana(&self, id: CardId) -> Vec<ability_order::GrantedManaAbility> {
+        if let Some(evaluation) = ability_evaluation::evaluate_if_needed(self) {
+            return evaluation.result.objects[id as usize].mana.clone();
+        }
+        let mut result = Vec::new();
+        for &source in &self.game().state.attachment_sources {
+            let reference = self.reference(source);
+            if self.kinds(source) & 1 != 0 || !self.attachment_link(reference, self.reference(id)) {
+                continue;
+            }
+            for group in self.object(source).card.static_ability_groups() {
+                for fragment in group.fragments {
+                    if let crate::cards::StaticAbilityFragment::AttachmentMana(production) =
+                        *fragment
+                    {
+                        result.push(ability_order::GrantedManaAbility {
+                            source: reference,
+                            production,
+                        });
+                    }
+                }
+            }
+        }
+        result
+    }
     fn attachment_link(&self, source: ObjectRef, recipient: ObjectRef) -> bool {
         let object = self.object(source.card);
         object.zone == Zone::Battlefield
@@ -129,5 +154,39 @@ impl CharacteristicWorld for Game {
             .attackers
             .iter()
             .any(|attacker| attacker.card == id)
+    }
+}
+
+impl ManaProduction {
+    /// Evaluate against the actual game or a speculative funding overlay.
+    pub(super) fn in_world<W: CharacteristicWorld + ?Sized>(
+        self,
+        world: &W,
+        source: CardId,
+    ) -> Self {
+        match self {
+            Self::CountSubtype { color, subtype } => {
+                let controller = world.object(source).controller;
+                let count = world
+                    .game()
+                    .state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|(id, _)| {
+                        let object = world.object(*id as CardId);
+                        object.zone == Zone::Battlefield
+                            && object.controller == controller
+                            && (object.card.has_subtype(subtype)
+                                || world.subtypes(*id as CardId).contains(subtype))
+                    })
+                    .count();
+                let mut mana = [0; 6];
+                mana[usize::from(color)] =
+                    u32::try_from(count).capacity("mana representation exhausted");
+                Self::Fixed(mana)
+            }
+            value => value,
+        }
     }
 }
