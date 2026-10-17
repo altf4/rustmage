@@ -557,6 +557,7 @@ pub(crate) enum Instruction {
         amount: u32,
     },
     DoubleCounters,
+    SnapshotDoubleCreatures(CreatureFilter),
     PutCounters {
         subject: Subject,
         kind: CounterKind,
@@ -648,6 +649,8 @@ pub(crate) enum AmountValue {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StatValue {
+    Fixed(u16),
+    TappedCount(CountFilter),
     Not(&'static StatValue),
     CardsDrawnThisTurn,
     ControllerHandSize,

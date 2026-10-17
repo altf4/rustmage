@@ -134,7 +134,9 @@ mod tests {
             .min_by_key(|a| match a {
                 Action::ChooseReplacement { .. }
                 | Action::ChooseTarget { .. }
-                | Action::Discard { .. } => 0,
+                | Action::Discard { .. }
+                | Action::Sacrifice { .. }
+                | Action::ChooseSearch { .. } => 0,
                 Action::PayCosts { .. }
                 | Action::PutTrigger { .. }
                 | Action::FinishTargets
@@ -163,17 +165,29 @@ mod tests {
         id
     }
     #[test]
-    fn first_four_complete_sagas_cast_pay_and_every_chapter_resolves_both_seats() {
+    fn twelve_complete_sagas_cast_pay_and_every_chapter_resolves_both_seats() {
         for p in [Player::P0, Player::P1] {
             for name in [
                 "Summon: Choco/Mog",
                 "Summon: Esper Ramuh",
                 "Summon: Fat Chocobo",
                 "Summon: G.F. Ifrit",
+                "Burn, Burn, Tree and Fern",
+                "Summon: Anima",
+                "Leaves from the Vine",
+                "Summon: Primal Garuda",
+                "Welcome to Sweettooth",
+                "The Huntsman's Redemption",
+                "Roar of Endless Song",
+                "Summon: Shiva",
             ] {
                 let mut g = setup(p);
                 let ally = named(&mut g, p, "Bear Cub", Zone::Battlefield);
-                named(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+                let second = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+                let enemy = named(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+                g.state.objects[enemy as usize].tapped = true;
+                let artifact = named(&mut g, p.other(), "Candy Trail", Zone::Battlefield);
+                named(&mut g, p, "Firebending Lesson", Zone::Graveyard);
                 named(&mut g, p, "Forest", Zone::Hand);
                 named(&mut g, p, "Shock", Zone::Graveyard);
                 let id = cast(&mut g, p, name);
@@ -213,6 +227,46 @@ mod tests {
                     }
                 }
                 assert_eq!(g.state.objects[id as usize].zone, Zone::Graveyard);
+                match name {
+                    "Burn, Burn, Tree and Fern" => {
+                        assert!(!g.on_battlefield(enemy));
+                        assert!(!g.on_battlefield(artifact));
+                    }
+                    "Summon: Anima" => {
+                        assert!(!g.on_battlefield(enemy));
+                        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 3);
+                        assert_eq!(g.state.players[p.index()].life, 17);
+                        assert_eq!(g.state.players[p.other().index()].life, 17);
+                    }
+                    "Leaves from the Vine" => {
+                        assert_eq!(g.state.objects[ally as usize].counters.plus_one, 1);
+                        assert_eq!(g.state.objects[second as usize].counters.plus_one, 1);
+                        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 1);
+                    }
+                    "Summon: Primal Garuda" => {
+                        assert!(!g.on_battlefield(enemy));
+                        assert_eq!(g.stats(ally).power, 4);
+                        assert!(g.keywords(ally).contains(Keywords::FLYING));
+                    }
+                    "Welcome to Sweettooth" => {
+                        assert_eq!(g.state.objects[ally as usize].counters.plus_one, 2);
+                    }
+                    "The Huntsman's Redemption" => {
+                        assert!(!g.on_battlefield(ally));
+                        assert_eq!(g.stats(second).power, 4);
+                        assert!(g.keywords(second).contains(Keywords::TRAMPLE));
+                        assert_eq!(g.hand_count(p), 2);
+                    }
+                    "Roar of Endless Song" => {
+                        assert_eq!(g.stats(ally).power, 4);
+                        assert_eq!(g.stats(second).power, 4);
+                    }
+                    "Summon: Shiva" => {
+                        assert_eq!(g.state.objects[enemy as usize].counters.stun, 2);
+                        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 1);
+                    }
+                    _ => {}
+                }
             }
         }
     }
@@ -398,6 +452,299 @@ mod tests {
             assert_eq!(g.revision(), revision);
             assert!(g.state.objects[z as usize].tapped);
             assert_eq!(g.state.objects[id as usize].counters.lore, u64::MAX);
+        }
+    }
+
+    fn chapter_number(item: &SpellView) -> u16 {
+        let StackKind::TriggeredAbility { ability } = item.kind else {
+            panic!("not trigger")
+        };
+        let TriggerCondition::Chapter { number } =
+            item.trigger_definition().triggers()[ability as usize].condition
+        else {
+            panic!("not chapter")
+        };
+        number
+    }
+    #[test]
+    fn final_chapter_leaving_stack_does_not_sacrifice_while_earlier_chapters_remain() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = setup(p);
+            let id = cast(&mut g, p, "Summon: Choco/Mog");
+            g.effect_counter(id, CounterKind::Lore, 3, replacements::ResumeMode::Pending);
+            g.prepare_triggers();
+            while !g.state.ordering_triggers.is_empty() {
+                let packet = g
+                    .state
+                    .ordering_triggers
+                    .iter()
+                    .min_by_key(|v| chapter_number(v))
+                    .unwrap()
+                    .id;
+                let a = g
+                    .legal_actions()
+                    .into_iter()
+                    .find(|a| matches!(a,Action::PutTrigger{id}if *id==packet))
+                    .unwrap();
+                replay(&mut g, a);
+            }
+            assert_eq!(chapter_number(g.state.stack.last().unwrap()), 4);
+            replay(&mut g, Action::Pass);
+            replay(&mut g, Action::Pass);
+            assert!(g.on_battlefield(id));
+            assert!(!g.saga_sacrifice_required(id));
+            assert!(g.state.stack.iter().all(|item| chapter_number(item) < 4));
+            // No printed admitted spell currently counters an ability; exercise the shared native counter operation.
+            let packet = g.state.stack.last().unwrap().id;
+            assert!(g.counter_stack_item(packet, false));
+            g.state_based_actions();
+            assert!(g.on_battlefield(id));
+            let packet = g.state.stack.last().unwrap().id;
+            assert!(g.counter_stack_item(packet, false));
+            g.state_based_actions();
+            assert!(!g.on_battlefield(id));
+        }
+    }
+    #[test]
+    fn final_anima_resolution_owned_sacrifice_keeps_source_and_parent_closed_packet() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = setup(p);
+            let enemy = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let source = cast(&mut g, p, "Summon: Anima");
+            g.effect_counter(
+                source,
+                CounterKind::Lore,
+                3,
+                replacements::ResumeMode::Pending,
+            );
+            g.prepare_triggers();
+            while !g.state.ordering_triggers.is_empty() {
+                let a = g
+                    .legal_actions()
+                    .into_iter()
+                    .find(|a| matches!(a, Action::PutTrigger { .. }))
+                    .unwrap();
+                replay(&mut g, a);
+            }
+            let lower: Vec<_> = g
+                .state
+                .stack
+                .iter()
+                .filter(|v| chapter_number(v) != 4)
+                .map(|v| v.id)
+                .collect();
+            for id in lower {
+                assert!(g.counter_stack_item(id, false));
+            }
+            replay(&mut g, Action::Pass);
+            replay(&mut g, Action::Pass);
+            assert!(g.state.resolving.is_some());
+            assert_eq!(g.actor(), Some(p.other()));
+            assert!(g.on_battlefield(source));
+            assert!(!g.saga_sacrifice_required(source));
+            assert!(g.observe(p).effect_choice.is_some());
+            assert!(g.observe(p).actions.is_empty());
+            let a = Action::Sacrifice {
+                object: g.object_ref(enemy),
+            };
+            let old = g.snapshot();
+            let rev = g.revision();
+            assert_eq!(g.apply(p, a.clone()), Err(Error::WrongActor));
+            assert_eq!(g.snapshot(), old);
+            assert_eq!(g.revision(), rev);
+            replay(&mut g, a);
+            settle(&mut g);
+            assert!(!g.on_battlefield(enemy));
+            assert!(!g.on_battlefield(source));
+            assert_eq!(g.state.players[p.other().index()].life, 17);
+        }
+    }
+    #[test]
+    fn first_turn_skipped_draw_main_only_and_simultaneous_entry_lore_is_apnap() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = setup(p);
+            let source = cast(&mut g, p, "Summon: Choco/Mog");
+            g.state.turn = 1;
+            g.state.step = Step::Upkeep;
+            g.give_priority();
+            replay(&mut g, Action::Pass);
+            replay(&mut g, Action::Pass);
+            assert_eq!(g.state.step, Step::Main1);
+            assert_eq!(g.state.objects[source as usize].counters.lore, 2);
+            settle(&mut g);
+            let mut g = setup(p);
+            named(&mut g, p, "Doubling Season", Zone::Battlefield);
+            named(&mut g, p.other(), "Doubling Season", Zone::Battlefield);
+            let a = named(&mut g, p, "Summon: Choco/Mog", Zone::Hand);
+            let b = named(&mut g, p.other(), "Summon: Fat Chocobo", Zone::Hand);
+            g.stage_entries(
+                vec![
+                    g.entry_move(b, Zone::Battlefield, false),
+                    g.entry_move(a, Zone::Battlefield, false),
+                ],
+                None,
+            );
+            g.advance_entries();
+            assert_eq!(g.state.objects[a as usize].counters.lore, 2);
+            assert_eq!(g.state.objects[b as usize].counters.lore, 2);
+            assert_eq!(g.state.pending_triggers.len(), 4);
+            g.prepare_triggers();
+            assert_eq!(g.actor(), Some(p));
+            assert!(
+                g.state
+                    .ordering_triggers
+                    .iter()
+                    .any(|s| s.controller == p.other())
+            );
+        }
+    }
+    #[test]
+    fn leaves_guard_is_or_and_roar_captures_all_signed_operands() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = setup(p);
+            let leaves = cast(&mut g, p, "Leaves from the Vine");
+            g.state
+                .objects
+                .iter_mut()
+                .filter(|o| o.zone == Zone::Graveyard)
+                .for_each(|o| o.zone = Zone::Exile);
+            named(&mut g, p, "Firebending Lesson", Zone::Graveyard);
+            let before = g.state.players[p.index()].cards_drawn_this_turn;
+            g.effect_counter(
+                leaves,
+                CounterKind::Lore,
+                2,
+                replacements::ResumeMode::Pending,
+            );
+            settle(&mut g);
+            assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, before + 1);
+            // A temporary group effect captures current signed values. Later entrants and changes don't rewrite it.
+            let mut g = setup(p);
+            let a = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let b = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            g.state.objects[b as usize].growth.power = -3; // -1/2 survives SBAs; power must remain signed.
+            let roar = cast(&mut g, p, "Roar of Endless Song");
+            g.effect_counter(
+                roar,
+                CounterKind::Lore,
+                2,
+                replacements::ResumeMode::Pending,
+            );
+            settle(&mut g);
+            assert_eq!(
+                g.stats(a),
+                Stats {
+                    power: 4,
+                    toughness: 4
+                }
+            );
+            assert_eq!(
+                g.stats(b),
+                Stats {
+                    power: -2,
+                    toughness: 4
+                }
+            );
+            let c = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            assert_eq!(g.stats(c).power, 2);
+            g.state.objects[a as usize].counters.plus_one = 1;
+            assert_eq!(g.stats(a).power, 5);
+        }
+    }
+
+    #[test]
+    fn shiva_draw_counts_current_tapped_opposing_animated_vehicles_not_own_or_untapped() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = setup(p);
+            let vehicle = named(&mut g, p.other(), "Cultivator's Caravan", Zone::Battlefield);
+            let first = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let crew = named(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+            let own = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            g.state.objects[own as usize].tapped = true;
+            let source = cast(&mut g, p, "Summon: Shiva");
+            assert!(g.state.objects[first as usize].tapped);
+            g.state.priority = p.other();
+            let ability = g.state.objects[vehicle as usize]
+                .card
+                .activations()
+                .iter()
+                .position(|a| a.crew_minimum().is_some())
+                .unwrap() as u16;
+            replay(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: vehicle,
+                    ability,
+                    counter_payment: Counters::default(),
+                },
+            );
+            let contributor = g.object_ref(crew);
+            replay(
+                &mut g,
+                Action::ChooseCrewer {
+                    object: contributor,
+                },
+            );
+            replay(&mut g, Action::FinishCrew);
+            settle(&mut g);
+            assert!(g.is_creature(vehicle));
+            g.state.priority = p.other();
+            let mana = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a,Action::ActivateMana{card,..}if *card==vehicle))
+                .unwrap();
+            replay(&mut g, mana);
+            assert!(g.state.objects[vehicle as usize].tapped);
+            let before = g.state.players[p.index()].cards_drawn_this_turn;
+            g.effect_counter(
+                source,
+                CounterKind::Lore,
+                2,
+                replacements::ResumeMode::Pending,
+            );
+            settle(&mut g);
+            assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, before + 3);
+        }
+    }
+    #[test]
+    fn saga_sba_has_real_sacrifice_cause_and_lore_is_available_for_generic_counter_costs() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = setup(p);
+            let watcher = named(&mut g, p, "Pirate Peddlers", Zone::Battlefield);
+            let source = cast(&mut g, p, "Summon: Choco/Mog");
+            let mut payments = Vec::new();
+            let cost = Card::from_name("Brambleback Brute")
+                .unwrap()
+                .activations()
+                .iter()
+                .find(|a| a.cost.remove == Some((None, 1)))
+                .unwrap()
+                .cost;
+            super::super::activations::counter_payments(
+                cost,
+                g.state.objects[source as usize].counters,
+                |p| {
+                    payments.push(p);
+                    false
+                },
+            );
+            assert_eq!(
+                payments,
+                vec![Counters {
+                    lore: 1,
+                    ..Counters::default()
+                }]
+            );
+            g.effect_counter(
+                source,
+                CounterKind::Lore,
+                3,
+                replacements::ResumeMode::Pending,
+            );
+            settle(&mut g);
+            assert_eq!(g.state.objects[watcher as usize].counters.plus_one, 1);
+            assert!(!g.on_battlefield(source));
         }
     }
 }

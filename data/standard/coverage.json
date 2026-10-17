@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "073ce021f9394964984f4dabe9e3ad364dfeac65d518516cea474529efb3a1c8",
+  "catalogue_version": "fd7143292c2884de5d310611bcbcc206595b3b0c8cd2e4af4cecfadbda346311",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1764,
-  "implemented_total": 1770,
-  "token_definitions": 84,
+  "implemented_standard_cards": 1772,
+  "implemented_total": 1778,
+  "token_definitions": 86,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -3550,7 +3550,7 @@
     {
       "name": "Burn, Burn, Tree and Fern",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -14806,7 +14806,7 @@
     {
       "name": "Leaves from the Vine",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -21382,7 +21382,7 @@
     {
       "name": "Roar of Endless Song",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -25288,7 +25288,7 @@
     {
       "name": "Summon: Anima",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -25354,7 +25354,7 @@
     {
       "name": "Summon: Primal Garuda",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -25366,7 +25366,7 @@
     {
       "name": "Summon: Shiva",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -26728,7 +26728,7 @@
     {
       "name": "The Huntsman's Redemption",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -30208,7 +30208,7 @@
     {
       "name": "Welcome to Sweettooth",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {

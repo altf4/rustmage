@@ -3,7 +3,7 @@
   "as_of": "2026-10-16",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "rules": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
-  "status": "Foundation checkpoint: four kernel-only bodies executable; eight bounded extensions and final acceptance pending",
+  "status": "All twelve complete initial bodies executable; full native/compiler and focused public paid cases pass; final Standard and broad public acceptance pending",
   "cards": [
     {
       "name": "Burn, Burn, Tree and Fern",

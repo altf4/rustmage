@@ -459,8 +459,8 @@ def stat_count_filter(text):
     elif noun in kinds:kind=kinds[noun]
     else:
         if noun.startswith('basic '):basic=True;noun=noun[6:]
-        singular={word.casefold():word for word in [*CREATURE_TYPE_NAMES,'Plains','Island','Swamp','Mountain','Forest','Equipment','Desert','Gate','Cave','Town','Treasure','Lesson']}
-        plurals={word.casefold()+'s':word for word in ['Island','Swamp','Mountain','Forest','Desert','Gate','Cave','Town','Treasure']}
+        singular={word.casefold():word for word in [*CREATURE_TYPE_NAMES,'Plains','Island','Swamp','Mountain','Forest','Equipment','Desert','Gate','Cave','Town','Treasure','Lesson','Food']}
+        plurals={word.casefold()+'s':word for word in ['Island','Swamp','Mountain','Forest','Desert','Gate','Cave','Town','Treasure','Food']}
         subtype=SUBTYPE_PLURALS.get(noun,plurals.get(noun,singular.get(noun)))
         if subtype is None:return None
         if basic and subtype not in ('Plains','Island','Swamp','Mountain','Forest'):return None
@@ -845,6 +845,7 @@ def search_filter(noun):
     """Closed card qualities, with explicit conjunctions and branch-local unions."""
     fixed={
         'basic land card':'BasicLand','land card':'Land','creature card':'Creature',
+        'creature or basic land card':'AnyOf(&[SearchFilter::Creature, SearchFilter::BasicLand])',
         'artifact card':'Artifact','enchantment card':'Enchantment',
         'basic land cards and/or Gate cards':'AnyOf(&[SearchFilter::BasicLand, SearchFilter::Subtype("Gate")])',
         'basic land cards and/or Desert cards':'AnyOf(&[SearchFilter::BasicLand, SearchFilter::Subtype("Desert")])',
@@ -1614,6 +1615,7 @@ for _name, _zone, _kinds, _relation, _other, _nonland in [
     ('CardGrave', 'Graveyard', 0, -1, False, False),
     ('Land', 'Battlefield', 2, -1, False, False),
     ('Artifact', 'Battlefield', 16, -1, False, False),
+    ('ArtifactOpponent', 'Battlefield', 16, 1, False, False),
     ('ArtifactCreature', 'Battlefield', 17, -1, False, False),
     ('ArtifactCreatureYou', 'Battlefield', 17, 0, False, False),
     ('ArtifactCreatureOpponent', 'Battlefield', 17, 1, False, False),
@@ -3601,6 +3603,39 @@ def extract_replacements(card):
     return dict(card,oracle_text='\n'.join(residual)),specs
 
 
+def saga_chapter_program(body):
+    """Complete chapter sentences using shared immutable effects, without card-name gates."""
+    text=normalize_duration(body[0].lower()+body[1:])
+    if text=='destroy target artifact an opponent controls.':return 'ArtifactOpponent',['Destroy']
+    if m:=re.fullmatch(r'this creature deals ([0-9]+) damage to target tapped creature an opponent controls\.',text):
+        return ('CreatureOpponentTapped',[f'Damage({int(m[1])})']) if int(m[1])<=32767 else None
+    if text=='each opponent sacrifices a creature of their choice and loses 3 life.':
+        parsed=sacrifice_program('each opponent sacrifices a creature of their choice.')
+        return 'None',[*parsed[1],'LoseLife(PlayerSet::Opponent, 3)']
+    if text=="draw a card if there's a creature or Lesson card in your graveyard.":
+        filters=[stat_count_filter('creature cards in your graveyard'),stat_count_filter('Lesson cards in your graveyard')]
+        value='StatValue::CountUnion(&['+', '.join(filters)+'])'
+        return 'None',['If { guard: StepGuard::Expression { value: '+value+', minimum: Some(1), maximum: None }, skip: 1 }','Draw(PlayerSet::Controller, 1)']
+    if text=='put X +1/+1 counters on target creature you control, where X is one plus the number of Foods you control.':
+        value='AmountValue::Stat(StatValue::Sum(&[StatValue::Fixed(1), '+stat_value('Foods you control')+']))'
+        return 'CreatureYou',['PutCountersScaled { subject: Subject::Targets, kind: CounterKind::PlusOne, amount: '+value+' }']
+    if m:=re.fullmatch(r'up to two target creatures each get ([+-][0-9]+)/([+-][0-9]+) and gain (.+) until end of turn\.',text):
+        keywords=keyword_list(m[3]);power,toughness=int(m[1]),int(m[2])
+        if keywords is None or max(abs(power),abs(toughness))>32767:return None
+        return ('Creature',0,2),[grow_instruction('Targets',power,toughness),f'GrantKeywords {{ subject: Subject::Targets, keywords: Keywords({keywords}) }}']
+    if text=='double the power and toughness of each creature you control until end of turn.':
+        return 'None',['SnapshotDoubleCreatures('+creature_filter('creatures you control')+')']
+    if text=='tap target creature an opponent controls. Put a stun counter on it.':
+        return 'CreatureOpponent',['Tap',counter_instruction('Targets','a','stun')]
+    if text=='draw a card for each tapped creature your opponents control.':
+        filt=stat_count_filter('creatures you control').replace('relation: 0','relation: 1')
+        return 'None',['DrawScaled(PlayerSet::Controller, AmountValue::Stat(StatValue::TappedCount('+filt+')))']
+    parsed=targeted_program(body)
+    if parsed:return parsed
+    program=statement_program(body)
+    return ('None',program) if program else None
+
+
 def saga_body(card):
     """Whole single-face Saga only: exact reminder, all numbered effects and intrinsic text."""
     if card.get('layout') != 'saga' or 'Saga' not in card.get('type_line','').split(' — ')[-1].split():return None
@@ -3623,13 +3658,11 @@ def saga_body(card):
             # A flavor word is part of this one complete chapter, never an executable clause.
             if ' — ' in body:
                 flavor,body=body.split(' — ',1)
-                if not re.fullmatch(r"[A-Za-z! ']+",flavor):return None
+                if flavor not in {'Aerial Blast','Diamond Dust','Heavenly Strike','Judgment Bolt','Kerplunk','Oblivion','Pain','Slipstream','Stampede!','Wark'}:return None
             body=re.sub(r' \([^\n]*\)','',body).replace('This Saga','This creature')
-            parsed=targeted_program(body)
-            if parsed:targets,program=parsed
-            else:
-                targets,program='None',statement_program(body)
-            if not program:return None
+            parsed=saga_chapter_program(body)
+            if parsed is None:return None
+            targets,program=parsed
             abilities.extend((f'Chapter {{ number: {number} }}',program,targets) for number in numbers)
         else:intrinsic.append(line)
     if not seen or max(seen)!=final or seen!=set(range(1,final+1)):return None
