@@ -26,3 +26,10 @@ Catalogue entries or partial card implementations do not satisfy it.
 - Report complete supported cards, shared mechanics, remaining blockers and
   measured implementation/simulation throughput. Keep the full goal open until
   entire-pool behavior, interactions and performance are verified.
+
+- Resource safety: run Cargo through `python3 scripts/resource_guard.py -- cargo ...`.
+  Routine validation enters this runner automatically. It enforces one build
+  across worktrees, one Cargo job/test thread, and a shared 6 GiB memory cgroup
+  (including subprocesses and orphaned units). Raw Rust compilation fails closed.
+  Do not bypass the wrapper, raise the memory cap or launch unmanaged builds.
+  Keep logs/reports under ~/.cache so reboot does not erase failure evidence.
