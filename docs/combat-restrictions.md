@@ -1,8 +1,8 @@
 # Continuous combat restrictions
 
-Issue #308 implements five complete prototype bodies on actual main 8108a6f:
+Issue #308 implements five complete bodies on actual main b390849:
 Pacifism, Mouser Mark III, Tiger-Dillo, Technodrome and The Lion-Turtle.
-Prototype coverage is 1,891/5,164 Standard identities, 3,273 gated, schema86.
+Composed coverage is 1,903/5,164 Standard identities, 3,261 gated, schema89.
 This candidate is not merge-ready; full Standard/RL support remains incomplete.
 
 Immutable CombatRestriction records describe attack/block bans on the source or
