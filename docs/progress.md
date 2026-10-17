@@ -325,3 +325,19 @@ scopes in [the complete delivery record](resolved-base-stat-expressions.md).
 Two independent NONAUTHOR exact-final-head reviews remain required before merge.
 
 The [Tiered delivery](tiered-costs.md) composes actual schema98 main and adds all six complete Tiered bodies/eighteen mutually exclusive modes, plus complete Boros Charm and Epic Fight. Coverage is1,968/5,164 (3,196 gated),95 token recipes and schema99. The strict union preserves all5,324 other definitions, all912 inherited helpers and every color/alias/inline flag/token recipe; only six Tiered-cost helper arms are added. Final validation passes1,900 native tests, all-target Clippy/fmt/generator,40 affected compiler/provenance methods,50 paid natural Standard vectors in three public methods (91.757s) and100 fixed unretried Standard games (177.315s;81,365 owned frames/162,730 denials). Exact production/library identities, historical prototype failures and final independent-review requirements remain explicit in the feature record. This does not complete the full Standard goal.
+
+
+## Live static stat effects — PR #332 / issue #331
+
+Four complete bodies compose actual Tiered main: Maha, Its Feathers Night;
+Archon of the Wild Rose; Aettir and Priwen; Burden of Proof. Coverage is1,972/5,164
+(3,192 gated), schema100. Sparse owned state evaluates current controllers/life/
+Aura membership, independent7b axes,7c bonuses and real blocking restrictions;
+simultaneous sources receive controller-chosen APNAP timestamps. Strict preservation
+retains5,328 unrelated definitions,918 inherited helpers and95 token recipes.
+Final frozen production ca735501 passes1,911 native tests, Clippy/fmt/generator,
+45 affected compiler/provenance methods,12 paid natural Standard vectors20.167s
+and100 fixed unretried Standard games186.170s (84,430 owned frames/168,860 denials).
+All910 execution inputs and the optimized library hash remain unchanged. Independent
+whole-four review and exact-final-head approval gate merging; the full source and
+historical failure scopes remain in [the delivery record](live-base-stat-effects.md).

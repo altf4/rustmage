@@ -1,0 +1,51 @@
+{
+  "prior_definitions": 5332,
+  "current_definitions": 5332,
+  "changed_definitions": [
+    "Aettir and Priwen#0",
+    "Archon of the Wild Rose#0",
+    "Burden of Proof#0",
+    "Maha, Its Feathers Night#0"
+  ],
+  "added_definitions": [],
+  "preserved_definitions": 5328,
+  "prior_helpers": 918,
+  "new_helpers": [
+    [
+      "aura",
+      "Burden of Proof#0"
+    ],
+    [
+      "equipment",
+      "Aettir and Priwen#0"
+    ],
+    [
+      "live_static_effects",
+      "Aettir and Priwen#0"
+    ],
+    [
+      "live_static_effects",
+      "Archon of the Wild Rose#0"
+    ],
+    [
+      "live_static_effects",
+      "Burden of Proof#0"
+    ],
+    [
+      "live_static_effects",
+      "Maha, Its Feathers Night#0"
+    ]
+  ],
+  "prior_colors": 5332,
+  "inline_flag_tables": 3,
+  "token_recipes": 95,
+  "emblem_recipes": 1,
+  "prior_aliases": 5438,
+  "result": "PASS",
+  "parent": "61a7d0cef4b10591958cea4391c553db4c2c07ff",
+  "production": "ca735501aca9d991ca860f7da04c2f4931614302",
+  "own_prototype": "58e1830ba68a1e72de1862473f46791deca8df9e",
+  "expected_standard_admissions": 1972,
+  "observation_schema": 100,
+  "all_four_programs_and_six_helpers_identical_prototype": true
+}

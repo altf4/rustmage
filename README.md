@@ -5,9 +5,9 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,968 have executable rules so far,
-with 3,196 still gated. The catalogue includes 95 token recipes and one emblem;
-observations use schema 99.
+knows all 5,164 pinned Standard identities; 1,972 have executable rules so far,
+with 3,192 still gated. The catalogue includes 95 token recipes and one emblem;
+observations use schema 100.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
@@ -18,6 +18,7 @@ The first training target is [current Standard, pinned to October 15, 2026](docs
 [Adventure faces](docs/adventure.md), [eight further complete pairs](docs/adventure-land-targets.md), [exact milled selection](docs/adventure-milled-selection.md), [Role Auras](docs/role-auras.md) and [cast and attack events](docs/adventure-event-predicates.md) provide forty complete pairs with paid inset casts and owned normal-play exile permissions; [typed attachment Ward](docs/attachment-ward.md) adds ten complete bodies. Their [composition record](docs/review-pr-258.md) tracks combined validation.
 [Complete Role consumers](docs/role-followup.md) add twelve whole bodies with paid inline/reflexive choices, independent target groups and full Saga resolution.
 [Role move results and paid flash](docs/role-semantic-kernels.md) add six complete bodies with exact returned recipients, mass Role attachments, enchanted-creature lords and optional timing costs.
+[Live static stat effects](docs/live-base-stat-effects.md) complete Maha, Archon of the Wild Rose, Aettir and Priwen, and Burden of Proof, with current life/controller conditions and controller-chosen simultaneous timestamps.
 [Tiered costs and complete modal bodies](docs/tiered-costs.md) complete all six Tiered cards and eighteen tiers, plus Boros Charm and Epic Fight, with mandatory mode costs, exact owner shuffle and signed snapshot multiplication.
 [Resolved signed base stats](docs/resolved-base-stat-expressions.md) complete five bodies with resolution-time land/Town snapshots, exact signed subject LKI, independent draw events and whole equipped-attack effects.
 [Private land placement](docs/hand-land-placement.md) completes five bodies with private optional choices, actual land entry, paid modal activations and exact explored-kind triggers.

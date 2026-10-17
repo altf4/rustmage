@@ -1,7 +1,7 @@
 {
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "prototype_parent": "19e4602b436b7aa8c9708f28f87fe288985c9377",
-  "status": "Source audit only; zero new admissions at this checkpoint.",
+  "status": "Four complete bodies admitted and validated at production ca735501aca9d991ca860f7da04c2f4931614302 on actual schema99 main; independent exact-final review required before merge.",
   "proposed_complete": [
     "Maha, Its Feathers Night",
     "Archon of the Wild Rose",
@@ -105,8 +105,8 @@
         "layout": "normal",
         "mana_cost": "{3}{B}{B}",
         "cmc": 5.0,
-        "type_line": "Legendary Creature — Elemental Bird",
-        "oracle_text": "Flying, trample\nWard—Discard a card.\nCreatures your opponents control have base toughness 1.",
+        "type_line": "Legendary Creature \u2014 Elemental Bird",
+        "oracle_text": "Flying, trample\nWard\u2014Discard a card.\nCreatures your opponents control have base toughness 1.",
         "power": "6",
         "toughness": "5",
         "colors": [
@@ -228,7 +228,7 @@
         "layout": "normal",
         "mana_cost": "{2}{W}{W}",
         "cmc": 4.0,
-        "type_line": "Creature — Archon",
+        "type_line": "Creature \u2014 Archon",
         "oracle_text": "Flying\nOther creatures you control that are enchanted by Auras you control have base power and toughness 4/4 and have flying.",
         "power": "4",
         "toughness": "4",
@@ -328,7 +328,7 @@
         "layout": "normal",
         "mana_cost": "{6}",
         "cmc": 6.0,
-        "type_line": "Legendary Artifact — Equipment",
+        "type_line": "Legendary Artifact \u2014 Equipment",
         "oracle_text": "Equipped creature has base power and toughness X/X, where X is your life total.\nEquip {5}",
         "colors": [],
         "color_identity": [],
@@ -477,7 +477,7 @@
         "layout": "normal",
         "mana_cost": "{1}{U}",
         "cmc": 2.0,
-        "type_line": "Enchantment — Aura",
+        "type_line": "Enchantment \u2014 Aura",
         "oracle_text": "Flash\nEnchant creature\nEnchanted creature gets +2/+2 as long as it's a Detective you control. Otherwise, it has base power and toughness 1/1 and can't block Detectives.",
         "colors": [
           "U"

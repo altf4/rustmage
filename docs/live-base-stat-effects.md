@@ -163,3 +163,42 @@ That proof now pins the merged Tiered delivery61a7d0c and separately requires al
 eight current programs and six recipes to remain identical, with its mutant
 control retained. The new strict actual99-parent four-body proof remains complete.
 No final composed runtime/public success is claimed before the frozen gates finish.
+
+
+## Final frozen validation — production ca735501
+
+On actual main61a7d0c, coverage is1,972/5,164 executable Standard identities,
+3,192 gated,95 token recipes/one emblem,40 Adventure pairs/13 Omen pairs,
+observation schema100. The strict actual-parent proof preserves5,328 unrelated
+programs,918 inherited helper arms, all colors/aliases/inline flags/token recipes;
+precisely four live recipes plus Aettir Equipment/Burden Aura are added. All four
+programs and six recipes remain identical to the original58e1830 prototype.
+`live-base-stat-main-preservation.json` records the actual-parent proof.
+
+At frozen production ca735501aca9d991ca860f7da04c2f4931614302, all1,911 native
+tests (1,899 unit+12 integration), all-target Clippy, formatting and generator
+consistency PASS. All45 affected compiler/provenance methods PASS9.715s, including
+strict preservation/mutant controls and inherited Tiered/resolved-expression checks.
+The eleven native live-static groups include both-seat paid whole-body play,
+foreign-controller Ward after source departure, actual Detective blocking,
+late real Crew, simultaneous opposing-source APNAP order, signed life and Role/
+attachment ordering, independent axes and owned clone/replay/restore legality.
+
+The optimized library's SHA256 is
+db6481a91016eefb057d8ad1d709dc8d1c9f231ec602879e27c371b4bcdac283;
+its catalogue fingerprint is
+2611f64601bb2d777463426f1be5f75b3ebeb3d8b8fcd9d5863fae138b77fb13.
+All12 naturally drawn/paid Standard vectors PASS20.167s,9,662 owned frames and
+19,324 wrong-actor/stale denials. All100 fixed unretried natural Standard games
+PASS186.170s (186.267s including driver), all12 vectors covered,84,430 owned
+frames and168,860 denials. Every game uses real mana, indexed actions and natural
+terminal play. All910 tracked execution inputs and the exact library hash stay
+fixed throughout all final gates. Every process is terminal; completed non-SO
+build outputs are removed and every shared-library path/hash preserved.
+
+Two independent nonauthor reviews additionally inspect all four complete Java
+bodies and40 unique pinned files, generic raw guards, exact-parent preservation,
+source timestamps/layers and paid foreign-controller cross-rule interactions.
+Final publication changes only documentation and audit status; exact published-head
+approvals are required before guarded merge. Earlier source-scoped failures and
+interim successes above remain historical evidence. Full Standard is incomplete.
