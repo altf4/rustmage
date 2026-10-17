@@ -129,7 +129,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::BeginConvoke => 40,
             Action::ChooseConvoker { .. } => 50,
             Action::ChooseMobilizeDefender { .. } | Action::ChooseHandDefender { .. } => 50,
-            Action::PutHandCreature { .. } => 50,
+            Action::PutHandCreature { .. } | Action::PutHandLand { .. } => 50,
             Action::DeclineHandEntry => -1,
             Action::ChooseSaddler { .. } | Action::ChooseCrewer { .. } => 50,
             Action::FinishSaddle | Action::FinishCrew => 100,

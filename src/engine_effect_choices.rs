@@ -29,7 +29,9 @@ impl Game {
         let o = &self.state.objects[object.card as usize];
         let hand_choice = matches!(
             choice.kind,
-            EffectChoiceKind::Discard | EffectChoiceKind::HandCreature
+            EffectChoiceKind::Discard
+                | EffectChoiceKind::HandCreature
+                | EffectChoiceKind::HandLand { .. }
         );
         let entitled_player = if hand_choice { o.owner } else { o.controller };
         if entitled_player != player
@@ -40,10 +42,16 @@ impl Game {
         }
         if matches!(
             choice.kind,
-            EffectChoiceKind::Discard | EffectChoiceKind::HandCreature
+            EffectChoiceKind::Discard
+                | EffectChoiceKind::HandCreature
+                | EffectChoiceKind::HandLand { .. }
         ) {
             return o.zone == Zone::Hand
-                && (choice.kind != EffectChoiceKind::HandCreature || o.card.is_creature());
+                && match choice.kind {
+                    EffectChoiceKind::HandCreature => o.card.is_creature(),
+                    EffectChoiceKind::HandLand { .. } => o.card.is_land() && o.controller == player,
+                    _ => true,
+                };
         }
         if choice.greatest_power[player.index()]
             .is_some_and(|max| self.object_view(object.card).power != max)
@@ -100,6 +108,18 @@ impl Game {
         self.start_effect_choice_inner(
             item,
             EffectChoiceKind::HandCreature,
+            PlayerSet::Controller,
+            evidence::cost(0).filter,
+            1,
+            Some(0),
+            false,
+            None,
+        )
+    }
+    pub(super) fn start_hand_land(&mut self, item: &SpellView, tapped: bool) -> bool {
+        self.start_effect_choice_inner(
+            item,
+            EffectChoiceKind::HandLand { tapped },
             PlayerSet::Controller,
             evidence::cost(0).filter,
             1,
@@ -206,13 +226,26 @@ impl Game {
                 })
                 .count();
             if let Some(skip_to) = choice.skip_to
+                && !matches!(
+                    kind,
+                    EffectChoiceKind::HandCreature | EffectChoiceKind::HandLand { .. }
+                )
                 && available < usize::from(amount)
             {
                 self.state.resolving.as_mut().unwrap().pc = skip_to;
                 return false;
             }
-            choice.required[player.index()] =
-                amount.min(u16::try_from(available).unwrap_or(u16::MAX));
+            // Optional private hand placement always presents the same actor/phase,
+            // even with no eligible card. The player can decline without revealing
+            // whether their hidden hand contains a creature or land.
+            choice.required[player.index()] = if matches!(
+                kind,
+                EffectChoiceKind::HandCreature | EffectChoiceKind::HandLand { .. }
+            ) {
+                amount
+            } else {
+                amount.min(u16::try_from(available).unwrap_or(u16::MAX))
+            };
         }
         self.state.resolving.as_mut().unwrap().choice = Some(Box::new(choice));
         self.advance_effect_choice()
@@ -234,14 +267,18 @@ impl Game {
                 return true;
             }
         }
-        if choice.kind == EffectChoiceKind::HandCreature {
+        if matches!(
+            choice.kind,
+            EffectChoiceKind::HandCreature | EffectChoiceKind::HandLand { .. }
+        ) {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
             let Some(reference) = choice.selected[player.index()].first().copied() else {
                 self.state.resolving.as_mut().unwrap().choice = None;
                 return false;
             };
-            let enchantment =
-                self.state.objects[reference.card as usize].card.kind_mask() & 32 != 0;
+            let enchantment = choice.kind == EffectChoiceKind::HandCreature
+                && self.state.objects[reference.card as usize].card.kind_mask() & 32 != 0;
+            let forced_tapped = matches!(choice.kind, EffectChoiceKind::HandLand { tapped: true });
             if enchantment && choice.hand_defender.is_none() {
                 if self.state.objects.iter().any(|o| {
                     o.zone == Zone::Battlefield
@@ -271,8 +308,9 @@ impl Game {
             let mut movement = self.entry_move(
                 reference.card,
                 Zone::Battlefield,
-                enchantment || self.enters_tapped(reference.card),
+                forced_tapped || enchantment || self.enters_tapped_for(reference.card, player),
             );
+            movement.controller = player;
             movement.attacking = choice.hand_defender;
             self.stage_entries(vec![movement], None);
             return false;
@@ -347,7 +385,9 @@ impl Game {
         let actor = self.actor()?;
         if matches!(
             choice.kind,
-            EffectChoiceKind::Discard | EffectChoiceKind::HandCreature
+            EffectChoiceKind::Discard
+                | EffectChoiceKind::HandCreature
+                | EffectChoiceKind::HandLand { .. }
         ) && viewer != actor
         {
             return None;

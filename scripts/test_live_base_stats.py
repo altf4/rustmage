@@ -47,10 +47,22 @@ class LiveBaseCompilerTests(unittest.TestCase):
  def test_strict_actual_foundation_four_body_union(self):
   import copy
   from scripts.catalogue_preservation import canonical,assert_union
-  physical={c['oracle_id']:c['name']for c in self.all};parent='19e4602b436b7aa8c9708f28f87fe288985c9377';old=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',parent+':src/generated/catalogue.rs'],text=True),physical);new=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  physical={c['oracle_id']:c['name']for c in self.all};parent='19e4602b436b7aa8c9708f28f87fe288985c9377';old=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',parent+':src/generated/catalogue.rs'],text=True),physical);new=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show','58e1830ba68a1e72de1862473f46791deca8df9e:src/generated/catalogue.rs'],text=True),physical);current=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
   helpers={('live_static_effects',n+'#0')for n in self.names}|{('equipment','Aettir and Priwen#0'),('aura','Burden of Proof#0')}
   proof=assert_union(old,new,changed={n+'#0'for n in self.names},added=set(),helpers=helpers,aliases={});self.assertEqual(proof['preserved_definitions'],5328)
+  for name in self.names:self.assertEqual(current['definitions'][name+'#0'],new['definitions'][name+'#0'])
+  for helper in helpers:self.assertEqual(current['helpers'][helper],new['helpers'][helper])
   mutant=copy.deepcopy(new);mutant['definitions']['Plains#0']='unrelated mutation'
   with self.assertRaises(AssertionError):assert_union(old,mutant,changed={n+'#0'for n in self.names},added=set(),helpers=helpers,aliases={})
+
+ def test_actual_merged_parent_preserves_every_other_program(self):
+  import copy
+  from scripts.catalogue_preservation import canonical,assert_union
+  parent='ba3752a456908e0bee67a86e88864b14ba1312df';physical={c['oracle_id']:c['name']for c in self.all}
+  old=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',parent+':src/generated/catalogue.rs'],text=True),physical);new=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  helpers={('live_static_effects',n+'#0')for n in self.names}|{('equipment','Aettir and Priwen#0'),('aura','Burden of Proof#0')};args=dict(changed={n+'#0'for n in self.names},added=set(),helpers=helpers,aliases={})
+  proof=assert_union(old,new,**args);self.assertEqual(proof['preserved_definitions'],5328);self.assertEqual(proof['prior_helpers'],912)
+  mutant=copy.deepcopy(new);mutant['definitions']['Plains#0']='unrelated mutation'
+  with self.assertRaises(AssertionError):assert_union(old,mutant,**args)
 
 if __name__=='__main__':unittest.main()

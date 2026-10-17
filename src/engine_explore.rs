@@ -98,7 +98,14 @@ impl Game {
                 let source = self.object_view(id);
                 if source.controller == explorer.controller {
                     for (index, ability) in source.card.triggers().iter().enumerate() {
-                        if ability.condition.event() == TriggerCondition::CreatureExploresYou {
+                        let matches_event = match ability.condition.event() {
+                            TriggerCondition::CreatureExploresYou => true,
+                            TriggerCondition::CreatureExploresCardYou { land } => {
+                                revealed.is_some_and(|card| card.card.is_land() == land)
+                            }
+                            _ => false,
+                        };
+                        if matches_event {
                             self.queue_trigger(&source, index);
                         }
                     }

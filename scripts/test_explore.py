@@ -38,7 +38,9 @@ class ExploreCompilerTests(unittest.TestCase):
         for row in self.manifest['cards']:
             self.assertEqual(row['oracle_text'],self.rows[row['name']]['oracle_text']);self.assertIn(row['name'],supported)
         for row in self.manifest['gated']:self.assertNotIn(row['name'],supported)
-        names={c['name'] for c in self.manifest['cards']}
+        later=self.manifest['subsequently_completed'];self.assertEqual({c['name']for c in later},{'Nicanzil, Current Conductor'})
+        for row in later:self.assertIn(row['name'],supported);self.assertEqual(row['oracle_text'],self.rows[row['name']]['oracle_text'])
+        names={c['name'] for c in self.manifest['cards']+later}
         cards=[dict(c,oracle_text=c['oracle_text']+'\nDiscover 3.') if c['name'] in names else c for c in self.snapshot['cards']]
         snapshot=dict(self.snapshot,cards=cards,cards_sha256=hashlib.sha256(json.dumps(cards,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest())
         _,invalid=g.compile_catalogue(snapshot,self.target);self.assertFalse(names&{c['name'] for c in invalid['cards'] if c['implemented']})

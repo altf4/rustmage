@@ -299,6 +299,7 @@ pub(crate) struct SearchSpec {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EffectChoiceKind {
     HandCreature,
+    HandLand { tapped: bool },
     CollectEvidence(u16),
     Forage,
     ForageOrBlack,
@@ -462,6 +463,9 @@ pub(crate) enum Instruction {
     DiscardScaled(PlayerSet, AmountValue),
     DiscardManaValueLifeLoss,
     PutHandCreature,
+    PutHandLand {
+        tapped: bool,
+    },
     JobSelect {
         token: Card,
     },
@@ -629,6 +633,11 @@ pub(crate) enum Instruction {
         subject: Subject,
         power: Option<i128>,
         toughness: Option<i128>,
+    },
+    SetResolvedBaseStats {
+        subject: Subject,
+        power: Option<ResolvedStatValue>,
+        toughness: Option<ResolvedStatValue>,
     },
     Grow {
         subject: Subject,
@@ -811,6 +820,20 @@ pub(crate) enum AmountValue {
         value: &'static AmountValue,
         factor: u16,
     },
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum ResolvedStatValue {
+    /// Capture a signed scalar once, when the instruction resolves.
+    Stat(StatValue),
+    /// Evaluate before creating the fixed, until-cleanup layer-7b effect.
+    Threshold {
+        value: StatValue,
+        minimum: i128,
+        yes: i128,
+        no: i128,
+    },
+    /// Current exact event object, or its signed departure LKI.
+    EnteringPower,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StatValue {
@@ -1365,6 +1388,9 @@ pub(crate) enum TriggerCondition {
     SelfOffspring,
     SelfKicked,
     CreatureExploresYou,
+    CreatureExploresCardYou {
+        land: bool,
+    },
     SelfBargained,
     SelfEvidence,
     EvidenceCollected,

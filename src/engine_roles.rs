@@ -23,6 +23,7 @@ pub(super) struct RoleState {
     pub attached: Vec<RoleTimestampView>,
     pub base_stats: Vec<BaseStatsEffectView>,
     pub live_static: Vec<LiveStaticSourceView>,
+    pub stat_subjects: Vec<ResolvedStatSubjectView>,
 }
 impl RoleState {
     pub fn bytes(&self) -> usize {
@@ -30,6 +31,7 @@ impl RoleState {
             + self.attached.len() * std::mem::size_of::<RoleTimestampView>()
             + self.base_stats.len() * std::mem::size_of::<BaseStatsEffectView>()
             + self.live_static.len() * std::mem::size_of::<LiveStaticSourceView>()
+            + self.stat_subjects.len() * std::mem::size_of::<ResolvedStatSubjectView>()
     }
 }
 impl Game {

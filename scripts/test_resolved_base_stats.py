@@ -1,0 +1,67 @@
+"""Complete resolved-stat consumers; audit files never grant admission."""
+import copy,hashlib,json,subprocess,unittest
+from pathlib import Path
+from scripts import generate_catalogue as g
+from scripts.catalogue_preservation import canonical,assert_union
+INITIAL_NAMES={'Genemorph Imago','Moon Girl and Devil Dinosaur','Belligerent Yearling'}
+NAMES=INITIAL_NAMES|{'PuPu UFO','Atomic Microsizer'}
+PARENT='4b309a0763b4e8d12ebdb750ea098458f5f2c961'
+DELIVERED='ef36073d7f4edff2312d8069d29dcae7134f68d6'
+COMPOSED_PARENT='a9380ec478646c42308c7284de197fa466db24d2'
+class ResolvedBaseTests(unittest.TestCase):
+ @classmethod
+ def setUpClass(cls):cls.all=json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards'];cls.cards={c['name']:c for c in cls.all if c['name']in NAMES}
+ def compile(self,c):
+  sha=hashlib.sha256(json.dumps([c],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();r,v=g.compile_catalogue(dict(cards=[c],card_count=1,cards_sha256=sha),dict(banned_card_names=[]));return r,next(x['implemented']for x in v['cards']if x['name']==c['name'])
+ def test_whole_bodies_are_name_independent_and_each_ability_is_present(self):
+  for c in self.cards.values():
+   rust,ok=self.compile(c);self.assertTrue(ok,c['name'])
+   for alias in [c['name'],'Generic Resolved Fixture','Shock','Forest','Grizzly Bears']:
+    renamed=dict(c,name=alias,oracle_text=c['oracle_text'].replace(c['name'],alias));r,ok=self.compile(renamed);self.assertTrue(ok,(c['name'],alias))
+    self.assertIn('SetBaseStats'if c['name']in ['Moon Girl and Devil Dinosaur','Atomic Microsizer']else'SetResolvedBaseStats',r)
+   if c['name']=='Moon Girl and Devil Dinosaur':
+    self.assertIn('ordinal: Some(2)',rust);self.assertIn('OncePerTurn(&TriggerCondition::ArtifactEntersYou)',rust);self.assertIn('GrantKeywords { subject: Subject::Source, keywords: Keywords(256) }',rust)
+   if c['name']=='Belligerent Yearling':self.assertIn('May { skip: 1 }',rust);self.assertIn('ResolvedStatValue::EnteringPower',rust)
+   if c['name']=='Genemorph Imago':self.assertIn('minimum: 6, yes: 6, no: 3',rust)
+   if c['name']=='PuPu UFO':self.assertIn('Instruction::PutHandLand { tapped: false }',rust);self.assertIn('subtype: Some("Town")',rust);self.assertIn('ResolvedStatValue::Stat(',rust)
+   if c['name']=='Atomic Microsizer':self.assertIn('TriggerCondition::EquippedAttacks',rust);self.assertIn('min: 0, max: 1',rust);self.assertIn('keywords: Keywords(16384)',rust)
+ def test_raw_reminders_costs_and_incomplete_bodies_do_not_supply_rules(self):
+  for c in self.cards.values():
+   raw=c['oracle_text'];mutants=[raw+' (You win the game.)',raw+'\n((Draw seven cards.))',raw.replace('base','ba(Draw seven cards.)se',1),raw.replace('creature',"crea(This creature can't be blocked.)ture",1),raw+'\nDraw seven cards. You win the game.',raw+'\nYou may put a land from your hand onto the battlefield.']
+   for alias in ['Generic Resolved Fixture','Shock',c['name']]:
+    for text in mutants:
+     if text!=raw:self.assertFalse(self.compile(dict(c,name=alias,oracle_text=text.replace(c['name'],alias)))[1],(c['name'],alias,text))
+   for cost in ['{X}{U}','{1}{Q}','{4294967296}{U}']:self.assertFalse(self.compile(dict(c,mana_cost=cost))[1],(c['name'],cost))
+   for layout in ['split','transform','modal_dfc']:self.assertFalse(self.compile(dict(c,layout=layout))[1],(c['name'],layout))
+  c=self.cards['Genemorph Imago']
+  for raw in [c['oracle_text'].replace('six','many'),c['oracle_text'].replace('6/6',str(2**127)+'/6')]:self.assertFalse(self.compile(dict(c,oracle_text=raw))[1],raw)
+  c=self.cards['Belligerent Yearling']
+  for raw in [c['oracle_text'].replace("that creature's power","that creature's toughness"),c['oracle_text'].replace('until end of turn','until your next turn')]:self.assertFalse(self.compile(dict(c,oracle_text=raw))[1],raw)
+ def test_scalar_snapshot_is_generic_and_original_raw_authenticated(self):
+  base=self.cards['Belligerent Yearling']
+  for axis,value,fragment in [('power','the number of Towns you control','subtype: Some("Town")'),('toughness','your life total','StatValue::ControllerLife')]:
+   body="{3}: Until end of turn, this creature's base "+axis+' becomes equal to '+value+'.'
+   for alias in ['Independent Scalar Snapshot','Shock','Forest']:
+    c=dict(base,name=alias,oracle_text=body);rust,ok=self.compile(c);self.assertTrue(ok,(axis,value,alias));self.assertIn('ResolvedStatValue::Stat(',rust);self.assertIn(fragment,rust)
+    for raw in [body+' (You win the game.)',body.replace('base','ba(Draw seven cards.)se'),body.replace('Until end of turn','Until your next turn'),body.replace(value,'the number of cards anywhere')]:self.assertFalse(self.compile(dict(c,oracle_text=raw))[1],raw)
+ def test_exact_three_against_prototype_foundation_preserve_all_other_definitions(self):
+  physical={c['oracle_id']:c['name']for c in self.all};a=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',PARENT+':src/generated/catalogue.rs'],text=True),physical);b=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',DELIVERED+':src/generated/catalogue.rs'],text=True),physical);current=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  proof=assert_union(a,b,changed={n+'#0'for n in INITIAL_NAMES},added=set(),helpers=set(),aliases={});self.assertEqual(proof['preserved_definitions'],5328)
+  for name in INITIAL_NAMES:self.assertEqual(current['definitions'][name+'#0'],b['definitions'][name+'#0'])
+  mutant=copy.deepcopy(b);mutant['definitions']['Plains#0']='unrelated mutation'
+  with self.assertRaises(AssertionError):assert_union(a,mutant,changed={n+'#0'for n in INITIAL_NAMES},added=set(),helpers=set(),aliases={})
+ def test_actual_composed_parent_has_exactly_five_new_whole_bodies(self):
+  physical={c['oracle_id']:c['name']for c in self.all};a=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',COMPOSED_PARENT+':src/generated/catalogue.rs'],text=True),physical);b=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  helpers={('equipment','Atomic Microsizer#0')}
+  proof=assert_union(a,b,changed={n+'#0'for n in NAMES},added=set(),helpers=helpers,aliases={});self.assertEqual(proof['preserved_definitions'],5327)
+  mutant=copy.deepcopy(b);mutant['definitions']['Plains#0']='unrelated mutation'
+  with self.assertRaises(AssertionError):assert_union(a,mutant,changed={n+'#0'for n in NAMES},added=set(),helpers=helpers,aliases={})
+ def test_complete_pinned_java_and_direct_imports_are_audit_only(self):
+  audit=json.loads((g.ROOT/'docs/resolved-base-stat-admissions.json').read_text());self.assertEqual({r['name']for r in audit['cards']},NAMES);java=Path('/home/altf4/Code/mage');facts={c['name']:c for c in self.all};seen=set();records=0
+  for row in audit['cards']:
+   self.assertEqual(row['oracle_id'],facts[row['name']]['oracle_id'])
+   for k,v in row['facts'].items():self.assertEqual(v,facts[row['name']][k])
+   for source in row['sources']:
+    records+=1;p=source['java_source'];blob=(java/p).read_bytes();self.assertEqual(hashlib.sha256(blob).hexdigest(),source['java_sha256']);self.assertEqual(blob,subprocess.check_output(['git','-C',str(java),'show',audit['java_revision']+':'+p]));seen.add(p)
+  self.assertEqual((records,len(seen)),(144,105))
+if __name__=='__main__':unittest.main()

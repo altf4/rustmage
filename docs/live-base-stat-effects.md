@@ -114,3 +114,17 @@ shared libraries were removed at terminal completion. The complete native suite
 PASS at the earlier primitive-only ebacd75 is not relabeled as this admission build.
 Further paid Ward, non-Detective blocking, late crewed Vehicle, foreign controller,
 simultaneous conflicting setters and final optimized public workloads remain.
+
+## Actual schema98 composition checkpoint
+
+The prototype now includes actual main ba3752a (hand-land97 and resolved
+expressions98), retaining every new parent runtime field and catalogue program.
+It has1,964 executable identities/schema100 at this interim checkpoint. A separate
+strict actual-parent four-body proof complements the fixed original19e→58e proof;
+all four original definitions and six new helper recipes remain identical. Parent
+policies only receive schema updates. Archon/Aettir's former gating sentinels now
+check complete success plus unknown-residual rejection, preserving the remaining
+unsupported bodies. Raw simultaneous entry with more than one timestamp source
+must use the staged transaction, including opposing controllers; no hidden helper
+may silently choose vector order. No new composed runtime test has run yet, and
+final actual schema99 composition remains required before full gates.
