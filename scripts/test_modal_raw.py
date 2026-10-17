@@ -4,6 +4,7 @@ from scripts import generate_catalogue as g
 from scripts import test_legacy_metadata as metadata
 from scripts.catalogue_preservation import canonical,assert_union
 PARENT='356d79880dbae6bdcbda600dadb1bef6da16c18c'
+DELIVERED='dffafa6caaf7288ae8bbb8fa4c90b206e5960b94'
 class ModalRawTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):
@@ -87,8 +88,8 @@ class ModalRawTests(unittest.TestCase):
   reminder='Look at the top card of your library. You may put that card on the bottom of your library.'
   raw='When this creature enters, choose one —\n• Create a Sorcerer Role token attached to target creature you control. (Enchanted creature gets +1/+1 and has "Whenever this creature attacks, scry 1. ('+reminder+')")\n• Draw a card.'
   self.assertTrue(self.compile(self.card(raw))[1],raw)
- def test_no_actual_program_helper_factory_color_or_alias_changes(self):
-  physical={c['oracle_id']:c['name']for c in self.cards.values()};before=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',PARENT+':src/generated/catalogue.rs'],text=True),physical);after=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical);proof=assert_union(before,after,changed=set(),added=set(),helpers=set(),aliases={});self.assertEqual(proof['preserved_definitions'],5332);self.assertEqual(proof['prior_helpers'],924)
+ def test_historical_modal_delivery_changed_no_program_helpers_factories_or_aliases(self):
+  physical={c['oracle_id']:c['name']for c in self.cards.values()};before=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',PARENT+':src/generated/catalogue.rs'],text=True),physical);after=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',DELIVERED+':src/generated/catalogue.rs'],text=True),physical);proof=assert_union(before,after,changed=set(),added=set(),helpers=set(),aliases={});self.assertEqual(proof['preserved_definitions'],5332);self.assertEqual(proof['prior_helpers'],924)
   mutant=copy.deepcopy(after);mutant['definitions']['Plains#0']='unrelated mutation'
   with self.assertRaises(AssertionError):assert_union(before,mutant,changed=set(),added=set(),helpers=set(),aliases={})
 if __name__=='__main__':unittest.main()

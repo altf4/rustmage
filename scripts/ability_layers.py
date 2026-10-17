@@ -37,6 +37,14 @@ class StaticGroup:
         return min(f.layer for f in self.fragments)
 
 
+def _immutable(value):
+    if isinstance(value, (list, tuple)):
+        return tuple(_immutable(item) for item in value)
+    if isinstance(value, dict):
+        return tuple((key, _immutable(item)) for key, item in sorted(value.items()))
+    return value
+
+
 def continuous_groups(card, parser):
     """Project immutable groups without changing the caller's factory registry."""
     tokens, emblems = dict(parser.TOKEN_DEFS), dict(parser.EMBLEM_DEFS)
@@ -166,7 +174,7 @@ def _continuous_groups(card, parser):
                         fragments.append(Fragment('attachment_keywords', Layer.ABILITY, body[7]))
                     for condition, program, targets in body[2]:
                         if condition.startswith('Granted('):
-                            fragments.append(Fragment('attachment_trigger', Layer.ABILITY, (condition, tuple(program), targets)))
+                            fragments.append(Fragment('attachment_trigger', Layer.ABILITY, _immutable((condition, program, targets))))
                     fragments.extend(Fragment('scaling_modifiers', Layer.MODIFY, s) for s in scales)
             else:
                 body = parser.equipment_template(dict(card, oracle_text='\n'.join([residual.get('oracle_text', ''), *equips])))
@@ -177,7 +185,7 @@ def _continuous_groups(card, parser):
                         fragments.append(Fragment('attachment_keywords', Layer.ABILITY, body[7]))
                     for condition, program, targets in body[2]:
                         if condition in ('GrantedAttacks',) or condition.startswith('Granted('):
-                            fragments.append(Fragment('attachment_trigger', Layer.ABILITY, (condition, tuple(program), targets)))
+                            fragments.append(Fragment('attachment_trigger', Layer.ABILITY, _immutable((condition, program, targets))))
         elif aura and original not in enchant:
             body = parser.aura_template(dict(card, oracle_text='\n'.join([*enchant, residual.get('oracle_text', '')])))
             if body is not None:
@@ -187,7 +195,7 @@ def _continuous_groups(card, parser):
                     fragments.append(Fragment('attachment_keywords', Layer.ABILITY, body[9]))
                 for condition, program, targets in body[2]:
                     if condition.startswith('Granted('):
-                        fragments.append(Fragment('attachment_trigger', Layer.ABILITY, (condition, tuple(program), targets)))
+                        fragments.append(Fragment('attachment_trigger', Layer.ABILITY, _immutable((condition, program, targets))))
         if fragments:
             groups.append(StaticGroup(index, original, tuple(fragments)))
     return tuple(groups)
@@ -200,7 +208,7 @@ def rust_groups(card, parser, abilities):
     compiler error, never an omitted fragment or an inferred name-based ability.
     """
     variants = {
-        'static_modifiers': 'StaticModifier', 'scaling_modifiers': 'ScalingModifier',
+        'keyword_grants': 'KeywordGrant', 'static_modifiers': 'StaticModifier', 'scaling_modifiers': 'ScalingModifier',
         'enchanted_modifiers': 'EnchantedModifier', 'dynamic_stats': 'DynamicStats',
         'base_stat_setter': 'BaseStatSetter', 'live_static_base': 'LiveBase',
         'live_static_bonus': 'LiveBonus', 'live_static_keywords': 'LiveKeywords',
@@ -214,7 +222,7 @@ def rust_groups(card, parser, abilities):
               Layer.CDA: 'Cda', Layer.BASE: 'Base', Layer.MODIFY: 'Modify', Layer.RULE: 'Rule'}
     available = {}
     for index, (condition, program, targets) in enumerate(abilities):
-        available.setdefault((condition, tuple(program), targets), []).append(index)
+        available.setdefault(_immutable((condition, program, targets)), []).append(index)
     used = set()
     rendered = []
     for group in continuous_groups(card, parser):

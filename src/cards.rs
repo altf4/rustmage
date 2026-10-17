@@ -1,3 +1,7 @@
+#[path = "ability_layers.rs"]
+mod ability_layers;
+pub(crate) use ability_layers::{AbilityLayer, StaticAbilityFragment, StaticAbilityGroup};
+
 use crate::capacity::CapacityExt;
 use crate::engine::GrantedSubtypes;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
@@ -1835,6 +1839,9 @@ impl Card {
     }
     pub(crate) fn additional_cost(self) -> Option<AdditionalCost> {
         generated::additional_cost(self)
+    }
+    pub(crate) fn static_ability_groups(self) -> &'static [StaticAbilityGroup] {
+        generated::static_ability_groups(self)
     }
     pub(crate) fn live_static_effects(self) -> &'static [LiveStaticEffect] {
         generated::live_static_effects(self)

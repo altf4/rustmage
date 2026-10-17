@@ -31,6 +31,7 @@ pub(crate) enum StaticAbilityFragment {
     AttachedTurnKeywords(Keywords),
     /// Stable index into the granting definition's immutable trigger array.
     AttachmentTrigger(u16),
+    KeywordGrant(KeywordGrant),
     StaticModifier(StaticModifier),
     ScalingModifier(ScalingModifier),
     EnchantedModifier(EnchantedModifier),
