@@ -1388,7 +1388,8 @@ class CatalogueCompilerTests(unittest.TestCase):
             c=next(c for c in snapshot['cards'] if c['name']==a['name']);self.assertEqual(c['oracle_text'],a['oracle_text']);self.assertIn(c['name'],supported)
             self.assertIsNone(generate.permanent_program_template(dict(c,oracle_text=c['oracle_text']+'\nDiscover 4.')))
             self.assertIsNone(generate.trigger_creature_template(dict(c,oracle_text=c['oracle_text']+'\nDiscover 4.')))
-        for name in ['Wishclaw Talisman','Path to Redemption','M.O.D.O.K.','Scour for Scrap','Oltec Archaeologists']:
+        self.assertIn('Oltec Archaeologists',supported)
+        for name in ['Wishclaw Talisman','Path to Redemption','M.O.D.O.K.','Scour for Scrap']:
             self.assertNotIn(name,supported)
 
     def test_discard_history_amount_and_two_complete_bodies(self):
@@ -2309,7 +2310,8 @@ class CatalogueCompilerTests(unittest.TestCase):
                      'Environmental Scientist','Flock Impostor','Gangly Stompling','Graveshifter',
                      'Mischievous Sneakling','Prideful Feastling','Rooftop Percher','Three Tree Mascot']:
             self.assertIn(name,supported)
-        for name in ['Nameless Inversion','Barkform Harvester','Taurean Mauler','Firdoch Core',
+        self.assertIn('Barkform Harvester',supported)
+        for name in ['Nameless Inversion','Taurean Mauler','Firdoch Core',
                      'Crib Swap','Mutable Explorer','Omni-Changeling']:
             self.assertNotIn(name,supported)
 

@@ -2,7 +2,7 @@
 import json
 from pathlib import Path
 import unittest
-from rustmage import Game
+from rustmage import Game, EngineError
 import test_adventure
 
 FACTS={c['name']:c for c in json.loads((Path(__file__).resolve().parents[1]/'data/standard/cards.json').read_text())['cards']}
@@ -10,7 +10,20 @@ NAMES=["Archenemy's Charm",'Auroral Procession','Barkform Harvester','Coati Scav
 BASICS=['Plains','Island','Swamp','Mountain','Forest']
 
 class GraveyardRecoveryTests(unittest.TestCase):
-    replay=test_adventure.AdventureTests.replay
+    def replay(self,g,o,index):
+        actor=o['actor'];other='P1' if actor=='P0' else 'P0'
+        saved=g.snapshot();parent=g.clone();child=parent.clone();parent.close()
+        with child:
+            expected=child.act(child.observe(actor),o['actions'][index])
+            other_expected=child.observe(other)
+        self.assertEqual(g.step(o,index),expected)
+        g.restore(saved)
+        with self.assertRaisesRegex(EngineError,'StaleRevision'):g.step(o,index)
+        actual=g.step(g.observe(actor),index);expected['revision']=actual['revision']
+        self.assertEqual(actual,expected)
+        other_actual=g.observe(other);other_expected['revision']=other_actual['revision']
+        self.assertEqual(other_actual,other_expected);g.drop_snapshot(saved)
+        return actual
     denied=test_adventure.AdventureTests.denied
 
     def test_eighteen_paid_complete_recovery_bodies_both_seats(self):
@@ -68,6 +81,9 @@ class GraveyardRecoveryTests(unittest.TestCase):
                     if k=='AnnounceActivate':return 3000 if actor==p and stage=='activate' and a['card']==source else -1000
                     if k=='ChooseMode':return 2700 if a['mode']==(1 if name in ["Archenemy's Charm","Rydia's Return",'White Widow, Free Agent'] else 0) else -1000
                     if k=='ChooseTarget':return 2700 if a['target']=={'Card':chosen} else -1000
+                    if k=='ChooseAdditionalCost':
+                        selected=objects[a['object']['card']]['card']
+                        return 3000 if selected==target_name and not dead else 2400 if selected in BASICS else -1000
                     if k=='Discard':
                         if stage=='setup':return 2700 if n==target_name and not dead else 2200 if n in BASICS else -10000 if n==name and sum(v['card']==name for v in hand)==1 else -500
                         return 2700 if a['card']!=chosen else -500
