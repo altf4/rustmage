@@ -1,4 +1,4 @@
-"""Strict whole-pair admission for reusable land allowances and target movement."""
+"""Strict whole-pair admission for historical cast and declaration events."""
 import copy
 import hashlib
 import importlib.util
@@ -29,4 +29,4 @@ class AdventureEventCompilerTests(unittest.TestCase):
    c=copy.deepcopy(self.rows[NAMES[i]]);c['card_faces'][0]['oracle_text']=c['card_faces'][0]['oracle_text'].replace(old,new);self.assertFalse(self.admitted(c),(i,old,new))
  def test_event_predicates_bind_typed_history_caster_and_declaration(self):
   for i,expected in enumerate(['InstantSorceryOrdinal(1)','CastingPlayer','SelfAttacksAlone']):
-   c=self.rows[NAMES[i]];report=g.compile_catalogue(dict(cards=[c],card_count=1,cards_sha256='0'*64),dict(banned_card_names=[]));self.assertIn(expected,report[0])
+   c=self.rows[NAMES[i]];report=g.compile_catalogue(dict(cards=[c],card_count=1,cards_sha256=hashlib.sha256(json.dumps([c],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()),dict(banned_card_names=[]));self.assertIn(expected,report[0])

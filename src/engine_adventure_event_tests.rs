@@ -427,7 +427,7 @@ fn viper_uses_chosen_face_mana_value_with_x_at_the_cast_event() {
             priority(&mut g, p.other());
             g.state.players[p.other().index()].mana = [30; 6];
             act(&mut g, Action::AnnounceOmen { card: omen });
-            act(&mut g, Action::ChooseX { x });
+            act(&mut g, Action::ChooseX { value: x });
             // Resolve the spell and cast-event packet without reading physical parent MV.
             drive(&mut g, None);
             assert_eq!(
