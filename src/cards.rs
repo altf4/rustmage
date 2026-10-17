@@ -300,6 +300,7 @@ pub(crate) struct SearchSpec {
 pub enum EffectChoiceKind {
     HandCreature,
     HandLand { tapped: bool },
+    LandCards { maximum: u32, tapped: bool },
     CollectEvidence(u16),
     Forage,
     ForageOrBlack,
@@ -465,6 +466,10 @@ pub(crate) enum Instruction {
     CounterThenDrawIfDiscounted,
     DiscardScaled(PlayerSet, AmountValue),
     DiscardManaValueLifeLoss,
+    PutLandCards {
+        maximum: AmountValue,
+        tapped: bool,
+    },
     PutHandCreature,
     PutHandLand {
         tapped: bool,

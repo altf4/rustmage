@@ -85,14 +85,33 @@ class BasePowerCompilerTests(unittest.TestCase):
         physical = {c['oracle_id']: c['name'] for c in self.cards}
         parent = 'dffafa6caaf7288ae8bbb8fa4c90b206e5960b94'
         before = canonical(subprocess.check_output(['git', '-C', str(g.ROOT), 'show', parent + ':src/generated/catalogue.rs'], text=True), physical)
-        after = canonical((g.ROOT / 'src/generated/catalogue.rs').read_text(), physical)
+        after = canonical(subprocess.check_output(['git', '-C', str(g.ROOT), 'show', 'aab3560:src/generated/catalogue.rs'], text=True), physical)
+        current = canonical((g.ROOT / 'src/generated/catalogue.rs').read_text(), physical)
         args = dict(changed={n+'#0' for n in self.names}, added=set(), helpers={('static_cast_restriction', n+'#0') for n in ['Kutzil, Malamet Exemplar','Voice of Victory']}, aliases={})
         proof = assert_union(before, after, **args)
         self.assertEqual(proof['preserved_definitions'], 5329)
         self.assertEqual(proof['prior_helpers'], 924)
+        for name in self.names: self.assertEqual(current['definitions'][name+'#0'], after['definitions'][name+'#0'])
+        for helper in args['helpers']: self.assertEqual(current['helpers'][helper], after['helpers'][helper])
         mutant = copy.deepcopy(after)
         mutant['definitions']['Plains#0'] = 'unrelated mutation'
         with self.assertRaises(AssertionError): assert_union(before, mutant, **args)
+
+
+    def test_actual_joint_land_parent_preserves_every_prior_program_and_recipe(self):
+        import copy
+        from scripts.catalogue_preservation import canonical, assert_union
+        physical = {c['oracle_id']: c['name'] for c in self.cards}
+        parent = 'f35e95302aad7924be38def41598dcf9013c0fb7'
+        before = canonical(subprocess.check_output(['git', '-C', str(g.ROOT), 'show', parent+':src/generated/catalogue.rs'], text=True),physical)
+        after = canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+        args = dict(changed={n+'#0'for n in self.names},added=set(),helpers={('static_cast_restriction',n+'#0')for n in ['Kutzil, Malamet Exemplar','Voice of Victory']},aliases={})
+        proof=assert_union(before,after,**args)
+        self.assertEqual(proof['preserved_definitions'],5330)
+        self.assertEqual(proof['prior_helpers'],926)
+        self.assertEqual(proof['token_recipes'],96)
+        mutant=copy.deepcopy(after);mutant['definitions']['Plains#0']='unrelated mutation'
+        with self.assertRaises(AssertionError):assert_union(before,mutant,**args)
 
 
 if __name__ == '__main__':

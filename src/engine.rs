@@ -327,6 +327,8 @@ define_actions! {
     ChooseMobilizeDefender { defender: CombatDefender },
     PutHandCreature { object: ObjectRef },
     PutHandLand { object: ObjectRef },
+    SelectLand { object: ObjectRef },
+    FinishLandSelection,
     DeclineHandEntry,
     ChooseHandDefender { defender: CombatDefender },
     ChooseSaddler { object: ObjectRef },
@@ -2140,7 +2142,13 @@ impl Game {
             }
             Pending::EffectChoice { player } => {
                 let choice = s.resolving.as_ref().unwrap().choice.as_ref().unwrap();
+                if matches!(choice.kind, EffectChoiceKind::LandCards { .. })
+                    && emit(Action::FinishLandSelection)
+                {
+                    return true;
+                }
                 if choice.skip_to.is_some()
+                    && !matches!(choice.kind, EffectChoiceKind::LandCards { .. })
                     && emit(
                         if matches!(
                             choice.kind,
@@ -2160,6 +2168,7 @@ impl Game {
                         let action = match choice.kind {
                             EffectChoiceKind::HandCreature => Action::PutHandCreature { object },
                             EffectChoiceKind::HandLand { .. } => Action::PutHandLand { object },
+                            EffectChoiceKind::LandCards { .. } => Action::SelectLand { object },
                             EffectChoiceKind::Sacrifice => Action::Sacrifice { object },
                             EffectChoiceKind::Discard => Action::Discard { card: object.card },
                             _ => unreachable!("forage has its own choice"),
@@ -3403,8 +3412,12 @@ impl Game {
                 }
                 self.advance_damage_choices();
             }
-            Action::PutHandCreature { object } | Action::PutHandLand { object } => {
-                self.choose_effect_object(actor, object)
+            Action::PutHandCreature { object }
+            | Action::PutHandLand { object }
+            | Action::SelectLand { object } => self.choose_effect_object(actor, object),
+            Action::FinishLandSelection => {
+                self.finish_land_selection();
+                self.run_program();
             }
             Action::DeclineHandEntry => self.decline_effect_payment(),
             Action::ChooseHandDefender { defender } => self.choose_hand_defender(defender),

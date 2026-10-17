@@ -80,3 +80,16 @@ written and syntax-checked. Their first syntax check caught a missing space in
 a conditional expression, corrected before publication. No public success is
 claimed before execution. Final composition will include merged joint-land main
 so the final optimized library and broad gates exercise the latest rules kernel.
+
+## Actual joint-land parent composition
+
+The draft now composes actual f35e953 (1,974/schema101), retaining both complete
+joint-land bodies and Beau's96th recipe. Candidate coverage is1,977/5,164 and
+schema103. The original dff→three-body proof remains pinned to aab3560 and binds
+all three programs/two helpers to the current generated library. A separate strict
+actual-f35 proof allows precisely those same three changes, retaining all5,330
+other definitions,926 inherited helpers and96 recipes. Joint-land's exact historical
+union similarly remains fixed while its two current bodies/Beau/helpers stay bound.
+Python conflicts are resolved only after verifying that both sides differ solely
+in schema literals; parent policy logic is retained. Final composed gates remain
+pending until actually executed.
