@@ -5800,3 +5800,7 @@ mod fdn_tribal_seven_tests;
 #[path = "engine_zone_effects.rs"]
 mod zone_effects;
 pub use zone_effects::TemporaryControlView;
+
+#[cfg(test)]
+#[path = "engine_fdn_zone_seven_tests.rs"]
+mod fdn_zone_seven_tests;
