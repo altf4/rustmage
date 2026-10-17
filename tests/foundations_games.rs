@@ -58,14 +58,14 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
         deck(
             "Swamp",
             &[
-                "Bloodthirsty Conqueror",
+                "Painful Quandary",
                 "Vengeful Bloodwitch",
                 "Ravenous Amulet",
                 "Duress",
                 "Pilfer",
                 "Feed the Swarm",
                 "Dread Summons",
-                "Massacre Wurm",
+                "Perforating Artist",
                 "Tragic Banshee",
             ],
         ),
@@ -105,6 +105,9 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
     for land in &mut decks[1][..8] {
         *land = Card::from_name("Forest").unwrap();
     }
+    for land in &mut decks[2][..8] {
+        *land = Card::from_name("Mountain").unwrap();
+    }
     for land in &mut decks[3][..8] {
         *land = Card::from_name("Forest").unwrap();
     }
@@ -122,6 +125,8 @@ fn foundations_five_color_full_games_and_owned_search_replay() {
             "Drake Hatcher",
             "Ravenous Amulet",
             "Juggernaut",
+            "Painful Quandary",
+            "Perforating Artist",
         ],
     );
 }
