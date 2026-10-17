@@ -1,0 +1,11 @@
+{
+  "name": "@token/cat_beast_2_2_white",
+  "catalogue_id": 5337,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "20ffb4cf7bcce93b8b92ed140583e6d44718826eda07a881dd21ea184b523d96",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/CatBeastToken.java",
+  "java_sha256": "38a8c277adc2bd56350b414730196ed24a5da3a21c3da6e02249007dd6259dea"
+}
