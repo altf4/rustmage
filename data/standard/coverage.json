@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "81a17914e9703a2f813a55dcfa4bf4b2584bb3c1c046755681f2f5d09e602cdc",
+  "catalogue_version": "b73cd3f85c37f013b7887a958de384d10088b2f17fa1fb8a671043aaca249a0f",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1837,
-  "implemented_total": 1843,
+  "implemented_standard_cards": 1838,
+  "implemented_total": 1844,
   "token_definitions": 93,
   "emblem_definitions": 1,
   "cards": [
@@ -15154,7 +15154,7 @@
     {
       "name": "Living Lectern",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": "permanent_template"
     },
     {

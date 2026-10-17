@@ -55,14 +55,22 @@ impl Game {
         capture: bool,
         attachment: Option<ObjectRef>,
     ) -> Vec<ObjectRef> {
-        let groups: Vec<_> = groups
-            .iter()
-            .copied()
-            .filter(|g| {
-                g.token.role().is_none()
-                    || attachment.is_some_and(|r| self.aura_can_enchant(g.token, controller, r))
-            })
-            .collect();
+        // Ordinary token batches borrow their groups without a new allocation.
+        let groups: std::borrow::Cow<'_, [TokenGroupView]> = if attachment.is_none() {
+            std::borrow::Cow::Borrowed(groups)
+        } else {
+            std::borrow::Cow::Owned(
+                groups
+                    .iter()
+                    .copied()
+                    .filter(|g| {
+                        g.token.role().is_none()
+                            || attachment
+                                .is_some_and(|r| self.aura_can_enchant(g.token, controller, r))
+                    })
+                    .collect(),
+            )
+        };
         let timestamp = if attachment.is_some()
             && groups
                 .iter()
@@ -107,7 +115,7 @@ impl Game {
             .try_reserve(fresh)
             .capacity("object allocation exhausted");
         let mut index = 0;
-        for group in &groups {
+        for group in groups.iter() {
             let token = group.token;
             let tapped = group.tapped || self.opponent_entry_requires_tapped(token, controller);
             for _ in 0..group.amount {

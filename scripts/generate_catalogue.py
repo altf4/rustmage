@@ -395,6 +395,16 @@ ROLE_BODIES = {
 }
 
 
+def role_route(text):
+    """Detection can erase prose; production authentication always uses raw text."""
+    while isinstance(text,str):
+        if re.search(r'\bRole\s+token\b',text,re.IGNORECASE):return True
+        stripped=re.sub(r'\([^()]*\)', '', text)
+        if stripped==text:return False
+        text=stripped
+    return False
+
+
 def role_reminder_text(text):
     """Authenticate complete predefined characteristics before presentation removal."""
     for kind, body in ROLE_BODIES.items():
@@ -404,8 +414,8 @@ def role_reminder_text(text):
         if kind == 'Wicked':
             bodies += [v.replace('this Aura', 'this enchantment') for v in bodies]
         for accepted in bodies:
-            pattern = r'(' + re.escape(kind) + r' Role token attached to [^.]+\.) \(' + re.escape(accepted) + r'\)'
-            text = re.sub(pattern, r'\1', text)
+            pattern = r'(' + re.escape(kind) + r' Role token attached to [^.]+\.)( Activate only as a sorcery\.)? \(' + re.escape(accepted) + r'\)'
+            text = re.sub(pattern, r'\1\2', text)
     return text
 
 
@@ -4298,7 +4308,7 @@ def compile_catalogue(snapshot, target):
                 effect,keywords,abilities=saga
                 activations=[];enters=[0,0,0]
         role_raw = original.get('oracle_text','')
-        if 'Role token' in role_raw:
+        if role_route(role_raw):
             checked_role = role_reminder_text(role_raw)
             checked_role = checked_role.replace("Menace (This creature can't be blocked except by two or more creatures.)", 'Menace')
             if '(' in checked_role or ')' in checked_role: effect='Unsupported'

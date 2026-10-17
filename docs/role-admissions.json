@@ -1,0 +1,757 @@
+{
+  "schema": 1,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "rules": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+  "release_notes": "https://magic.wizards.com/en/news/feature/wilds-of-eldraine-release-notes",
+  "scope": "All snapshot physical cards mentioning Role tokens, complete source-file hashes and resolvable direct imports; shared six Standard predefined Role factories and direct imports. This is an audit inventory, never an admission input, and does not claim every transitive Java dependency was rewritten.",
+  "cards": [
+    {
+      "name": "Asinine Antics",
+      "oracle_id": "0a0a051c-59ed-4286-b842-a34da7ef15d5",
+      "status": "gated_incomplete_body",
+      "faces": [
+        {
+          "name": "Asinine Antics",
+          "mana_cost": "{2}{U}{U}",
+          "type_line": "Sorcery",
+          "oracle_text": "You may cast this spell as though it had flash if you pay {2} more to cast it.\nFor each creature your opponents control, create a Cursed Role token attached to that creature. (If you control another Role on it, put that one into the graveyard. Enchanted creature is 1/1.)"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AsinineAntics.java",
+          "java_sha256": "0cf7aad83ab8aaaa53ebeecc43057278132dc4b8339a5010d21e38e78008bedb"
+        }
+      ]
+    },
+    {
+      "name": "Become Brutes",
+      "oracle_id": "789e034c-7f4a-4fd5-9dd8-48313742126e",
+      "status": "gated_incomplete_body",
+      "faces": [
+        {
+          "name": "Become Brutes",
+          "mana_cost": "{1}{R}",
+          "type_line": "Sorcery",
+          "oracle_text": "One or two target creatures each gain haste until end of turn. For each of those creatures, create a Monster Role token attached to it. (If you control another Role on it, put that one into the graveyard. Enchanted creature gets +1/+1 and has trample.)"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BecomeBrutes.java",
+          "java_sha256": "9065dcb93a5c3cd483c0e4b909cef401b6ad39410133e84968187bd9a2772371"
+        }
+      ]
+    },
+    {
+      "name": "Besotted Knight // Betroth the Beast",
+      "oracle_id": "c7b6d2cd-9105-404b-88f0-a67037fb2120",
+      "status": "implemented",
+      "faces": [
+        {
+          "name": "Besotted Knight",
+          "mana_cost": "{3}{W}",
+          "type_line": "Creature — Human Knight",
+          "oracle_text": "",
+          "power": "3",
+          "toughness": "3"
+        },
+        {
+          "name": "Betroth the Beast",
+          "mana_cost": "{W}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Create a Royal Role token attached to target creature you control. (Enchanted creature gets +1/+1 and has ward {1}.)"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BesottedKnight.java",
+          "java_sha256": "0c406c2316696e82f2d9784db9ed2d495596de5d38013bf6f03a4a4182a2092f"
+        }
+      ]
+    },
+    {
+      "name": "Charmed Clothier",
+      "oracle_id": "ad0e6b12-a6bd-4860-9eac-68b2492d9567",
+      "status": "implemented",
+      "faces": [
+        {
+          "name": "Charmed Clothier",
+          "mana_cost": "{4}{W}",
+          "type_line": "Creature — Faerie Advisor",
+          "oracle_text": "Flying\nWhen this creature enters, create a Royal Role token attached to another target creature you control. (If you control another Role on it, put that one into the graveyard. Enchanted creature gets +1/+1 and has ward {1}.)",
+          "power": "3",
+          "toughness": "3"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CharmedClothier.java",
+          "java_sha256": "3314851f46d1d3e696819b3f5d503603b5de8d5b16a5b9bf91f3914051a22782"
+        }
+      ]
+    },
+    {
+      "name": "Charming Scoundrel",
+      "oracle_id": "9eec304d-ffcb-4287-b877-280ac1e4f496",
+      "status": "implemented",
+      "faces": [
+        {
+          "name": "Charming Scoundrel",
+          "mana_cost": "{1}{R}",
+          "type_line": "Creature — Human Rogue",
+          "oracle_text": "Haste\nWhen this creature enters, choose one —\n• Discard a card, then draw a card.\n• Create a Treasure token.\n• Create a Wicked Role token attached to target creature you control.",
+          "power": "1",
+          "toughness": "1"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CharmingScoundrel.java",
+          "java_sha256": "a368f8993f86210d167c04871a9c4e2e144b8b38ebd2e7c9714926891f719ded"
+        }
+      ]
+    },
+    {
+      "name": "Conceited Witch // Price of Beauty",
+      "oracle_id": "1c751201-24ba-4e5c-bf44-71c3e4693a92",
+      "status": "implemented",
+      "faces": [
+        {
+          "name": "Conceited Witch",
+          "mana_cost": "{2}{B}",
+          "type_line": "Creature — Human Warlock",
+          "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)",
+          "power": "2",
+          "toughness": "3"
+        },
+        {
+          "name": "Price of Beauty",
+          "mana_cost": "{B}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Create a Wicked Role token attached to target creature you control. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/ConceitedWitch.java",
+          "java_sha256": "cb760bc93dd220c70eaa755781c42fde16423174d8108d2d8d712736aa6553ee"
+        }
+      ]
+    },
+    {
+      "name": "Curse of the Werefox",
+      "oracle_id": "64b41b54-ca22-41df-8bd3-dc4f7832fbb7",
+      "status": "gated_incomplete_body",
+      "faces": [
+        {
+          "name": "Curse of the Werefox",
+          "mana_cost": "{2}{G}",
+          "type_line": "Sorcery",
+          "oracle_text": "Create a Monster Role token attached to target creature you control. When you do, that creature fights up to one target creature you don't control. (If you control another Role on it, put that one into the graveyard. Enchanted creature gets +1/+1 and has trample. Creatures that fight each deal damage equal to their power to the other.)"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CurseOfTheWerefox.java",
+          "java_sha256": "a2150bb71c01b5e99c3d7559e469fadd00cfd8bd4e855f16225575c149fa415b"
+        }
+      ]
+    },
+    {
+      "name": "Cursed Courtier",
+      "oracle_id": "17916cf9-1e6c-41bd-96ce-2b050d828838",
+      "status": "gated_incomplete_body",
+      "faces": [
+        {
+          "name": "Cursed Courtier",
+          "mana_cost": "{2}{W}",
+          "type_line": "Creature — Human Noble",
+          "oracle_text": "Lifelink\nWhen this creature enters, create a Cursed Role token attached to it. (Enchanted creature is 1/1.)",
+          "power": "3",
+          "toughness": "3"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CursedCourtier.java",
+          "java_sha256": "38c9de4d7965e74c0dfcc9fb50acad7f8f6c16330ac7a561a4f7ed3751920063"
+        }
+      ]
+    },
+    {
+      "name": "Cut In",
+      "oracle_id": "9b205900-ec39-455e-900b-615ece08a07f",
+      "status": "gated_incomplete_body",
+      "faces": [
+        {
+          "name": "Cut In",
+          "mana_cost": "{3}{R}",
+          "type_line": "Sorcery",
+          "oracle_text": "Cut In deals 4 damage to target creature.\nCreate a Young Hero Role token attached to up to one target creature you control. (If you control another Role on it, put that one into the graveyard. Enchanted creature has \"Whenever this creature attacks, if its toughness is 3 or less, put a +1/+1 counter on it.\")"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CutIn.java",
+          "java_sha256": "44d3b1368c2661bd94c86457a8fbbf8b66e550950eec74c74f612d3775ec8bcf"
+        }
+      ]
+    },
+    {
+      "name": "Diminisher Witch",
+      "oracle_id": "c2283655-f6b8-4399-ba1f-68a7107f9485",
+      "status": "gated_incomplete_body",
+      "faces": [
+        {
+          "name": "Diminisher Witch",
+          "mana_cost": "{2}{U}",
+          "type_line": "Creature — Human Warlock",
+          "oracle_text": "Bargain (You may sacrifice an artifact, enchantment, or token as you cast this spell.)\nWhen this creature enters, if it was bargained, create a Cursed Role token attached to target creature an opponent controls. (If you control another Role on it, put that one into the graveyard. Enchanted creature is 1/1.)",
+          "power": "3",
+          "toughness": "2"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DiminisherWitch.java",
+          "java_sha256": "9d5f523db418063f3b1bdf846b493e83eea17a1ef420e9bdc2a7b162df78ff2d"
+        }
+      ]
+    },
+    {
+      "name": "Embereth Veteran",
+      "oracle_id": "2c232056-9dd6-4a78-be08-3bff19daa88d",
+      "status": "implemented",
+      "faces": [
+        {
+          "name": "Embereth Veteran",
+          "mana_cost": "{R}",
+          "type_line": "Creature — Human Knight",
+          "oracle_text": "{1}, Sacrifice this creature: Create a Young Hero Role token attached to another target creature. (If you control another Role on it, put that one into the graveyard. Enchanted creature has \"Whenever this creature attacks, if its toughness is 3 or less, put a +1/+1 counter on it.\")",
+          "power": "2",
+          "toughness": "1"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/EmberethVeteran.java",
+          "java_sha256": "5b4067c1b754b19678f6d62fd3f49b1c748c7d79123426fd03ac5d15f25eb2b4"
+        }
+      ]
+    },
+    {
+      "name": "Eriette's Whisper",
+      "oracle_id": "27ca3201-a374-4a9d-b0ba-93b391f36844",
+      "status": "gated_incomplete_body",
+      "faces": [
+        {
+          "name": "Eriette's Whisper",
+          "mana_cost": "{3}{B}",
+          "type_line": "Sorcery",
+          "oracle_text": "Target opponent discards two cards. Create a Wicked Role token attached to up to one target creature you control. (If you control another Role on it, put that one into the graveyard. Enchanted creature gets +1/+1. When this token is put into a graveyard, each opponent loses 1 life.)"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/EriettesWhisper.java",
+          "java_sha256": "9e32d848891fa240c627ac90eef1207b5ac22cf4b9c4ab93e1f66f1fbb94f0e4"
+        }
+      ]
+    },
+    {
+      "name": "Faunsbane Troll",
+      "oracle_id": "b707c131-de13-4d4d-839d-b9f47d62f090",
+      "status": "gated_incomplete_body",
+      "faces": [
+        {
+          "name": "Faunsbane Troll",
+          "mana_cost": "{2}{B}{G}",
+          "type_line": "Creature — Troll",
+          "oracle_text": "When this creature enters, create a Monster Role token attached to it. (Enchanted creature gets +1/+1 and has trample.)\n{1}, Sacrifice an Aura attached to this creature: This creature fights target creature you don't control. If that creature would die this turn, exile it instead. Activate only as a sorcery.",
+          "power": "4",
+          "toughness": "4"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FaunsbaneTroll.java",
+          "java_sha256": "b4d3f88c2b6fb0a074205683ca055a17dc83446a5018f9d04c7c8fe5dfedd149"
+        }
+      ]
+    },
+    {
+      "name": "Ferocious Werefox // Guard Change",
+      "oracle_id": "fef67393-9b7b-495d-8b03-865537386d42",
+      "status": "implemented",
+      "faces": [
+        {
+          "name": "Ferocious Werefox",
+          "mana_cost": "{3}{G}",
+          "type_line": "Creature — Elf Fox Warrior",
+          "oracle_text": "Trample",
+          "power": "4",
+          "toughness": "3"
+        },
+        {
+          "name": "Guard Change",
+          "mana_cost": "{1}{G}",
+          "type_line": "Instant — Adventure",
+          "oracle_text": "Create a Monster Role token attached to target creature you control. (Enchanted creature gets +1/+1 and has trample.)"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FerociousWerefox.java",
+          "java_sha256": "7dd81e3c51cd943d715b9a444f72eddfe0961a9e81c130b56b541b8edc53dbdc"
+        }
+      ]
+    },
+    {
+      "name": "Gadwick's First Duel",
+      "oracle_id": "322e3bc1-2dfa-4d5f-848f-a82d9ce02a67",
+      "status": "gated_incomplete_body",
+      "faces": [
+        {
+          "name": "Gadwick's First Duel",
+          "mana_cost": "{1}{U}",
+          "type_line": "Enchantment — Saga",
+          "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Create a Cursed Role token attached to up to one target creature. (If you control another Role on it, put that one into the graveyard. Enchanted creature is 1/1.)\nII — Scry 2.\nIII — When you next cast an instant or sorcery spell with mana value 3 or less this turn, copy that spell. You may choose new targets for the copy."
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GadwicksFirstDuel.java",
+          "java_sha256": "65c20dd4c95da05721d768aba524035bc10cd8bdab87cb0e585d2a3366e42121"
+        }
+      ]
+    },
+    {
+      "name": "Living Lectern",
+      "oracle_id": "061e7fb2-2c04-4845-b60a-0e2512a2dec1",
+      "status": "implemented",
+      "faces": [
+        {
+          "name": "Living Lectern",
+          "mana_cost": "{1}{U}",
+          "type_line": "Artifact Creature — Construct",
+          "oracle_text": "{1}, Sacrifice this creature: Draw a card. Create a Sorcerer Role token attached to up to one other target creature you control. Activate only as a sorcery. (If you control another Role on it, put that one into the graveyard. Enchanted creature gets +1/+1 and has \"Whenever this creature attacks, scry 1.\")",
+          "power": "0",
+          "toughness": "4"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LivingLectern.java",
+          "java_sha256": "50b656de403d5db99cc0c41ec34c13ddb6629ef3f61fd58c2ac7c99b8c2702a3"
+        }
+      ]
+    },
+    {
+      "name": "Lord Skitter's Blessing",
+      "oracle_id": "d5bd40fc-6138-4752-b3ff-b1e5fa269214",
+      "status": "gated_incomplete_body",
+      "faces": [
+        {
+          "name": "Lord Skitter's Blessing",
+          "mana_cost": "{1}{B}",
+          "type_line": "Enchantment",
+          "oracle_text": "When this enchantment enters, create a Wicked Role token attached to target creature you control. (Enchanted creature gets +1/+1. When this token is put into a graveyard, each opponent loses 1 life.)\nAt the beginning of your draw step, if you control an enchanted creature, you lose 1 life and you draw an additional card."
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LordSkittersBlessing.java",
+          "java_sha256": "a28ca516e77a6ba4bd264822a625c72f8863b77574da6b9b4be004cb65c3f178"
+        }
+      ]
+    },
+    {
+      "name": "Merry Bards",
+      "oracle_id": "699fa8e6-84f5-4010-a8fe-7b2e4f280ef9",
+      "status": "gated_incomplete_body",
+      "faces": [
+        {
+          "name": "Merry Bards",
+          "mana_cost": "{2}{R}",
+          "type_line": "Creature — Human Bard",
+          "oracle_text": "When this creature enters, you may pay {1}. When you do, create a Young Hero Role token attached to target creature you control. (If you control another Role on it, put that one into the graveyard. Enchanted creature has \"Whenever this creature attacks, if its toughness is 3 or less, put a +1/+1 counter on it.\")",
+          "power": "3",
+          "toughness": "2"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MerryBards.java",
+          "java_sha256": "9870397419be40ecf5930fa765c5b2214c45b21bc1bad7ec3e639fb092596ae4"
+        }
+      ]
+    },
+    {
+      "name": "Not Dead After All",
+      "oracle_id": "380c367f-73ea-485f-a37b-5af0ba160893",
+      "status": "gated_incomplete_body",
+      "faces": [
+        {
+          "name": "Not Dead After All",
+          "mana_cost": "{B}",
+          "type_line": "Instant",
+          "oracle_text": "Until end of turn, target creature you control gains \"When this creature dies, return it to the battlefield tapped under its owner's control, then create a Wicked Role token attached to it.\" (Enchanted creature gets +1/+1. When this token is put into a graveyard, each opponent loses 1 life.)"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/n/NotDeadAfterAll.java",
+          "java_sha256": "f08e34d905896d4810e491f1e60b4a67f1012aac6b6716e6d0c750108bc24612"
+        }
+      ]
+    },
+    {
+      "name": "Protective Parents",
+      "oracle_id": "d9717522-358b-41ac-9183-8a6b3981f921",
+      "status": "gated_incomplete_body",
+      "faces": [
+        {
+          "name": "Protective Parents",
+          "mana_cost": "{2}{W}",
+          "type_line": "Creature — Human Peasant",
+          "oracle_text": "When this creature dies, create a Young Hero Role token attached to up to one target creature you control. (If you control another Role on it, put that one into the graveyard. Enchanted creature has \"Whenever this creature attacks, if its toughness is 3 or less, put a +1/+1 counter on it.\")",
+          "power": "3",
+          "toughness": "2"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/ProtectiveParents.java",
+          "java_sha256": "7e868a1003544beccab389d31e76333dbcc75797907514b4bc7695850ce72290"
+        }
+      ]
+    },
+    {
+      "name": "Redtooth Genealogist",
+      "oracle_id": "f6cb9c5a-601e-4580-9fab-903e9b00e35e",
+      "status": "implemented",
+      "faces": [
+        {
+          "name": "Redtooth Genealogist",
+          "mana_cost": "{2}{G}",
+          "type_line": "Creature — Elf Advisor",
+          "oracle_text": "When this creature enters, create a Royal Role token attached to another target creature you control. (If you control another Role on it, put that one into the graveyard. Enchanted creature gets +1/+1 and has ward {1}.)",
+          "power": "2",
+          "toughness": "3"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RedtoothGenealogist.java",
+          "java_sha256": "e58a7565b3bd5373828e27e9bd67176669d0912e76add1c4734baab67e564621"
+        }
+      ]
+    },
+    {
+      "name": "Return Triumphant",
+      "oracle_id": "a4814615-ffa2-4692-86bc-3a1b7fc2acc8",
+      "status": "gated_incomplete_body",
+      "faces": [
+        {
+          "name": "Return Triumphant",
+          "mana_cost": "{1}{W}",
+          "type_line": "Sorcery",
+          "oracle_text": "Return target creature card with mana value 3 or less from your graveyard to the battlefield. Create a Young Hero Role token attached to it. (Enchanted creature has \"Whenever this creature attacks, if its toughness is 3 or less, put a +1/+1 counter on it.\" If you put another Role on the creature later, put this one into the graveyard.)"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/ReturnTriumphant.java",
+          "java_sha256": "4f8752bf16ac01bbbdab1a1713ae13c1f21b2a6c0fb0637326c7ad6d660e5e8e"
+        }
+      ]
+    },
+    {
+      "name": "Royal Treatment",
+      "oracle_id": "fd0f8fdc-4065-41f4-b8fb-ecb8f185774d",
+      "status": "implemented",
+      "faces": [
+        {
+          "name": "Royal Treatment",
+          "mana_cost": "{G}",
+          "type_line": "Instant",
+          "oracle_text": "Target creature you control gains hexproof until end of turn. Create a Royal Role token attached to that creature. (If you control another Role on it, put that one into the graveyard. Enchanted creature gets +1/+1 and has ward {1}.)"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RoyalTreatment.java",
+          "java_sha256": "384928c119dd97e08fd53dc3a80824edc0aef4b57c600fec6d9b1c683887604d"
+        }
+      ]
+    },
+    {
+      "name": "Shatter the Oath",
+      "oracle_id": "f545870d-b628-4acb-88c7-37c2d72a5a85",
+      "status": "gated_incomplete_body",
+      "faces": [
+        {
+          "name": "Shatter the Oath",
+          "mana_cost": "{3}{B}{B}",
+          "type_line": "Sorcery",
+          "oracle_text": "Destroy target creature or enchantment. Create a Wicked Role token attached to up to one target creature you control. (If you control another Role on it, put that one into the graveyard. Enchanted creature gets +1/+1. When this token is put into a graveyard, each opponent loses 1 life.)"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/ShatterTheOath.java",
+          "java_sha256": "cfccbab24d4c1bce937bd7c2e9f03e4e3c06fa46539558828460eeb21a0a7039"
+        }
+      ]
+    },
+    {
+      "name": "Spellbook Vendor",
+      "oracle_id": "51dad7d3-f91d-4bd8-aaed-235da42a448b",
+      "status": "gated_incomplete_body",
+      "faces": [
+        {
+          "name": "Spellbook Vendor",
+          "mana_cost": "{1}{W}",
+          "type_line": "Creature — Human Peasant",
+          "oracle_text": "Vigilance\nAt the beginning of combat on your turn, you may pay {1}. When you do, create a Sorcerer Role token attached to target creature you control. (If you control another Role on it, put that one into the graveyard. Enchanted creature gets +1/+1 and has \"Whenever this creature attacks, scry 1.\")",
+          "power": "2",
+          "toughness": "2"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SpellbookVendor.java",
+          "java_sha256": "e3707d7cc96dc0cf9bd5e3bff6edc451dd2d389e956616cb0d3949e681dee031"
+        }
+      ]
+    },
+    {
+      "name": "Spiteful Hexmage",
+      "oracle_id": "d07e0d88-8b7f-423d-97b7-cf7b80d8924c",
+      "status": "implemented",
+      "faces": [
+        {
+          "name": "Spiteful Hexmage",
+          "mana_cost": "{B}",
+          "type_line": "Creature — Human Warlock",
+          "oracle_text": "When this creature enters, create a Cursed Role token attached to target creature you control. (If you control another Role on it, put that one into the graveyard. Enchanted creature is 1/1.)",
+          "power": "3",
+          "toughness": "2"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SpitefulHexmage.java",
+          "java_sha256": "f7dcd5c89606743814334140513c770ac3c7f2d721ac15d463395ebdd210e367"
+        }
+      ]
+    },
+    {
+      "name": "Splashy Spellcaster",
+      "oracle_id": "21486218-70ec-4c60-9844-8f7c80912333",
+      "status": "implemented",
+      "faces": [
+        {
+          "name": "Splashy Spellcaster",
+          "mana_cost": "{3}{U}",
+          "type_line": "Creature — Elemental Wizard",
+          "oracle_text": "Whenever you cast an instant or sorcery spell, create a Sorcerer Role token attached to up to one other target creature you control. (If you control another Role on it, put that one into the graveyard. Enchanted creature gets +1/+1 and has \"Whenever this creature attacks, scry 1.\")",
+          "power": "2",
+          "toughness": "4"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SplashySpellcaster.java",
+          "java_sha256": "09f7066727a72dbd5da79d9ea887660a8c785673e57864d9577f9b5600693169"
+        }
+      ]
+    },
+    {
+      "name": "Syr Armont, the Redeemer",
+      "oracle_id": "53fc09e1-1e5d-4f22-b623-2c5c770183ab",
+      "status": "gated_incomplete_body",
+      "faces": [
+        {
+          "name": "Syr Armont, the Redeemer",
+          "mana_cost": "{3}{G}{W}",
+          "type_line": "Legendary Creature — Human Knight",
+          "oracle_text": "When Syr Armont enters, create a Monster Role token attached to another target creature you control. (If you control another Role on it, put that one into the graveyard. Enchanted creature gets +1/+1 and has trample.)\nEnchanted creatures you control get +1/+1.",
+          "power": "4",
+          "toughness": "4"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SyrArmontTheRedeemer.java",
+          "java_sha256": "d2ccbf1b512741e1e4f03fd57b2c1e19c470e65ec2e7024aa1b0c4b06de8fff5"
+        }
+      ]
+    },
+    {
+      "name": "The Witch's Vanity",
+      "oracle_id": "ad2793f3-a36f-4a09-a38f-eb98ce0a2b79",
+      "status": "gated_incomplete_body",
+      "faces": [
+        {
+          "name": "The Witch's Vanity",
+          "mana_cost": "{1}{B}",
+          "type_line": "Enchantment — Saga",
+          "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Destroy target creature an opponent controls with mana value 2 or less.\nII — Create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\nIII — Create a Wicked Role token attached to target creature you control."
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TheWitchsVanity.java",
+          "java_sha256": "0581a104fc4afb2d379784277db19dde2ab993e3b6af0d3dd87b4367c264c27a"
+        }
+      ]
+    },
+    {
+      "name": "Twisted Fealty",
+      "oracle_id": "a5ae75de-0dff-44bf-9dc6-5895ab3ae731",
+      "status": "gated_incomplete_body",
+      "faces": [
+        {
+          "name": "Twisted Fealty",
+          "mana_cost": "{2}{R}",
+          "type_line": "Sorcery",
+          "oracle_text": "Gain control of target creature until end of turn. Untap that creature. It gains haste until end of turn.\nCreate a Wicked Role token attached to up to one target creature. (If you control another Role on it, put that one into the graveyard. Enchanted creature gets +1/+1. When this token is put into a graveyard, each opponent loses 1 life.)"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TwistedFealty.java",
+          "java_sha256": "151c3f57ce15a0c3149ad92766fb51359479bcc3ac7e890f6e49ded17c2a26e0"
+        }
+      ]
+    },
+    {
+      "name": "Twisted Sewer-Witch",
+      "oracle_id": "99c9920a-f84b-4626-9fe5-d94cc62cd277",
+      "status": "gated_incomplete_body",
+      "faces": [
+        {
+          "name": "Twisted Sewer-Witch",
+          "mana_cost": "{3}{B}{B}",
+          "type_line": "Creature — Human Warlock",
+          "oracle_text": "When this creature enters, create a 1/1 black Rat creature token with \"This creature can't block.\" Then for each Rat you control, create a Wicked Role token attached to that Rat. (If you control another Role on it, put that one into the graveyard. Enchanted creature gets +1/+1. When this token is put into a graveyard, each opponent loses 1 life.)",
+          "power": "3",
+          "toughness": "4"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TwistedSewerWitch.java",
+          "java_sha256": "fbe4021fc6d6e1c5bccb8c500cdf1a70658f36b668290e500db07cc0343bda32"
+        }
+      ]
+    },
+    {
+      "name": "Unassuming Sage",
+      "oracle_id": "1cf4e16b-2273-41c7-9bcd-0cdc78e12198",
+      "status": "gated_incomplete_body",
+      "faces": [
+        {
+          "name": "Unassuming Sage",
+          "mana_cost": "{1}{W}",
+          "type_line": "Creature — Human Peasant Wizard",
+          "oracle_text": "When this creature enters, you may pay {2}. If you do, create a Sorcerer Role token attached to it. (Enchanted creature gets +1/+1 and has \"Whenever this creature attacks, scry 1.\")",
+          "power": "2",
+          "toughness": "2"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/u/UnassumingSage.java",
+          "java_sha256": "d94e1920b447179ca3e35dd6fe9c77ca8947b6d02630273f61d1b77fe21d249f"
+        }
+      ]
+    },
+    {
+      "name": "Vantress Transmuter // Croaking Curse",
+      "oracle_id": "89ae3475-9063-4700-a7bd-47d5dcd43a3b",
+      "status": "implemented",
+      "faces": [
+        {
+          "name": "Vantress Transmuter",
+          "mana_cost": "{3}{U}",
+          "type_line": "Creature — Human Wizard",
+          "oracle_text": "",
+          "power": "3",
+          "toughness": "4"
+        },
+        {
+          "name": "Croaking Curse",
+          "mana_cost": "{1}{U}",
+          "type_line": "Sorcery — Adventure",
+          "oracle_text": "Tap target creature. Create a Cursed Role token attached to it. (Enchanted creature is 1/1.)"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VantressTransmuter.java",
+          "java_sha256": "0dcefad8542436c67f6b10608fc78923c836a5e33f868ee44ba01d3f565f21c0"
+        }
+      ]
+    },
+    {
+      "name": "Witch's Mark",
+      "oracle_id": "00807825-88e5-4b88-8527-a49f553a91be",
+      "status": "gated_incomplete_body",
+      "faces": [
+        {
+          "name": "Witch's Mark",
+          "mana_cost": "{1}{R}",
+          "type_line": "Sorcery",
+          "oracle_text": "You may discard a card. If you do, draw two cards.\nCreate a Wicked Role token attached to up to one target creature you control. (If you control another Role on it, put that one into the graveyard. Enchanted creature gets +1/+1. When this token is put into a graveyard, each opponent loses 1 life.)"
+        }
+      ],
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WitchsMark.java",
+          "java_sha256": "23b2f0d7caee8765f224e26663656df991c3e0fa8e16e9a281cc008e7397712f"
+        }
+      ]
+    }
+  ],
+  "shared_sources": [
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/CursedRoleToken.java",
+      "java_sha256": "a02cb2b2e1acef2e2ecbdcdd60b316b34c863db9a6c2bd62a720b9333a016b60"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/MonsterRoleToken.java",
+      "java_sha256": "67671911409c2865887315ecffbbe4018ad96147a0116ccfb2aff786773ffdd8"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/RoyalRoleToken.java",
+      "java_sha256": "8779b4cf1b5485c5d14726215d91c3d73e24bb7dd0ffbcbe0e8866f6a555b5fc"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/SorcererRoleToken.java",
+      "java_sha256": "5a85faa436c027f40d6efe841502a2f65c1667d246ae3af83e8955fc62ba7b35"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/WickedRoleToken.java",
+      "java_sha256": "0e4e26d1d998d36c57f3780153647f6fdabf50c1fa5b3e30ebbe5df5439a8883"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/YoungHeroRoleToken.java",
+      "java_sha256": "52b61f8b2cd0270cc1f45a672871f89eaa80f3b1b56933f6570f6e1daa3fdd09"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/RoleType.java",
+      "java_sha256": "dbf5a947685f6d81c10d8f4245efd85bd2ff637851682abf5a361f5b84744d1d"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateRoleAttachedSourceEffect.java",
+      "java_sha256": "d02f77031cae94148cc31a006a79605f0c87a485546d973c17b463c1bed8fa55"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateRoleAttachedTargetEffect.java",
+      "java_sha256": "2a528a7a2d1e4a1c369adcc6b28b1761c279b3dfbfd922df38b53b1ac090adb3"
+    }
+  ]
+}

@@ -5295,3 +5295,7 @@ mod control_tests;
 #[cfg(test)]
 #[path = "engine_adventure_land_targets_tests.rs"]
 mod adventure_land_targets_tests;
+
+#[cfg(test)]
+#[path = "engine_role_tests.rs"]
+mod role_tests;
