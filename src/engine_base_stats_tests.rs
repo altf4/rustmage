@@ -517,8 +517,7 @@ fn primitive_axes_cda_overflow_boundary_and_sparse_owned_heap_are_exact() {
         let body = named(&mut g, p, "Burrowguard Mentor", Zone::Battlefield);
         assert_eq!((g.stats(body).power, g.stats(body).toughness), (1, 1));
         // Isolate the setter primitive; the complete printed callers are paid above.
-        let mut item = g.cast_item(p, body, [0; 6]);
-        item.object = g.object_ref(body);
+        let item = g.activation_item(p, body, 0);
         let bytes = g.state_bytes();
         let before = g.snapshot();
         let mut branch = {
@@ -558,8 +557,7 @@ fn primitive_axes_cda_overflow_boundary_and_sparse_owned_heap_are_exact() {
         assert_eq!(g.snapshot(), saved);
         // Layer 7b precedes checked additive arithmetic: an overwritten printed
         // power must not cause an intermediate overflow before the legal result.
-        let mut item = g.cast_item(p, body, [0; 6]);
-        item.object = g.object_ref(body);
+        let item = g.activation_item(p, body, 0);
         g.state.objects[body as usize].growth.power = i128::MAX;
         g.set_base_stats(&item, Subject::Source, Some(-1), None);
         assert_eq!(g.stats(body).power, i128::MAX - 1);
