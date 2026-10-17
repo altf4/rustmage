@@ -61,7 +61,7 @@ class AdventureMilledSelectionTests(unittest.TestCase):
      if k=='FinishMilledSelection':return 1500
      if k=='ChooseAuraAttachment':return 2800
      if k=='PlayLand':return 1800-20*sum(v['owner']==actor and v['zone']=='Battlefield' and v['card']==n for v in objects.values())
-     if k in ['TapMana','ActivateMana','AnnounceMana']:return 2100 if o['decision']in ['pay_costs','resolution_mana'] and n in BASICS else -1000
+     if k in ['TapMana','ActivateMana','AnnounceMana']:return 2100 if o['decision']in ['pay_costs','resolution_mana'] else -1000
      if k in ['PayCosts','PutTrigger','FinishTargets','FinishSearch','FinishAttackers','FinishBlockers','Keep','ChooseSpellCost']:return 2400
      if k in ['Discard','Bottom']:
       if actor==p and stage!='finish' and n==name:return -1000
