@@ -148,12 +148,10 @@ fn score(o: &Observation, a: &Action, i: usize, s: &[Progress; 2]) -> i32 {
                         -1000
                     }
                 }
-                "Bear Cub" | "Three Tree Mascot" | "Chrome Companion" | "Jibbirik Omnivore" => {
-                    if friends < 4 || all_done {
-                        1600
-                    } else {
-                        -1000
-                    }
+                "Bear Cub" | "Three Tree Mascot" | "Chrome Companion" | "Jibbirik Omnivore"
+                    if friends < 4 || all_done =>
+                {
+                    1600
                 }
                 _ => -1000,
             }
