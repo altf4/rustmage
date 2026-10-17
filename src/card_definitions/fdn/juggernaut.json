@@ -3,7 +3,7 @@
   "catalogue_id": 2295,
   "oracle_id": "4ac9116f-36bc-4d71-b696-d6ee064e1d58",
   "facts_sha256": "57e10866d0761845c1024a89d9779f217ad6870e24db551128309f4be46b62f1",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e6bb9dae4d7a20f27ecffaa74934f40f489db30d6b3eccd1484a090e6d656dcd"
@@ -33,8 +33,5 @@
       "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByCreaturesSourceEffect.java",
       "sha256": "db532584552c032f8fed7fb9a2cb025e45f58c4710c0d3bb1406f6aab7a338f5"
     }
-  ],
-  "remaining_obligations": [
-    "Full paid card lifecycle, combined attack/evasion rules acceptance and independent consumer reviews remain pending."
   ]
 }
