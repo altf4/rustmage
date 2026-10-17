@@ -1,0 +1,96 @@
+{
+  "baseline": "3899858e837b4b0ae4eb3f552a39d4d437609a3f",
+  "baseline_fingerprint": "6062fce44b1f7673e714bb125687499d5649aeb8d9f62088fa38ea3146f51566",
+  "baseline_definitions": 5311,
+  "baseline_standard_supported": 1825,
+  "gated": 3339,
+  "normal_gated": 3050,
+  "ranked_families": [
+    {
+      "family": "own graveyard recovery",
+      "gated_text_matches": 136,
+      "shorter_than_250_chars": 92,
+      "prototype_whole_card_admissions": 19
+    },
+    {
+      "family": "negative-kind battlefield targets",
+      "gated_text_matches": 85,
+      "shorter_than_250_chars": 48,
+      "blocker": "Many need unsupported negated type/subtype predicates; do not force-fit existing positive kinds."
+    },
+    {
+      "family": "Mercenary token recipes",
+      "gated_text_matches": 14,
+      "shorter_than_250_chars": 6,
+      "blocker": "Several have independent copy/crime/spree/once-per-turn/mana dependencies; smaller coherent immediate yield."
+    }
+  ],
+  "inventory_method": "Count every gated snapshot identity by layout, rank lexical families as investigation leads, then require whole-body compilation plus semantic/runtime probes. Text-match counts are not admission promises.",
+  "gated_by_layout": {
+    "normal": 3050,
+    "transform": 77,
+    "prepare": 57,
+    "adventure": 48,
+    "saga": 40,
+    "split": 28,
+    "class": 14,
+    "case": 12,
+    "modal_dfc": 10,
+    "meld": 3
+  },
+  "prototype_candidates": [
+    "Archenemy's Charm",
+    "Auroral Procession",
+    "Barkform Harvester",
+    "Coati Scavenger",
+    "Dundoolin Weaver",
+    "Elvish Regrower",
+    "Fateshaper Aspirant",
+    "Fight On!",
+    "Hazel's Nocturne",
+    "Macabre Waltz",
+    "Morcant's Loyalist",
+    "Oltec Archaeologists",
+    "Pull from the Grave",
+    "Restore with Empathy",
+    "Rydia's Return",
+    "Tomb Trawler",
+    "Tombstone, Career Criminal",
+    "True Ancestry",
+    "White Widow, Free Agent"
+  ],
+  "actual_admissions": [
+    "Archenemy's Charm",
+    "Auroral Procession",
+    "Barkform Harvester",
+    "Coati Scavenger",
+    "Dundoolin Weaver",
+    "Elvish Regrower",
+    "Fateshaper Aspirant",
+    "Fight On!",
+    "Hazel's Nocturne",
+    "Macabre Waltz",
+    "Oltec Archaeologists",
+    "Pull from the Grave",
+    "Restore with Empathy",
+    "Rydia's Return",
+    "Tomb Trawler",
+    "Tombstone, Career Criminal",
+    "True Ancestry",
+    "White Widow, Free Agent"
+  ],
+  "actual_lost_admissions": [],
+  "gated_dependencies": {
+    "Morcant's Loyalist": "issue287: exact post-death source binding for another-target exclusion"
+  },
+  "composed_main": "bece141f80a5efa5b5bea1798257d471db0c3d8e",
+  "composed_main_runtime_equivalent_to_baseline": false,
+  "historical_composed_main": "0977111f57734f6e4e22bf6c3c68a88358d29da9",
+  "historical_composed_main_runtime_equivalent_to_baseline": true,
+  "composed_parent_definitions": 5318,
+  "composed_parent_supported": 1832,
+  "composed_supported": 1850,
+  "composed_catalogue_fingerprint": "df39fdccc7a5d94c9778e482871b82dcc587619e389278c4835b98e81ce002ed",
+  "runtime_source": "024d25830d084bef99c2eeddc0a1b61a84295968",
+  "additional_regression_source": "8ad6ea2012b20aa7b312c6432bfb062bba93e35c"
+}

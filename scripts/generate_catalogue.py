@@ -2061,11 +2061,106 @@ def target_subject_conditional(text):
     return spec,[*program,subject_guard('Targets',len(body),**kwargs),*body]
 
 
+def recovery_target_program(text):
+    """Exact own-graveyard targets; generated keys encode semantics, never identity."""
+    match = re.fullmatch(r'(return|put) (another target|target|up to one target|up to two target|one or two target|two target) (?:(.*?) )?cards? from your graveyard (to your hand|on (?:the )?(top|bottom) of your library)\.', text)
+    if match is None:
+        return None
+    action, cardinality, noun, destination, where = match.groups()
+    # Death-trigger source references currently retain the former incarnation.
+    # 'Another' in a graveyard needs a validated physical-source exclusion.
+    if cardinality == 'another target':
+        return None
+    if (action == 'return') != (where is None):
+        return None
+    noun = noun or ''
+    minimum, maximum = 0, 'u32::MAX'
+    if bound := re.fullmatch(r'(.+) with mana value ([0-9]+) or (less|greater)', noun):
+        noun = bound[1]
+        number = int(bound[2])
+        if number > 4294967295:
+            return None
+        if bound[3] == 'less': maximum = number
+        else: minimum = number
+    kinds = {'': 0, 'creature': 1, 'land': 2, 'artifact': 16,
+             'enchantment': 32, 'instant or sorcery': 12,
+             'artifact or enchantment': 48, 'artifact and/or enchantment': 48,
+             'creature or planeswalker': 65, 'creature and/or planeswalker': 65}.get(noun)
+    predicate, nonland = None, False
+    if noun in ('permanent', 'nonland permanent'):
+        kinds, predicate, nonland = 0, 'Permanent', noun.startswith('nonland')
+    elif noun == 'legendary':
+        kinds, predicate = 0, 'Legendary'
+    elif noun in CREATURE_TYPE_NAMES:
+        kinds, predicate = 0, 'Subtype(' + json.dumps(noun) + ')'
+    if kinds is None:
+        return None
+    expression = (f'TargetRule::Object {{ zone: TargetZone::Graveyard, kinds: {kinds}, relation: 0, '
+                  f'other: {str(cardinality.startswith("another")).lower()}, nonland: {str(nonland).lower()}, '
+                  f'tapped: false, min_mana: {minimum}, max_mana: {maximum} }}')
+    if predicate:
+        expression = 'TargetRule::Filtered { base: &' + expression + ', predicate: &TargetPredicate::' + predicate + ' }'
+    key = 'Recovery' + hashlib.sha256(expression.encode()).hexdigest()
+    TARGET_RULES[key] = expression
+    bounds = {'up to one target': (0, 1), 'up to two target': (0, 2),
+              'one or two target': (1, 2), 'two target': (2, 2)}.get(cardinality)
+    targets = (key, *bounds) if bounds else key
+    return targets, ['ReturnToHand' if where is None else 'TopLibrary' if where == 'top' else 'BottomLibrary']
+
+
+def recovery_route(text):
+    """Detect even nested/infix attempted recovery; erasure never authenticates it."""
+    if not isinstance(text, str): return False
+    while True:
+        # Detection only: erasing an infix parenthesis can leave extra spaces,
+        # while whole-body parsers normalize those spaces before recognizing it.
+        # The strict validator below still receives the untouched raw body.
+        if re.search(r'from\s+your\s+graveyard\s+(?:to\s+your\s+hand|on\s+(?:the\s+)?(?:top|bottom)\s+of\s+your\s+library)', text, re.IGNORECASE):
+            return True
+        stripped = re.sub(r'\([^()]*\)', '', text)
+        if stripped == text: return False
+        text = stripped
+
+
+def recovery_reminders_valid(card):
+    raw = card.get('oracle_text', '')
+    if not recovery_route(raw) or not any(c in raw for c in '()'):
+        return True
+    # Each pair is trailing prose of its actual production. No nested, detached,
+    # infix, duplicate or unrelated reminder can disappear into generic parsers.
+    for line in raw.splitlines():
+        if not any(c in line for c in '()'): continue
+        match = re.fullmatch(r'([^()]+) \(([^()]+)\)', line)
+        if match is None: return False
+        body, reminder = match.groups()
+        intrinsic = dict(card, oracle_text=line)
+        if creature_template(dict(intrinsic, oracle_text=body)) is not None:
+            if intrinsic_reminders_valid(intrinsic): continue
+        if body == 'Prowess' and reminder == 'Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.': continue
+        if body.startswith('Kicker ') and extract_kicker(dict(card, oracle_text=line))[1] is not None: continue
+        if body == 'Bargain' and extract_bargain(dict(card, oracle_text=line))[1]: continue
+        if (re.fullmatch(r'When this creature enters, you may forage\. When you do, return target permanent card from your graveyard to your hand\.', body)
+                and reminder == 'To forage, exile three cards from your graveyard or sacrifice a Food.'): continue
+        if (re.fullmatch(r'(?:• )?Put (?:a|one|two|three|four|five|six) \+1/\+1 counters? on target creature\. It gains (?:[a-z -]+ and )?indestructible until end of turn\.', body)
+                and reminder == 'Damage and effects that say "destroy" don\'t destroy it.'): continue
+        if match := re.fullmatch(r'(?:• )?Scry ([1-6])\.', body):
+            count = int(match[1])
+            words = {1:'one', 2:'two', 3:'three', 4:'four', 5:'five', 6:'six'}
+            expected = ('Look at the top card of your library. You may put it on the bottom.' if count == 1 else
+                        f'Look at the top {words[count]} cards of your library, then put any number of them on the bottom and the rest on top in any order.')
+            if reminder == expected: continue
+        if body == 'Create a Clue token.' and reminder == 'It\'s an artifact with "{2}, Sacrifice this token: Draw a card."': continue
+        return False
+    return True
+
+
 def targeted_program(text):
     """Complete target occurrences with independent predicates and effect focus."""
     if not isinstance(text, str) or not text.endswith('.'):
         return None
     text = strip_rule_label(text)
+    if match := re.fullmatch(r'(Return (?:up to (?:one|two) |one or two |two |)target [^.]+ cards? from your graveyard to your hand), then (discard (?:a card|two cards|three cards))\.', text):
+        text = match[1] + '. ' + match[2][0].upper() + match[2][1:] + '.'
     if text.casefold()=='untap target attacking creature.':return 'CreatureAttacking',['Untap']
     text = normalize_duration(text[0].lower() + text[1:])
     if 'another target attacking creature you control' in text:
@@ -2306,6 +2401,8 @@ def targeted_program(text):
         return rule, [grow_instruction('Targets', int(m[2]), int(m[3]))]
     if m:=re.fullmatch(r'up to two target creatures each get ([+-][0-9]+)/([+-][0-9]+) until end of turn\.',text):
         if max(abs(int(m[1])),abs(int(m[2])))<=32767:return ('Creature',0,2),[grow_instruction('Targets',int(m[1]),int(m[2]))]
+    if recovery := recovery_target_program(text):
+        return recovery
     # A targeted clause followed by wholly non-targeted instructions is supported.
     if '. ' in text:
         first, rest = text.split('. ', 1)
@@ -2328,7 +2425,7 @@ def targeted_program(text):
             if isinstance(result[0], list): return None
             rule = result[0][0] if isinstance(result[0], tuple) else result[0]
             maximum = result[0][2] if isinstance(result[0], tuple) else 1
-            if maximum == 1 and rule not in ('None', 'Player', 'Opponent', 'Spell', 'CreatureGrave', 'CreatureGraveYou'): tail = ['Untap']
+            if maximum == 1 and not rule.startswith('Recovery') and rule not in ('None', 'Player', 'Opponent', 'Spell', 'CreatureGrave', 'CreatureGraveYou'): tail = ['Untap']
         if result and tail:
             spec, program = result
             return spec, program + tail
@@ -4291,6 +4388,8 @@ def compile_catalogue(snapshot, target):
             activations = [*activations, *cycling]
             if len(activations) > 64: effect = 'Unsupported'; activations = []
         # A later generic selector cannot revive rejected intrinsic reminder text.
+        if not recovery_reminders_valid(original):
+            effect = 'Unsupported'
         if not intrinsic_reminders_valid(original):
             effect = 'Unsupported'
         # Rejected timing syntax/source shapes must not be revived by legacy selectors.
