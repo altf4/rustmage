@@ -1590,7 +1590,7 @@ impl Game {
                     }
                 }
                 Instruction::TapAttached => {
-                    if let Some(id) = self.attached_subject(&item) {
+                    if let Some(id) = self.attached_permanent(&item) {
                         self.tap_objects(&[id]);
                     }
                 }
@@ -1863,9 +1863,7 @@ impl Game {
                     if matches!(instruction, Instruction::TapCreatures(_)) {
                         self.tap_objects(&ids);
                     } else {
-                        for id in ids {
-                            self.state.objects[id as usize].untap();
-                        }
+                        self.untap_objects(&ids, untap_rules::UntapCause::Effect);
                     }
                 }
                 Instruction::UntapSource | Instruction::TapSource => {
@@ -1873,7 +1871,7 @@ impl Game {
                         if instruction == Instruction::TapSource {
                             self.tap_objects(&[item.card]);
                         } else {
-                            self.state.objects[item.card as usize].untap();
+                            self.untap_objects(&[item.card], untap_rules::UntapCause::Effect);
                         }
                     }
                 }
@@ -2118,6 +2116,16 @@ impl Game {
                         .collect();
                     self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
+                Instruction::RemoveAllCountersFrom(subject) => {
+                    let ids = if subject == Subject::Attached {
+                        self.attached_permanent(&item).into_iter().collect()
+                    } else {
+                        self.keyword_subjects(&item, subject)
+                    };
+                    for id in ids {
+                        self.state.objects[id as usize].counters = Counters::default();
+                    }
+                }
                 Instruction::RemoveAllCounters => {
                     for bound in &item.targets {
                         if self.same_target_object(*bound)
@@ -2186,13 +2194,16 @@ impl Game {
                 }
                 Instruction::Tap | Instruction::Untap => {
                     if instruction == Instruction::Untap {
-                        for bound in &item.targets {
-                            if self.same_target_object(*bound)
-                                && let Target::Card(id) = bound.target
-                            {
-                                self.state.objects[id as usize].untap();
-                            }
-                        }
+                        let ids: Vec<_> = item
+                            .targets
+                            .iter()
+                            .filter(|bound| self.same_target_object(**bound))
+                            .filter_map(|bound| match bound.target {
+                                Target::Card(id) => Some(id),
+                                _ => None,
+                            })
+                            .collect();
+                        self.untap_objects(&ids, untap_rules::UntapCause::Effect);
                     } else if let [bound] = item.targets.as_slice() {
                         if self.same_target_object(*bound)
                             && let Target::Card(id) = bound.target

@@ -28,6 +28,7 @@ pub(crate) enum StaticAbilityFragment {
     /// Predefined Cursed Role sets both axes in layer 7b.
     PredefinedRoleBase,
     RemoveAttachedAbilities,
+    AttachedUntap(UntapRestriction),
     AttachedSubtype(&'static str),
     AttachmentStats(Stats),
     AttachmentKeywords(Keywords),
@@ -55,4 +56,10 @@ pub(crate) enum StaticAbilityFragment {
     EntryTriggerSuppression(u16, u16),
     OpponentEntryTapped(u16, u16),
     StaticCastRestriction(u16, u8),
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum UntapRestriction {
+    All,
+    ControllerStep,
 }

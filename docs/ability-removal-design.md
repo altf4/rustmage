@@ -214,3 +214,12 @@ strategy. The shared layer6 machinery is retained. The four complete Aura bodies
 will be authored directly, using typed static-effect identities and programs after
 remaining runtime providers, untap restrictions and all-counter removal are wired.
 No new card admission or final acceptance is claimed at this transition checkpoint.
+
+Runtime untapping now distinguishes effect-driven attempts from the current
+controller's untap step. A prohibition is checked before removing Stun counters;
+restricted multi-object untaps freeze eligibility before changes, while the common
+unrestricted turn path keeps its allocation-free loop. TapAttached can use any
+exact attached permanent, and a Subject-based full-counter reset supports River.
+Thirty-six existing step-related native tests pass on frozen938 inputs (18.014s);
+terminal cleanup reclaims76,873,728 allocated bytes with its SO unchanged. Actual
+prohibited-untap cases await the directly authored complete Aura definitions.

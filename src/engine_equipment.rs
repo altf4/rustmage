@@ -14,17 +14,19 @@ impl Game {
             })
     }
 
-    pub(super) fn attached_subject(&self, item: &SpellView) -> Option<CardId> {
+    pub(super) fn attached_permanent(&self, item: &SpellView) -> Option<CardId> {
         let target = if self.on_battlefield(item.card) && self.object_ref(item.card) == item.object
         {
             self.state.objects[item.card as usize].attached_to
         } else {
             item.source_attachment
         }?;
-        (self.on_battlefield(target.card)
-            && self.object_ref(target.card) == target
-            && self.is_creature(target.card))
-        .then_some(target.card)
+        (self.on_battlefield(target.card) && self.object_ref(target.card) == target)
+            .then_some(target.card)
+    }
+    pub(super) fn attached_subject(&self, item: &SpellView) -> Option<CardId> {
+        self.attached_permanent(item)
+            .filter(|&id| self.is_creature(id))
     }
 
     pub(super) fn attachment_bonus(&self, id: CardId) -> (Stats, Keywords) {

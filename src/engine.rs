@@ -128,6 +128,8 @@ mod sba;
 pub use roles::{RoleGroupView, RoleTimestampView};
 #[path = "engine_ability_evaluation.rs"]
 mod ability_evaluation;
+#[path = "engine_untap_rules.rs"]
+mod untap_rules;
 pub use ability_evaluation::{AbilityAvailabilityView, GrantedAbilityView};
 #[path = "engine_ability_order.rs"]
 mod ability_order;
@@ -4122,10 +4124,10 @@ impl Game {
             obj.damaged_this_turn = false;
             obj.dealt_damage_this_turn = false;
             if obj.controller == self.state.active && obj.zone == Zone::Battlefield {
-                obj.untap();
                 obj.summoning_sick = false;
             }
         }
+        self.untap_active_player();
         self.begin_step(Step::Upkeep);
         self.give_priority();
     }

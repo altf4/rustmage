@@ -1,6 +1,8 @@
 #[path = "ability_layers.rs"]
 mod ability_layers;
-pub(crate) use ability_layers::{AbilityLayer, StaticAbilityFragment, StaticAbilityGroup};
+pub(crate) use ability_layers::{
+    AbilityLayer, StaticAbilityFragment, StaticAbilityGroup, UntapRestriction,
+};
 
 use crate::capacity::CapacityExt;
 use crate::engine::GrantedSubtypes;
@@ -714,6 +716,7 @@ pub(crate) enum Instruction {
     },
     DoubleCounters,
     RemoveAllCounters,
+    RemoveAllCountersFrom(Subject),
     SnapshotDoubleCreatures(CreatureFilter),
     PutCounters {
         subject: Subject,
