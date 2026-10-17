@@ -74,7 +74,7 @@ class AdventureMilledSelectionTests(unittest.TestCase):
     if a['kind']=='AnnounceAdventure':source=a['card'];before_library=o['players'][pi]['library_count'];stage='wait_inset'
     if a['kind']=='AnnounceExile':stage='wait_normal'
     if a['kind']=='SelectMilled':choices+=1;recipients.append(a['object'])
-    if a['kind']=='Attack' and (a['card']==source or i==5 and attached):attacked=True
+    if a['kind']=='Attack' and actor==p and (a['card']==source or i==5 and attached and objects[source]['attached_to']['card']==a['card']):attacked=True
     before=[g.observe(v)for v in ['P0','P1']]
     with self.assertRaisesRegex(EngineError,'WrongActor'):g.act(dict(o,actor='P1'if actor=='P0'else'P0'),a)
     self.assertEqual(before,[g.observe(v)for v in ['P0','P1']]);self.replay(g,o,j);frames+=1
