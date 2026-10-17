@@ -16,18 +16,9 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Fair observations | Hidden-hand/library projection and privacy tests; catalogue fingerprint | New private choices/zones; belief sampling and neural encoders |
 | Reviewed delivery | Saga PR #259 has two independent nonauthor approvals of the complete authored batch and durable scoped evidence in the [Saga review record](review-pr-259.md). Crew PR #253 and earlier milestones retain their own feature/review records. | Continue issue-managed, reviewed PRs through complete acceptance |
 
-The current composition adds nineteen complete [Adventure pairs](adventure.md)
-and ten complete [attachment/Ward bodies](attachment-ward.md) to merged Saga
-main. Coverage is 1,801/5,164, with 3,363 identities still gated, 86 token factories,
-one emblem and observation schema 78. All 1,659 combined native tests and all-target
-Clippy pass. All three same-source Standard100 workloads finish naturally with
-complete body vectors, 496,285 owned replay frames and 992,570 denials. The
-complete 351 compiler/data suite passes in 476.874 seconds; all 233 unique
-fresh public methods pass in 712.402 seconds. The
-[composition record](review-pr-258.md) tracks exact source/library identities,
-canonical preservation, meaningful cross-mechanic cases and current gate status.
+The current composition adds nine complete [Omen pairs](omens.md) to reviewed Adventure/Saga/attachment-Ward main. Coverage is1,810/5,164, with3,354 gated,87token recipes, one emblem and observation schema79. All1,668 native tests and all-target Clippy pass. All356 unique compiler methods pass863.099s; all236 unique fresh public methods pass1197.240s. Four same-source Standard100 workloads finish naturally with complete body vectors,585,235 parent-closed owned frames and1,170,470 denials. Exact source/library identities, preservation, provenance and independent review status are in the [Omen composition record](review-pr-263.md).
 
-The other 56 true Adventure parents, thirteen Omen parents and 54 Saga parents
+The other 56 true Adventure parents, four Omen parents and54 Saga parents
 remain part of the full goal, alongside wider Ward/Role/disguise/cloak/control
 and other required semantics. Full rules enforcement across Standard, efficient
 training interfaces and full-deck performance remain incomplete.
