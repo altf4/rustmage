@@ -196,6 +196,7 @@ impl Game {
         a.additional_paid = true;
         match spec.kind {
             EffectChoiceKind::HandCreature
+            | EffectChoiceKind::HandLand { .. }
             | EffectChoiceKind::CollectEvidence(_)
             | EffectChoiceKind::Forage
             | EffectChoiceKind::ForageOrBlack => unreachable!(),

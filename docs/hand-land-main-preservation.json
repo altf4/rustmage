@@ -1,0 +1,24 @@
+{
+  "prior_definitions": 5332,
+  "current_definitions": 5332,
+  "changed_definitions": [
+    "Embrace the Paradox#0",
+    "H.E.R.B.I.E. Scout Unit#0",
+    "Insidious Fungus#0",
+    "Lessons from Life#0",
+    "Nicanzil, Current Conductor#0"
+  ],
+  "added_definitions": [],
+  "preserved_definitions": 5327,
+  "prior_helpers": 911,
+  "new_helpers": [],
+  "prior_colors": 5332,
+  "inline_flag_tables": 3,
+  "token_recipes": 95,
+  "emblem_recipes": 1,
+  "prior_aliases": 5438,
+  "result": "PASS",
+  "parent": "19e4602b436b7aa8c9708f28f87fe288985c9377",
+  "source": "71d7c3481705e755440411c9db32fe7c3a5d65b2",
+  "all_five_original_programs_identical": true
+}

@@ -39,7 +39,10 @@ class BaseStatTests(unittest.TestCase):
    for suffix in ['\nYou win the game.','\n(Draw seven cards.)']:self.assertFalse(self.compile(dict(c,oracle_text=c['oracle_text']+suffix))[1],c['name'])
    for layout in ['transform','modal_dfc','split']:self.assertFalse(self.compile(dict(c,layout=layout))[1],(c['name'],layout))
   for c in self.all:
-   if c['name'] in ['Vincent\'s Limit Break','Eaten by Piranhas','Witness Protection','Atomic Microsizer','Archon of the Wild Rose','Unable to Scream','Aettir and Priwen']:self.assertFalse(self.compile(c)[1],c['name'])
+   if c['name'] in ['Vincent\'s Limit Break','Eaten by Piranhas','Witness Protection','Archon of the Wild Rose','Unable to Scream','Aettir and Priwen']:self.assertFalse(self.compile(c)[1],c['name'])
+   if c['name']=='Atomic Microsizer':
+    self.assertTrue(self.compile(c)[1])
+    self.assertFalse(self.compile(dict(c,oracle_text=c['oracle_text']+'\nDiscover 4.'))[1])
   card=dict(self.cards['Multiply by Zero'])
   for value in [str(2**127),str(-(2**127)-1)]:self.assertFalse(self.compile(dict(card,oracle_text='Target creature has base power '+value+' until end of turn.'))[1])
  def test_historical_ten_body_preservation_and_current_programs(self):

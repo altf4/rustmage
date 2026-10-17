@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "515597b2bc440a31283a078a0fa3a0e94dd57107d45e48d1b562d72aa9c35760",
+  "catalogue_version": "ec7ab5b89bfa6b576492517b789af763ecd300cd0a86e6f9871f029bc5b3c85b",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1953,
-  "implemented_total": 1959,
+  "implemented_standard_cards": 1960,
+  "implemented_total": 1966,
   "token_definitions": 95,
   "emblem_definitions": 1,
   "cards": [
@@ -1546,8 +1546,8 @@
     {
       "name": "Atomic Microsizer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Attack-in-the-Box",
@@ -7864,8 +7864,8 @@
     {
       "name": "Embrace the Paradox",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Emerge from the Cocoon",
@@ -11530,8 +11530,8 @@
     {
       "name": "H.E.R.B.I.E. Scout Unit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "HULK SMASH!",
@@ -13102,8 +13102,8 @@
     {
       "name": "Insidious Fungus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Insidious Roots",
@@ -14884,8 +14884,8 @@
     {
       "name": "Lessons from Life",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Let's Play a Game",
@@ -17596,8 +17596,8 @@
     {
       "name": "Nicanzil, Current Conductor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Nick Fury, Agent of S.H.I.E.L.D.",
@@ -19636,8 +19636,8 @@
     {
       "name": "PuPu UFO",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Public Thoroughfare",

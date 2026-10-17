@@ -319,6 +319,7 @@ define_actions! {
     ChooseConvoker { object: ObjectRef, contribution: ConvokeContribution },
     ChooseMobilizeDefender { defender: CombatDefender },
     PutHandCreature { object: ObjectRef },
+    PutHandLand { object: ObjectRef },
     DeclineHandEntry,
     ChooseHandDefender { defender: CombatDefender },
     ChooseSaddler { object: ObjectRef },
@@ -816,9 +817,15 @@ impl SpellView {
                 Some(Instruction::Modal(modes)) => Some(modes),
                 _ => None,
             },
-            StackKind::ActivatedAbility { .. }
-            | StackKind::DelayedSacrifice
-            | StackKind::DelayedWarpExile => None,
+            StackKind::ActivatedAbility { ability } => match self.source_card.activations()
+                [ability as usize]
+                .program
+                .first()
+            {
+                Some(Instruction::Modal(modes)) => Some(modes),
+                _ => None,
+            },
+            StackKind::DelayedSacrifice | StackKind::DelayedWarpExile => None,
         }
     }
     pub(crate) fn program(&self) -> Option<(TargetPlan, &'static [Instruction])> {
@@ -2106,11 +2113,16 @@ impl Game {
             Pending::EffectChoice { player } => {
                 let choice = s.resolving.as_ref().unwrap().choice.as_ref().unwrap();
                 if choice.skip_to.is_some()
-                    && emit(if choice.kind == EffectChoiceKind::HandCreature {
-                        Action::DeclineHandEntry
-                    } else {
-                        Action::DeclineEffectPayment
-                    })
+                    && emit(
+                        if matches!(
+                            choice.kind,
+                            EffectChoiceKind::HandCreature | EffectChoiceKind::HandLand { .. }
+                        ) {
+                            Action::DeclineHandEntry
+                        } else {
+                            Action::DeclineEffectPayment
+                        },
+                    )
                 {
                     return true;
                 }
@@ -2119,6 +2131,7 @@ impl Game {
                     if self.effect_choice_candidate(choice, player, object) {
                         let action = match choice.kind {
                             EffectChoiceKind::HandCreature => Action::PutHandCreature { object },
+                            EffectChoiceKind::HandLand { .. } => Action::PutHandLand { object },
                             EffectChoiceKind::Sacrifice => Action::Sacrifice { object },
                             EffectChoiceKind::Discard => Action::Discard { card: object.card },
                             _ => unreachable!("forage has its own choice"),
@@ -3364,7 +3377,9 @@ impl Game {
                 }
                 self.advance_damage_choices();
             }
-            Action::PutHandCreature { object } => self.choose_effect_object(actor, object),
+            Action::PutHandCreature { object } | Action::PutHandLand { object } => {
+                self.choose_effect_object(actor, object)
+            }
             Action::DeclineHandEntry => self.decline_effect_payment(),
             Action::ChooseHandDefender { defender } => self.choose_hand_defender(defender),
             Action::Sacrifice { object } => self.choose_effect_object(actor, object),
@@ -5585,6 +5600,10 @@ mod death_exile_tests;
 #[cfg(test)]
 #[path = "engine_combat_restriction_tests.rs"]
 mod combat_restriction_tests;
+
+#[cfg(test)]
+#[path = "engine_hand_land_tests.rs"]
+mod hand_land_tests;
 
 #[cfg(test)]
 #[path = "engine_base_stats_tests.rs"]
