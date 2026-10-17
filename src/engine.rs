@@ -1156,6 +1156,8 @@ struct State {
     #[allow(clippy::box_collection)]
     temporary_abilities: Option<Box<Vec<TemporaryAbilityView>>>,
     #[allow(clippy::box_collection)]
+    suspected: Option<Box<Vec<ObjectRef>>>,
+    #[allow(clippy::box_collection)]
     death_exile_replacements: Option<Box<Vec<ExileDeathReplacementView>>>,
     roles: Option<Box<roles::RoleState>>,
     replacements: Option<Box<replacements::ReplacementState>>,
@@ -1460,6 +1462,7 @@ pub struct Observation {
     pub casting_prohibited: bool,
     pub death_exile_replacements: Vec<ExileDeathReplacementView>,
     pub temporary_abilities: Vec<TemporaryAbilityView>,
+    pub suspected: Vec<ObjectRef>,
     pub replacement_choice: Option<ReplacementChoiceView>,
     pub created_token_choice: Option<CreatedTokenChoiceView>,
     /// Complete exact numeric cost-payment space, visible only to its actor.
@@ -1672,6 +1675,7 @@ impl Game {
                 exile_links: Vec::new(),
                 exile_permissions: Vec::new(),
                 temporary_abilities: None,
+                suspected: None,
                 death_exile_replacements: None,
                 roles: None,
                 adventures: None,
@@ -2779,7 +2783,7 @@ impl Game {
                 {
                     return true;
                 }
-                if count < usize::from(announcement.spec.max) {
+                if count < announcement.spec.max {
                     return self.visit_targets(
                         announcement.spec.rule,
                         actor,
@@ -3301,7 +3305,7 @@ impl Game {
                     .iter()
                     .filter(|bound| bound.group == announcement.group)
                     .count()
-                    == usize::from(announcement.spec.max)
+                    == announcement.spec.max
                 {
                     self.finish_target_group();
                 }
@@ -3783,6 +3787,9 @@ impl Game {
             before.zone, destination,
             "same-zone moves are ordering operations"
         );
+        if before.zone == Zone::Battlefield {
+            self.clear_suspected_reference(before.reference);
+        }
         if before.zone == Zone::Battlefield
             && destination == Zone::Graveyard
             && before.is_creature()
@@ -4458,6 +4465,10 @@ impl Game {
                 None
             },
             x_choice: if owns_choice { self.x_choice() } else { None },
+            suspected: s
+                .suspected
+                .as_ref()
+                .map_or_else(Vec::new, |v| v.as_ref().clone()),
             temporary_abilities: s
                 .temporary_abilities
                 .as_ref()
@@ -4881,6 +4892,7 @@ impl Game {
         let s = &self.state;
         std::mem::size_of::<State>()
             + self.temporary_ability_bytes()
+            + self.suspected_bytes()
             + self.death_exile_bytes()
             + self.mobilize_bytes()
             + std::mem::size_of::<Vec<Object>>()
@@ -5556,6 +5568,8 @@ mod target_exclusion_tests;
 #[cfg(test)]
 #[path = "engine_battlefield_return_tests.rs"]
 mod battlefield_return_tests;
+#[path = "engine_suspect.rs"]
+mod suspect;
 
 #[cfg(test)]
 #[path = "engine_death_exile_tests.rs"]

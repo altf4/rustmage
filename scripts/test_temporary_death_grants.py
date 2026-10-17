@@ -76,14 +76,14 @@ class TemporaryDeathGrantCompilerTests(unittest.TestCase):
      variants.append(raw[:index]+extra+raw[index:])
    for text in variants:
     self.assertFalse(self.compile(dict(c,name='Independent raw grant',oracle_text=text))[1]['implemented'],(name,text))
- def test_malformed_metadata_and_remaining_five_whole_bodies_stay_gated(self):
+ def test_malformed_metadata_and_remaining_tiered_whole_body_stays_gated(self):
   manifest=json.loads((ROOT/'docs/temporary-death-admissions.json').read_text())
-  initial=set(manifest['initial_consumers'])
+  initial=set(manifest['initial_consumers'])|{"Galuf's Final Act",'Rabid Attack','Perigee Beckoner','Presumed Dead'}
   self.assertEqual({r['name'] for r in manifest['cards'] if r['status']=='implemented_complete_body'},initial)
   for row in manifest['cards']:
    c=self.cards[row['name']]
    if row['name'] not in initial:self.assertFalse(self.compile(c)[1]['implemented'])
    else:
-    for update in [dict(mana_cost='{Y}'),dict(mana_cost='{4294967296}'),dict(type_line='Creature'),dict(layout='adventure')]:
+    for update in [dict(mana_cost='{Y}'),dict(mana_cost='{4294967296}'),dict(layout='adventure')]+([] if row['name']=='Perigee Beckoner' else [dict(type_line='Creature')]):
      self.assertFalse(self.compile(dict(c,**update))[1]['implemented'],update)
 if __name__=='__main__':unittest.main()

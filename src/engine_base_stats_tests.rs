@@ -569,3 +569,80 @@ fn primitive_axes_cda_overflow_boundary_and_sparse_owned_heap_are_exact() {
         );
     }
 }
+
+// Insert after Suspect PR322 is merged; requires its completed Presumed/Galuf bodies.
+#[test]
+fn base_stat_sba_uses_parent_death_exile_before_suspect_return() {
+    for p in [Player::P0, Player::P1] {
+        let q = p.other();
+        let mut g = setup(p);
+        g.state.players[p.index()].mana = [80; 6];
+        // Initial fixture has explicit foreign ownership; every following spell is paid.
+        let bear = named(&mut g, q, "Bear Cub", Zone::Battlefield);
+        g.state.objects[bear as usize].controller = p;
+        let old = g.object_ref(bear);
+        let deaths = g.state.creatures_died_this_turn;
+        for name in ["Presumed Dead", "Water Wings", "Scorching Dragonfire"] {
+            let spell = named(&mut g, p, name, Zone::Hand);
+            cast(&mut g, spell, None, &[Target::Card(bear)]);
+            settle(&mut g);
+        }
+        assert_eq!((g.stats(bear).power, g.stats(bear).toughness), (6, 4));
+        assert_eq!(g.object_view(bear).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(bear).damage, 3);
+        let zero = named(&mut g, p, "Multiply by Zero", Zone::Hand);
+        cast(&mut g, zero, None, &[Target::Card(bear)]);
+        settle(&mut g);
+        assert_eq!(g.object_view(bear).zone, Zone::Exile);
+        assert_eq!(g.object_view(bear).owner, q);
+        assert_ne!(g.object_ref(bear), old);
+        assert_eq!(g.state.creatures_died_this_turn, deaths);
+        assert!(!g.is_suspected(bear));
+        assert!(g.observe(p).base_stat_effects.is_empty());
+        assert!(g.state.temporary_abilities.is_none());
+        assert!(g.state.death_exile_replacements.is_none());
+        assert!(g.state.stack.is_empty());
+        cleanup_checked(&mut g);
+        assert_eq!(g.object_view(bear).zone, Zone::Exile);
+    }
+}
+#[test]
+fn base_stat_death_lki_feeds_galuf_and_owner_return_clears_old_layers() {
+    for p in [Player::P0, Player::P1] {
+        let q = p.other();
+        let mut g = setup(p);
+        g.state.players[p.index()].mana = [80; 6];
+        let bear = named(&mut g, q, "Bear Cub", Zone::Battlefield);
+        g.state.objects[bear as usize].controller = p;
+        let ally = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let old = g.object_ref(bear);
+        let deaths = g.state.creatures_died_this_turn;
+        for name in ["Presumed Dead", "Galuf's Final Act", "Water Wings"] {
+            let spell = named(&mut g, p, name, Zone::Hand);
+            cast(&mut g, spell, None, &[Target::Card(bear)]);
+            settle(&mut g);
+        }
+        assert_eq!((g.stats(bear).power, g.stats(bear).toughness), (7, 4));
+        let murder = named(&mut g, p, "Murder", Zone::Hand);
+        cast(&mut g, murder, None, &[Target::Card(bear)]);
+        settle_choices(&mut g, Some(Target::Card(ally)), true, false);
+        assert_eq!(g.object_view(bear).zone, Zone::Battlefield);
+        assert_eq!(
+            (g.object_view(bear).owner, g.object_view(bear).controller),
+            (q, q)
+        );
+        assert_ne!(g.object_ref(bear), old);
+        assert!(g.is_suspected(bear));
+        assert_eq!((g.stats(bear).power, g.stats(bear).toughness), (2, 2));
+        assert_eq!(g.state.objects[ally as usize].counters.plus_one, 7);
+        assert_eq!((g.stats(ally).power, g.stats(ally).toughness), (9, 9));
+        assert_eq!(g.state.creatures_died_this_turn, deaths + 1);
+        assert!(g.observe(p).base_stat_effects.is_empty());
+        assert!(!g.keywords(bear).contains(Keywords::FLYING));
+        assert!(!g.keywords(bear).contains(Keywords::HEXPROOF));
+        assert!(g.state.stack.is_empty());
+        cleanup_checked(&mut g);
+        assert!(g.is_suspected(bear));
+        assert_eq!((g.stats(bear).power, g.stats(bear).toughness), (2, 2));
+    }
+}

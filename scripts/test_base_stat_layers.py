@@ -5,7 +5,7 @@ from scripts.catalogue_preservation import canonical,assert_union
 NAMES={'Doc Ock, Sinister Scientist','Mirkwood Meditator','Multiply by Zero','Perfected Theory','Quandrix Charm','Snowmelt Stag','Turtle-Duck','Water Wings','Gateway Sneak','Snooping Page'}
 PARENT='5d103e7a3172e4742687d3f77f3ed814264b1532'
 DELIVERED='4b309a0'
-COMPOSED_PARENT='02d83521879d80772374b1c50d66c6356ea7325e'
+COMPOSED_PARENT='4a8fe17fb1521e6c49865f3245391d16e0471c38'
 class BaseStatTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):cls.all=json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards'];cls.cards={c['name']:c for c in cls.all if c['name'] in NAMES}
@@ -50,7 +50,7 @@ class BaseStatTests(unittest.TestCase):
   with self.assertRaises(AssertionError):assert_union(before,mutant,changed={n+'#0' for n in NAMES},added=set(),helpers=helpers,aliases={})
  def test_actual_composed_parent_changes_only_ten_bodies(self):
   physical={c['oracle_id']:c['name'] for c in self.all};before=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',COMPOSED_PARENT+':src/generated/catalogue.rs'],text=True),physical);after=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
-  helpers={('base_stat_setter',n+'#0') for n in ['Doc Ock, Sinister Scientist','Snowmelt Stag']}|{('keyword_grants','Doc Ock, Sinister Scientist#0')};proof=assert_union(before,after,changed={n+'#0' for n in NAMES},added=set(),helpers=helpers,aliases={});self.assertEqual(proof['preserved_definitions'],5321)
+  helpers={('base_stat_setter',n+'#0') for n in ['Doc Ock, Sinister Scientist','Snowmelt Stag']}|{('keyword_grants','Doc Ock, Sinister Scientist#0')};proof=assert_union(before,after,changed={n+'#0' for n in NAMES},added=set(),helpers=helpers,aliases={});self.assertEqual(proof['preserved_definitions'],5322)
   mutant=copy.deepcopy(after);mutant['definitions']['Plains#0']='unrelated mutation'
   with self.assertRaises(AssertionError):assert_union(before,mutant,changed={n+'#0' for n in NAMES},added=set(),helpers=helpers,aliases={})
  def test_full_family_metadata_and_complete_pinned_direct_imports(self):

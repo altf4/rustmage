@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "207132ca97dee872366570400c19c91d5589f5ddf430ba18803f89c66a2b6a61",
+  "catalogue_version": "9fc25b72fa36df9d09c874eb64e990754020e5e572e8bbb523d37d462dd87aa9",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1941,
-  "implemented_total": 1947,
-  "token_definitions": 94,
+  "implemented_standard_cards": 1950,
+  "implemented_total": 1956,
+  "token_definitions": 95,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -232,8 +232,8 @@
     {
       "name": "Absolving Lammasu",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Absorbing Man",
@@ -5056,8 +5056,8 @@
     {
       "name": "Convenient Target",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Cool but Rude",
@@ -10042,8 +10042,8 @@
     {
       "name": "Galuf's Final Act",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Galvanic Giant // Storm Reading",
@@ -13444,8 +13444,8 @@
     {
       "name": "It Doesn't Add Up",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "It'll Quench Ya!",
@@ -18784,7 +18784,7 @@
     {
       "name": "Perigee Beckoner",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -18808,8 +18808,8 @@
     {
       "name": "Person of Interest",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Personify",
@@ -19354,8 +19354,8 @@
     {
       "name": "Presumed Dead",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Pretending Poxbearers",
@@ -19972,8 +19972,8 @@
     {
       "name": "Rabid Attack",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Rabid Bite",
@@ -20506,8 +20506,8 @@
     {
       "name": "Reasonable Doubt",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Reassembling Skeleton",
