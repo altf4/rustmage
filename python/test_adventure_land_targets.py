@@ -103,7 +103,10 @@ class AdventureLandTargetTests(unittest.TestCase):
                 if a['kind']=='AnnounceExile' and actor==p:stage='wait_normal'
                 if a['kind']=='Attack' and a['card']==source:attacked=True
                 if a['kind'] in ['TapMana','ActivateMana'] and a['card']==source:land_witness=True
+                mana_witness=(i==5 and actor==p and a['kind']=='PayCosts' and o['announcing'] and o['announcing']['card']==source and o['announcing']['kind']!='Spell')
                 before=[g.observe(v) for v in ['P0','P1']]
                 with self.assertRaisesRegex(EngineError,'WrongActor'):g.act(dict(o,actor='P1' if actor=='P0' else 'P0'),a)
                 self.assertEqual(before,[g.observe(v) for v in ['P0','P1']]);self.replay(g,o,j);frames+=1
+                if mana_witness:
+                    after=g.observe(p);body=next(v for v in after['objects'] if v['id']==source);self.assertTrue(body['tapped']);land_witness=True
             self.fail((name,p,seed,stage,'no terminal game'))
