@@ -5,11 +5,11 @@ owned replay, privacy/actor and exact-incarnation assertions.
 """
 import unittest
 from rustmage import Game
-from test_replacements import ReplacementTests
+import test_replacements as _replacements
 B=['Plains','Island','Swamp','Mountain','Forest']
 class ImmediateReturnTests(unittest.TestCase):
- replay=ReplacementTests.replay
- deny=ReplacementTests.deny
+ replay=_replacements.ReplacementTests.replay
+ deny=_replacements.ReplacementTests.deny
  def test_actual_paid_until_return_finishes_before_map_choice_both_seats(self):
   for p in ['P0','P1']:
    q='P1' if p=='P0' else 'P0';own=sum(([b]*12 for b in B),[])+['Doubling Season']*12+['Ajani, Caller of the Pride']*12+['Get Lost']*12
