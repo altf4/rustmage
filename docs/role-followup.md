@@ -5,11 +5,11 @@ Become Brutes, Cursed Courtier, Cut In, Diminisher Witch, Eriette's Whisper,
 Merry Bards, Protective Parents, Shatter the Oath, Spellbook Vendor,
 The Witch's Vanity, Unassuming Sage and Witch's Mark.
 
-The candidate catalogue is1,874/5,164 identities, with3,290 gated. This is a
+The candidate catalogue is 1,875/5,164 identities, with 3,289 gated. This is a
 compiler candidate, not a gameplay delivery claim. The parent Role kernel's
 validation does not prove these twelve bodies. Paid native/public games, all
 new continuation boundaries, full gates and two independent final-head reviews
-are still required. Parent PR289 must integrate before this batch merges.
+are still required. Actual merged main `ce9a90a1867ce741387d3ed0a1aac0aa1592ca08` includes the Role kernel and exact death-source binding. The candidate keeps those semantics and schema 86.
 
 The compiler distinguishes non-targeted exact-source attachment from targets;
 optional source payment from a separately stacked reflexive target selection;
@@ -25,7 +25,7 @@ bodies retain their complete programs. Canonical comparison preserves5,316 of
 5,328 prior definitions; exactly the declared twelve unsupported definitions
 change. Existing helpers and recipes remain identical; the only new helper row
 is Diminisher Witch's zero-reduction Bargain cost option. No Rust engine or
-public interface changes are part of this compiler batch; schema85 is retained.
+public interface changes are part of this compiler batch; schema 86 is retained.
 The34-card Role audit inventory now marks24 implemented compiler bodies and10
 still gated. It never grants admission permission.
 

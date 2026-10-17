@@ -204,6 +204,8 @@ fn complete_case(p: Player, index: usize, foreign: bool) {
     let fodder = named(&mut g, p, "Candy Trail", Zone::Battlefield);
     let before = g.state.players[p.index()].mana.iter().sum::<u32>();
     let opponent_hand = g.hand_count(p.other());
+    let before_draw = g.state.players[p.index()].cards_drawn_this_turn;
+    let before_discard = g.state.players[p.index()].cards_discarded_this_turn;
     let source = announce(&mut g, p, name, foreign);
     let mut targets = vec![
         Target::Card(foe),
@@ -259,6 +261,36 @@ fn complete_case(p: Player, index: usize, foreign: bool) {
         assert!(g.state.objects.iter().any(|o| o.zone == Zone::Battlefield
             && o.owner == p
             && o.card.token_info().is_some_and(|t| t.subtypes == "Food")));
+        let food = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find(|(_, o)| {
+                o.zone == Zone::Battlefield
+                    && o.owner == p
+                    && o.card.token_info().is_some_and(|t| t.subtypes == "Food")
+            })
+            .unwrap()
+            .0 as CardId;
+        g.state.priority = p;
+        let life = g.state.players[p.index()].life;
+        let mana = g.state.players[p.index()].mana.iter().sum::<u32>();
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: food,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        drive(&mut g, &[], true, None, true);
+        assert_eq!(
+            mana - g.state.players[p.index()].mana.iter().sum::<u32>(),
+            2
+        );
+        assert_eq!(g.state.players[p.index()].life, life + 3);
+        assert!(!g.on_battlefield(food));
         g.begin_step(Step::Main1);
         g.give_priority();
         drive(&mut g, &[Target::Card(ally)], true, None, true);
@@ -303,6 +335,16 @@ fn complete_case(p: Player, index: usize, foreign: bool) {
     }
     if index == 8 {
         assert!(g.keywords(source).contains(Keywords::VIGILANCE));
+    }
+    if index == 11 {
+        assert_eq!(
+            g.state.players[p.index()].cards_drawn_this_turn - before_draw,
+            2
+        );
+        assert_eq!(
+            g.state.players[p.index()].cards_discarded_this_turn - before_discard,
+            1
+        );
     }
     assert_eq!(
         g.object_view(source).owner,
