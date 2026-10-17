@@ -1,4 +1,4 @@
-// Gated core fixture: ordinary typed obligations, not an admission declaration.
+// Direct typed behavior from complete Oracle and pinned XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(1, 3),
     triggers: &[TriggeredAbility {
