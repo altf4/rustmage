@@ -8,6 +8,8 @@ fn paid_crypt_feaster_retains_its_string_name_on_the_battlefield_in_both_seats()
     for player in [Player::P0, Player::P1] {
         let mut game = setup(player);
         let creature = named(&mut game, player, "Crypt Feaster", Zone::Hand);
+        assert!(!game.observe(player.other()).objects.iter().any(|object| object.id == creature));
+        assert_eq!(game.observe(player).objects.iter().find(|object| object.id == creature).unwrap().name(), "Crypt Feaster");
         game.state.players[player.index()].mana = [0, 0, 1, 0, 0, 3];
         cast(&mut game, creature, None, &[]);
         settle(&mut game);
@@ -16,6 +18,12 @@ fn paid_crypt_feaster_retains_its_string_name_on_the_battlefield_in_both_seats()
         let name: &str = object.name();
         assert_eq!(name, "Crypt Feaster");
         assert_eq!(object.card.name(), name);
+        for viewer in [player, player.other()] {
+            let observation = game.observe(viewer);
+            assert_eq!(observation.schema, 114);
+            let visible = observation.objects.iter().find(|object| object.id == creature).unwrap();
+            assert_eq!(serde_json::to_value(visible).unwrap()["name"], "Crypt Feaster");
+        }
         assert_eq!(game.state.players[player.index()].mana, [0; 6]);
         let saved = game.snapshot();
         let mut owned = { let parent = game.clone(); parent.clone() };
@@ -91,6 +99,10 @@ fn named_and_copied_tokens_keep_string_names_in_owned_views() {
         let branch = { let parent = game.clone(); parent.clone() };
         game.move_object(copied_token, Zone::Graveyard);
         game.state_based_actions();
+        let goblin = Card::catalogue().find(|card| card.is_token() && card.name() == "Goblin Token").unwrap();
+        game.create_tokens(player, goblin, 1, false);
+        assert_eq!(game.object_view(copied_token).name(), "Goblin Token");
+        assert_ne!(game.object_view(copied_token).reference, frozen.reference);
         assert_eq!(frozen.name(), "Coruscation Mage");
         assert_eq!(branch.object_view(copied_token).name(), frozen.name());
         game.restore(&saved).unwrap();

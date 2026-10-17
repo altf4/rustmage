@@ -68,3 +68,18 @@ location placeholders. These identify the original artifact suffixes without
 binding the repository to one machine. Artifact hashes and measurements remain
 unchanged. Actual libraries remain at their existing paths; the notation change
 does not move or delete artifacts.
+
+## Rules names and catalogue identities
+
+`Card::name()` is a shared string containing a definition's actual rules name;
+`Card::identity()` is its unambiguous catalogue/serialization key. Different token
+recipes can share one rules name, and fixed offspring copies keep their source's
+name. Do not compare factory keys when a rule asks about names.
+
+Live object-name rules use the central characteristic-world name query, including
+speculative funding worlds. `ObjectView.name` freezes the effective string for
+observations and last-known information; `ObjectView::name()` reads that captured
+value. Names are shared string references, with no allocated string in each live
+object. Future name-changing effects must extend the characteristic query rather
+than changing physical metadata or recomputing a departed object's name. This
+query does not itself admit new copy, rename or named-ability suppression cards.

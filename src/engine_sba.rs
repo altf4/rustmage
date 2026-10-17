@@ -84,7 +84,7 @@ impl Game {
             }
             if object.card.is_legendary() {
                 legends[object.controller.index()]
-                    .entry(object.card.name())
+                    .entry(self.object_name(id))
                     .or_default()
                     .push(self.object_ref(id));
             }

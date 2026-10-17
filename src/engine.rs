@@ -1413,6 +1413,8 @@ pub struct ObjectView {
     pub id: CardId,
     pub reference: ObjectRef,
     pub card: Card,
+    /// Frozen effective rules name; independent of lookup/serialization identity.
+    pub name: &'static str,
     pub owner: Player,
     pub controller: Player,
     pub zone: Zone,
@@ -1438,11 +1440,9 @@ pub struct ObjectView {
 }
 
 impl ObjectView {
-    /// Current rules name without allocating a string in each object or branch.
-    /// Fixed token copies and chosen Adventure faces already carry their definition.
-    /// Future name-changing effects must resolve their effective name here too.
+    /// Captured rules name, retained even after this object changes or leaves play.
     pub fn name(&self) -> &'static str {
-        self.card.name()
+        self.name
     }
 }
 

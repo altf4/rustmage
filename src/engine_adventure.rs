@@ -84,6 +84,7 @@ impl Game {
         let mut before = self.object_view(item.card);
         if before.zone == Zone::Stack && before.reference == item.object {
             before.card = item.source_card;
+            before.name = item.source_card.name();
             before.kinds = item.source_card.kind_mask();
             before.keywords = item.source_keywords;
             before.power = 0;
