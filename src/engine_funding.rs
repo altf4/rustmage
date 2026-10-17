@@ -49,6 +49,7 @@ struct ResourceKey {
     used: u64,
     gained: Keywords,
     owned: bool,
+    controlled: bool,
     attacking: bool,
     identity: Option<CardId>,
     attached: Option<(CardId, u64)>,
@@ -577,7 +578,10 @@ impl<'g> FundingState<'g> {
                 counters: r.object.counters,
                 used: r.object.used_abilities,
                 gained: r.object.gained_keywords,
-                owned: r.object.controller == goal.actor,
+                // Ownership still determines whose graveyard receives a sacrificed
+                // resource; control determines who can use it before that move.
+                owned: r.object.owner == goal.actor,
+                controlled: r.object.controller == goal.actor,
                 attacking: r.attacking,
                 identity: linked.then_some(r.id),
                 attached: r.object.attached_to.map(|r| (r.card, r.generation)),
@@ -601,7 +605,7 @@ impl<'g> FundingState<'g> {
                 r.used,
                 r.gained,
                 r.attacking,
-                (r.owned, r.identity, r.attached),
+                (r.owned, r.controlled, r.identity, r.attached),
             )
         });
         FundingKey {
