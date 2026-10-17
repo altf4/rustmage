@@ -448,7 +448,14 @@ fn actual_lesson_damage_counts_only_casters_graveyard_and_color_target_checks_wh
         assert_eq!(g.object_view(target).damage, 4);
         assert_eq!(g.observe(p).death_exile_replacements.len(), 1);
         // The spell is still on the stack when its Lesson count is evaluated.
-        assert_eq!(g.state.players[p.index()].graveyard.len(), 3);
+        assert_eq!(
+            g.state
+                .objects
+                .iter()
+                .filter(|o| o.owner == p && o.zone == Zone::Graveyard)
+                .count(),
+            3
+        );
         if g.actor() != Some(p) {
             checked(&mut g, Action::Pass);
         }
