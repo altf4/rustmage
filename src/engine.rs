@@ -5335,3 +5335,7 @@ mod milled_selection_tests;
 #[cfg(test)]
 #[path = "engine_role_tests.rs"]
 mod role_tests;
+
+#[cfg(test)]
+#[path = "engine_role_followup_tests.rs"]
+mod role_followup_tests;
