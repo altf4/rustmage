@@ -29,6 +29,12 @@ class FeralCompilerTests(unittest.TestCase):
     c=copy.deepcopy(self.cards[name]);face=c['card_faces'][0] if c.get('card_faces') else c
     face['oracle_text']='\n'.join(prefix+line for line in face['oracle_text'].splitlines())+' (You win the game.)'
     self.assertFalse(self.admitted(c),(name,prefix))
+ def test_unknown_parenthetical_cannot_split_the_constraint_route_literal(self):
+  for name in [NAME,'Arashin Sunshield','Griffnaut Tracker']:
+   for replacement in ['single(You win the game.) graveyard','single (Draw a card.)graveyard','single(You win the game.)(Draw a card.) graveyard','single(You win the game.) GRAVEYARD']:
+    c=copy.deepcopy(self.cards[name]);face=c['card_faces'][0] if c.get('card_faces') else c
+    face['oracle_text']=face['oracle_text'].replace('single graveyard',replacement)
+    self.assertFalse(self.admitted(c),(name,replacement))
  def test_unconstrained_graveyard_template_retains_its_distinct_semantics(self):
   self.assertEqual(g.targeted_program('exile up to two target cards from graveyards.')[0],('CardGrave',0,2))
   self.assertEqual(g.targeted_program('exile up to two target cards from a single graveyard.')[0],('CardSingleGrave',0,2))
