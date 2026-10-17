@@ -1437,6 +1437,15 @@ pub struct ObjectView {
     pub emblem: Option<&'static EmblemInfo>,
 }
 
+impl ObjectView {
+    /// Current rules name without allocating a string in each object or branch.
+    /// Fixed token copies and chosen Adventure faces already carry their definition.
+    /// Future name-changing effects must resolve their effective name here too.
+    pub fn name(&self) -> &'static str {
+        self.card.name()
+    }
+}
+
 /// A single zone transition with the departing object's last-known characteristics.
 /// Engine internals consume this value; observations do not expose hidden transitions.
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -6078,3 +6087,7 @@ mod fdn_exile_two_tests;
 #[cfg(test)]
 #[path = "engine_fdn_library_eight_tests.rs"]
 mod fdn_library_eight_tests;
+
+#[cfg(test)]
+#[path = "engine_object_name_tests.rs"]
+mod object_name_tests;

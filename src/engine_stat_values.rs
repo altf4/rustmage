@@ -217,12 +217,7 @@ impl Game {
                     .filter(|&(id, o)| {
                         Self::count_object_matches(filter, source, owner, id, o, subtypes, kinds)
                     })
-                    .map(|(_, object)| {
-                        object
-                            .card
-                            .token_info()
-                            .map_or_else(|| object.card.name(), |info| info.name)
-                    })
+                    .map(|(_, object)| object.card.name())
                     .collect();
                 names.sort_unstable();
                 names.dedup();

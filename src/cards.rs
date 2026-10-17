@@ -312,7 +312,7 @@ impl SearchFilter {
             }
             Self::AnyOf(filters) => filters.iter().any(|filter| filter.matches(card)),
             Self::AllOf(filters) => filters.iter().all(|filter| filter.matches(card)),
-            Self::Name(name) => card.token_info().map_or(card.name(), |info| info.name) == name,
+            Self::Name(name) => card.name() == name,
             Self::Kinds(kinds) => card.kind_mask() & kinds != 0,
             // Card characteristics in the library; flashback is not flash.
             // Dynamic outside-battlefield ability grants remain gated.
@@ -1976,8 +1976,10 @@ impl Card {
                 .map_or(self.name(), |token| token.factory_identity)
         })
     }
+    /// Actual rules name, shared as a regular string across all games.
+    /// Token recipes may share a name; use `identity()` for stable lookup.
     pub fn name(self) -> &'static str {
-        self.info().name
+        self.token_info().map_or(self.info().name, |token| token.name)
     }
     pub fn is_legendary(self) -> bool {
         self.info().legendary
