@@ -1904,9 +1904,7 @@ impl Card {
         self.info().standard_legal
     }
     pub fn token_info(self) -> Option<&'static TokenInfo> {
-        self.index()
-            .checked_sub(generated::TOKEN_BASE)
-            .and_then(|offset| generated::TOKENS.get(offset))
+        generated::token_info(self)
     }
     pub fn emblem_info(self) -> Option<&'static EmblemInfo> {
         self.index()

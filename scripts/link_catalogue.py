@@ -54,11 +54,18 @@ def render(metadata,records,version):
         lines.append('    Definition { '+', '.join(expr)+' },')
     lines+= ['];','#[rustfmt::skip]',f'pub(super) static NAME_INDEX: [(&str,u16); {len(metadata["aliases"])}] = [']
     lines.extend(f'    ({quote(name)}, {index}),'for name,index in metadata['aliases']);lines.append('];')
-    for k in ['token_base','emblem_base']:lines.append(f'pub(super) const {k.upper()}: usize = {metadata[k]};')
+    for k in ['token_base','emblem_base']:lines.append(f'#[allow(dead_code)] pub(super) const {k.upper()}: usize = {metadata[k]};')
     for key,ty in [('tokens','TokenInfo'),('emblems','EmblemInfo')]:
         lines+=['#[rustfmt::skip]',f'pub(super) static {key.upper()}: [{ty}; {len(metadata[key])}] = [']
         for obj in metadata[key]:lines.append('    '+ty+' { '+', '.join(k+': '+(quote(v)if isinstance(v,str)else str(v))for k,v in obj.items())+' },')
         lines.append('];')
+    token_cards=[c for c in cards if c['category']=='token']
+    if len(token_cards)!=len(metadata['tokens']):raise ValueError('token metadata count mismatch')
+    for card,token in zip(token_cards,metadata['tokens']):
+        if card['name'] not in (token['factory_identity'],token['name']):raise ValueError('token metadata identity mismatch: '+card['name'])
+    lines.append("pub(super) fn token_info(card: Card) -> Option<&'static TokenInfo> { match card.index() {")
+    lines.extend(f"    {c['index']} => Some(&TOKENS[{offset}])," for offset,c in enumerate(token_cards))
+    lines.append("    _ => None, } }")
     all_ids=[c['index']for c in cards[:metadata['physical_count']]if records[c['index']]['complete']]
     lines+=['#[allow(non_upper_case_globals)]','impl Card {','#[rustfmt::skip]',f'    pub const ALL: [Card; {len(all_ids)}] = ['+', '.join(f'Card({i})'for i in all_ids)+'];']
     lines.extend(f'    pub const {name}: Card = Card({index});'for name,index in metadata['constants'].items());lines.append('}')
