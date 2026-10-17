@@ -2,6 +2,10 @@
 import copy
 import json
 import unittest
+import hashlib
+import os
+import subprocess
+from pathlib import Path
 from scripts import generate_catalogue as g
 from scripts import test_legacy_metadata as metadata
 
@@ -11,6 +15,26 @@ class RoleSemanticCompilerTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.cards={c['name']:c for c in json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards']}
+
+    def test_exact_six_body_union_preserves_current_parent_and_pinned_java_sources(self):
+        from scripts.catalogue_preservation import canonical, assert_union
+        names=['Return Triumphant','Twisted Sewer-Witch','Syr Armont, the Redeemer','Asinine Antics','A Tale for the Ages','Mystical Tether']
+        physical={c['oracle_id']:c['name'] for c in self.cards.values()}
+        before=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show','804f539567d2f50b27c801915a3eb5afd7f8d692:src/generated/catalogue.rs'],text=True),physical)
+        after=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+        helpers={('enchanted_modifiers',n+'#0') for n in ['Syr Armont, the Redeemer','A Tale for the Ages']}|{('flash_surcharge',n+'#0') for n in ['Asinine Antics','Mystical Tether']}
+        assert_union(before,after,changed={n+'#0' for n in names},added=set(),helpers=helpers,aliases={})
+        manifest=json.loads((g.ROOT/'docs/role-semantic-admissions.json').read_text())
+        self.assertEqual({c['name'] for c in manifest['cards']},set(names))
+        source=Path(os.environ.get('RUSTMAGE_XMAGE_SOURCE','/home/altf4/Code/mage'))
+        records=manifest['shared_sources']+[v for c in manifest['cards'] for v in c['sources']]
+        for card in manifest['cards']:
+            self.assertEqual(card['oracle_id'],self.cards[card['name']]['oracle_id'])
+            self.assertEqual(card['facts'],{k:self.cards[card['name']][k] for k in card['facts']})
+        for record in {v['java_source']:v for v in records}.values():
+            blob=subprocess.check_output(['git','-C',str(source),'show',manifest['java_revision']+':'+record['java_source']])
+            self.assertEqual(hashlib.sha256(blob).hexdigest(),record['java_sha256'])
+            self.assertEqual((source/record['java_source']).read_bytes(),blob)
 
     def test_complete_mass_role_body_keeps_token_prefix_and_exact_recipient_filter(self):
         original=self.cards['Twisted Sewer-Witch']
