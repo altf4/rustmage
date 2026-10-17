@@ -70,3 +70,15 @@ production. One hundred natural Standard games cover all 24 Role body/seat
 vectors with 81,882 owned frames and 163,764 denials. The
 [PR289 record](review-pr-289.md) keeps exact source scopes and final review gates
 explicit. The full all-Standard, rules and training goal remains incomplete.
+
+The [exact source-binding delivery](trigger-source-binding.md) completes Morcant's
+Loyalist on actual merged Role main, bringing coverage to1,863/5,164 (3,301 gated)
+and schema86. All1,755 native tests, all-target Clippy and257 unique fresh public
+methods pass. The423-method compiler collection executes421 passing methods and
+skips two opt-in provenance methods; both then execute/pass with the pinned Java
+source explicitly enabled, completing all423 unique methods across those runs.
+Six actual paid Morcant cases cover both seats with Elf/Changeling recovery or no
+other Elf,5,097 owned decisions and10,194 actor/revision denials. The new inherited
+Tombstone payment method passes separately on identical production. Exact
+checkpoint/export/library identities and required independent reviews remain in
+the [PR293 record](review-pr-293.md). This does not complete the all-Standard goal.
