@@ -47,6 +47,28 @@ impl Game {
         }
     }
 
+    pub(super) fn trigger_time_guards_hold(
+        &self,
+        condition: TriggerCondition,
+        player: Player,
+        source: ObjectRef,
+        tapped: bool,
+    ) -> bool {
+        match condition {
+            TriggerCondition::When { guard, event } => {
+                self.step_guard(guard, player, source, tapped)
+                    && self.trigger_time_guards_hold(*event, player, source, tapped)
+            }
+            TriggerCondition::Granted(event)
+            | TriggerCondition::OncePerTurn(event)
+            | TriggerCondition::DuringOpponentsTurn(event)
+            | TriggerCondition::ManaSpent { event, .. }
+            | TriggerCondition::InterveningIf { event, .. } => {
+                self.trigger_time_guards_hold(*event, player, source, tapped)
+            }
+            _ => true,
+        }
+    }
     pub(super) fn trigger_guards_hold(
         &self,
         condition: TriggerCondition,
@@ -55,7 +77,8 @@ impl Game {
         tapped: bool,
     ) -> bool {
         match condition {
-            TriggerCondition::Granted(event)
+            TriggerCondition::When { event, .. }
+            | TriggerCondition::Granted(event)
             | TriggerCondition::OncePerTurn(event)
             | TriggerCondition::DuringOpponentsTurn(event)
             | TriggerCondition::ManaSpent { event, .. } => {

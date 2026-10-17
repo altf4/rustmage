@@ -220,10 +220,12 @@ fn source_obligations(
 /// ability. Converters may improve colors but cannot create spendable quantity.
 /// Overlapping resource/life/counter costs across abilities are deliberately
 /// counted independently: this can only overestimate what a legal path gains.
-fn activation_gain_upper(ability: &ActivatedAbility, counters: Counters, life: i128) -> u128 {
-    let Some(production) = ability.mana_production() else {
-        return 0;
-    };
+fn activation_gain_upper(
+    ability: &ActivatedAbility,
+    production: ManaProduction,
+    counters: Counters,
+    life: i128,
+) -> u128 {
     let mut produced = 0;
     production.visit(|mana| {
         produced = produced.max(mana.into_iter().map(u128::from).sum::<u128>());
@@ -271,7 +273,12 @@ impl<'g> FundingState<'g> {
         for object in &game.state.objects {
             if object.zone == Zone::Battlefield && object.controller == goal.actor {
                 for ability in object.card.activations() {
-                    if ability.mana_production().is_some() {
+                    if let Some(production) = ability.mana_production() {
+                        if let ManaProduction::CountSubtype { subtype, .. } = production
+                            && !subtypes.contains(&subtype)
+                        {
+                            subtypes.push(subtype);
+                        }
                         for subtype in ability.guard.subtypes() {
                             if !subtypes.contains(subtype) {
                                 subtypes.push(*subtype);
@@ -491,7 +498,7 @@ impl<'g> FundingState<'g> {
                 }
                 activations::counter_payments(ability.cost, object.counters, |counters| {
                     funding_cost_payments(self.mana, ability.cost, |payment| {
-                        production.visit(|production| {
+                        production.in_world(self, entry.id).visit(|production| {
                             moves.push(FundingMove {
                                 resource,
                                 ability: Some(index as u16),
@@ -630,9 +637,13 @@ impl<'g> FundingState<'g> {
             }
             for ability in object.card.activations() {
                 // Tapped objects cannot pay tap costs in this closed search.
-                if !object.tapped || !ability.cost.tap {
+                if (!object.tapped || !ability.cost.tap) && ability.mana_production().is_some() {
                     total = total.saturating_add(activation_gain_upper(
                         ability,
+                        ability
+                            .mana_production()
+                            .unwrap()
+                            .in_world(self, resource.id),
                         object.counters,
                         self.life,
                     ));
@@ -706,7 +717,7 @@ impl<'g> FundingState<'g> {
                     uses = uses.min(u64::try_from(count / u128::from(amount)).unwrap_or(u64::MAX));
                 }
                 let mut maximum = [0u32; 6];
-                production.visit(|mana| {
+                production.in_world(self, resource.id).visit(|mana| {
                     for index in 0..6 {
                         maximum[index] = maximum[index].max(mana[index]);
                     }
@@ -2046,3 +2057,7 @@ mod ability_world_tests {
         }
     }
 }
+
+#[cfg(test)]
+#[path = "engine_fdn_scaled_mana_tests.rs"]
+mod fdn_six_scaled_tests;

@@ -43,39 +43,60 @@ fn neutral_filter_impossible_total_prunes_before_search() {
 fn net_gain_handles_choices_alternative_costs_and_finite_or_repeatable_production() {
     let mut a = Card::from_name("Three Tree Mascot").unwrap().activations()[0];
     a.once_per_turn = false;
-    assert_eq!(activation_gain_upper(&a, Counters::default(), 20), 0); // Neutral even if repeatable.
+    assert_eq!(
+        activation_gain_upper(&a, a.mana_production().unwrap(), Counters::default(), 20),
+        0
+    ); // Neutral even if repeatable.
     a.program = &[Instruction::AddMana(ManaProduction::Choice {
         mask: 31,
         amount: 3,
     })];
     assert_eq!(
-        activation_gain_upper(&a, Counters::default(), 20),
+        activation_gain_upper(&a, a.mana_production().unwrap(), Counters::default(), 20),
         u128::MAX
     );
     a.cost.life = 2;
-    assert_eq!(activation_gain_upper(&a, Counters::default(), 5), 4); // Two uses; three colors are not fifteen mana.
+    assert_eq!(
+        activation_gain_upper(&a, a.mana_production().unwrap(), Counters::default(), 5),
+        4
+    ); // Two uses; three colors are not fifteen mana.
     a.cost.remove = Some((Some(CounterKind::PlusOne), 2));
     let counters = Counters {
         plus_one: 3,
         ..Counters::default()
     };
-    assert_eq!(activation_gain_upper(&a, counters, 5), 2);
+    assert_eq!(
+        activation_gain_upper(&a, a.mana_production().unwrap(), counters, 5),
+        2
+    );
     a.cost.life = 0;
     a.cost.remove = None;
     a.once_per_turn = true;
     a.cost.generic = 3;
-    assert_eq!(activation_gain_upper(&a, counters, 20), 0);
+    assert_eq!(
+        activation_gain_upper(&a, a.mana_production().unwrap(), counters, 20),
+        0
+    );
     a.cost.alternatives = &[ManaCost {
         colored: [0; 6],
         generic: 1,
     }];
-    assert_eq!(activation_gain_upper(&a, counters, 20), 2); // Cheapest equivalent, not primary cost.
+    assert_eq!(
+        activation_gain_upper(&a, a.mana_production().unwrap(), counters, 20),
+        2
+    ); // Cheapest equivalent, not primary cost.
     a.once_per_turn = false;
     a.cost.tap = true;
-    assert_eq!(activation_gain_upper(&a, counters, 20), 2);
+    assert_eq!(
+        activation_gain_upper(&a, a.mana_production().unwrap(), counters, 20),
+        2
+    );
     a.cost.tap = false;
     a.cost.sacrifice = true;
-    assert_eq!(activation_gain_upper(&a, counters, 20), 2);
+    assert_eq!(
+        activation_gain_upper(&a, a.mana_production().unwrap(), counters, 20),
+        2
+    );
 }
 
 #[test]

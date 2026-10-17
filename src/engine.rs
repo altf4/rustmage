@@ -5707,3 +5707,7 @@ mod fdn_recursion_tests;
 #[cfg(test)]
 #[path = "engine_fdn_power_damage_tests.rs"]
 mod fdn_power_damage_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_lords_six_tests.rs"]
+mod fdn_lords_six_tests;
