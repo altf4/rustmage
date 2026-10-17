@@ -426,7 +426,7 @@ fn score(o: &Observation, action: &Action, focal: Card, progress: &[Pilot; 2]) -
             }
         }
         Action::AnnounceExile { card } if object(*card).card == focal => {
-            if !state.normal || state.attacked {
+            if !state.normal || complete(state) {
                 2400
             } else {
                 -1000
@@ -466,7 +466,7 @@ fn score(o: &Observation, action: &Action, focal: Card, progress: &[Pilot; 2]) -
                 && state.second
                 && !state.extra
                 && o.stack.is_empty()
-                && (object(*card).card == focal
+                && (Some(*card) == state.inset
                     || (focal == Card::from_name(NAMES[3]).unwrap()
                         && object(*card).card.has_subtype("Food")))
             {
@@ -514,7 +514,7 @@ fn score(o: &Observation, action: &Action, focal: Card, progress: &[Pilot; 2]) -
             }
         }
         Action::Block { .. } => {
-            if progress.iter().all(|p| p.attacked) {
+            if all_done && progress.iter().all(|p| p.attacked) {
                 100
             } else {
                 -1000
@@ -535,7 +535,7 @@ fn score(o: &Observation, action: &Action, focal: Card, progress: &[Pilot; 2]) -
             ..
         } if object(*id).owner != actor
             && Some(*id) == progress[actor.other().index()].inset
-            && !progress[actor.other().index()].attacked =>
+            && !complete(&progress[actor.other().index()]) =>
         {
             -1000
         }
@@ -713,7 +713,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 .iter()
                                 .find(|v| Some(v.id) == state.inset)
                                 .unwrap();
-                            assert_eq!((a.power, a.toughness), (b.power + 2, b.toughness + 2));
+                            assert_eq!(
+                                (a.power, a.toughness),
+                                (b.power + 2, b.toughness + 2),
+                                "Hollow before={b:?} after={a:?} before_turn={} before_step={:?} after_turn={} after_step={:?}",
+                                flight.before.turn,
+                                flight.before.step,
+                                o.turn,
+                                o.step
+                            );
                             assert_eq!(
                                 token_count(&o, p, "Food") + 1,
                                 token_count(&flight.before, p, "Food")
