@@ -2241,6 +2241,47 @@ def recovery_reminders_valid(card):
     return True
 
 
+def target_exclusion_reminders_valid(card):
+    """Detect every new exclusion route before any presentation erasure."""
+    raw=card.get('oracle_text','')
+    if not isinstance(raw,str):return True
+    surface=raw;seen=False
+    while True:
+        normalized=' '.join(surface.casefold().split())
+        seen |= re.search(r'\bnonenchantment creature\b|\bnon-mount creature\b|\bnoncreature (?:artifact|enchantment)\b|\bchoose one or both\b',normalized) is not None
+        stripped=re.sub(r'\([^()]*\)','',surface)
+        if stripped==surface:break
+        surface=stripped
+    if not seen:return True
+    for line in raw.splitlines():
+        if '(' not in line and ')' not in line:continue
+        bare=re.sub(r'\([^()]*\)','',line).strip()
+        if creature_template(dict(card,oracle_text=bare)) is None or not intrinsic_reminders_valid(dict(card,oracle_text=line)):
+            return False
+    return True
+
+
+def target_exclusion_program(text):
+    nouns={
+        'nonenchantment creature':('Creature','WithoutKinds(32)'),
+        'non-mount creature':('Creature','WithoutSubtype("Mount")'),
+        'noncreature artifact':('Artifact','WithoutKinds(1)'),
+        'noncreature enchantment':('Enchantment','WithoutKinds(1)'),
+    }
+    match=re.fullmatch(r'(tap|untap|destroy) (up to one |)target (nonenchantment creature|non-mount creature|noncreature artifact|noncreature enchantment)( or noncreature enchantment|)\.',text.casefold())
+    if match is None:return None
+    verb,optional,noun,union=match.groups()
+    if union and noun!='noncreature artifact':return None
+    def rule_for(noun):
+        base,predicate=nouns[noun]
+        return filtered_target(base,predicate)
+    expression=rule_for(noun)
+    if union:expression='TargetRule::Union(&['+expression+', '+rule_for('noncreature enchantment')+'])'
+    key='Exclusion'+hashlib.sha256(expression.encode()).hexdigest()
+    TARGET_RULES[key]=expression
+    return ((key,0,1) if optional else key),[verb.capitalize()]
+
+
 def targeted_program(text):
     """Complete target occurrences with independent predicates and effect focus."""
     if not isinstance(text, str) or not text.endswith('.'):
@@ -2253,6 +2294,7 @@ def targeted_program(text):
     if 'another target attacking creature you control' in text:
         result=targeted_program(text.replace('another target attacking creature you control','another target creature you control',1))
         return ('OtherCreatureAttackingYou',result[1]) if result and result[0]=='OtherCreatureYou' else None
+    if result:=target_exclusion_program(text):return result
     if result:=role_program(text):return result
     if result:=target_subject_conditional(text):return result
     for subject,rule in [('another target attacking creature you control','OtherCreatureAttackingYou'),('target attacking creature','CreatureAttacking'),('target attacking Goblin you control','GoblinAttackingYou')]:
@@ -3164,9 +3206,11 @@ def modal_spell_template(card):
             or not isinstance(card.get('oracle_text'), str)):
         return None
     lines = re.sub(r'\([^()]*\)', '', card['oracle_text']).strip().split('\n')
-    if not lines or lines[0] != 'Choose one —' or not 2 <= len(lines) - 1 <= 64:
+    if not lines or lines[0] not in ('Choose one —', 'Choose one or both —') or not 2 <= len(lines) - 1 <= 64:
         return None
+    if lines[0] == 'Choose one or both —' and len(lines) != 3:return None
     modes = []
+    bodies = []
     for line in lines[1:]:
         if not line.startswith('• '): return None
         text = line[2:].strip()
@@ -3177,6 +3221,11 @@ def modal_spell_template(card):
         compiled = spell_program_template(dict(card, oracle_text=body))
         if compiled is None: return None
         modes.append((text, *compiled))
+        bodies.append(body)
+    if lines[0] == 'Choose one or both —':
+        combined=spell_program_template(dict(card,oracle_text=" ".join(bodies)))
+        if combined is None:return None
+        modes.append(("Choose both", *combined))
     return modes
 
 
@@ -4526,6 +4575,8 @@ def compile_catalogue(snapshot, target):
             effect = 'Unsupported'
         if not intrinsic_reminders_valid(original):
             effect = 'Unsupported'
+        if not target_exclusion_reminders_valid(original):
+            effect='Unsupported'
         if not enchanted_draw_reminders_valid(original):
             effect = 'Unsupported'
         # Rejected timing syntax/source shapes must not be revived by legacy selectors.

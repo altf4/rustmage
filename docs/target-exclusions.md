@@ -1,0 +1,15 @@
+# Live target exclusions and complete two-mode combinations
+
+Issue300 implements seven complete bodies on mainc41c060: Coeurl, Sterling Keykeeper, Rock Soldiers, Guerrilla Gorilla, Overwhelming Surge, Amazing Acrobatics and Decoy Ploy. Prototype coverage is1,874/5,164 Standard identities,3,290 gated. This candidate is not merge-ready; the all-Standard RL/search goal remains incomplete.
+
+Read-only target predicates exclude current kinds or effective subtypes at both admission and resolution. Animated artifacts stop satisfying noncreature restrictions. Mount exclusion includes printed Changeling. No new mutable state, heap allocation per object, or observation schema change is introduced.
+
+For exactly two complete printed modes, “Choose one or both” lowers to the three legal combinations. The combined choice retains printed order, independent target groups and rebased group selection. Each original mode must compile completely, as must their concatenation; unsupported instructions never disappear. This also naturally admits Amazing Acrobatics and Decoy Ploy; both are included in the complete source and validation scope. Zero modes and repeated modes have no legal option. More than two printed modes remain gated by this initial grammar.
+
+Raw rules are authenticated before any parenthetical erasure across every new generic caller, including modal routes that do not use the new exclusions. Unknown suffix, infix and nested prose fails closed; exact separately proven intrinsic keyword reminders remain available. The pinned manifest contains all seven full source records and explicit direct Java imports. It is audit evidence, not an execution whitelist or a transitive Java port.
+
+Prototype compiler validation passes five methods in0.528seconds, covering every complete body under all reserved fixture names, each raw rule boundary, the three combinations and exact current-parent preservation. All5,324 prior definitions and every helper/color/alias/recipe/flag remain unchanged. Six new paid native groups pass in0.08seconds: both seats; actual complete casts/activations and all modal combinations; noncreature artifact animation between admission/resolution; stale incarnations; Changeling Mount exclusion; independent partial modal resolution; same Changeling targeted by both Decoy modes; source sacrifice and sorcery timing; opponent hexproof and actual target owner; exact underpayment rejection. Every applied action checks owned raw/index forks after parent drop, restore, both observations, wrong actor and stale revision.
+
+Diagnostic failures remain scoped: the first native compile omitted the module path attribute; the second run passed four groups and failed one fixture because it used an unsupported enchantment creature. The corrected test uses supported Fear of Surveillance. Neither failure required a production runtime change.
+
+Full native/Clippy/compiler/public gates, fresh naturally paid Standard workloads, independent nonauthor reviews and final exact-head confirmations remain pending. Completed disposable build outputs are cleaned while every shared-library path/hash is preserved.
