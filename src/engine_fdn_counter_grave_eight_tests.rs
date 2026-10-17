@@ -530,3 +530,85 @@ fn fdn_counter_eight_simultaneous_rise_freezes_entry_power_and_dispatches_counte
         assert_eq!(g.hand_count(p), 4);
     }
 }
+
+#[test]
+fn fdn_counter_eight_unrestricted_targets_include_both_players_graveyards_and_permanents() {
+    for p in [Player::P0, Player::P1] {
+        for target_owner in [p, p.other()] {
+            let mut g = setup(p);
+            let ooze = named(&mut g, p, "Scavenging Ooze", Zone::Battlefield);
+            let victim = named(&mut g, target_owner, "Bear Cub", Zone::Graveyard);
+            activate(&mut g, ooze, 0, Some(Target::Card(victim)), None);
+            settle(&mut g);
+            assert_eq!(g.object_view(victim).zone, Zone::Exile);
+            assert_eq!(g.object_view(ooze).counters.plus_one, 1);
+            assert_eq!(g.state.players[p.index()].life, 21);
+
+            let mut g = setup(p);
+            let victim = named(&mut g, target_owner, "Bear Cub", Zone::Graveyard);
+            let land = named(&mut g, target_owner, "Forest", Zone::Graveyard);
+            let wrong_grave = named(&mut g, target_owner.other(), "Plains", Zone::Graveyard);
+            let zombie = named(&mut g, p, "Soul-Shackled Zombie", Zone::Hand);
+            cast(&mut g, zombie, None, &[]);
+            until(&mut g, |g| {
+                matches!(g.state.pending, Pending::Targets { .. })
+            });
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(victim),
+                },
+            );
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(wrong_grave),
+                },
+            );
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(land),
+                },
+            );
+            pay(&mut g);
+            settle(&mut g);
+            assert_eq!(g.object_view(victim).zone, Zone::Exile);
+            assert_eq!(g.object_view(land).zone, Zone::Exile);
+            assert_eq!(g.object_view(wrong_grave).zone, Zone::Graveyard);
+            assert_eq!(g.state.players[p.index()].life, 22);
+            assert_eq!(g.state.players[p.other().index()].life, 18);
+
+            let mut g = setup(p);
+            g.state.players[p.index()].life = 30;
+            let ayli = named(&mut g, p, "Ayli, Eternal Pilgrim", Zone::Battlefield);
+            let cost = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let victim = named(&mut g, target_owner, "Serra Angel", Zone::Battlefield);
+            activate(&mut g, ayli, 1, Some(Target::Card(victim)), Some(cost));
+            settle(&mut g);
+            assert_eq!(g.object_view(cost).zone, Zone::Graveyard);
+            assert_eq!(g.object_view(victim).zone, Zone::Exile);
+        }
+        for sacrifice_target in [false, true] {
+            let mut g = setup(p);
+            g.state.players[p.index()].life = 30;
+            let ayli = named(&mut g, p, "Ayli, Eternal Pilgrim", Zone::Battlefield);
+            let cost = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            // Both are legal targets. Paying the cost can invalidate its own target;
+            // "another" restricts the sacrificed creature, not the exile target.
+            let target = if sacrifice_target { cost } else { ayli };
+            activate(&mut g, ayli, 1, Some(Target::Card(target)), Some(cost));
+            settle(&mut g);
+            assert_eq!(g.object_view(cost).zone, Zone::Graveyard);
+            assert_eq!(
+                g.object_view(ayli).zone,
+                if sacrifice_target {
+                    Zone::Battlefield
+                } else {
+                    Zone::Exile
+                }
+            );
+            assert_eq!(g.state.players[p.index()].life, 30);
+        }
+    }
+}

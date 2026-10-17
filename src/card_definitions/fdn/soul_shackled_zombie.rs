@@ -8,7 +8,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 base: &TargetRule::Object {
                     zone: TargetZone::Graveyard,
                     kinds: 0,
-                    relation: 2,
+                    relation: -1,
                     other: false,
                     nonland: false,
                     tapped: false,

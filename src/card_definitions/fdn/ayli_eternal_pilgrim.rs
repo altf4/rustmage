@@ -76,7 +76,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             targets: one(TargetRule::Object {
                 zone: TargetZone::Battlefield,
                 kinds: 0,
-                relation: 2,
+                relation: -1,
                 other: false,
                 nonland: true,
                 tapped: false,
