@@ -1,0 +1,12 @@
+{
+  "name": "Slumbering Trudge",
+  "catalogue_id": 3931,
+  "oracle_id": "d04bce9a-822b-4a52-8826-b503ef5f5b2e",
+  "facts_sha256": "ad2758a11757d8087a6bf4dd165f1c8d28196bacea6cf8e219cd2334dbdd6b3e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "674f768d8e4f0840cb2bd86d7278dd425e67218abee1e305af28e750ccbac66b"
+  },
+  "physical_metadata_sha256": "f0e9df3751635087147cf281ff2f30e6fb8faccf21afba6481fd235b17281a46"
+}

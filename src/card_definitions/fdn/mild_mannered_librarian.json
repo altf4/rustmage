@@ -1,0 +1,12 @@
+{
+  "name": "Mild-Mannered Librarian",
+  "catalogue_id": 2757,
+  "oracle_id": "fb7070ab-c234-4d54-8cdc-caf106bf24a6",
+  "facts_sha256": "f4adfd0108d38a33b8a6d6734a432a874962aa370c323cd8a8b973d37720c464",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "02444242a1009026b4b2e13b3b36825c2773a3eac6cabcfea0e16013aed1d9ff"
+  },
+  "physical_metadata_sha256": "c4af52a1ac37d725449a490e8715726d7105a410f6f03de1954e57df59537b23"
+}

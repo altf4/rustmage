@@ -1,0 +1,12 @@
+{
+  "name": "Morbius the Living Vampire",
+  "catalogue_id": 2850,
+  "oracle_id": "1a947e4d-8a14-45f1-bb80-760a317b1ed0",
+  "facts_sha256": "34fdf3b9bffdb143fdf0bfac4af2e9a6c9fcc3eabc154467ab533b6d0c5e3043",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a0f09bae76340dbf19828c1f956c84a9077b2a902e7f7071ee321691d4c085d2"
+  },
+  "physical_metadata_sha256": "ff6a194e385fd42fd91ab8d03249f8ce5457ab9a67d2d832f7363d846bf3effe"
+}

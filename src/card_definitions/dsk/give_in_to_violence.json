@@ -1,0 +1,12 @@
+{
+  "name": "Give In to Violence",
+  "catalogue_id": 1759,
+  "oracle_id": "2bf4811f-3462-4542-acb0-101e772bfec9",
+  "facts_sha256": "8b2b22dc6f80772d0ded40ea08deead3100f8418113e7df738a7b497ef02f58e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d447a061a73e0fab1f23bb2954a5c0b42ff21337b6c89e354e70adce4c548645"
+  },
+  "physical_metadata_sha256": "06ae23fcbcb9c9ddb9bcb594c55c28eb82c3c106c1f1e23775a32e8c4c3fcdb5"
+}

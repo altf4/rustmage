@@ -1,0 +1,12 @@
+{
+  "name": "Grapple with Death",
+  "catalogue_id": 1847,
+  "oracle_id": "dced5cab-1438-4264-b44c-54dc37ec73d3",
+  "facts_sha256": "63c22758b3b9dda0b5a47207cb112b41d0261fded548c9e915d2cdf0b877e198",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7da714458405029179b6b8dda10612b5765bb3770fd584ed30f3d8a5417329ed"
+  },
+  "physical_metadata_sha256": "d219bdf050ce75e0d1f96ca8458bb9663da8c6b9358a58aa2d3bdf5374498e23"
+}

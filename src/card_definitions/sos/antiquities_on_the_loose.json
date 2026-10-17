@@ -1,0 +1,12 @@
+{
+  "name": "Antiquities on the Loose",
+  "catalogue_id": 180,
+  "oracle_id": "9c45682f-48b5-4e58-9277-ff4211f389ae",
+  "facts_sha256": "ab695acb4ee22d63fe881785f3332cc14e3bc28dacd843e35f5b103ee11654a4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "47e456e3c4e588a9016e61b13b8a3bc7a97c20ee805c5208ba2839b2e1865daf"
+  },
+  "physical_metadata_sha256": "6ff8724051a5a293d59f24bfeed66d16aaa28d8214a69497832bc5dee892c755"
+}

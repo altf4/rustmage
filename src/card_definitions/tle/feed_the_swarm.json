@@ -1,0 +1,12 @@
+{
+  "name": "Feed the Swarm",
+  "catalogue_id": 1482,
+  "oracle_id": "5825997b-10d7-4a36-972c-a80ddd90b8ed",
+  "facts_sha256": "f06663531364fcebccff28a5b3089021cea48133133675e0866f6e898e8b8713",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "83a20805b7696fcdc761f95249bcbbbaa73e02eb816603c31d1ee019859e48f5"
+  },
+  "physical_metadata_sha256": "8b646bfed52014d44ec274832a060a843dbbd90f63947bfa5d08bfe1a47f0ba2"
+}

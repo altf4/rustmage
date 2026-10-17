@@ -1,0 +1,12 @@
+{
+  "name": "Poison Dart Frog",
+  "catalogue_id": 3194,
+  "oracle_id": "e88a2b71-c90d-4e16-99a3-93d11fe7a968",
+  "facts_sha256": "914ba0597eb094187ff951842660d961c93bb38dd56a87b133e741759d8900ef",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "16192e2531b22cd5797352136c9a4020d424c8abc692f62d7418ca0d2cce1f71"
+  },
+  "physical_metadata_sha256": "0ced33139f520c80325fe456734c1ceec6fb7fcdc1d488d1e49c553044871b16"
+}

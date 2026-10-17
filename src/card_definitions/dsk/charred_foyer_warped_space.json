@@ -1,0 +1,12 @@
+{
+  "name": "Charred Foyer // Warped Space",
+  "catalogue_id": 728,
+  "oracle_id": "9f50ec9f-78e6-403f-8f41-84d603fee0eb",
+  "facts_sha256": "3ff5734f37daf29b2c58ab9af5497629c1a53f277994d0818e34a0da227c35bd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "34368032cb2b43985cfce8490752c3dddb2c496108e7322eeceb8ac30fb47561"
+  },
+  "physical_metadata_sha256": "ce9815dfe61f5d606db13bc8cf8fcd6736fad7d2a311fdd55f113330b6192972"
+}

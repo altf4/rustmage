@@ -1,0 +1,12 @@
+{
+  "name": "Kastral, the Windcrested",
+  "catalogue_id": 2322,
+  "oracle_id": "ced5fe9a-4237-4c89-9dd6-b133b966ebcc",
+  "facts_sha256": "d88c346603aac881d759fdec41fa07fe0c01fe42da2e40470462ea2012bf61a3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d5eb014e2191533f16cd191d19efc40d913589feecf05490e05479db50f57df4"
+  },
+  "physical_metadata_sha256": "0ec3501d8d82fe3eca569956cf4db07135890ae6900e2d9785b6bdc1031e63a4"
+}

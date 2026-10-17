@@ -1,0 +1,12 @@
+{
+  "name": "Noxious Newt",
+  "catalogue_id": 2974,
+  "oracle_id": "1232c461-643c-40a3-901e-09b665f817da",
+  "facts_sha256": "e87386ad2cef22adc0e34b868fcf7b9e20ae906f733e5ca608bd63f4bc3d2f41",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9681a1815d10ed9979225c0154e9de3bb8fe70efe57e4fa11aa86483f2532cc9"
+  },
+  "physical_metadata_sha256": "b937b70e50650edc876f63bd1514029fce6c24f68babe0756461411218c3c51d"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Faerie Slumber Party",
+  "catalogue_id": 1428,
+  "oracle_id": "48ee9007-2d1c-446f-aee3-795d23028e06",
+  "facts_sha256": "b33b83b038e5063c926f53901747299e8c93265f56067ca58b42e6258a7fe3a8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "feb171f88b0e864043d78a28f8d3f707936737f4e9f5fd376dd8c1b55355c90b"
+  },
+  "physical_metadata_sha256": "7b69f709938a11bc2d6755c287fb3fa61dac334a69f97668db1e77477adb6ccd"
+}

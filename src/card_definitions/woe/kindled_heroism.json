@@ -1,0 +1,12 @@
+{
+  "name": "Kindled Heroism",
+  "catalogue_id": 2358,
+  "oracle_id": "c1ed20c0-f75d-4aca-8874-6955bd9fb21b",
+  "facts_sha256": "84e6e679da4c46922ead2ffee10e2d51daf919fd0944a06748a531a957444b28",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "00678bf46a7645dc33331927db0a0b79a68c875eb3ebccebc33d7afb13f0752e"
+  },
+  "physical_metadata_sha256": "a53e1db651f0473cb31a8ce17ad2dc565ca1cb9e067cebd79f41de2fe6d2e305"
+}

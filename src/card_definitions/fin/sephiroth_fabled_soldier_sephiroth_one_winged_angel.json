@@ -1,0 +1,12 @@
+{
+  "name": "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel",
+  "catalogue_id": 3790,
+  "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+  "facts_sha256": "61d8d58e6eb2c44954643179efa7438b8deaac09a6534c3144bbd9907aa01ea3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3c0c47a022737a9f9407078e90bcfde76e6f2fb11393a719eba2ea6fed9e08d2"
+  },
+  "physical_metadata_sha256": "6b72572060f0292637e1d46b8b6a372a5cef099a1784693ca997cf0178afd8ae"
+}

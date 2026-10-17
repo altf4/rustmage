@@ -1,0 +1,12 @@
+{
+  "name": "Vindictive Warden",
+  "catalogue_id": 4899,
+  "oracle_id": "43b339ec-4d7d-41ac-a5ab-96c6a6de00e2",
+  "facts_sha256": "b8430dfe0a3c8710c79b2d714da763e045f30e2a3fbee163f8648b77e50f1015",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6e435377db03058d8ce85f9b968f07e8e2a51e0e79890fb2cd4cca28ace6e270"
+  },
+  "physical_metadata_sha256": "0306e5a1ecea1621b2654b6675a35cc88fa8e3d7952451561fd744b1869ddd91"
+}

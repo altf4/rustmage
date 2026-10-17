@@ -1,0 +1,12 @@
+{
+  "name": "Close Encounter",
+  "catalogue_id": 775,
+  "oracle_id": "032fdd08-2ea7-442e-8162-0a8e5a585253",
+  "facts_sha256": "a0074b82d6cdd22387bb64165b068bf6137455355f90dd706848966f710e3769",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "682355da841547d5c643b3e5c0ae186d1fdbcc7b2c070cd4d80cca9d4ba91dd9"
+  },
+  "physical_metadata_sha256": "4ac948e59e53e376772f1b0e87c1a10aa8cf37fc00a4135e56847db7b9d26ad7"
+}

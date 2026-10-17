@@ -1,0 +1,12 @@
+{
+  "name": "Skystreak Engineer",
+  "catalogue_id": 3909,
+  "oracle_id": "2f920bf2-6a49-47c2-be3c-9787c377673b",
+  "facts_sha256": "46ac4c4d7dfb98beb8949b3805bd6a2bb702d876f5f19dd2539f1c29eb62f62f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "717a09f96ef5cca27f390cd861fc7c0d5df43a7c337dcfb4782cfba92b6a56cd"
+  },
+  "physical_metadata_sha256": "249d603454a8aa0aa9da7dbb9a6e61f657755716011bf3970fac42029018ccf8"
+}

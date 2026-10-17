@@ -1,0 +1,12 @@
+{
+  "name": "Caelorna, Coral Tyrant",
+  "catalogue_id": 615,
+  "oracle_id": "4bbc5df9-60d7-46c1-8856-91c9c74abf18",
+  "facts_sha256": "720aae434dd1b135a07dbe155a64e8bbfda2def79feebd70cd2e42d8de4a7aa8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f99d36002af34a2dd767f00b371e643d71e94af177c76730a82f495f6dd0ff3d"
+  },
+  "physical_metadata_sha256": "0af643eff9c7f479493aecd65291ef3e0039ba450c5a48f024493087f5eec09a"
+}

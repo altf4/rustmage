@@ -1,0 +1,12 @@
+{
+  "name": "Quick-Draw Katana",
+  "catalogue_id": 3313,
+  "oracle_id": "604ef241-df8f-48f8-8680-f9ed77ff30ae",
+  "facts_sha256": "3b0db9a01243b54adbe84cdc273c17ba26e7d231cb3c025c7e93d3e0f79f0294",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ef3aced47027e4c2d7262d23183abba3d19217bb7cc26c6280f596b2020ff21a"
+  },
+  "physical_metadata_sha256": "526c6f26f3c09219a8e0b38cc7def6c16d1f2347b8ee3c56a85e2420a2be4f12"
+}

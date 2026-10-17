@@ -1,0 +1,12 @@
+{
+  "name": "Sun-Spider, Nimble Webber",
+  "catalogue_id": 4234,
+  "oracle_id": "2d961997-4f5f-4ce2-b062-11411147e2f7",
+  "facts_sha256": "ec211d07dcfa2c4b176ad837d765674dc0698fc0f4acd07a437394d37b3187de",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2e0730a5994328a8a4663f33739bd0f8bf778ad0048f013e46475207136402c8"
+  },
+  "physical_metadata_sha256": "8242ce60c87cbc32546765a07c8f1f81a936e68eaab7c32da8ee0fbf40a852b3"
+}

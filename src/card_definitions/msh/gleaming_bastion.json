@@ -1,0 +1,12 @@
+{
+  "name": "Gleaming Bastion",
+  "catalogue_id": 1771,
+  "oracle_id": "7785ffd4-f169-475d-9558-ce4877b3378a",
+  "facts_sha256": "5666254dc6ae6af1202c777b8bfc2703cefaeb74215b6fc5b105d09dc5ca00dc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "578327ab4598ff956c373b4dd885c4f4a595471bdb2eaee8e79e20095f9248b7"
+  },
+  "physical_metadata_sha256": "1a4ee6a66b1d3bfeb261703fa60edfdaa514077706678ead1ca253ee759dfda6"
+}

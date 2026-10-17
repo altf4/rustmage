@@ -1,0 +1,12 @@
+{
+  "name": "Red Hulk",
+  "catalogue_id": 3428,
+  "oracle_id": "a14a838a-49f4-45e3-9ec0-3c803af45a68",
+  "facts_sha256": "649337f787b74382acd136a50b54756065072c261800ff86997500fcc1206873",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cf1fc5d6951f107d8cf600e29aec4ecc4fd7bad01c6ca434df1f49a3786aeb6d"
+  },
+  "physical_metadata_sha256": "6d2aaaa9307d787b858b346c7b4cf235809399147978857f5634f6eff79cf611"
+}

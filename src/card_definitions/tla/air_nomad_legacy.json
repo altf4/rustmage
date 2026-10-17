@@ -1,0 +1,12 @@
+{
+  "name": "Air Nomad Legacy",
+  "catalogue_id": 103,
+  "oracle_id": "9e830359-ab92-4bfd-82b3-d9c67ac80cf7",
+  "facts_sha256": "d3a785d362ca8797fb6b7e47018a1ff52435cdeae253ee6544e991504e68044a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "35c12796d384ea8bcbe6b79b1a8e62a2368c140135c4cee081dbce61465a7f95"
+  },
+  "physical_metadata_sha256": "abe97bd10f1c9ed96cd84e15e6eeeacd291d5e85535ca1e64531fc2442a53065"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Interface Ace",
+  "catalogue_id": 2195,
+  "oracle_id": "c4272676-a38a-4b23-988e-9cdb2feb46c1",
+  "facts_sha256": "757bd7ff59f438cec6210c2fe57b34095024524a7a8939b1d581ed3e6c2f9197",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6bcd29ac9c2db0f97201106abfcddab2537014be8c873ad523137dea612f662e"
+  },
+  "physical_metadata_sha256": "3b0dd70ac46bf8f33e6b45b288de52a8d125e2f80301a7c37c30178aeba24583"
+}

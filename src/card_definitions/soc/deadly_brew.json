@@ -1,0 +1,12 @@
+{
+  "name": "Deadly Brew",
+  "catalogue_id": 994,
+  "oracle_id": "b831d3f8-07ce-4172-ba29-213cac414c9a",
+  "facts_sha256": "c93aa12017b1e22dd8dea9b3fe7772822d0154e94032c5e57ddb56cebfc9bc96",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d7bff4379a71b081401230fe97818435875b0a09d7ccb845feb1d62035d3f99b"
+  },
+  "physical_metadata_sha256": "36501c28e9832b7d88d4a34118586d49f3f992a1657b07dd7d4dd70b43459921"
+}

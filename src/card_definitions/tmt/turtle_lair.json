@@ -1,0 +1,12 @@
+{
+  "name": "Turtle Lair",
+  "catalogue_id": 4708,
+  "oracle_id": "eb002bbc-08df-4bf0-bea3-46494ad261b6",
+  "facts_sha256": "f717c8bd8935681b12133c88c496e0883a09bc045a44725eb12b4170a47f69ee",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3fef386f949d2cd6990ab2025c30939e65e4ed0e2c1feec791fc4ab52a0fce03"
+  },
+  "physical_metadata_sha256": "1bd27cb7dde086503c965c36d4ef640cb0aa342b0b45759062d485c0d74a99b4"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Spider Food",
+  "catalogue_id": 4018,
+  "oracle_id": "38eabfea-5ea5-4baa-8ad6-7a7cb00e1fed",
+  "facts_sha256": "93214f05a8576074ad2affd827ec80478ecb7c7d4fb106ca51ef57e581f763dd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d70979e580c76b08ef115d375e38c98955cf12a309c58bde97014b3184e35e0b"
+  },
+  "physical_metadata_sha256": "34df8245c437f1d8a79cd782a1ac35ac81b7bc3a3476cd4ac52cb2896cf557e5"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Fatal Fissure",
+  "catalogue_id": 1448,
+  "oracle_id": "202e45d6-8c7a-46db-85fb-634aa77b4097",
+  "facts_sha256": "9597425145b8bad733a2945f97a2cc59bf26784ea9f140ac503bd7320c1f3fac",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "da3cf769a8460faf49e298509abc59f55a4e341028b6ef08ed9d4f8948aa7137"
+  },
+  "physical_metadata_sha256": "12ab083865a44a1f85866e4a743f7deb5dc18066dc68d10fe003d6c81356a701"
+}

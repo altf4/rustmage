@@ -1,0 +1,12 @@
+{
+  "name": "Jeskai Monument",
+  "catalogue_id": 2271,
+  "oracle_id": "0b2b7d04-73f3-43f6-86e0-fa00cbbc6469",
+  "facts_sha256": "085f421fffe63ef8c13621baa61e2e349ae4c63aa8175b46d1804a7954d2c210",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ee79112611c7cf30cf7d1b5977ca9102f7c7a7c6902ca4baaf3e1f3defd9ff80"
+  },
+  "physical_metadata_sha256": "4f0b48f83bbd49e4976d50644db1e7334cdf388e853faf2d0c376a5585889bdc"
+}

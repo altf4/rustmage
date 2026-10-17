@@ -1,0 +1,12 @@
+{
+  "name": "Venomsac Lagac",
+  "catalogue_id": 4872,
+  "oracle_id": "2fac62be-dcbe-409f-a362-f0e519ec14a9",
+  "facts_sha256": "7cbed3706d94be3bb20fc5af9f9a4b1192ad235b0d0b0fbee598e078762a748c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c851b90f934a7c98f23130dbcd753889a676af83d87316f62ada99061431af5c"
+  },
+  "physical_metadata_sha256": "51911ffe53d0d78ae51bb7c888e95614f19986a82f7ca1f79721fe3c4cd6f000"
+}

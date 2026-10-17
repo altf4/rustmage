@@ -1,0 +1,12 @@
+{
+  "name": "Asinine Antics",
+  "catalogue_id": 245,
+  "oracle_id": "0a0a051c-59ed-4286-b842-a34da7ef15d5",
+  "facts_sha256": "9f737a84d9507a4c7d539a7f8ce9d7f8805f7fac60fe8008cb91d4d44e69ecd5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "60c15475bc6246663c9855a23217dc63fd5bfd055fbb49ad4f9aec0ed5295af7"
+  },
+  "physical_metadata_sha256": "5a9ef294f42e5cc10f500dc1d9c98d2badccd7ab8502ee932971198805f9e0aa"
+}

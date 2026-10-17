@@ -1,0 +1,12 @@
+{
+  "name": "Harried Spearguard",
+  "catalogue_id": 1954,
+  "oracle_id": "e3542d0f-fcee-4df7-aa95-b55138caa2ab",
+  "facts_sha256": "33c44a95b5ad86e2534c3a2f4b1fcc22c498fb52a534241af6eb414c4370e961",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "db89ae692b532507a89efa6574d6308427010be0f71763917bda023cf492c5f9"
+  },
+  "physical_metadata_sha256": "1f54d08c489195b965b725ba828156e1c8414839fe52dd18155e4a4df22cf207"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Along the Crooked Way",
+  "catalogue_id": 137,
+  "oracle_id": "f4437cb3-85f7-49b5-bb41-6a948549d987",
+  "facts_sha256": "8c9acac21b63a0ce8f47fe9641960b6d9bae12236319904cd2f163111e221cad",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7edcbe94b30c5bac0fd70e13b28152046fb13e6afe87556b6f99ea57be770140"
+  },
+  "physical_metadata_sha256": "0c8632da73f9414cb5125051bdd81dc92e726e0b8d2846fe47eb32c811af3250"
+}

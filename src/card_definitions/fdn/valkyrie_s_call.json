@@ -1,0 +1,12 @@
+{
+  "name": "Valkyrie's Call",
+  "catalogue_id": 4828,
+  "oracle_id": "27400927-9aba-4fb3-90c4-490d01969e60",
+  "facts_sha256": "2eb339a6133b51489a781b2b238f439ccdce3b21f8703365be3ab2eaab3f14bd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d20f4eae8a589d0b8724c39e7b5b97faf48f552f789dd973e2278dfaa0ad0667"
+  },
+  "physical_metadata_sha256": "25dbb9b56a7ef6abf7553c6d039cb1378f70b49a0e6d968edb4ad222c721d91d"
+}

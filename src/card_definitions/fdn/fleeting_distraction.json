@@ -1,0 +1,12 @@
+{
+  "name": "Fleeting Distraction",
+  "catalogue_id": 1551,
+  "oracle_id": "b36271cb-cda2-434a-a580-6050dc460409",
+  "facts_sha256": "71affeb61adbe32bb95f7d3ce6ad2f0b3959a09533372aa3344c7c0454bf7d9d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "415c847a0d411c0304ff0d63d41cce70317a41425de60cf0ce1f0bd66e3e232f"
+  },
+  "physical_metadata_sha256": "99795e4253bfff7d697abb51882db818f8f818ae9c13c2439d48a0cbe33e7f95"
+}

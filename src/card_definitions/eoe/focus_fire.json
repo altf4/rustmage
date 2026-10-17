@@ -1,0 +1,12 @@
+{
+  "name": "Focus Fire",
+  "catalogue_id": 1572,
+  "oracle_id": "6c4514be-fda7-45e8-83fe-04d49e2b932c",
+  "facts_sha256": "47fe2e98554a9c1b7a325eff23f4a2a52d1116e2a13feecb2672b1b12dfd183a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cb912e2ef51ed21a89f01f6f885bc2bffd84f37e626834238dfc080e8446c237"
+  },
+  "physical_metadata_sha256": "eeeb7b25ba05b97b0c53e222581ee9eeddfde8a9ce946fe17031bae79ee8af65"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Grim Repriser",
+  "catalogue_id": 1882,
+  "oracle_id": "e853e2fb-f90d-4934-aa70-c8d3cdf12e56",
+  "facts_sha256": "30ecefe8a8e647a4f655fdd8ef34f050a96ce886947ab5b9f807bdaa69ccc783",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b0a8aa778435ad47e41bbc8f197bda2ffe5561dfa86531f5e57e0a6547986b45"
+  },
+  "physical_metadata_sha256": "274f2e408ca98579984bac2cf049881d9d3d68d4c012a48630c4363936f4b6e1"
+}

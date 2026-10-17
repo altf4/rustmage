@@ -1,0 +1,12 @@
+{
+  "name": "Zuko, Exiled Prince",
+  "catalogue_id": 5178,
+  "oracle_id": "3231ce2e-d4f8-44fc-872d-aeafa59aed4b",
+  "facts_sha256": "8e6c2f6a1ba2e3b58ccef602e73d95898d02f66cf95c32bef7157698c126e9b4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d8de408a6afad42bc99111552a32b6271fe259e11db91d2e6dc1ba1ac2666b24"
+  },
+  "physical_metadata_sha256": "53a49d48ccd910088b2cca0b9486af2f585d2b88a7f1e077220e4c8e81785a1e"
+}

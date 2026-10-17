@@ -1,0 +1,12 @@
+{
+  "name": "Metalhead",
+  "catalogue_id": 2729,
+  "oracle_id": "7df45a2a-75bc-4343-8dad-3a642efd13ee",
+  "facts_sha256": "e62465eb6707e909c86e9f3999b70a2f02507dafb13c48870035446272ddd1bc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3e09de6b83aecda9d11bd9a0195e4c8f4c76c81e8d01876ec08a0487ef188656"
+  },
+  "physical_metadata_sha256": "419d24cda7182375ae445b47ce3fff7ea7b218a31d7c7528962fb85b85c293c8"
+}

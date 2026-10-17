@@ -1,0 +1,12 @@
+{
+  "name": "Fiery Annihilation",
+  "catalogue_id": 1505,
+  "oracle_id": "d44f3724-17b7-48f0-885d-75292669f971",
+  "facts_sha256": "e9807cd7c5e042798abb710f91834f26ab9dece035b8fce01b4e46a464873e00",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e6de7ed5f6b02b39264d7233fb55ee49f3fed420b5e867054116008b4da26533"
+  },
+  "physical_metadata_sha256": "2e7af17fa38ca8242821231f84c1ece074ab2d4ac766a6565908f8ac695ff337"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Reckless Velocitaur",
+  "catalogue_id": 3423,
+  "oracle_id": "367420cb-e77b-4d0c-9a83-0deee28f6d36",
+  "facts_sha256": "2685a3ced05863d82344e2d492787dc8a7af730e9cf133e88b98d02e2e454374",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3a83a665c7009a358520955aba111a8cfaaa86f4adacd5082fe25bdf4f313790"
+  },
+  "physical_metadata_sha256": "f75cd28f796651b6e026040091ef5214d871dac1b0810b76a0bed0b2274f7d7c"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Chandra, Torch of Defiance",
+  "catalogue_id": 717,
+  "oracle_id": "12cc800c-c7be-4811-8207-fd01a99cc892",
+  "facts_sha256": "c49e2320c256d4528e8c05497e3fb7ced8a04289b89310f171ab42e988eec089",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d2273a0170ee7aba68675dfe3a999c0c35523ebeb42f3ad6ce94e08802cea820"
+  },
+  "physical_metadata_sha256": "c7e7dc0964950b982c485f14c176b138bc69a33940a574ccb34246933d8fdde7"
+}

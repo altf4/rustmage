@@ -1,0 +1,12 @@
+{
+  "name": "Chalk Outline",
+  "catalogue_id": 704,
+  "oracle_id": "af335eb3-f60a-44b3-a1ed-1e165f3e3605",
+  "facts_sha256": "14dd8d34631bbd62b76eb7274214d3ecc11a98571f8a127b9e380af0e33a0150",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3321efb2947b40bf27a3706e944d8f0cf7eca42fbbec369c27152eeb2184431b"
+  },
+  "physical_metadata_sha256": "43b49b31495b216cb6f040aa502698de28fa0e5411df972245655dc5f1a0a5e2"
+}

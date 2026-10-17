@@ -1,0 +1,12 @@
+{
+  "name": "Heroes' Hangout",
+  "catalogue_id": 2017,
+  "oracle_id": "43306a78-85b5-4df4-a018-75dd75aa8997",
+  "facts_sha256": "a383c513a4f628520f6ef2a5a4bee057cc07c9b09c3466a27db7021833896cf1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4a5670e1e77eec6ad308bbfce33e9fc0c6bb2e2171bd9046d8e17f13ae108ea2"
+  },
+  "physical_metadata_sha256": "37d8d8f3af78a585f7451fc85be49d73f1b00a913bfdcf69b90f48daca5ead03"
+}

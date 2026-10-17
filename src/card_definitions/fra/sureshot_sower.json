@@ -1,0 +1,12 @@
+{
+  "name": "Sureshot Sower",
+  "catalogue_id": 4267,
+  "oracle_id": "5bbc9d7d-91bd-4a58-8d19-f7be650720b7",
+  "facts_sha256": "58b795b528db03fc70adfb47c17eeb39e56b3601f2aeda86d34007f6733537b1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3e0f063b9f8d66c90c0233c4ab8cb9895e7b341ff97605ac82c07a1af29ed182"
+  },
+  "physical_metadata_sha256": "7b6dfa5fc91c4e41825f31ab13565b33f0a6823ac46fc6e6e08b58c663a663c7"
+}

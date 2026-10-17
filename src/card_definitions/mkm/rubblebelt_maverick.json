@@ -1,0 +1,12 @@
+{
+  "name": "Rubblebelt Maverick",
+  "catalogue_id": 3608,
+  "oracle_id": "1ba59349-a162-4444-b3e0-cddfc01ef03b",
+  "facts_sha256": "48f41054e3b4f85bcd8c030ced09b9d2b57ef1e050a97a7efb39cd7f4dc07b22",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8609f000247fb791086217dec572708f21f9339732d5aedaf71f4dd5249c40ab"
+  },
+  "physical_metadata_sha256": "3d561bb5f5827afb8bdd86ef66d3678c1e0f47a3434a356af70a638e9e2a3514"
+}

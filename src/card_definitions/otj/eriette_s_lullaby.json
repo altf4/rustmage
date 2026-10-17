@@ -1,0 +1,12 @@
+{
+  "name": "Eriette's Lullaby",
+  "catalogue_id": 1356,
+  "oracle_id": "b134a9e6-b004-4833-b298-10529f5a85b8",
+  "facts_sha256": "b1629918edc0a00e6e6837c5996d9d7cc65fa8d4be4c584b006ecd99fa19b25b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "68aeede8f6690aad23a509c727d45070c17ff736d319ce3f0533df1cf66ba525"
+  },
+  "physical_metadata_sha256": "122619d137fb0171be1a79ed9f152c0d384824204d22e2c4517d2a3995be93b6"
+}

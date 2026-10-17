@@ -1,0 +1,12 @@
+{
+  "name": "Warg Tactics",
+  "catalogue_id": 4978,
+  "oracle_id": "d1663b51-37a1-45a0-b477-2d3e7dd0828e",
+  "facts_sha256": "b988e34be387922be756bab18173f410af9f99c5797cf2d6daf04457462ea954",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f6ed15bbc8710b22a412e409ebd54abbf23f04977ac35168bdb452dbe855404c"
+  },
+  "physical_metadata_sha256": "be71607c433a4e7177761b48401eeb065ec5e2634972d7fb890e0e46c6b2a2e3"
+}

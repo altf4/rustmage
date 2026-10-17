@@ -1,0 +1,12 @@
+{
+  "name": "Glowcap Lantern",
+  "catalogue_id": 1791,
+  "oracle_id": "2034d41b-5e77-49a6-884e-d3a6017f84d0",
+  "facts_sha256": "509be60b11e4fa5ad0bbc64229720da338d2d39f7975e9bd6afe1ba5eae0ea20",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "52379bfb5f8f2ce0f8030950cd26ab4a591f56fcbccfe4ac92fc72ab795ef7c6"
+  },
+  "physical_metadata_sha256": "7ad894a4fcea0f8ebb7d323c930446186a03b4f463b42ef2d09730851c6f0d51"
+}

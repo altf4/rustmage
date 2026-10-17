@@ -1,0 +1,12 @@
+{
+  "name": "Teyo, Lightshield Expert",
+  "catalogue_id": 4410,
+  "oracle_id": "77a9fac6-3c26-4456-9e0b-f5839a3dcae2",
+  "facts_sha256": "c58b5648722729ba21b60012773f1580020e20b2097cfbea614ef9dd82dc2ec3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ca6e717db185796423c59fd9dc99b85ec951149261501ed2e4b6da1811886201"
+  },
+  "physical_metadata_sha256": "f5d6aceb1be5bef423be615be5f69eddfd149137a222983151f63c4760286653"
+}

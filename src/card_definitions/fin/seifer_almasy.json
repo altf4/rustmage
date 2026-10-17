@@ -1,0 +1,12 @@
+{
+  "name": "Seifer Almasy",
+  "catalogue_id": 3770,
+  "oracle_id": "7088a901-0489-41c3-9f2f-633939514de8",
+  "facts_sha256": "48ad8d0793d0545433be7673f9804676122e9a1c7b10dd8421100baee33cb4b5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8f2266c5e4e5dac88093cab5319955e97f14a38f46f8d6703c467358c127fb24"
+  },
+  "physical_metadata_sha256": "a853fd38446e3bd3dc5654f85ca5ed478902679e7be49f73a1128ea7b26895ce"
+}

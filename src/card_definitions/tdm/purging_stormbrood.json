@@ -1,0 +1,12 @@
+{
+  "name": "Purging Stormbrood",
+  "catalogue_id": 3284,
+  "oracle_id": "5e8086d5-ea48-4555-b65a-a33d08ba4afd",
+  "facts_sha256": "1ec67c41a76b5d9c39c550c234b6c6b51985292ef25a5c2f7d54975b66502d30",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "705e2c3835206e19ef1abee95bea13e2e567e41f5d8f47938d198ffdd3dfc839"
+  },
+  "physical_metadata_sha256": "2b9f615111df9fe06b027d2921fa9132264f11780a0c05d6f130cce062de7077"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Fblthp, Knows the Way",
+  "catalogue_id": 1458,
+  "oracle_id": "48b891b6-3175-4864-bb98-af131098c557",
+  "facts_sha256": "3066592ad1277f7eb979ad81cea5015f73695772a22a24b2c9d9d7b39fc5716e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7e1aa33d1e87a08aa80e52d5c760ad377bbfc66a67d4f9815c5f8c7933cad893"
+  },
+  "physical_metadata_sha256": "384ae3ed01fddeb0d55c8acc7d7c9ad8253e0067c3decd237d241307cf9934de"
+}

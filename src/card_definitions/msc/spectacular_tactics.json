@@ -1,0 +1,12 @@
+{
+  "name": "Spectacular Tactics",
+  "catalogue_id": 3997,
+  "oracle_id": "15948fdf-3f9e-4eed-b85b-c5a554ff0571",
+  "facts_sha256": "5a43cb59ac2aa318af7445a38482c93582a34149eb71df0b4d204ef4154d00da",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "997fc7281cbe7634b72068d1e30185a5f5883f030bcc61d326e3791d47599b9c"
+  },
+  "physical_metadata_sha256": "02ce9339ee4100c0d49d711916c3732a02a3470365e18ec8909ac8dfa93a0a52"
+}

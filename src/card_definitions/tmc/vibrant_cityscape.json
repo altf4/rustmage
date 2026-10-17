@@ -1,0 +1,12 @@
+{
+  "name": "Vibrant Cityscape",
+  "catalogue_id": 4884,
+  "oracle_id": "6a7f3e1f-6798-4644-b64c-7765f81f0938",
+  "facts_sha256": "394f5493f9287ec1a13b5f53663f85e65612b18144d27944408ef5ea15ffb5ee",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5947cb2b9e276729a000dac22b4d6d39016063a4a7028bf1b63f677a76fc7839"
+  },
+  "physical_metadata_sha256": "03093712ab28df21dbef8af81b0c8850df31c49f146b83de4c9457f72fbbe3ec"
+}

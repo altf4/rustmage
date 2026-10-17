@@ -1,0 +1,12 @@
+{
+  "name": "Temple of Epiphany",
+  "catalogue_id": 4365,
+  "oracle_id": "79f94050-d850-41ca-b1db-5ae0cf743f0a",
+  "facts_sha256": "af4f3b8e5473b5fb72b1fa7d4fb6706abce5a617238a47975df18ea7a09a5611",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ca31ca1b2c50262d2e84a7bb8b346c0667c77a9bb095e02d45f2432aaf1234be"
+  },
+  "physical_metadata_sha256": "f9f826f6916d5e9e427286c0659a674dec584d0ad9108faabd10059b6376b811"
+}

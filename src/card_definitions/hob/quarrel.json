@@ -1,0 +1,12 @@
+{
+  "name": "Quarrel",
+  "catalogue_id": 3307,
+  "oracle_id": "db05b114-2eb5-46bc-81e7-7e036d8eaab3",
+  "facts_sha256": "c61a41044ce8c9baaffa493b61a0250e87e6953c4afc91729cbd666b6c56390f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0e79b799c7c65dc6eb9ce04e636fafe20bb94b3e286c6c3299fa037e4e680f6c"
+  },
+  "physical_metadata_sha256": "d4f24b5631e92a51193b50581d929a10526abdd097102dbd08bf02baa80a5a62"
+}

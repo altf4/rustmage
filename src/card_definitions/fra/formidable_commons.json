@@ -1,0 +1,12 @@
+{
+  "name": "Formidable Commons",
+  "catalogue_id": 1598,
+  "oracle_id": "3e51c060-1e86-4a0e-8fee-8b7273161468",
+  "facts_sha256": "3ebcd381e0c5824697b0f5369956acca7d25b01989a88a6c1d1f14e316f0516b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d1b7afaf26e6aad0c3ac852354a3ee190323958ace609618766bdabd8ffa1aba"
+  },
+  "physical_metadata_sha256": "a7c00f051eba0fd4471d43c45a8e421671f2002a70130380f759a336299bb87d"
+}

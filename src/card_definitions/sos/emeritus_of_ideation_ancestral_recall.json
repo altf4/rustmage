@@ -1,0 +1,12 @@
+{
+  "name": "Emeritus of Ideation // Ancestral Recall",
+  "catalogue_id": 1316,
+  "oracle_id": "24a29be4-5bc2-469b-b2ce-2fb305c3facb",
+  "facts_sha256": "2aeaff2858a20d487bb7a73e796353f56eac30c80e931788c889d3b1dbcd58cc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "68d70ef19d46410bd8ba7eacc1196b944abb3efe0426ec9f87ae7c009fa54d4f"
+  },
+  "physical_metadata_sha256": "861d84701cef5275585ce503998a3c3237f3a465257140b7989c9ba6f00ed25a"
+}

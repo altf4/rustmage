@@ -1,0 +1,12 @@
+{
+  "name": "Mudbutton Cursetosser",
+  "catalogue_id": 2871,
+  "oracle_id": "b63e5518-61f3-4cde-a799-5f3ee6aba70b",
+  "facts_sha256": "695911b9be802f90380dfe1def5bca99429621a3d910ef7002bc0704233541a6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3e00ec8ae73dabb428b7ff79e76fe112dcd99eb1bf47d357176331bfa1c59cf1"
+  },
+  "physical_metadata_sha256": "6ecd6a9a2d082b07d85288ab2681ec74204ad5884919e3cd7c5109b49d3ccfc6"
+}

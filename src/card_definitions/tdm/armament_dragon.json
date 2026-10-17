@@ -1,0 +1,12 @@
+{
+  "name": "Armament Dragon",
+  "catalogue_id": 223,
+  "oracle_id": "23c75386-8011-4ee4-97e2-eaafeb20b788",
+  "facts_sha256": "a3ae37bdb9e5751dfe525e8db2890959e29933923419951df3822a95a01400e0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0e87db4c193114d5b0ee1764c945a6e38733ce5538147e8e6b59b16ba2f17c80"
+  },
+  "physical_metadata_sha256": "fe39ae943eb9ba70b5b8cafc05feb90c814be3829ccba7f8879b3f0cdedb44b0"
+}

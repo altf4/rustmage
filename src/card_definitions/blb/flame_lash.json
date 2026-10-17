@@ -1,0 +1,12 @@
+{
+  "name": "Flame Lash",
+  "catalogue_id": 1540,
+  "oracle_id": "c65e804b-9222-4fa8-88d1-df06a3279f22",
+  "facts_sha256": "f70c20b342da68bd5f8e66a8b0d70e027ca2d9d2ef1b3aa6edaeca73a4141a4f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4af6602ddfc56805c40b2306ab76f4efce9970a1ccf1dd8cd5e3b5bf91d3ded4"
+  },
+  "physical_metadata_sha256": "57792b4f92e62e8052eebdd2d5334ce954f3869e3aba1af978c143f996457d42"
+}

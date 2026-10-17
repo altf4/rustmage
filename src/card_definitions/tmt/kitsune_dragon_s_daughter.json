@@ -1,0 +1,12 @@
+{
+  "name": "Kitsune, Dragon's Daughter",
+  "catalogue_id": 2380,
+  "oracle_id": "9be19bdf-db1e-433e-8be4-8b985a568211",
+  "facts_sha256": "57bf54712dd6d64133858b0925769dc0af64b2201447962bf9da1eef34a03a35",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e92c78a22c88945c72e54e6f306fdb20d8043c71c04dda5527cf524158f1d30c"
+  },
+  "physical_metadata_sha256": "1154140ccd7672531d367ac96062add16027d43295aea4551c259ada5d7dc151"
+}

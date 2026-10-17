@@ -1,0 +1,12 @@
+{
+  "name": "Wardens of the Cycle",
+  "catalogue_id": 4976,
+  "oracle_id": "fa7d09aa-2ebc-4571-81da-836cd80cf554",
+  "facts_sha256": "bd0e61f53f2f0147aa2624dbc138c32e83624908615e68f0e16a1b3dac3413ed",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fb2d9ab966f3ffbb23d563270804e25f85353463954e15d982be00b948122a00"
+  },
+  "physical_metadata_sha256": "e0cc45798c69a73ca782ea65ff099fabdb756985c85eb8c59f8ea902964bb749"
+}

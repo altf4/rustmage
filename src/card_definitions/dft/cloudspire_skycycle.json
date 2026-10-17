@@ -1,0 +1,12 @@
+{
+  "name": "Cloudspire Skycycle",
+  "catalogue_id": 784,
+  "oracle_id": "f7467fce-61e4-401a-8a3d-b0a2bc347088",
+  "facts_sha256": "5a6538f7d6ebd9797931fa248a9c3ab48821b97c796558ba80fd3f3648bb9740",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2243a50c90aa1c24bebd1f31a8ff722b46ddca7a4b56c2ac3221cc3946d40ee4"
+  },
+  "physical_metadata_sha256": "3d88f343d42fb2c060b498ea8aa9e2cfdbb05a452a649a9f8e948f31f62f543f"
+}

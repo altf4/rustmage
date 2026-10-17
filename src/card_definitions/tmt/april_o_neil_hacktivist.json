@@ -1,0 +1,12 @@
+{
+  "name": "April O'Neil, Hacktivist",
+  "catalogue_id": 191,
+  "oracle_id": "d379a919-02cd-46fd-a6ce-b66a77745ae7",
+  "facts_sha256": "c5618b1060b1b154787961802f694eb3d3a6d7ffa9028123c078b4504ce7b2ac",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4aa38d1dd0c676364840442c15765dc7618de33c7463358694125c892079664e"
+  },
+  "physical_metadata_sha256": "f61b1acfae073640dbde4040463b54bf59e35866af390bfe8fb42c406a3bfeed"
+}

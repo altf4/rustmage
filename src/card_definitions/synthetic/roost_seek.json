@@ -1,0 +1,12 @@
+{
+  "name": "Roost Seek",
+  "catalogue_id": 5229,
+  "oracle_id": "7cee6d43-5dec-4989-85ec-c635ec783ec7",
+  "facts_sha256": "3bd160839b257c931ac2e54fd931ade2538970941bf46d8b91b74bbf8980c931",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f12bb4dd79f7c4e39f0e2036f4608fc4a47e00b2b55018056fc4b5b97b9792c0"
+  },
+  "physical_metadata_sha256": "0d4cb27f3a2ee29d369091b4ddd632863a523c709d6e79ed23ad575ca9c9c9ec"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "April, Reporter of the Weird",
+  "catalogue_id": 193,
+  "oracle_id": "1c371003-e4f0-4d7c-b021-273176772f97",
+  "facts_sha256": "8f36b0a59698ab56f9ada554eabed04a35d1e09bd6cebbe7c85b7bf0d5e4b9e3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "09c0247987f3283af60cb51ed07695aeda133475298fed70a08945fb616dfc71"
+  },
+  "physical_metadata_sha256": "0f74034ea45d6ddeeb46a57675b39bc53f3e21f0099c6983da3a436cad25fcb4"
+}

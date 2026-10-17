@@ -1,0 +1,12 @@
+{
+  "name": "Zahur, Glory's Past",
+  "catalogue_id": 5152,
+  "oracle_id": "fb82cd81-0e71-43ab-88f9-b1fa158f5138",
+  "facts_sha256": "f61bf5e59c68e4d22c3ef86a5806a93c0a51990eda7af90ed2fe9db16498c55f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "801b753878596b5c7cabebdda89d4bb1ca4eb3a9ecb6497cdefbf0599facfa45"
+  },
+  "physical_metadata_sha256": "054cf4c4da2a0cb37cb45b5f3a3c3a57775ec4a47ce9b7efcc39a82c613328e0"
+}

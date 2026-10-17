@@ -1,0 +1,12 @@
+{
+  "name": "Cavern Stomper",
+  "catalogue_id": 689,
+  "oracle_id": "94657522-9977-4d2b-8eb6-f1e64e82cd0f",
+  "facts_sha256": "fd5572527ad85e5aab8c309b8de5f71939d45f3ae4cab70283f1f083509d5dd5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "832ca57776c9753dcc7a5a3ca27c3b46d64b149a47d3f40c91dd5cf951bcf016"
+  },
+  "physical_metadata_sha256": "7cd50d1a88d31d631b1b8d14f21f7464b31f2183c279fce30c64df2969e95e4e"
+}

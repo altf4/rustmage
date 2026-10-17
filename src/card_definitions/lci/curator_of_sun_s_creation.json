@@ -1,0 +1,12 @@
+{
+  "name": "Curator of Sun's Creation",
+  "catalogue_id": 928,
+  "oracle_id": "0e636c98-67c7-4f02-b909-5d43e276fa41",
+  "facts_sha256": "94bfad17da4ede4aa36f9ec27816cbcb943a4f3ae88ad5dae7ec28470d336f93",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e7cc51acaa23c99996dab618b96cf9487e02e4a44b6a1f06a1807b4937337d77"
+  },
+  "physical_metadata_sha256": "de67c6fade0d6102db42f1635b58298956102770453727a41d30325dae2093d8"
+}

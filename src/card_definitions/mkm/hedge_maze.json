@@ -1,0 +1,12 @@
+{
+  "name": "Hedge Maze",
+  "catalogue_id": 1987,
+  "oracle_id": "ca4b6689-04ee-4227-9bdc-cb5a9590c745",
+  "facts_sha256": "2ee570a4f7dda0805af232d61950ebaae84ad5dc7bb14a23b1f5d0450da1eae4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "be22e314fd0538d746d08b531ba39de9757e91b1505de27902e7f760b6949f91"
+  },
+  "physical_metadata_sha256": "d4cb7b27037ed70c2d089f02a046437144850a27000746e075063ce1e3b5de96"
+}

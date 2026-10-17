@@ -1,0 +1,12 @@
+{
+  "name": "Patched Plaything",
+  "catalogue_id": 3107,
+  "oracle_id": "0b7e950a-89e1-4ec4-94af-5af2f1252b12",
+  "facts_sha256": "978fcbe53a8efffd29e9b081865e7ea938c77153a9d8ba6d833b5418bf85af23",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b89e9856309de8f69b320095df09a799bec0823172eea2070d657efdac688c9a"
+  },
+  "physical_metadata_sha256": "9abe7e32ec6a8c49ffb2141d38d96d7c7813a4e6641efae4b9496b4d7a306c5f"
+}

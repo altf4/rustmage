@@ -1,0 +1,12 @@
+{
+  "name": "Guarded Heir",
+  "catalogue_id": 1898,
+  "oracle_id": "63e79a6f-ed98-480a-a740-d44e111046f7",
+  "facts_sha256": "6ad27898d2203acdd8b77d58c0df63123680ad3744df04af33ed90145444b877",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "075788e7442648c7abcd3645dff7af02c194ebb462e35ae23084276d5accc953"
+  },
+  "physical_metadata_sha256": "d1588f63e4f6fb926df8a22fb0a84041325b468ef628eb80d6b86bf347f45832"
+}

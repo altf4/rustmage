@@ -1,0 +1,12 @@
+{
+  "name": "Mazemind Tome",
+  "catalogue_id": 2692,
+  "oracle_id": "800fb917-8898-4eba-9f94-aec6e9d75236",
+  "facts_sha256": "eaed1eba6206449b3557146bc06cdcdb80b7225915a0d14094d0ee76ca512082",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1dd72b470987e69a780cca7215d88aa0bfabab7437dd7ddddd6c241c0f598322"
+  },
+  "physical_metadata_sha256": "0f8713461f8565efa8116569e43f6ef41d564c9569167f7dad742b894cd137f1"
+}

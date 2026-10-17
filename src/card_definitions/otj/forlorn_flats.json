@@ -1,0 +1,12 @@
+{
+  "name": "Forlorn Flats",
+  "catalogue_id": 1595,
+  "oracle_id": "ebb3e2ff-2214-4e11-88fb-e0fa84288cf1",
+  "facts_sha256": "b0e7072ecde9be8c0c11676c151c1b2e63f8af2dc69e4be6331219adfefa495c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9504cf6b512f7cff27003c381c959a474f4daf0dfc249e1e430e5fe2bf145bcb"
+  },
+  "physical_metadata_sha256": "b31d031fa8334c0a4ae22f8733e4cbc0c36941fbb273cdf038cc97f9bd8baea3"
+}

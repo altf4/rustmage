@@ -1,0 +1,12 @@
+{
+  "name": "Monoist Circuit-Feeder",
+  "catalogue_id": 2834,
+  "oracle_id": "de70a6bb-32ed-4a89-a522-c2a71f08fb02",
+  "facts_sha256": "758ba977f0fd030000cb5c516bb4695d7220fcf4e45053b4529837adbc7094ec",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0f92d4ce056593db8c6e02d4c91e2fe8327122380693da1102477b6def293697"
+  },
+  "physical_metadata_sha256": "3ee5f95fa85475d39be1272ec2dc8c6dcb918d549aa80c719546476e9c551661"
+}

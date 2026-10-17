@@ -1,0 +1,12 @@
+{
+  "name": "Merciless Enforcers",
+  "catalogue_id": 2723,
+  "oracle_id": "b32a7b97-0883-4c9f-a23d-ad269efd8cc3",
+  "facts_sha256": "5e1dc7e03e2b89d41bbf090729ee94fba0b281d8b0b66fe0a7cf905f4ca9bd73",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "082c4c5c1e57f1dc67c95928b5c17d2eb1663a14c6ff75123724314a6e36b31f"
+  },
+  "physical_metadata_sha256": "b5a80dfc88c144c90152622a82f636d56e16bd0ba11e211235f71950ff80557a"
+}

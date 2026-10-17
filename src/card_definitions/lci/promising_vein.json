@@ -1,0 +1,12 @@
+{
+  "name": "Promising Vein",
+  "catalogue_id": 3257,
+  "oracle_id": "861eb7d7-7616-4620-a4fd-4b8c3bf00dd1",
+  "facts_sha256": "942a8bab67f8944bd673ef44a7822666a65173e72ed046dd235fd5bed5aefbf1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "53b6da982e89f026285fc7d9e2ceb2665598d002c1d67b828bd967d2bb6e16ba"
+  },
+  "physical_metadata_sha256": "38656d2f2e6b0596170d10aaf568e4776362fe86e9428a3db1908f22505dd1a2"
+}

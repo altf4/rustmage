@@ -1,0 +1,12 @@
+{
+  "name": "Azure Beastbinder",
+  "catalogue_id": 299,
+  "oracle_id": "7bb51602-60e8-4730-b11c-2870d6b42e20",
+  "facts_sha256": "ef9e68dcec647ca87a51d71ebcfbe5415b0586b659d6d44ecfca716dea83032c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5259f993a2ec5507d6a3ac5471f69b9897e8d451100919c7e580ee63086dc422"
+  },
+  "physical_metadata_sha256": "c1441630a5c259f7aa15ee0579339a9f967b05b8a213e477d79c193c893e9e0a"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Spinewoods Armadillo",
+  "catalogue_id": 4048,
+  "oracle_id": "8c81f7b6-38e7-482b-afff-727074a23888",
+  "facts_sha256": "d3aceb32a08a0fd87ad3995affd8108ced6a3f3774ca83aa2dbda0d704890f22",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0e2d01ab5116982da11de3121ba9fad5e88677edfbea9e779b31613d2451225f"
+  },
+  "physical_metadata_sha256": "5b746c8da5a28f4db2347f9cbaad7a9ccdf05e4c0628f1e9f38fe89621a4d1f9"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Dwarven Provisioner",
+  "catalogue_id": 1216,
+  "oracle_id": "8fcab221-8737-4357-b8ee-bad9421739a3",
+  "facts_sha256": "307da0b517e5c3e9d9ea03484a559bf0626978e3130b9863a1286e3eaf52f3e1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f19884097bb088e3b29ff578fab9aadb6d95f8ac37f380956416602e9d79d373"
+  },
+  "physical_metadata_sha256": "1675657a581b003aa14bf6311b95413dd14e0b965857d226950583c78f814019"
+}

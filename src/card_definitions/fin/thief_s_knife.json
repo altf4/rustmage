@@ -1,0 +1,12 @@
+{
+  "name": "Thief's Knife",
+  "catalogue_id": 4528,
+  "oracle_id": "4bf589ed-58f8-40ad-bcee-50cb99da02ca",
+  "facts_sha256": "f51aba10caa399bce7f5792a19e7b8ca0ebb758653eb1501124b9b7e14517bff",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "362def6db8c3c12d330ccde214a615c36d31be454e6cc49e81a86e2b81a2d36c"
+  },
+  "physical_metadata_sha256": "d931944d68df377edb1bf349cff7b665245c9c1100413bf17ce00cc7afb12f41"
+}

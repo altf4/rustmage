@@ -1,0 +1,12 @@
+{
+  "name": "Air Response Unit",
+  "catalogue_id": 104,
+  "oracle_id": "18a22d9f-81bc-4ed5-bd83-e3f8ec5e38c8",
+  "facts_sha256": "836844dfcfeac93650c2f27d32a27546597dfac648312613eb2e5cb9cc674d17",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d3f9f171d98cd33c8198ed7d70eedde41beb5bbf178c16d5f740ca636f17ae7e"
+  },
+  "physical_metadata_sha256": "1dfb896624e4f873ed6d8f9092b02daae430f9786f20d182958c8dff7db16e43"
+}

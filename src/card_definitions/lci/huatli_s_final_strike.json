@@ -1,0 +1,12 @@
+{
+  "name": "Huatli's Final Strike",
+  "catalogue_id": 2089,
+  "oracle_id": "20acb8df-2ea0-48b0-8dcf-54dd0e1f8db8",
+  "facts_sha256": "630a9824588890f28843a56a8ea41fc8e0962b5f95bfc7d19380cd255fd59a3f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "769dae9ebd944c07af5f32b971bc3d413625c896aff90725c532e7e239ae672d"
+  },
+  "physical_metadata_sha256": "7e0123657733532e7773942d6d5af1dcc01acedf364696d01407654ce0bb2f43"
+}

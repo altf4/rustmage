@@ -1,0 +1,12 @@
+{
+  "name": "Emergency Eject",
+  "catalogue_id": 1311,
+  "oracle_id": "da363da1-aecf-4d49-8e77-8dc56981a741",
+  "facts_sha256": "099c3e53be703018d1912c78187524521c60a6654c10af13c637a557278ea564",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0815986d54bf0d1b09f1e1fa6ed4771e8cc417a4cd33ff5a765cb5edb098b177"
+  },
+  "physical_metadata_sha256": "60e44bc0d862cf5cb17392c36c8e743ba17b5740804f5369908eb79c1b716c47"
+}

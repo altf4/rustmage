@@ -1,0 +1,12 @@
+{
+  "name": "Fin Fang Foom",
+  "catalogue_id": 1508,
+  "oracle_id": "52ec472e-a745-4e25-b9a7-8e1eb8873594",
+  "facts_sha256": "bfdccb9fe4b85adab006415a71aecc2f94f0284affa5adaddb7dfae2b2d9644b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c4dbf20e57beab783e5aa73279a7912b496d0db4fc6061bc49c859ec96fefcc0"
+  },
+  "physical_metadata_sha256": "6bf024125e0fa4ea1b079348dee2a73799e0a88fd9551667729a2ea34f48f788"
+}

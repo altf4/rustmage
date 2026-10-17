@@ -1,0 +1,12 @@
+{
+  "name": "Vibrant Outburst",
+  "catalogue_id": 4885,
+  "oracle_id": "a0cbb1ba-73b1-4418-bbe3-5d1a02007c08",
+  "facts_sha256": "0406aca750d56b6204320472c7d741e18f00ff3e0f8ff0191b8e95d43c189234",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7c9120122a03d9fc82e878e548bcfdbc27279e3998b6af13205ba0f18016499f"
+  },
+  "physical_metadata_sha256": "3bf3bd3f4dd049cd4f1c3f5763ee7f3dd9592b1845306443fd9bbd3b714df5f0"
+}

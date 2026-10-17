@@ -1,0 +1,12 @@
+{
+  "name": "Mardu Devotee",
+  "catalogue_id": 2661,
+  "oracle_id": "24ee57b5-a505-4264-97ca-8b8dfb12298e",
+  "facts_sha256": "0aaf40e6b72334e267705b7f7b0a9d10a69aee1d55ed13391ec52604d450ac20",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "301f1b0b3809a9db04b769d44af27bbb846f81f66efd09aac3a428efe3b7e143"
+  },
+  "physical_metadata_sha256": "32e64fc3821013a7f73de6c16b17cf9b27f98a2c6608c67fc1c3306c88da1c67"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Chrome Companion",
+  "catalogue_id": 747,
+  "oracle_id": "1ac6fabb-71db-442f-8c14-ba9e659f906c",
+  "facts_sha256": "5fd723345ee1abcd84c254ebefb74471791435dcd6cba9c1dbb3c0bce5ea8f1c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8796d0a03468aa097f3ce22e8a71da797aa965f59f39581a3c81ef72829cfa72"
+  },
+  "physical_metadata_sha256": "8d750f11cf8b637d1ef55955358a2f52f0a5a61ec22d4b207896da706b16aa79"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Salt Road Skirmish",
+  "catalogue_id": 3659,
+  "oracle_id": "f6e72f4e-d6e0-4537-93c1-7045385c8401",
+  "facts_sha256": "dd50fb1d6938699dabc9566e8fe816c5c9c70de331fc796baa958c68100a320e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2a648517ccbc619bfbc217d659a6ade77e4a65c682f87716e6436b9c0170a528"
+  },
+  "physical_metadata_sha256": "53ea39804d627baf2ff2e4bdca110a11bf4967492325fd661cd9bcf8619d1830"
+}

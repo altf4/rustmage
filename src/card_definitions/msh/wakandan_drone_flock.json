@@ -1,0 +1,12 @@
+{
+  "name": "Wakandan Drone Flock",
+  "catalogue_id": 4953,
+  "oracle_id": "282d6e61-3240-4f1e-9c2d-8ddb59b03af4",
+  "facts_sha256": "3ceeb114e64009022db358ce2fd597236f6a433f306de8e0732b85f8e829275a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cf1024668e9c2f4eddb4adb7705ed4191e723c0cfeb9b28876a4547014ca1744"
+  },
+  "physical_metadata_sha256": "3f94f416bbecbc13b9a0bd8d474cda48f50f8f1eadc68ac55fd0c760493de834"
+}

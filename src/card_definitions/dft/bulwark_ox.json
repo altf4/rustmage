@@ -1,0 +1,12 @@
+{
+  "name": "Bulwark Ox",
+  "catalogue_id": 580,
+  "oracle_id": "bcd56fbf-fde3-41c2-83f5-9636e92d2893",
+  "facts_sha256": "1d99295b522bde70702e33dac07b783ad1442037c5cab288e502427255c3ac57",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8e641fe339f5063960bb0688f159d9c06a513dd0a729b3ba24601debfcfccadf"
+  },
+  "physical_metadata_sha256": "6b137c44e4afb2f4b76535c123e58819095192847a8463e1dc8fc3bdf5228c34"
+}

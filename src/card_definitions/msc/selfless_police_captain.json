@@ -1,0 +1,12 @@
+{
+  "name": "Selfless Police Captain",
+  "catalogue_id": 3782,
+  "oracle_id": "ece77a64-8d99-430e-8407-bdb321828d63",
+  "facts_sha256": "dd67238e7473c16fa3a7c87f15643c89f27dd9b0e4630ae8f783f0f92a0fdc5a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6855e8a23a2d29e560269c5fc2ad88464be63c4cea3e586ccaf92e1f69dd5d50"
+  },
+  "physical_metadata_sha256": "9198b7a01e2ba20bfd8cddae06a993ead39ca2a88fa46f2052bd13cfee8bebc0"
+}

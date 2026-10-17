@@ -1,0 +1,12 @@
+{
+  "name": "Threefold Thunderhulk",
+  "catalogue_id": 4571,
+  "oracle_id": "b8020a8b-557b-465d-865d-b59fecd7abc1",
+  "facts_sha256": "6f1f8292f5c35fe4f0ba2e256b0c1f6bffdcc6f55b51303217214e0c80f61f1f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "70d6ccd9d549f1b868b9f2dd2f7a88ed3395f6117f25c3364b743b3b98ccbf87"
+  },
+  "physical_metadata_sha256": "0252d95c1d4bbdd1f5a6236251b4fe69ed065644bddec57031f1bdd6b8333590"
+}

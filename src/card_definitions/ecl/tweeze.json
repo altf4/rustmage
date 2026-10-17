@@ -1,0 +1,12 @@
+{
+  "name": "Tweeze",
+  "catalogue_id": 4714,
+  "oracle_id": "9a294cbd-df18-4ee0-acaa-e31390a7f508",
+  "facts_sha256": "19314fe261cb63bcd7b236f61c116c8bc05a08854bfb23725a7b485cfa81e0a4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fddd39a0d7d0d5e31f1b4c7943f3b974050ca27f8b225dd09716e10b372ab1e7"
+  },
+  "physical_metadata_sha256": "5ab07e2e6307f636410f860bb5c693788d75990e34ca70a52650c10495d4c9fa"
+}

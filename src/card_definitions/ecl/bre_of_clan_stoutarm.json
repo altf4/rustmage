@@ -1,0 +1,12 @@
+{
+  "name": "Bre of Clan Stoutarm",
+  "catalogue_id": 535,
+  "oracle_id": "59384481-3ca0-49dd-b94f-d3680b336f1e",
+  "facts_sha256": "88c79b94d629d5b2684a58f84fd3101b58b38b18807db5887c364e8644fddafc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f245ae6737f21fb7a00ed1585d458232b0d344220d23d9c9698737df1a803f25"
+  },
+  "physical_metadata_sha256": "f3f703b9336f7270ec92b6e12fece361793b96819c07e00de2937f1fe30f82c9"
+}

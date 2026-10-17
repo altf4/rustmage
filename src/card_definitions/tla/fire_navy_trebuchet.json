@@ -1,0 +1,12 @@
+{
+  "name": "Fire Navy Trebuchet",
+  "catalogue_id": 1525,
+  "oracle_id": "1f018a8c-6ceb-4d03-94a7-8713467c9cf5",
+  "facts_sha256": "de2166f4d331cfcbf6014c3c65863697c8197a07c61bd48db6a086d3734911f8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "86bdd30d88c8db39f33f932063df9ffcade4a00a67a8f937a0aa0093ab3fd0c7"
+  },
+  "physical_metadata_sha256": "bdca2462d96f38bb8628a71f8e805b75295336fd2f502edf4f0e8a9bf0cdd288"
+}

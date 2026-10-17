@@ -1,0 +1,12 @@
+{
+  "name": "Hoarding Dragon",
+  "catalogue_id": 2052,
+  "oracle_id": "d36d3c93-ed24-4447-9d15-3071f5c0989b",
+  "facts_sha256": "35800d0dfb76285bb4af69a2d71e365feb97adfd2292708504a74db96ef44fef",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1336283ea5ea343d11425db43486be32db2e3aae23ff089c5001b3798771fdad"
+  },
+  "physical_metadata_sha256": "e1f14ed0bdcbf8d50429941a593229cad91f76ff6ffc7464eaa73ddee78f2a9e"
+}

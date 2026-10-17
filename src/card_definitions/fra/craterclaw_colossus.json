@@ -1,0 +1,12 @@
+{
+  "name": "Craterclaw Colossus",
+  "catalogue_id": 881,
+  "oracle_id": "71355b51-e70e-47b0-8460-933af3567141",
+  "facts_sha256": "d464435da85f47f68fcdd05a0733a3699e126c5b0c3d5c3a055d17ee824ba57b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "420b041af521be8637be3d80b086af747f0e4da1a6fae8a91b89ff10518afc2e"
+  },
+  "physical_metadata_sha256": "89e48be142853cad45308d88f6a5ee1a34dee6bcef5114e5338ba91055af9256"
+}

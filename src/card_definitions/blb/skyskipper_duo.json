@@ -1,0 +1,12 @@
+{
+  "name": "Skyskipper Duo",
+  "catalogue_id": 3907,
+  "oracle_id": "a50db36c-948b-4132-a5e5-84aab1f42612",
+  "facts_sha256": "f01748517febb45ec0f2a9342a846611862ddf022edbf9dfbdb5a96cfd9a3b4b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8b9c878a49375e46711b6bad6b7389cbbb2563d14f1183d41da12d5db8c82de2"
+  },
+  "physical_metadata_sha256": "0caea1236093b172556a395608be642cf3993a855933f2f118b7c649d1146861"
+}

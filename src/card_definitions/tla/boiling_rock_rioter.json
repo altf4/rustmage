@@ -1,0 +1,12 @@
+{
+  "name": "Boiling Rock Rioter",
+  "catalogue_id": 483,
+  "oracle_id": "5193172c-9024-409e-bd9e-0387971d65fe",
+  "facts_sha256": "effc59b7fe080ff5c45191302bf56c4ff27ea54b61c55c2d200c84d23d5a9d10",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7db90555c7b689144938131800bd94dfab5f3e7e778532e5c9d852bb90efe161"
+  },
+  "physical_metadata_sha256": "a82cbda7a48fd30854173ac045b85df91a2a846a9c03c0c0c992229f5598be16"
+}

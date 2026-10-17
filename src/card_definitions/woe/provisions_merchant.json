@@ -1,0 +1,12 @@
+{
+  "name": "Provisions Merchant",
+  "catalogue_id": 3265,
+  "oracle_id": "2f796869-7350-4886-b210-cb5b9cb3e78a",
+  "facts_sha256": "6042bd4e2027df67a001843e406cbb1e05c0c7c37fa9cd00f0be80a64b5bf132",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "370e5ced419ee92390242c588104b77c032a6114b0c085eff18f3cc8f9a9aae8"
+  },
+  "physical_metadata_sha256": "5a7df3b5a85894dff5168db5da4b923410d36344033c98f089af3753d17e3094"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Boneyard Desecrator",
+  "catalogue_id": 498,
+  "oracle_id": "c3adc698-a0c5-4c82-8347-536745c9e928",
+  "facts_sha256": "e732134b4ed43522cf72d09ec127589883b2e8728418dc28abcf835a296e31db",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "df03b9e3f73c6b04287c9fb0ba240efdd59cbcb81a4c5ede8600641fb64f959b"
+  },
+  "physical_metadata_sha256": "13f81df93dd1833e0556144b6b38167c9901a5897fb5de4626637234b0b5269e"
+}

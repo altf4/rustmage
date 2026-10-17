@@ -1,0 +1,12 @@
+{
+  "name": "Korvold and the Noble Thief",
+  "catalogue_id": 2398,
+  "oracle_id": "bcae7f20-b601-4669-b3a7-c32ed0c6b9d3",
+  "facts_sha256": "c41a011373b299cd91a99712287639fadb0c7f71982c73cf4edb6277738849f3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dc91c26d61d2d94176aafa638d5ac448b7388fecc612f8d8aa59989f93a6c6a7"
+  },
+  "physical_metadata_sha256": "8b94048d15489ec8357b198415eff3714e7fb7ee5cdef31371adfe50cac52e24"
+}

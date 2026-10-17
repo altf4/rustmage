@@ -1,0 +1,12 @@
+{
+  "name": "Analyze the Pollen",
+  "catalogue_id": 153,
+  "oracle_id": "ec7d550b-9e13-4249-89c7-6ad43f71ea11",
+  "facts_sha256": "897b4e9ffaefe3fdaf04d6d45dd3e2aa8a26bc33efbc2ce3b346c3bcb13d6af5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "42a7444b38c255a6f0955168ca22abfc00bc8177d098b08d15afb6de0f6c8d2e"
+  },
+  "physical_metadata_sha256": "7a5878747ec36608b409abfc35e10b4ef1d28520290397913657ca165edb398f"
+}

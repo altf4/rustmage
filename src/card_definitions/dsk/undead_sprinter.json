@@ -1,0 +1,12 @@
+{
+  "name": "Undead Sprinter",
+  "catalogue_id": 4760,
+  "oracle_id": "3416ac84-c5ef-44be-894f-ab3b89e592ce",
+  "facts_sha256": "4b6a896a43afa96a1300f2353a110e7b85ac66487cb150b5aa21d4f0ef64314c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "331515743898528085def1ae83ab46736928581a2ab9362878c9bc7d291bb0e1"
+  },
+  "physical_metadata_sha256": "02bcf96556ff39f2461093276d8853db7f9de4b17d5ab0caed1d39023d9901cf"
+}

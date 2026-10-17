@@ -1,0 +1,12 @@
+{
+  "name": "Dwynen's Elite",
+  "catalogue_id": 1218,
+  "oracle_id": "3d4a7dd3-9258-4bd1-adc4-08f0205e196a",
+  "facts_sha256": "3d137ece7c0aaf8b38a544ef16aa4962442b9b2098147e2d0d530ad4054afa18",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "475dc14da6a23b5178673971cdf67e843d9ca62f7be2a8a569ec30b2d9d9c0c8"
+  },
+  "physical_metadata_sha256": "b5237624977e184c90f79c89d1dc8262b2d4fd5d52cc0eb7c324162950379034"
+}

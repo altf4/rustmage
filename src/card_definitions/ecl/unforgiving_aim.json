@@ -1,0 +1,12 @@
+{
+  "name": "Unforgiving Aim",
+  "catalogue_id": 4781,
+  "oracle_id": "be7e220e-272e-45ca-8265-8d78da2cd2a7",
+  "facts_sha256": "6a15501b2159d60ee87b4b076a06554aa2d863fe9d44719e6c99826ef118bcac",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "296947a38731c751620817201df26354b6b40a2d9a2859cfd8a9aeeceec167e6"
+  },
+  "physical_metadata_sha256": "6d791c65b5a70ef4c582e1c4b87f52faae975ac3b5a4477240797ba7ecd33c3a"
+}

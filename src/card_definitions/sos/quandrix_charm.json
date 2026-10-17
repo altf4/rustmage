@@ -1,0 +1,12 @@
+{
+  "name": "Quandrix Charm",
+  "catalogue_id": 3304,
+  "oracle_id": "f43e36ea-6bf5-45bd-a4ad-cc507ae45641",
+  "facts_sha256": "9f11d1f1105145ce508c721576888da13c234a066dc3d13f111bd12bb147d5c0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "89994250e8fa75fccde99ab96ac5b7eda8884fbe3af949d4a62674928f06e257"
+  },
+  "physical_metadata_sha256": "2b1a43cd849027b047fcc56b3375be8ad70ecb652c698cad08141730d9434885"
+}

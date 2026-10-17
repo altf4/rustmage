@@ -1,0 +1,12 @@
+{
+  "name": "Ravine Raider",
+  "catalogue_id": 3401,
+  "oracle_id": "4c2e84dc-b4f5-4eca-af07-1c53a1caae7c",
+  "facts_sha256": "c444b5d589ae642c66b7277f30d31e9c2e883207cd2b1a71c31694eebe794d49",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1e00e5bd091fe4ab2742e44e4bdb665acf3facb914659a4b630e599715346aeb"
+  },
+  "physical_metadata_sha256": "65f90ca5546f082a49cc136fb5bbc3dd2d22611c66d9c6b9c0e600476e7e2298"
+}

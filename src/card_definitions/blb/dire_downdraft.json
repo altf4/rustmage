@@ -1,0 +1,12 @@
+{
+  "name": "Dire Downdraft",
+  "catalogue_id": 1085,
+  "oracle_id": "a45065e9-951a-4c6d-80b6-bd86a49f7439",
+  "facts_sha256": "ea894731b1e65fc901b022ba94a0ba58666eea30d8c88204433bcc32517286a5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8ef3ca8ac10a10eda367ecafab1ef2418584b97a89c3ac7cec03fd340b19accc"
+  },
+  "physical_metadata_sha256": "c42e46655743f3d647fe78c315673e9deffe684014d29e903cbd6b6423d0ba00"
+}

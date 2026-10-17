@@ -1,0 +1,12 @@
+{
+  "name": "Perfect Intimidation",
+  "catalogue_id": 3126,
+  "oracle_id": "da099c34-74b2-4db8-8583-09bf2c56606f",
+  "facts_sha256": "15aec2769e2709ddc87cf3a989c4a4645550c4505b2e6c12df1aed69c390c9a9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d701790727bf5cf16242a24a8370ddbfd74a58d47573faa0306313399b307ffe"
+  },
+  "physical_metadata_sha256": "2a348dbe08d9c55d5136185ac60c8d15901e6acbd310af38e63aba3a8800fa90"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "White Widow, Free Agent",
+  "catalogue_id": 5048,
+  "oracle_id": "4f0c055f-f614-44b0-9374-c53541f89185",
+  "facts_sha256": "ab79ea0688feacb827eb00ef08a29e13f28a441e9a8628d16a5f74a5fdcc5e78",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3cc63d1945b1e11655a77f620e6bba195c07ca784d76a5e7dbdd56e50d41a0dd"
+  },
+  "physical_metadata_sha256": "e13c328ffea14e94343a26e8d760993f3cdd0d88982a350eca6e5c9ac7b90038"
+}

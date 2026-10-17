@@ -1,0 +1,12 @@
+{
+  "name": "Overlord of the Boilerbilges",
+  "catalogue_id": 3071,
+  "oracle_id": "c2db05e0-879b-43e4-9009-37a95fd848dc",
+  "facts_sha256": "ae2127a2ee0d35c9685eeea869442e299695889e9bf537b2025dbb5135a25d2f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "725369509563d227c404ad9ff4c2ec213a00d23116e41cd9b229a1feeb920fa8"
+  },
+  "physical_metadata_sha256": "07b94f3a19ada73decea84b6ff6fdef052caf7b0f802efb05a6ebd629814e70b"
+}

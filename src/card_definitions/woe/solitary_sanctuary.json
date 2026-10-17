@@ -1,0 +1,12 @@
+{
+  "name": "Solitary Sanctuary",
+  "catalogue_id": 3960,
+  "oracle_id": "4c0a8eed-f2e2-4821-8011-6e6ad2081936",
+  "facts_sha256": "74a059174563ef5ce3ba4662e7e4f2fe12c34442a2724845238299b3f377a943",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b9245d716f42afd3bd85458a0a5af540790311e6d1021683677ec196c30f34fa"
+  },
+  "physical_metadata_sha256": "83c241fad5c37f444f493bccad4128c9165e093dd60abd02cb0d841a7f5f71df"
+}

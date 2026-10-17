@@ -1,0 +1,12 @@
+{
+  "name": "Empyrean Eagle",
+  "catalogue_id": 1323,
+  "oracle_id": "270d14b2-07bc-46bc-918f-658102265ccf",
+  "facts_sha256": "b87d10bd5c7fc90fbf135ab33a396d40d492ddb043834333e3f97b198e8cccc3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4369c2569c0dbcea205fd78d9def7efa70f9c50e49420f9ba4365f0ac62ed123"
+  },
+  "physical_metadata_sha256": "6a159acdb1fc7be9401b2992cc75e279221d21aff7f7f221895644e90e38d08d"
+}

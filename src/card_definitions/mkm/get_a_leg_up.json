@@ -1,0 +1,12 @@
+{
+  "name": "Get a Leg Up",
+  "catalogue_id": 1720,
+  "oracle_id": "a80519c4-f778-4b8e-9920-64013e98c95b",
+  "facts_sha256": "af27d92eff7be8b07f6faa5c4dc8cc8bc75a59003f72c1600f31df809fca390b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e3ca882a4139d1ca795a6be7e2b73176b2422ca1a490ab899e0eab01d4466aa2"
+  },
+  "physical_metadata_sha256": "427853e4ad2195986f958ed844538634a3ada52dc57d771f38383473b5bb293f"
+}

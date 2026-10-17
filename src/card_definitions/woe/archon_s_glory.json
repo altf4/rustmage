@@ -1,0 +1,12 @@
+{
+  "name": "Archon's Glory",
+  "catalogue_id": 216,
+  "oracle_id": "bc5631ae-494e-4987-8d17-57674bfbdb9f",
+  "facts_sha256": "468332c10aa35620ed371557fc975cd89d49ba890634724af6759302daab788f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c68bdc94c4f8211913b67d66a79fe5ad99f57ed55878116e9011eb0da17020d9"
+  },
+  "physical_metadata_sha256": "488126a805d5f8137a4970ad8d0d7a9c688825504d5156f56983e757c1a87b0d"
+}

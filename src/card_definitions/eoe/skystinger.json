@@ -1,0 +1,12 @@
+{
+  "name": "Skystinger",
+  "catalogue_id": 3908,
+  "oracle_id": "6bb7419b-e085-4616-8e5c-4ed08cb2b4c1",
+  "facts_sha256": "919331861e9292e0f559b997199741b391fef68adb8b87db46e81de33b5a2aac",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "195b09143f95188011ae66150b3f510689c51fbecc0d448ebe72543b6cbac28f"
+  },
+  "physical_metadata_sha256": "6049d4d18b767453992d9b5e4b5e8af9a34127e18176be19ec3b468c461f5801"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Super Speed",
+  "catalogue_id": 4254,
+  "oracle_id": "88923ca1-a793-42f0-b9f8-ed9ff9c1185d",
+  "facts_sha256": "4d9866dc4033156171ab5820c69f31e944b85d2e99f79d491717e295d2cf4269",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3f24ac471000a81c3a3fc7c75affd8c6da4d3154d1f080205ad82950733efa9b"
+  },
+  "physical_metadata_sha256": "d6ceefecb8326cfc38ed1df70856a013d900433671eb355841e65710266baa8d"
+}

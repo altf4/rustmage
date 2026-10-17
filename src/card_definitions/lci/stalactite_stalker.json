@@ -1,0 +1,12 @@
+{
+  "name": "Stalactite Stalker",
+  "catalogue_id": 4089,
+  "oracle_id": "c8c28807-8abf-4f91-81f3-1d7d9e856c25",
+  "facts_sha256": "0221979ea4b17c6c1cde53ac3d311a5f370aa620b09226ae9f930ee5385594fa",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "31bc60b841e6b69a7be1abefa2cadd0e8ab1f269b5adf3dba2ef3947ed346692"
+  },
+  "physical_metadata_sha256": "2cfa5b257f90b5e10994173a5a8b639b319d48ad7f5df12be1e01290142fe589"
+}

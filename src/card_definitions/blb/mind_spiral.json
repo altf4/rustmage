@@ -1,0 +1,12 @@
+{
+  "name": "Mind Spiral",
+  "catalogue_id": 2763,
+  "oracle_id": "03e356ae-f1e8-4730-8d2b-b9e2f32db915",
+  "facts_sha256": "b74ab38f28f04d4cce885bae58458707ac44018f3a2560e018bf0060d70ae5d9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1fdf8ec12e26ffe6bd1128bb3ae9351d91663f4097730fc5ff880cd6beab3ea1"
+  },
+  "physical_metadata_sha256": "8dc53bf57d2907b4c020793eb276875b97b2334ed8aee44a4a736960d13a3c76"
+}

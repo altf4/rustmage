@@ -1,0 +1,12 @@
+{
+  "name": "Ayli, Eternal Pilgrim",
+  "catalogue_id": 292,
+  "oracle_id": "e6a35729-edee-4a8c-9aa1-041114d66c69",
+  "facts_sha256": "2e1c0af315a218a3147609139320bb168ad564fc8feef270080a57bfe8e374ab",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1521108534b39009876e8181a42b2c26ef09596ea6df65cfbec773261aa5fc48"
+  },
+  "physical_metadata_sha256": "9747904766b599cf853d7c53f59498da625687a0d8b57d8dc69b3090dfb6800b"
+}

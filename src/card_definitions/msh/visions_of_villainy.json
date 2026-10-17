@@ -1,0 +1,12 @@
+{
+  "name": "Visions of Villainy",
+  "catalogue_id": 4918,
+  "oracle_id": "3b46800b-711b-4cbb-b296-26115b4f6839",
+  "facts_sha256": "a28ce227c316160eee73fdfdbb6dbb69e73ec401214f1089730c85364636a4db",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0e12adab164a1c1821e4ca9ff0928a313817f047d910351f61c58802d4e67a11"
+  },
+  "physical_metadata_sha256": "926b948a625226f3070285e4f9ec04d668096abcdf0a6ae7e699ab8dc60a319c"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Hydraulic Helper",
+  "catalogue_id": 2111,
+  "oracle_id": "503928cd-1abd-44cd-92c3-6dc19bb07f78",
+  "facts_sha256": "7e564c723a1df2838e82b67b586ec23907aa83686eb164e0e66ccf40ed9f7ff0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "168e22bf534e96ba9c5eae07a47558f4ec964168d046e24ac36127bbd3a4648b"
+  },
+  "physical_metadata_sha256": "cd4e1f4a33d95d2dcdfd48c9033061a7880c075b9b3a072d067ef3e6df1f6853"
+}

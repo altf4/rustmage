@@ -1,0 +1,12 @@
+{
+  "name": "Intrepid Tenderfoot",
+  "catalogue_id": 2206,
+  "oracle_id": "94023b23-339a-426e-85cc-cc361ef68754",
+  "facts_sha256": "cba7a734fd66c5ddd4c088e08c45ba06c349b919b45e223f13518d915b420aca",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f41d97115b3310fc729f0992165698756c4b7ef53877b3af8c51c7a638f58d13"
+  },
+  "physical_metadata_sha256": "ab981277075ea0b559c2d6c61af422fecd57c32d929a3cc921285d47bc16383c"
+}

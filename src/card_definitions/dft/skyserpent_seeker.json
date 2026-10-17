@@ -1,0 +1,12 @@
+{
+  "name": "Skyserpent Seeker",
+  "catalogue_id": 3905,
+  "oracle_id": "5da8b86a-a7be-4fb5-9a45-a47d5cb4b372",
+  "facts_sha256": "927b0961dd5c7b602bfeb53989db2b187e81f7561cef0f386ae4a9e6107cb740",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eb640c7b6c9121ba3c592d7e4752c64b5764715b82898433a86c6efca1c6be4b"
+  },
+  "physical_metadata_sha256": "2ee24ff2f294dae11f2f0e31dc20fdf942bfae63897615764da5a28969a6b0af"
+}

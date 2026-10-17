@@ -1,0 +1,12 @@
+{
+  "name": "Heartfire Hero",
+  "catalogue_id": 1977,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "21fa3aa6d7e9e2e34d77f4064516b3c24edf01f30e0b44f9577f8be05db655f6"
+  },
+  "physical_metadata_sha256": "77bcbdcdfdbd590d846b75897ca09b5fd9f93a36aa996d29f0d07518e2b86e0c"
+}

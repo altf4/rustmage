@@ -1,0 +1,68 @@
+// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+pub(in crate::cards) const RULES: CardRules = CardRules {
+    effect: Effect::Creature(6, 5),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::Ward,
+        targets: TargetPlan::Single(TargetSpec::NONE),
+        program: &[
+            Instruction::ChooseObjects {
+                kind: EffectChoiceKind::Discard,
+                players: PlayerSet::Opponent,
+                filter: SacrificeFilter {
+                    artifact_enchantment_or_token: false,
+                    keywords: Keywords(0),
+                    source_only: false,
+                    kinds: 0,
+                    nonland: false,
+                    other: false,
+                    tokens: None,
+                    subtype: None,
+                },
+                amount: 1,
+                optional_skip: Some(1),
+            },
+            Instruction::Skip(1),
+            Instruction::CounterRelated,
+        ],
+    }],
+    activated: &[ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        cycling: true,
+        origin: ActivationOrigin::Hand,
+        cost: ActivationCost {
+            colored: [0, 0, 0, 0, 0, 0],
+            generic: 2,
+            alternatives: &[],
+            additional: None,
+            mana_component: true,
+            tap: false,
+            sacrifice: false,
+            exile_self: false,
+            discard: true,
+            life: 0,
+            remove: None,
+            loyalty: None,
+        },
+        targets: TargetPlan::Single(TargetSpec::NONE),
+        program: &[Instruction::Search(SearchSpec {
+            filter: SearchFilter::Subtype("Swamp"),
+            maximum: 1,
+            destination: SearchDestination::Hand,
+            tapped: false,
+            reveal: true,
+        })],
+        sorcery: false,
+        once_per_turn: false,
+    }],
+    enters: Counters {
+        plus_one: 0,
+        minus_one: 0,
+        stun: 0,
+        loyalty: 0,
+        lore: 0,
+    },
+    entry: EntryTapped::Never,
+    keywords: Keywords(0),
+    ..CardRules::EMPTY
+};

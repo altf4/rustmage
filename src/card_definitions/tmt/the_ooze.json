@@ -1,0 +1,12 @@
+{
+  "name": "The Ooze",
+  "catalogue_id": 4484,
+  "oracle_id": "82a6fa6f-13c2-4ea3-bec2-c51b56b2783b",
+  "facts_sha256": "ba1eb62dad5820e98bb490e1843091c7a89c13b61337b30ef25958870900ac3d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8f77f380f4b901ab9bc34785949aa7242f01588b88e6d7d4ffd1141b0130598c"
+  },
+  "physical_metadata_sha256": "2df47543f64aafc45e45c7ba215066c54d37f968fe499ae9637cd1f6da805921"
+}

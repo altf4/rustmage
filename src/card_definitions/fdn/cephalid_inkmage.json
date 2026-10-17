@@ -1,0 +1,12 @@
+{
+  "name": "Cephalid Inkmage",
+  "catalogue_id": 700,
+  "oracle_id": "8d979a0b-ba04-4abb-8f78-c707ce15351a",
+  "facts_sha256": "3e5f8e1232e87a7400d74b4a74ee0cedf8f0f06deb174548ac61be10a8bd1ebb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ebf08f8c86c3037354ef19c3afe8a4bc6c5d8bb63155e3cbcbbf22dc570a3e7b"
+  },
+  "physical_metadata_sha256": "c3c36576dabb4016b47e3a5e7ebe190099737e89efc3e0fcd400474f5c70da44"
+}

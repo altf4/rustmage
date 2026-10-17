@@ -1,0 +1,12 @@
+{
+  "name": "Hunter's Axe",
+  "catalogue_id": 2104,
+  "oracle_id": "d7d59fef-1401-464b-b1bb-ee5da92cde51",
+  "facts_sha256": "5d819134a5ee65ed12b069274811ac34187fd57b580fbd00e9eee86ca262e010",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ceb5d02fbbb1fafc3235453ab9deba26932010459309a32ac70d7cd83e6a4701"
+  },
+  "physical_metadata_sha256": "321343e4bd17d1c234c37dd122a10cfac514de0478623d9280f02f805ca4fc11"
+}

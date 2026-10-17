@@ -1,0 +1,12 @@
+{
+  "name": "Shock Brigade",
+  "catalogue_id": 3839,
+  "oracle_id": "8676e917-17dd-4047-99c4-402f2e909e16",
+  "facts_sha256": "1ea078b25ce8be14058e2cb155fb954ccde5892d5e1597078882ba834baea5c6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d6cb6c50bb976bfc668dfd8af1b13b14bb0a0adb53c6be41618f9acd93fe381b"
+  },
+  "physical_metadata_sha256": "2d2faadaeacf4a7b9db299b9ed0c29eadfa380f969f6396a5388764caa328ce3"
+}

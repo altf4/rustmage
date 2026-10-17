@@ -1,0 +1,12 @@
+{
+  "name": "Starport Security",
+  "catalogue_id": 4108,
+  "oracle_id": "5454dddf-c6e5-4b0d-b96d-4904c13606dc",
+  "facts_sha256": "d2359ab9d050377771027b9b2ed6456ee195144fc387cf2332db5d3a5a5c911f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ef2799b90d43f7aff7b96e81fe1812a275e16320b57b149550b2c948c76f783b"
+  },
+  "physical_metadata_sha256": "dfaf774afc2da0688202e1a78cbadafdb8da5174166aefe2aaaa4e21d019c470"
+}

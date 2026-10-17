@@ -1,0 +1,12 @@
+{
+  "name": "Daretti, Rocketeer Engineer",
+  "catalogue_id": 958,
+  "oracle_id": "0eb1d539-6301-46b0-903e-487eda34253f",
+  "facts_sha256": "8152384e1b603428d1226ad4fb36a4edd47be33631c78648226f0cfe22b35149",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3d60190c9cdc1dc01a5743c5b636d8d4c81749078dac7319a0ce30693d7eb19a"
+  },
+  "physical_metadata_sha256": "5fae80cd3ef0ea00c3e3f959499520355029b817794743eaffbbf03fa1e59a63"
+}

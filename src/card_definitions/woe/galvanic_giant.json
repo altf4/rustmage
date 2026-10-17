@@ -1,0 +1,12 @@
+{
+  "name": "Galvanic Giant",
+  "catalogue_id": 1673,
+  "oracle_id": "48ab8ba0-0e85-4656-a798-ceb961fb02ce",
+  "facts_sha256": "149f3eb14226a5a3c87fb3dd632c9a307167e5bdc1980da07975cb8cdbbc5273",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "956cd5d4282ae00d4b5d12d6dfeedceaeb9e38965f93be04d2e840e25497d7e4"
+  },
+  "physical_metadata_sha256": "16ad14d20aa36757d4b2fca297b4788a056623a52aa0f56877a55c3c6c454991"
+}

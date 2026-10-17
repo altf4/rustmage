@@ -1,0 +1,12 @@
+{
+  "name": "Forum Familiar",
+  "catalogue_id": 1603,
+  "oracle_id": "7ea0012b-b90b-43d6-bb5b-e4e92452bea7",
+  "facts_sha256": "d1ab27edd97aff0828902a7a182709c7a713de079d8d616df6e3ec9637f05d80",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c6ff3d028168cc97f4b6e3e3affcb1d7d733bfe95a44f20b117a66cc42e6a32f"
+  },
+  "physical_metadata_sha256": "692b79d244a6d62f021b07071aff3e7843b2af188fc013fddf0832007af031a9"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Smaug the Magnificent",
+  "catalogue_id": 3933,
+  "oracle_id": "c53b7602-5e36-4900-896c-844bf6eac22e",
+  "facts_sha256": "876f03b367d465fe8491facbd8b54eca2f6873babefd288d92488d045250959e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0425af88b29dc49b9d7dd92509ae45e66107ad8b2fbd2f5e5620b1ce4949b5d8"
+  },
+  "physical_metadata_sha256": "543264d5750fbf191cfb836d571923198f0d8a284ee0fc642c3f5d09e9a67984"
+}

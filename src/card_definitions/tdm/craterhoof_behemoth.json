@@ -1,0 +1,12 @@
+{
+  "name": "Craterhoof Behemoth",
+  "catalogue_id": 882,
+  "oracle_id": "8c52bd39-0586-48ca-b263-17210cf9feb6",
+  "facts_sha256": "384db7fd461ba07acd6d8419590fcab030809777894cc75b24361f23c67dbaad",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4e55619df3a09856da0c4ca63c96bdbbbe9a36e17ed481337f7611a37417e18c"
+  },
+  "physical_metadata_sha256": "a6c59c52735043889f0574f97b736e2850c9bbee41d6f44f307a033e17caad04"
+}

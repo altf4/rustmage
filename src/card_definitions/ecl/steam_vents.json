@@ -1,0 +1,12 @@
+{
+  "name": "Steam Vents",
+  "catalogue_id": 4124,
+  "oracle_id": "17039058-822d-409f-938c-b727a366ba63",
+  "facts_sha256": "838985a349a304f5af3c8b80720306e5393f9c6443a6e717820072a184320e55",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b32bac418946129c9dc613c41a19eb6f03cdeb5c9ee13f3a188ff276ae35c5c8"
+  },
+  "physical_metadata_sha256": "1115391738c328e32fc84f1c7b7f03c7e6c729b3520b9719e6898c86a74339d6"
+}

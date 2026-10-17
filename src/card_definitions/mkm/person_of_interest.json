@@ -1,0 +1,12 @@
+{
+  "name": "Person of Interest",
+  "catalogue_id": 3133,
+  "oracle_id": "3d18cd9b-6013-48d7-9269-4787e7585a51",
+  "facts_sha256": "b3ea0290e80981f73f367b6e4a56d16626bb2fc65e019341af8d9e1d74b066e1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3e23f398465573fa0198b769c88ffa2bcef177e7fbb3ba051201e77541a61977"
+  },
+  "physical_metadata_sha256": "e6cc06eae37b13db7302449412e1b1e4ba5100c81e7f2c0c4de598242d9b6454"
+}

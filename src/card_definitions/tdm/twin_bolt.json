@@ -1,0 +1,12 @@
+{
+  "name": "Twin Bolt",
+  "catalogue_id": 4717,
+  "oracle_id": "970dc070-3668-4584-9904-2897b27bb806",
+  "facts_sha256": "9cc59ee1886796e8bad8fc68f369ace0020c480db0e4221e1badbb394eea4d27",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7b8c15277a0e61ac7f8b822a409042d282c0e646f26c81261b9ca0d6e4f61984"
+  },
+  "physical_metadata_sha256": "e4a003aae00d988d95031200112322d0b1b29d2972150d3b0dafceacd182a681"
+}

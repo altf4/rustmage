@@ -1,0 +1,12 @@
+{
+  "name": "Garruk's Uprising",
+  "catalogue_id": 1686,
+  "oracle_id": "3127ae9b-a7a7-43ec-89d7-688f8445b33d",
+  "facts_sha256": "ffde973839942a89203fd81a6be8be7cf2a7571399d89a2eb2296c3aa38f1f13",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1da9cbc63e58beeecaea282385ed5cf590a2507a8d30b804d6a145d8a40d7a8d"
+  },
+  "physical_metadata_sha256": "db08394622a09405e8c8eb9db5991966a1579629d5b54a79c60def62ba1677b7"
+}

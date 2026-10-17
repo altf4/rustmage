@@ -1,0 +1,12 @@
+{
+  "name": "Ojer Pakpatiq, Deepest Epoch // Temple of Cyclical Time",
+  "catalogue_id": 2998,
+  "oracle_id": "34ef174e-1b3d-43d5-9f72-3d35befbdd7f",
+  "facts_sha256": "aee320f2647ec6d617cb5d44bb58f7f5e11fd2a42d2b924a3a9bf23fc794bbf5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0f426fb8a2f3f85fda424aba93838d795f82403422eb7d5dc053d7afce057688"
+  },
+  "physical_metadata_sha256": "98660922fd7f8a9a50500d339771215e4ababc1943a1c660457f3433011ae406"
+}

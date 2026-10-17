@@ -1,0 +1,12 @@
+{
+  "name": "Arcane Amphisbaena",
+  "catalogue_id": 203,
+  "oracle_id": "5c151e3b-fcf2-4adb-a60b-9eff0c360705",
+  "facts_sha256": "5a7442fecd3bf35ee2a39bf68566697426ce5b6a01637d9198f0d9fb91e1e077",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "663b380a8a9de8b2695acf7532836e665324e2c9a53e06c67038233adff2ac6a"
+  },
+  "physical_metadata_sha256": "43cd9746c9f4bcaa543046e2004981bfc10a44310116da31ca1c66f08fb70752"
+}

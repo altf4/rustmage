@@ -1,0 +1,12 @@
+{
+  "name": "The Unbeatable Squirrel Girl",
+  "catalogue_id": 4512,
+  "oracle_id": "80312910-5d53-44f1-9982-e46dc7532abb",
+  "facts_sha256": "da9e1793e67b9b384d182f8dd3e4f24a5b93708218894bd00ca23c3b7c4940f7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9ce12de22f40dd7239bc63d5c28622288710504a8a84f2ff1072a0cb972d8637"
+  },
+  "physical_metadata_sha256": "c4d4b27e46ec0bc85d339b44cf375eb934bd315b7fda4302851cae4498cff03b"
+}

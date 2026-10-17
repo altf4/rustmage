@@ -1,0 +1,12 @@
+{
+  "name": "Protective Parents",
+  "catalogue_id": 3262,
+  "oracle_id": "d9717522-358b-41ac-9183-8a6b3981f921",
+  "facts_sha256": "d1331825c36f54554bdfd1ec39d1151d1df52b7b3f7d5390225bcf0250bb5d6a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2fc0f56ff16bd07ff4a102489c6c68178a90145a3cb59b31d490a0734f8937b1"
+  },
+  "physical_metadata_sha256": "fd1959dcccf5b5db364694dc633220f0bf1bca475d357ba271519ca0abf90943"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Officious Interrogation",
+  "catalogue_id": 2993,
+  "oracle_id": "e57e448b-1186-4662-a6b0-01a9ce33b961",
+  "facts_sha256": "0f3a12c89c30dde97475d1ad80a6d2519865a7ed6323d09ec3a7837c865158c0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ff8b3ed2ef4d420db6db1bf8a1eb9dd46a6b8b766a80d9070f32b73591e85726"
+  },
+  "physical_metadata_sha256": "c05886b61c0bf25aa458d760584e8faa4c09688b728f16802483466586f653e8"
+}

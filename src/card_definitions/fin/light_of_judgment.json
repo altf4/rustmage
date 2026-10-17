@@ -1,0 +1,12 @@
+{
+  "name": "Light of Judgment",
+  "catalogue_id": 2493,
+  "oracle_id": "932177b8-70f8-4908-a48f-fe03204daddc",
+  "facts_sha256": "d0b72639808ac6b839af683995a3c250b89c9828a77a79637e6220d28c742068",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "24797250f1b87b6d87af8f58e315cc06b86625e32ba874fc43a1db217c41126c"
+  },
+  "physical_metadata_sha256": "1475bc3f7f9635eec38a74dc6f25be63a76725a3be3750eae211fe9377537e69"
+}

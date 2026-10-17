@@ -1,0 +1,12 @@
+{
+  "name": "Mend the Wilds",
+  "catalogue_id": 5209,
+  "oracle_id": "ba610f08-61a7-47fe-9a80-32b5ce51b118",
+  "facts_sha256": "9eea4ae811b6be9a0bde299f0c8155121c0aad41922d4d8b6fbb03b2265e0ca1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "60c69b043a04437710a3b3ff5e0aa93f1821aa6c6e01c151502b8bd04d69c90f"
+  },
+  "physical_metadata_sha256": "7100dfd170eea945fdccfced9102efeda3398eeffdd5b56e2bc2135793ee8807"
+}

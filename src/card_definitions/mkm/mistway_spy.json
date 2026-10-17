@@ -1,0 +1,12 @@
+{
+  "name": "Mistway Spy",
+  "catalogue_id": 2797,
+  "oracle_id": "87ccb151-a948-4e5a-878b-0d46c921a2b7",
+  "facts_sha256": "658981fb12b85f30aa53dad8a6567b4d67d02607461c9fce93149b381e7c4eed",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3ff79e37273a6b8cfcfcf5d2c3a2527d470c97fda91382149e067f661aa4fa08"
+  },
+  "physical_metadata_sha256": "a839f4329e08ab169405fda665b18cba4994768b11e8cbd659bf4b227768c9a9"
+}

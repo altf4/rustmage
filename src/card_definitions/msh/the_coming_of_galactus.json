@@ -1,0 +1,12 @@
+{
+  "name": "The Coming of Galactus",
+  "catalogue_id": 4430,
+  "oracle_id": "e05f23ba-f2b2-4c40-83fa-8defce3cb978",
+  "facts_sha256": "3ba863442a42d840d44a08816554161a02c8788ee0b45097572d6d762885eb55",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "14cc0916de1163c4d10a509c7faaa1805a246b572083c5ac929bbc41c1969d00"
+  },
+  "physical_metadata_sha256": "fb5baab2e9c3a10aa6c1427f6958a076f597db1094687e586e5f767f7b713b83"
+}

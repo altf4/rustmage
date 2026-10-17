@@ -1,0 +1,12 @@
+{
+  "name": "Vnwxt, Verbose Host",
+  "catalogue_id": 4926,
+  "oracle_id": "6454c457-a278-431a-9e8d-bfd1a966bdde",
+  "facts_sha256": "8e32a9d02ca796651d732b276dd5a5de0333a0e85466b1ff48a2f9240fa0984c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9f7d10513d6cd353223ad41604149ab163d268ed700451a9daa041be0839bab8"
+  },
+  "physical_metadata_sha256": "1a984b9aa4e28f98693ffc03fb0d06afef4c483407a4a632fa6d2d14cc199c23"
+}

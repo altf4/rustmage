@@ -1,0 +1,12 @@
+{
+  "name": "Chilling Screech",
+  "catalogue_id": 5231,
+  "oracle_id": "af7db15c-93af-4c7e-a028-42181d91a923",
+  "facts_sha256": "5e041ed82ce3f81e0819b15ce6ce9b57b3a93c1acda84f9061e621a5b4fc363d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2aec385588423925b5f46b6eae27eb2e65d32fb74e0a62b713d75e4e5b352aa7"
+  },
+  "physical_metadata_sha256": "1b722079e3719cb459df737cf52f612840f112b7725f032cf76775bc4794ca25"
+}

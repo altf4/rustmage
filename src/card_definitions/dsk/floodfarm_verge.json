@@ -1,0 +1,12 @@
+{
+  "name": "Floodfarm Verge",
+  "catalogue_id": 1563,
+  "oracle_id": "f1e9abfb-c3c8-483e-b446-5c2afc9f6394",
+  "facts_sha256": "c10600a84a6fef1eb3d81f12e2380db2d5cd5768acb0df6f31841b0501bfeeb9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a2bedb06203a962462fbfabc1ca34497b878e1840cb0fbb43d82547856e99577"
+  },
+  "physical_metadata_sha256": "a97436678a78b9476d78c7922370a943870c9affc05a13569adadb304708ede5"
+}

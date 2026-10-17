@@ -1,0 +1,12 @@
+{
+  "name": "Unwelcome Sprite",
+  "catalogue_id": 4809,
+  "oracle_id": "d0a38e8c-c42c-4c99-8a44-d390ff2511ff",
+  "facts_sha256": "10fef61fc2c7d92a9c15efd44ea6b71a100a629c947aa999750072ac22ace959",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2bfad49f4b6a4ac6da8702f2c797d0dd11ed22506ab64def47977156177f2a3a"
+  },
+  "physical_metadata_sha256": "b752cb37662116c1165d30f40d714b559a78b5c2873ee8a5b3607debb3e4579e"
+}

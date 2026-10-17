@@ -1,0 +1,12 @@
+{
+  "name": "Celestial Reunion",
+  "catalogue_id": 696,
+  "oracle_id": "ba0a815c-1dfe-47c1-890f-496c670124f3",
+  "facts_sha256": "2f77d5accb78dc51e4931d162d1f0ce390939dd3621d8cbbcde7817ee0991d03",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5b92a7cd377a65f17348c3c886a2b69b663a981fcdeb8d2294c469fac8c4778a"
+  },
+  "physical_metadata_sha256": "614ea62a742d5b7c7a85c70cd2ce375fe5225be623618bba930f75067c6052b1"
+}

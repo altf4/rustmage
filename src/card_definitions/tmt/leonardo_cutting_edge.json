@@ -1,0 +1,12 @@
+{
+  "name": "Leonardo, Cutting Edge",
+  "catalogue_id": 2473,
+  "oracle_id": "933fe6e5-8d00-4411-aa54-7780382c1ea6",
+  "facts_sha256": "e9ae295dbb988b7b46f812156c979c514a5d792ee6bbc9eb01270dd7ceb6807b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3bf8c84750698c44bcc7d558fb6dc5d73bb86e9d600d39d82052129c39929a52"
+  },
+  "physical_metadata_sha256": "5b5a069715e319bc0affad3f0ac633a89a81b434f5693834adbb99af74d96774"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Icetill Explorer",
+  "catalogue_id": 2125,
+  "oracle_id": "109cdefd-e8cc-4ac7-b6ba-2cfdef8d780f",
+  "facts_sha256": "1afec812cc364ca5af0ee5346e58ae09adbf967c9d772ec6ea9596a687fc2818",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "95d0127545dab30063e1ff37585b29d7b6c0967cc0cdfd7afe2a02832abe8ca8"
+  },
+  "physical_metadata_sha256": "95418c2d9a2904e02f65f2a36ce6338fbaeec0aac2a837cf950ee7988b056ed9"
+}

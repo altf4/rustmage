@@ -1,0 +1,12 @@
+{
+  "name": "Bloodghast",
+  "catalogue_id": 456,
+  "oracle_id": "e97f9c2b-b41e-4f36-9245-77c0ac125647",
+  "facts_sha256": "188fa6c2954953856a19a60429bb94815153f655c3f1aecdad661bef95650eb1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5fd85ac540184d61218a2062e2cc6bf660129df293b80c50cac1b9fe47dcced2"
+  },
+  "physical_metadata_sha256": "28060a9c3295bfcb86f3e67640141df20d270f27ddb1c1d810532e3d95f6fca0"
+}

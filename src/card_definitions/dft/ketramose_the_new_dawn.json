@@ -1,0 +1,12 @@
+{
+  "name": "Ketramose, the New Dawn",
+  "catalogue_id": 2344,
+  "oracle_id": "de41ad94-b9d7-4c2b-bfa6-394d18737228",
+  "facts_sha256": "9153c395ea3df03521a3d443f5b04e4dac3c703163f32cc4e87add1e2b0d9302",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "61f960598d595ff7adf9d54e7dfd1df79e36120bacf709ecd038d5a72e349e36"
+  },
+  "physical_metadata_sha256": "f0dcb3034e3e8430a857d887cfca9cdbf404fa953cc2c92c6d40c735a899a2fb"
+}

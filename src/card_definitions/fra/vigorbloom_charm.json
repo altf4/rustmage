@@ -1,0 +1,12 @@
+{
+  "name": "Vigorbloom Charm",
+  "catalogue_id": 4890,
+  "oracle_id": "826f17d1-3806-4579-8b1b-2082b7b03d69",
+  "facts_sha256": "4dc5736c04add727a1753971e6004a65d1e58f4cb7a0f43b3527573edb3dc22c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d2c39df85c2ba02aab65b9d6a6b7722d8e6cd7e90966c0f281d939abcd78dff4"
+  },
+  "physical_metadata_sha256": "38218d382fa7986577f57ccb622da1881bb465c0345e7792e120d9a7cef9b29e"
+}

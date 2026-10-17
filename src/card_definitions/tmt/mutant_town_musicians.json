@@ -1,0 +1,12 @@
+{
+  "name": "Mutant Town Musicians",
+  "catalogue_id": 2891,
+  "oracle_id": "9f318ddc-3dc5-4e43-92b3-3a776e41c56e",
+  "facts_sha256": "53a885e75ee2b039c0539b90fc469a8dae0d2dd463c7001563c46f9c02397ad7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a121950dc4755bf59970f5e30cc63cd8ff7f7cc5ed0896edbb17650f8885782b"
+  },
+  "physical_metadata_sha256": "0ebc7a71f94def00f966608c18609f86450a22588886f315c5d7a6addd5fa0d8"
+}

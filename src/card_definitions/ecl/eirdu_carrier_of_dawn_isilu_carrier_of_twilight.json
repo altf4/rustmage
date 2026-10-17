@@ -1,0 +1,12 @@
+{
+  "name": "Eirdu, Carrier of Dawn // Isilu, Carrier of Twilight",
+  "catalogue_id": 1273,
+  "oracle_id": "36af3c2c-49d7-46ea-ab02-c254b332448e",
+  "facts_sha256": "b2bef366bab9bb489d702f0ffaecbb34734399b6d30d5df50725a053f89e04c2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "533d71a12ad73131f82ec8b4e791ee139eb5e09ccdc09aff33a956904c3b6a57"
+  },
+  "physical_metadata_sha256": "b586efde8373530466ea59900cfea8491a811191716076149f0c24660ee9751e"
+}

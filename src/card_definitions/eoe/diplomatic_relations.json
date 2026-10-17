@@ -1,0 +1,12 @@
+{
+  "name": "Diplomatic Relations",
+  "catalogue_id": 1084,
+  "oracle_id": "57b75be4-9229-4a48-a59e-a0f812f38637",
+  "facts_sha256": "3246878a51834cd9edcf96e3166a88082c06852b8339c22b3a28d96fc9d32a67",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b636a6934831061a0484f6633cafad2f7ee1a7fac878e78522055ffd1e003070"
+  },
+  "physical_metadata_sha256": "b32548f4efa897fe0a8cc63102bf121571f6249faab1e4231055febb9f308284"
+}

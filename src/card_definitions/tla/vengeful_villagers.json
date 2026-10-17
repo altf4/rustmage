@@ -1,0 +1,12 @@
+{
+  "name": "Vengeful Villagers",
+  "catalogue_id": 4867,
+  "oracle_id": "ad6442c2-7aa2-4c24-8133-f679a3499bde",
+  "facts_sha256": "ad0f15a6567a4c4c45524798bf4c207c7eb5aeb7e804c0bcd1e7619fa895678d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "80be2e8529492bafffb71c448206520395f4fcafa81893ca31124628efd4ee9d"
+  },
+  "physical_metadata_sha256": "575d30f44797943f108883986e1721c8a782852abac4e152162ffde29e27d51a"
+}

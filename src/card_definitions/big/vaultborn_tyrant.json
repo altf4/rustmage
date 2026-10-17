@@ -1,0 +1,12 @@
+{
+  "name": "Vaultborn Tyrant",
+  "catalogue_id": 4853,
+  "oracle_id": "e8d0accc-b320-4c07-8a71-a09db860351e",
+  "facts_sha256": "fb22d21c7545e5f07246fe7bd941df1f0b26a50c1e2e41fc08fe6606d590c126",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2f1c3ce2fba7afb26b7e94205c791e92f6f900ea6c3f2ca7a7665d70d101bdae"
+  },
+  "physical_metadata_sha256": "4590e8eeb0d000f489b6e56b502d7e587442252dc7c28dee5bc4bbb7fa11767d"
+}

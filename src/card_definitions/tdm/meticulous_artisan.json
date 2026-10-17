@@ -1,0 +1,12 @@
+{
+  "name": "Meticulous Artisan",
+  "catalogue_id": 2734,
+  "oracle_id": "2b2b3b16-389c-4581-b889-b8a2e76f83a2",
+  "facts_sha256": "a8c18430800e1d23d55806b8ed98cb2bd98c249b205035429df370682389c40a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "224abb92f38c9d33fcd763fb18bbe76b104d8faedbd17d67d25bab7b6d0be115"
+  },
+  "physical_metadata_sha256": "b90d56016fdd306eb2030a417bd878e55dcedf07d13691f772a6da3f5282a80e"
+}

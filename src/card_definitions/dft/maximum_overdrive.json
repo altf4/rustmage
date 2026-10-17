@@ -1,0 +1,12 @@
+{
+  "name": "Maximum Overdrive",
+  "catalogue_id": 2690,
+  "oracle_id": "f0e85b74-12fb-4d63-853e-7a3f41f731b4",
+  "facts_sha256": "57b671620508d13102a527a1535af38142e77ff1e631fd1747cbf2c2b0b4be24",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8ef5527f346ffeefcea2a04e15a670009f5cc30edcab511581b2b88a956ea775"
+  },
+  "physical_metadata_sha256": "62fe18bde90aeb4c2281fbc08f5e86d6cdb68612780738717572984350f561e7"
+}

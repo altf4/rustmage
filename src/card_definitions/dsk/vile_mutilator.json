@@ -1,0 +1,12 @@
+{
+  "name": "Vile Mutilator",
+  "catalogue_id": 4893,
+  "oracle_id": "1aae80a5-079c-48f3-aad1-563931e1a031",
+  "facts_sha256": "ce65e4b4fffd0e805f2778977d144a252d2bd2e22d95942a6220d6ff53b2d3bd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0166fe2f8414098b88ff9a8cc054cffc84b9942d7c5b87932877889b3410bc3f"
+  },
+  "physical_metadata_sha256": "df0adf9ae88b454f9a2e82af133f0b353f78aeda9565894b7a30207d69f8c31a"
+}

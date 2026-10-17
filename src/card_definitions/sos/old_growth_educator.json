@@ -1,0 +1,12 @@
+{
+  "name": "Old-Growth Educator",
+  "catalogue_id": 3008,
+  "oracle_id": "2b7362a9-3518-4071-ab1b-40689a50e12a",
+  "facts_sha256": "d9d82f423512e5b051ab5ed6b4dd4e7fe03ec5cc9d48e349eace65aaeffc62b6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9c71f3137b4f280c9162b58bb71c5fa59f87a6a935a1d38f849720df4ae49c1e"
+  },
+  "physical_metadata_sha256": "4fe3dfd72a8151f1c2ec200b8197fd188192aa42f0716995e142d8e41146c43d"
+}

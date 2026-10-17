@@ -1,0 +1,12 @@
+{
+  "name": "Bioengineered Future",
+  "catalogue_id": 415,
+  "oracle_id": "6fa78914-85b3-46fd-977a-0e5b4d29eca4",
+  "facts_sha256": "0e737610f29ee784a0470922fbe8724cf97340d055a2c4eb6ee58486a1162c64",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5fc8d149d4d7aae9579387fef1213f928eef94a53aff9417ed5cc26ec5b7fa81"
+  },
+  "physical_metadata_sha256": "f56f316bbd858e50c721dadf9d7daf4fa627dad8afea18150881d722769fa985"
+}

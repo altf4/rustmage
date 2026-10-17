@@ -1,0 +1,12 @@
+{
+  "name": "Diregraf Ghoul",
+  "catalogue_id": 1087,
+  "oracle_id": "6048fc70-0dcc-4b54-977d-16e240225f82",
+  "facts_sha256": "be7ebe381efe23154ea0c1c806ccec4655c9018d2f71218cba1ead4d5b55028e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "58b7bea03685120f9eec9f0bb064ae3a601e70034caf86acef2f7808cea572e6"
+  },
+  "physical_metadata_sha256": "33205eef5f8482fcc8e9e4137fb6e8b6835c3c984a9ab4c5927163373211c387"
+}

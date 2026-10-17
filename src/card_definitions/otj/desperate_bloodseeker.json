@@ -1,0 +1,12 @@
+{
+  "name": "Desperate Bloodseeker",
+  "catalogue_id": 1057,
+  "oracle_id": "de8d7cad-02c7-43f1-896e-eaa73f016ada",
+  "facts_sha256": "0b7f600740841d093f8cf28195ebfaee2c8222c5c5fbccd045e3dffa07bf054a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f91cf06c7bc02d27cd2c166e23b2c2a5af84affb995c968a8ee3e26205233fd3"
+  },
+  "physical_metadata_sha256": "c9afccaab3869cc359ae02ef7726ddc251b79ff6c223097a7714540953990467"
+}

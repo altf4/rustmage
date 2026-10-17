@@ -1,0 +1,12 @@
+{
+  "name": "Abuelo, Ancestral Echo",
+  "catalogue_id": 41,
+  "oracle_id": "eaa9baac-72f2-4bde-9146-860878d9860b",
+  "facts_sha256": "41aef081e585f5644257c7fe129355c9a25e87dc88ffbbaada95203114a660ab",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "db31743f1c3dd6202abe0079a6fb8ea1e24648c0a2d3d4ca5ffa0cedb7317986"
+  },
+  "physical_metadata_sha256": "b4c1a8d5c45ca16a54a6fafd857a1cb018e986699631c7113947c31cace13efc"
+}

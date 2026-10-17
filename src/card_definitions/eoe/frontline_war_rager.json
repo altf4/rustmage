@@ -1,0 +1,12 @@
+{
+  "name": "Frontline War-Rager",
+  "catalogue_id": 1636,
+  "oracle_id": "610d006a-3ceb-4136-b92b-a500c74d06b0",
+  "facts_sha256": "a594e1806b418f8c1118380ef6d6cc18ba03b0e86668b1a7d27063826cb3aa63",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bc99858791fbc25e4050d15a8e87e932e0b45bb54a3d7a8c0073f6d6c561ab2a"
+  },
+  "physical_metadata_sha256": "1653ffd81df8662c8a64a8f36132b397de94c7fc5de6085a386b4761df641cd4"
+}

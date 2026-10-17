@@ -1,0 +1,12 @@
+{
+  "name": "Wilt-Leaf Liege",
+  "catalogue_id": 5074,
+  "oracle_id": "2441696b-a9ba-4813-ba2e-e71f85281d05",
+  "facts_sha256": "04c1af19d42c5730056babd5ecd0c0b97b5a1f619b8d453c60d34a4df2e98c56",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "06f4bca40bc300353e109d33894528fb4d8fd22276f66be08ffad455fdde7763"
+  },
+  "physical_metadata_sha256": "13ce3fc3d0d8a6fb41ed4332f93d06025c0a009f3b2c08980646a765a75329b2"
+}

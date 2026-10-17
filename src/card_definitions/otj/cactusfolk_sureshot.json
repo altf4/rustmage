@@ -1,0 +1,12 @@
+{
+  "name": "Cactusfolk Sureshot",
+  "catalogue_id": 614,
+  "oracle_id": "05f15b7b-28bf-4b63-a4ca-b57712a1a66a",
+  "facts_sha256": "aa275f008c1c75218022dea6251e9d18aa0fb77e71d184323f63a961025689b2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "70c8ea3ab305c0e1dc206d8eeef8b26c61618c90a412639fa3567a832608c402"
+  },
+  "physical_metadata_sha256": "b9c5afa41756e78198586a370a242a3f3bf73f6de6852b7f2e604ae168975648"
+}

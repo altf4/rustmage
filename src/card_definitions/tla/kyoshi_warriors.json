@@ -1,0 +1,12 @@
+{
+  "name": "Kyoshi Warriors",
+  "catalogue_id": 2432,
+  "oracle_id": "b29abb09-75ea-431c-ab60-f2940d002e83",
+  "facts_sha256": "709eba31666e01c34e5f8d5825a29610f1c056b6bbeb4495090cb632cf2b1447",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "84aa075b9d30f4805b39c6e997403349c2804b6c822b4da71d58c7dacbb922ae"
+  },
+  "physical_metadata_sha256": "9fe1cdb9053bb9b75e35cc4f56fb69d4331099cba5db7fcad722a93b7e91647e"
+}

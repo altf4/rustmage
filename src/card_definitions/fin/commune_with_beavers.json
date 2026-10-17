@@ -1,0 +1,12 @@
+{
+  "name": "Commune with Beavers",
+  "catalogue_id": 815,
+  "oracle_id": "9108fffb-90f4-444e-8d3e-46a3d4ff3681",
+  "facts_sha256": "8e7d20e68ec135e4d3cc2eb6c0b55dca846bf6c03f0928b46fb895dbe11fbd9d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8261ee69c4477c3c6f008a6bbc325612e192666380d3e7e10c8e4259e129cd6b"
+  },
+  "physical_metadata_sha256": "881ec3f91850603ade1ad1bfd4d279388d4a0d63d864dfdad691fa179a1d5696"
+}

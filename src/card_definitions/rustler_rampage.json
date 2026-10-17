@@ -1,9 +1,0 @@
-{
-  "name": "Rustler Rampage",
-  "oracle_id": "ef0c0f28-e1ee-42a1-9878-95a0ceb0a9fa",
-  "facts_sha256": "48926c891a28f48c4e9cddb66853f3d9ae73407f469ebdffec4dde03f8565497",
-  "complete": true,
-  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-  "java_source": "Mage.Sets/src/mage/cards/r/RustlerRampage.java",
-  "java_sha256": "642cf40b865f9c131ed71f39d518823c58ec7de24b27453308216efb11616dc8"
-}

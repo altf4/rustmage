@@ -1,0 +1,12 @@
+{
+  "name": "Starlit Soothsayer",
+  "catalogue_id": 4107,
+  "oracle_id": "0c0940c6-8126-4d58-809e-871cf8588ef9",
+  "facts_sha256": "f434af62448db11c98af9ff52998e256dd3ae306847d990b65bd974a3d228cea",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4f33abbf0f01aa3e7cf57e21ba43f68c4f27c08c1330bb8e8a38dba7b460d4f9"
+  },
+  "physical_metadata_sha256": "652db4f4b497b8533614f00ea7392b5d1505fad1baf338c1e9237138242cea89"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Smile at Death",
+  "catalogue_id": 3937,
+  "oracle_id": "9228f04c-506f-4453-a335-e66876b8ce8d",
+  "facts_sha256": "9e485ea8dd7b4ab94c829742d8a87f2637cf916a77edd7f29a28a2863a004a40",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5bf3f9fb3d235d79b2edfaf0d7ed0ba7452c6369b39d95c0ee9c977889a20078"
+  },
+  "physical_metadata_sha256": "16affb9c2acba25bdaa0a8945c456598c03a28891b32533c2675d3ee9264084d"
+}

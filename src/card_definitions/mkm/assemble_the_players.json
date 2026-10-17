@@ -1,0 +1,12 @@
+{
+  "name": "Assemble the Players",
+  "catalogue_id": 247,
+  "oracle_id": "180ba940-2b11-4953-b7ce-74847e1aebfd",
+  "facts_sha256": "5bcf6bbbcae5db62d41dcc969662ccf3c87d3817f1ae575c0d834e93bb05b500",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5d6c5557cdf7c228e3b097f4f03e441def55139347f06b4cf06ab51d990735d5"
+  },
+  "physical_metadata_sha256": "21ba1679e6835757ea9de002cfb15c9f4f65dcd5f0ded2371e6017fdfba7e11f"
+}

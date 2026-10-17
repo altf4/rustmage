@@ -1,0 +1,12 @@
+{
+  "name": "Jungle Hollow",
+  "catalogue_id": 2299,
+  "oracle_id": "6de714e1-446d-4fb9-9e3d-bcd3ec6af9ca",
+  "facts_sha256": "c55f4acd0a02e4f4e57bf9b2800abc6cf6f49a36ccf82e6177936f917cb36f14",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e970a6d2b697e5c6d01d66ce2e55fa551863b45837d24c189c55a6811f0bfb5b"
+  },
+  "physical_metadata_sha256": "34ffbf9e520f2535d3778287f338cd8baf4eaab2ccb68c301f0d57dc3b602d8f"
+}

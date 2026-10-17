@@ -1,0 +1,12 @@
+{
+  "name": "Experimental Confectioner",
+  "catalogue_id": 1404,
+  "oracle_id": "87f82d15-5b6b-400f-8a15-d45a2a735f7d",
+  "facts_sha256": "aca7e1967a6c4c5a90694399153c0bbb8c6f9e1c276ad8a2b4049c8e93f92823",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "30158e354bbc867bc50f39ee3ba9c1dde21b984c69f4e5d0dd35f755dc25e352"
+  },
+  "physical_metadata_sha256": "73356d79060f88787445f5e47c2c2183ef18780dcfa8bb58f538385463b61c01"
+}

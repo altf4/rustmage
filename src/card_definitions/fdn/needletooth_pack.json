@@ -1,0 +1,12 @@
+{
+  "name": "Needletooth Pack",
+  "catalogue_id": 2913,
+  "oracle_id": "ac68fe30-a4a5-45f6-8782-fed57718c42e",
+  "facts_sha256": "affa0ed98fceb18f7a8fc071028bef43d82190cc15ff03c79db5d7be60159ce7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a2d58d5a19732bceac2960e6bed0c26918700a49af46fd4f1d25aa8437dfd285"
+  },
+  "physical_metadata_sha256": "9f99724b8f6aaaeebe80c063e04b5e254d0acb74e64006ba7cacaa28d4e3172c"
+}

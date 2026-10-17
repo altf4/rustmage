@@ -1,0 +1,12 @@
+{
+  "name": "Cavern of Souls",
+  "catalogue_id": 690,
+  "oracle_id": "89ca686a-7c72-4d8f-9290-e89635624a83",
+  "facts_sha256": "4b4e6ede598e1997fc88f592436e281e0c9c82d8c36555af44236e563f1e70f6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e3551d0de131be3bf5dde8d9f9b56346f76be8f4290088432c411558763ecf17"
+  },
+  "physical_metadata_sha256": "5fe1c784fa8f7578c3c5cfb8154b02ea0c67661aba6e196844e532ef600f8ac5"
+}

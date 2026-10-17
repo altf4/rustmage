@@ -1,0 +1,12 @@
+{
+  "name": "Illicit Masquerade",
+  "catalogue_id": 2136,
+  "oracle_id": "fa2a275a-a28b-45cd-b8ca-a93247ff59bc",
+  "facts_sha256": "a40949acd713951a482a206c61cf433b53f5eff9e030279e3fc7eab21eed3603",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "767ba1c4d737815398c80b1629dce3a1df75e4528ae13ab33fad0867531ee355"
+  },
+  "physical_metadata_sha256": "194bbb35774870256e53217d03d5896b45c87408090140d7a33eeca54d5d0d32"
+}

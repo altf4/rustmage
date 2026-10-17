@@ -1,0 +1,12 @@
+{
+  "name": "Sage of the Skies",
+  "catalogue_id": 3648,
+  "oracle_id": "cfc7cef7-0a95-49f8-970f-abff2cacd82d",
+  "facts_sha256": "ad835b59fa2dfdab21ed5ac3de4531629c8d90c876e6459e4d014cae8aa63161",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d4bc9220fdfdd53b4b097865f1380d0518305409d66781ced30570483cf6ef0c"
+  },
+  "physical_metadata_sha256": "f1de5f025284e4313264dfe4efef804dbc0a501a94609a38eb1d50c1cbb360bf"
+}

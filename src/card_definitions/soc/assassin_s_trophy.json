@@ -1,0 +1,12 @@
+{
+  "name": "Assassin's Trophy",
+  "catalogue_id": 246,
+  "oracle_id": "ac10d218-f9a6-4058-9cda-a15ca1b0b7b5",
+  "facts_sha256": "958726cf2668277c20acd827a2c7b90b0528cade13dc60a1953fd20bc26c1255",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "94cd55b1945838fd6a4488f7a1f86eea142f1919ef7070e083bd5793b41adf9f"
+  },
+  "physical_metadata_sha256": "9a87bdcf2fbfb90e547e59e42266af97c4d69907b193322d003613e6fe40d878"
+}

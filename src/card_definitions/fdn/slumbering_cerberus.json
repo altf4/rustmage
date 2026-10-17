@@ -1,0 +1,12 @@
+{
+  "name": "Slumbering Cerberus",
+  "catalogue_id": 3929,
+  "oracle_id": "39cae244-96e1-4ea3-899a-3aa871cca31c",
+  "facts_sha256": "61c2e622dc9c8eec036a6ed8926669a4f660b02cb6b7fc5bddd29bb0252717ac",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2f6ceed4d7680d8351b7c434f54db5c8d6a75e989f5e87f781c06259bffa7827"
+  },
+  "physical_metadata_sha256": "3f58723dcce96d037f55aa6db0bf9732de1cde718f50d08c13113e72c7c39178"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Teval, Arbiter of Virtue",
+  "catalogue_id": 4407,
+  "oracle_id": "f6cf359a-91cb-4b3c-8837-be53e4ed9c93",
+  "facts_sha256": "698398c195279ed4ef7cc00f374fdabaacbb0df6dc1219e0d78d283f79bd73e8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7e3544a018fe8b26e11731c71c240d34ac07676202db4b35f4b7102738fff30b"
+  },
+  "physical_metadata_sha256": "92f8783d43aa704778474c92e3b86870e473a004f5436ca7abdf8601302eb75e"
+}

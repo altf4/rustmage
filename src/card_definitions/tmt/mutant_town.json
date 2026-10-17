@@ -1,0 +1,12 @@
+{
+  "name": "Mutant Town",
+  "catalogue_id": 2890,
+  "oracle_id": "f6059731-2e10-4f72-a214-b257f1677e9e",
+  "facts_sha256": "82bcb0b022c868d85620dc2d41dec4e3128e16824c26a88f55f5e954454b7d74",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "111171b4cb0987dc538ce296271b34eb91955d47ececbdb4fea724218c1f82e5"
+  },
+  "physical_metadata_sha256": "c0040f19a9e277adc908496b90709594d9e5aa2c9b29ac66ba8fc09071a8e37d"
+}

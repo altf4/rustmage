@@ -1,0 +1,12 @@
+{
+  "name": "Osseous Exhale",
+  "catalogue_id": 3048,
+  "oracle_id": "8d84a706-080c-4fb2-b1b9-3dbb3294fb7b",
+  "facts_sha256": "b8f6a4265e3d4cf18a58762795472621cf3051eadb853ac6e19a1a2521d422f6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a1e45331847e5c2f89230bcc3f21cb2dfe4f08763ffd7b301eedd11874f9cf47"
+  },
+  "physical_metadata_sha256": "74cfcd6ab3d8310b2d9137428aef319b6280e9a165311ab8ba49e23b355acd4e"
+}

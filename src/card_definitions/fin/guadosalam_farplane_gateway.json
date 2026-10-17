@@ -1,0 +1,12 @@
+{
+  "name": "Guadosalam, Farplane Gateway",
+  "catalogue_id": 1897,
+  "oracle_id": "849c97e4-df15-4ecb-bdf8-283bb497d90c",
+  "facts_sha256": "d1acf9d25e7c69356cdacdafa0dbdfb1b671f9bcfd381ed5576304f337625da6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4f8ec30c6b220606923a9a2f11fd52b146f49339731716e40ac53941556aa818"
+  },
+  "physical_metadata_sha256": "e96c36e116f22bdaa542f22de65f4fc1d2169f7c2a95b7cd05253bfffca17316"
+}

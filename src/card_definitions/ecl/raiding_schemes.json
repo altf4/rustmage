@@ -1,0 +1,12 @@
+{
+  "name": "Raiding Schemes",
+  "catalogue_id": 3346,
+  "oracle_id": "854cac11-9a22-4dea-8c1b-c49a4858a754",
+  "facts_sha256": "fb6b34fa2321914e48a27ccca2e15d8c5fca8833594d307b98c54c9dfdaa5a98",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "948ec05ddd697c96bcbbf092aea227211f3ae0dff9257750a9b6a3950b709836"
+  },
+  "physical_metadata_sha256": "85fc3d97145829ca2beb81ce9026ca1b887408ed81685f38667093b49be605df"
+}

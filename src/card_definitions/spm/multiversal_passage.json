@@ -1,0 +1,12 @@
+{
+  "name": "Multiversal Passage",
+  "catalogue_id": 2877,
+  "oracle_id": "17770eeb-ecbf-4510-af2d-acececfbe146",
+  "facts_sha256": "d0dda4f3aa4a8e9f366146aa6c4bbadcecf2739f84c115122d5da6a36e904be0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fc07be62c047a5e1ac4063e4fa653f53331450da60cbcc96eb1bb66abf8d0a65"
+  },
+  "physical_metadata_sha256": "5272ea29026340b79ecaad5454f05a218a9b60c33d07f6b9db813b001efdb504"
+}

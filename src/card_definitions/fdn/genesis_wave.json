@@ -1,0 +1,12 @@
+{
+  "name": "Genesis Wave",
+  "catalogue_id": 1709,
+  "oracle_id": "e2487868-f386-438e-a73f-b494f6d35fac",
+  "facts_sha256": "f9afa57f398cb818642c3664c15433db95feb789ab2cfb4d95c0b72b46d1e3cc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "868f9c8eae2e67926b9262198c883788a7c5b7785d8ed6f994b53199ebc2b7f2"
+  },
+  "physical_metadata_sha256": "9d8d7f3b52f13f6d9d0010e7a1df61c9b484c1f256e3dd7a8a7591bc1db6e732"
+}

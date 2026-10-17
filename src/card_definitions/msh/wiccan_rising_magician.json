@@ -1,0 +1,12 @@
+{
+  "name": "Wiccan, Rising Magician",
+  "catalogue_id": 5050,
+  "oracle_id": "fc17b7a3-7711-4449-80bd-692e8ed9087d",
+  "facts_sha256": "6d0e417703ad92319d46eb6a4394237cba9562c343655aab0e93c337d700e171",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b9c2b311c7cd868682ff9d1191cb4d3f4d370efdfcbebba44f2037f00bf68505"
+  },
+  "physical_metadata_sha256": "6919a57b966aba326e3880a6521b9f715960c8150b52bcbf9b8a5f30b463aed3"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Sunset Saboteur",
+  "catalogue_id": 4244,
+  "oracle_id": "c3731735-2b78-4a15-bff4-4d8559401f68",
+  "facts_sha256": "3aeac628bcc03ebbec2a5ea46b3b83f83289d5e4a1b4301b3a43debc64370f90",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7badc9098ac3901df6c78426649269d2185c04fd048eb18d2560ff66cf1ff5a8"
+  },
+  "physical_metadata_sha256": "e26bfd7d72ccec70b2c3a48ad67b00de6a01b92411b48ece4b49272410c8ed0d"
+}

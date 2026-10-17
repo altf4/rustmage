@@ -1,0 +1,12 @@
+{
+  "name": "Raphael, Most Attitude",
+  "catalogue_id": 3378,
+  "oracle_id": "eaf194a7-d95f-4738-9052-92ad00443a76",
+  "facts_sha256": "ee8ae7028609c8d57fc5eae05e4ec8e86c17dde6825501413d812fea39c14675",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "82d1ae04e71a5c9fab0686feabf083fe32f41b48696d25f983e44f25527fcf1a"
+  },
+  "physical_metadata_sha256": "fcd8bc27be97904e1cfdfcddee2aed700910491229b6cc0fa7b45a94f35a4a86"
+}

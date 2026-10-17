@@ -1,0 +1,12 @@
+{
+  "name": "Unburied Earthcarver",
+  "catalogue_id": 4754,
+  "oracle_id": "75da657e-0e36-4f2a-9b81-b7eba7d8e050",
+  "facts_sha256": "2ec5da4762321c71b01e03acb9f99cea861ccbda14e9fd24149fcd21f79269f6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "64d59c3e65f99ba930ae7851baec21306997b23118455726605736c6d528fe07"
+  },
+  "physical_metadata_sha256": "20cc484acfc0624e80abc5b641cc37327fafc79034a95180306b68c5cc27930b"
+}

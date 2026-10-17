@@ -1,0 +1,12 @@
+{
+  "name": "Dwynen, Gilt-Leaf Daen",
+  "catalogue_id": 1219,
+  "oracle_id": "30d0d75f-e94c-460b-b957-9f1d655c0f65",
+  "facts_sha256": "3ebeb8609960c92096647c7dc32e7aa29cbd9c0ff5e20c683199dfd687559fdd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7b95c4ab8704f49f4f088d068f2132d6629a4ab392c407e977b53f90024f41eb"
+  },
+  "physical_metadata_sha256": "c87e15e1924623482ca50a21de5e79716d9ea60c0691f14c1368b2953fe53f0f"
+}

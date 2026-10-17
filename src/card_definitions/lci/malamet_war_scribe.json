@@ -1,0 +1,12 @@
+{
+  "name": "Malamet War Scribe",
+  "catalogue_id": 2640,
+  "oracle_id": "8978a30a-7918-4851-92ef-f40fdf90c379",
+  "facts_sha256": "f7ca02c722a3ec14758d64bb1d8ba24c3d76e1fa3efac49647ea30cef21864a3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "24bc49a8d066c8274eb438c6f506bb5c4cd8bff6920f9336d2f8653d3e63ed2b"
+  },
+  "physical_metadata_sha256": "915aa53951700b67dfc3e65341dbff8a0ec1c6f3a5179205a59aea09679da9eb"
+}

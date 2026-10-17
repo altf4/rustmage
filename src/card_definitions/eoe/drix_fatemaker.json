@@ -1,0 +1,12 @@
+{
+  "name": "Drix Fatemaker",
+  "catalogue_id": 1189,
+  "oracle_id": "583102f8-7232-4fbb-a715-087448536bb2",
+  "facts_sha256": "139b22897bb66d49ccbe2115035751e0841f9904ef7d79329c2d72ba84847232",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fe131faf5ba1206a59eeb85a338748d38fe1f61b4d140014a64934f86fac8797"
+  },
+  "physical_metadata_sha256": "9276adfd06579ab8ca70354f16d2ff1eb478700a30395e64d98d19aac1e37b3d"
+}

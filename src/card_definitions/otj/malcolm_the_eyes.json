@@ -1,0 +1,12 @@
+{
+  "name": "Malcolm, the Eyes",
+  "catalogue_id": 2643,
+  "oracle_id": "7932ab35-39dc-4500-aa44-2ad7228f0d2a",
+  "facts_sha256": "e68bc8540c1c0353370f3ee3f76895501d6380a3f43c4a43f597739efb83a320",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0b7ed73314e381b8434bbf19799a3b074ea597c4d54a72d6da05368761e62383"
+  },
+  "physical_metadata_sha256": "2a4dbc8b85a3f2cc9cd95c691c71ef57242afcff7d0665ce3813b433d1d3ff9e"
+}

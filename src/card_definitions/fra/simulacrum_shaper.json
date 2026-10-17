@@ -1,0 +1,12 @@
+{
+  "name": "Simulacrum Shaper",
+  "catalogue_id": 3877,
+  "oracle_id": "9e45e2da-7064-4ec0-8d09-55fc7d1aeaa8",
+  "facts_sha256": "6a3aac820bf7bf7ec3cd4dc5b4574801c9ad7aceb6deb1ebc65693236c468a1a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "18374c4d6729ea71943767c6c8facdd7a5ca219975cb95219c00fdcb69bafd22"
+  },
+  "physical_metadata_sha256": "e4e2484f986221380a91f171ef3bc740d83815b3de4a9aca5b9d9622b3532a93"
+}

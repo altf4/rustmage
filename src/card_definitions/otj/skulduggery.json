@@ -1,0 +1,12 @@
+{
+  "name": "Skulduggery",
+  "catalogue_id": 3894,
+  "oracle_id": "9100530e-2bd0-487e-a4eb-13dabd55b678",
+  "facts_sha256": "8645092774094985b43a8ede4ff1a80cb8c7f53726bfbc495c3da55ab45b6de5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "66d62342b91d76da81a3a00e28bb75a763e8bd4cd355eef9040abeba86041ff1"
+  },
+  "physical_metadata_sha256": "6d47616f8fe6b7961d701b1e7514dd956a96a01380b0e1ba5ec299a87983e4e9"
+}

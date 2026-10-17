@@ -1,0 +1,12 @@
+{
+  "name": "Raging Battle Mouse",
+  "catalogue_id": 3341,
+  "oracle_id": "9ffe4d90-b46c-4606-89cb-1b724104f6ea",
+  "facts_sha256": "304c0710d81c93941d1057e689ce358cab2cc2337f1c9f13dbc9aa1305af420d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9196be16462e4d44c8dea136080408eb9ddf23cd5dd7df06bdbe1af20532f472"
+  },
+  "physical_metadata_sha256": "96d648e1430ffc13c51ac595cfac1ee1790415dfd8c0e055e0180c09a1a76aa1"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "April O'Neil, Kunoichi Trainee",
+  "catalogue_id": 192,
+  "oracle_id": "3f166376-2739-411c-8f42-96f2ef28ef86",
+  "facts_sha256": "939179cf83ec6556aa2babbc979b82714767d308c6baf790577aa3029a8d849f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "600c16926fca819cb5b18a752b2e7c5c58124d8b752b1a9241447d35fbe4d5e2"
+  },
+  "physical_metadata_sha256": "0658248830ef2efb43eb8a7c367829d5d8d45e0bd90638cf31502a0b19cad765"
+}

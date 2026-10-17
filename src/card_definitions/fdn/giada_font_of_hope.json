@@ -1,0 +1,12 @@
+{
+  "name": "Giada, Font of Hope",
+  "catalogue_id": 1736,
+  "oracle_id": "48e6d3d8-2f27-4017-acdd-40bce8cdbc02",
+  "facts_sha256": "1e214afe1e454fda989e7b0f1ede5d4fc2cd6225528f40c25373f431385e37b2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "01caf2c58c607ca02d6e15a13c14a51a16f4a2d5672d21f602ee8ad8cc856fd7"
+  },
+  "physical_metadata_sha256": "4d6f5fef32b6fbf97ae22b9a986eea5e812a5c963de3374314ea7271b28ff52d"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Tannuk, Steadfast Second",
+  "catalogue_id": 4335,
+  "oracle_id": "b5ae8016-92ed-4ae8-83a8-65068defc616",
+  "facts_sha256": "f01a8cf013b0a9c9f3a8a3785851dafb96da752876490b7023ad6bdabbf71147",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c49f4d0fce3d4511c4d33d17af7f8a1de2fbe2445b46e24d12e8f9b84c633613"
+  },
+  "physical_metadata_sha256": "1146f7eaf93f5aafb997ef9f52abc9d893b7112a0c39b404d03f3c40ffab6a87"
+}

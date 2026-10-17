@@ -1,0 +1,12 @@
+{
+  "name": "June, Bounty Hunter",
+  "catalogue_id": 2298,
+  "oracle_id": "1779869a-5e54-4ab5-86b8-d4d20e2e1ba4",
+  "facts_sha256": "22687a17545a7e1bcd1fcbf4a631b821f7bc2b6f7b483326675bad23f7c86e40",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f6c2e8ddc3d8ca29950a2efe1d271d2b975f14ec116a119aa69f2221e3c7001a"
+  },
+  "physical_metadata_sha256": "57848adc8739b3e54bccd413e5ba24cdd94cb98e5a4a0cf7b281418c3199381f"
+}

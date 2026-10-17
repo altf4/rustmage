@@ -1,0 +1,12 @@
+{
+  "name": "Say Its Name",
+  "catalogue_id": 3703,
+  "oracle_id": "474f0675-4088-4f77-8081-f9ed7d492837",
+  "facts_sha256": "d7b93856e8d79702faee92f62175842d17cda843d9bb666b70fb1b6ad5d1b95d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "497b829e89044e1b95fae0af5de6ae4897b10cf7281799e9c70deae162e14a2b"
+  },
+  "physical_metadata_sha256": "585542fbda317ea03236dafb63bfae1cb385ddae705646b36820ca8ef4349c51"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Flamekin Gildweaver",
+  "catalogue_id": 1545,
+  "oracle_id": "bc8427fb-e5ee-4b44-9a4f-6d9f01b4b896",
+  "facts_sha256": "80fb46b97c9efbc70c5209086bafafc189756d0c48d169fd6f9dd3d5bddc7992",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fb83c68f7e7849963eb394bc91de9e0d599496b7d06288c7c762273733c7c147"
+  },
+  "physical_metadata_sha256": "98a0fc08084939c8601ecff7a687ac8e16bdab861ef0353b1627dc9b1dd89727"
+}

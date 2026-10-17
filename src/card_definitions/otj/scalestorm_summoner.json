@@ -1,0 +1,12 @@
+{
+  "name": "Scalestorm Summoner",
+  "catalogue_id": 3709,
+  "oracle_id": "55ede1d4-593d-433c-943a-4db12eeb5fa8",
+  "facts_sha256": "415f16282ceb85d3d21cafc05f95c4122efb360fe0f3569f0597ad504c18f1ee",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3094b1853f067c4a5a4232187ff4f8eede056df5404c5b59e664c033b7542883"
+  },
+  "physical_metadata_sha256": "f7bbd2c12a382d8c3a420aeaf0fe1e007130e33c35ccf3088ed92ff08772d529"
+}

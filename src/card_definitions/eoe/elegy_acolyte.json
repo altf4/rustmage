@@ -1,0 +1,12 @@
+{
+  "name": "Elegy Acolyte",
+  "catalogue_id": 1280,
+  "oracle_id": "f7d52eac-edc9-464b-a163-07c136aa6e4c",
+  "facts_sha256": "43bf526e211ce7042ab70a53b7ab75bfc1bf8e6f71ccab19901a35b55059da08",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b010e2887bd79d4253dfbdfffefa1d7e0b50798cdafbd45686eec2ef0499d3b9"
+  },
+  "physical_metadata_sha256": "9c9e516850b02833d54909f12df1673e49d62d3729c1886d3f8e5fda5322fed4"
+}

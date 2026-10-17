@@ -1,0 +1,12 @@
+{
+  "name": "Jet, Freedom Fighter",
+  "catalogue_id": 2276,
+  "oracle_id": "77cd2246-6906-4dce-8580-4c9d2e68c477",
+  "facts_sha256": "10ccc6d3afb107b85e078a5f394120846f078ffd00ceae842ed224665be33a5b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fda47f30d1aa087c4635482d2c8d3b625e6333339b05b1d638d717bdb1fdc4b6"
+  },
+  "physical_metadata_sha256": "2d77b2d24b26170a6bd943c5a1c8b4afce82f3807fadeafd94ecf85c1dafc254"
+}

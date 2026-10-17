@@ -1,0 +1,12 @@
+{
+  "name": "Crustacean Commando",
+  "catalogue_id": 908,
+  "oracle_id": "b24a87af-407f-4c58-80b4-caab9c65a233",
+  "facts_sha256": "c60173d96865d5d9b59a9861e5d6b87e6d7d93c88f62336ab0bb4139936e4743",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0d4f355b9f7f1ac5e882ebd246c3f03c69c50f0bec86c4f3f651a6d4521a7fe0"
+  },
+  "physical_metadata_sha256": "99779fe4d936a2efb84904f24e52f2189d2153abd8630ed24dfa943ceda774f8"
+}

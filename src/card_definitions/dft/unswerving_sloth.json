@@ -1,0 +1,12 @@
+{
+  "name": "Unswerving Sloth",
+  "catalogue_id": 4805,
+  "oracle_id": "5e512ce9-5e2e-4ec3-9486-a10c63cff299",
+  "facts_sha256": "bb63a1a46eeb59b28dca27637467f769ace855a9de426972af5d1f7c045f299e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "289486e16c70e947e43ae3e379d627962b86d42b9f871e87dbd2dd0bbfee88e9"
+  },
+  "physical_metadata_sha256": "dd128771ff05514de7af90f2be4b007c7bda5308a92f3997a2795184011adf86"
+}

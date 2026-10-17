@@ -1,0 +1,12 @@
+{
+  "name": "Full Bore",
+  "catalogue_id": 1644,
+  "oracle_id": "4b96d003-d3b4-4181-9f50-06a3e6eb1916",
+  "facts_sha256": "a764e8a296f6266f4c597bd378337170927067a1e332ce509effb9534ea151de",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0e591fa82ac6127e7a2c3dfcb045bf80562459382dd8bc1589963609d00dc673"
+  },
+  "physical_metadata_sha256": "a3749352f44611410d50c2cadbc9d25025130d37da48dc5f24f1bdc4f9887fdf"
+}

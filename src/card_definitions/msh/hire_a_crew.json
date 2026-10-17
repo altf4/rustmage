@@ -1,0 +1,12 @@
+{
+  "name": "Hire a Crew",
+  "catalogue_id": 2047,
+  "oracle_id": "6eb7a870-b626-4326-9e4c-45193f8ce138",
+  "facts_sha256": "84564ec17cb674b7091002bbaf030d54784e1c4990e51b243fed071e83e602dd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "12a962ea194b38ba2a5b199741f5ed799642e9d453ff02c381652ed91897eced"
+  },
+  "physical_metadata_sha256": "0b364ffa4e4f746839abadbe83d257649cb74df676323875813dff63d917d99b"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Growing Dread",
+  "catalogue_id": 1889,
+  "oracle_id": "aa1d8bfa-729a-4e10-8069-57a1d4f4392b",
+  "facts_sha256": "fd2d667e53b253b368b412182ce3a3693076279847e32bd39331cb43e9bd081a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "62b2c37b1d2b79ddcb49e56fc1b3c04e0d24ee71b88198d76c0ef41c533d57c9"
+  },
+  "physical_metadata_sha256": "701be0bbc427214ee294ace3d36df0ce587b73c01b5281b088c93f69d67b8ac0"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Nessian Hornbeetle",
+  "catalogue_id": 2919,
+  "oracle_id": "ab097f46-a7bf-4cf1-a96c-36b681fe79da",
+  "facts_sha256": "3b930db7480ed768ac41705e718c3b561e67562e025c6bf49931cb9372d122a0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "01b5eee14c2c4526aedbc8e5f3068f005cafc5874c62d3c3f29e11aaad9d916b"
+  },
+  "physical_metadata_sha256": "3c2935ab6f425e00850617848e3eff6dd93f2ba8c12def3c5626cb86e37360c0"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Arni, Renowned Champion",
+  "catalogue_id": 230,
+  "oracle_id": "1a929c4f-ae1f-44d9-a0a7-2ca2dc928dee",
+  "facts_sha256": "a72ac931f33a02a8d1feb7aa7f7aa106058359421670d8986cc514ec089b092a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b2b11b56d67203d8122eb8b4a3b80a9be3a4a540f392fe017845d984325a37de"
+  },
+  "physical_metadata_sha256": "350e75af343d7bcc31e261b79743a29521af1c4b9ced0e412202bad99e47b5cf"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Thoughtweft Imbuer",
+  "catalogue_id": 4551,
+  "oracle_id": "9dee8c0b-71e0-4a94-b411-78b29b599847",
+  "facts_sha256": "ded3e0d5f140cb5117ab242b47b9869ef852d2b8e08a896ac7b2b61f336aeaa6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ff75fda64fece2648a6bc824be33d1b130394bff584072dc9e633e32d1ca0a1e"
+  },
+  "physical_metadata_sha256": "07084214707e26dc2e23fdbc49d8557f80b357e4638d11036bc23a8422e3b055"
+}

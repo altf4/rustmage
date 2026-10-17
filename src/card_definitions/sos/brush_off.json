@@ -1,0 +1,12 @@
+{
+  "name": "Brush Off",
+  "catalogue_id": 573,
+  "oracle_id": "873694c0-c100-4d24-a74f-1ab26442dd18",
+  "facts_sha256": "5e6f91f9f590dfdc4fe09317dd6a426449fbfc027ed06942f651c3201b5c25b5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ae5ced0ee1ee1c6010bd955bd844648c43d2bfaa57943b175d6664d52ab8f58e"
+  },
+  "physical_metadata_sha256": "4467f2bb01468a77ad4a534fc7866a3e8965df56109f35a013c300e1c38cab37"
+}

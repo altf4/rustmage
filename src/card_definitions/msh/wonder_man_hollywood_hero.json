@@ -1,0 +1,12 @@
+{
+  "name": "Wonder Man, Hollywood Hero",
+  "catalogue_id": 5107,
+  "oracle_id": "e2c49754-711e-43b3-82f1-5376a4d99701",
+  "facts_sha256": "5749e516276900a3ef2a47b25ef14a02fdc21310a73ab359df44aa7ef92fd13a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5360b84504326c5fb1f8f032132693e397d5c254595fa6de983c0f91380e5dca"
+  },
+  "physical_metadata_sha256": "4d50e7d02ea3f188246e9060ce0af91f193cb9eed7658ba7a362293f4c7598e6"
+}

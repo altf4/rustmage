@@ -1,0 +1,12 @@
+{
+  "name": "Call the Mountain Chocobo",
+  "catalogue_id": 621,
+  "oracle_id": "a0dd3eb4-f6f1-4bfb-935c-032dd5af3811",
+  "facts_sha256": "172f9230545b8062ab203d4918b26cce42db6dc68af05338c688c43d0b9c1bfd",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "90e34da1d57156e559fb1fa32092e6f175ddb89a45d9929e5d67aadb255b1fc2"
+  },
+  "physical_metadata_sha256": "7501ce406abb321d5c5584e7ebe171aeef903d6bd55df2bc56569f2ec9c8f0ed"
+}

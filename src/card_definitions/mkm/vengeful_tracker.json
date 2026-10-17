@@ -1,0 +1,12 @@
+{
+  "name": "Vengeful Tracker",
+  "catalogue_id": 4866,
+  "oracle_id": "fe540a23-0357-44fa-8e1c-0a5c2a04cb01",
+  "facts_sha256": "5201da372bed88606034e85a0bf46fd1b137b9a3f0a02aae6ee4d538ef3da904",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2b283ee2ee0aefd06799226c5dbf7fa07bd0df94071c327532b91b77c48ad86f"
+  },
+  "physical_metadata_sha256": "02e9d685799c3d830d9894fc3dabfae8c570185ab4a00f3720228508ffe9e244"
+}

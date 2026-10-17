@@ -1,0 +1,12 @@
+{
+  "name": "Peter Parker's Camera",
+  "catalogue_id": 3143,
+  "oracle_id": "10777360-c046-43e3-ab44-9d0b926fbbf8",
+  "facts_sha256": "2bf74e9f4d4e540305481e220183615e6d99e7d455f2b546c1fcb3fb0dc49107",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "03309d234d82d956e425afb6625d93fe5784c0b024f6ce0eb7712de46124d788"
+  },
+  "physical_metadata_sha256": "7f721b6e2a5297c7c97b6c360d107b5e35bcc870ea1c1f188ab6d0ccfc1594aa"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Sonic Shrieker",
+  "catalogue_id": 3968,
+  "oracle_id": "d317e3f1-553f-44f6-8543-d6d4c42534ad",
+  "facts_sha256": "eca1d389735f542bf8cda2db20f3623c92aa3a95f83526bd18a603f54a4ad9d6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f90a7a466d3724099569b6817abd0e5e6cf2eec93a8653eeb7d394d02970bb02"
+  },
+  "physical_metadata_sha256": "443b7aae026766c2c3c628f85cf64e439cf57b294662ca05cd092cb61df8f881"
+}

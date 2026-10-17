@@ -1,0 +1,12 @@
+{
+  "name": "Boros Guildgate",
+  "catalogue_id": 506,
+  "oracle_id": "73c423b7-cab8-4e69-8070-9edbf96a6c2c",
+  "facts_sha256": "81cea1dedd1139f82f6457b2c4d800f33cee751905e6eb375ea53d210f949878",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "40127db95628fed4233f7f020c80e35eb6f2dbf4fcf8902df3a686c8bcd579eb"
+  },
+  "physical_metadata_sha256": "1ac2f460846f662e5684d461280e092f5a7ddfc56cb7da8c4ee413d16efd6696"
+}

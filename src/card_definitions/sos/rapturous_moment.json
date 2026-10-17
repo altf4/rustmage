@@ -1,0 +1,12 @@
+{
+  "name": "Rapturous Moment",
+  "catalogue_id": 3384,
+  "oracle_id": "c997afb7-82cb-4579-885e-3628cb1b51e4",
+  "facts_sha256": "8b1aa60dec226d806cb13d47ecdeb7215cabc6e703ed956a26b5f860b4645929",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e55bb4b491cc3f4c9839c9af067e0cd274bc14fdfda6ff3e3b88a207d420dd27"
+  },
+  "physical_metadata_sha256": "7c1997f7b648d0f158b09c53bba45b4de9f84e3bcd5f152ee9d66c177574ee37"
+}

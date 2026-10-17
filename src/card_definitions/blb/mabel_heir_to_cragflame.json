@@ -1,0 +1,12 @@
+{
+  "name": "Mabel, Heir to Cragflame",
+  "catalogue_id": 2600,
+  "oracle_id": "4b11e435-5888-4e3b-a255-db817392163f",
+  "facts_sha256": "10defc6f79907c3d18f2b604baaba4fdce426dfc2da98454b05d87834205ec01",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c33578f5ca068327e814c0f3a0836694be9e9e62135938af6ef9586a6d28acc8"
+  },
+  "physical_metadata_sha256": "2d644b00d9e035a90e3ac59de720061416b5b6284b1ef6d311893aac0b7d7764"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Sanctum Lurker",
+  "catalogue_id": 3673,
+  "oracle_id": "3ebd64d2-c178-45a2-a51f-9869754baa0f",
+  "facts_sha256": "5cef8228a19941cb941474bd7dfbc1a7dd5fd3d96447581519fd05d4a7104da7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "607e38f56977872c46c9368908971b76d585e7a0b8520b37cdd613b503f7a1c5"
+  },
+  "physical_metadata_sha256": "3e8bccfc70bd6733293a9b42099a1c98556b3c74e563ba7ee1d6aad8721548c9"
+}

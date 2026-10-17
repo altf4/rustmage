@@ -1,0 +1,12 @@
+{
+  "name": "Baron, Airship Kingdom",
+  "catalogue_id": 335,
+  "oracle_id": "cc710da0-5a2e-4bc4-8fdd-d90e7bc1f224",
+  "facts_sha256": "f0c40bcccaba6e81fee72aca55b61d5377bbe87ab8f0d3763d646e36dbcb526b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "26585e3b60a5bd0a7a6540f3b8c980cae98916a80aa50a55b445a7e07d51b5a0"
+  },
+  "physical_metadata_sha256": "6eebcc6156d79edefbea61d301c2a2a87c63df7fa91bda914dc47e98d00278a3"
+}

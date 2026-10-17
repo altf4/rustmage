@@ -1,0 +1,12 @@
+{
+  "name": "Combat Tutorial",
+  "catalogue_id": 805,
+  "oracle_id": "2a483d95-ff99-40b4-9071-6e78585090d5",
+  "facts_sha256": "b2a4138349cc292466c9777791a482042adb7ae0a15ba7b2cb3332a873990988",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "53063a5b2667a0da979076759c7d577e6831b444f024f6b32d3b83dbd2544e2c"
+  },
+  "physical_metadata_sha256": "1e4ba99f3b3a857e9841af4ece464b628a2a6df83605ffdd2bda4707e4b63f68"
+}

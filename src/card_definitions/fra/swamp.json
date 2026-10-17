@@ -1,0 +1,12 @@
+{
+  "name": "Swamp",
+  "catalogue_id": 2,
+  "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+  "facts_sha256": "0ddffcfeb10574ceab2d19fcaad90b912eb08a51601bfa0d51ceb993dcfc04e5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3f48352f438bb3503b1c727434736447bb66d343a3e7952360d5c2ac245420c3"
+  },
+  "physical_metadata_sha256": "b89422fcb086cbe1ed7f140d88a440dcc1741fd72734decc5ddc9b81b87697af"
+}

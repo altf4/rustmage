@@ -1,0 +1,12 @@
+{
+  "name": "Slagstorm",
+  "catalogue_id": 3912,
+  "oracle_id": "2ed1879a-83b8-48df-a6d2-fe28e912b4c5",
+  "facts_sha256": "10a3ccbb320fd898a453beff7c852cfa6b1a7e23cc3a85870f342fb4c495ce93",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c189d2c0383eb4f0806de2d940c891ef19a90ee0cec91ab9f73aca34c5ef9a01"
+  },
+  "physical_metadata_sha256": "e308fa4e0d4c6a6fe97a192a4d28c1c960e7bc09261806f12280ab8d9d68d73e"
+}

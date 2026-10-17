@@ -1,0 +1,12 @@
+{
+  "name": "Buzzard-Wasp Colony",
+  "catalogue_id": 605,
+  "oracle_id": "29fd050c-dd1d-4e1b-b3cc-f7d8d18e4dcb",
+  "facts_sha256": "dfbb726b3fd8c23f47e913779ea00df7d791fa653096efac6a87007a4b0efab5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5d19b2cf5b96da5cff09326c439ee96e2b7f08fdf1b36e0fc3ebc1027f3d4719"
+  },
+  "physical_metadata_sha256": "c0c43180750887f2e07333a4ae483c509e0202ae8dde4b5b84fc483a79d9b9a4"
+}

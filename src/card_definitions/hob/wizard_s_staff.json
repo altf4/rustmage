@@ -1,0 +1,12 @@
+{
+  "name": "Wizard's Staff",
+  "catalogue_id": 5103,
+  "oracle_id": "30c3c700-46f4-4a77-8c45-5c7e3a21bd62",
+  "facts_sha256": "b4f63568e2e9db6b5cae0dc113adf40ec940bd12074e1b088f64c8e367920450",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "203d7b1b310d6d59ec2b4e55515dba1006f2b95fd40596fafa132dce0447d50c"
+  },
+  "physical_metadata_sha256": "3d5f5ca212ad212ee32201caf727202e5905b50681ca9b4f69c0fd50c4dce6d1"
+}

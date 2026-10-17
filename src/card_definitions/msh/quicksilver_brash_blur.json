@@ -1,0 +1,12 @@
+{
+  "name": "Quicksilver, Brash Blur",
+  "catalogue_id": 3315,
+  "oracle_id": "b76ce131-e51a-445e-8216-00df5904ab93",
+  "facts_sha256": "2eef362e3108bed1e86d2ab7aac9cfcff7210b05df73c121976fb80a189f8845",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3af0f2d6d5c3baef94128c07f109403365eba9678d477139c0f2b0b79139ffac"
+  },
+  "physical_metadata_sha256": "dab1d915e5f4a96d61a5014de391783f869f7cfc8a9bd35d07821d20ce708ec9"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Balemurk Leech",
+  "catalogue_id": 311,
+  "oracle_id": "a511772c-3739-469d-a5a2-5827b7ce9b5c",
+  "facts_sha256": "1b00e60f1c864b3f3919f63cb148e2437ecb2c46f1858f508a763412172263c2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4521f677e645324c4a3e7b05397d4bd773785809aa79c1b12808ec355bd2b74d"
+  },
+  "physical_metadata_sha256": "7c88a8ee4fb6de0308610608d6b040cf13242386e12e38c0d4316c7eee92abd1"
+}

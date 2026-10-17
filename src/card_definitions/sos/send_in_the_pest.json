@@ -1,0 +1,12 @@
+{
+  "name": "Send in the Pest",
+  "catalogue_id": 3786,
+  "oracle_id": "955bfcb8-6477-4ed0-b6e7-8940874ae5e4",
+  "facts_sha256": "5ada274e7df083e16196e9226b5c2284cb6789b49836b085945e66c5e44c430d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4b6a4cbc91cbfd034c451945dc0106255f59b4808efc792184db7ce900f968a6"
+  },
+  "physical_metadata_sha256": "64a90b77b2379ef484ff3c4a4d986074f0942daf099ad4defa4e39c9d1609c5d"
+}

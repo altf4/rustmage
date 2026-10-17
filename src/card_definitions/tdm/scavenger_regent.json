@@ -1,0 +1,12 @@
+{
+  "name": "Scavenger Regent",
+  "catalogue_id": 3717,
+  "oracle_id": "7e97a242-0bac-4f18-9228-e98ecca36254",
+  "facts_sha256": "8f30dc3a35d70620bf2a758f932114931a32b720d683ca1306167c0822e502f5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "450e276c39ccdc805479fa1a930ef4a9545f2d4c5e1ec1d3498745b567291ee9"
+  },
+  "physical_metadata_sha256": "fc27193aeeb91b8f819fa7614eb42b64c8ecb121b9c147e1d84e2a0673b6e011"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Swordsman, Sharp Scoundrel",
+  "catalogue_id": 4297,
+  "oracle_id": "2f15abe7-54aa-40ed-a15d-5b827f1c3923",
+  "facts_sha256": "69be87ae9ce040f08173eff859b3c1fe6c0394563c695fbc48ab6ee688e0284b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ce66528f5e9a56f36a955182454a77d273cad697e8fe4a6445c70a5b6efa4ce5"
+  },
+  "physical_metadata_sha256": "671f9f50df8b909abed97bfaa0c2b2f6886e402c6c033f53f1b5b31a2b99b569"
+}

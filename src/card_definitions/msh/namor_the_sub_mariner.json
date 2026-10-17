@@ -1,0 +1,12 @@
+{
+  "name": "Namor the Sub-Mariner",
+  "catalogue_id": 2905,
+  "oracle_id": "dff11626-ad4d-443a-b7db-f508790b5fd2",
+  "facts_sha256": "4a97f67bf0456c9e9d909c4a7e96ccd0a60fba46b97bfffb3a7e780ad4156aa6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8a90dbb80eeef349540d70ef27bb99a9c38db879bd1b130837a8ce98a9ff0a73"
+  },
+  "physical_metadata_sha256": "9048c50b0cddbc4ae368e01e58d66779e6d9fd2bbeefb08fd3836d6fa53a9056"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Kin-Tree Nurturer",
+  "catalogue_id": 2353,
+  "oracle_id": "ad28a1f9-8893-4693-9464-c32ed760f6b1",
+  "facts_sha256": "d3742240548b62bd4220ba75ef752c2a84e76265360a13c95870b00867190be1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "88b7ae2ee1def7fdcc007bf6a266902db500b5b52dc7c1330469d4b7c92cfaa7"
+  },
+  "physical_metadata_sha256": "9aba56c2865b961b4f57ef36cad8cf8c32462eb2f5207503dcceacf20d661597"
+}

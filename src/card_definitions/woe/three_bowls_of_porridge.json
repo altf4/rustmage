@@ -1,0 +1,12 @@
+{
+  "name": "Three Bowls of Porridge",
+  "catalogue_id": 4565,
+  "oracle_id": "5369e40a-5fd6-4a9d-bdc9-4af510449649",
+  "facts_sha256": "eeb46d52a13509938cedb4c4902f7cc12d59fdabfd8f60d3cc83fd31d675c281",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6a26f1142a870fac63426ec53f7f264f053378d063a9f5c3f05daf1e7e020c09"
+  },
+  "physical_metadata_sha256": "2af026fdb5d2f85500d2d618621ac28d9d58f32215e7f6bb1cb7bf272f180c7b"
+}

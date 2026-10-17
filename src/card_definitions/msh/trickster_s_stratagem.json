@@ -1,0 +1,12 @@
+{
+  "name": "Trickster's Stratagem",
+  "catalogue_id": 4682,
+  "oracle_id": "170ee399-d3cd-40ef-a340-193c0f0f6002",
+  "facts_sha256": "203ea04d5ebf27c8fb549f4a07c8477d91d814b611f83ffdf97e673c01aa9906",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0711a37e3319381c9aa971c31337fe13432f7767022855a5374b06519a3ffea4"
+  },
+  "physical_metadata_sha256": "76195050699681bc73245584b177dc03d0dd30789a26fe70e985b39e45b6906f"
+}

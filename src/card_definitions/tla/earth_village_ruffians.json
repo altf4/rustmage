@@ -1,0 +1,12 @@
+{
+  "name": "Earth Village Ruffians",
+  "catalogue_id": 1239,
+  "oracle_id": "0380e99c-18f9-4472-8223-bb208e5f0963",
+  "facts_sha256": "686509e3ee036891da586398a1ff0ea856bdef59f0bcbc40eb91e583f3f54e21",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f9897208c403e39bab19913bfed8c6ad7574e877f26906e2d4fec197b2796f78"
+  },
+  "physical_metadata_sha256": "1488753c97c487bcb461362d9966e3070b96120aaaf2911c90213adad7384060"
+}

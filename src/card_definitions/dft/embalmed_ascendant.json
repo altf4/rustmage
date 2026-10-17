@@ -1,0 +1,12 @@
+{
+  "name": "Embalmed Ascendant",
+  "catalogue_id": 1303,
+  "oracle_id": "2f4d7988-3f5b-45d7-9838-02897d7180be",
+  "facts_sha256": "00a7d0ea060570972efd257743c3aca31af5f07fbf49fbda9a654b8a33592bc0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5a07eb85e019587cc4fd4fb6cf950f9f6b9e12f3bcd889479fd2eb8079d42e31"
+  },
+  "physical_metadata_sha256": "48f85d26631473e057fd091aaa3669009b2def43ef87c82d018cc97f59e96d5f"
+}

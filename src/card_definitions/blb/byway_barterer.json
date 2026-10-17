@@ -1,0 +1,12 @@
+{
+  "name": "Byway Barterer",
+  "catalogue_id": 608,
+  "oracle_id": "a864b032-6e1a-4211-ad6e-54a5a5c7321b",
+  "facts_sha256": "5bbe47a4d099c3735ad494b5ed26cbff8fd5217e594b1d312a550b12905052d7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4a14ce90a1b09296925abee21852e3d2d81c9e399d0b9d2247d9f1297c6de932"
+  },
+  "physical_metadata_sha256": "3bfd26166c2984c2fae5200baf57eaa27cfe12576a45f52a737fa7bcc8f9e585"
+}

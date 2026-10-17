@@ -1,0 +1,12 @@
+{
+  "name": "Web Up",
+  "catalogue_id": 5024,
+  "oracle_id": "9b9b086c-d201-4574-a1e9-0d6f8de53d7d",
+  "facts_sha256": "fad996bbf471964a8b7bb0ad69ebce94e19455de329ba2b70cb24cbac5e54557",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7513f3cf32b7cadee4c7aedff3d094e82547f24c75e02882ac4a4a7ade435ae3"
+  },
+  "physical_metadata_sha256": "446a555b47e5d78f1b3e89ce6a3ade5c4a982a06b39527c8f5042ea83fe64118"
+}

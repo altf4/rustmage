@@ -1,0 +1,12 @@
+{
+  "name": "Doom Reigns Supreme",
+  "catalogue_id": 1132,
+  "oracle_id": "f398a742-22c1-4da9-9d49-fdce2eb93d01",
+  "facts_sha256": "b135a825c040f024441e308d1b0fad14bd315e265fb45c1da1acb960ebea0547",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8f50637a781337afd9aed2475097338af8f5828c0074e8df8fcf73810608ca2e"
+  },
+  "physical_metadata_sha256": "c32501b695a909c56b64662c8a3348923d42e539cdab0d3dd89fcf1f6a2b94f9"
+}

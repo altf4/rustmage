@@ -1,0 +1,12 @@
+{
+  "name": "Bark of Doran",
+  "catalogue_id": 329,
+  "oracle_id": "db3ba239-2239-4e9d-ad70-cff32ed24578",
+  "facts_sha256": "43c386c25ff888e132208ef8e00e8fad7c402b06370a5e36b7b25e9fe331a977",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fb1f2ab9bf11d338770d747e45c7a09479c4161c5e1c68b13c83bc3db74edc88"
+  },
+  "physical_metadata_sha256": "7a47333d8749ad087684a22883d290746bb905d7018bab30f1b871a93e138b94"
+}

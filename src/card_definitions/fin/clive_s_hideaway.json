@@ -1,0 +1,12 @@
+{
+  "name": "Clive's Hideaway",
+  "catalogue_id": 771,
+  "oracle_id": "283f743f-6e79-49de-b7ed-08e6ffb64cc6",
+  "facts_sha256": "f4dc087674a11d3f03ec2e11b9ee0bca792ab505f554a20f152f0cb51ab5467e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9264a679c0e8808d6b849bdca42d5f1186beea458ed0a37f77784303073a1a2f"
+  },
+  "physical_metadata_sha256": "ed12ecd840423902b76161c863688e4456c8dd0cf1f64ec634dc725b9e31122e"
+}

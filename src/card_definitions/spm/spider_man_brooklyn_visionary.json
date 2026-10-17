@@ -1,0 +1,12 @@
+{
+  "name": "Spider-Man, Brooklyn Visionary",
+  "catalogue_id": 4030,
+  "oracle_id": "2ca85872-9436-4515-af50-c13e59605627",
+  "facts_sha256": "a5f8425da5d6285fca3c65f2a01e9e7fea0fe1833fc66110b74a09d0e1293334",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "63a4311bd3a3f777cc762b43f7a27baa0ef6a75b5c0af0cdc2c3d16788a671e9"
+  },
+  "physical_metadata_sha256": "3673b4f8f8db53625bcf5cb9e153b9444d2f5c9b0c041fd82d92ac6d73d18db2"
+}

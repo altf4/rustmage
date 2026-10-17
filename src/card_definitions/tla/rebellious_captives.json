@@ -1,0 +1,12 @@
+{
+  "name": "Rebellious Captives",
+  "catalogue_id": 3418,
+  "oracle_id": "70401db7-edbc-402f-98ef-be74bd316273",
+  "facts_sha256": "f6bd90fd1c8c3ae0c786cbcc288a8710d2ecfc932200275e75ebae6c4b0f7227",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1288cad52d4cb7870d72db532be67d7efe607e434a0bd1b83c034c0e4540662f"
+  },
+  "physical_metadata_sha256": "e0bece410fa5975679bda2deb1f64e6cf211bd397919795d7fc59e70c108255c"
+}

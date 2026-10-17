@@ -1,0 +1,12 @@
+{
+  "name": "Raphael, Ninja Destroyer",
+  "catalogue_id": 3379,
+  "oracle_id": "fdb8e862-c642-4b7b-b061-400de6061ffe",
+  "facts_sha256": "4492d9300e7740f8b875a54ac2793b852c3adab165a59f82a767cb181934d47f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "229fe0802301b9714bb68ad1c81355cee8f1532b5db87d64fe35f1441a77e27d"
+  },
+  "physical_metadata_sha256": "ca02135e538285b52f90bb0d2eeea712c41fe80f22963b79c8476eabadc154cc"
+}

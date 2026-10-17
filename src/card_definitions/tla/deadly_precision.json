@@ -1,0 +1,12 @@
+{
+  "name": "Deadly Precision",
+  "catalogue_id": 999,
+  "oracle_id": "d23ca3d2-0731-4df4-a3c6-69ddf0c58601",
+  "facts_sha256": "2ec651f686eebc7fdca367230648321b8dcb794ada0e13d053ed4d8d16cbcf4a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0385464f08db025eaa094f455ad9453a97403a0231634ce58ba823aedc016c35"
+  },
+  "physical_metadata_sha256": "f5d86809b935ef53d42a58f423721d11bc303f1adfea81513fee399c989874e6"
+}

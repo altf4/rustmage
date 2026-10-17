@@ -1,0 +1,12 @@
+{
+  "name": "Hei Bai, Spirit of Balance",
+  "catalogue_id": 1991,
+  "oracle_id": "8f709660-bb26-409f-9650-e5228ac8db7e",
+  "facts_sha256": "f3d98d80c3a0ea2b353eaf31e607324ed3c664b891a1fb6808abe85935b3f869",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e8c54df5f4bf422ce5099136876ce9c471e4691a555284cb24d5426e29e9fa7f"
+  },
+  "physical_metadata_sha256": "8706db5b3ad29be58999f9ac07949c390245ae930edddcf5a0ee6fc280fc7eb7"
+}

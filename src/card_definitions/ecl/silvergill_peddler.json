@@ -1,0 +1,12 @@
+{
+  "name": "Silvergill Peddler",
+  "catalogue_id": 3873,
+  "oracle_id": "08688903-d9cc-4d57-ba91-14a8523551b9",
+  "facts_sha256": "cbbe9af5331df7ea6d2366fe01a8ae96527f072b4cbdb72f936a54d37e488470",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e59ec7cd447edc7c3128b247c54949840563723edb1d03cf33178e550be2a580"
+  },
+  "physical_metadata_sha256": "e1e27bd32e589bb510049eb3b79ffc75f60db2c94485fb83b15c7d1397c55aef"
+}

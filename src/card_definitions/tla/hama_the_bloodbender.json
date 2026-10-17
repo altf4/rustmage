@@ -1,0 +1,12 @@
+{
+  "name": "Hama, the Bloodbender",
+  "catalogue_id": 1933,
+  "oracle_id": "ef80e174-78e8-412d-a6fe-89c7af746669",
+  "facts_sha256": "a2380b957779307e1e65b5ccb3825ae72f814e5543122f31f138166547fbea25",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1b6a15c32e0f6b65adae8c6d7c53c0980c0b6ce3d9552b7ab35b5c1694116a18"
+  },
+  "physical_metadata_sha256": "e725be76b35ae552f3cabc3d773754b9bec714ed9deb542e50aa54c79bf66859"
+}

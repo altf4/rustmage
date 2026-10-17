@@ -1,0 +1,12 @@
+{
+  "name": "Gleaming Barrier",
+  "catalogue_id": 1770,
+  "oracle_id": "1eb9e401-8975-447b-839d-f7cd23897465",
+  "facts_sha256": "7207f681783dbad81c50dc73b9f927fa0a23510b0d3f7d68c4cd56c436fff858",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "488305f8d5836d4f6c29763472d456a0aeee0fffad766a8166f52d0fb48c5160"
+  },
+  "physical_metadata_sha256": "9c72161458e8c173ba955aab72964316edf488cfa88484710d3f95cb74ce629a"
+}

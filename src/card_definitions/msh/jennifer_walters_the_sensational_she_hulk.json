@@ -1,0 +1,12 @@
+{
+  "name": "Jennifer Walters // The Sensational She-Hulk",
+  "catalogue_id": 2263,
+  "oracle_id": "c867a778-97ef-4872-b890-b088b96a1281",
+  "facts_sha256": "fce922aa93fc790c9fc8672b46118cc96759ac581dff240e8f6fe1f76a6d9cdb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "aeb7e214155b216410d210d26184d28ee0cfc2d997ad852b3b1934c1645faf62"
+  },
+  "physical_metadata_sha256": "a54e1dce7f665536984f823346649c9e6fa561932fb50cacc11429a92b82bcb7"
+}

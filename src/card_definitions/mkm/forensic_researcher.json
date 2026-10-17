@@ -1,0 +1,12 @@
+{
+  "name": "Forensic Researcher",
+  "catalogue_id": 1593,
+  "oracle_id": "75e7f7c7-fa98-497b-bf5e-8f74571e190c",
+  "facts_sha256": "f6e32d91020b865b9266b042a4d532a5d240e71f6fefcab97f31e717322fa4ff",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fa7f9e4b575eb7344fca5e969a72bece5a2a75750c05b177ec0f3c130122ac70"
+  },
+  "physical_metadata_sha256": "10501da9f881596860958381e63b632373fb4bac283863c38abd97db73e57abe"
+}

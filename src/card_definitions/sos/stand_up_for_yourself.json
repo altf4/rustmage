@@ -1,0 +1,12 @@
+{
+  "name": "Stand Up for Yourself",
+  "catalogue_id": 4094,
+  "oracle_id": "00e94b75-ad31-4e1f-b3be-eed7cd3e4d76",
+  "facts_sha256": "1428a67931c1557bab53326d09c7dbff1b3935f37bc9470583e4540bb38178e7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a82b44a2a71a3be3120ffb776d488a0859707aba62ec9bb86202afd1c4c69ca9"
+  },
+  "physical_metadata_sha256": "16aa46f59174307a37f5ac472c6bb4eabd12e9a077e74ea46ef72ae48e8fab6d"
+}

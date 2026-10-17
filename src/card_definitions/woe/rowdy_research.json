@@ -1,0 +1,12 @@
+{
+  "name": "Rowdy Research",
+  "catalogue_id": 3601,
+  "oracle_id": "1a33a5c2-5aa1-48e5-95a8-d52cdce980de",
+  "facts_sha256": "122e7259dc0e457cfd50c1be9d0ceca9890ac7a991e917eaccc43613d45f0c21",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bdc85bac621a1eaf0a51a93c74c835f1b065dea3c0246180e5e333bb5e161e38"
+  },
+  "physical_metadata_sha256": "96eebce23c39759a7525799c4da990d4c7059bad6c46ed4861082c899187a3a7"
+}

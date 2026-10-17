@@ -1,0 +1,12 @@
+{
+  "name": "Unscrupulous Agent",
+  "catalogue_id": 4795,
+  "oracle_id": "3e7879d5-62ea-4c9a-9fc0-659d70f3a8e1",
+  "facts_sha256": "9408c6d772539faa3dfe2f964bb9b00bb91ac69707711f22f2c8f57a457858c3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "41ff397a9d42691610753c193bb9b22cd2a30902c3b599d9df080ac367a5e451"
+  },
+  "physical_metadata_sha256": "34ce53bce99ae7f832ee3a6e612b6a8f5fda468ec691ae5838271060625299fe"
+}

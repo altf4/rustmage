@@ -1,0 +1,12 @@
+{
+  "name": "Crime Novelist",
+  "catalogue_id": 889,
+  "oracle_id": "5996b1d0-7fe3-4fec-8730-9db901d887b1",
+  "facts_sha256": "7ea637b7a730f518d560190ea5aca7c6e52991ca48ec3c70bde0b3159bfcd4ee",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2da510871c3286b0d2b9143d7d8876d7c8ae83cd2a20bafced249fb6f60b6f31"
+  },
+  "physical_metadata_sha256": "371c165b820c0606885e367f5edd9f1a53c357b0452c6c91240a0add9b170f80"
+}

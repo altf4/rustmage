@@ -1,0 +1,12 @@
+{
+  "name": "Besotted Knight",
+  "catalogue_id": 392,
+  "oracle_id": "c7b6d2cd-9105-404b-88f0-a67037fb2120",
+  "facts_sha256": "7015079462c4f8bb2b882284d54cdac8cd21528b188c9920639bfd875e4e6310",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "888b6751695cf0cfd3e6216f133f2358d68ca9799870c821ed56dc94cfd363e8"
+  },
+  "physical_metadata_sha256": "a4e6e6b433fe3e650699598df3e835d040ae1e11aeea9ed38ac061ad310126d4"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Captivating Cave",
+  "catalogue_id": 649,
+  "oracle_id": "4c77767a-8133-43bc-b7a5-09a73259d354",
+  "facts_sha256": "ae5a9a4865812072a1cc72ef9ec95582106ff15d45df7f5aaf9ddd156a05a4df",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e866f49e0106dbed87457bdff8a3ca04d37583f532b0e587a53286e35afac034"
+  },
+  "physical_metadata_sha256": "aff4d493e4bc23477e08cb8846278b1b96074c4e1c50ce9b0aaa40a417940c49"
+}

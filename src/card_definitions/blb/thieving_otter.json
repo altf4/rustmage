@@ -1,0 +1,12 @@
+{
+  "name": "Thieving Otter",
+  "catalogue_id": 4529,
+  "oracle_id": "5dee663f-9e2e-4503-8086-fc51664fdf29",
+  "facts_sha256": "ed2991543394538b4affa6c848700fb6b341eae74d1789ffd15f27e5d5af41aa",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "835872e5262825883eb6cce399e0be1a4053f9d9b8d7d91376cad9737c36a01e"
+  },
+  "physical_metadata_sha256": "4ea72df735100d2cd8af76d6484ca021661353963b082bf8acf15e7777aa7b98"
+}

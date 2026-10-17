@@ -1,0 +1,12 @@
+{
+  "name": "Optimistic Scavenger",
+  "catalogue_id": 3028,
+  "oracle_id": "0180c67b-c5c8-4a67-9562-d51f9e7ffff5",
+  "facts_sha256": "45c17565628b07091f31a5415d2f7bd512e46e01e86146303ab8932b9e3d146c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "aeb6e492fec0322566998102f6ab739210b02c9814ed7f3c7168553caaef3763"
+  },
+  "physical_metadata_sha256": "6f02462919b51b888e1dd3c67b01a61dbfa6db8220d97e31b64cda639d6acc52"
+}

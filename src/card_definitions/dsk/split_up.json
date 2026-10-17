@@ -1,0 +1,12 @@
+{
+  "name": "Split Up",
+  "catalogue_id": 4067,
+  "oracle_id": "2e82520a-9da3-49ae-b5c8-37e7ac8853fe",
+  "facts_sha256": "d93c3058ec1768545f6d5220545e7925aa45395d2221af7d96ab1d46f7e4b916",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f32bfb1e06d3c5cf1d2ce7875069f7ed8d3becc0f7198863e988c7ce2d43a2a4"
+  },
+  "physical_metadata_sha256": "b13c48d7d80d1bd2d88b587bd377ebba8fa387ea083ea3b07beca17ebd961bf1"
+}

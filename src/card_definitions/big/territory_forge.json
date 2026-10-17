@@ -1,0 +1,12 @@
+{
+  "name": "Territory Forge",
+  "catalogue_id": 4397,
+  "oracle_id": "a14d89b6-23eb-4337-8dee-93c39b0efbf1",
+  "facts_sha256": "c4360cf4d37bf2e0ffe40283a5a36d95de6c121d438c94e807579630a143b1cb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "445000ecf63f366cbad48c45ef91c57d09b09c3ebe3238e1c4163669510e7483"
+  },
+  "physical_metadata_sha256": "390cc461937521edc258c07747e5b28a55fef97bb83ab21382e997fb98460def"
+}

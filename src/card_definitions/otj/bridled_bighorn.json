@@ -1,0 +1,12 @@
+{
+  "name": "Bridled Bighorn",
+  "catalogue_id": 545,
+  "oracle_id": "6a1ad848-6fda-46dd-aad8-2f6a5c71a696",
+  "facts_sha256": "9c3e21900ad471429747b3d757ea23e2eb7bd988a09fc727c8af2713de9782b5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "400570db057b6446fa1f6015bbbef9a52ab3cf7aadb6ed68f55325f9957b51c3"
+  },
+  "physical_metadata_sha256": "cf6b59db90fd17e93fe78be76d7156b37501f762eb9313fb9e0d812567a2dd47"
+}

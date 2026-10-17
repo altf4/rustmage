@@ -1,0 +1,12 @@
+{
+  "name": "Hexhaven Dueling Arena",
+  "catalogue_id": 2022,
+  "oracle_id": "2cc075da-f79b-4050-84eb-2c1b9a30260c",
+  "facts_sha256": "616a442c095e74e2d8829d2b3c4abc3b9789556fff574bf3099ff456d4d60ea7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7b4b3d675c1cdc3fe3a6c9315d23ebe4e30285b2765d080d7b313bd10dc3ff09"
+  },
+  "physical_metadata_sha256": "e477b674fb382facacd94c32b53bccb839675a669383d49d61ad77e827c58951"
+}

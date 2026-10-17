@@ -1,0 +1,12 @@
+{
+  "name": "Godless Shrine",
+  "catalogue_id": 1815,
+  "oracle_id": "73864fcc-1bde-4bc0-831e-2b93e546e417",
+  "facts_sha256": "e2637147a893145fa7fb89dd44c7f130db4bc3bd325bfd05c10a9da700822266",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cd13dffc00d47f77fcae933624846cb64a44626fbfa2e29dc3a3c695c96a5859"
+  },
+  "physical_metadata_sha256": "c4100f82bd87dbe8233a306cda2abaf5e4c370ecece0d7b3c0d3fbe54bb60bcd"
+}

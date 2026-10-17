@@ -1,0 +1,12 @@
+{
+  "name": "Dour Port-Mage",
+  "catalogue_id": 1141,
+  "oracle_id": "cf58e309-00e8-438e-813e-2e1c1002db23",
+  "facts_sha256": "4430952793f1bce6b65ce08b6418e745a599a63d47709a483cc8b9b7faab8373",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "086cf84c00ea2f6d33dab232fd3104aaf0e9464eb9afff7a7df84b426a9fecd6"
+  },
+  "physical_metadata_sha256": "004d8dc39a9bdb2c8be60af6b27b68e78232985769616bbc41ab31a71c3066b3"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Hero in Training",
+  "catalogue_id": 2014,
+  "oracle_id": "87f1a840-021c-4699-a2c4-f2926daf98eb",
+  "facts_sha256": "80dc577ea9ef1016200c54114d1f1a28f3e9580bee08c20d82e3fd4332ed0774",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "60998e2b80059593509eb73a25cd445147ea0ff1a394d9b0760684fec8d1418c"
+  },
+  "physical_metadata_sha256": "731a6470eb8d3b15dd4827699dfe3b5ec294425b40a39bdf678062dc4f06de08"
+}

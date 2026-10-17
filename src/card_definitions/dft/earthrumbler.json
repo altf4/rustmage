@@ -1,0 +1,12 @@
+{
+  "name": "Earthrumbler",
+  "catalogue_id": 1244,
+  "oracle_id": "ba5982a9-e8c1-4e7c-9a73-c4caad0f7336",
+  "facts_sha256": "b99ff2348c7f0f46553cfe48a77791cef9093b72bd126d7f50b803af7d5e094e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1dbb9bd39556dc71aadf01a4d1dacf3bc61f08350a6b0555865abfec49824f54"
+  },
+  "physical_metadata_sha256": "311dae303a9f8981783b980c9dd76077ecb7a757720b7c1eaecc37911b4810c4"
+}

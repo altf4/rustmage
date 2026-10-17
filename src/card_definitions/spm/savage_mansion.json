@@ -1,0 +1,12 @@
+{
+  "name": "Savage Mansion",
+  "catalogue_id": 3693,
+  "oracle_id": "1af15c1d-a41c-44cc-9614-d72694dd26e8",
+  "facts_sha256": "fb962494ac4856e065906930bd7fc04b85815ae82d41aae0b8d38d8d3d23b9aa",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "315e0361db6e5de88a85b9b4ba74f2a850377bd483bbb4a2f2852b98aadf0a9c"
+  },
+  "physical_metadata_sha256": "0cb27b678a019a2bddc15fda0a08802e55d421c9a3138478357b3704f66445fc"
+}

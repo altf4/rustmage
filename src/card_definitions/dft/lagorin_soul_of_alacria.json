@@ -1,0 +1,12 @@
+{
+  "name": "Lagorin, Soul of Alacria",
+  "catalogue_id": 2436,
+  "oracle_id": "f7b6f5d4-b122-4ab4-a2c2-449ac781359a",
+  "facts_sha256": "821e451e79dc47e0055a42c0de7c21b1b33a62f110f651d2cd13d76e141af0ac",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "be09004008702a5be0e61a221ced00366c9c016c2a8805e997163cf4e97954ca"
+  },
+  "physical_metadata_sha256": "c089097e0951ef792cc90cd687867a23281aba469ca6b4cc48538c81bc663165"
+}

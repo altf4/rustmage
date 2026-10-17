@@ -1,0 +1,12 @@
+{
+  "name": "Glamermite",
+  "catalogue_id": 1766,
+  "oracle_id": "a7b0d897-38c0-4f90-81e8-3c5b8d31a607",
+  "facts_sha256": "494b200832272e2fdd99364e601cb4ce4ec28af68cb9421af1d1278b45cd8df7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6af3da2e2100d3b31cb442c34c5816c9abec730d63abd04d7eeb081048a9522f"
+  },
+  "physical_metadata_sha256": "04f65097adfddd00114caf5910d73df8b12489bceae40a406b326c13c6820411"
+}

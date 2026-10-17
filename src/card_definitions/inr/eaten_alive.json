@@ -1,0 +1,12 @@
+{
+  "name": "Eaten Alive",
+  "catalogue_id": 1247,
+  "oracle_id": "d437ecc2-2fd3-4ad3-b23e-217f55e58dae",
+  "facts_sha256": "5373f8b4335a7fd9e1b5b04fb20919635cbb105f82afba80ad709c156a5afea0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0c182ec0c27cbc2970bdbb40997ce3d49e15586667885a7975c401f274285282"
+  },
+  "physical_metadata_sha256": "a62aee5ce9ef7154e93ea34c52bf23af04f44797a500b7e9b14fa0a774e6d9ac"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Prowcatcher Specialist",
+  "catalogue_id": 3266,
+  "oracle_id": "594132ac-32a7-41d5-b7f0-3692bbed7f6f",
+  "facts_sha256": "4fb4a45406b07dfb7b960d9ebb58ac313413b30d380601f01f491728fce029e5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d7b395a288a81923e0801aa997a37beed759aee2122198cd06b4756359b255dd"
+  },
+  "physical_metadata_sha256": "4f260fbbcf1dcdeb061e77bbc7df23b88ed34fe4a78981a6c915ee47bd98e83d"
+}

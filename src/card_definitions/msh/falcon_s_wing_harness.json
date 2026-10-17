@@ -1,0 +1,12 @@
+{
+  "name": "Falcon's Wing Harness",
+  "catalogue_id": 1432,
+  "oracle_id": "e69db5f0-beed-48e8-bc25-768b1e8be5ea",
+  "facts_sha256": "500ed79a614a0d8f6e70054ff3e40c84b1875e3e7c39b1a246b7ab9ac2e826bb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "903c14942d765aa59658adbd61def59a0d370f2d24d6a87cc6d7faba9ec5cb70"
+  },
+  "physical_metadata_sha256": "b11c5ff3fd25f8dd6b152af0abb211939607f2ccabcfd040132227fe74966ed7"
+}

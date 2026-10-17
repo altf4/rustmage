@@ -1,0 +1,12 @@
+{
+  "name": "Hundred-Battle Veteran",
+  "catalogue_id": 2099,
+  "oracle_id": "9ed6aa5b-4369-42f7-9853-aae1ac9b17e2",
+  "facts_sha256": "86b838882d90d6d11b5fdba8095129887dd1ec3f3514503cf1d9ab5b71e1d436",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2010ff66e1bcabb00fca9e117b7cf49f8b14c06cdd7ccba4c8ded4869d828b29"
+  },
+  "physical_metadata_sha256": "b53afa4107f134b09da02285b788c3e73fb20fef0fcdd9654761e2faac108570"
+}

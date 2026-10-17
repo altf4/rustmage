@@ -1,0 +1,12 @@
+{
+  "name": "Chaos Spewer",
+  "catalogue_id": 720,
+  "oracle_id": "77217a66-4ba8-443f-b915-178cfcc233e1",
+  "facts_sha256": "946ea58f9ad5bf0fb4c3d12eb1052846020939bb9512d456b2ddf9bf98de54bc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5b7b46ba1d3dafbde786d4d048552c14546a49e53432107d179d252a283615ce"
+  },
+  "physical_metadata_sha256": "7ce8eefb9d22326777fb061abf9ca14c378a23cc02eae34f0b8fd1c43d060157"
+}

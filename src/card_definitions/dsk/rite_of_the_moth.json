@@ -1,0 +1,12 @@
+{
+  "name": "Rite of the Moth",
+  "catalogue_id": 3547,
+  "oracle_id": "a7fea839-d7d7-48b4-aeaf-133767532e32",
+  "facts_sha256": "73f6c1d3f07c90cf14512db91fa91c75963473f1d45c2e0ed8b0b9536ab3366a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7c2d871871b86f93cdcf63ea015e35dfa44848b5d62082bf69ad39af6fa7c85a"
+  },
+  "physical_metadata_sha256": "6b25a6f8f397bf0e017472d9931b3d6c6ada8c46719a184d052302264b415b4b"
+}

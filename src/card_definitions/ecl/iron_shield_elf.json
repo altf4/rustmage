@@ -1,0 +1,12 @@
+{
+  "name": "Iron-Shield Elf",
+  "catalogue_id": 2234,
+  "oracle_id": "1c77b4da-b580-4ce9-b127-76de674f5694",
+  "facts_sha256": "7175ecadd49ac0fdd0d15a99f189d1ad9eadaf14af7b5be4a54778469e99f5a1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5b4658be3e8ba7964c974a64b56ea6981c681484755191bc28ec3badfc072d68"
+  },
+  "physical_metadata_sha256": "305f4cdd3a6b2921a6027c33c18a16a47449a99f8a9f0db89f2d74c87c9b16bb"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Gate Colossus",
+  "catalogue_id": 1694,
+  "oracle_id": "386c5895-9713-4c28-9ba8-8ca0caa06c13",
+  "facts_sha256": "64ad501d9182369519f45253e02011a4bec5e9a7ff7cb1c643d0f1fd8a2031f1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4af4629d81499ff318e676659caa4035db0bd355cde997eda3d0ed0a941c4ae3"
+  },
+  "physical_metadata_sha256": "87775c2e86208375e50b3678281676301fcee24deed9f782750c3e917c286f42"
+}

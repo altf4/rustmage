@@ -1,0 +1,12 @@
+{
+  "name": "Sphinx of False Conclusions",
+  "catalogue_id": 4013,
+  "oracle_id": "9f004382-c57b-4fde-af97-0c85516c3cf4",
+  "facts_sha256": "1bb47c3dc9b219f6222d1f4cab304910ffecf95380f5a06368c1d082fbc0a98e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "379ad236f810e631a4059da48fbd8557210d7e839eaae4362d49a61b7cae9d4c"
+  },
+  "physical_metadata_sha256": "888b12260fbc7300a9d49a09f55bcaa7c70cc305075a51077f44b27629d485a7"
+}

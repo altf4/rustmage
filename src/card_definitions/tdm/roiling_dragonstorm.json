@@ -1,0 +1,12 @@
+{
+  "name": "Roiling Dragonstorm",
+  "catalogue_id": 3578,
+  "oracle_id": "6badc583-fabb-4d63-b70c-e7380acafc23",
+  "facts_sha256": "119f67aeb2c2bdd5747e9b49f29f8b6bbeadb7e164cbacb1767e731798eb63ab",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2a2023131dd828de83f054cc807ccc8055fc09648f8b100db4d13fb37b5afc32"
+  },
+  "physical_metadata_sha256": "295ecbfa85ae6c8ed3ed9f19ddf395f508b3cc21c11ce9b3cd35e5778f17ed6f"
+}

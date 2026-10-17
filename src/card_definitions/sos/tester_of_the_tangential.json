@@ -1,0 +1,12 @@
+{
+  "name": "Tester of the Tangential",
+  "catalogue_id": 4402,
+  "oracle_id": "a30a2b96-4a8c-4d18-b276-5005b8aff7ed",
+  "facts_sha256": "a1f195330c6ba6beba9ebca32fbdee750115ebe9217935f652599c7c4db640d0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1169fb8a15d6abfccc9095e6a739d2dcde62503b1495644b20c7516aad5c0b8e"
+  },
+  "physical_metadata_sha256": "c6da993f4554ae6cdffdf5c4a9fa3f15134e739fea185bbb8a85b0f55e504163"
+}

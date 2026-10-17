@@ -1,0 +1,12 @@
+{
+  "name": "Mister Negative",
+  "catalogue_id": 2794,
+  "oracle_id": "c8da3262-826d-4ea8-bb22-06374bebefe5",
+  "facts_sha256": "6bc887aa46bf43b33cf2158312c7fb9546c5e365dcbf247c61699f059e619f37",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ce6c6c61cce16d443e3bcab256192ba2c6d84df55c51d409c2c5ea9173992b06"
+  },
+  "physical_metadata_sha256": "e9dec459691ead7c34842ffe2fdf5d335423299170d18383b8f2893fab8d2121"
+}

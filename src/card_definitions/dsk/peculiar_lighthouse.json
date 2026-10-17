@@ -1,0 +1,12 @@
+{
+  "name": "Peculiar Lighthouse",
+  "catalogue_id": 3118,
+  "oracle_id": "d55f7e20-11c6-44e2-8a21-dca67d3dbc68",
+  "facts_sha256": "3904d15764c7415d31f864dc8f4764c9570968f4e6052d1cac057d10d6a4dd97",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "11be76ca976174e9fdd18c2378b8ac1bb3e1f74c8103c96fb06f365570ba354c"
+  },
+  "physical_metadata_sha256": "1ccc4b7ad49998738822eb5d61c5d1b384706a1a1988478a692138c835b2326b"
+}

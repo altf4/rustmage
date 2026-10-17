@@ -1,0 +1,12 @@
+{
+  "name": "Thrór's Map",
+  "catalogue_id": 4577,
+  "oracle_id": "925cacdc-6d09-4fbd-9258-9f0539da180c",
+  "facts_sha256": "f334aa3c45ff46d8e73e93fc21b03e737b6eb7344558b6dfeb944e09a670c915",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "be09176d2e5595454b5c4b7b90a039f3e82761900a4e63709aa01e06d8df57ee"
+  },
+  "physical_metadata_sha256": "6059f8a49e570d3952fca056b863c14db4a7de62e1671dc9ef98db594db97f29"
+}

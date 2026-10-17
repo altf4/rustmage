@@ -1,0 +1,12 @@
+{
+  "name": "Sage of Days",
+  "catalogue_id": 3646,
+  "oracle_id": "656fc672-efa5-484a-b5e8-eac262331439",
+  "facts_sha256": "01fd9600cf007e94aa3bce41b0c55957d12df8654492f61444f35025a3c562c8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "60b3c2b8f0bd428a6bcd43b912756a3d2d0eaa5cfddb74ae0c44edee053e1aa9"
+  },
+  "physical_metadata_sha256": "cfae8c9d21a1c1cf2fdcef75086ac326a887610b15d31bb62f8a12155ceee023"
+}

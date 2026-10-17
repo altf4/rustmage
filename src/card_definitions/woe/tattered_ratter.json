@@ -1,0 +1,12 @@
+{
+  "name": "Tattered Ratter",
+  "catalogue_id": 4344,
+  "oracle_id": "ba36f27a-08fc-46a5-bc55-2a71091cebcc",
+  "facts_sha256": "a7ccb18fb28535df4b57e3f93ec4a99efa3d1c2d675d74840102e44983d4e2ee",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "525e8948bdc0431b6f7d660fd2255e115761913b18e796efa7e41ef6243aa4ad"
+  },
+  "physical_metadata_sha256": "7a352f70c7fdb782adcead4abb72ff5d0675d532585a95897a682fe433798faa"
+}

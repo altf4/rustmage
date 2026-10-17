@@ -1,0 +1,12 @@
+{
+  "name": "Wander Off",
+  "catalogue_id": 4962,
+  "oracle_id": "b14d3226-adc2-4bdd-9e69-fefdc946ac04",
+  "facts_sha256": "008ae29210efda80a16137e9da3a47cfa5d40bc7a8419df7171f2c78b4163256",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f29b9cf0a8475cd8b994c8572be29731302967319a81f5ce0fd09ac0077eaead"
+  },
+  "physical_metadata_sha256": "d75a904c428e9c9cfb2d51eb2e0a6added12ff39cb71b07e65e6a2dd4b2d939e"
+}

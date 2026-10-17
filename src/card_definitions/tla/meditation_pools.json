@@ -1,0 +1,12 @@
+{
+  "name": "Meditation Pools",
+  "catalogue_id": 2704,
+  "oracle_id": "66208129-20fb-4cb4-8f00-8d4574c9c653",
+  "facts_sha256": "42deed7eb80075b67bf8c431482356eb4e5490482ebbb0ad40ce15ef21fa39af",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0d415c21591e7f17e1ee0d8edf80001bf259e56235c76542d143e709f4354715"
+  },
+  "physical_metadata_sha256": "a38cfe0ae4239990906e324ac9ce7aee0cb115c444151a6eef660efa4bdc1f47"
+}

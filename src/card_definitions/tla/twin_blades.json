@@ -1,0 +1,12 @@
+{
+  "name": "Twin Blades",
+  "catalogue_id": 4716,
+  "oracle_id": "88b076a4-46ff-4a41-95a5-2821f4d8944d",
+  "facts_sha256": "5779da7327daf49212967a55f20ea8d2349c5ae4279ae7aa557103aa4051611f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "75b1675e83dd6877c4192b13a17264a50905e11bd2437ec992e5421434f1b07f"
+  },
+  "physical_metadata_sha256": "082509dc9005b4a8b0ab15c6b3eee4e88a6357c91445f8143c0e6cac7cc5b5c7"
+}

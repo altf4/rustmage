@@ -1,0 +1,12 @@
+{
+  "name": "Bewildering Blizzard",
+  "catalogue_id": 401,
+  "oracle_id": "84469042-d48d-409f-a2c9-047058f13bc5",
+  "facts_sha256": "979b7e8238a1c0cca44ec6af3ed8fdcfd76a6bf9b25261111a6c93f646a13980",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f397300e4f050311b1122bd46fc311960d366a2b2eea31e5fe560076ae3975db"
+  },
+  "physical_metadata_sha256": "7ebc8356da040b9c828284e2aa28495b56b1de27923baaf5c2f8a70ba21ce1b8"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Worldwalker Helm",
+  "catalogue_id": 5116,
+  "oracle_id": "9573c85a-e574-4b4e-aae0-2165c45fd27e",
+  "facts_sha256": "faded4bae241e9656731834b859f14108a491655abd81358baa599abf23049be",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1123df0c9534586b72d9fe2046588f187e84c32d3be00391d3cb7c941609d97f"
+  },
+  "physical_metadata_sha256": "58be00f7118e6720ff9dc86d850f7c64af5b5b05eb2cbcf319532aac83410574"
+}

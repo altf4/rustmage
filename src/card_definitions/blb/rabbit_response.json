@@ -1,0 +1,12 @@
+{
+  "name": "Rabbit Response",
+  "catalogue_id": 3326,
+  "oracle_id": "9f7abd7d-1087-495c-8a52-2a2368cc1032",
+  "facts_sha256": "fd640f47f28ae7f07a3600dcddd9e18e33ed949b469977ac48727fdafe2ad7a3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b29e23e9256869184c979f6019b5a16feaea1cbaee9924c94e44120ac4f723c8"
+  },
+  "physical_metadata_sha256": "77c068de3511538db9712f8d2ffb5a4e9106c4e3878e44ca34213c15883f2bc9"
+}

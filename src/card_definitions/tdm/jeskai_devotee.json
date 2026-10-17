@@ -1,0 +1,12 @@
+{
+  "name": "Jeskai Devotee",
+  "catalogue_id": 2270,
+  "oracle_id": "6dcdd313-6df7-4d44-a4cb-0346a4fdb4e1",
+  "facts_sha256": "e21b7bc05e20df3a310915135a451986175891dc003627b75975c3244b64c8c8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8b69f4ecffda60c55eaebfceeffa34b76cc44fd550a860438e7c8796df4c6890"
+  },
+  "physical_metadata_sha256": "2e2f844d2e53056d9ededc58115590b3c90463492e3db0a8c0d20924a26bc9d7"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Rufus Shinra",
+  "catalogue_id": 3610,
+  "oracle_id": "0caeb396-e574-4e80-a1f6-79988fe9ba19",
+  "facts_sha256": "f9b2aff52d339b8172059afeacde63b14847edc207032419d5648ed4c429423c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4b3f318cb4a4d96808ea260261828fb55aac2d0db079abad788cd0c87e32a54a"
+  },
+  "physical_metadata_sha256": "e31e6cde72d5b613a3487c55241e5f4b5d979c78b32f260c54447bc3bded5200"
+}

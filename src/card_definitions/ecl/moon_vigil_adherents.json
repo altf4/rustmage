@@ -1,0 +1,12 @@
+{
+  "name": "Moon-Vigil Adherents",
+  "catalogue_id": 2841,
+  "oracle_id": "d0fa43f6-d8f6-4674-b538-6d546b7dcf40",
+  "facts_sha256": "9fabf864d62476576fbe933fd760a5e118128162c503b79b84555a0536421baf",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c67ddcd0983aa85830f08cf84c9eb034753d7e765dc1c782e734c452728ea841"
+  },
+  "physical_metadata_sha256": "390548bda41d843de719f60ce2b8735b0e54b9ab7f027d1bb3e395ff9a03d60d"
+}

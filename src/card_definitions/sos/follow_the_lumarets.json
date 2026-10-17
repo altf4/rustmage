@@ -1,0 +1,12 @@
+{
+  "name": "Follow the Lumarets",
+  "catalogue_id": 1580,
+  "oracle_id": "5bb38d08-582e-43aa-9507-7c20759978ec",
+  "facts_sha256": "d79545601fb445000fb526fe0bbb256a2aa74692e743f6e5dc6dcd6e8d1fc636",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7b7f2782b81e4e6146c06f9a5be0e3e5afc5e8c35d7c550969d03a2f82d727b9"
+  },
+  "physical_metadata_sha256": "b6be88ed6129cb7fd625a6f6ca193b9fc1894decc5d64ea1ec07a788df867986"
+}

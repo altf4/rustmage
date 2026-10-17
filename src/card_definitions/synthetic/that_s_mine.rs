@@ -1,0 +1,27 @@
+// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+pub(in crate::cards) const RULES: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::Single(TargetSpec::NONE),
+        &[Instruction::CreateTokens {
+            token: Card(5302),
+            amount: 1,
+            tapped: false,
+        }],
+    ),
+    triggers: &[],
+    activated: &[],
+    enters: Counters {
+        plus_one: 0,
+        minus_one: 0,
+        stun: 0,
+        loyalty: 0,
+        lore: 0,
+    },
+    entry: EntryTapped::Never,
+    keywords: Keywords(0),
+    extras: &CardExtras {
+        adventure_parent: Some(Card(1837)),
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};

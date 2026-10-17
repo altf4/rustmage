@@ -1,0 +1,12 @@
+{
+  "name": "Ancestral Anger",
+  "catalogue_id": 156,
+  "oracle_id": "e0828e8d-f01f-4088-9123-6d923ddb3242",
+  "facts_sha256": "2d030fb64a8f8451ae3dac9c7ae6d62a172efd753a8f08d8980bb5f344450df5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "61dce2c97e1faec5ed18678f6b96f84f3a846b164401196c79da00d6ee1b9cf7"
+  },
+  "physical_metadata_sha256": "c549b90a5180fff4c1283c6ce2ec14a4502c8c13b412c3c180b3e3d909ebe1c6"
+}

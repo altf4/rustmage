@@ -1,0 +1,12 @@
+{
+  "name": "High Noon",
+  "catalogue_id": 2037,
+  "oracle_id": "3c8cbf0f-0288-4b5e-bd4f-0f208670b6b5",
+  "facts_sha256": "7f7cf26a321f911e0f21ea6efcebd8bf4b5a4c09e15d88d86fd5a0183dedc1a1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e953d986349c854bd25f6f0882b86b091cff50aba9102ec019fdc32354d241d1"
+  },
+  "physical_metadata_sha256": "c2f8edab3ee198b6562ff741260dcdf162531b41699237ba2dd17175eb4c9d2d"
+}

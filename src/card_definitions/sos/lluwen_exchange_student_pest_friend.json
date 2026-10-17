@@ -1,0 +1,12 @@
+{
+  "name": "Lluwen, Exchange Student // Pest Friend",
+  "catalogue_id": 2528,
+  "oracle_id": "cb125cd4-c7c2-415d-b802-bdcfc2454403",
+  "facts_sha256": "d8da86800e5616e45f23bbafd85c6c2d0384ffa24226cae8ba866b92cc42a621",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0dcb65cf0009bf9f39ddceba11a8293fa84d49c15b63f6bf4322b9447061a41f"
+  },
+  "physical_metadata_sha256": "6dac541549a97458fa7506c5cb8165a174d1e30c5df336958ff1a569586fa733"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Elspeth, Storm Slayer",
+  "catalogue_id": 1292,
+  "oracle_id": "f78af825-023a-42e9-8374-5c52303a1417",
+  "facts_sha256": "128b61caf509aa3036a6c3f209330d0eb66fbd6bf569013ba268bc2fe31784e4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7f70e9d6c95cddc500fe72b1aa097ab3f9c7fb7ad59d2b3e26fcf40c02a04653"
+  },
+  "physical_metadata_sha256": "52d0995fe819062051e2ac9cdfda28abc64d70785cc8be7203b295eef9c77e7b"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Windurst, Federation Center",
+  "catalogue_id": 5077,
+  "oracle_id": "e198126a-f280-47f7-8bd0-3dc9f5ff05a0",
+  "facts_sha256": "ba279cfdb3b9830b5ec2572882280947659f40a45fe2e28c351e3381094f32dc",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cbe817c281aea86231d9c12b04e8adfe00973dcc9fc83f8fdfa67b17d8652a3b"
+  },
+  "physical_metadata_sha256": "0ad3520e912f71818c36226aa558be5224eeba28bb3cf9d63c079c6af8559600"
+}

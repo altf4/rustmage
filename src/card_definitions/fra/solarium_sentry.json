@@ -1,0 +1,12 @@
+{
+  "name": "Solarium Sentry",
+  "catalogue_id": 3956,
+  "oracle_id": "afddba56-f9a0-4917-8167-c9fd17ca9954",
+  "facts_sha256": "6aef3b7c18ae4356c7e9a1835594110f3296841213b24561bde4fda6dedff4a2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "db4c6b8fb19d966ec6245fc1925e8455aa6e63b0689a968411907a68825bd07d"
+  },
+  "physical_metadata_sha256": "fe57b34b43ecbbe63daa4ef0ec4577ef8b4009c5cfc697b27abaa4a26d7a8ce1"
+}

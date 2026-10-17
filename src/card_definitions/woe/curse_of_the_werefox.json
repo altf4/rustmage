@@ -1,0 +1,12 @@
+{
+  "name": "Curse of the Werefox",
+  "catalogue_id": 934,
+  "oracle_id": "64b41b54-ca22-41df-8bd3-dc4f7832fbb7",
+  "facts_sha256": "49cc4b37a9add452f8137b2343622d7a9a99a2884734a898644cb4dbae27b383",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f7eecf83f3e919eaf4f47ab91d72c943e45867bdc8d0e8cf4684a075afdbdc65"
+  },
+  "physical_metadata_sha256": "9121d90ad8b70f74af792eee17ef974e7c01b677b711e290b47fc88a7b6439ea"
+}

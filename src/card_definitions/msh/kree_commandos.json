@@ -1,0 +1,12 @@
+{
+  "name": "Kree Commandos",
+  "catalogue_id": 2412,
+  "oracle_id": "09eb988a-e2eb-42e1-a786-01be63d2263f",
+  "facts_sha256": "306a96dcb4fa8325f808cd16b01b21bf5bd710ee59933e300ad10bac708a5c4a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3dd9c427229addecc352ad0f40b3f608ce47b78c43656370be13fee6db2c46f6"
+  },
+  "physical_metadata_sha256": "40c44c3804dc204a582bf65e2ab51b9f500f3084056ae45d1f31eca2afb63502"
+}

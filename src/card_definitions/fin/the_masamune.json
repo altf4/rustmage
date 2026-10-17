@@ -1,0 +1,12 @@
+{
+  "name": "The Masamune",
+  "catalogue_id": 4471,
+  "oracle_id": "89eb4c39-35ae-405b-8af4-779880cb11c9",
+  "facts_sha256": "d427f5ba748addf6110b4ce4ec046a874295e08c2e44f1e4a639d3a1467c11bd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8d88b445c821f9cf35d5ff099ddb677756063a3e45834c848ffda5dc7d8a9c7a"
+  },
+  "physical_metadata_sha256": "9602a3d6a1fd793e0c78cb8e1f62580f86b2f3d0ab4c09825310d6292e97bbfd"
+}

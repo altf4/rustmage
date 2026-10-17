@@ -1,0 +1,12 @@
+{
+  "name": "Voyager Glidecar",
+  "catalogue_id": 4942,
+  "oracle_id": "8f40d73b-9106-448e-8649-5d62939f0d38",
+  "facts_sha256": "a1f87e34c97619328aaaf23fd1e12347bfae0eda5133fb7fef3460eb0692876e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4e5913910a346e24adc6417bec0fa2d4a2426270d99242dba67a24c45e4ce961"
+  },
+  "physical_metadata_sha256": "cefa08beb1ba4c02d84144321d5adceec29630fcfdb2f7fddbcbe7325637738b"
+}

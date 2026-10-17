@@ -1,0 +1,12 @@
+{
+  "name": "Evil Reawakened",
+  "catalogue_id": 1389,
+  "oracle_id": "264f944b-386b-4378-9764-4a8bde246809",
+  "facts_sha256": "e846aca0566477096033a439454931ee6cd8e64607a9b5658d05164cc2bee895",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5ebd7ee9d4493f4f8512d19e49067f5770ffb0c08cda27e1e6781ac601bb074d"
+  },
+  "physical_metadata_sha256": "691d90f31cc98cf22a79328a798dc5efb1656158e7655a6cc45f0781c2eccf53"
+}

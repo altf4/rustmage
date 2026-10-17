@@ -1,0 +1,12 @@
+{
+  "name": "Parting Gust",
+  "catalogue_id": 3104,
+  "oracle_id": "367bb252-41e1-4f98-9d22-442dd332cccf",
+  "facts_sha256": "3f4866a19b8637a9a005e31d19c05d1908fef197d7d17e092d3d88e63b31ec15",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "353d2834843a5730d7d35d154e8a589319e2e47ffd2caf8ce82f2061e6b669ca"
+  },
+  "physical_metadata_sha256": "0d9113b82a2fe29ee7bec8d91b9ca6591476c606ef1b3b6fc18df45ff3a4f734"
+}

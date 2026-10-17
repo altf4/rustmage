@@ -1,0 +1,12 @@
+{
+  "name": "Krumar Initiate",
+  "catalogue_id": 2419,
+  "oracle_id": "65a7fb13-77b9-44ea-9e0e-34daef82eb69",
+  "facts_sha256": "4af9646f7b21d53959e4a73a6fa8be4ae64698a07bbf409984f17d84967a9e07",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "15196efd94fb2f65e10a04687dc66c09d3bf3bcf5abfea670f8bcbda67ef0be7"
+  },
+  "physical_metadata_sha256": "c62c2cad63a5571797df18e041b6c2b7e882b76b90e2957e4cb86fd6a2ed5d8b"
+}

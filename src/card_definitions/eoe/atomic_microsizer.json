@@ -1,0 +1,12 @@
+{
+  "name": "Atomic Microsizer",
+  "catalogue_id": 256,
+  "oracle_id": "048c3b0b-48ef-42f5-a2af-90aa1d133296",
+  "facts_sha256": "105b0fa196b07c0fec5bb7445df6178bf7f07d158fd408bc1899fc2b8d76e53f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "05f366ea0c99095e4a71041208f3586560d9eeb996b10a2cef0f9141bd48ab51"
+  },
+  "physical_metadata_sha256": "a091b3f827e46ae83f95f65134498a827bea01ce9968518f7be3a25293e1b83a"
+}

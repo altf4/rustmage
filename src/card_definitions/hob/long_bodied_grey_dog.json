@@ -1,0 +1,12 @@
+{
+  "name": "Long-Bodied Grey Dog",
+  "catalogue_id": 2546,
+  "oracle_id": "6f83da19-fd89-44ec-88f3-0c3fddfbd1b2",
+  "facts_sha256": "76742e59973cf421a44c368892682357db169e9e96513e9ba00b8b61d70fc50c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "57c0f4b08eba238915f00f80d1f2a45ae4bd5a0df7ccf4858c87cf79bbc4f7b3"
+  },
+  "physical_metadata_sha256": "b955d27fbafe0cfc15c7598a4f06eaf1ec1086649e8acbd8ff1ccc49ebf7b491"
+}

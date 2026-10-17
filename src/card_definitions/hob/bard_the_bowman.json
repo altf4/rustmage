@@ -1,0 +1,12 @@
+{
+  "name": "Bard the Bowman",
+  "catalogue_id": 325,
+  "oracle_id": "ec076f5b-b0e3-4b6f-9293-a8fc42f20bd8",
+  "facts_sha256": "1776ef7be0f18a5858c52786f3dc2a7b04f229a3dec5a93dad05b938dfca29fb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d127308a18cd8849cf0cf9b040e4be37980d8477d9da7f0109446f81c1489fd5"
+  },
+  "physical_metadata_sha256": "e79a2b79ed13a429f2061e5da4713145f5c1bad45a881fedbb2b32c0cdb948b4"
+}

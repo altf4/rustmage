@@ -1,0 +1,12 @@
+{
+  "name": "Ghost Vacuum",
+  "catalogue_id": 1732,
+  "oracle_id": "4ef583ab-e0a0-4e4b-bd65-af766038b1fd",
+  "facts_sha256": "c455f42b4dee45ec9bf34014c95d21afe3f463956e24f2c64f3c2429712a41cc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1ec2eaa1af5c800a480fa51afd751b9910206275286a3edb2d8637cf6842d79c"
+  },
+  "physical_metadata_sha256": "16f76a43aab35d87699e7f3b06e314b6202c934b45afb1bd04305c788f38f808"
+}

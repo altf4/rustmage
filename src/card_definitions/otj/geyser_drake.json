@@ -1,0 +1,12 @@
+{
+  "name": "Geyser Drake",
+  "catalogue_id": 1724,
+  "oracle_id": "411b9158-e427-4099-bd30-3fbb22edb553",
+  "facts_sha256": "39a50bceb43078b555a5cf62d196f7ba18416fc3522f1a95fd02bb5cbec8ee2e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dc8b44086ccc7fd5153e3f67d21fb8ee29901cec8751b8b1239e8a7fa0f1b5c1"
+  },
+  "physical_metadata_sha256": "f26e632f22c5ac93d382a0412e4776fbb7d342a5c27f73d797a7624e49c094cf"
+}

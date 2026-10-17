@@ -1,0 +1,12 @@
+{
+  "name": "Glarb, Calamity's Augur",
+  "catalogue_id": 1767,
+  "oracle_id": "df9409e6-bd6d-4b5b-b807-fcf347ee940a",
+  "facts_sha256": "66a84fcd63d085984d7c1a0665c2b7a76790d79466d75490b8eef034c09d69cc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6d9cf2462fbab99c4f6c9f0ab9db3049593a6e31c8476eac501d05ab9018f978"
+  },
+  "physical_metadata_sha256": "41a354f66cd5b980d06ab314be3cc1a9a84b6bc2b3a4b2faceb59691d03c7a7f"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Strife Scholar // Awaken the Ages",
+  "catalogue_id": 4187,
+  "oracle_id": "e85c6bd2-db15-4052-88c0-3ae25414f0ca",
+  "facts_sha256": "63af9fc20c864b8f4c85891f9210f40db8c405cef089d54526024cffce4be499",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ba3cd467238e290b114a8b39069d3728036a6911ca906470165f9aa2458fc7b1"
+  },
+  "physical_metadata_sha256": "3d701b6ba1db3afd00bcc1314a09bbbf70140220fce902f8bd3f53fde4ec908c"
+}

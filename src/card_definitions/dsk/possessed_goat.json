@@ -1,0 +1,12 @@
+{
+  "name": "Possessed Goat",
+  "catalogue_id": 3206,
+  "oracle_id": "821f4ff3-ebc7-4f47-ac35-d00093b6d35b",
+  "facts_sha256": "ed6926c20f129d39bca5c8d4ebc5773c8937a8e69bc1da633a7326b7eff626a5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3074b70f6d86fe66dccfd214002687222670f672880427c221a1e8116ad13505"
+  },
+  "physical_metadata_sha256": "2e8c12de0f313ac888eb753ad9a363760ebf2590f37ff570d2b8eea2ed7f4405"
+}

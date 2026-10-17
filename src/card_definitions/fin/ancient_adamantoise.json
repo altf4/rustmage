@@ -1,0 +1,12 @@
+{
+  "name": "Ancient Adamantoise",
+  "catalogue_id": 159,
+  "oracle_id": "e6873252-653a-47a8-99b7-b2ef70aa1f7f",
+  "facts_sha256": "ead0d04c5d3d517a1616171f2f31cf1898eb1d174b43adc3644e0d223debb4e1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9b3a9a383ffca51e11c535586b32102655890e7f7a720c7ef74cebc843031635"
+  },
+  "physical_metadata_sha256": "70174c7c9c801becabefc3ceb5657de9b0ed839696b46642ef0934cb3fb69e68"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Orzhov Guildgate",
+  "catalogue_id": 3045,
+  "oracle_id": "57b37df5-fee4-4720-931f-f0cb0a8b338c",
+  "facts_sha256": "1b6889e37740e5008d9cb7e622d209b608f24bc507f779919e9fe5b9269bbd02",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cf3ce135ad2ca59dedb6558ca43fd926db6ffb78247acff522a5f8ff29b8d82f"
+  },
+  "physical_metadata_sha256": "a2e104f34e7c4636522a841b20edfb2c8b28488a70ca64f051580b818f9df9cd"
+}

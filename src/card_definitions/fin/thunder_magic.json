@@ -1,0 +1,12 @@
+{
+  "name": "Thunder Magic",
+  "catalogue_id": 4579,
+  "oracle_id": "623c1873-cd83-4a5f-b391-fd0d2bb89061",
+  "facts_sha256": "7053d911db3aa80ecb596be3dfc3b9a810f7a2908fec8e27c543768735ec1789",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d3b96cb755cf1afe25b2347d9535300ca2b027539ae0406fa43f3c3c8faac9a3"
+  },
+  "physical_metadata_sha256": "b520abbad0924ba7e27c5f6f2088f4f972934efde352c6c828cbde1ac4593d75"
+}

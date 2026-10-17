@@ -1,0 +1,12 @@
+{
+  "name": "Wandertale Mentor",
+  "catalogue_id": 4966,
+  "oracle_id": "9d14c7bd-7802-401c-b02b-c7f3c51b007f",
+  "facts_sha256": "5d89539fd4b1b2fc3e82799bfebd983033377b0b7defd246cd65cf077912f669",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4229845ed3c590afb0c61b861de9f3dc0217f385ce236974103ddc4760134efa"
+  },
+  "physical_metadata_sha256": "69ce0726e52530e57f35ab29449f8a51930bf48544c3b096933144b3ac8a560f"
+}

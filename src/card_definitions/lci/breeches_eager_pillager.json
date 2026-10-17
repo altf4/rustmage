@@ -1,0 +1,12 @@
+{
+  "name": "Breeches, Eager Pillager",
+  "catalogue_id": 541,
+  "oracle_id": "15361770-c6dc-4db7-b745-aa03e4b866ea",
+  "facts_sha256": "39e4c6839d91b833742d603f77fa1a208368176e502584e65fe4fe6041e51df3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dfcb119c0c73d1c999441b4e0ade1f31f696f2e33f61688a3200d26b8e24e09c"
+  },
+  "physical_metadata_sha256": "fd271d1fd1ae4687538d2eba891b4c312903fc35e10ad6b7a022898b7d557d6f"
+}

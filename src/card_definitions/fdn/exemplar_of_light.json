@@ -1,0 +1,12 @@
+{
+  "name": "Exemplar of Light",
+  "catalogue_id": 1396,
+  "oracle_id": "9ad730b5-8950-4215-9319-387e2970dd22",
+  "facts_sha256": "26951030f725df4c095a543129d59509cedbe18e0bf8d44bb05403de5597da3b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b017ca387d65151b27b5632489a377de5619f91d02fe55f077ce2e080b67d79a"
+  },
+  "physical_metadata_sha256": "8ac7eb3379bed1b73344066e5e1c6fa91eb99ab924ae1df6db8bb3661b80357b"
+}

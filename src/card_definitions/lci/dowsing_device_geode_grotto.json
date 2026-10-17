@@ -1,0 +1,12 @@
+{
+  "name": "Dowsing Device // Geode Grotto",
+  "catalogue_id": 1145,
+  "oracle_id": "2f4374f6-c695-4a5d-a6d6-0e41eaa587ca",
+  "facts_sha256": "6d2936e7c653117d3dbd456cc4e3b00c537ee1ca09b6324126cb4c7a39705121",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4f5296f531e362017f49dd0de23044ea361bf9024f39eef9e5f57d76795b4650"
+  },
+  "physical_metadata_sha256": "ab094cd4e7d943a10964be0cdb43abc11947a28b4da0dfae9b763c3bb850c922"
+}

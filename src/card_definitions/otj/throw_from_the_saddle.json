@@ -1,0 +1,12 @@
+{
+  "name": "Throw from the Saddle",
+  "catalogue_id": 4575,
+  "oracle_id": "d6780d29-0dd7-4f04-95b8-4ca6a55308f2",
+  "facts_sha256": "e5c571903421380dd998bb3ce98f3e1f9e3bef6c5a396f0a0340432977f1a265",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "277359f2cdcfc9c97cb2ad1acc187cf547ab11f3dac2e91e0d9cfb5e94ba4375"
+  },
+  "physical_metadata_sha256": "1fe6cdd276446a6aadbbf38e97e1fe8ca12bd2cf79bd88953c4c4d0f517a4129"
+}

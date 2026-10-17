@@ -1,0 +1,12 @@
+{
+  "name": "Hovel Hurler",
+  "catalogue_id": 2083,
+  "oracle_id": "fb9cd9d0-8eea-4aa8-bb9c-bb0aac847421",
+  "facts_sha256": "159a32774a225e49cce924a5a49e87ecd3d077319cdf935e921deebba05de8dd",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "47304027b70a07239badb5988d3772f00935367cec7cacb1964b0760089bd720"
+  },
+  "physical_metadata_sha256": "fb3a040346ee3281d90b4cbdfe7cb57e5f3a7b264fa4de82916552f75008c4df"
+}

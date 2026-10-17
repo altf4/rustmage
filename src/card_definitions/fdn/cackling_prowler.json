@@ -1,0 +1,12 @@
+{
+  "name": "Cackling Prowler",
+  "catalogue_id": 610,
+  "oracle_id": "898da62e-d29a-4ddc-be69-2ddec54614f5",
+  "facts_sha256": "af3a4e141f908523880c92eb419c2a624c950de09c1d5e788ab8b5b72c7e0cfc",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6982831d014a59d83f0cc8085bd4cbc737c5894eb8c6cac50e1448b855e46426"
+  },
+  "physical_metadata_sha256": "f44c7b893d8d0ddea26a42a11ef68b0331c7bfb4d9c1d96a99bbc173622f5c0c"
+}

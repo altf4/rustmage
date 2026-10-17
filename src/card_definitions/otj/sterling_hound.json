@@ -1,0 +1,12 @@
+{
+  "name": "Sterling Hound",
+  "catalogue_id": 4133,
+  "oracle_id": "3178c1f9-f644-4926-ac9a-d40e4db79955",
+  "facts_sha256": "eaedcd67fdff6aadf491466b1139077b09d1937c78c1eacebb1d2ee61ac25069",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "afba541a810a10934380adc91b76d270215c58c4c9590fe2189f2429256ab09a"
+  },
+  "physical_metadata_sha256": "bb57b76105d98319c982f4be976196867ee6f4c1a7efbe473e045318bc7c82db"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Tatyova, Benthic Druid",
+  "catalogue_id": 4345,
+  "oracle_id": "0715e860-3b3b-4331-9718-207973e94fee",
+  "facts_sha256": "754688a7ee8c75a750c3e84dcb917e887661cdcdfbe51b71b57afaddcec5c1dd",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a997953e821ac05d8c2351ad6170c3b2da9b8451cd0834e398410e798b6858b8"
+  },
+  "physical_metadata_sha256": "ff1fa675ce760472c398d97ed82c72a03cc01b620f88bb88c901578c69616399"
+}

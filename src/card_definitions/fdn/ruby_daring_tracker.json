@@ -1,0 +1,12 @@
+{
+  "name": "Ruby, Daring Tracker",
+  "catalogue_id": 3609,
+  "oracle_id": "5d1b0eee-3a7a-4f22-a40d-7658a368962a",
+  "facts_sha256": "bb1713289977e9c54148e44c7bedfee572a93be2015f478e9816ced660ee9ca6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e9b037a23804832a23c537439324313bdd93b10ada11032ba990b07ba17d5eb2"
+  },
+  "physical_metadata_sha256": "ce5bf0ac338c42d6a1c086a1479c023bad7c6e6028ca6ed02725af73ac97224d"
+}

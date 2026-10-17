@@ -1,0 +1,12 @@
+{
+  "name": "Jaded Analyst",
+  "catalogue_id": 2254,
+  "oracle_id": "e43400fe-3df5-4942-abc3-b9bba34fc7cd",
+  "facts_sha256": "9aead2917f4e6c38c57794ff671a6c465fb7c4b2b05df3a90e6937b1e0ad7c78",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dbb0a7b4a55c8c4e5b25a0f5f29c0722e648173bae28ce583a0fb14436b9d66c"
+  },
+  "physical_metadata_sha256": "1a7bf0c99865f9562e92097d243503b0974938903fd109c55d4201ec557aac54"
+}

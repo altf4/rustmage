@@ -1,0 +1,12 @@
+{
+  "name": "Spider-Sense",
+  "catalogue_id": 4036,
+  "oracle_id": "c4485bf9-e7ff-48b5-a983-02900939ee9d",
+  "facts_sha256": "86faf36f5df7cd4577466bea46612130cc49722f1a5d3dcfe82487e01978a5f9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "86c4b20a8241d2afb24ca1c818ef4c94ac6474a5d0739a29ea2b73abf382d7ef"
+  },
+  "physical_metadata_sha256": "692804f4c254e082f27f1276aebe3d48da23a5712052a441bd76403e1328c92f"
+}

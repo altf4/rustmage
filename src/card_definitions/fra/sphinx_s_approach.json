@@ -1,0 +1,12 @@
+{
+  "name": "Sphinx's Approach",
+  "catalogue_id": 4016,
+  "oracle_id": "48b1ac27-430f-4fd9-a71b-6ad125c57fe3",
+  "facts_sha256": "f1d700976ba65a05f6b35eee55fe05c670eb86ed577a672abce4b4fa64e86c9b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e93ed7a39f0135d0ef0037d464d7c2c68643f043d696e48fa82ecaa714ecd58a"
+  },
+  "physical_metadata_sha256": "bf3603f93635a2dc2b70ea39006f75edef6551c3daafd66125cae7822270d746"
+}

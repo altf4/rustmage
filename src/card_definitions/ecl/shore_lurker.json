@@ -1,0 +1,12 @@
+{
+  "name": "Shore Lurker",
+  "catalogue_id": 3844,
+  "oracle_id": "4288ba56-ddd0-4bd9-ba61-daf03e9f2d7f",
+  "facts_sha256": "0399fc96aab516f79d2111af8b74ad750579490cba56fddf47dd4fd027c004e5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c50927b15d004a9f000ee3e89157b3242b35620a2c64fe65a39f1cbeac8822cc"
+  },
+  "physical_metadata_sha256": "60198b74a5efca5bed154e10bb7b15b96dbf31fdd3f701533ad738579c7e5bca"
+}

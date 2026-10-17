@@ -1,0 +1,12 @@
+{
+  "name": "Gleaming Splendor",
+  "catalogue_id": 1773,
+  "oracle_id": "c01aeaa5-1d3b-4493-9575-30175dcd780d",
+  "facts_sha256": "53ab9cbf0f4aae2b382edec868099dfbb275566406fc7a04721b636b867ca4f6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fa34649cabb4fcb43a57d3d7f30805dd7acf0940415e8096b1417802dc2838db"
+  },
+  "physical_metadata_sha256": "5057bbfcb89b9773e937bc0f2d4adc73825721b37bd39769b3771694f0745875"
+}

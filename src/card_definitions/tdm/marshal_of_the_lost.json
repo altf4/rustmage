@@ -1,0 +1,12 @@
+{
+  "name": "Marshal of the Lost",
+  "catalogue_id": 2669,
+  "oracle_id": "af762373-e159-4a36-83b5-a82b8b16fa41",
+  "facts_sha256": "8eac261ba7de268587b9ec075b11b5b42969a677592d795fd76a0ae200676e2f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "accf5fd81017752591c3d213949d82bb1f7cf688aaf0ef8e77a4714e4daa754d"
+  },
+  "physical_metadata_sha256": "457588b0e8ce94481714ec5eb22e982823271957aa8b471468a4532021063130"
+}

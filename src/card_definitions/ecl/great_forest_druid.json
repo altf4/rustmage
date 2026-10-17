@@ -1,0 +1,12 @@
+{
+  "name": "Great Forest Druid",
+  "catalogue_id": 1863,
+  "oracle_id": "5cb6ebf7-6a75-4464-9e39-e171fcb52de3",
+  "facts_sha256": "ad0706572055bc55f2de5eaebdd9275ae2d227e567aa507de4e86f524a4bffc8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b02fc314a80c183075c93254cf76fabde2890584bf47ab8e71ccab6ad3868762"
+  },
+  "physical_metadata_sha256": "609b633818473d4ae2ec6d0a97b9ac139ebf32c283a5cb0935bce5526e3aef8f"
+}

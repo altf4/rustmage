@@ -1,0 +1,12 @@
+{
+  "name": "Command the Stage",
+  "catalogue_id": 812,
+  "oracle_id": "13bfc51f-d079-40ef-a4ba-47d06d3150a3",
+  "facts_sha256": "9146d4bb53fc624f6521735e40fa9f3ff073c7513f962ff19f92fb5a069c674a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "07034a2b1af5b62d642950fe4e64cca7e644d7e3feddf0e5953c2dc8c7e7ceef"
+  },
+  "physical_metadata_sha256": "1e80642cf6cf911ddf1bf030c5426b85c8f71edb6d328d977cdf43be761debc5"
+}

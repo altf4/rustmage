@@ -1,0 +1,12 @@
+{
+  "name": "Spectral Snatcher",
+  "catalogue_id": 4002,
+  "oracle_id": "371762f6-e07b-4c0e-a4ee-6c35a3809eb6",
+  "facts_sha256": "c9bea2cd2a581449ae43d3bb257aca964a2b39526a3a049d9eae8468e7c7b326",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f9cb8c4fa80053e2d10fe787b61295d05403cd7e73d1ac32f11905e21d52f045"
+  },
+  "physical_metadata_sha256": "df8a9f2bdba124e4aba1799e8f979aafb8d1551604ff96ea5738b2efdc469043"
+}

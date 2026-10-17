@@ -1,0 +1,12 @@
+{
+  "name": "Hot Dog Cart",
+  "catalogue_id": 2077,
+  "oracle_id": "cf27f1f8-2d95-4a00-97f8-72a244837f08",
+  "facts_sha256": "69bdacfb6ecdfb2259d8c6290f3f268d714f824d97542d38977f5f7aef98453e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4b9323e80522e6ec15b07bb3167d3b22bbeb5107c306f01dc75f7d6d77abc5a5"
+  },
+  "physical_metadata_sha256": "dbd8b689d13b11a96f139f8b0104088be6e4209fba9d885aefd19c4857784e73"
+}

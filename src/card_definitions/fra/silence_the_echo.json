@@ -1,0 +1,12 @@
+{
+  "name": "Silence the Echo",
+  "catalogue_id": 3865,
+  "oracle_id": "43654381-c55c-4d6d-abfd-12932ceb5a4a",
+  "facts_sha256": "816051047baee5609912b771803aef1be050deec78d79a9b2348e18b68b18e51",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dd5efa5ad3ce0af9531d6cc8f8515c963a4850feb9c2bd2f8fd99317099f90e4"
+  },
+  "physical_metadata_sha256": "68108d05debde80ba97b82b4bfb4d1755cd4c6d377677b68466760738067b6ef"
+}

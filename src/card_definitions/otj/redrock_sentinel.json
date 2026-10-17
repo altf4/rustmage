@@ -1,0 +1,12 @@
+{
+  "name": "Redrock Sentinel",
+  "catalogue_id": 3436,
+  "oracle_id": "51a6819d-c8fb-4f52-ab0c-4ae845728ed2",
+  "facts_sha256": "30b299b635f4016844e5fdc2c2847b961674a9630a815b2235f2c3bbbaa4d49a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a15b2fafc3c2713ac493f25d6610f0d87b17f3409e485a0df6c4f3484d4c5f64"
+  },
+  "physical_metadata_sha256": "184cbabfa1de5e4668b639dde6a642e55a68e744e73828e1ca3f72cb32fb17fb"
+}

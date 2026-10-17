@@ -1,0 +1,12 @@
+{
+  "name": "Speed, Young Avenger",
+  "catalogue_id": 4003,
+  "oracle_id": "2fb0f2d2-ed1f-4181-91f2-684a71c34998",
+  "facts_sha256": "237ecf7a4f3d7b72d24ce73141b9ed38e98bbf0b711da39be840efe6dfb013de",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b31ffbd51926d92f1af8545e3ff62e0978598f2359580cbe49a76cc24401c731"
+  },
+  "physical_metadata_sha256": "e341e41b68ddf164755a4289227619ba23b18086a1ad754b2a278943dfd4d61a"
+}

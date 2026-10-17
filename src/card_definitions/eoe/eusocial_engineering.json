@@ -1,0 +1,12 @@
+{
+  "name": "Eusocial Engineering",
+  "catalogue_id": 1384,
+  "oracle_id": "2f3f5a1c-8b88-4080-bd80-14db4d6c8c50",
+  "facts_sha256": "fe514d97beecc67a0de3e909dd471057665e9bc6058b9867ae168405f40f1802",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "08f201123b0ce50c52c01a8d4bb18ce89122c52ef132c00e358d26f2a6bc5165"
+  },
+  "physical_metadata_sha256": "9afe54bd5e2f3960b56eafb82d7b28ecda418f5a8db1a1d202d6e62e02da5229"
+}

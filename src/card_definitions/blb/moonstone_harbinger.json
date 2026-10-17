@@ -1,0 +1,12 @@
+{
+  "name": "Moonstone Harbinger",
+  "catalogue_id": 2848,
+  "oracle_id": "fcae4f9d-8f81-42f9-93a3-82a482851bdd",
+  "facts_sha256": "7373457bf46c3f8a4bce3b4828ef2be3cdd07b331c4259a56cdce20a927ab859",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "27630505f450c63ad34fb82f740a3f2de7006f74c960effc25a2b4f3af42d789"
+  },
+  "physical_metadata_sha256": "9c6a2b7b144961ead4fe5ebad411fd4a877796ffd3b4c1c04fb1f69025e73b92"
+}

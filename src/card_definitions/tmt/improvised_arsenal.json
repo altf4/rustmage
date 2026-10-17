@@ -1,0 +1,12 @@
+{
+  "name": "Improvised Arsenal",
+  "catalogue_id": 2154,
+  "oracle_id": "4f02aa99-481c-4089-8f7c-cfe7eaa7dda0",
+  "facts_sha256": "9d15e1ccddef58b497c7480e3fc116241ef713b22dd64b86c0505b269922d736",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "203d12b4b8feb1e8c54c2444757317f224fcb16509da7b996318a59a56bbba1d"
+  },
+  "physical_metadata_sha256": "d9dfeb2632e33266e1d427654792856d8db8fe46419597d83c9cf97e0ee79a7a"
+}

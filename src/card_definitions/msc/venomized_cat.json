@@ -1,0 +1,12 @@
+{
+  "name": "Venomized Cat",
+  "catalogue_id": 4871,
+  "oracle_id": "eb54d807-624b-471e-8c44-07322003903e",
+  "facts_sha256": "fb63f58ce527cd4c0c207ce3e59c2d760faa155b6d009061a6f231bfb53d5a01",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f0b967fc0028d48985894807d3804bc2027956cf557b7bbe8926d2a2aa747f09"
+  },
+  "physical_metadata_sha256": "286b09a0f5022a68ffc04001b62236dbb974e750a2cc6953073225343371e2d7"
+}

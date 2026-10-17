@@ -1,0 +1,12 @@
+{
+  "name": "Impolite Entrance",
+  "catalogue_id": 2148,
+  "oracle_id": "b77764fe-bc79-410a-995a-ac392f5b46b8",
+  "facts_sha256": "f204830d9c92674610045bd8b9cfcf75c29b568138a6a112caedccaace33b911",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c75a1c060c0c6470032606a0c2e183e845ec35e3d03104800241cba72b65b840"
+  },
+  "physical_metadata_sha256": "93dea52c949c86bbc4c2f63c7c46a4117f5b6ee65215acf5077f70bca7751602"
+}

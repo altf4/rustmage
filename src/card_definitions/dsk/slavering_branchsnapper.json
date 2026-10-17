@@ -1,0 +1,12 @@
+{
+  "name": "Slavering Branchsnapper",
+  "catalogue_id": 3915,
+  "oracle_id": "29326487-6d95-40a8-9bcc-f94ada4e27c3",
+  "facts_sha256": "145fb11f0befced5e4256fb70d48ae7327b2bd3e8f25412b156eafa8733c5063",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "04d8fa652f8590c606a9d9c5291a9beda24b6db2ad4213fd33d9f8a7ad65a159"
+  },
+  "physical_metadata_sha256": "c7e08fcf9b0a8b7e5055ac3efea8f5c2117572ba78268e0dc1efaca4f8ea003a"
+}

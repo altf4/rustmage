@@ -1,0 +1,12 @@
+{
+  "name": "Mudflat Village",
+  "catalogue_id": 2872,
+  "oracle_id": "aeeab1df-0b8b-4bc4-a5f9-aac413449bec",
+  "facts_sha256": "07ddad8cde50c74d41ab8a8497159e8cba9cf8c5c6eb9b55e72b8ecd95b0ed6c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a3060bb049021f97192c62990d35923bbd4560600ce548efb7157d70f7be946e"
+  },
+  "physical_metadata_sha256": "0fbfea740fc0a6afc23d47d4285b95251b2a64b226914482a2d0ab68f6062c04"
+}

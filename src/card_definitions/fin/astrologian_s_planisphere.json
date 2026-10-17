@@ -1,0 +1,12 @@
+{
+  "name": "Astrologian's Planisphere",
+  "catalogue_id": 251,
+  "oracle_id": "4dcd0583-cee0-46a6-ba43-93bca5eb0428",
+  "facts_sha256": "34c203f4efb1e630ab38610e59015797d6d44c2c1c9ea9a1856ca2ea1c61cf2d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dd8d2e65eee5e2e93e5897a0deb0e00dfec90d7fbe9aae8d14cb509882bfe0f6"
+  },
+  "physical_metadata_sha256": "3455ad6b0c7c9d6da175892b48c5aa5e60293cbd77450a354c47679b5b91247e"
+}

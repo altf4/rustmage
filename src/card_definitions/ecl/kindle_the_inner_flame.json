@@ -1,0 +1,12 @@
+{
+  "name": "Kindle the Inner Flame",
+  "catalogue_id": 2356,
+  "oracle_id": "c7ca6371-73bb-4717-a148-0804b8f4c1e6",
+  "facts_sha256": "d04b9324583635e275f971c37116061288b382b464e35586bfa272626b20c909",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c29cc348b80c61f481b8a82b540da81add86a5c0c74d37cfc938f08163fe23fe"
+  },
+  "physical_metadata_sha256": "ec14417f1144ffa0076610a28173e92034bfd0f8c6c1a44e0b5e3da780040c78"
+}

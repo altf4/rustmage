@@ -1,0 +1,12 @@
+{
+  "name": "Jade-Cast Sentinel",
+  "catalogue_id": 2253,
+  "oracle_id": "985192cd-ceb6-48ad-80b9-e10fc544260e",
+  "facts_sha256": "ae0f1bb85972a50a1d96dc64fbf3e48d4ff8638cdd64cd7235c42969fc4c3664",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "453f6ebd6f52e368a9b2d1238f7a9dedb2f51b5939778b5d22c0f45b4eefddfc"
+  },
+  "physical_metadata_sha256": "626903ca99115a6ad67e6f35a5a0dc15f50c254e09582de8ca468a31fb73c55c"
+}

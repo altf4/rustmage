@@ -1,0 +1,12 @@
+{
+  "name": "Apothecary Stomper",
+  "catalogue_id": 185,
+  "oracle_id": "6a381121-9134-489c-8c7e-44be1936b0e2",
+  "facts_sha256": "68d4de2a1830245a728b5e7b3af97469b2943054c4cd438b42dbbe25773746eb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7355920e8a50c20f15c407a375a426a80fb644f7f2a0dcd56a131515aed4c216"
+  },
+  "physical_metadata_sha256": "8b18a8c6371edc5ef27ae54cd407537fa0e53d94079fd8233bd442aea36bb6f4"
+}

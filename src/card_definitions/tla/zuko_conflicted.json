@@ -1,0 +1,12 @@
+{
+  "name": "Zuko, Conflicted",
+  "catalogue_id": 5177,
+  "oracle_id": "b5fd82b9-77de-4358-9ce7-915cc809a889",
+  "facts_sha256": "95c665e706c7fda790cab1a1979b250d2b928ae9aa7071680c7b590626efef2c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0d0c34143876e7082ca8b383b7a561832eda51036440be2eddec29b331639626"
+  },
+  "physical_metadata_sha256": "4e3c58c50b21829a83651e7fa945833d01e404e14251d93f2de7b94ee047ec8c"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Venom Connoisseur",
+  "catalogue_id": 4868,
+  "oracle_id": "03ebc100-68ac-4d53-adc2-d537212f7d31",
+  "facts_sha256": "10f8b71bada49f529dc2a8b8f433520aef35eba4d0d51c1aed9c150ac5ff3592",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1ad0f498f1e3423d061ede8679082659ac777d264bdcaffd64c7ab46faf0591b"
+  },
+  "physical_metadata_sha256": "2c3a1b06799e770f181659a639a24b0c79db6d2a9e5cf5b4cb538da998451b78"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Practiced Scrollsmith",
+  "catalogue_id": 3215,
+  "oracle_id": "a02f9f42-4c3a-4a97-8667-68ba4617f193",
+  "facts_sha256": "e05e30f3ec4cfdf71e757240b5cf1e447a6d5649972751108a0e2160bbf5b5de",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f7296e600661ad7184aea14afe65dd7bed8c52fac9756de1e5f87646a942ed03"
+  },
+  "physical_metadata_sha256": "0a03b9764f956994a7bae0eb77e2a2db894bcc9ac9f0d9f913154db4abc4480e"
+}

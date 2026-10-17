@@ -1,0 +1,12 @@
+{
+  "name": "Zimone, All-Questioning",
+  "catalogue_id": 5164,
+  "oracle_id": "6c044dd1-8938-4d62-a7b2-e2298de08f70",
+  "facts_sha256": "d6e54a41de0c78904201ed2e700a55cc71acb5aceeb5987fd6a88d2f83850e84",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2c334d426d7f369fba6121c8b6e5bebf02eb492b96e6ae3eabef287551369593"
+  },
+  "physical_metadata_sha256": "9c3e271d4d2f783a920cfadb74df36f131ddbe7f5e7147e2da162201502fa8bd"
+}

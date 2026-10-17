@@ -1,0 +1,12 @@
+{
+  "name": "Tender Wildguide",
+  "catalogue_id": 5283,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c24b320ec08f50c5f1bf916ad7ec03f64fea25176e4da024af3095170357541d"
+  },
+  "physical_metadata_sha256": "eda779752a630b30a25de3995082446238de4dc7a432b6b172950ed54e13470e"
+}

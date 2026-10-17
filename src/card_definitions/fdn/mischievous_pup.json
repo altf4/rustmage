@@ -1,0 +1,12 @@
+{
+  "name": "Mischievous Pup",
+  "catalogue_id": 2788,
+  "oracle_id": "e75b187d-0e3b-4d94-a940-8b7e4e7ed1ca",
+  "facts_sha256": "c0136687fd399f90b8313947f4115c5ba93a8dc3ac7de62c5a8b35ccc9ec2fa4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "255193a0de0394761e59cf503e3201350e3d8b52c0bf322e7aa0347d2e8bd1a7"
+  },
+  "physical_metadata_sha256": "f4f2970f4b9fa83c494ef26c6e64c3219b1c5ad8e767b3693001fc1d74d65d14"
+}

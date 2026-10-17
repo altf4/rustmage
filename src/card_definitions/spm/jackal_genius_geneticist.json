@@ -1,0 +1,12 @@
+{
+  "name": "Jackal, Genius Geneticist",
+  "catalogue_id": 2250,
+  "oracle_id": "5998f07e-01f9-4d02-94dd-867c7166463f",
+  "facts_sha256": "88e8fbc3d2cb1d5bb99676eff124ac1289dca3032214eaab94e118002feb1f77",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d844113ccb5a067bc54af61ffd26134cde5eb7b93359fba7c850e66d40a0b156"
+  },
+  "physical_metadata_sha256": "dd80c891bd57bd6112d961c87719e3e31f2cf640cc98258e37d0d3fb4efc3419"
+}

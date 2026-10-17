@@ -1,0 +1,12 @@
+{
+  "name": "Brigid's Command",
+  "catalogue_id": 551,
+  "oracle_id": "6487fc1b-5c83-4d09-94d3-175725bcb922",
+  "facts_sha256": "94193eac64e8940accd1da2bbc035ba8915a9fe596f7c4176f24b8bdf53d3487",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9d4e41029cb10f87d926f9976297939608aedf6c2c0710d55ad8315afc1cfb9c"
+  },
+  "physical_metadata_sha256": "2f8b8b65402267f738f6d46835002aab90c5e3790d6dc5558f963571eb93d076"
+}

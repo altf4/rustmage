@@ -1,0 +1,12 @@
+{
+  "name": "Enduring Vitality",
+  "catalogue_id": 1337,
+  "oracle_id": "3577c47e-76d3-4659-b922-31c4b74be3a0",
+  "facts_sha256": "14a7a9700294d4bfe3b719b0870f573565073ccfa832c4eebae1286efcf44e22",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ca16977a256c041a5f63110c776e489a8c6a2f65c985be482ce2772188ae8915"
+  },
+  "physical_metadata_sha256": "ccc56afb8f526367694a23a3782f9be42a524458e4c0c7c645b4b3318cc695a8"
+}

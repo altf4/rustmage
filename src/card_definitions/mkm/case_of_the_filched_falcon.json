@@ -1,0 +1,12 @@
+{
+  "name": "Case of the Filched Falcon",
+  "catalogue_id": 663,
+  "oracle_id": "33b31fb0-71ce-408a-a256-2a5a3b085cb6",
+  "facts_sha256": "defb3e8f08eeb2bdad7fbcdaba1c9ba2b266b31363df30776b45dc3cc53ac2cb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c61b5e865052d80898cc63e7b1040777ce06355992dc492671ab98d34c6c1302"
+  },
+  "physical_metadata_sha256": "b0a25c345893623ac435ecffd1c4cb96867d0a015dc55b9ff4c6ff058f2c40c9"
+}

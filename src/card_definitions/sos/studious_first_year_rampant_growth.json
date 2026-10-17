@@ -1,0 +1,12 @@
+{
+  "name": "Studious First-Year // Rampant Growth",
+  "catalogue_id": 4196,
+  "oracle_id": "58b0c737-0a84-4f9a-b3b7-300c5de43874",
+  "facts_sha256": "253b51ff169d02b699f9cdcc33570238341047f53e0d65cdc992a18671d4c4c4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8a4d348d9b0f7b52280a72b1767304013751b0caa66110bb70626482d9a42b0a"
+  },
+  "physical_metadata_sha256": "f01ae44ec6c48b1996c15dc6b17aed9520fff8b2bfc99765b9bdab6028ac047f"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Llanowar Elves",
+  "catalogue_id": 8,
+  "oracle_id": "68954295-54e3-4303-a6bc-fc4547a4e3a3",
+  "facts_sha256": "3d3340bfa44cc8ddc45a7f31f4a63585f3d5b2c4f00b1838fc48a3388fab46c0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6803384aaa0dd206370a163ce7e2ef870367144d2eafb59594961139430a9447"
+  },
+  "physical_metadata_sha256": "522018cd3bcac479a27be007e790e13fe968694cf8a9f3b3e0e531c49afbd792"
+}

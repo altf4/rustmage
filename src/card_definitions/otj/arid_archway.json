@@ -1,0 +1,12 @@
+{
+  "name": "Arid Archway",
+  "catalogue_id": 220,
+  "oracle_id": "3be3d7e6-7860-438a-b8c8-ef154c18c163",
+  "facts_sha256": "af7f9340ed529b33de987ee45cbf9d54e9f1e6ad793a4ff6cb7529977ba7ccac",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9fdf245f0ab581a87e2a6e09447727565abab7bdd30b9067500da7adf35b51bf"
+  },
+  "physical_metadata_sha256": "6e3c56da47b414b6eb0d15308bb06d092e04dc200cf08f7cde5cea429b0e917e"
+}

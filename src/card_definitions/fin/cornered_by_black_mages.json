@@ -1,0 +1,12 @@
+{
+  "name": "Cornered by Black Mages",
+  "catalogue_id": 851,
+  "oracle_id": "68a58e0b-1506-492e-8ca3-016e520c10ba",
+  "facts_sha256": "e5c18631ea93be3e60d057c3fc3af70ecab89f2505f5fdd2f42833ffa9434579",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "055494c3f24db20cf34b0a785bb275635a2924e0efdbe3e258c1883abc300724"
+  },
+  "physical_metadata_sha256": "a0ee903d80ee40a62c5e64ba7611437691f8719600ff7026a21054a17aa3fbc0"
+}

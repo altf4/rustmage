@@ -1,0 +1,12 @@
+{
+  "name": "Weapons Vendor",
+  "catalogue_id": 5021,
+  "oracle_id": "bd0a7a86-a567-4145-b1d8-e0b72091db84",
+  "facts_sha256": "7e9f8181b8b60a978fd1a2b387f4f6c38d38cb471a0bb0ced2cc7851fc251143",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2a6c16ebeb065365776c9c9ab1585bcbdfd63f88686a5d94812f8f7c8aa15bd5"
+  },
+  "physical_metadata_sha256": "7a79e361260c2f40b50ef80a42ff0e612138f742969e553b7c96875f73f6fb0f"
+}

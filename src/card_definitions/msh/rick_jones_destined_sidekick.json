@@ -1,0 +1,12 @@
+{
+  "name": "Rick Jones, Destined Sidekick",
+  "catalogue_id": 3517,
+  "oracle_id": "4bccfa67-0c6f-42a1-b8d4-0842a8230d1e",
+  "facts_sha256": "06c22b7f26b60a5633a3ba1da0115b58be9df4ac6ad9d7a5aefe93a5a7e6bffe",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a92f12d49cfe9c62ef47e885a4bde598c4e5cb4553eada97c8c323937e825b87"
+  },
+  "physical_metadata_sha256": "41839570f77b652123c39d059032c4900753f0c6b0bce538a9b8f4fa96f007e4"
+}

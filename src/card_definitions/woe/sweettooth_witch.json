@@ -1,0 +1,12 @@
+{
+  "name": "Sweettooth Witch",
+  "catalogue_id": 4290,
+  "oracle_id": "635b854d-de71-4c85-9755-8c97bf3cba36",
+  "facts_sha256": "88f4fdbdcab86e461b698549630fe9792dd1d94d5b8a155af3663ab83a6dbd7c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a3a502ae58406a2eece7146b82b1be9374bf2c14985c7a6ffce4a2267caab2cc"
+  },
+  "physical_metadata_sha256": "b852966971e95a32f704e2e66a38392d989706c54317ff98b00474ef475e6f33"
+}

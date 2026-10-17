@@ -1,0 +1,12 @@
+{
+  "name": "Mind Transfer Protocol",
+  "catalogue_id": 2765,
+  "oracle_id": "0d80d0f7-a436-431c-a54e-e7dd7dbba8de",
+  "facts_sha256": "3d1eb08fc494fb19ffeb8a38035a8ed7e2e27c805fa09e8a16fcbdebf35df8e7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0b8cc077a88238087655ea6b70482c1a0ea90c77649696a04fdd2aa21056c11a"
+  },
+  "physical_metadata_sha256": "07457db6092e7960c518ac412814a8470dd53b688c6f895d3951f3610136bb16"
+}

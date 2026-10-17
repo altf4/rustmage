@@ -1,0 +1,12 @@
+{
+  "name": "Tigra, Feline Fury",
+  "catalogue_id": 4600,
+  "oracle_id": "39d993be-30ad-4756-a494-fd8808d474c9",
+  "facts_sha256": "fe67ce54105c494247a962e11114b2a80939827694a25aa030ee06e6f8e659be",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eef24705420e8932f2dd0e8564d7617c9fbf934c4ad1316a343101a49f80bf71"
+  },
+  "physical_metadata_sha256": "69f3daa9698fcc00f2465bd782235f00941d88f0bbfa3477f038ff8b643662ec"
+}

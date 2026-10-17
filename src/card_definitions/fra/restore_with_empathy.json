@@ -1,0 +1,12 @@
+{
+  "name": "Restore with Empathy",
+  "catalogue_id": 3496,
+  "oracle_id": "cb1e697f-6689-4f0b-8725-61d51432b8dd",
+  "facts_sha256": "88d37548823720bfa1772aa55380028ac3b64ecbdd99b99344ec3a5c09005a7c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "27f0ac58efa0f2db30109e745b855da857d11ad1e51d23748f6794d5b93669b1"
+  },
+  "physical_metadata_sha256": "45be8d772fc94dbad851f15ead383bf2eb9481e9e75c8a0909f16d68541ee12f"
+}

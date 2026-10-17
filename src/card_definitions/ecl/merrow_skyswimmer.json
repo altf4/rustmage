@@ -1,0 +1,12 @@
+{
+  "name": "Merrow Skyswimmer",
+  "catalogue_id": 2726,
+  "oracle_id": "d709f396-021f-49eb-adb5-374aa790eaae",
+  "facts_sha256": "7b46792d6699a52f719ba05fce87ed18461d24fbbc9b13779287268e021bb82a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dd5e086b5568732f5b8377d6518bf304343873c5175e1299bbbdfa2c49c50cff"
+  },
+  "physical_metadata_sha256": "6f8a9f316c58cb1f19e37ba396aee14a4bac1320cb5c6a86fc600b0aa5c7fb96"
+}

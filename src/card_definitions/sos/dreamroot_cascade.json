@@ -1,0 +1,12 @@
+{
+  "name": "Dreamroot Cascade",
+  "catalogue_id": 1183,
+  "oracle_id": "dd8538e6-cd5f-4a88-aff5-eb5e76ce8ddb",
+  "facts_sha256": "261f09fcf41328cf71a0a4dd7399e81ab4bbeda52e669bd654a3478dc78f20bc",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "67ac4d48f7ce74f385ee5b423d6349e2fae61b3cf690abd594a5f2f45283db21"
+  },
+  "physical_metadata_sha256": "e2857319caac361554684592d794e4cd1a107f8a5062d1eb8518390253c55fa4"
+}

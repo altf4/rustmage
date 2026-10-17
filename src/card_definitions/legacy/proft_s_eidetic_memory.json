@@ -1,0 +1,12 @@
+{
+  "name": "Proft's Eidetic Memory",
+  "catalogue_id": 3251,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9c44600423862d04cfa6d02152da17f3afd1440f3786d4dfc3b399b27c1d9bf6"
+  },
+  "physical_metadata_sha256": "08acf3ba97a3ecf745efc5343b7ba77d40e1e6b4f1e9ec5e907be30b0246aff4"
+}

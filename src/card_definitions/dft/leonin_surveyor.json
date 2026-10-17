@@ -1,0 +1,12 @@
+{
+  "name": "Leonin Surveyor",
+  "catalogue_id": 2477,
+  "oracle_id": "97c29db0-b3e1-4704-afe8-5218250c044c",
+  "facts_sha256": "9c905779ef255d07ac5c3fdf9f82c18355a032d84d65b5c3b5645ffcfb0011d2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4744480f2f39e6ebced21f2a17a25c222b301b1d267850b38399955dac10738d"
+  },
+  "physical_metadata_sha256": "154caacd18c34576c2a6a353c1b0a80460a96d417c73c6fdca81926c714ed021"
+}

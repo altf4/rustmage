@@ -1,0 +1,12 @@
+{
+  "name": "Armasaur Guide",
+  "catalogue_id": 224,
+  "oracle_id": "1d4e7422-2e26-49ce-beef-08f61583089a",
+  "facts_sha256": "a5e06bf595f660fb3a7dd203498e8d2067cdaa021a29a679ed084f50975d1af6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d1a73ea69a18393cd9c7a7440dbcb4ef5431206011684fa7f908a1bae1357f85"
+  },
+  "physical_metadata_sha256": "a81cb54423eda813566ba719633e28fd686b54fafe6dc3299e7ade6a797e2f6b"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Claim the Kingdom",
+  "catalogue_id": 759,
+  "oracle_id": "3cd15225-e9b6-4998-b545-76536c72e948",
+  "facts_sha256": "313433cd4c8f4882a867bc1206162ad2828146104beb7dd03c0458cf3dee3736",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ce61bad17a4c1cef3dd96e2063a83b7ffabf88c6b23dffb1646db7f70badfcec"
+  },
+  "physical_metadata_sha256": "899af91d7dbcd63e501a22c5e9ee6c3a23dec6c72324b8a92c58a5cd150955e4"
+}

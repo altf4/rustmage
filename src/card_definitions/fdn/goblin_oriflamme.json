@@ -1,0 +1,12 @@
+{
+  "name": "Goblin Oriflamme",
+  "catalogue_id": 1806,
+  "oracle_id": "836bd011-2da5-443a-a814-19a664b98a1a",
+  "facts_sha256": "1adba5d12e8b5a9b548269d6b07b1b7abcbae5cc36e64354904c9584fa70da56",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "575366a3796d2e34556d3b27795af8a76d1b88b310e7aabc433f6742b1d66b6f"
+  },
+  "physical_metadata_sha256": "1ae64503e7000510baa477ebe353cb9971aea6a5959f3cc5d670295d12838980"
+}

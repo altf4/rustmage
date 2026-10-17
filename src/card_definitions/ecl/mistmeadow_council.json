@@ -1,0 +1,12 @@
+{
+  "name": "Mistmeadow Council",
+  "catalogue_id": 2795,
+  "oracle_id": "9acfec0d-05a0-4b28-a883-e6863f1cb773",
+  "facts_sha256": "39c9982fa3c3289aac086bb9449d6dc15bfa6bf9083fa52530715f882a29c24a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bab730f34e386ce88d9dc2d0519f9285735dabb3a811c4a68ca3afc83c804f26"
+  },
+  "physical_metadata_sha256": "c18d2627e5dd4da1287ff0e3533b5378d5bbfe501f2c6355a06c677e8de9a6f0"
+}

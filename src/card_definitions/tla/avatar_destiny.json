@@ -1,0 +1,12 @@
+{
+  "name": "Avatar Destiny",
+  "catalogue_id": 276,
+  "oracle_id": "ecb81888-589b-4486-a444-e0c26384854e",
+  "facts_sha256": "8cc54eb512ed7d8233214de092100468cb53a334257357b4ab2fa712b793cc1f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6513be59fe7f0ca39a2552eab4ad86f96c66ce46239e825255565628a1f33615"
+  },
+  "physical_metadata_sha256": "713ae76aa97b538ccfb97ae380987cb8326c05cecefe6b97631efd03fef9672c"
+}

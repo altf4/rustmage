@@ -1,0 +1,12 @@
+{
+  "name": "Stormbeacon Blade",
+  "catalogue_id": 4170,
+  "oracle_id": "f4b3ee43-fc01-425f-8322-29bf6d16cb3f",
+  "facts_sha256": "14eebfedaa97a8f3fa3a57b3e49b0bb90d6bef87d0fce7c76810772ffe4465eb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3e6d550ce5721f9f4de1cf633ab741b2d2fcc1a840693ac46797311273bc543b"
+  },
+  "physical_metadata_sha256": "ca85b568dea25475a9c2078fa8d30a6483cdd616cb53f21faff73cd91f0d586b"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Sovereign Okinec Ahau",
+  "catalogue_id": 3987,
+  "oracle_id": "087b2490-e415-44e2-a674-3b5619a0fad5",
+  "facts_sha256": "3ec20a84cf261e65f84557b7bb85987ac467358283bef0eccecb07001702d74a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "585f2f7aff6f700450ddf4d5ecd03d6893ad133e3006fc176e757c6ca4f5f45e"
+  },
+  "physical_metadata_sha256": "6c02ffd27bfcb6a2853c7432a2ed0871b5ee7cfd437327652f4cc2e27adccbc4"
+}

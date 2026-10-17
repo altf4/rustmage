@@ -1,0 +1,12 @@
+{
+  "name": "Blanchwood Armor",
+  "catalogue_id": 438,
+  "oracle_id": "80ea56ad-e741-4a85-b4e8-ce62e7d593d5",
+  "facts_sha256": "0b7fa049ea762c7485735db6413c98cb77bdaaeaa9d5b5682e6e32aeac2a017e",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0d0fe0541b6de1f83436d4c738b4d47012d1a9168a50968d619d01df0d9da548"
+  },
+  "physical_metadata_sha256": "250a70926664b9b6360ebe8f8da871141c5d50a4d5f566e1b42c9dec1befa683"
+}

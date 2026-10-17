@@ -1,0 +1,12 @@
+{
+  "name": "Giott, King of the Dwarves",
+  "catalogue_id": 1756,
+  "oracle_id": "c629fa91-e13c-494b-a95f-a91b7c52035a",
+  "facts_sha256": "78a516163066a23939adba7099ead706ca9d0e20d9f4003d9bd044a2ed4beedc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "833987f82bda056f5a890d66c7a690a72c8d71e28e3dd9c510135be88eb4451e"
+  },
+  "physical_metadata_sha256": "dd4ab81d6b42e8c50ef1cd49b627fbef8da299f339cb273fe70c658617243216"
+}

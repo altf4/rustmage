@@ -1,0 +1,12 @@
+{
+  "name": "Ordinary Bear",
+  "catalogue_id": 3035,
+  "oracle_id": "89a2fab8-b074-42aa-a871-d9c5de2d0895",
+  "facts_sha256": "11e1ae46a035f9c8f9851f3b4960b5c5759a7482b38703768c8b2d908a9a06c2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "06a48eb43fcc2c537bf76bc146013bff18103f547003d7311cb25d0460da066a"
+  },
+  "physical_metadata_sha256": "02dbf7de60b469caa499eb7e51551700ce922992d7cffa75ee0e9e457e03e9b6"
+}

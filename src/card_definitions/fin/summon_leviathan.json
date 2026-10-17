@@ -1,0 +1,12 @@
+{
+  "name": "Summon: Leviathan",
+  "catalogue_id": 4223,
+  "oracle_id": "b38d1811-64d7-4a35-a86c-3291eecd8391",
+  "facts_sha256": "59bacc59e44452a6fb1598a2f1c53afbbc6de1ce54493f8ed052bac46d9cc755",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "79c26e57ed08f49c8722524c9641f60cc5b703c4edf25ede3778a80f8869b8b9"
+  },
+  "physical_metadata_sha256": "b15a300191e9c98a7bf5823061efdcbe93cddc662bc5467ae7e7c3b617604dfa"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Rydia's Return",
+  "catalogue_id": 3633,
+  "oracle_id": "0d007479-c5e8-4aa1-b53e-fa962783deee",
+  "facts_sha256": "9aa08b5aba520de770abb9373efa3cbb95feab50c529f40f59c2ed7c3d46653a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fb7e00bea5aeec56588a6f5cd09d7959d9d472d47ac35ec6df7be6895b090d81"
+  },
+  "physical_metadata_sha256": "5fdccc67a5fbc788f95ef2cb342b384de525bdd6bc23494242b6afa8c09ac57b"
+}

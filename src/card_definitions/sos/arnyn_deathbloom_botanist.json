@@ -1,0 +1,12 @@
+{
+  "name": "Arnyn, Deathbloom Botanist",
+  "catalogue_id": 232,
+  "oracle_id": "3debd5c7-da3c-4130-8ed9-e156e10034b6",
+  "facts_sha256": "a58454b43c6b7e9d03e758cbcb80f814066d9515ff1cc89b20d86d5462c4bac5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "be5fe2a0461ff47edb092ac2b66f28a59ede2ccfc3fc5c9e186eb64fee4f7b95"
+  },
+  "physical_metadata_sha256": "483652e101c281691955961e478ab1db2110cccafd31ea7fee39b65cbb06e876"
+}

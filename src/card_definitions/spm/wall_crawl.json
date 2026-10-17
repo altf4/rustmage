@@ -1,0 +1,12 @@
+{
+  "name": "Wall Crawl",
+  "catalogue_id": 4958,
+  "oracle_id": "4a09536e-dfc1-4b15-adc1-07ef866ebda0",
+  "facts_sha256": "bc852303573b0870fb53b4df3d341e8d531b541f83e49ae2a80c02c7eb421690",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4f89c65180ff89234643b979749a0f7e86c2e2b90fd8dfb2972e430c4c0a4474"
+  },
+  "physical_metadata_sha256": "1ee10af2f02020b36e9e390ba4ff040f005f81b0b11845835135474460f713b7"
+}

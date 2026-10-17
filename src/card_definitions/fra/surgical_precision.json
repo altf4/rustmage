@@ -1,0 +1,12 @@
+{
+  "name": "Surgical Precision",
+  "catalogue_id": 4268,
+  "oracle_id": "0caccec3-4942-499a-9434-0c94389afcf8",
+  "facts_sha256": "8fe7cb1a8ef95587a59bf5dd4d2478c67cfbfeb98e1aeacdf427ca3e8b7644cb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bba52f485ba08ee5fc81e6499e0090f2c8a13d73ea39f783591fc7805618c0d0"
+  },
+  "physical_metadata_sha256": "643a7c6005351dd250d43ef00518f3bc7e7eec4b2db5c36637797cce6f332444"
+}

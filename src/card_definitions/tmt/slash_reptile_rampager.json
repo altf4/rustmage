@@ -1,0 +1,12 @@
+{
+  "name": "Slash, Reptile Rampager",
+  "catalogue_id": 3914,
+  "oracle_id": "8abff7b5-fe27-46bd-b951-b5d9f93f3a14",
+  "facts_sha256": "55a00a0a2700f86293f1f492f610be4076f561045e8eb45b35441499b3db9b89",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0fd34eb32582ab1002ec640d9b178cbd82c54da192734b310cf47c359c6ca8ed"
+  },
+  "physical_metadata_sha256": "23adcee87ad1209fa76c5eaf2bc302c8f960e20ec99a997d580d5173c613bf7c"
+}

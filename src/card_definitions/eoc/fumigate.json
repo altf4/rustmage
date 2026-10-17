@@ -1,0 +1,12 @@
+{
+  "name": "Fumigate",
+  "catalogue_id": 1648,
+  "oracle_id": "b17ea905-0696-4e58-b564-557e87236e27",
+  "facts_sha256": "c5944ad91fe9393070c77c82074542c024910483d20ba7b4b252c154c890ac12",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f993233e12167f03c015a7eeb6146824a33497f6f1eb1eac828ff607c520b631"
+  },
+  "physical_metadata_sha256": "632e2da724bc5213ce5f64db2049fa63acd0001dea21852d8c01d21857a42486"
+}

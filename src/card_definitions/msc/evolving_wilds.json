@@ -1,0 +1,12 @@
+{
+  "name": "Evolving Wilds",
+  "catalogue_id": 1391,
+  "oracle_id": "a75445d3-1303-4bb5-89ad-26ea93fecd48",
+  "facts_sha256": "9446c98e8196b81b0c2d8000ef5135b0ce025b933fc3cf16dcc4d3ef99ff34b1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fe03b63887a09f3b0acf673ce0b04753529f5b11e1e5eb45c48fd05e596ac556"
+  },
+  "physical_metadata_sha256": "a57b14e7e5be4386a66c03ad54ff962b72d608b729fd0e4155ab80f056000a43"
+}

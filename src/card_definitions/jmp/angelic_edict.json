@@ -1,0 +1,12 @@
+{
+  "name": "Angelic Edict",
+  "catalogue_id": 165,
+  "oracle_id": "36de8401-ee4e-413f-91ad-06924e39c857",
+  "facts_sha256": "277d7474be0f8a9884019fcce1cc9284387ffa8038abb64b824c4fdc6465a695",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "44dc3077922c729764512d35a5685fc9b9f93faf2eb067e2894098e3293c3400"
+  },
+  "physical_metadata_sha256": "710c04dbea36f78f9e8ff5053f95a3baa6a66dc494cdfe38e446eef3ee3c14d3"
+}

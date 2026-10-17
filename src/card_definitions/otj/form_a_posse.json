@@ -1,0 +1,12 @@
+{
+  "name": "Form a Posse",
+  "catalogue_id": 1596,
+  "oracle_id": "8923462f-0540-41e8-931e-97b5f1dadd51",
+  "facts_sha256": "b779643a62cc3c82b0bd5bc23c1c170eca461c6eccbdb16ae8b4847ef947c9dd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "56a172ea91a3183676322696b7b90ef90e5fe2605f3f7267a58a567ca3ac5589"
+  },
+  "physical_metadata_sha256": "9cc24ce55bbbc540bdee451cdfbb72f512466e7505c610bc5583183c1e0961fa"
+}

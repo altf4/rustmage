@@ -1,0 +1,12 @@
+{
+  "name": "Leader, Super-Genius",
+  "catalogue_id": 2463,
+  "oracle_id": "bec686dd-a9ea-4db5-bc20-8e40420b9a9b",
+  "facts_sha256": "8d712c75d410ec52b543cddec3d67830ffcf1662da33d1e6275ff804c264a3b5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "47249fbd594abb38691d437a2e7be08dcb0bb6d2ecadb0c3ffa6526d0b8b3838"
+  },
+  "physical_metadata_sha256": "1207232b41199da831d13a5930e7ecac8ea9d5464473382d8ee0f6937663b7d3"
+}

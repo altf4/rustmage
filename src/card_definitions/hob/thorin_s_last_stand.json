@@ -1,0 +1,12 @@
+{
+  "name": "Thorin's Last Stand",
+  "catalogue_id": 4540,
+  "oracle_id": "3c4da169-1e50-4790-abdc-214e7b8a2ad5",
+  "facts_sha256": "de64177ef5fbdc66f36ff1dabaf446cb93601cc16d8c1250371c4aba90408458",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ff704d42c4b12df980fb2fe783b511ff548dfdb5e78d3af1e3b88783d0e536c8"
+  },
+  "physical_metadata_sha256": "4aace9690b15fabd4aec0ce85d05ced9a32c7d1bbfebdf784abc0f2fd9877bc6"
+}

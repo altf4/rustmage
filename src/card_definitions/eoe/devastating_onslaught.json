@@ -1,0 +1,12 @@
+{
+  "name": "Devastating Onslaught",
+  "catalogue_id": 1063,
+  "oracle_id": "2e17cd4c-ebf0-40d0-b52d-b4d84bbcf7b3",
+  "facts_sha256": "6ef0837e57166940a75b3feab4e4fc6e3787d6620c82b6a6b503d407625b1e9c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "38d4685dfa8a15c19580fa8c70210d03b8431c5e4bbc7d3caec991e74ede1066"
+  },
+  "physical_metadata_sha256": "679b9a87b3674155ec3f183a909562c71296bdae09f76afae9acf866dc92493a"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Worldsoul's Rage",
+  "catalogue_id": 5115,
+  "oracle_id": "3b6ef144-bb98-4686-9718-204f1c3cf020",
+  "facts_sha256": "301bbe2a60dacc99cc912119fc4c3fa19f4aace1dd2d787e609d7ed99df1d0f7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "44790bba1455e6327fd588a2c0e8d1ef25f7641eb4e69c51746763e887dba000"
+  },
+  "physical_metadata_sha256": "c3066adc6fa4b87b75335b1a9155da2d7d8d595ef01e26d0654de48fbde09ed2"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Nobody",
+  "catalogue_id": 2954,
+  "oracle_id": "eddab60f-2eac-4f20-934c-3d9307f885c3",
+  "facts_sha256": "0f5034cbecb935d855920436d9b182d073830c5a66a2d8586a9988bb06a27901",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a796521324d7ba1cb0be62475f04a88fa55b1933da4d6649d7a9c1c88d66c86b"
+  },
+  "physical_metadata_sha256": "2f99ea89d4bfd1f5c11e3f828613d77535b02d918a94356f76530f30d9bf70eb"
+}

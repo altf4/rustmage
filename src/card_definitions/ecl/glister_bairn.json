@@ -1,0 +1,12 @@
+{
+  "name": "Glister Bairn",
+  "catalogue_id": 1784,
+  "oracle_id": "6a7229a8-1634-4278-ab50-0ec2b51edac1",
+  "facts_sha256": "fe7fb073c500510042de60bb0dabea68e32c68e8d467131f730216fc2b0d4065",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1817518e03ff3369617ac11dcda46821029f78f7a8b46d5b0c82f5f4cd6ebb24"
+  },
+  "physical_metadata_sha256": "114cd9f1a2814cf8be166bd9c81dfbadbfb04c41a09882cb7432dd76d4481d6c"
+}

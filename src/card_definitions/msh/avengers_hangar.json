@@ -1,0 +1,12 @@
+{
+  "name": "Avengers Hangar",
+  "catalogue_id": 284,
+  "oracle_id": "10fc2009-4212-47c6-8a97-ab0f45c1f91b",
+  "facts_sha256": "7cf3e79f30b9403869ed7fd62ae5c63bbae0506b96fd62da76c7ecc5ce4eb008",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "da8f3793ea2efdd375ef08d69680fed686fa21cbb35fc18a70ae942b791634f2"
+  },
+  "physical_metadata_sha256": "09b2dee9fb63b579bcfca87d9e181fe5b1d659b28ec450407dd5ab8f2c6c2038"
+}

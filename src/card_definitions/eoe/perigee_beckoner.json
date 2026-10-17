@@ -1,0 +1,12 @@
+{
+  "name": "Perigee Beckoner",
+  "catalogue_id": 3129,
+  "oracle_id": "e0a35a44-e56d-434e-8043-43d5031b2e84",
+  "facts_sha256": "d13ecb07c59ac7978a7b14e5643383f63de8878e0ef983ee61a30c60920bd438",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0d59e1201ba88c4f7f05a674bc3ea731c1819d22f96911e41ac7fc311ae5d7eb"
+  },
+  "physical_metadata_sha256": "678d89192c60f39992db5c39ca41bb2909333a99959a9c3b47302bf933cc22d4"
+}

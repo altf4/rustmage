@@ -1,0 +1,12 @@
+{
+  "name": "Loch Mare",
+  "catalogue_id": 2533,
+  "oracle_id": "631eb3e9-a3e0-4341-ad2d-e79142ce537d",
+  "facts_sha256": "5928fbe0250c74a2ab0e5910a1d7d9043a4bc023a71a4b68817397829fad03f1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "96bfe2a3fb11a691f10f4cb71f0307021ed0826ec27102ff4a3bc88e5eb3b1c5"
+  },
+  "physical_metadata_sha256": "3e2f870b2d0802d8054174df4e5575d033bfef1deafcec337501d52e6072461d"
+}

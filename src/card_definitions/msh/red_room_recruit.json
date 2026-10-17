@@ -1,0 +1,12 @@
+{
+  "name": "Red Room Recruit",
+  "catalogue_id": 3430,
+  "oracle_id": "4e60c38c-cbf5-4ff7-8fff-634f7e3086cc",
+  "facts_sha256": "ce552868ddd766d122b10c5ff47d724df7b542b5c5621bb9433309ac3b0bbb49",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ec33152c23ea6aaf075dd9fad08f3f27ef1b57dd4a748e52489416afa3a2e789"
+  },
+  "physical_metadata_sha256": "e7539d150bcd42b585e4096c7b2e1a1f09bc1ae3b4a38468416f67ada486684d"
+}

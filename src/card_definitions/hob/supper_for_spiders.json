@@ -1,0 +1,12 @@
+{
+  "name": "Supper for Spiders",
+  "catalogue_id": 4264,
+  "oracle_id": "4d891515-39da-492e-ac19-1aa524245449",
+  "facts_sha256": "02bf741638b560a31bfaa5399773f696f4aa612f3760bd61690e40cb1e890cbd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "34012c6cf7cbe92a355d86157e2b248b547e4ccde5c1c3675cf77e630bf2af98"
+  },
+  "physical_metadata_sha256": "ebd61419b605a16470144fcd5a3844a94e2e06b179bb713a70f810b450123dde"
+}

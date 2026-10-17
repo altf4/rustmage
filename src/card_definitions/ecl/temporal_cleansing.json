@@ -1,0 +1,12 @@
+{
+  "name": "Temporal Cleansing",
+  "catalogue_id": 4372,
+  "oracle_id": "5f67698a-28db-43cd-aaf1-52371b0b47eb",
+  "facts_sha256": "6133f287164ad4fc016fe122689548f732a798481ee8402bbe34e9cf9a02f7bc",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "01707cb04f1fb16cd4c650c61a92757fc14caec1f275ae1920cc653b5e0a1b08"
+  },
+  "physical_metadata_sha256": "fb6f0c2564d55bdb5053eb83a5977ba836c5170afabcb488bf6271225318df3e"
+}

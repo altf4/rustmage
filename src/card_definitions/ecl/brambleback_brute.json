@@ -1,0 +1,12 @@
+{
+  "name": "Brambleback Brute",
+  "catalogue_id": 523,
+  "oracle_id": "eb25920a-3162-4838-b092-09cbd43332fd",
+  "facts_sha256": "5a499dc11e9d740e7441347ebb313df9fe02d905f3a8656a7fec0cce6f651253",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "52d9f6f55e9fe757acf98587efa2e3f3d117e506b7a0773e9148d747c20d5d95"
+  },
+  "physical_metadata_sha256": "6b652f574984579e3112383a111609401b6628bea19abeb81838ec4fd3c9fea8"
+}

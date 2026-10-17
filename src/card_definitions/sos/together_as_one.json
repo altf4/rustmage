@@ -1,0 +1,12 @@
+{
+  "name": "Together as One",
+  "catalogue_id": 4618,
+  "oracle_id": "234f1c4b-dd0c-4c4e-b3c1-3b9ccfc42226",
+  "facts_sha256": "f879d49d0c7ce972d3bebcf0ed461ab32c0047a63fbbc9b568fd5c5b00f01e59",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9dd1f7440ed6713c517c453a317f4ad27d7f20b3146d829cb5ddfb6571607b19"
+  },
+  "physical_metadata_sha256": "7a2dc49122a0b5e88a329054a617232b9027b8be5270a49b74455949adc38139"
+}

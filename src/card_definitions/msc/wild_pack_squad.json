@@ -1,0 +1,12 @@
+{
+  "name": "Wild Pack Squad",
+  "catalogue_id": 5058,
+  "oracle_id": "294b2aa7-cb46-46bd-8241-69b26d73aa2d",
+  "facts_sha256": "d0a0bb8cb6ae16fb7f6300ed6e1b0da658b919b0abebde7d8de4edf6cca8586b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "20a4707d71af0bd20eb7a155c3e02c1a839aeca2db28b06953b16f1bfb27d516"
+  },
+  "physical_metadata_sha256": "074366920aa76504f942c99b7cbaf91ce8afbb52cbd357f6baa5755b5981afc6"
+}

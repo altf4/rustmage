@@ -1,0 +1,12 @@
+{
+  "name": "Curious Forager",
+  "catalogue_id": 932,
+  "oracle_id": "30af656a-99ab-4e0a-81fe-3cdb0ea6a0cc",
+  "facts_sha256": "d605ff8153401614c6446b5ae9d1ed1620cf3647689f98fca9bf87f90af4b4ba",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7f2db0f47d9d60dd107568b3f0ac822dbd7a25a656c908cde4fef56155c74bc0"
+  },
+  "physical_metadata_sha256": "c817efca2357809139abb700844680e3ca032b4c18849ed2f3b7c0bf76ebbc42"
+}

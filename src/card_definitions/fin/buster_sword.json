@@ -1,0 +1,12 @@
+{
+  "name": "Buster Sword",
+  "catalogue_id": 603,
+  "oracle_id": "5e060d58-4d6e-425c-b7d4-727669fcce5b",
+  "facts_sha256": "c68d14b2b8d84d1f4559444a574a0cdf03a445eb23013c9d053170ccd5b06234",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "abbd38e65c084344c94a4ff1513f5795fbc84e02de2603af45ed06720806331f"
+  },
+  "physical_metadata_sha256": "16cd8eb9dcac698a505666ddb4ced1a1a5c8dc3c58f0817f900a1fdd0f9c775d"
+}

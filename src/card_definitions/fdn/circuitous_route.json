@@ -1,0 +1,12 @@
+{
+  "name": "Circuitous Route",
+  "catalogue_id": 755,
+  "oracle_id": "30afacd9-4680-4aac-8c22-584f9418822d",
+  "facts_sha256": "3582a9bbe8eb88f6be497f3d3c0936cdb88cf931c41264b4bb828f5a02835ad3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b3f15debf140629ea64abda6e162c8ed3c8bdb32ece6ef048a5262f802f144e1"
+  },
+  "physical_metadata_sha256": "314c5445c370b31ceb6c606294a9bac542316badf0b99c6ef50a2b7ed66ccb72"
+}

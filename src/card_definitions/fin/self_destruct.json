@@ -1,0 +1,12 @@
+{
+  "name": "Self-Destruct",
+  "catalogue_id": 3779,
+  "oracle_id": "98bf6311-bc9b-4bf8-ac83-c041973b86d0",
+  "facts_sha256": "c8c053ec294f63a896bdff3cdcf88cf1fb297dd570c7c51a9cb59af3d2278a30",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2089e5583062b9fcc4ad497da3bc5113d1ed4264e413b3a6f8a765e7f278bca9"
+  },
+  "physical_metadata_sha256": "bb321b058e60b4225b35afb9684e97532e00f5e93be5b9228b25bb2bc0984acc"
+}

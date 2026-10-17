@@ -1,0 +1,12 @@
+{
+  "name": "Phoenix Fleet Airship",
+  "catalogue_id": 3149,
+  "oracle_id": "6ffe71c0-acb5-4ba9-8c2f-719330e1ea69",
+  "facts_sha256": "4394b141822fc44e16b290d8e94325783bd2c881155ab5190afed152f7dd031a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b4c5619eb73c79b0b6719f4ec4074f8504b97d96006d7935a96f54627586e3cb"
+  },
+  "physical_metadata_sha256": "813e9d2454f7da61f71eb6a763b7bf2d74df1f47610482038d3385b8e3bbc5e3"
+}

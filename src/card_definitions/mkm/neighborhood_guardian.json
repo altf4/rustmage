@@ -1,0 +1,12 @@
+{
+  "name": "Neighborhood Guardian",
+  "catalogue_id": 2916,
+  "oracle_id": "ef414347-bbe3-47cb-b900-88275561c43e",
+  "facts_sha256": "c6507460a331872c6801b321c6e891bb5e7888223942ff795ca897e5981a8a2d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d600dffd12f08fde54590020c1b78962b60e611b1b51ceb9986eb1464c1d919d"
+  },
+  "physical_metadata_sha256": "4dc657dc457d81ce28fea5c88bb6b1ff47d313fc8921982a3dea0a3c86a84c8e"
+}

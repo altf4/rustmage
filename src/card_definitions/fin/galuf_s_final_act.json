@@ -1,0 +1,12 @@
+{
+  "name": "Galuf's Final Act",
+  "catalogue_id": 1672,
+  "oracle_id": "9268d369-173e-4325-98f6-348beeb8ba62",
+  "facts_sha256": "43b9e5b83e353c417d14bbaeadf8fa5285776eb30601c6362be36c618194505c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b86c9d3c436e8b46295b9f5a7013249a8b88e79420d3be57f1f6e3fb933ea057"
+  },
+  "physical_metadata_sha256": "aff0d1a62b84e20df2c2735c30a7a24573a64fb2d01d438ebe2ff7b56737b5ec"
+}

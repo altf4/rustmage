@@ -1,0 +1,12 @@
+{
+  "name": "Acrobatic Cheerleader",
+  "catalogue_id": 50,
+  "oracle_id": "d8ce3f18-26fe-47e8-be8b-0d89d7de7038",
+  "facts_sha256": "fdcebe74b11f7cafebaaaf53a437f59f7f68bf1f3ecb339efcc6c8b9938409e4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "417767dd074dfe4fc37c8a865501b9b4b49f32c12b4cd290e83eeff1d2825884"
+  },
+  "physical_metadata_sha256": "d76df09fdd163b1ea07f99afc6f9f1ccbb5a740810fd2a5aa08303a3790a3b08"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Dream Beavers",
+  "catalogue_id": 1178,
+  "oracle_id": "a1cec8e8-cf3c-42a4-b625-ca0cd148664e",
+  "facts_sha256": "90615ae52ea0ec4392327a49d77f1a734c79d1cf80daddc8a4263c81539089e2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d19edeb81acfa76bd7ba3622b4fe7843aba460c022dd45e083b1f81eaf74936c"
+  },
+  "physical_metadata_sha256": "e56833cda8e4c28d1a7e88d7930c214085ce54510834d7d7901cec03e364615d"
+}

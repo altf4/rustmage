@@ -1,0 +1,12 @@
+{
+  "name": "Massacre Girl, Most Wanted",
+  "catalogue_id": 2677,
+  "oracle_id": "81f35914-73bf-429f-ba20-32e23ac30159",
+  "facts_sha256": "174fdfdaa8eb474eaddf62239e358a6a3a7c18cc59c326d29507e9f3a2a486e1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "488279f4ab0a7e077a49c269d40df26eb8b4f3787f61e1c90fe3a5bc6cdf7e63"
+  },
+  "physical_metadata_sha256": "500959261b14bcc8940fc61e3699c5e0d0fe027a0b80c02e55b9b700b5fecaa2"
+}

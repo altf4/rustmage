@@ -1,0 +1,12 @@
+{
+  "name": "Disturbing Mirth",
+  "catalogue_id": 1103,
+  "oracle_id": "7010bfbb-8aea-473b-a9a5-27488de13cc5",
+  "facts_sha256": "dbf60402700144bed694762c1418f7ed3ba0823bd8e51bf1a26a18b6f0568898",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3452cfcf84fe21ea3590a08df67218f9bdc24ddce0b1db26b030fd9d785bc7bb"
+  },
+  "physical_metadata_sha256": "43e13014b4a2244af3c6699c4b7e96900f4ef76bbb6d6632cd5a8f0b4dd2ebb6"
+}

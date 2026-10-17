@@ -1,0 +1,12 @@
+{
+  "name": "Potioner's Trove",
+  "catalogue_id": 3211,
+  "oracle_id": "d604c75e-9d81-49de-80bc-08f4ef3ee975",
+  "facts_sha256": "b150efd73aa56bb84a597b37f23b7f514583dd70840a955791cff8620a9766d6",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b9401d107a60ba5f4731d3f8e4d0b27aa0c4c1e511c319aac7259177fb5c7d4e"
+  },
+  "physical_metadata_sha256": "8c50a737a6d14f0865e3a53b8326569c3866f99c99a6404d7b11f2828a0c70ec"
+}

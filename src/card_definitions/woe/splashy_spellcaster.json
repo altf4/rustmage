@@ -1,0 +1,12 @@
+{
+  "name": "Splashy Spellcaster",
+  "catalogue_id": 4062,
+  "oracle_id": "21486218-70ec-4c60-9844-8f7c80912333",
+  "facts_sha256": "83fb108ec32d902f8c84ca4bbf63b64a51bf97f311b12316438396562bd3b7a3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6567355614c949626696e2cafdc489fff53942205f4adc3ed5bf3bed8cae4934"
+  },
+  "physical_metadata_sha256": "532b773e182de12c88fdfdc966f08d88c4a6c2eb32e621cf09ea3202297c9f1d"
+}

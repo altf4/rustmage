@@ -1,0 +1,12 @@
+{
+  "name": "Riling Dawnbreaker",
+  "catalogue_id": 3525,
+  "oracle_id": "1fc31651-70fe-4a58-9b7e-7359510bba51",
+  "facts_sha256": "bb1bece2be9eb4b9db4724e9c39a95dd8d610edb894a0337e7a835cbe5beb960",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d903cc325d975e947abfda459e3ba17d8f655242a646097b699537b11ed17579"
+  },
+  "physical_metadata_sha256": "d0bdeef0d2f2ee657825043b7681c095e9d76024528acca1006d1fbbed26ee88"
+}

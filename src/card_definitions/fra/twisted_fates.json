@@ -1,0 +1,12 @@
+{
+  "name": "Twisted Fates",
+  "catalogue_id": 4726,
+  "oracle_id": "3ce30a19-e716-478f-be89-e2d95753cfed",
+  "facts_sha256": "4ef4d05d32be81613be5752a7349b9549641ac62b498303a46741b92ed247fa1",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a67bd095f02799dc3fb0137d04626519f076aa8980286a78d5a4bed6b0fda062"
+  },
+  "physical_metadata_sha256": "28d1c5c5661dcec29acb116a0f3660b0ca58dba1b9be8d49cb0bac1038ce257a"
+}

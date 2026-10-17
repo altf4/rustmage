@@ -1,0 +1,12 @@
+{
+  "name": "Deadly Complication",
+  "catalogue_id": 995,
+  "oracle_id": "c53c75a0-c248-4e76-8d28-f7e53b2dcc49",
+  "facts_sha256": "34222a7706ef6971eb6cd15a62663b67dc38e634a5c764570fdeea0e9963a666",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "82d2d9afc027ed5485e50debaac1d720c46d31ef0fe45ec89e3b90fe5dbfbab7"
+  },
+  "physical_metadata_sha256": "15dc05ba7851fb9119e3ee69068d83b7bf2df1de4f3fd9c0019cd8c85deec025"
+}

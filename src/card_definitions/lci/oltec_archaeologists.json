@@ -1,0 +1,12 @@
+{
+  "name": "Oltec Archaeologists",
+  "catalogue_id": 3009,
+  "oracle_id": "b19c4bbf-258f-4436-8ef9-fc905c283776",
+  "facts_sha256": "b5faa7675794b775febe20407511dabb3496f57905e2f42f39cb1cda3c53af94",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b8af53097d9fe99b1e5d942269ba245b4aaf8ca49bf8e18dcf42593ee7d52577"
+  },
+  "physical_metadata_sha256": "924adcdc057afd40bc0f645358a180e0f4c39fb69708f3e7164f5d263c896647"
+}

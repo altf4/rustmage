@@ -1,0 +1,12 @@
+{
+  "name": "Bulk Up",
+  "catalogue_id": 578,
+  "oracle_id": "fade8af0-5fdb-4237-9dd6-48bfd1d62767",
+  "facts_sha256": "b032aee7c90475bca671770058390281674703efa68d1839ad74673c1656c25b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7e34900e7bfb147c5c0ffd6727bd13c8e936ab5575fda89c26e6e28cc9b85ab4"
+  },
+  "physical_metadata_sha256": "2354ceacecd253fcea927b09baf68aaf5afee9ab361a05a89efd3cde7f30087d"
+}

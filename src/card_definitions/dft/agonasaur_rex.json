@@ -1,0 +1,12 @@
+{
+  "name": "Agonasaur Rex",
+  "catalogue_id": 99,
+  "oracle_id": "1ad5766b-9ae3-437b-bd91-c4c988a8b095",
+  "facts_sha256": "da9b192940eac5c7e8273a48f31eeb4ba1626dc48c84f41018656400327804a2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "538712b8f8c83fbafb67595b3084946a7aac213eafc12902c2a4f336b8426be8"
+  },
+  "physical_metadata_sha256": "970942d7ba8a744cbb2cdcb86147a3d324722908b6aceb10b9ac92f680c0231a"
+}

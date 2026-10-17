@@ -1,0 +1,12 @@
+{
+  "name": "Krang, Utrom Warlord",
+  "catalogue_id": 2405,
+  "oracle_id": "2d56a491-b3eb-4f3e-82ab-981d3036c45d",
+  "facts_sha256": "9d3e7dc68e3c822ffaf69fad6f0f59b69a02891da4e7c7336f832563a5804c01",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5fbb07821cecdc9a688c2e54c121b8316f565f4e0517ada639e1fd4f549baa59"
+  },
+  "physical_metadata_sha256": "77662234e1b66c0f03e8f305748d2ffbc2e0e9695c5bcd9666d6031ee105a199"
+}

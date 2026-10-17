@@ -1,0 +1,12 @@
+{
+  "name": "Thistledown Players",
+  "catalogue_id": 4535,
+  "oracle_id": "7054c42b-48dd-4887-b878-69c005259d27",
+  "facts_sha256": "0962b9746f4232efd16108d0eda609675be1f794d9d4435a04289f854c8396a8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f7d82b8dfab13cac9c20ac45e857a436f735854af41fba965413148a77bea59e"
+  },
+  "physical_metadata_sha256": "5a99848b33ff6645e8559552dfced0a3d2bf5427c58a5b4fa7370eb20afb3d57"
+}

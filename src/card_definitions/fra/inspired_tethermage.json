@@ -1,0 +1,12 @@
+{
+  "name": "Inspired Tethermage",
+  "catalogue_id": 2186,
+  "oracle_id": "80c2784b-f27d-4a51-9380-171eb32b961d",
+  "facts_sha256": "be9b8e511a01f29fb082052e57f8a2813e24863f301a3fc4d38848cb75ae0ead",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4d85174d17e39fa22c62e52471df3b8d04e438e58e4b1888ab7d963e9d3d8182"
+  },
+  "physical_metadata_sha256": "4f7c16a2fbf93b5745669635edfbaf3725531fbd86b7df6346e927a4a9ffbe6e"
+}

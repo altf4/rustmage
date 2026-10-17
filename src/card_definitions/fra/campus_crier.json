@@ -1,0 +1,12 @@
+{
+  "name": "Campus Crier",
+  "catalogue_id": 628,
+  "oracle_id": "c1a9d60f-a469-48f9-8f1c-3ca5ae86bd64",
+  "facts_sha256": "5ccbab753eaf0233128284063773c0cde34155ab640bbd9129091f51e1371834",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4247640541ef538dd7651a5ff23bc9f900c1e357998e78b568880fa17d71cbd0"
+  },
+  "physical_metadata_sha256": "b655fa6dd45942fff5b8a5b15c2e6b015c514b8c274596c0c3cb90b5c40722f6"
+}

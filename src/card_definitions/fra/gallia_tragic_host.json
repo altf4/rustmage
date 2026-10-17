@@ -1,0 +1,12 @@
+{
+  "name": "Gallia, Tragic Host",
+  "catalogue_id": 1670,
+  "oracle_id": "58285b70-0d13-4723-b5a4-91fb6f9ccf03",
+  "facts_sha256": "68a15f4eafbf22f702f35a8020acacd53d117e9aefc9e4cfb7b63c3df4e8e27e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a932deeeccefd112ae65123255322429ed98a98ce274c03aab7d8ed07ef6165b"
+  },
+  "physical_metadata_sha256": "5319cb4c7dd5cb426ec169dce7694225f7329a690377d62f05788cd827fcf709"
+}

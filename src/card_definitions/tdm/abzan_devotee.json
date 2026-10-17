@@ -1,0 +1,12 @@
+{
+  "name": "Abzan Devotee",
+  "catalogue_id": 44,
+  "oracle_id": "3d02ee2f-b7bd-40b0-b9be-2420991b2be0",
+  "facts_sha256": "766eb3c08cfdede821de741a2e99142b7996d2547109faaabf03b9cce9b7e1c4",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b25e6d96d1fca2b1d999e9614776a6e15c9a0972a0d15d463f41dec275eb3e1a"
+  },
+  "physical_metadata_sha256": "7c80715b75e0da68612ff3910bbbdb1305860ff03ecd2cd88dd8b2815198feb5"
+}

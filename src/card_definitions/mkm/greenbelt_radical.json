@@ -1,0 +1,12 @@
+{
+  "name": "Greenbelt Radical",
+  "catalogue_id": 1872,
+  "oracle_id": "d0a4efc3-fa68-48f2-a6d0-2fff93e05c77",
+  "facts_sha256": "4890db673284d3409dee06cb4a4a77f4528e52aa029fd1f01b3cd59cbdfb5a64",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2bedbb9c488352459881ee0a641f5c9235e9a78550936ce9e795f59670fe4897"
+  },
+  "physical_metadata_sha256": "641edea06176ce02e2d8d9a0e0e107374a2b9ff418e48185633b442197e0d27d"
+}

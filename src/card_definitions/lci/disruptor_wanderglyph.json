@@ -1,0 +1,12 @@
+{
+  "name": "Disruptor Wanderglyph",
+  "catalogue_id": 1097,
+  "oracle_id": "81dda1a8-72ac-4e69-8367-4f72c445197c",
+  "facts_sha256": "9d51aa533e8a9f6c8361d8eb839de9a2959ffb0c96189894be22c232f80e30f9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5d34e838b77874b03c568a9bfde3fe9cf937ddc71e4ad18194bfddb86c8aa04d"
+  },
+  "physical_metadata_sha256": "941e9ea203843ef76f8c70bc8b57a65131821dbeef7ddf681be8d5fdf7ba248b"
+}

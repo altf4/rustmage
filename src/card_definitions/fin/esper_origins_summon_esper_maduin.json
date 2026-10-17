@@ -1,0 +1,12 @@
+{
+  "name": "Esper Origins // Summon: Esper Maduin",
+  "catalogue_id": 1369,
+  "oracle_id": "947b40a2-e272-4ef6-85fb-3d767a21bc7a",
+  "facts_sha256": "d2e53f0dfac6ad5d4ede05d53efe6e5b9826ff0590199098085ef025282262ce",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "334376f5c1920e43267fc5396921b1c887a81ad3246cdf7a2b8f4c80f297d9bb"
+  },
+  "physical_metadata_sha256": "59d49becd3f78031d6e3bc91c96e6b38ed04cc5a417002904740ab51e3bc22b9"
+}

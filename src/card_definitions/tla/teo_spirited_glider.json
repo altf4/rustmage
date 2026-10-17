@@ -1,0 +1,12 @@
+{
+  "name": "Teo, Spirited Glider",
+  "catalogue_id": 4386,
+  "oracle_id": "ea74940f-01de-4804-92ed-b273fddf6d62",
+  "facts_sha256": "65a1a98db7491916677816b83e2414af609db64c4af25ea496dac91d4679c36f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "35fab8572b534c8d5ae7d5fb84887f55eea0278a4d5aecfdfa8c07195ee03c46"
+  },
+  "physical_metadata_sha256": "07b43d2a889c178ff322414289427490d6909fc13317a548c35d248e765de4aa"
+}

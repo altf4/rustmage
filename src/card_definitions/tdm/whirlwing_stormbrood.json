@@ -1,0 +1,12 @@
+{
+  "name": "Whirlwing Stormbrood",
+  "catalogue_id": 5039,
+  "oracle_id": "4fbfc814-df10-4d61-ada9-c96cc8ee8d8c",
+  "facts_sha256": "901be646c24b84f4c8850a8d3c484fc0c0f80c047c8041392fde08ecbed49727",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "af4cedbb934f86bd70dda81fc6f7ad77a7c4fab2ad6116eae6bbf27f52f73e89"
+  },
+  "physical_metadata_sha256": "a052f547c756628c34346fd9c620ec7cc5cfe19faff7d4ebf800040248dc413f"
+}

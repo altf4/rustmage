@@ -1,0 +1,12 @@
+{
+  "name": "Lys Alana Informant",
+  "catalogue_id": 2595,
+  "oracle_id": "b5058b5c-0359-42ec-ba9e-ae1371bb9c22",
+  "facts_sha256": "915c8606fb271e88bbcb0682b81b100120c9784c930e8d2b8be8692f890f3c56",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e7277e53f8b0cd5fa8d90e3d6379225f98f2af3cfc9fef3bbd49866bfab5e897"
+  },
+  "physical_metadata_sha256": "c127ad691dec738fad2eaa5bd474b2038911714cb976971beabfe207a9e49c04"
+}

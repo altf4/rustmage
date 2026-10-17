@@ -1,0 +1,12 @@
+{
+  "name": "Inspiring Call",
+  "catalogue_id": 2187,
+  "oracle_id": "9b9a10ff-5a5d-4df8-88aa-18d84ff9117c",
+  "facts_sha256": "aa69794a4c36f13bcb163af9c9e4e044b9e7c078d53d8b3de1267fe77b2f671d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f145af87bda22463e46c7a0c08f96c0a94ceb6a122b743bfba6395f2541c9fb2"
+  },
+  "physical_metadata_sha256": "623e65d4aeb5cc41a0ec1776f50e805f4fedba9337e78996b0cee849df521da8"
+}

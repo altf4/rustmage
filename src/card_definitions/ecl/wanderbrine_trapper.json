@@ -1,0 +1,12 @@
+{
+  "name": "Wanderbrine Trapper",
+  "catalogue_id": 4964,
+  "oracle_id": "915d70ac-46ce-41d0-a137-f17e7aaea87d",
+  "facts_sha256": "6d805420397e3c0c0759369152bad735f5fbcf8d1dd308797ba5d9e31bac4b1e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f41cb3b9fc7c94baef6498ab011f96dc78646e12533e97b2377fcd7e4a056fa2"
+  },
+  "physical_metadata_sha256": "9b17ba407cd15e11808bc0309e613400859308cfe0b150261c9b1cfb7b8b43cd"
+}

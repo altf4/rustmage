@@ -1,0 +1,12 @@
+{
+  "name": "The Lord of the Eagles",
+  "catalogue_id": 4469,
+  "oracle_id": "3b38f314-d997-4c2a-b4c9-40dbe780993d",
+  "facts_sha256": "58035a6cea950c03e1b9a8b04c083992085c9df1007e85e6b18999a037ad5061",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ba9dba4b56dd9c58c189837e4b382e92c256989b9024e78541d1202c916ca1b4"
+  },
+  "physical_metadata_sha256": "9a882ac0eab62d92040a154d98140740f2a92c778099648a7762c7f7d2bb13c3"
+}

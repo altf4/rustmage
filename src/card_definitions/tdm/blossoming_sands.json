@@ -1,0 +1,12 @@
+{
+  "name": "Blossoming Sands",
+  "catalogue_id": 472,
+  "oracle_id": "45429b2c-be3b-4b2e-9bab-a059ccbda8cd",
+  "facts_sha256": "f4a08f5ed04f3c8b6fee1de0d3159595ea8a3d2865e90f86ee246b3aa449102f",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d444be403a9e573c32b9f75e505b31b945cdab38575a1fafa8db8dc110db454e"
+  },
+  "physical_metadata_sha256": "8d262dfde44d749d37c8eb71e71a496c53478f08fc444851054dc6ca255334c5"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Felling Blow",
+  "catalogue_id": 1491,
+  "oracle_id": "fbfa19ca-98bb-4c7d-a04e-920a8aafb031",
+  "facts_sha256": "e94e6fc281e5ec188aebe2d3c99042e3bb2039c711476ae885a822195d170c1d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d1a7b378cdf53cdefe02170cc2be429b33319864ac1eed9f68c6aed65127134d"
+  },
+  "physical_metadata_sha256": "cf2bff665fdf479acd01e4dc4f98c7cd81137c011bc41dae692173f458965cd6"
+}

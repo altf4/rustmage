@@ -1,0 +1,12 @@
+{
+  "name": "Clement, the Worrywort",
+  "catalogue_id": 768,
+  "oracle_id": "57ce5ebd-cfac-4bb9-b010-04d0c285be27",
+  "facts_sha256": "0895a5c3073a2de0a28d4ba7862b7c7b24ba99469d126a97a5ccce8d8fcc857f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "06e74dec729eb0fd08bdefed8a4afd69a53fa4a95bd8111ac68b30253cf9e2eb"
+  },
+  "physical_metadata_sha256": "1a3f0f1efc7913afb5f4e635307ffd5d882baf15cd9a118aca85b6abeaf34051"
+}

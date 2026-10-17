@@ -1,0 +1,12 @@
+{
+  "name": "Altanak, the Thrice-Called",
+  "catalogue_id": 141,
+  "oracle_id": "6591f243-f94c-4a83-bb16-1fb838d9eb14",
+  "facts_sha256": "abd8c4aac22b63e5da78a931476c300779fcdc6c5e1c3f7c1047f5dccb9fad5c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "cd7951b94a0841f902c18bbcedcaf6173939177870e7047ba7638a9b89987350"
+  },
+  "physical_metadata_sha256": "a33535e798237709f1f2a74e975b06dac422960e05e6ece0cca1b209213cc761"
+}

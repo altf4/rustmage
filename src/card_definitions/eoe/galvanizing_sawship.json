@@ -1,0 +1,12 @@
+{
+  "name": "Galvanizing Sawship",
+  "catalogue_id": 1675,
+  "oracle_id": "dfe8f77a-cc26-438b-92ae-2ca7a91f813b",
+  "facts_sha256": "116143b83020ba3ea295b5ece9b66d3a6770f5c956d7eed68565a7d13b8962db",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5eb8755a71bb9ffaab899606a95a9827d52e36dae4d5bc7657d8b1eb4491237a"
+  },
+  "physical_metadata_sha256": "069656896902c7bb11bd9627fa759127eed6fa09b9015a24922d4e97e7bc7cbf"
+}

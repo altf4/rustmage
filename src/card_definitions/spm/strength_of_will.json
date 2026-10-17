@@ -1,0 +1,12 @@
+{
+  "name": "Strength of Will",
+  "catalogue_id": 4185,
+  "oracle_id": "0389b48a-e64c-44fb-8a41-fd571cba237c",
+  "facts_sha256": "9c6883ca950c1affa75824e405813b14bb3d2e0096d71f997c73226f4e23535e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a00f0285725259f1b06ccc7ea49a1975b599b068eceebc61a8964281c666fe0e"
+  },
+  "physical_metadata_sha256": "5fc519bc0d1031c052ad90794d2ad74f3ac99d2226a6d3713364601d2e4308ae"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Fire Elemental",
+  "catalogue_id": 1515,
+  "oracle_id": "3912d21e-1ebc-4a81-9dc9-f404248d564a",
+  "facts_sha256": "f9e6fde33a8b7c607d7b4ea9b7d0433bef8cb72afef5f09db0350ad5b03666b9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e9cbc046572455fdfe6716d22aabc26bf76a7f3984f8b24503da7b1dd6bfd011"
+  },
+  "physical_metadata_sha256": "f23dce5586a7f7d0656229d47aef67cf7c73e0d5ad91c365ff3f762336b0a825"
+}

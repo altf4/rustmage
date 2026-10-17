@@ -1,0 +1,12 @@
+{
+  "name": "Thought Shucker",
+  "catalogue_id": 4548,
+  "oracle_id": "33f4fcd5-4eea-4146-a564-da5511a8ee0a",
+  "facts_sha256": "bc3e08fa56cfc93b91892ac052ab1ca827d296d5893db6d737f070cdc75e43b0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3d1b5b4b7c4f3a2a9aaa36dc734dfb98f68ffa2270c065961f1eea6052ee2590"
+  },
+  "physical_metadata_sha256": "f07d223054c3519e89443aa52d6568c01ca85b50ee16e880ee60620a0b95222f"
+}

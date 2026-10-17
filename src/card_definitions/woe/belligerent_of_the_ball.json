@@ -1,0 +1,12 @@
+{
+  "name": "Belligerent of the Ball",
+  "catalogue_id": 379,
+  "oracle_id": "2be2f6c8-d8df-4e5c-a0c1-7566183bbe81",
+  "facts_sha256": "d49be3159abf24053b30e5ac3dd873cb48d6275bf68f59b32e0b9c78490aa6db",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6edce7ad30d9df19366107863213ae0ea433b73f8834d4a4cb23006b3dc39c45"
+  },
+  "physical_metadata_sha256": "68d14ecffbc367cd1138b24daef09eaa9698af27cd047a1b84281b7f91ab4df3"
+}

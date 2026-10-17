@@ -1,0 +1,12 @@
+{
+  "name": "Ingenious Leonin",
+  "catalogue_id": 2166,
+  "oracle_id": "99853d2e-2223-4c05-bbd7-0a746f8f810d",
+  "facts_sha256": "cf249f48f06d9d63c4b6aa010ffd9f24c512b56375baf0bb2af034b02edb9caa",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a86fa9dd3f91f219f74767e4ceec121cc39a7a0a0408c1068c587b946624f51d"
+  },
+  "physical_metadata_sha256": "85417694d113ced7920bc880a41c1a2606b639c05ab4a6e3947cede5964e9155"
+}

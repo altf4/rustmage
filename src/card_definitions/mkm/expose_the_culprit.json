@@ -1,0 +1,12 @@
+{
+  "name": "Expose the Culprit",
+  "catalogue_id": 1409,
+  "oracle_id": "4f7e4aff-ef68-44fe-a0dc-b9ab0ecd7146",
+  "facts_sha256": "d094894642adfe8697096e51761b0c61d59ccc284c6d7c6676796689c12f5c80",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "18feae27102498be9b776a1d8da82261ec9ec5383109b74ec76c3727c2362d1e"
+  },
+  "physical_metadata_sha256": "e6931e64dee089aa51911f160b956406040efae5dbf1c66db8c84fd507713d07"
+}

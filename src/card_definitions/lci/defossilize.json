@@ -1,0 +1,12 @@
+{
+  "name": "Defossilize",
+  "catalogue_id": 1031,
+  "oracle_id": "d620de15-8141-4877-9330-8328a3fa85e1",
+  "facts_sha256": "fc30ba91b9404c250433d09e73fc38733073b8b2a97aa8f224f46c24e4570863",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "13bf2d5e8a358a53d6c1e94e1a3448f774d2339389968b01f86c158afa9bc868"
+  },
+  "physical_metadata_sha256": "9fc29d879f90920a1d75cb8ab4969e205aabd8b03cd910fd9b28dc8d8355419c"
+}

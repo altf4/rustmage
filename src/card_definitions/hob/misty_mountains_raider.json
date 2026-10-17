@@ -1,0 +1,12 @@
+{
+  "name": "Misty Mountains Raider",
+  "catalogue_id": 2799,
+  "oracle_id": "c394b767-620c-4310-b78f-ece312259e46",
+  "facts_sha256": "8660f886ccfd941a03842d739f809f2c27540f6a7a8af86fd1d6bf7db53a8ca5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "efad7efe46f49695667b6b9a4569b5ad86197ff055ec6e1f64ad7cc7311471f9"
+  },
+  "physical_metadata_sha256": "7e20b57e459e0a8f23c9661c60393c8caf2f5dd17b69152aab60611b7dc49b71"
+}

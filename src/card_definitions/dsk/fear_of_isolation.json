@@ -1,0 +1,12 @@
+{
+  "name": "Fear of Isolation",
+  "catalogue_id": 1469,
+  "oracle_id": "0ee28549-5909-4372-8376-34010b7b6654",
+  "facts_sha256": "a0bf8684663b09693cac0626f96a6ccd1ea03901ebc839c17d1299c070e9cf13",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "de08d37ae016f3b085751c4cc3481168363c93b2085d7e9901980eb8d14d53c0"
+  },
+  "physical_metadata_sha256": "582835d1cef3e0cf231dfca52bbb494b7c96df008d1bcdafc99a9b9c53d7cd4c"
+}

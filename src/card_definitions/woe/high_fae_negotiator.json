@@ -1,0 +1,12 @@
+{
+  "name": "High Fae Negotiator",
+  "catalogue_id": 2035,
+  "oracle_id": "90ecd452-333a-43b0-be08-a61f3779b3bd",
+  "facts_sha256": "aa68e52e1ae530cb691b438d56a6b2e68cb3ae9ae14a844af6d20429c45d660d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "61d2a8933f1daac922c7faa64084c11c680a82bed463d0508c0c99ec50f54c85"
+  },
+  "physical_metadata_sha256": "2812d047f6983023bff25c22d5bc94837ece917bf031bcff1c2d31481ab18121"
+}

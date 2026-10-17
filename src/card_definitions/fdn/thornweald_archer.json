@@ -1,0 +1,12 @@
+{
+  "name": "Thornweald Archer",
+  "catalogue_id": 4546,
+  "oracle_id": "b5ba87f5-3589-4a8b-ad65-2ae2523e98e8",
+  "facts_sha256": "23162b0e65f11a31b5b63b6c85041f0ed1a2337a73a23d3bfc51bcbfe898b425",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2a655f45c316b8fb5f632b3b0cf9d9d208d2fe9f95d1867031a1741e9c6cf4e3"
+  },
+  "physical_metadata_sha256": "5f36905881c215b92857fcc4f1c66e7866f29801f6160b76b4b3d6d70f650134"
+}

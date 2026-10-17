@@ -1,0 +1,12 @@
+{
+  "name": "Cenote Scout",
+  "catalogue_id": 698,
+  "oracle_id": "ec3911c0-686f-4c78-838d-a683eed6c01c",
+  "facts_sha256": "fb3912ea2d84f67819c73e75598d5102369a3b6e9f8fe1b01d1a1448a5a579b7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7ab978e605b6a5b77c16126ea12c7f25211bc237d09784ea6d80cbf8ac113afa"
+  },
+  "physical_metadata_sha256": "05e9ffaeef7f486c0434a95f51e2c017fb2f5be555b7eea424631ccd22accdcb"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Violent Echoes",
+  "catalogue_id": 4903,
+  "oracle_id": "e8ecec61-cc47-4051-a599-0e7470764488",
+  "facts_sha256": "e4510027032d61049f2d61a29f4b114541458a4c4ad8f8c4d4c4e40623ef557c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a3dbeada180fa1ecca79438ebcdd2f8f657d3171498077e894f5e5c7f09ffc09"
+  },
+  "physical_metadata_sha256": "f78238ca5be80257a2945535d15c4357d9ea023a4e31860515f010dc1ba836ee"
+}

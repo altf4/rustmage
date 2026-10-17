@@ -1,0 +1,12 @@
+{
+  "name": "Sultai Monument",
+  "catalogue_id": 4209,
+  "oracle_id": "9db71b76-eda7-49dd-af5a-3de18acb8ccb",
+  "facts_sha256": "995d9739bc86ae71eebfb682425ac8e7f5dc9f518c5b41f87326cb9f246f3e11",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "01037b4f335c7f531b60e444c3db091caff80de0a7f6be855044bde92dac34cd"
+  },
+  "physical_metadata_sha256": "22934cd26534c840dc794bef9b975a1763fe0213f5f891e74edab0df5444bc2e"
+}

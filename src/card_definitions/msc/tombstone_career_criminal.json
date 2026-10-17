@@ -1,0 +1,12 @@
+{
+  "name": "Tombstone, Career Criminal",
+  "catalogue_id": 4625,
+  "oracle_id": "6ad2cbb6-2291-420c-bfc8-ed3f079b59bf",
+  "facts_sha256": "f852a0277bac9a443d572a5c84dcdeeecf7d990877d2353e3906f71898e12ffa",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1a5d7d3dab71cd191f2a7fd043e035cb80fe7e532b2c587428366450f2a17e73"
+  },
+  "physical_metadata_sha256": "fabd865993eabb3485937e6c08c5c2262b75571ddf4a44a638ff9899ac025643"
+}

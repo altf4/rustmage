@@ -1,0 +1,12 @@
+{
+  "name": "Pain 101",
+  "catalogue_id": 3089,
+  "oracle_id": "e9975888-c75f-471e-a70d-17449e92226d",
+  "facts_sha256": "494d223425f3ffebd33e2f95a675ebe2b2ff29b35c1c7dbb8f922dedabcc1a78",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "31fc7a314e0a113bfe7499214b6d4df010b0d667695a027a808b953bedb6a2b3"
+  },
+  "physical_metadata_sha256": "ec6de2ffcb4a1a4ad5a5ee3ed66e68ccf17e37f817536583ec0a07ddb8303d18"
+}

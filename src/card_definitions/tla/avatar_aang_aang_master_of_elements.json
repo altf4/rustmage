@@ -1,0 +1,12 @@
+{
+  "name": "Avatar Aang // Aang, Master of Elements",
+  "catalogue_id": 275,
+  "oracle_id": "b4872bac-5822-4c35-9b73-38c4e3ffa477",
+  "facts_sha256": "729c36ee2c354be35a52ceb2b91f2582bbfecbe9686615bad6fcae49abd8e5ee",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d806cc248a95d3ad0d708d76f464babd4a3963f0283d20563a46ceefdf11c46a"
+  },
+  "physical_metadata_sha256": "cb90e929b385b187b9795ad3694973dd2fd5efe68019b66939b16a0ac195b2c2"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "TCRI Building",
+  "catalogue_id": 4313,
+  "oracle_id": "4139f40a-873b-4842-96a2-b7875de1c20a",
+  "facts_sha256": "10abcd8afba632d562b2a597f40eae25cb45f11e370e17fede412739f9a4cb77",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "773324ff771c58ed0bbd25163114f256aaf1cec48d43005b9d624d46c4477ddc"
+  },
+  "physical_metadata_sha256": "ca8d9c45e1180c6816940ccaf5a4f3b9d6493c9aa003b37ac285167d398b6030"
+}

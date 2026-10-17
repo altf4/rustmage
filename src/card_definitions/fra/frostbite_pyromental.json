@@ -1,0 +1,12 @@
+{
+  "name": "Frostbite Pyromental",
+  "catalogue_id": 1637,
+  "oracle_id": "9a104f73-597b-49e3-8088-13db31f61900",
+  "facts_sha256": "25923757701eabc3b5c69b08471d4058ef8696c99bb1498054d79e61f0191d88",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "52addc4735a1f8b47276e14941348afe5efca4f1792bde65ebd2f26c400e4d57"
+  },
+  "physical_metadata_sha256": "69d8578940d1c83a2ec4d201c8a95af2fed5aeb676f0712fd675912908cada69"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Rebellious Strike",
+  "catalogue_id": 3419,
+  "oracle_id": "4f3d7102-f8ce-42d4-94eb-f69b695773d1",
+  "facts_sha256": "e43073fe7ba37846eec202a59088e3482ec1a87f96c7d4a6df68ce23bc7f61e9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "90a598b36b56a8a9d805f70f5cf0e75e69a56790a6d8c7b71bf541d3dfb32db2"
+  },
+  "physical_metadata_sha256": "a5e53fe2c72be2a48d5f7a804fd2f7f6ac5c7259cd0e52b1b52845378c331ba0"
+}

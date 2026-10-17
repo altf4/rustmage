@@ -1,0 +1,12 @@
+{
+  "name": "Oscorp Industries",
+  "catalogue_id": 3046,
+  "oracle_id": "f432eb6a-f1bf-4ce7-b915-1488dccb4bb9",
+  "facts_sha256": "8581aa1e77cd93aa72b921306485b00a82f8598275af71461508cb4996784d77",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d36bbec07863fefb965c181b50fe15da0b669a3b2d1af4b2eed8b8a96f5c4df7"
+  },
+  "physical_metadata_sha256": "5e6f5b1818c3029e8d4444d96e8724bba076e6b967d7505032230c32b9e28bbe"
+}

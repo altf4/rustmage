@@ -1,0 +1,12 @@
+{
+  "name": "Trygon Predator",
+  "catalogue_id": 4695,
+  "oracle_id": "c744b5f4-fbcf-48b8-9d60-5e9c6ac297e0",
+  "facts_sha256": "417ee23548b1a32a34b43fd6db064a547b5847d4a913f6cccdfd189c4951025b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5b0d4bf970e14b9affc952646086cc9f2fc0e6c86fac5265885cc7fac5ba5477"
+  },
+  "physical_metadata_sha256": "ef82cc583ca7450d508ad02c3e692f97b8f2322f25f4341150b8c5b75bbcd7c5"
+}

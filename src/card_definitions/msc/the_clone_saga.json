@@ -1,0 +1,12 @@
+{
+  "name": "The Clone Saga",
+  "catalogue_id": 4428,
+  "oracle_id": "0f0282c6-aceb-4879-8ec8-482d0501204a",
+  "facts_sha256": "5c3504cbb482066181e76ed854439be2741ca0dc5de7bfb327456c721c6caa51",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f54c169843a4d5a013d99f4036db8d3f076cee8a574e0043eab8bd7d174a349c"
+  },
+  "physical_metadata_sha256": "cc002f42ea53b2a77fd55882910fbaa5762d7e2b5c30013d790a3dfde57be256"
+}

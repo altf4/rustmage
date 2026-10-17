@@ -1,0 +1,12 @@
+{
+  "name": "Boggart Cursecrafter",
+  "catalogue_id": 476,
+  "oracle_id": "5d58aefe-a3df-4e0a-b679-b967cd5fd2c6",
+  "facts_sha256": "b63b572dd0b8ce1df88d0425eaa477f4027bada9ebd5d9b9fc72fd81a562ce74",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3df13567442ea7e9f565ba3b23eba7d7624bff610193b6e47d0bf939379562b0"
+  },
+  "physical_metadata_sha256": "79be5f01417e5beff83d0284d81bf78eaab0d81a710c2544ec6e9a2d3792afea"
+}

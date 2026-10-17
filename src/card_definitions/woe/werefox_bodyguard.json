@@ -1,0 +1,12 @@
+{
+  "name": "Werefox Bodyguard",
+  "catalogue_id": 5035,
+  "oracle_id": "d5ee2ced-29f4-430f-962e-2f930b92624c",
+  "facts_sha256": "9fcd32e887342352919229b909c13bcf53bef4ac88fe9808857a9d82bc03d56d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "af311d3c65985596999c9deb809f8dc3c93920a58e089ff5530701552a709246"
+  },
+  "physical_metadata_sha256": "e4567702b673a9a1fc7a11ec800464f78d34237910f1a5a16d3edb6230c06d08"
+}

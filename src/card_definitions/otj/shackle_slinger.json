@@ -1,0 +1,12 @@
+{
+  "name": "Shackle Slinger",
+  "catalogue_id": 3804,
+  "oracle_id": "59e8747a-3e3f-48d2-aaee-af94ecee378b",
+  "facts_sha256": "186d2a20949b50e2c7f1cc5a9a291ce00cb828d2d88109f3ef9bc1c3b191c4c8",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "606222c98eff3832bb792b243a8c72b7048d00fb549702f3dff6af0a0ddf280a"
+  },
+  "physical_metadata_sha256": "0bc4d06dcbed22be3a8828fa637646ce2f54c0e3986fe2311909ed28a5c3c4ad"
+}

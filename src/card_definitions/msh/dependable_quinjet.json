@@ -1,0 +1,12 @@
+{
+  "name": "Dependable Quinjet",
+  "catalogue_id": 1044,
+  "oracle_id": "60105eb8-bdca-44b9-a970-68a7615526e8",
+  "facts_sha256": "0316bc45bb5ad5e0591e4ef670cd74e6cfe091805b23f33d03cc4fd1681d212a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "216b8e97915199df8a118efc1406d9a82e25ee4f7f4e9869c087545f67bab177"
+  },
+  "physical_metadata_sha256": "f33cc744b722512a1132906145ad897beee5b76d535fd74f0b4e2850c35f9e37"
+}

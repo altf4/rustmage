@@ -1,0 +1,12 @@
+{
+  "name": "Expel the Interlopers",
+  "catalogue_id": 1403,
+  "oracle_id": "744b7e93-c893-4770-a3bb-6a45b7f8e4f7",
+  "facts_sha256": "bd101cb5c74bfbaaceea444bfed9b5f9cb5a1c60bede472ef71e47174f8d5df9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a36a360595677b87eed51b38fa904231bbff7c2158a708e3f6e333b31d6d1b26"
+  },
+  "physical_metadata_sha256": "e415720ab9c1b4f990cb83d83a3448c40cdc52111f667eea22a98394b4946594"
+}

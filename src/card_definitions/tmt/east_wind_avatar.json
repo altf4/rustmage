@@ -1,0 +1,12 @@
+{
+  "name": "East Wind Avatar",
+  "catalogue_id": 1246,
+  "oracle_id": "e2ef355a-2472-47e0-9b2e-987994291921",
+  "facts_sha256": "83a9305f8aaee852381aba3d8afdec2f39d07796ae43711ed6f0094af31f3b36",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c0bebce4c67612fed3026623dc8829d6cabd9886a1aa5fec2572f4f558be96b4"
+  },
+  "physical_metadata_sha256": "56aa67555861a9014df438fceddfca616f2437d55c9980da533244f5a0c56822"
+}

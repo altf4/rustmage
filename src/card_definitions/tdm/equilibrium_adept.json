@@ -1,0 +1,12 @@
+{
+  "name": "Equilibrium Adept",
+  "catalogue_id": 1354,
+  "oracle_id": "42bf9435-02e6-428f-a93c-fe4652deb4fc",
+  "facts_sha256": "b9618bc112f54c9610230ced2513faecde4a122dca9e9150a2e418911a0355bf",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1979df61b5321155c935d40e9a5377e242698575a3d46186ecf38c007917a4ef"
+  },
+  "physical_metadata_sha256": "d2d2c457a2ec87d82514e92394aedcb5a6362b6dfc6c49468934301bf5cca614"
+}

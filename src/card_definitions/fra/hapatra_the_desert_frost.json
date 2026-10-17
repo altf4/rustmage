@@ -1,0 +1,12 @@
+{
+  "name": "Hapatra, the Desert Frost",
+  "catalogue_id": 1938,
+  "oracle_id": "ac0f161a-e5ec-4a95-9f37-305bdf1ac900",
+  "facts_sha256": "69b30e77dee534bfa2db78e26317861e42dd99030b4c7826b3925339e87a1122",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d24a25431ee4517af7342be2350e75af15e82034c19c6813cb735a2d1eb45b2b"
+  },
+  "physical_metadata_sha256": "7947f6c1d79e776a2304ab29fcc89f2bb1af6192ad23f2df7f84596f7264fe45"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Reluctant Dounguard",
+  "catalogue_id": 3454,
+  "oracle_id": "162dcfa0-36e4-41cd-8322-08e810ff04d4",
+  "facts_sha256": "26d6c0ba0dcb0b17e45c29bd54f90894dc215e3b84714d988ed309d6e54b1868",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "09ec8d049d7b9cf1ef54d0db355516e18ffbdadae9752132b5c6c8e03f595d38"
+  },
+  "physical_metadata_sha256": "81e42f125c6b0cc3e11f9a249d861c53dc817a326c74531d61832bb68834349e"
+}

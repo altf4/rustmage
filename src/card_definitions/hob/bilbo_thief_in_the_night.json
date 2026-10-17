@@ -1,0 +1,12 @@
+{
+  "name": "Bilbo, Thief in the Night",
+  "catalogue_id": 411,
+  "oracle_id": "72a9a85d-7cfc-4b3c-82db-9d35be6c0982",
+  "facts_sha256": "c3c2ce92aa1fba4d372efc92d63d04c64f4b32297cf33359c4c5420e1d194a09",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "eed2de35c5f0597721f6d6f775793c6083f55771b18e3c4bd6dc85c3435d089e"
+  },
+  "physical_metadata_sha256": "8f53511010fe3d9240742a8e717c616824689733627c71e35ede0ffdc31f5091"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Theorix Charm",
+  "catalogue_id": 4525,
+  "oracle_id": "cf527bbd-e898-4aa9-909d-daec2f4b62ad",
+  "facts_sha256": "b1e4efc3e7ff4f02d3b28b451610fb8537208a756a8140822c5260c4d28fde1a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bae60356245b6c6a59ff62740fa8294dd4bdfb1682d33e8949f0eb4bb9506f35"
+  },
+  "physical_metadata_sha256": "461aa0db58831c5151fecd8e6fed999b8f6db913c9bf8389073a72fad49ba7a6"
+}

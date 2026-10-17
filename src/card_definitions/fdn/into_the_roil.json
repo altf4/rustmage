@@ -1,0 +1,12 @@
+{
+  "name": "Into the Roil",
+  "catalogue_id": 2202,
+  "oracle_id": "c2898bbd-82a4-4d26-b6ee-169b0ebe71b4",
+  "facts_sha256": "55ff5acbf0ed52f357e75db5237fb8c212d575df19b78fe96fc087b55409acf0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ea1ee77ff0e757aa836b6e9dffbc82c51eb3772fa08b929c2278e885a61e1515"
+  },
+  "physical_metadata_sha256": "c0cfd3609795e694061be40483d3dc90fd8ec06003c054ab59cdc8d80b7da5d4"
+}

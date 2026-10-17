@@ -1,0 +1,12 @@
+{
+  "name": "Sagu Wildling",
+  "catalogue_id": 3651,
+  "oracle_id": "7cee6d43-5dec-4989-85ec-c635ec783ec7",
+  "facts_sha256": "3bd160839b257c931ac2e54fd931ade2538970941bf46d8b91b74bbf8980c931",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9f5b7c5723b954a553dd06d95e2444c08646bec9fd6c283df37e7bce31cdb88a"
+  },
+  "physical_metadata_sha256": "097521ed24c5ed6604900895eb15c2c3b10ee2bc1dc7d10522e05f438da80492"
+}

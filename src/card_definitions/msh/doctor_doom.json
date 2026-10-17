@@ -1,0 +1,12 @@
+{
+  "name": "Doctor Doom",
+  "catalogue_id": 1119,
+  "oracle_id": "9e4fa592-71f8-4c71-8c91-78e6326cd736",
+  "facts_sha256": "e902a2cf9e3b57b211eb4f26e2035bd273e6e310af719b47f984241990ce2182",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "de4f7d5b4f256559657b6d635a6cc5c74141640e2b8494ee3d43673af36a38b1"
+  },
+  "physical_metadata_sha256": "8df34e406f4eff45de60f56b9687d0fafa28ab78d41269262dd70f006caa8b82"
+}

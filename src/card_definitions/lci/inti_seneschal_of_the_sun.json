@@ -1,0 +1,12 @@
+{
+  "name": "Inti, Seneschal of the Sun",
+  "catalogue_id": 2197,
+  "oracle_id": "176f5ba8-6e7b-4234-a298-b6164f51656f",
+  "facts_sha256": "ab47051ae1e6856495968d3cc98596db4852ae891d9afbc833d69fdc28d6c68a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fce3a1102ee1253074060bf689eaff10f576fb1bece63acd3b1faeb5081ddf8e"
+  },
+  "physical_metadata_sha256": "6fb372a6ac594b1eadf2677da189e9fe4ee224dc106334f5c84f11b6e7ef2fd4"
+}

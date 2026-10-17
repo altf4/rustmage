@@ -1,0 +1,12 @@
+{
+  "name": "Midgar, City of Mako",
+  "catalogue_id": 2744,
+  "oracle_id": "4e34a49d-f031-48ac-a458-97b79124b76c",
+  "facts_sha256": "dafcac34c6d5bb3d88d7ae82c40dec77d17c39478db2c977e668677349c16c79",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e194fb0a9602ed1bfdeebba6262f007a9b869f2b26981308b63b80533170219a"
+  },
+  "physical_metadata_sha256": "8e816b68fdba3008533c879620cc28e28db5d5af3b57ac51a8250107d44d4602"
+}

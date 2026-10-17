@@ -1,0 +1,12 @@
+{
+  "name": "Painter's Studio // Defaced Gallery",
+  "catalogue_id": 3092,
+  "oracle_id": "2af01e09-f233-4675-89cd-470816471c62",
+  "facts_sha256": "701a63ff1b0ad2b2b64cdade5838ebe106e0ae112b9aa753c0bfee9409d08b75",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "bad6da2676e8fdd7eeb1ea358b0a60765a41343184e26762ee6ced145adbac49"
+  },
+  "physical_metadata_sha256": "3ccd6906093cc469910abdd7db2659b049dbc969c6aa63f5f676f3ad2d9387dd"
+}

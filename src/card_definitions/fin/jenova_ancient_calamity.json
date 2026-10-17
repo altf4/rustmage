@@ -1,0 +1,12 @@
+{
+  "name": "Jenova, Ancient Calamity",
+  "catalogue_id": 2266,
+  "oracle_id": "9370f6bf-d6a0-4c5b-828f-7229f563cc07",
+  "facts_sha256": "465e198db59e24a16822b03fe3344b2ca11ac36901d3761e9aadb61295552ce0",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fd000556919fc58fe6c654bd34e0bc6cc3fdb90948f46d717bb61312c894163b"
+  },
+  "physical_metadata_sha256": "bba4e27635f216d70a12ef0fc5529497cc761011dc234022ae09ce84ec4e70fe"
+}

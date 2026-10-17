@@ -1,0 +1,12 @@
+{
+  "name": "It Doesn't Add Up",
+  "catalogue_id": 2239,
+  "oracle_id": "dcfc8c59-d032-414d-9da6-125ebcb1366c",
+  "facts_sha256": "fb2e111bc3ec5cf77d34bbd1be56a21d8c387c6fccdf5bcd94848d0a5081e499",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0dff30e104978682a4148cc6bd35ed4adedb0d558e0ea9625d70cbb6cb0706e1"
+  },
+  "physical_metadata_sha256": "7aef1b6f9ce4abd02f5ad69e4725aba2273cf32f7dacd7aefb28e53fec6b5614"
+}

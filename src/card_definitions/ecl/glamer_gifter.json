@@ -1,0 +1,12 @@
+{
+  "name": "Glamer Gifter",
+  "catalogue_id": 1765,
+  "oracle_id": "e67a820b-6249-478e-91db-9827e44aa60a",
+  "facts_sha256": "a7b6b3860ac65c9cf436e2bb67d56daaccaee35a2a55837987185a217ded1822",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1fa3a5716df5f2e84864d590d1b6882441fb6ec98d07843711c325cd37628cf1"
+  },
+  "physical_metadata_sha256": "5eac1321445ff29f5d0a498c3442f053a353c869b693f5c8682ea8578aa72eef"
+}

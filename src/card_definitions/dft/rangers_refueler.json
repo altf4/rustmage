@@ -1,0 +1,12 @@
+{
+  "name": "Rangers' Refueler",
+  "catalogue_id": 3371,
+  "oracle_id": "8e7ac64d-42c3-4e3b-9a20-9f09ee9d8a7a",
+  "facts_sha256": "33ca0847739643222c01dca42d94867a61ac67580654a52cf27e388689c92f5e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "108850783d3f82b18d685daf3b41d9b1f4501a7223ef648126048a0ee999d2bf"
+  },
+  "physical_metadata_sha256": "764bf55e01bf66d20228946590ecf6b1dd6aa5c7cba3131c035ed4ac330cc9dd"
+}

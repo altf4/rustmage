@@ -1,0 +1,12 @@
+{
+  "name": "Electro's Bolt",
+  "catalogue_id": 1276,
+  "oracle_id": "e9222f89-e495-4502-bb0c-f5e802686b01",
+  "facts_sha256": "92a0d9a6c11bf15798ed83c2208fc7cb5041bccbebbe351e78d96eaa8b19d4f2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7815e83e29569b9dc9313b58dd48ba15cd68f218e33041b389f307b7337e05cf"
+  },
+  "physical_metadata_sha256": "0d9cb6de35c1e2abcd501095d4ef5706a3359599703405172a71a0a34f451432"
+}

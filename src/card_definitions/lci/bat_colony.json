@@ -1,0 +1,12 @@
+{
+  "name": "Bat Colony",
+  "catalogue_id": 348,
+  "oracle_id": "c2022f95-2c26-4a2a-b83b-60efa937cdde",
+  "facts_sha256": "2435c833d8f56e6a2f80c9be788fbc3676e99ee5f98fc528557c6cd40c80c5ad",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dd1aa42de2f443379d20a7128f3430efee7cbf3b62a91e7d402782426f95e62a"
+  },
+  "physical_metadata_sha256": "2ae797a69865c4d3c3dcbb24ec08fc51d773dee86db9e77c40aebaf26e59e33d"
+}

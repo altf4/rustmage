@@ -1,0 +1,12 @@
+{
+  "name": "Meltstrider Eulogist",
+  "catalogue_id": 2709,
+  "oracle_id": "046b60da-0a14-40b0-a36c-5328f6b8972b",
+  "facts_sha256": "bbaf0af319bc7c63a233b35f7db7e3818d48e61f4e6424e3edb742d5dc6b2dfd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6679133184d85a617c3b9283f59c00dfd006f0e29544fe4b6b797ab026e02bf6"
+  },
+  "physical_metadata_sha256": "cbcb2760f3a4d368fe0cc5243b71dd672c486726b7495e17634cb2babb62ab0c"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Etali's Favor",
+  "catalogue_id": 1376,
+  "oracle_id": "df98b93b-0aa6-4bea-9d8d-798ebc795b0b",
+  "facts_sha256": "6f5a537f0c366b32e243c4f8363044db5ac4e613391af210c07a2ead60471cce",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6afc7c02a71a8f59c79f8ae65ece686db010eb2d695c8c761a20b3b74489b945"
+  },
+  "physical_metadata_sha256": "677d0811ed02164fc99c91c16b71d396dc9bc8b80583055df10867873e6eaf62"
+}

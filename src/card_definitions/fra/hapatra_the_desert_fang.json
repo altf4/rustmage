@@ -1,0 +1,12 @@
+{
+  "name": "Hapatra, the Desert Fang",
+  "catalogue_id": 1937,
+  "oracle_id": "6894345f-52a6-46e4-b278-0783087daee1",
+  "facts_sha256": "0a8af008f4c2273bb42ab4f201e72d615302e62c3a908f88f55e791fe091106a",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f66735ccfc106d6b485ca3c05e1003ba0bf22beeb5e3fe208804466857a877b8"
+  },
+  "physical_metadata_sha256": "bf6d46ba1680a63ba99a22c6b1146ba03bc381092b9091ccd1431aec40233993"
+}

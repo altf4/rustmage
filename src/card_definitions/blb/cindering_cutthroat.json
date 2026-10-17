@@ -1,0 +1,12 @@
+{
+  "name": "Cindering Cutthroat",
+  "catalogue_id": 753,
+  "oracle_id": "46e8bec0-1a09-4e6e-b78a-7ba161686ca9",
+  "facts_sha256": "ddaa866f275fd1e399b08ad4f50644241ee863b9f258a5afb92773ac87f16f15",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3dbd6396721c71d5fdaa1e6d33fc6949922098bdaf95ef8567371a8946cce197"
+  },
+  "physical_metadata_sha256": "80a6aa05bba55650206a061da03aa61ee96e22c81087a3d0aeea9a3f9b82b9b5"
+}

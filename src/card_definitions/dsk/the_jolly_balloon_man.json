@@ -1,0 +1,12 @@
+{
+  "name": "The Jolly Balloon Man",
+  "catalogue_id": 4456,
+  "oracle_id": "82ea519f-0e14-43d3-bf46-a1c5352e9600",
+  "facts_sha256": "e2c49b7acf4a28692dc294b9b2fe36020a535ef70ee811d096c333781e96b547",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "359d4f4d63ed9390829a74e38817512112d83c9124ed94624163d77ac91da6c7"
+  },
+  "physical_metadata_sha256": "967808f1cd5b4a4543176dce8f2543b27dba80767dc20d782e3f9c253775cede"
+}

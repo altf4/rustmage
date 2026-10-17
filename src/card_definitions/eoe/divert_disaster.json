@@ -1,0 +1,12 @@
+{
+  "name": "Divert Disaster",
+  "catalogue_id": 1108,
+  "oracle_id": "76fdbc2c-d2b1-466f-9230-06e187bcc9e6",
+  "facts_sha256": "79084954e81317919750ffe0d4680130d336d600d09d72476f4398ebfe94f7bb",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e1308f1c21c3a13869eb0de850150db20021cca2a6dae4e4e03515a9cc699c8c"
+  },
+  "physical_metadata_sha256": "8dfbb8db12c93f372421b1a40524e47178c190d6f096637c4294c14ac714edc2"
+}

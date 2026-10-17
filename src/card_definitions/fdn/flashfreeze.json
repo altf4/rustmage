@@ -1,0 +1,12 @@
+{
+  "name": "Flashfreeze",
+  "catalogue_id": 1550,
+  "oracle_id": "eaf98e03-729b-4145-b2af-c910c415c15d",
+  "facts_sha256": "ebc620e733901a570a41c3b7895df91a4ebb9cf9fb37e64cafa7a29e2ea3d085",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3367dda4a4601871bc75355c90c1598b8f687b47649b169068b60f665285e0d1"
+  },
+  "physical_metadata_sha256": "89de9df14b41e16462f18154163c92f157e9d1391fdb0d30a94eb9b067679250"
+}

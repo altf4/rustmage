@@ -1,0 +1,12 @@
+{
+  "name": "Fblthp, Lost on the Range",
+  "catalogue_id": 1459,
+  "oracle_id": "764f6412-c4ff-4eec-9a9d-870661f97f8b",
+  "facts_sha256": "ddf515ddfff893d6d5da818968a57c27d3448f02dcc693ced312b0ab327ffeab",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "25ae64d9a4e56ceef8bc2b7ce69b0690abeb1d5fce6105cf76dbeea4d0fee093"
+  },
+  "physical_metadata_sha256": "293cb769c3d9b8510a2b3225994f78c73fc2ae5c0b1db3adce3bfebfadb1a71a"
+}

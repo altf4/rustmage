@@ -1,0 +1,12 @@
+{
+  "name": "Abrade",
+  "catalogue_id": 34,
+  "oracle_id": "f9db72dc-9a5b-48a4-a86e-7464d9a2166a",
+  "facts_sha256": "35b37cc6402ad018a447638c2c0fbed736df0206ec9d52bd31a84fa6187a2df1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5fbe775163ffb54be9cfe430e2beab77c87091d82148d84371b7205e3c00140d"
+  },
+  "physical_metadata_sha256": "6130b54916aa25a2267bd8d6aa08a7d3db0953c0274cc43bfa22a1541742859f"
+}

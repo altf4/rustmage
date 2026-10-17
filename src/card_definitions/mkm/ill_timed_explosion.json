@@ -1,0 +1,12 @@
+{
+  "name": "Ill-Timed Explosion",
+  "catalogue_id": 2134,
+  "oracle_id": "6e3b3a3f-e32f-4c72-a9fb-dd1e877876b6",
+  "facts_sha256": "a3e1699563f94e53853ea502b93529e624a2eddf5af4439375a31511cf56c811",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "721636e60ac00ed90ed75d180dbb9969b0191ad58714ae027c09cc89fcf89b7c"
+  },
+  "physical_metadata_sha256": "72b022e229396d55bdde76988aa9b7c6c6b19c17047dd4a84846071705a50505"
+}

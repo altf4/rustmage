@@ -1,0 +1,12 @@
+{
+  "name": "Ishgard, the Holy See",
+  "catalogue_id": 2238,
+  "oracle_id": "4f4358cb-59df-46d9-be27-69929f5a615c",
+  "facts_sha256": "3a4d6c33b0245757dda04733ef6b3de153b110911d74051c3310456c4a5c9cc9",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "306e965b1b7db6caaa1ab4a6f9d459f1ca2bbfde5fc1d9a165d94e0509a0679b"
+  },
+  "physical_metadata_sha256": "efb29de7066228b69c47aa1900d9ed0789749601a04ab19fc5e56a0056fd8743"
+}

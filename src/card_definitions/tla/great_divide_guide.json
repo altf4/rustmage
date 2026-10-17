@@ -1,0 +1,12 @@
+{
+  "name": "Great Divide Guide",
+  "catalogue_id": 1861,
+  "oracle_id": "79e69a91-d580-47fb-be76-1e32c50d2fa0",
+  "facts_sha256": "0202e8fd593132e0da3b6e90218defe5e74bc5c2d544d04b258f0dd955e64724",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4f24c2ba56a1557a0fd7d98dd3f189aaad0b5c3e644283db81c22a8409c7c7d0"
+  },
+  "physical_metadata_sha256": "8b206f37caa77ef998e583457aee472004beb83a8d09f3d2fea1a1bd37443097"
+}

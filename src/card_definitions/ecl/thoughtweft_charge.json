@@ -1,0 +1,12 @@
+{
+  "name": "Thoughtweft Charge",
+  "catalogue_id": 4550,
+  "oracle_id": "a8cdcaa0-8e25-4c17-b5ce-16f72b535123",
+  "facts_sha256": "d6b5816618fff6122c62e5c13054f5d505b46f695c0432671d2871d150e44ead",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "89799d8615a9587b6e28c6ed69ea1b6b3f44e2751b22d5dc06391c771ee99ab0"
+  },
+  "physical_metadata_sha256": "b18ba9bcbd5c376338dfab9731732860516d1b04abc11ee08885c2ff1c57dfdc"
+}

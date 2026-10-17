@@ -1,0 +1,12 @@
+{
+  "name": "Memory Guardian",
+  "catalogue_id": 2715,
+  "oracle_id": "dac33359-0317-4b11-9078-fccfd2321e53",
+  "facts_sha256": "141717d10b3446a6017b821e170ae43d4e7556221b31c39739dad118391fff3b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "041fc8db258d737faaa2112dbddcb042bfe2aa5ec57b30e3a559f059d7f493fa"
+  },
+  "physical_metadata_sha256": "35c610c57601fb0b3129d66d9bc47fa39377f84182cce2ca016fd0b16bce061d"
+}

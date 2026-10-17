@@ -1,0 +1,12 @@
+{
+  "name": "Season of the Burrow",
+  "catalogue_id": 3753,
+  "oracle_id": "8e013e51-1684-4f58-8fe1-3588b6fbb5b5",
+  "facts_sha256": "e2bd2ffef8077bd4a695657b6f524ac93ef0fb45a3709a89b0022bfa8773c198",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "67a4b69a94ce56c98e032392aea3c8404f5ae07cafd4885c3fc1097da4fecf8a"
+  },
+  "physical_metadata_sha256": "51b1913c239aab3cc300aae3909156261fd0223346193faf9028cfc18c149657"
+}

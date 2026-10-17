@@ -1,0 +1,12 @@
+{
+  "name": "Daring Mechanic",
+  "catalogue_id": 960,
+  "oracle_id": "9b1d79b7-a812-4f48-9be0-789294da3b56",
+  "facts_sha256": "455a562032f66b4ee9f8b7cd79aaf77b80968a433e53703a6a50e55c643db341",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7d655288c8bed895764ce4efa86dc080825c4f70501fd08a9f960d401a07a5f2"
+  },
+  "physical_metadata_sha256": "26c16a16440ecec39be84f6f656b26d281b93b648fa64e86886a0fba9442f5b6"
+}

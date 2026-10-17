@@ -1,0 +1,12 @@
+{
+  "name": "Harrier Strix",
+  "catalogue_id": 1955,
+  "oracle_id": "eb154ebb-d02f-405a-a557-3d5ec7648c42",
+  "facts_sha256": "91b3945dbf54503761059b1e377a77a65b665738b1b0211548f99cf4dd8f2c7c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5a3b9e7b9ff55136734583242343e53f2670e69b1972e755ea766af9c2e33621"
+  },
+  "physical_metadata_sha256": "5c9faaea36831f43a78da4c002dd31c3d7281b611abc984a8f90218577a0b460"
+}

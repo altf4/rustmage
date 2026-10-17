@@ -1,0 +1,12 @@
+{
+  "name": "Bombard",
+  "catalogue_id": 491,
+  "oracle_id": "c0899c12-5462-4ff1-a9e5-d99cffa7c6cc",
+  "facts_sha256": "0fc9c0ff1783f0f28befc693e00dacfb4a615178b49639677ccc4faf23e4b02c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "04cdead634f4d39c57fda427142e194494f6cb2a05ca7e13cd5744a564c57b52"
+  },
+  "physical_metadata_sha256": "8d3f83ec3ecd51d27af0040c5446a6cd732ea7b20f9bb3537f404ad694d13061"
+}

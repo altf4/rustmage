@@ -1,0 +1,12 @@
+{
+  "name": "Waterbender Ascension",
+  "catalogue_id": 4997,
+  "oracle_id": "aeddfdc2-149b-4703-ba57-8d844b25ef08",
+  "facts_sha256": "28bdf7af9d47b3b8d719921b0b961ed48b2f6f5b6c714458fcae20d124457bb4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a49ae77387db9d19ab1f0777bcf59a5d68222d03acc51a6a17fa122b223e2081"
+  },
+  "physical_metadata_sha256": "56e256ae9de614e8c6d5442e0ef99bd2a8464cefc3dbaf81afd9725cef3e113f"
+}

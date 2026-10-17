@@ -1,0 +1,12 @@
+{
+  "name": "Trained Arynx",
+  "catalogue_id": 4652,
+  "oracle_id": "bc875500-f6df-4365-b2d6-7cf425daea97",
+  "facts_sha256": "bb490a170d96196c893140a01a6a011573c6e61c634182b2127e70c6bedf9116",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dd3ce6cd51d10c3f2d39c9543ea98b2d595bdeca1f96cbc61145fce45e6bdec4"
+  },
+  "physical_metadata_sha256": "7e5d9bdfd244059c4b886fb957629cdcbdc624c16e3b97bbd9173bfce497bf9e"
+}

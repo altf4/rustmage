@@ -1,0 +1,12 @@
+{
+  "name": "Auron's Inspiration",
+  "catalogue_id": 268,
+  "oracle_id": "53a4d9ee-6dfa-4a8b-a1e4-7f671a666188",
+  "facts_sha256": "cb514eabfcf10bb8e4fd6df9fabaaba0ea6dd51f3dfd049fac53f455c41aae3d",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "02e66116ad769e316a999d5f66d1bc50ab11c5aacc59b9cf786a310d16e19763"
+  },
+  "physical_metadata_sha256": "304e9865cde1def549c7c2caf6df6be9c389eb541ba8f151cabbaf9c52d4d1b8"
+}

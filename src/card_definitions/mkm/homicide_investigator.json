@@ -1,0 +1,12 @@
+{
+  "name": "Homicide Investigator",
+  "catalogue_id": 2061,
+  "oracle_id": "dc4d5602-47cb-47c8-8a43-3b840e12b79c",
+  "facts_sha256": "506f44117386bb5c967f6ef2efb5ecfe1e8f110eeec3060b2cbb6477025f58b5",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "02a13615d6960d5536b94cd20c87a73987baf2c712c7f4240a3405584d5a33e7"
+  },
+  "physical_metadata_sha256": "e5a189a126d30147e6ecb98a734d6012c60ff4ac61a18a2cb76b9515dbe25187"
+}

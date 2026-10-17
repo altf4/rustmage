@@ -1,0 +1,12 @@
+{
+  "name": "Molt Tender",
+  "catalogue_id": 2813,
+  "oracle_id": "9a39ca64-e1a9-42ef-8efd-6aa3edde3d93",
+  "facts_sha256": "9e604cfb72d5e84f33bb0238b37b507e46cbb6827554649c0238111a6891ce44",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "174a4047370e8a8cf4938d0da75fd1e15094a61f0ec6449623b4e3fabd263ba8"
+  },
+  "physical_metadata_sha256": "72ddb90f20ca211860ccb28c0b791952b5ff3cd4ab58bf365bf14683078af0c9"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Ghalta the Unstoppable",
+  "catalogue_id": 1727,
+  "oracle_id": "8e5ea773-a60b-4502-9db5-ce93fa61cc89",
+  "facts_sha256": "1c013ff6d44f22b7e2d4ad419b5b04e7640876c55bae39495e4a5e1230180b4a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ed16491c09e35956f9e67f04a2f2589156c6dcbfd2f00e97c7b7c5213e8b1ab8"
+  },
+  "physical_metadata_sha256": "1a7f626f888d1c33f94f728d015ebec0f084b69050a64a9fc0d6cc9d5854c818"
+}

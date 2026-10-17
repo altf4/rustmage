@@ -1,0 +1,12 @@
+{
+  "name": "Evidence Examiner",
+  "catalogue_id": 1388,
+  "oracle_id": "a3468804-26ad-4919-b030-a1906a7029e8",
+  "facts_sha256": "c72b33ad80cf01a32c2b6b296ecb0dca50cdba65b1ea8564e602bf7d210bc8a7",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "6aaa78ae21ce503e70b13f90137186f13c4e772d4cddd572bb74a79c7c97ca46"
+  },
+  "physical_metadata_sha256": "674f713f63176d1440480f68359d86f01a280782297428e0ad56c9a62c59ed4a"
+}

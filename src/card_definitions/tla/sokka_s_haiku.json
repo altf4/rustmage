@@ -1,0 +1,12 @@
+{
+  "name": "Sokka's Haiku",
+  "catalogue_id": 3952,
+  "oracle_id": "87a97c72-143d-48a8-a1c5-3c44aa8e5a86",
+  "facts_sha256": "d474e0d1f919398ad71177419d634af76cc9c022297204ed77b4ccbf675b0d4b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "21cc147419c7d90779a08c5cff4da7babc70a0ebe4d9fa22cc791b52af266a1f"
+  },
+  "physical_metadata_sha256": "567fbd6e40e9560ba8500a25d283aad0f187794f0b5b52b2c0f6e40d6df870f2"
+}

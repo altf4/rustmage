@@ -1,0 +1,12 @@
+{
+  "name": "Prosperity Tycoon",
+  "catalogue_id": 3261,
+  "oracle_id": "07acb7e5-7aae-4d89-aabf-cbd329b3480b",
+  "facts_sha256": "29c802806156531616baef99224d750539b1f8e7b551eb143d379fd50e363c8f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "95a393e208ace277fd916cbe204de514791e6f7229b16105715a3820cbf51684"
+  },
+  "physical_metadata_sha256": "07e1e0ba206967b84ad200ab5bb997c97477e5a53942b30a751a90ee11470316"
+}

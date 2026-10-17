@@ -1,0 +1,12 @@
+{
+  "name": "Hecteyes",
+  "catalogue_id": 1986,
+  "oracle_id": "7a11b4ed-430d-4ef8-b0c1-6a022f12448c",
+  "facts_sha256": "bb1c53d9f8e16cc864ffe4d531591e1ff9e48de6c72b820e718976fb6e89a0e3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "239390dcd7cfabd8193b40a4c925d14fdfe8ed53527962a0c0cc7b7ab2261f74"
+  },
+  "physical_metadata_sha256": "ce5918bc310ae09456006ce9493d94a8a69fe5f2d52d0fecb4a2127101240670"
+}

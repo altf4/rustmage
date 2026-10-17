@@ -1,0 +1,12 @@
+{
+  "name": "Rocky Rebuke",
+  "catalogue_id": 3573,
+  "oracle_id": "fd85db70-8616-42df-9dac-bad7923f88d7",
+  "facts_sha256": "aeb550c7abc2d2f3395eb552ad1ccf5db2d96317d0bc259bda61dd41c34a78b6",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "dd00cea13b91d6ba62c11c2e1da56c5a6ef0395105f0853eb5fe03171c1169b0"
+  },
+  "physical_metadata_sha256": "a323b9f2790216bb45f92caff2e2e678d9f50b4dd16ce46e962f2cd836227a55"
+}

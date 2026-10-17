@@ -1,0 +1,12 @@
+{
+  "name": "Risen Necroregent",
+  "catalogue_id": 3541,
+  "oracle_id": "527cc22f-b471-4a84-93a8-be56193a9723",
+  "facts_sha256": "d5c54ca938d9e31ae37b1c6d6a97555c57f02f9eaf06ddea4d263c4edb4e59b5",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f42b268b40fd4daeb04dc3500f38920ba79dd3e6b4684e2f34038d517fb1b5c7"
+  },
+  "physical_metadata_sha256": "99215d82584c5b1e450530921533e5317c3252cd9c54a63e195c9130e29889aa"
+}

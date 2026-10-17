@@ -1,0 +1,12 @@
+{
+  "name": "Space-Time Anomaly",
+  "catalogue_id": 3990,
+  "oracle_id": "241117a0-8305-48bb-9cb9-9b01e86e08f7",
+  "facts_sha256": "569e806f5c438f0a5d80d43c48531f22e1af4e8f923a8cb1cc379ff8da0dba21",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "977dd4adcb0bd9b1981f865808fe884c619c8aced3bab629983754cefc5bba04"
+  },
+  "physical_metadata_sha256": "bf86501e158beb5330727db87dd1ef85a9b20970de6b68da013ec22f6776af11"
+}

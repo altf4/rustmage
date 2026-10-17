@@ -1,0 +1,12 @@
+{
+  "name": "Feral Encounter",
+  "catalogue_id": 1495,
+  "oracle_id": "5a8196ef-24ee-40b6-97d1-8a2257180f86",
+  "facts_sha256": "5771a5d111876f8a684a626fb535acf123c2c97732e5b05c568337904fcabe50",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e8e9b20836a6606eb7abeaee3d5a9af4758634dbddb517ae0b4c6b6fa2a403fc"
+  },
+  "physical_metadata_sha256": "28aa9aac5e7efe50a9f0aae7d4568dca4dcabcaf740c96d9c44a13b935a025df"
+}

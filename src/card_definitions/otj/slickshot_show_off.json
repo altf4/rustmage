@@ -1,0 +1,12 @@
+{
+  "name": "Slickshot Show-Off",
+  "catalogue_id": 3924,
+  "oracle_id": "74c7a029-59aa-4511-8e4c-f8f167cda4e2",
+  "facts_sha256": "78fd11c364ea9f8b63e7f9c2585b799498f948829282647d319cc7f9a753bc80",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c659153a6531692a96947866fa0a3373a9ffc6c28d97ae3440e7df3c12dd4f35"
+  },
+  "physical_metadata_sha256": "fb879052786dd75957fed9fd76a75a7e660e22f962ca18c77579693ab0e7d9ee"
+}

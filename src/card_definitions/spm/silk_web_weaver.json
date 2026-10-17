@@ -1,0 +1,12 @@
+{
+  "name": "Silk, Web Weaver",
+  "catalogue_id": 3867,
+  "oracle_id": "50477dc8-9a2a-41eb-984d-c9e1e78e08a2",
+  "facts_sha256": "e3f8d42b16030d7d2f1fdbcec17ed4f0089a596fa4be9cce4ebcdf1664dbe51d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e919eac520b7b94aa5d3a9a501d9d8c4e447989ece1189238543ab3ace5f1b3d"
+  },
+  "physical_metadata_sha256": "89f79a120eadce9041abf8436bc227a9b2aef7d371a7272618221cef87fc03d9"
+}

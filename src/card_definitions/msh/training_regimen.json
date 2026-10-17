@@ -1,0 +1,12 @@
+{
+  "name": "Training Regimen",
+  "catalogue_id": 4654,
+  "oracle_id": "f44bde8b-43e9-4719-ac60-b8f0cee8df9b",
+  "facts_sha256": "efe78db008b775346ab08aeab51ae47f9670218d19a512e402e68a82db657aeb",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "45f4ce673d51deef42a9e8a53e4e3c807efcd55cc2a39199de06027d4d0e5408"
+  },
+  "physical_metadata_sha256": "c630d2196afc72a3bdcf7bc171f2fc5e09545908b6d5b827e42d6870e3448977"
+}

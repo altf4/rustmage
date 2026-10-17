@@ -1,0 +1,12 @@
+{
+  "name": "Zell Dincht",
+  "catalogue_id": 5156,
+  "oracle_id": "f207ce73-e4cd-4dfc-b3b9-5704f5148959",
+  "facts_sha256": "be0689095ae8de7f8aeba3b0194487ef651e42f73864690a50a19554feb921ee",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "17a7516e7c05ee9e5b15448348f77bc95ba58e7b0200bff4e951e7ba4aafbe9f"
+  },
+  "physical_metadata_sha256": "29667407be307b2b2672901b41bcdb8882f946475608904cc4212866b02580d3"
+}

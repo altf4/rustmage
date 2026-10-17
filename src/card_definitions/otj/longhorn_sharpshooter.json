@@ -1,0 +1,12 @@
+{
+  "name": "Longhorn Sharpshooter",
+  "catalogue_id": 2547,
+  "oracle_id": "6a0a7b02-10e6-4dbf-8356-659095519480",
+  "facts_sha256": "825e7fdb170b1d67b931e768586d326d99d9fd8cfc2fd2bbe7452814be747620",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c6f84fc6963846ea8a04a2b1ee3f34cff4570c49851950703444548bd47fdcc0"
+  },
+  "physical_metadata_sha256": "3f9088c97fd5de6c3779a8f2455b641a2bc70ee7cbde52bf2c8c57a5ae034d0b"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Mockingbird, Ace Agent",
+  "catalogue_id": 2808,
+  "oracle_id": "1fd00656-83ba-4feb-b089-224007936b99",
+  "facts_sha256": "87a5aa1c2b72cb0743e2fd4f42f1f0ed17a17118365958d8a09ee86c33f1d92a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "d3bf9c054fe2212a8eec6fbd83f15174416d4da01de9d68ef797b32771d7afac"
+  },
+  "physical_metadata_sha256": "d1f83a7e0e92e45beb5704923292ddec0869a202ee1adca0cd841347a0075747"
+}

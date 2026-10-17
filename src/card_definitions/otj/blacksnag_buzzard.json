@@ -1,0 +1,12 @@
+{
+  "name": "Blacksnag Buzzard",
+  "catalogue_id": 436,
+  "oracle_id": "99da512c-e222-4e5c-aa64-a276ed9ebe87",
+  "facts_sha256": "0bb4e78f9fb5dfe07281a53d8313cfe6a9503e88be377362b8e4cd8041d78194",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2d4b607241a23ade110427ab8c60b32c3c4592c28ed2375bc7e9589afa723e6d"
+  },
+  "physical_metadata_sha256": "59a3eda630f7821a8f33434528251b9df2559e256c7894dd825a21c10a533a12"
+}

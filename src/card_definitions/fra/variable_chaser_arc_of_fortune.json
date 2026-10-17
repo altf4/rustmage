@@ -1,0 +1,12 @@
+{
+  "name": "Variable Chaser // Arc of Fortune",
+  "catalogue_id": 4850,
+  "oracle_id": "67c603cc-ad66-4a1c-8386-5901c9c01bfb",
+  "facts_sha256": "9464e84f9a1255a8c673918490129b8bb970167af7ff5bd40d08b7419e5aa7bf",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "726e310d89f03f4bb4d7e9640dcb3588b991bedd0bfed53e8bed724485324340"
+  },
+  "physical_metadata_sha256": "e90a6f13772a58d79dc9eb238dd8c32024e6d3849926019182fc9c46002b9a18"
+}

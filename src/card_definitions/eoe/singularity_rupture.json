@@ -1,0 +1,12 @@
+{
+  "name": "Singularity Rupture",
+  "catalogue_id": 3880,
+  "oracle_id": "e1976b6c-7e43-4f4a-b082-f95495a1b260",
+  "facts_sha256": "682a75f2d5cc801da939bb4cf349f1c0d48815d55959d9d1af7d39a75ee6b957",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "64a7487b3330ea978670d51d85e5531d2f7df7c8eab795db561b699d67a5dd52"
+  },
+  "physical_metadata_sha256": "1e7841d6a9b728f6adf0a858f6c91662cbdc9314b098c560667add2d26703459"
+}

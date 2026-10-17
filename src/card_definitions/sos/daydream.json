@@ -1,0 +1,12 @@
+{
+  "name": "Daydream",
+  "catalogue_id": 988,
+  "oracle_id": "094c4486-6cae-4268-850e-ff0082e5ad10",
+  "facts_sha256": "3e8322487c7d404bad45b844458a99592bbcabdcbf0c653263ced7ed7d773f5c",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0c3e9cd1423f8f6c08e0384ef289b7567c89c8b39a1e59e1c813c9c4aa20f74f"
+  },
+  "physical_metadata_sha256": "46b8fa1eccda44f8032987898712a0b933ae3c42ec21580e2622af05ee7725f5"
+}

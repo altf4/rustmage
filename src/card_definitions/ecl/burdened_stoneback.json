@@ -1,0 +1,12 @@
+{
+  "name": "Burdened Stoneback",
+  "catalogue_id": 586,
+  "oracle_id": "8a5e17a0-6f3c-49ed-b328-ed90a46ed6c5",
+  "facts_sha256": "0b32d9e846d6c1c681c91165b912576b514cdb4960877194e31db1c6cab34b0a",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7340edfe23b831960d81ec4bb096595152eff257b65cb775d381f59587fefc1d"
+  },
+  "physical_metadata_sha256": "10d9cbff3a616d3ba9c15ff97f88275055ae2991a0009766704f1b720a22bad8"
+}

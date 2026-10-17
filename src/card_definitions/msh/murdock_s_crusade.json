@@ -1,0 +1,12 @@
+{
+  "name": "Murdock's Crusade",
+  "catalogue_id": 2880,
+  "oracle_id": "36330947-5ef9-4bff-b541-bfbddd9715a3",
+  "facts_sha256": "de7e7d075035cc9ac7d4d9e762393c402f4aabd33a33ebec47b0c709474c44b9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b7b2dbb26e85115c61b9e696e933dacada4dc83591baed3cbf9111e160e5d6a9"
+  },
+  "physical_metadata_sha256": "b4c86f5109c80fa7d88beab1c0d6cd5be0e1aba992e549630b7ec8b747c61455"
+}

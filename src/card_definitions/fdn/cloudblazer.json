@@ -1,0 +1,12 @@
+{
+  "name": "Cloudblazer",
+  "catalogue_id": 779,
+  "oracle_id": "f84d1291-1f82-4b67-a26e-b79624b4ce1d",
+  "facts_sha256": "79177631181a1114c0a802607902b156eeeb10898218b5382f32a8890b4190cf",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9d0fae024561dd9e90e34dc4dc8096fb907a99f32c7dc7dc33fcef9b340b1c52"
+  },
+  "physical_metadata_sha256": "5a4ace9389cc9c2bb563085ea06ce1a45740fdd24ef02869559aba9c468d02d2"
+}

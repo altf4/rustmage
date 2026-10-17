@@ -1,0 +1,12 @@
+{
+  "name": "Molecular Modifier",
+  "catalogue_id": 2812,
+  "oracle_id": "d0e58b8e-2c41-4602-a905-c2a6086ecf70",
+  "facts_sha256": "dd8ea06861bd1159633bf235f161732b128ef7204c56262957c182b3283319d8",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8352d58d5f5be25b9260d10ab93d350e777781224a602b6c24fc57b14693278f"
+  },
+  "physical_metadata_sha256": "3649d4423b5747df2312466585529bd97e75b28793381909a72599224e54e8b4"
+}

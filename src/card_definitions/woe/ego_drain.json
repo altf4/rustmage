@@ -1,0 +1,12 @@
+{
+  "name": "Ego Drain",
+  "catalogue_id": 1272,
+  "oracle_id": "b4fc198f-3595-4880-ad12-96c18fbf9c33",
+  "facts_sha256": "55ddf57f2c553f64da3085a4dc6952b6b27885f694aa6577bce2205e2620615b",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "37260f260a4e87f9a2f5a39fb50c7058bec4310909b5514fa0ab81f2311be793"
+  },
+  "physical_metadata_sha256": "d1d26785a18769355bc27a09912eca3c7816045fce6720efe063bea375c250d3"
+}

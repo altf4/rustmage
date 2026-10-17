@@ -1,0 +1,12 @@
+{
+  "name": "Leaping Ambush",
+  "catalogue_id": 2464,
+  "oracle_id": "e920c955-66f5-4c6e-a2a8-8b282f9e456e",
+  "facts_sha256": "dd87306e7ee6c58f80f859383e39635cb21113f409b74f6e74702e0b869bd98b",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f73f01ccece9ca4c2c4e83270103c01297737d791b6b3204bd327485bec2c00b"
+  },
+  "physical_metadata_sha256": "c1202c366d4707ed90b223f570397bc05cab8c18c7a2cc5f1c1998e80f1a4fa8"
+}

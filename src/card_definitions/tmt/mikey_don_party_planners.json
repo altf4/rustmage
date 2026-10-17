@@ -1,0 +1,12 @@
+{
+  "name": "Mikey & Don, Party Planners",
+  "catalogue_id": 2755,
+  "oracle_id": "529178e8-425e-4d59-948c-ca7d0663f6ff",
+  "facts_sha256": "388b9972709fa6b689b53c59a6ae0a9ca3dd337ff84b8e998d5cbd776c49e785",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b3c8897fdf486d5329176841adaffaf974550767c66e8acd6f37f97022e8bcb0"
+  },
+  "physical_metadata_sha256": "b510bff8fa7a800f00a92089d3e31134b4cd08c61b0a016f336253cb694eb3ac"
+}

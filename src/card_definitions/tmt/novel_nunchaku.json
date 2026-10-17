@@ -1,0 +1,12 @@
+{
+  "name": "Novel Nunchaku",
+  "catalogue_id": 2971,
+  "oracle_id": "6d819742-3d02-4d60-9b10-82caa49a9d49",
+  "facts_sha256": "c2a1c6e2c360053f55013a07b383086d859c5ed1913be097f284b4191f808623",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "999d9d32c93891912dcb33b28f0217b6d04ed09465d6117f96501bb078577aff"
+  },
+  "physical_metadata_sha256": "49d558e73095e99ad5988cf4d4bf4d5a48027a9196a10dfad5cecb190b058235"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Splash Portal",
+  "catalogue_id": 4061,
+  "oracle_id": "29b537f5-4d9f-40ed-b38b-e8faa2b5af7d",
+  "facts_sha256": "503610bef955c1f28966b4497587ea283d511d0f17ac0e75f9efb8f378da8cfd",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "7ac2f608decf1ba3276ac1996857fc6a85e12e0ec38776b79eec8e4444f5e0f7"
+  },
+  "physical_metadata_sha256": "f36faa501279821cda5949dcb00917b8c8585e67c7f6961d504523a57adff237"
+}

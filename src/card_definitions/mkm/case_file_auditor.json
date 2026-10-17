@@ -1,0 +1,12 @@
+{
+  "name": "Case File Auditor",
+  "catalogue_id": 660,
+  "oracle_id": "8c612741-2b30-43b3-bd3f-7df19662d298",
+  "facts_sha256": "e3aefa3b90d2e841735557552bcc568df6457d7ad2e3e4252f43699b5558de10",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "33c8209086492f80669bc4b032573a4feae608d6381bb69dddfff318934279cb"
+  },
+  "physical_metadata_sha256": "fc8317f80543f765c5c6e2a9fc579bff62ee3a194a3d862a50ecca1ae58401ef"
+}

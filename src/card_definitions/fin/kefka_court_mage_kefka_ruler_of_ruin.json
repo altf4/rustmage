@@ -1,0 +1,12 @@
+{
+  "name": "Kefka, Court Mage // Kefka, Ruler of Ruin",
+  "catalogue_id": 2336,
+  "oracle_id": "6d3ca5cb-781d-4608-b7f1-38c020536376",
+  "facts_sha256": "f234cfd5c1380cb2831baa13bb2b50a3398003e01d1f106354dccb80ed7ee2d9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e6396e924070b8f16123f7a798a100a95803dc1b745af29e7f1670e31233fcb5"
+  },
+  "physical_metadata_sha256": "72a21943304987a99d7652a1072c46f2e4ff9f90723e5db79518a24aa63feaa1"
+}

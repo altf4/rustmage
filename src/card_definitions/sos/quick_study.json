@@ -1,0 +1,12 @@
+{
+  "name": "Quick Study",
+  "catalogue_id": 3312,
+  "oracle_id": "7bff8d4a-1c7d-48b8-b3e3-737dd6f01823",
+  "facts_sha256": "9df8e914e98c95f4e0164c1903454ec49c336a596d723c1200af59637b7a0924",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "af956526c48fe1c5890133fecb7f94bbbed09a38fe35cc9746c44dde09c5b6cc"
+  },
+  "physical_metadata_sha256": "47622635b4d6144bb60a403b532086666e91e4fd0a7d05d6d0e8145bd8a7d7d8"
+}

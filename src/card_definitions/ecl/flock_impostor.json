@@ -1,0 +1,12 @@
+{
+  "name": "Flock Impostor",
+  "catalogue_id": 1561,
+  "oracle_id": "6522070b-7002-44fd-8deb-832fe67ef9a9",
+  "facts_sha256": "2e4b365d37a5e9736458f2de4c7b4ffa457cb869c8e351b4ed91edede6516f71",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "a4fccbb046b85773eecdb19b4d5778617550708a9fabbb56f450f0315f6e7585"
+  },
+  "physical_metadata_sha256": "b86bde1768abd615b9586e875bd407d0c970b34b06eed8f01c88811dd2d036be"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Comforting Counsel",
+  "catalogue_id": 810,
+  "oracle_id": "5fd193c0-ed9f-4afb-b6cd-c1a20008fc0b",
+  "facts_sha256": "e2e53e89df9e8b08aef835e971c4362662b773adc81196f319a6c01be17a1210",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "2dd41c2594f1904c3fa23a0db4b15e13ba8dc0c78bd11ed23b9594744ff0a2ba"
+  },
+  "physical_metadata_sha256": "2ee7d2a69e139d0d0e028dbd07a86f00fed3950c4af0070fd005828dbdf64f4f"
+}

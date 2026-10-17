@@ -1,0 +1,12 @@
+{
+  "name": "Twinflame Travelers",
+  "catalogue_id": 4720,
+  "oracle_id": "341cf69a-246c-4eb5-910c-18c13a4c3dce",
+  "facts_sha256": "8322f645bb6a93d5efa1835fbad3541d7bc1bad853ceec6e313e8fb1a68a1069",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4f635c0beee70e21adae8b336abdfeae9a939adef4797c37e60d383f6d1db8ef"
+  },
+  "physical_metadata_sha256": "108563a1596b5c2aa5bbecebc5eded7ff2ad571e24ec95cd8a883804d9354363"
+}

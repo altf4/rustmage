@@ -1,0 +1,12 @@
+{
+  "name": "The Wandering Minstrel",
+  "catalogue_id": 4515,
+  "oracle_id": "e6e6e3d2-f2fb-46a1-8798-13a2f2efe8cc",
+  "facts_sha256": "056c89a61bae4f57b524f5b451591375f2d28ccf8b123e9bc93c70367405b309",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "87e754ace0cc18a4063339167a89dd17a4258856962e273f6e1208bc46dbebc2"
+  },
+  "physical_metadata_sha256": "4ad8c4b7615e99d8c9e267b47c55adc0378e9929367e0c49b64cd8ec03cd99a0"
+}

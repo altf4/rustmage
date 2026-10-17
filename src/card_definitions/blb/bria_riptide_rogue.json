@@ -1,0 +1,12 @@
+{
+  "name": "Bria, Riptide Rogue",
+  "catalogue_id": 544,
+  "oracle_id": "d627996b-cbcd-4162-bd13-9ab286de64d1",
+  "facts_sha256": "88eaf81a92d77a683eff606c219a324f6e7afb6bb47d11ef69f5c39b09d3324e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "9c9ea0f185d9cc7f1b780b97b5b86d68c6506fcc429bc3ba50d00940e1f8965a"
+  },
+  "physical_metadata_sha256": "9a017a8f96045fc72e17113c2f5814c0b00818e03e96355ac8bc306be8759556"
+}

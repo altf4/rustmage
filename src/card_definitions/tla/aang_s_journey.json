@@ -1,0 +1,12 @@
+{
+  "name": "Aang's Journey",
+  "catalogue_id": 21,
+  "oracle_id": "ddf461b9-a205-4dc7-a9c3-c047b1ff709f",
+  "facts_sha256": "0d5dab99b64659a66c9fd632b577f1f05779ab05bae7df703205702a72262186",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "98ba1cad9ffa474581895d0a881baaaed119da2bb9cc6c955aa55a13b4455b23"
+  },
+  "physical_metadata_sha256": "13f1cc8516233093cbec78487b10e03f5ac7120096acbf2cbecf01e0056ec9cb"
+}

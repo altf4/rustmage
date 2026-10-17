@@ -1,0 +1,12 @@
+{
+  "name": "Thranduil, Sindarin Liege",
+  "catalogue_id": 4559,
+  "oracle_id": "f6771d32-395e-4832-b33d-cbc12dff1516",
+  "facts_sha256": "df66f6fe7660a979db91b0441b06c11be274a1dce446340971b81774222959b0",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fd065d34a3f16d61b7f9a746c0164314e81b0c8942d1838bd021ba171113b8c3"
+  },
+  "physical_metadata_sha256": "dd7a4640d03b63025f08c38b5d41c5882c77bd5c2bcfe2b9167c1f76d216b4cf"
+}

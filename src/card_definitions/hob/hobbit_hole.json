@@ -1,0 +1,12 @@
+{
+  "name": "Hobbit Hole",
+  "catalogue_id": 2053,
+  "oracle_id": "17492186-9814-4c41-8111-1f000a96c212",
+  "facts_sha256": "55a83e43b31a6ecfdb5165032246e91bc160083d8d94c67385d10766619d5c81",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "400574c3836282e62c28dfb4fa11a950d34f093123c716358902179ca5833abb"
+  },
+  "physical_metadata_sha256": "b7021339d3f784ba0877deef1ced9a368e832037f43ed38e6e07772717121e08"
+}

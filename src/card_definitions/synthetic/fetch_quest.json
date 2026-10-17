@@ -1,0 +1,12 @@
+{
+  "name": "Fetch Quest",
+  "catalogue_id": 5202,
+  "oracle_id": "68f36dfa-bbd2-4860-b09b-37e35136be72",
+  "facts_sha256": "a629f31c158441429a7032d7f337cd39b65f3299a0ed1c89a1da44fa1fdd80d2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "264dfff5194892abaa13e6e5583ea1c6ced12c1db38b78bdb363b49476bfea3c"
+  },
+  "physical_metadata_sha256": "93f98564d2edbb2890c5806b2ebaae9a3966e71d6c792cff52aa8f845456fb2e"
+}

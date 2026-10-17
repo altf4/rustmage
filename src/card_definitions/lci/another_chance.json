@@ -1,0 +1,12 @@
+{
+  "name": "Another Chance",
+  "catalogue_id": 172,
+  "oracle_id": "df9cdc11-cb92-46ce-a83d-eb26e3cd004a",
+  "facts_sha256": "670ea48ec7b7260662e53fec2f9f1e5f3b8c62d9fe8d621c42aa2648f6dd9144",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c375c05a78a3f8c4be99b0590e854e50f6f67df53ea073876e96ac7d89babe40"
+  },
+  "physical_metadata_sha256": "cef4b130d53b637b18f72197cf7650fa35eb056e3bf95f1e390c7468f6eb3e83"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Saheeli, the Sun's Brilliance",
+  "catalogue_id": 3656,
+  "oracle_id": "5aa76c5d-8046-42ce-b61d-cc9b4806c11a",
+  "facts_sha256": "010cfa8ffdf0e80347746a69791674a499d20732d5f95fa9e1c65c1f0fd281e3",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "44f08a10816fa630f644ce3adf9f36a8713d90f16298cae32bc7e7148e89fd8e"
+  },
+  "physical_metadata_sha256": "cc1c89906ec637385d9ed6a86b4896e5ae780947bbaa5fc273fd0ee50c72b2fb"
+}

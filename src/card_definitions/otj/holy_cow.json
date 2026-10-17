@@ -1,0 +1,12 @@
+{
+  "name": "Holy Cow",
+  "catalogue_id": 2059,
+  "oracle_id": "748003fd-84c5-4c99-b146-d7d382eef64d",
+  "facts_sha256": "fc1a7778521b6ecbdb517ca86573330920d36247d48df30ee819a76a61d85a55",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0a2486043051a64d51b38bb892f7438923e52b4d840770b819e050b0f7e107c1"
+  },
+  "physical_metadata_sha256": "82ee743921d5cb7589f0bc3d686e0292ff1a9dafa720970c4bbe6f450061bd9b"
+}

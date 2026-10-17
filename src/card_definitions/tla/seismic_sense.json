@@ -1,0 +1,12 @@
+{
+  "name": "Seismic Sense",
+  "catalogue_id": 3773,
+  "oracle_id": "9d586c74-b1dd-4fcb-a24a-c703d250fa63",
+  "facts_sha256": "209f6d140486523872fc9858a0faa8402702dd3e6a6c20fe43dfb7217a02b3f7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "1751294cfe715b0786e6a9bff524d4c2937e05c6ff4a9c48d6f15dfb7ee39bc2"
+  },
+  "physical_metadata_sha256": "6cf7fb5b026cda18b7ba58f83cd346d6d3b3ba1a76d7401931b63ad8142d1ae9"
+}

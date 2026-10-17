@@ -1,0 +1,12 @@
+{
+  "name": "Scrap Compactor",
+  "catalogue_id": 3735,
+  "oracle_id": "7f113875-a411-463b-8b4d-91d1dee95c2a",
+  "facts_sha256": "93db9c73a35aa50bf10a8f48e1deaf1e0eedf99316ad5a7252105ca6c2bb58e2",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "b822d567334191501f9ae7b48c45512ceaad46507f51407a96dccf80ac416e36"
+  },
+  "physical_metadata_sha256": "f95ba81879cdc842aa5879db9393b790178a015065422753b95d654465f28e86"
+}

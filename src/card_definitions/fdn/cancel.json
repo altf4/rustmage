@@ -1,0 +1,12 @@
+{
+  "name": "Cancel",
+  "catalogue_id": 630,
+  "oracle_id": "7d00fb28-ea6c-49a9-b4af-ffb38860a9a7",
+  "facts_sha256": "e4aa6b999b13b95f46f4822b63d5f7eac39b7ceced0a5343bfce3b2b6d0f4dd1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "64635d89ee8db4f294191ad4d3424735dedb3892354dfa3194ee6ea427999bcf"
+  },
+  "physical_metadata_sha256": "0d1febe24651bcc2dab4cf14b459e6a4779ad9a5ccefeb2e92dd8982aa81d651"
+}

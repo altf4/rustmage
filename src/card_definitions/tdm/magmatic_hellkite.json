@@ -1,0 +1,12 @@
+{
+  "name": "Magmatic Hellkite",
+  "catalogue_id": 2624,
+  "oracle_id": "2a3b29c3-f69d-4671-8907-600d21528153",
+  "facts_sha256": "554d7b9fb63e3cc2eecf2293f7beec82ae1e92866a84cc4854a5194158e179a2",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "0a0431255f29e88764177e3cd8ba7ab5c8223a8b2fac1c3efa93dcabc23b863f"
+  },
+  "physical_metadata_sha256": "f98d8dbab5a0ba38d52d5c1fe430e64a04ace1fb48cecafcd67e001ea96fcb03"
+}

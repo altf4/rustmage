@@ -1,0 +1,12 @@
+{
+  "name": "Tomik, Izzet Sparkmage",
+  "catalogue_id": 4627,
+  "oracle_id": "16604fee-cd8d-41e4-8269-3c7ff756613d",
+  "facts_sha256": "be71a02868f137f13209024504c49ef91b681541951e23a665f1e7bdc2e72ea9",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "5a88e7076e3c347497c6837d0fd4b446af1c98c9ca293606e13f03a204a1d783"
+  },
+  "physical_metadata_sha256": "cccd2cb64267ee7d9b4b9b1830706786ec9541ffdc2c606ca0c84733994d6069"
+}

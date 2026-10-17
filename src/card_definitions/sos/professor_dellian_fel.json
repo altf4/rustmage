@@ -1,0 +1,12 @@
+{
+  "name": "Professor Dellian Fel",
+  "catalogue_id": 3249,
+  "oracle_id": "8c5fe985-69e1-4a03-99fc-a6fd2314a9a7",
+  "facts_sha256": "55ed8237f71af92dd20095ee1d0d8b6adf15a4154ed45ca128fad53da921afa3",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f9ee15dc2faa57d551d6cfd20eb15d8136ff94fcfe0f625dfa469ad9ceaf42a8"
+  },
+  "physical_metadata_sha256": "9cdda5c82d322c971baf954710525d12bffde3ae824a7d728915191d2c489e34"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Los Diablos Missile Base",
+  "catalogue_id": 2561,
+  "oracle_id": "4b17048f-8c7f-4e29-8f56-16db4c2106e6",
+  "facts_sha256": "0d12f3b19696e721d3b7490b14d8052b3c542d8b2661679fdd0aed94e7639f5c",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "fd384402e6a100de7150f571cf36df9f782c76a0f6e69def464b01bfee00c280"
+  },
+  "physical_metadata_sha256": "6ca2259586018648d59ebdffed58cd871ae0d95669fcc04397155307e23c3e9b"
+}

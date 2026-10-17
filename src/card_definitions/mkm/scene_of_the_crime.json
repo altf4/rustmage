@@ -1,0 +1,12 @@
+{
+  "name": "Scene of the Crime",
+  "catalogue_id": 3720,
+  "oracle_id": "ba11a517-1dbd-4797-9f5e-46ce0f6c77c0",
+  "facts_sha256": "419fb0c7a9fc6d494632b4cdf0af9e0c42c7ecc9455c8f63d65d44f38fc62420",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "11f9c1a1dcd703be1a72467a90a3f1863d0372bc6b7b5c5f93a8e6f7a865b9d5"
+  },
+  "physical_metadata_sha256": "1b7c44f6a90deff443cce4f618c9590efcc8b1371eb43f974017c2fc808de773"
+}

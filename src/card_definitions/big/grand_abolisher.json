@@ -1,0 +1,12 @@
+{
+  "name": "Grand Abolisher",
+  "catalogue_id": 1843,
+  "oracle_id": "c749f23c-40c0-4159-b84c-a70cbb062c14",
+  "facts_sha256": "4131277c39044b188e5e3d4e3f762fbc5df1b7c356957d531024006549476ba7",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "ed01802831d8e4a279f829723d570a2d75c034a70dc50692118aa8e3e34e83fc"
+  },
+  "physical_metadata_sha256": "a3a3bc0cc0dc103fd9198895c997e601b7857fab7dd78bd7d500d283ebd93f5d"
+}

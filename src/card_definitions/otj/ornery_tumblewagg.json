@@ -1,0 +1,12 @@
+{
+  "name": "Ornery Tumblewagg",
+  "catalogue_id": 3041,
+  "oracle_id": "f8d7bcbd-9a1d-4fc6-abdd-88a7e01b9411",
+  "facts_sha256": "e62fe473b5d4418ff9030ffbfa0d1f887c39e274dd89857fb5d22241e75900c4",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3c5cf4417325f660cedec59c9489d96b625da528b17c063f9b89672af398f229"
+  },
+  "physical_metadata_sha256": "f1839752d862b307f4fd5c23729fc95ff4b96539dd6f598e7689e90a875ac772"
+}

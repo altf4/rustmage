@@ -1,0 +1,12 @@
+{
+  "name": "Wilt in the Heat",
+  "catalogue_id": 5073,
+  "oracle_id": "3bed0b60-5944-44bb-9ddd-c82f323e6d20",
+  "facts_sha256": "a81a5ef260438fff7810996570192ee4198cee31bf8c0cb933437bbd5b8e8661",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "99c6ca5a894c8027aa34f038b8c73ab24ec4cededca3723c334aec52eafc7e40"
+  },
+  "physical_metadata_sha256": "8681e4c52b6fe106959c9ec7e450a59c919967d0a49eee0bad9d518dff2749e8"
+}

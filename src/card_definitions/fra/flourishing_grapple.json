@@ -1,0 +1,12 @@
+{
+  "name": "Flourishing Grapple",
+  "catalogue_id": 1568,
+  "oracle_id": "6b4f1569-2025-46a8-89ba-79859208b04e",
+  "facts_sha256": "b1ddd8d593eba78df201ab0a46d53fcafa90a5f75429eb6fdfc02f1dda333729",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4f3963a0d1e04ac01d18cfeb1419787ba1c01d7cf3f70d5b9af6a47664d26dda"
+  },
+  "physical_metadata_sha256": "c87824c4a770fc2d66d00328eee087208d96a866b4ec25f65ef948bed69b6887"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Plunder the Trollshaws",
+  "catalogue_id": 3188,
+  "oracle_id": "526f520e-b4bb-4215-9c6b-afc298744f06",
+  "facts_sha256": "e9ffa05b143a3a4f6406e86d027959783b45335629f1821986bef86bce0f0b1e",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "311c8ad0c856061669c9d5399fd51d1a1b80c6d968fee6dd3738289bf8bed119"
+  },
+  "physical_metadata_sha256": "72c54ee5477600bd1f34d5addda6dc4e68af3dbf155a85448f200daf1f7464d2"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Sword of Wealth and Power",
+  "catalogue_id": 4296,
+  "oracle_id": "b3a80545-9a8a-46b2-9d8c-b0d66fb68a5d",
+  "facts_sha256": "b2fb2f4ebc290d4c012738ffdf53f5437cab4fd2a086e33c035f9b55b203d860",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "789acfbc4b619bdf9234d5c6cec3516e75202c8486ab4a18afcde2c28ebec99d"
+  },
+  "physical_metadata_sha256": "713c8d2b1fdca789fbbfd02b66fa194046b51e8d4f648a995d258b5dc7263755"
+}

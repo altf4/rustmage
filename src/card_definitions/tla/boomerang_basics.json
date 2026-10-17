@@ -1,0 +1,12 @@
+{
+  "name": "Boomerang Basics",
+  "catalogue_id": 502,
+  "oracle_id": "acd881eb-f3b4-4174-9fc2-e3c7c213886b",
+  "facts_sha256": "738bf25467f5efdbeb6c91df5a9b248110007b89f12950623d6530fb6aafbe30",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "e8615393ea32483176356685aa3218b44c0c2222333f22a11fcaf128ac665520"
+  },
+  "physical_metadata_sha256": "3b95b78a671807dd23c5b24be36c39aa4877883f07f9bf9dd861286421d9b1ea"
+}

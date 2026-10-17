@@ -1,0 +1,12 @@
+{
+  "name": "Prairie Dog",
+  "catalogue_id": 3216,
+  "oracle_id": "70987216-f84d-43b9-8d75-bb21ff37747b",
+  "facts_sha256": "b854380e087db481ba4de39ef0d6e2b0474e09a0ee0085a89dbbfa728363022d",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8067141d7e752bc95d6f283f432f6b44f3d5e5d46841ca008557941676376041"
+  },
+  "physical_metadata_sha256": "ead3744bdaa7d36be59f9d0e62a94f1374b8c153c777362e3e7385d4610d4199"
+}

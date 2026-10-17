@@ -1,0 +1,12 @@
+{
+  "name": "Scoured Barrens",
+  "catalogue_id": 3731,
+  "oracle_id": "d37f858e-03c8-4594-9b92-cd03699a1591",
+  "facts_sha256": "4053aab61d910da51664239329dbf26b8086df47e5ea058ef58a71ecea1b14bd",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "f966d1420e0489cac9e9f29920060fe973d815e2ee4dd9bdd9c653d7c247d08e"
+  },
+  "physical_metadata_sha256": "dac692e664a65e432972b837f5b08383ab5aebcf5c78c3dc91ffac53c483eed3"
+}
