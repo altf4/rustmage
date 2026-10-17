@@ -547,3 +547,58 @@ fn paid_combined_mode_partial_group_invalidity_stale_target_and_counter_never_re
         }
     }
 }
+
+#[test]
+fn paid_creature_or_planeswalker_and_black_green_union_preserve_loyalty_move_semantics() {
+    for p in [Player::P0, Player::P1] {
+        for (name, damage) in [
+            ("Scorching Dragonfire", 3),
+            ("Obliterating Bolt", 4),
+            ("Essence Burn", 5),
+        ] {
+            let mut g = setup(p);
+            g.state.players[p.index()].mana = [30; 6];
+            let walker = named(
+                &mut g,
+                p.other(),
+                "Professor Dellian Fel",
+                Zone::Battlefield,
+            );
+            // Direct fixture insertion does not execute the actual entry procedure.
+            g.state.objects[walker as usize].counters.loyalty = 5;
+            let spell = named(&mut g, p, name, Zone::Hand);
+            paid_cast(&mut g, spell, None, &[Target::Card(walker)]);
+            settle(&mut g);
+            if damage < 5 {
+                assert_eq!(g.object_view(walker).zone, Zone::Battlefield);
+                assert_eq!(g.object_view(walker).counters.loyalty, 5 - damage);
+                assert_eq!(g.observe(p).death_exile_replacements.len(), 1);
+                g.move_object(walker, Zone::Graveyard);
+            }
+            assert_eq!(g.object_view(walker).zone, Zone::Exile);
+            assert_eq!(g.state.creatures_died_this_turn, 0);
+            assert!(g.observe(p).death_exile_replacements.is_empty());
+        }
+    }
+}
+#[test]
+fn primitive_zero_damage_is_not_a_condition_for_unconditional_target_replacement() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let target = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        let item = rule_item(&mut g, p, target);
+        let source = g.damage_source(item.card);
+        let dealt = g.apply_damage_batch(&[DamageEvent {
+            source,
+            target: Target::Card(target),
+            amount: 0,
+            combat: false,
+        }]);
+        assert!(dealt.is_empty());
+        assert_eq!(g.object_view(target).damage, 0);
+        assert!(!g.object_view(target).damaged_this_turn);
+        g.register_exile_if_dies(&item);
+        g.move_object(target, Zone::Graveyard);
+        assert_eq!(g.object_view(target).zone, Zone::Exile);
+    }
+}
