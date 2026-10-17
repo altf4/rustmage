@@ -373,6 +373,7 @@ define_actions! {
     AnnounceExile {
         card: CardId,
     },
+    AnnounceFlashSurcharge { card: CardId },
     AnnounceWarp { card: CardId },
     AnnounceAdventure { card: CardId },
     AnnounceOmen { card: CardId },
@@ -650,6 +651,8 @@ pub struct CastInfo {
     pub payment: Mana,
     pub origin: Zone,
     pub method: CastMethod,
+    /// Optional additional mana paid to obtain this spell's flash timing.
+    pub flash_surcharge: bool,
     /// Explicit optional additional cost, declared before targets; None until chosen.
     pub offspring: Option<bool>,
     /// One fixed optional surcharge, independent of casting method and offspring.
@@ -1105,6 +1108,8 @@ enum Pending {
 /// Card definitions are enum/static data, never cloned object graphs or trait objects.
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
+    #[allow(clippy::box_collection)]
+    temporary_abilities: Option<Box<Vec<TemporaryAbilityView>>>,
     roles: Option<Box<roles::RoleState>>,
     replacements: Option<Box<replacements::ReplacementState>>,
     // Sparse registry: keep an eight-byte pointer in the common empty state
@@ -1403,6 +1408,7 @@ pub struct LegalActionSpace {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    pub temporary_abilities: Vec<TemporaryAbilityView>,
     pub replacement_choice: Option<ReplacementChoiceView>,
     pub created_token_choice: Option<CreatedTokenChoiceView>,
     /// Complete exact numeric cost-payment space, visible only to its actor.
@@ -1611,6 +1617,7 @@ impl Game {
                 attachment_sources: Vec::new(),
                 exile_links: Vec::new(),
                 exile_permissions: Vec::new(),
+                temporary_abilities: None,
                 roles: None,
                 adventures: None,
                 plot: None,
@@ -2239,6 +2246,12 @@ impl Game {
                             return true;
                         }
                         continue;
+                    }
+                    if obj.card.flash_surcharge().is_some()
+                        && self.flash_surcharge_cast_fundable(actor, card, flashback)
+                        && emit(Action::AnnounceFlashSurcharge { card })
+                    {
+                        return true;
                     }
                     if !sorcery
                         && !obj.card.is_instant()
@@ -2948,6 +2961,17 @@ impl Game {
             }
             Action::AnnounceCast { card } | Action::AnnounceExile { card } => {
                 let item = self.cast_item(actor, card, [0; 6]);
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
+            Action::AnnounceFlashSurcharge { card } => {
+                let flashback = self.state.objects[card as usize].zone == Zone::Graveyard;
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                let cast = item.cast.as_mut().unwrap();
+                cast.flash_surcharge = true;
+                if flashback {
+                    cast.method = CastMethod::Flashback;
+                    self.state.objects[card as usize].flashback = true;
+                }
                 self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceAdventure { card } | Action::AnnounceOmen { card } => {
@@ -4013,6 +4037,8 @@ impl Game {
     }
 
     fn finish_cleanup(&mut self) {
+        // Until-end-of-turn abilities expire before any cleanup-induced SBA death.
+        self.state.temporary_abilities = None;
         for player in &mut self.state.players {
             player.extra_land_plays_remaining = 0;
         }
@@ -4329,6 +4355,10 @@ impl Game {
                 None
             },
             x_choice: if owns_choice { self.x_choice() } else { None },
+            temporary_abilities: s
+                .temporary_abilities
+                .as_ref()
+                .map_or_else(Vec::new, |grants| grants.as_ref().clone()),
             schema: OBSERVATION_SCHEMA,
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
             creatures_died_this_turn: s.creatures_died_this_turn,
@@ -4737,6 +4767,7 @@ impl Game {
     pub fn state_bytes(&self) -> usize {
         let s = &self.state;
         std::mem::size_of::<State>()
+            + self.temporary_ability_bytes()
             + self.mobilize_bytes()
             + std::mem::size_of::<Vec<Object>>()
             + std::mem::size_of::<Vec<ObjectRef>>()
@@ -5383,16 +5414,23 @@ mod adventure_event_tests;
 #[path = "engine_role_tests.rs"]
 mod role_tests;
 
+#[path = "engine_temporary_abilities.rs"]
+mod temporary_abilities;
+pub use temporary_abilities::TemporaryAbilityView;
+
 #[cfg(test)]
 #[path = "engine_enchanted_draw_tests.rs"]
 mod enchanted_draw_tests;
-
 #[cfg(test)]
 #[path = "engine_role_fight_tests.rs"]
 mod role_fight_tests;
 #[cfg(test)]
 #[path = "engine_role_followup_tests.rs"]
 mod role_followup_tests;
+#[cfg(test)]
+#[path = "engine_temporary_death_grants_tests.rs"]
+mod temporary_death_grants_tests;
+
 #[cfg(test)]
 #[path = "engine_target_exclusion_tests.rs"]
 mod target_exclusion_tests;

@@ -25,6 +25,14 @@ impl Game {
             let (colored, generic) = a.item.source_card.cost();
             ManaCost { colored, generic }
         });
+        // A selected hybrid equivalent already includes the declared surcharge.
+        if a.cost.is_none() {
+            base = Self::with_flash_surcharge(
+                base,
+                a.item.source_card,
+                a.item.cast.is_some_and(|c| c.flash_surcharge),
+            );
+        }
         if a.forage
             .as_ref()
             .is_some_and(|f| f.route == Some(ForageRoute::Black))
@@ -52,6 +60,59 @@ impl Game {
             a.item.source_card,
             a.item.cast.is_some_and(|c| c.kicker == Some(true)),
         )
+    }
+    pub(super) fn with_flash_surcharge(mut base: ManaCost, card: Card, pay: bool) -> ManaCost {
+        if pay {
+            let extra = card.flash_surcharge().expect("flash surcharge recipe");
+            base.generic = base
+                .generic
+                .checked_add(extra.generic)
+                .capacity("flash surcharge mana cost exhausted");
+            for (amount, extra) in base.colored.iter_mut().zip(extra.colored) {
+                *amount = amount
+                    .checked_add(extra)
+                    .capacity("flash surcharge mana cost exhausted");
+            }
+        }
+        base
+    }
+    pub(super) fn flash_surcharge_cast_fundable(
+        &self,
+        actor: Player,
+        card: CardId,
+        flashback: bool,
+    ) -> bool {
+        let definition = self.state.objects[card as usize].card;
+        let available = match definition.effect() {
+            Effect::Modal(modes) => modes.iter().any(|mode| {
+                self.cast_targets_available(mode.targets, actor, self.object_ref(card))
+            }),
+            Effect::Spell(plan, _) | Effect::Aura(plan) => {
+                self.cast_targets_available(plan, actor, self.object_ref(card))
+            }
+            _ => true,
+        };
+        if !available {
+            return false;
+        }
+        let costs = if flashback {
+            std::iter::once(definition.flashback_cost().unwrap()).chain([].iter().copied())
+        } else {
+            definition.cost_options()
+        };
+        costs.into_iter().any(|cost| {
+            let cost = Self::with_flash_surcharge(cost, definition, true);
+            if definition.target_cost_reduction().is_some() {
+                self.initial_target_cost_fundable(actor, card, cost)
+            } else if definition.collect_evidence_cost().is_some() {
+                self.evidence_cast_fundable(actor, card, cost, false)
+                    || self.evidence_cast_fundable(actor, card, cost, true)
+            } else if definition.has_bargain() {
+                self.initial_bargain_fundable(actor, card, cost)
+            } else {
+                self.spell_can_fund(actor, card, cost)
+            }
+        })
     }
     pub(super) fn with_kicker_cost(mut base: ManaCost, card: Card, pay: bool) -> ManaCost {
         if pay {

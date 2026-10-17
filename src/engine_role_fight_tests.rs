@@ -512,3 +512,57 @@ fn captured_fighter_can_be_a_later_opponent_target_after_control_changes_and_fig
         assert_eq!(g.state.players[p.other().index()].life, before + 6);
     }
 }
+
+#[test]
+fn composed_role_replacement_observations_bind_original_subject_and_leave_extra_frogs_unbound() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let own = named(&mut g, p, "Hill Giant", Zone::Battlefield);
+        named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        named(&mut g, p, "Doubling Season", Zone::Battlefield);
+        let quina = named(&mut g, p, "Quina, Qu Gourmet", Zone::Battlefield);
+        let recipient = g.object_ref(own);
+        paid(&mut g, p, own, false);
+        let mut saw_role = false;
+        let mut saw_extra = false;
+        for _ in 0..240 {
+            if g.state
+                .announcing
+                .as_ref()
+                .is_some_and(|a| a.item.reflexive_subject.is_some())
+            {
+                break;
+            }
+            for viewer in [p, p.other()] {
+                if let Some(choice) = g.observe(viewer).replacement_choice {
+                    assert_eq!(choice.role_attachments.len(), choice.tokens.len());
+                    for (group, binding) in choice.tokens.iter().zip(&choice.role_attachments) {
+                        if group.token.role().is_some() {
+                            assert_eq!(*binding, Some(recipient));
+                            saw_role = true;
+                        } else {
+                            assert_eq!(*binding, None);
+                            saw_extra = true;
+                        }
+                    }
+                }
+            }
+            // Apply the extra-token replacement first so its unbound Frog group
+            // is visible while the doubling replacement still awaits a choice.
+            let a = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| {
+                    matches!(a,
+                Action::ChooseReplacement{source,..} if source.card==quina)
+                })
+                .unwrap_or_else(|| next(&g));
+            act(&mut g, a);
+        }
+        assert!(saw_role && saw_extra);
+        let packet = to_reflexive(&mut g);
+        assert_eq!(packet.reflexive_subject.as_ref().unwrap().object, recipient);
+        announce_fight(&mut g, None);
+        settle(&mut g);
+    }
+}

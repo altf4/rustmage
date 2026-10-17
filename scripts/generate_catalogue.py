@@ -414,6 +414,8 @@ def role_reminder_text(text):
         prefix = 'If you control another Role on it, put that one into the graveyard. '
         # These two printed presentations describe the same predefined Role.
         bodies = [body, prefix + body]
+        if kind == 'Young Hero':
+            bodies += [body + ' If you put another Role on the creature later, put this one into the graveyard.']
         if kind == 'Wicked':
             bodies += [v.replace('When this Aura is put into a graveyard from the battlefield', 'When this token is put into a graveyard') for v in bodies]
             bodies += [v.replace('this Aura', 'this enchantment') for v in bodies]
@@ -451,6 +453,40 @@ def role_fight_body(card):
     token = re.search(r'token: (__TOKEN_[a-f0-9]+__)', result[1][0])[1]
     return ('Spell', 0, [('Reflexive', ['ReflexiveFight'], ('CreatureOpponent', 0, 1))],
             ('CreatureYou', [f'CreateRoleReflexive {{ token: {token}, ability: 0 }}']))
+
+
+def role_factory(kind):
+    if kind not in ROLE_BODIES: raise ValueError('unknown predefined Role')
+    factory = {'role':kind, 'name':kind, 'subtypes':'Aura Role', 'colors':0, 'keywords':0}
+    key = hashlib.sha256(json.dumps(factory,sort_keys=True).encode()).hexdigest()[:24]
+    if key in TOKEN_DEFS and TOKEN_DEFS[key] != factory:raise ValueError('token factory collision')
+    TOKEN_DEFS[key] = factory
+    return '__TOKEN_' + key + '__'
+
+
+def role_return_program(text):
+    match = re.fullmatch(r'return target creature card with mana value ([0-9]+) or less from your graveyard to the battlefield\. Create a (Cursed|Monster|Royal|Sorcerer|Wicked|Young Hero) Role token attached to it\.', text)
+    if not match or int(match[1]) > 4294967295: return None
+    rule = f'TargetRule::Object {{ zone: TargetZone::Graveyard, kinds: 1, relation: 0, other: false, nonland: false, tapped: false, min_mana: 0, max_mana: {int(match[1])} }}'
+    key = 'ReturnRole' + hashlib.sha256(rule.encode()).hexdigest()
+    TARGET_RULES[key] = rule
+    return key, [f'ReturnToBattlefieldWithRole {{ token: {role_factory(match[2])} }}']
+
+
+def mass_role_program(text):
+    """One creation event whose original groups each bind one exact creature."""
+    before = []
+    if ' Then for each ' in text:
+        prefix, text = text.split(' Then ', 1)
+        before = token_program(prefix) or predefined_program(prefix)
+        if not before: return None
+    match = re.fullmatch(r'for each (.+) (you control|your opponents control), create a (Cursed|Monster|Royal|Sorcerer|Wicked|Young Hero) Role token attached to that (.+)\.', text)
+    if not match or match[1] != match[4]: return None
+    noun, relation, kind, _ = match.groups()
+    if noun != 'creature' and noun not in CREATURE_TYPE_NAMES: return None
+    filt = creature_filter('creatures ' + relation)
+    if noun != 'creature': filt = filt.replace('subtype: None', 'subtype: Some(' + json.dumps(noun) + ')')
+    return [*before, f'CreateRolesMatching {{ token: {role_factory(kind)}, filter: {filt} }}']
 
 
 def role_consumer_reminders_valid(card):
@@ -541,11 +577,41 @@ def role_program(text):
         if fixed_rule is None:return None
         rule = fixed_rule
     elif fixed_rule is not None and rule != fixed_rule:return None
-    factory = {'role':kind, 'name':kind, 'subtypes':'Aura Role', 'colors':0, 'keywords':0}
-    key = hashlib.sha256(json.dumps(factory,sort_keys=True).encode()).hexdigest()[:24]
-    if key in TOKEN_DEFS and TOKEN_DEFS[key] != factory:raise ValueError('token factory collision')
-    TOKEN_DEFS[key] = factory
-    return rule, [*before, f'CreateRole {{ token: __TOKEN_{key}__, subject: Subject::Targets }}']
+    return rule, [*before, f'CreateRole {{ token: {role_factory(kind)}, subject: Subject::Targets }}']
+
+
+def quoted_creature_token_reminders_valid(card):
+    """Every caller of the quoted creature-token grammar authenticates raw text."""
+    raw = card.get('oracle_text', '')
+    if not isinstance(raw, str) or not any(c in raw for c in '()'):
+        return True
+    surface = raw
+    seen = False
+    while True:
+        normalized = ' '.join(surface.casefold().split())
+        seen |= re.search(r'"this creature can\'t (?:block|be blocked)\."', normalized) is not None
+        stripped = re.sub(r'\([^()]*\)', '', surface)
+        if stripped == surface:
+            break
+        surface = stripped
+    if not seen:
+        return True
+    if card.get('layout') == 'saga':
+        return saga_body(card) is not None
+    authenticated = role_reminder_text(raw)
+    authenticated = re.sub(r'^Bargain \(You may sacrifice an artifact, enchantment, or token as you cast this spell\.\)$', 'Bargain', authenticated, flags=re.MULTILINE)
+    for line in authenticated.splitlines():
+        if not any(c in line for c in '()'):
+            continue
+        # This neutral proxy checks only a complete intrinsic line's syntax;
+        # it never changes the source card's type, costs, abilities or execution.
+        proxy = dict(layout='normal', mana_cost='{0}', type_line='Creature',
+                     power='0', toughness='1', oracle_text=line)
+        bare = re.sub(r'\([^()]*\)', '', line).strip()
+        if (creature_template(dict(proxy, oracle_text=bare)) is None
+                or not intrinsic_reminders_valid(proxy)):
+            return False
+    return True
 
 
 
@@ -599,8 +665,8 @@ def token_program(text):
     if suffix != '.':
         if not suffix.startswith(' with '): return None
         ability = suffix[len(' with '):]
-        if ability in ('"This token can\'t block."', '"This token can\'t be blocked."'):
-            keywords = 2048 if ability == '"This token can\'t block."' else 16384
+        if ability in ('"This token can\'t block."', '"This token can\'t be blocked."', '"This creature can\'t block."', '"This creature can\'t be blocked."'):
+            keywords = 2048 if "can't block." in ability else 16384
         elif ability=='"Whenever a land you control enters, this token gets +1/+0 until end of turn."':
             landfall_growth=[1,0]
         else:
@@ -853,6 +919,45 @@ def source_rule_line(line, names):
 def source_grant_mask(words):
     restrictions={"can't be blocked":16384,"can't be blocked by more than one creature":65536}
     return restrictions.get(words,keyword_list(words.casefold()))
+
+
+def enchanted_modifier_route(text):
+    """Detect attempted static predicates even behind nested/infix reminders."""
+    while isinstance(text, str):
+        if re.search(r'\benchanted\s+creatures\b', text, re.IGNORECASE): return True
+        stripped = re.sub(r'\([^()]*\)', '', text)
+        if stripped == text: return False
+        text = stripped
+    return False
+
+
+def extract_flash_surcharge(card):
+    """Exact optional additional cost; the remaining whole body must compile."""
+    if card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'), str):
+        return card, None
+    match = re.match(r'^You may cast this spell as though it had flash if you pay ((?:\{[0-9WUBRGC]+\})+) more to cast it\.\n', card['oracle_text'])
+    if match is None or fixed_cost(card.get('mana_cost', '')) is None:
+        return card, None
+    extra = mana_cost_spec(match[1])
+    if extra is None or spell_cost_options(match[1]) is None:
+        return card, None
+    return dict(card, oracle_text=card['oracle_text'][match.end():]), extra
+
+
+def extract_enchanted_modifiers(card):
+    """Exact attached-Aura predicates; residual whole body still must compile."""
+    if card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'), str):
+        return card, []
+    residual, modifiers = [], []
+    for line in card['oracle_text'].splitlines():
+        match = re.fullmatch(r'Enchanted (creatures you control|creatures your opponents control|creatures) get ([+-][0-9]+)/([+-][0-9]+)\.', line)
+        if match and max(abs(int(match[2])), abs(int(match[3]))) <= 32767:
+            filt = creature_filter(match[1])
+            if filt is None: return card, []
+            modifiers.append(f'EnchantedModifier {{ filter: {filt}, stats: Stats {{ power: {int(match[2])}, toughness: {int(match[3])} }} }}')
+        else:
+            residual.append(line)
+    return dict(card, oracle_text='\n'.join(residual)), modifiers
 
 
 def extract_stat_rules(card):
@@ -1711,6 +1816,7 @@ def statement_program(text):
     text = strip_rule_label(text)
     if not text:return None
     text = normalize_duration(text[0].lower() + text[1:])
+    if mass_roles := mass_role_program(text): return mass_roles
     if m:=re.fullmatch(r'you lose ([0-9]+) life and you draw an additional card\.',text):
         amount=int(m[1])
         return [f'LoseLife(PlayerSet::Controller, {amount})','Draw(PlayerSet::Controller, 1)'] if amount<=65535 else None
@@ -2387,6 +2493,7 @@ def targeted_program(text):
     if 'another target attacking creature you control' in text:
         result=targeted_program(text.replace('another target attacking creature you control','another target creature you control',1))
         return ('OtherCreatureAttackingYou',result[1]) if result and result[0]=='OtherCreatureYou' else None
+    if result:=role_return_program(text):return result
     if result:=target_exclusion_program(text):return result
     if result:=role_program(text):return result
     if match:=re.fullmatch(r'destroy target creature an opponent controls with mana value ([0-9]+) or less\.',text):
@@ -3291,6 +3398,66 @@ def trigger_creature_template(card):
     if not abilities:
         return None
     return f"Creature({int(card['power'])}, {int(card['toughness'])})", keywords, abilities
+
+
+def temporary_death_route(text):
+    """Detection survives erasure; only the untouched whole spell grants abilities."""
+    if not isinstance(text, str): return False
+    while True:
+        surface = ' '.join(text.casefold().split())
+        if re.search(r'\bgains?\s+"when\b', surface) and 'dies' in surface:
+            return True
+        stripped = re.sub(r'\([^()]*\)', '', text)
+        if stripped == text: return False
+        text = stripped
+
+
+def temporary_death_spell_template(card):
+    if (card.get('layout') != 'normal'
+            or card.get('type_line', '').split(' — ')[0] not in ('Instant', 'Sorcery')
+            or spell_cost_options(card.get('mana_cost', '')) is None):
+        return None
+    raw = card.get('oracle_text')
+    if not isinstance(raw, str): return None
+    text = ' '.join(raw.split())
+    match = re.fullmatch(
+        r'(?P<clean>Until end of turn, (?P<target>target creature(?: you control)?)'
+        r'(?: gets (?P<power>[+-][0-9]+)/(?P<toughness>[+-][0-9]+) and)? gains '
+        r'"When this creature dies, (?P<body>[^"()]+)")'
+        r'(?: \((?P<reminder>[^()]+)\))?', text)
+    if match is None: return None
+    base = "return it to the battlefield tapped under its owner's control"
+    forms = {
+        base + '.': 'plain',
+        base + ' with a +1/+1 counter on it.': 'counter',
+        base + ', then create a Wicked Role token attached to it.': 'role',
+        base + ' and you create a Treasure token.': 'treasure',
+    }
+    mode = forms.get(match['body'])
+    if mode is None: return None
+    reminder = match['reminder']
+    if reminder is not None:
+        if mode == 'treasure':
+            if reminder != 'It\'s an artifact with "{T}, Sacrifice this token: Add one mana of any color."': return None
+        elif mode == 'role':
+            production = 'Create a Wicked Role token attached to it.'
+            if role_reminder_text(production + ' (' + reminder + ')') != production: return None
+        else:
+            return None
+    before = []
+    if match['power'] is not None:
+        power, toughness = int(match['power']), int(match['toughness'])
+        if max(abs(power), abs(toughness)) > 2147483647: return None
+        before.append(f'Grow {{ subject: Subject::Targets, power: {power}, toughness: {toughness} }}')
+    counter = 'Some((CounterKind::PlusOne, 1))' if mode == 'counter' else 'None'
+    role = 'Some(' + role_factory('Wicked') + ')' if mode == 'role' else 'None'
+    death = [f'ReturnGrantedSource {{ counter: {counter}, role: {role} }}']
+    if mode == 'treasure':
+        # Independent of whether the guarded return found/moved its old object.
+        death += predefined_program('create a Treasure token.')
+    rule = 'CreatureYou' if match['target'].endswith(' you control') else 'Creature'
+    return (rule, [*before, 'GrantUntilEndTurn { ability: 0 }'],
+            [('Granted(&TriggerCondition::SelfDies)', death, 'None')], match['clean'])
 
 
 def spell_program_template(card):
@@ -4450,6 +4617,8 @@ def compile_catalogue(snapshot, target):
     supported = []
     coverage = []
     static_rows = []
+    enchanted_rows = []
+    flash_surcharge_rows = []
     grant_rows = []
     dynamic_rows = []
     scaling_rows = []
@@ -4532,6 +4701,8 @@ def compile_catalogue(snapshot, target):
         card, additional = extract_additional_cost(card)
         card, target_reduction = extract_target_cost_reduction(card)
         card, reductions = extract_cost_reductions(card)
+        card, flash_surcharge = extract_flash_surcharge(card)
+        card, enchanted = extract_enchanted_modifiers(card)
         card, dynamic, scaling = extract_stat_rules(card)
         card, creature_entry = extract_creature_entry_tapped(card)
         card, entry_counters = extract_entry_counters(card)
@@ -4542,6 +4713,7 @@ def compile_catalogue(snapshot, target):
         template = creature_template(card)
         trigger_template = trigger_creature_template(card)
         spell = spell_program_template(card)
+        temporary_death = temporary_death_spell_template(original)
         modal = modal_spell_template(card)
         aura = aura_template(card)
         job = job_select_template(card) if (plot is None and warp is None and not cycling and flashback is None and offspring is None and kicker is None and not bargain and not convoke and evidence is None and additional is None and target_reduction is None and not reductions and dynamic is None and not scaling and creature_entry == 'Never' and not entry_counters) else None
@@ -4569,6 +4741,10 @@ def compile_catalogue(snapshot, target):
                 effect, keywords = template
             elif trigger_template is not None:
                 effect, keywords, abilities = trigger_template
+            elif temporary_death is not None:
+                effect = 'Spell'
+                spell = temporary_death[:2]
+                abilities = temporary_death[2]
             elif modal is not None:
                 effect = 'Modal'
             elif spell is not None:
@@ -4666,7 +4842,15 @@ def compile_catalogue(snapshot, target):
             else:
                 effect,keywords,abilities=saga
                 activations=[];enters=[0,0,0]
-        if not role_consumer_reminders_valid(original):
+        role_raw = original.get('oracle_text','')
+        if enchanted_modifier_route(role_raw):
+            checked_enchanted = role_reminder_text(role_raw)
+            if '(' in checked_enchanted or ')' in checked_enchanted:
+                effect = 'Unsupported'
+        # Only a completely authenticated temporary program can supply its
+        # contextual reminder-free body. Every other caller keeps original raw.
+        role_auth = dict(original, oracle_text=temporary_death[3]) if temporary_death is not None else original
+        if not role_consumer_reminders_valid(role_auth):
             effect='Unsupported'
         if attachment_ward_route(original) and not attachment_ward_reminders_valid(original):
             effect='Unsupported'
@@ -4690,6 +4874,8 @@ def compile_catalogue(snapshot, target):
             activations = [*activations, *cycling]
             if len(activations) > 64: effect = 'Unsupported'; activations = []
         # A later generic selector cannot revive rejected intrinsic reminder text.
+        if temporary_death_route(original.get('oracle_text', '')) and temporary_death is None:
+            effect = 'Unsupported'
         if not adventure_event_reminders_valid(original):
             effect = 'Unsupported'
         if not recovery_reminders_valid(original):
@@ -4700,9 +4886,19 @@ def compile_catalogue(snapshot, target):
             effect='Unsupported'
         if not enchanted_draw_reminders_valid(original):
             effect = 'Unsupported'
-        # Rejected timing syntax/source shapes must not be revived by legacy selectors.
-        if timing_seen and not timing_grants:
+        if not quoted_creature_token_reminders_valid(original):
             effect = 'Unsupported'
+        # Rejected timing syntax/source shapes must not be revived by legacy selectors.
+        if timing_seen and not timing_grants and flash_surcharge is None:
+            effect = 'Unsupported'
+        # The paid timing action composes normal/Flashback casts. A separate
+        # Warp declaration cannot yet choose both Warp and this extra cost.
+        if flash_surcharge is not None and warp_seen:
+            effect = 'Unsupported'
+        if flash_surcharge is not None:
+            checked_flash = role_reminder_text(original.get('oracle_text', ''))
+            if '(' in checked_flash or ')' in checked_flash:
+                effect = 'Unsupported'
         programs = {
             'Damage(3)': ('Any', ['Damage(3)']), 'Damage(2)': ('Any', ['Damage(2)']),
             'Grow': ('Creature', [grow_instruction('Targets', 3, 3)]), 'Draw': ('None', ['Draw(PlayerSet::Controller, 2)']),
@@ -4815,6 +5011,10 @@ def compile_catalogue(snapshot, target):
         if effect != 'Unsupported':
             if dynamic is not None:dynamic_rows.append(f'        {index} => Some({dynamic}),')
             if scaling:scaling_rows.append(f'        {index} => &['+', '.join(scaling)+'],')
+        if enchanted and effect != 'Unsupported':
+            enchanted_rows.append(f'        {index} => &[' + ', '.join(enchanted) + '],')
+        if flash_surcharge is not None and effect != 'Unsupported':
+            flash_surcharge_rows.append(f'        {index} => Some({flash_surcharge}),')
         definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(card.get('name', name))}, oracle_id: {oracle_id}, mana_cost: {quote(card.get("mana_cost",cost) if scalar is not None else cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in standard_names).lower()}, legendary: {str(card.get('type_line', '').startswith('Legendary ')).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, activated: {rust_activations(activations)}, enters: Counters {{ plus_one: {enters[0]}, minus_one: {enters[1]}, stun: {enters[2]}, loyalty: 0, lore: 0 }}, entry: EntryTapped::{entry}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
         if offspring_key is not None:
             offspring_factories[offspring_key]=(index,definitions[-1],color_mask,card.get('type_line','').split(' — ')[-1])
@@ -4975,6 +5175,8 @@ def compile_catalogue(snapshot, target):
     lines += ['#[rustfmt::skip]', 'pub(super) fn has_convoke(card: Card) -> bool {', '    '+convoke_match, '}', '']
     protection = 'matches!(card.0, ' + ' | '.join(uncounterable_rows) + ')' if uncounterable_rows else 'false'
     lines += ['#[rustfmt::skip]', 'pub(super) fn uncounterable(card: Card) -> bool {', '    ' + protection, '}', '']
+    lines += ['#[rustfmt::skip]', "pub(super) fn enchanted_modifiers(card: Card) -> &'static [EnchantedModifier] {", '    match card.0 {', *enchanted_rows, '        _ => &[],', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn flash_surcharge(card: Card) -> Option<ManaCost> {', '    match card.0 {', *flash_surcharge_rows, '        _ => None,', '    }', '}', '']
     return '\n'.join(lines), {'schema': 1, 'catalogue_version': version, 'standard_legal_cards': len(standard_names),
         'implemented_standard_cards': sum(row['implemented'] and row['standard_legal'] for row in coverage),
         'implemented_total': len(supported), 'token_definitions': len(used_tokens), 'emblem_definitions': len(used_emblems), 'cards': [r for r in coverage if r['name'] not in internal_faces], 'adventure_definitions': len(adventure_pairs), 'omen_definitions': len(omen_pairs)}

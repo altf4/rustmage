@@ -8,7 +8,7 @@
     {
       "name": "Asinine Antics",
       "oracle_id": "0a0a051c-59ed-4286-b842-a34da7ef15d5",
-      "status": "gated_incomplete_body",
+      "status": "implemented",
       "faces": [
         {
           "name": "Asinine Antics",
@@ -390,7 +390,7 @@
     {
       "name": "Not Dead After All",
       "oracle_id": "380c367f-73ea-485f-a37b-5af0ba160893",
-      "status": "gated_incomplete_body",
+      "status": "implemented",
       "faces": [
         {
           "name": "Not Dead After All",
@@ -451,7 +451,7 @@
     {
       "name": "Return Triumphant",
       "oracle_id": "a4814615-ffa2-4692-86bc-3a1b7fc2acc8",
-      "status": "gated_incomplete_body",
+      "status": "implemented",
       "faces": [
         {
           "name": "Return Triumphant",
@@ -571,7 +571,7 @@
     {
       "name": "Syr Armont, the Redeemer",
       "oracle_id": "53fc09e1-1e5d-4f22-b623-2c5c770183ab",
-      "status": "gated_incomplete_body",
+      "status": "implemented",
       "faces": [
         {
           "name": "Syr Armont, the Redeemer",
@@ -630,7 +630,7 @@
     {
       "name": "Twisted Sewer-Witch",
       "oracle_id": "99c9920a-f84b-4626-9fe5-d94cc62cd277",
-      "status": "gated_incomplete_body",
+      "status": "implemented",
       "faces": [
         {
           "name": "Twisted Sewer-Witch",

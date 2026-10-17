@@ -1,0 +1,946 @@
+{
+  "schema": 1,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "scope": "Six complete bodies and exact resolvable direct Java imports, including full wildcard package files; shared predefined Role source closure inherited and verified. Complete source bytes are pinned. This does not claim all transitive Java dependencies were rewritten. This inventory is never an admission input.",
+  "cards": [
+    {
+      "name": "Return Triumphant",
+      "status": "implemented_complete_body",
+      "oracle_id": "a4814615-ffa2-4692-86bc-3a1b7fc2acc8",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{1}{W}",
+        "type_line": "Sorcery",
+        "oracle_text": "Return target creature card with mana value 3 or less from your graveyard to the battlefield. Create a Young Hero Role token attached to it. (Enchanted creature has \"Whenever this creature attacks, if its toughness is 3 or less, put a +1/+1 counter on it.\" If you put another Role on the creature later, put this one into the graveyard.)",
+        "colors": [
+          "W"
+        ],
+        "keywords": [
+          "Role token"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/ReturnTriumphant.java",
+          "java_sha256": "4f8752bf16ac01bbbdab1a1713ae13c1f21b2a6c0fb0637326c7ad6d660e5e8e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateRoleAttachedTargetEffect.java",
+          "java_sha256": "2a528a7a2d1e4a1c369adcc6b28b1761c279b3dfbfd922df38b53b1ac090adb3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/Card.java",
+          "java_sha256": "86b9a512358a5c6814e62bc2f9cff87be07cf5a248e313686c137f0b76b798b0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AbilityType.java",
+          "java_sha256": "1a4d39e2a07683fae30c0bdf87dd99abdad842a026bb84f4c379eae3182d0c17"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AbilityWord.java",
+          "java_sha256": "d71138cdcee404732e2f78b64762f4c82dcc64d44324db381a40d113b08562a5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AffinityType.java",
+          "java_sha256": "eca2c84794fab5e694c45df079ecf553e13433f38dbf122d75579c3a591c215d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AsThoughEffectType.java",
+          "java_sha256": "8436ccff09091fa30fcd4578c489b528585b87a99a6fd2a2a5229e1d39256e5d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AttachmentType.java",
+          "java_sha256": "7931287bfa8563637d894de3e49b3d5fb3f15da417940ef4cc0c416f20976d24"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/BeholdType.java",
+          "java_sha256": "b9b6ef548969c8e1bbde48ec05adb6ae62139ab3fbdd72a91f8154817dc17c2c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CastManaAdjustment.java",
+          "java_sha256": "1a6abea87ac6a1b1d0f846654882fcd4792f06d20abc79210be81ac3fdfa665e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ColoredManaSymbol.java",
+          "java_sha256": "985f250903ee7c0a37c9809833d1b93d66ebafab3debe98d1a74be9bb2a973c8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CommanderCardType.java",
+          "java_sha256": "c7a4f91dda2d5daa0a74a3011b2c20d777f08e75eefd418ebdc5d33251adf2d0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ComparisonType.java",
+          "java_sha256": "33b0abc2b4214ece7d2f842b9f000d967dd8fb4e6cb073cb34eeab7e304731ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CostModificationType.java",
+          "java_sha256": "5f8f4a6e1b5b904a07f60e76c5fafdb480dbe144f4ed4315d776304fdf62d871"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/DependencyType.java",
+          "java_sha256": "cd7a049f6a26d4efedd8076f351667bd1d0ef9ab852bab3fea5c168d01925735"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/EffectType.java",
+          "java_sha256": "9ce993610dba5e425c8b689450a75ca6c1835e1a90a4a146d33558e21d37f4f8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/EmptyNames.java",
+          "java_sha256": "5db998d76ddf796673751a1c7b897aa1e80430759bab79b7f03918b0a24f9742"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/EnlargeMode.java",
+          "java_sha256": "a7bfec8d3326f8f1f1d8f6576c8a5fef58ad4c9ca2b0c0e7cac9bbf5a08b0d3f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/EnterEventType.java",
+          "java_sha256": "fb5034daa92149a525d05033fe676fbc4e626882ccffa58d50b527185119f0ae"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/GiftType.java",
+          "java_sha256": "0d0f7dc6e0fa94f5f11eef293d59604bc558bc6dff9de5bde8eda8d51ddde004"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Layer.java",
+          "java_sha256": "25d5bf29b4ee00c00eb3b344ea1bafd7d3ee35f375124f757834651c6cf859dd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/MageObjectType.java",
+          "java_sha256": "e789caadca5f3d035673804a42b7eafc63afbc3443f5a50621c5ff5785bc4240"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ManaType.java",
+          "java_sha256": "479a939fd55b25ab18bcde985dfd2e37d23d4ee0dfec596d7eedee2f6fb5f281"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/MatchBufferTime.java",
+          "java_sha256": "659d398cb3b93a5b0c272bb55c3a6b062da172db9dc200e86f91258f31668f5c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/MatchTimeLimit.java",
+          "java_sha256": "e0e1de578c0ef6a92dcdf039225d2b7e2b6c75f8aa3d40f5680600df4ca48acb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ModeChoice.java",
+          "java_sha256": "684247554825e5e9970c81aefdb844d5d778c6bed45e305657f5fe398270126e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/MultiAmountType.java",
+          "java_sha256": "f577ba3bf847e53069f6f9bc1319a243cf4d36c4b3b1ac6c1ba6d0395bc932b8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/MultiplayerAttackOption.java",
+          "java_sha256": "2593924e7562dbadfc84e4c0f7a7b8c5e843126b0cb55665461bb4b0e041dab4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PartnerVariantType.java",
+          "java_sha256": "3ec16b839cd1657ceeae5e462b71ba02d6bfa438e48909982d175e4c112b9bfe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PhaseStep.java",
+          "java_sha256": "64cfd5ae855792ce11efc4801efc84fbfd2f82dc94221e05dcc702e4bf70ee84"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PlanarDieRollResult.java",
+          "java_sha256": "693f3c87403ea3746bbb79d3f80450ae6ff757740289532d4bf6c5895f48b5ec"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Planes.java",
+          "java_sha256": "837dca8920e7581b03bcb9bf97030f5226c0ceaa6b35a5a2f52ab47788c1efc1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PlayerAction.java",
+          "java_sha256": "322d9aa8d50b3d0591cf4beedc66418f5fb16b8ff2a1b1455d6fc52997be5876"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Pronoun.java",
+          "java_sha256": "8a86c9321011c1674421283bb6ad0da6e035712bbed78fd8fea60b49563743ff"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PutCards.java",
+          "java_sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/RangeOfInfluence.java",
+          "java_sha256": "3f98cb8b739579214bd84667d05826620650825ef9644087f323f5189f50844b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Rarity.java",
+          "java_sha256": "9921cb718a4f4795fcba77a3d6ceda6470464edb84ec301335efaba2ae18ffd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/RoleType.java",
+          "java_sha256": "dbf5a947685f6d81c10d8f4245efd85bd2ff637851682abf5a361f5b84744d1d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/RollDieType.java",
+          "java_sha256": "9b34996973a8fcd4fabd11c035cb964d673e4d43175bc24cfa39f0158438e25d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SagaChapter.java",
+          "java_sha256": "2a5bcf61b6a211a22ba02c94ee762bdb3f70ae6470df54d28b11f255142077f5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SetTargetPointer.java",
+          "java_sha256": "a8f2e34b69d3cf460248cf90b28dbea3bb31fa6c912d89a6fdb32b0fd46ad4e6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SetType.java",
+          "java_sha256": "13e48d6b5674e55ac29feaa49c50c339b997f60e59991e8f7f2de2c74f43d87b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SkillLevel.java",
+          "java_sha256": "fd502603de0ef5e65b99f5ddc2e145cb336661cd6e69bd3dda66f0942736e35a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SpellAbilityCastMode.java",
+          "java_sha256": "78847cdd437922b306cf2aa1a77e8aee1560c8510c4cdac352403ddd5496b3bc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SpellAbilityType.java",
+          "java_sha256": "d1c1d311389b1c51a17edd80f893bb4e4ecf72b1c5ef6cd3b547d58d3679b8ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubLayer.java",
+          "java_sha256": "1a6334ed026e868bf2a4fcd4def50cb6a414fe3a803ef0a65d788e647d4a1866"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubTypeSet.java",
+          "java_sha256": "7bb16d4562db9e5227f18b6840525700d49cdc4ce664f9a89f85d46785f550ff"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SuperType.java",
+          "java_sha256": "4ec4cf97e8c73dee7d1d0e4be9f4b90eb980dcdcd26698fcb610aed30da9e6cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TableState.java",
+          "java_sha256": "264be8a2ea2dee23aa82c16d0e04b8a53edae0dc1d2f96d4eae968dac9e75f62"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TargetController.java",
+          "java_sha256": "bd1591f2b4d3613a47bd6e509f92d688fea7c10d31a19ce7601ccba62cbba7f6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TimingRule.java",
+          "java_sha256": "ce29c2591308e309ec653a343d24ae0c1cdd477341ac1e060f7a6725d1269024"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TournamentPlayerState.java",
+          "java_sha256": "efb61269ec76c02aea9b56769e1ce53473fc1a3a4400b302c48a449059a9db44"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TurnPhase.java",
+          "java_sha256": "38002b047fd1ee80b41a65c846dad944fd376c68a0dd10f5928100abe9ba8ced"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/UseFirstManaAbilityMode.java",
+          "java_sha256": "812b6b81309c3282f0f8206f2b66a20e44bd0e49c222cb93d655a29c8c8ea6c2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/WatcherScope.java",
+          "java_sha256": "9ecb7ca3e5dbd9f5e0b16a52d0f2a64aaf09d38edd2d925e6a4ebb46df02d2c1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Zone.java",
+          "java_sha256": "4d8040e25af69a6e12c441a029b7cb44f1115d1016148738eafa4d2096f5610e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterCard.java",
+          "java_sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreatureCard.java",
+          "java_sha256": "ee796c20588a1c0975306824c57d1c173bfa54b4afaf8c3526aaf32e15d02739"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+          "java_sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/Player.java",
+          "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+          "java_sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+          "java_sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/util/CardUtil.java",
+          "java_sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    },
+    {
+      "name": "Twisted Sewer-Witch",
+      "status": "implemented_complete_body",
+      "oracle_id": "99c9920a-f84b-4626-9fe5-d94cc62cd277",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{3}{B}{B}",
+        "type_line": "Creature \u2014 Human Warlock",
+        "oracle_text": "When this creature enters, create a 1/1 black Rat creature token with \"This creature can't block.\" Then for each Rat you control, create a Wicked Role token attached to that Rat. (If you control another Role on it, put that one into the graveyard. Enchanted creature gets +1/+1. When this token is put into a graveyard, each opponent loses 1 life.)",
+        "power": "3",
+        "toughness": "4",
+        "colors": [
+          "B"
+        ],
+        "keywords": [
+          "Role token"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TwistedSewerWitch.java",
+          "java_sha256": "fbe4021fc6d6e1c5bccb8c500cdf1a70658f36b668290e500db07cc0343bda32"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/RoleType.java",
+          "java_sha256": "dbf5a947685f6d81c10d8f4245efd85bd2ff637851682abf5a361f5b84744d1d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+          "java_sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/RatCantBlockToken.java",
+          "java_sha256": "aab83bf3ec8d02a815343fe29084d4c4476a37f088e7a16f47209e1d8ef2e65b"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    },
+    {
+      "name": "Syr Armont, the Redeemer",
+      "status": "implemented_complete_body",
+      "oracle_id": "53fc09e1-1e5d-4f22-b623-2c5c770183ab",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{3}{G}{W}",
+        "type_line": "Legendary Creature \u2014 Human Knight",
+        "oracle_text": "When Syr Armont enters, create a Monster Role token attached to another target creature you control. (If you control another Role on it, put that one into the graveyard. Enchanted creature gets +1/+1 and has trample.)\nEnchanted creatures you control get +1/+1.",
+        "power": "4",
+        "toughness": "4",
+        "colors": [
+          "G",
+          "W"
+        ],
+        "keywords": [
+          "Role token"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SyrArmontTheRedeemer.java",
+          "java_sha256": "d2ccbf1b512741e1e4f03fd57b2c1e19c470e65ec2e7024aa1b0c4b06de8fff5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateRoleAttachedTargetEffect.java",
+          "java_sha256": "2a528a7a2d1e4a1c369adcc6b28b1761c279b3dfbfd922df38b53b1ac090adb3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+          "java_sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AbilityType.java",
+          "java_sha256": "1a4d39e2a07683fae30c0bdf87dd99abdad842a026bb84f4c379eae3182d0c17"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AbilityWord.java",
+          "java_sha256": "d71138cdcee404732e2f78b64762f4c82dcc64d44324db381a40d113b08562a5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AffinityType.java",
+          "java_sha256": "eca2c84794fab5e694c45df079ecf553e13433f38dbf122d75579c3a591c215d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AsThoughEffectType.java",
+          "java_sha256": "8436ccff09091fa30fcd4578c489b528585b87a99a6fd2a2a5229e1d39256e5d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AttachmentType.java",
+          "java_sha256": "7931287bfa8563637d894de3e49b3d5fb3f15da417940ef4cc0c416f20976d24"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/BeholdType.java",
+          "java_sha256": "b9b6ef548969c8e1bbde48ec05adb6ae62139ab3fbdd72a91f8154817dc17c2c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CastManaAdjustment.java",
+          "java_sha256": "1a6abea87ac6a1b1d0f846654882fcd4792f06d20abc79210be81ac3fdfa665e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ColoredManaSymbol.java",
+          "java_sha256": "985f250903ee7c0a37c9809833d1b93d66ebafab3debe98d1a74be9bb2a973c8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CommanderCardType.java",
+          "java_sha256": "c7a4f91dda2d5daa0a74a3011b2c20d777f08e75eefd418ebdc5d33251adf2d0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ComparisonType.java",
+          "java_sha256": "33b0abc2b4214ece7d2f842b9f000d967dd8fb4e6cb073cb34eeab7e304731ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CostModificationType.java",
+          "java_sha256": "5f8f4a6e1b5b904a07f60e76c5fafdb480dbe144f4ed4315d776304fdf62d871"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/DependencyType.java",
+          "java_sha256": "cd7a049f6a26d4efedd8076f351667bd1d0ef9ab852bab3fea5c168d01925735"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/EffectType.java",
+          "java_sha256": "9ce993610dba5e425c8b689450a75ca6c1835e1a90a4a146d33558e21d37f4f8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/EmptyNames.java",
+          "java_sha256": "5db998d76ddf796673751a1c7b897aa1e80430759bab79b7f03918b0a24f9742"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/EnlargeMode.java",
+          "java_sha256": "a7bfec8d3326f8f1f1d8f6576c8a5fef58ad4c9ca2b0c0e7cac9bbf5a08b0d3f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/EnterEventType.java",
+          "java_sha256": "fb5034daa92149a525d05033fe676fbc4e626882ccffa58d50b527185119f0ae"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/GiftType.java",
+          "java_sha256": "0d0f7dc6e0fa94f5f11eef293d59604bc558bc6dff9de5bde8eda8d51ddde004"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Layer.java",
+          "java_sha256": "25d5bf29b4ee00c00eb3b344ea1bafd7d3ee35f375124f757834651c6cf859dd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/MageObjectType.java",
+          "java_sha256": "e789caadca5f3d035673804a42b7eafc63afbc3443f5a50621c5ff5785bc4240"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ManaType.java",
+          "java_sha256": "479a939fd55b25ab18bcde985dfd2e37d23d4ee0dfec596d7eedee2f6fb5f281"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/MatchBufferTime.java",
+          "java_sha256": "659d398cb3b93a5b0c272bb55c3a6b062da172db9dc200e86f91258f31668f5c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/MatchTimeLimit.java",
+          "java_sha256": "e0e1de578c0ef6a92dcdf039225d2b7e2b6c75f8aa3d40f5680600df4ca48acb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ModeChoice.java",
+          "java_sha256": "684247554825e5e9970c81aefdb844d5d778c6bed45e305657f5fe398270126e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/MultiAmountType.java",
+          "java_sha256": "f577ba3bf847e53069f6f9bc1319a243cf4d36c4b3b1ac6c1ba6d0395bc932b8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/MultiplayerAttackOption.java",
+          "java_sha256": "2593924e7562dbadfc84e4c0f7a7b8c5e843126b0cb55665461bb4b0e041dab4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PartnerVariantType.java",
+          "java_sha256": "3ec16b839cd1657ceeae5e462b71ba02d6bfa438e48909982d175e4c112b9bfe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PhaseStep.java",
+          "java_sha256": "64cfd5ae855792ce11efc4801efc84fbfd2f82dc94221e05dcc702e4bf70ee84"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PlanarDieRollResult.java",
+          "java_sha256": "693f3c87403ea3746bbb79d3f80450ae6ff757740289532d4bf6c5895f48b5ec"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Planes.java",
+          "java_sha256": "837dca8920e7581b03bcb9bf97030f5226c0ceaa6b35a5a2f52ab47788c1efc1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PlayerAction.java",
+          "java_sha256": "322d9aa8d50b3d0591cf4beedc66418f5fb16b8ff2a1b1455d6fc52997be5876"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Pronoun.java",
+          "java_sha256": "8a86c9321011c1674421283bb6ad0da6e035712bbed78fd8fea60b49563743ff"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/PutCards.java",
+          "java_sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/RangeOfInfluence.java",
+          "java_sha256": "3f98cb8b739579214bd84667d05826620650825ef9644087f323f5189f50844b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Rarity.java",
+          "java_sha256": "9921cb718a4f4795fcba77a3d6ceda6470464edb84ec301335efaba2ae18ffd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/RoleType.java",
+          "java_sha256": "dbf5a947685f6d81c10d8f4245efd85bd2ff637851682abf5a361f5b84744d1d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/RollDieType.java",
+          "java_sha256": "9b34996973a8fcd4fabd11c035cb964d673e4d43175bc24cfa39f0158438e25d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SagaChapter.java",
+          "java_sha256": "2a5bcf61b6a211a22ba02c94ee762bdb3f70ae6470df54d28b11f255142077f5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SetTargetPointer.java",
+          "java_sha256": "a8f2e34b69d3cf460248cf90b28dbea3bb31fa6c912d89a6fdb32b0fd46ad4e6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SetType.java",
+          "java_sha256": "13e48d6b5674e55ac29feaa49c50c339b997f60e59991e8f7f2de2c74f43d87b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SkillLevel.java",
+          "java_sha256": "fd502603de0ef5e65b99f5ddc2e145cb336661cd6e69bd3dda66f0942736e35a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SpellAbilityCastMode.java",
+          "java_sha256": "78847cdd437922b306cf2aa1a77e8aee1560c8510c4cdac352403ddd5496b3bc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SpellAbilityType.java",
+          "java_sha256": "d1c1d311389b1c51a17edd80f893bb4e4ecf72b1c5ef6cd3b547d58d3679b8ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubLayer.java",
+          "java_sha256": "1a6334ed026e868bf2a4fcd4def50cb6a414fe3a803ef0a65d788e647d4a1866"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubTypeSet.java",
+          "java_sha256": "7bb16d4562db9e5227f18b6840525700d49cdc4ce664f9a89f85d46785f550ff"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SuperType.java",
+          "java_sha256": "4ec4cf97e8c73dee7d1d0e4be9f4b90eb980dcdcd26698fcb610aed30da9e6cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TableState.java",
+          "java_sha256": "264be8a2ea2dee23aa82c16d0e04b8a53edae0dc1d2f96d4eae968dac9e75f62"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TargetController.java",
+          "java_sha256": "bd1591f2b4d3613a47bd6e509f92d688fea7c10d31a19ce7601ccba62cbba7f6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TimingRule.java",
+          "java_sha256": "ce29c2591308e309ec653a343d24ae0c1cdd477341ac1e060f7a6725d1269024"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TournamentPlayerState.java",
+          "java_sha256": "efb61269ec76c02aea9b56769e1ce53473fc1a3a4400b302c48a449059a9db44"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TurnPhase.java",
+          "java_sha256": "38002b047fd1ee80b41a65c846dad944fd376c68a0dd10f5928100abe9ba8ced"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/UseFirstManaAbilityMode.java",
+          "java_sha256": "812b6b81309c3282f0f8206f2b66a20e44bd0e49c222cb93d655a29c8c8ea6c2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/WatcherScope.java",
+          "java_sha256": "9ecb7ca3e5dbd9f5e0b16a52d0f2a64aaf09d38edd2d925e6a4ebb46df02d2c1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Zone.java",
+          "java_sha256": "4d8040e25af69a6e12c441a029b7cb44f1115d1016148738eafa4d2096f5610e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/EnchantedPredicate.java",
+          "java_sha256": "a7b45550142e17e80f25dfcb21e0381076c50e8f131b988e97195914e021469c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    },
+    {
+      "name": "Asinine Antics",
+      "status": "implemented_complete_body",
+      "oracle_id": "0a0a051c-59ed-4286-b842-a34da7ef15d5",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{2}{U}{U}",
+        "type_line": "Sorcery",
+        "oracle_text": "You may cast this spell as though it had flash if you pay {2} more to cast it.\nFor each creature your opponents control, create a Cursed Role token attached to that creature. (If you control another Role on it, put that one into the graveyard. Enchanted creature is 1/1.)",
+        "colors": [
+          "U"
+        ],
+        "keywords": [
+          "Role token"
+        ]
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AsinineAntics.java",
+          "java_sha256": "0cf7aad83ab8aaaa53ebeecc43057278132dc4b8339a5010d21e38e78008bedb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/PayMoreToCastAsThoughtItHadFlashAbility.java",
+          "java_sha256": "20557cfda122a26460aace27f5084a554bd88c1dba1f84e2c091a12684048ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/RoleType.java",
+          "java_sha256": "dbf5a947685f6d81c10d8f4245efd85bd2ff637851682abf5a361f5b84744d1d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    },
+    {
+      "name": "A Tale for the Ages",
+      "status": "implemented_complete_body",
+      "oracle_id": "682a0770-8fe0-4142-aa0c-b60af3628a33",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{1}{W}",
+        "type_line": "Enchantment",
+        "oracle_text": "Enchanted creatures you control get +2/+2.",
+        "colors": [
+          "W"
+        ],
+        "keywords": []
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/ATaleForTheAges.java",
+          "java_sha256": "322181c2fcd88f873fbb26f2635afa09289055291fb8b6134dc1f0c9e8bddc8a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+          "java_sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/EnchantedPredicate.java",
+          "java_sha256": "a7b45550142e17e80f25dfcb21e0381076c50e8f131b988e97195914e021469c"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    },
+    {
+      "name": "Mystical Tether",
+      "status": "implemented_complete_body",
+      "oracle_id": "fb1a6986-39f7-4592-9039-7e30f5ccd009",
+      "facts": {
+        "layout": "normal",
+        "mana_cost": "{2}{W}",
+        "type_line": "Enchantment",
+        "oracle_text": "You may cast this spell as though it had flash if you pay {2} more to cast it.\nWhen this enchantment enters, exile target artifact or creature an opponent controls until this enchantment leaves the battlefield.",
+        "colors": [
+          "W"
+        ],
+        "keywords": []
+      },
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MysticalTether.java",
+          "java_sha256": "5fa4007bb4143ed1bcdebf1f6ae30435f4dffc86e7f2c8ab816b3352d53c5b39"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/PayMoreToCastAsThoughtItHadFlashAbility.java",
+          "java_sha256": "20557cfda122a26460aace27f5084a554bd88c1dba1f84e2c091a12684048ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileUntilSourceLeavesEffect.java",
+          "java_sha256": "b996095b17f25f3acb6d649beaf87d3f4abca10338c9444419cca03029d940bf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        }
+      ],
+      "external_imports": [
+        "java.util.UUID"
+      ]
+    }
+  ],
+  "shared_sources": [
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/CursedRoleToken.java",
+      "java_sha256": "a02cb2b2e1acef2e2ecbdcdd60b316b34c863db9a6c2bd62a720b9333a016b60"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/MonsterRoleToken.java",
+      "java_sha256": "67671911409c2865887315ecffbbe4018ad96147a0116ccfb2aff786773ffdd8"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/RoyalRoleToken.java",
+      "java_sha256": "8779b4cf1b5485c5d14726215d91c3d73e24bb7dd0ffbcbe0e8866f6a555b5fc"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/SorcererRoleToken.java",
+      "java_sha256": "5a85faa436c027f40d6efe841502a2f65c1667d246ae3af83e8955fc62ba7b35"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/WickedRoleToken.java",
+      "java_sha256": "0e4e26d1d998d36c57f3780153647f6fdabf50c1fa5b3e30ebbe5df5439a8883"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/YoungHeroRoleToken.java",
+      "java_sha256": "52b61f8b2cd0270cc1f45a672871f89eaa80f3b1b56933f6570f6e1daa3fdd09"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/RoleType.java",
+      "java_sha256": "dbf5a947685f6d81c10d8f4245efd85bd2ff637851682abf5a361f5b84744d1d"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateRoleAttachedSourceEffect.java",
+      "java_sha256": "d02f77031cae94148cc31a006a79605f0c87a485546d973c17b463c1bed8fa55"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateRoleAttachedTargetEffect.java",
+      "java_sha256": "2a528a7a2d1e4a1c369adcc6b28b1761c279b3dfbfd922df38b53b1ac090adb3"
+    }
+  ]
+}

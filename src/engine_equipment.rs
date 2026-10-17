@@ -1,7 +1,8 @@
 //! Exact-incarnation attachment links and continuous Equipment bonuses.
 use super::*;
 impl Game {
-    /// An Aura's controller does not affect whether its exact recipient is enchanted.
+    /// CR303.4b: attachment, irrespective of Aura controller or pending SBA,
+    /// defines enchanted. Equipment and stale recipient incarnations do not.
     pub(super) fn is_enchanted(&self, id: CardId) -> bool {
         self.on_battlefield(id)
             && self.state.attachment_sources.iter().any(|&aura| {

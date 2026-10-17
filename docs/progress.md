@@ -131,3 +131,33 @@ five unique public methods and two 100-game workloads with 172,449 owned frames
 and 344,898 actor/revision denials. Earlier frozen branches retain their own full
 439/263 and 441/266 compiler/public scope; these are not fresh composed broad runs.
 Two exact final-head independent nonauthor confirmations are the delivery gate.
+
+The [Role move-result and paid-flash batch](role-semantic-kernels.md) completes
+six bodies on actual main8108: 1,892/5,164 Standard identities, 3,272 gated,
+schema87. Strict comparisons preserve all 5,325 other main definitions and every
+parent helper/color/recipe/alias/flag. Frozen c5af333 passes 1,784 native tests,
+all-target Clippy, 448 unique compiler/provenance methods and 268 fresh API
+methods with no skips; 100 natural Standard games produce 84,835 owned frames
+and 169,670 actor/revision denials. Later actual-main composition3e681b6 passes
+fresh 1,790 native tests, Clippy, 36 affected compiler methods and 42 paid natural
+Standard cases, retaining all authored six and seven parent programs exactly.
+The broad 448/268 and 100-game evidence keeps its c5 source scope. Two independent
+NONAUTHOR final-head confirmations remain required before merge; full Standard
+and the wider training/search goal remain incomplete.
+
+
+The [temporary creature death grants](temporary-death-grants.md) add three whole
+spells on actual merged main 16f0604: 1,895/5,164 Standard identities, 3,269 gated,
+schema 88. Exact-parent comparison preserves 5,328 other definitions and all 882
+helpers/colors/aliases/recipes/flags. Frozen ecedec2 passes 1,804 native tests,
+Clippy/formatting and 100 natural Standard games: 79,647 owned frames and 159,294
+actor/revision denials. Its full 460 compiler run has 459 passes and one stale
+inventory failure; its full 271 public run has 268 passing methods and three
+stale-schema methods (49 subtest failures). These broad runs are not relabeled
+green. After metadata-only correction and exact production/generator/card-data
+identity proof, fresh 10 affected compiler methods and four public methods
+(50 inherited Role cases plus all three grant spells in both seats) pass without
+errors or skips. Policy logic is unchanged except explicit schema assertion
+metadata. Both independent reviewers clear production; exact final-head
+confirmations remain required before merge. Five further inventoried death-grant
+bodies, the rest of Standard and the wider training/search goal remain incomplete.

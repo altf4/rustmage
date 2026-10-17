@@ -126,6 +126,7 @@ fn all_nine_complete_bodies_cast_from_both_origins_and_have_independent_effects(
                 root.cast,
                 Some(CastInfo {
                     physical_card: None,
+                    flash_surcharge: false,
                     face: CastFace::Normal,
                     payment: root.cast.unwrap().payment,
                     offspring: None,

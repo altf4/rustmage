@@ -517,3 +517,557 @@ fn eight_whole_ordinary_consumers_use_real_paid_casts_triggers_and_activation_co
         }
     }
 }
+
+#[test]
+fn paid_syr_armont_enchanted_lord_uses_creature_control_and_any_exact_aura_both_seats() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let ally = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let foe = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let ally_ref = g.object_ref(ally);
+        attach(&mut g, p.other(), RoleKind::YoungHero, ally_ref, 1);
+        let foe_ref = g.object_ref(foe);
+        let foreign_aura = attach(&mut g, p, RoleKind::Royal, foe_ref, 1)[0];
+        let source = named(&mut g, p, "Syr Armont, the Redeemer", Zone::Hand);
+        let before = g.state.players[p.index()].mana;
+        act(&mut g, Action::AnnounceCast { card: source });
+        for _ in 0..100 {
+            if g.state.pending == Pending::Priority
+                && g.state.stack.is_empty()
+                && g.state.announcing.is_none()
+                && g.state.pending_triggers.is_empty()
+            {
+                break;
+            }
+            let actions = g.legal_actions();
+            let a = if g.state.pending == Pending::Priority {
+                Action::Pass
+            } else {
+                actions
+                    .iter()
+                    .find(|a| {
+                        **a == Action::ChooseTarget {
+                            target: Target::Card(ally),
+                        }
+                    })
+                    .or_else(|| actions.iter().find(|a| matches!(a, Action::FinishTargets)))
+                    .or_else(|| actions.iter().find(|a| !matches!(a, Action::Concede)))
+                    .unwrap()
+                    .clone()
+            };
+            act(&mut g, a);
+        }
+        assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+        assert_eq!(
+            before.iter().sum::<u32>() - g.state.players[p.index()].mana.iter().sum::<u32>(),
+            5
+        );
+        assert!(before[0] > g.state.players[p.index()].mana[0]);
+        assert!(before[4] > g.state.players[p.index()].mana[4]);
+        assert!(g.is_enchanted(ally));
+        assert!(g.is_enchanted(foe));
+        assert!(!g.is_enchanted(source));
+        assert_eq!(g.stats(ally).power, 4); // Bear + Monster + lord, foreign Young Hero has no flat bonus.
+        assert_eq!(g.stats(foe).power, 3); // Opponent's creature gets no lord bonus despite our Aura.
+        assert_eq!(g.stats(source).power, 4);
+        g.state.objects[source as usize].controller = p.other();
+        assert_eq!(g.stats(ally).power, 3);
+        assert_eq!(g.stats(foe).power, 4);
+        g.move_object(foreign_aura.card, Zone::Graveyard);
+        assert!(!g.is_enchanted(foe));
+        assert_eq!(g.stats(foe).power, 2);
+    }
+}
+
+#[test]
+fn paid_tale_for_ages_buffs_only_live_enchanted_creatures_and_not_equipment_both_seats() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let ally = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let equipment_only = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let recipe = Card::catalogue()
+            .find(|card| card.is_supported() && card.equipment().is_some())
+            .unwrap();
+        let equipment = spawn(&mut g, p, recipe, Zone::Battlefield);
+        g.state.objects[equipment as usize].attached_to = Some(g.object_ref(equipment_only));
+        let ally_ref = g.object_ref(ally);
+        let aura = attach(&mut g, p.other(), RoleKind::Cursed, ally_ref, 1)[0];
+        let source = named(&mut g, p, "A Tale for the Ages", Zone::Hand);
+        let before = g.state.players[p.index()].mana.iter().sum::<u32>();
+        act(&mut g, Action::AnnounceCast { card: source });
+        settle(&mut g);
+        assert_eq!(
+            before - g.state.players[p.index()].mana.iter().sum::<u32>(),
+            2
+        );
+        assert_eq!(g.stats(ally).power, 3); // Cursed 1/1 plus enchanted +2/+2.
+        assert!(!g.is_enchanted(equipment_only));
+        let equipped_power = g.stats(equipment_only).power;
+        g.move_object(aura.card, Zone::Graveyard);
+        assert!(!g.is_enchanted(ally));
+        assert_eq!(g.stats(ally).power, 2);
+        assert_eq!(g.stats(equipment_only).power, equipped_power);
+    }
+}
+
+#[test]
+fn paid_return_triumphant_attaches_to_actual_new_object_and_stale_targets_do_not_rebind() {
+    for p in [Player::P0, Player::P1] {
+        for stale in [false, true] {
+            let mut g = setup(p);
+            let target = named(&mut g, p, "Bear Cub", Zone::Graveyard);
+            let before = g.object_ref(target);
+            let source = named(&mut g, p, "Return Triumphant", Zone::Hand);
+            let mana = g.state.players[p.index()].mana.iter().sum::<u32>();
+            act(&mut g, Action::AnnounceCast { card: source });
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            if g.legal_actions().contains(&Action::FinishTargets) {
+                act(&mut g, Action::FinishTargets);
+            }
+            let saved = g.snapshot();
+            assert_eq!(
+                g.apply(p, Action::PayCosts { payment: [0; 6] }),
+                Err(Error::IllegalAction)
+            );
+            assert_eq!(g.snapshot(), saved);
+            let pay = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PayCosts { .. }))
+                .unwrap();
+            act(&mut g, pay);
+            assert_eq!(
+                g.state.stack.last().unwrap().targets[0].object,
+                Some(before)
+            );
+            if stale {
+                g.move_object(target, Zone::Hand);
+                g.move_object(target, Zone::Graveyard);
+            }
+            settle(&mut g);
+            assert_eq!(
+                mana - g.state.players[p.index()].mana.iter().sum::<u32>(),
+                2
+            );
+            assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+            assert_eq!(
+                g.object_view(target).zone,
+                if stale {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            let roles: Vec<_> = g
+                .state
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.attached.iter().collect());
+            if stale {
+                assert!(roles.is_empty());
+            } else {
+                assert_ne!(g.object_ref(target), before);
+                assert_eq!(roles.len(), 1);
+                assert_eq!(roles[0].recipient, g.object_ref(target));
+                assert_ne!(roles[0].recipient, before);
+                assert_eq!(
+                    g.state.objects[roles[0].aura.card as usize].card.role(),
+                    Some(RoleKind::YoungHero)
+                );
+                assert_eq!(g.stats(target).power, 2);
+            }
+        }
+    }
+}
+
+#[test]
+fn role_move_completion_requires_actual_successful_battlefield_destination() {
+    for p in [Player::P0, Player::P1] {
+        for skipped in [false, true] {
+            let mut g = setup(p);
+            let target = named(&mut g, p, "Bear Cub", Zone::Graveyard);
+            let before = g.object_ref(target);
+            let mut movement = g.entry_move(target, Zone::Battlefield, false);
+            movement.role_after = Some((factory(RoleKind::YoungHero), p));
+            movement.skipped = skipped;
+            if !skipped {
+                movement.destination = Zone::Exile;
+            }
+            g.stage_entries(vec![movement], None);
+            assert!(g.state.roles.as_ref().is_none_or(|r| r.attached.is_empty()));
+            assert_eq!(
+                g.object_view(target).zone,
+                if skipped {
+                    Zone::Graveyard
+                } else {
+                    Zone::Exile
+                }
+            );
+            if skipped {
+                assert_eq!(g.object_ref(target), before);
+            }
+        }
+    }
+}
+
+#[test]
+fn successful_return_role_creator_is_independent_of_returned_creature_controller() {
+    for creator in [Player::P0, Player::P1] {
+        let mut g = setup(creator);
+        let owner = creator.other();
+        let target = named(&mut g, owner, "Bear Cub", Zone::Graveyard);
+        let mut movement = g.entry_move(target, Zone::Battlefield, false);
+        movement.controller = owner;
+        movement.role_after = Some((factory(RoleKind::Wicked), creator));
+        g.stage_entries(vec![movement], None);
+        g.advance_entries();
+        g.advance_replacements(false);
+        settle(&mut g);
+        assert_eq!(g.object_view(target).controller, owner);
+        let roles = &g.state.roles.as_ref().unwrap().attached;
+        assert_eq!(roles.len(), 1);
+        assert_eq!(roles[0].recipient, g.object_ref(target));
+        let aura = g.object_view(roles[0].aura.card);
+        assert_eq!((aura.owner, aura.controller), (creator, creator));
+    }
+}
+
+fn role295_rat(g: &mut Game, owner: Player) -> CardId {
+    let card = Card::catalogue()
+        .find(|c| {
+            c.is_token() && c.has_subtype("Rat") && c.info().keywords.contains(Keywords::CANT_BLOCK)
+        })
+        .unwrap();
+    spawn(g, owner, card, Zone::Battlefield)
+}
+fn role295_frogs(g: &Game, p: Player) -> Vec<CardId> {
+    g.state
+        .objects
+        .iter()
+        .enumerate()
+        .filter_map(|(id, o)| {
+            (o.zone == Zone::Battlefield
+                && o.controller == p
+                && o.card.is_token()
+                && o.card.has_subtype("Frog"))
+            .then_some(id as CardId)
+        })
+        .collect()
+}
+#[test]
+fn paid_asinine_flash_cost_timing_foreign_rights_and_nontarget_hexproof_both_seats() {
+    for p in [Player::P0, Player::P1] {
+        for (flash, foreign, reduced) in [
+            (false, false, false),
+            (true, false, false),
+            (true, true, false),
+            (true, true, true),
+        ] {
+            let mut g = setup(p);
+            let foe = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            g.state.objects[foe as usize].gained_keywords = Keywords::HEXPROOF;
+            let ally = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            g.state.objects[ally as usize].controller = p;
+            if reduced {
+                named(&mut g, p, "Archmage of Runes", Zone::Battlefield);
+            }
+            let spell = named(
+                &mut g,
+                if foreign { p.other() } else { p },
+                "Asinine Antics",
+                if foreign { Zone::Exile } else { Zone::Hand },
+            );
+            if foreign {
+                g.state.exile_permissions.push(ExilePlayPermission {
+                    object: g.object_ref(spell),
+                    player: p,
+                    expires_turn: g.state.turn,
+                });
+            }
+            if flash {
+                g.state.active = p.other();
+            }
+            g.state.priority = p;
+            g.state.players[p.index()].mana = [0, 2, 0, 0, 0, if reduced { 2 } else { 3 }];
+            assert!(
+                !g.legal_actions()
+                    .contains(&Action::AnnounceFlashSurcharge { card: spell })
+            );
+            if flash {
+                let before = g.snapshot();
+                let action = if foreign {
+                    Action::AnnounceExile { card: spell }
+                } else {
+                    Action::AnnounceCast { card: spell }
+                };
+                assert_eq!(g.apply(p, action), Err(Error::IllegalAction));
+                assert_eq!(g.snapshot(), before);
+            }
+            let expected = if flash {
+                if reduced { 5 } else { 6 }
+            } else {
+                4
+            };
+            g.state.players[p.index()].mana = [0, 2, 0, 0, 0, expected - 2];
+            act(
+                &mut g,
+                if flash {
+                    Action::AnnounceFlashSurcharge { card: spell }
+                } else {
+                    Action::AnnounceCast { card: spell }
+                },
+            );
+            assert!(!matches!(g.state.pending, Pending::Targets { .. }));
+            let cast = g.state.announcing.as_ref().unwrap().item.cast.unwrap();
+            assert_eq!(cast.flash_surcharge, flash);
+            assert_eq!(cast.method, CastMethod::Normal);
+            let before = g.snapshot();
+            assert_eq!(
+                g.apply(p, Action::PayCosts { payment: [0; 6] }),
+                Err(Error::IllegalAction)
+            );
+            assert_eq!(g.snapshot(), before);
+            settle(&mut g);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            assert_eq!(g.stats(foe).power, 1);
+            assert_eq!(g.stats(ally).power, 2);
+            let aura = g
+                .state
+                .roles
+                .as_ref()
+                .unwrap()
+                .attached
+                .iter()
+                .find(|r| r.recipient == g.object_ref(foe))
+                .unwrap()
+                .aura;
+            assert_eq!(g.object_view(aura.card).controller, p);
+            assert_eq!(g.object_view(aura.card).owner, p);
+            assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+            assert_eq!(
+                g.object_view(spell).owner,
+                if foreign { p.other() } else { p }
+            );
+        }
+    }
+}
+
+#[test]
+fn paid_mystical_tether_optional_flash_keeps_linked_return_and_foreign_owner_routing() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        g.state.active = p.other();
+        let foe = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let spell = named(&mut g, p.other(), "Mystical Tether", Zone::Exile);
+        g.state.exile_permissions.push(ExilePlayPermission {
+            object: g.object_ref(spell),
+            player: p,
+            expires_turn: g.state.turn,
+        });
+        let before = g.state.players[p.index()].mana;
+        act(&mut g, Action::AnnounceFlashSurcharge { card: spell });
+        for _ in 0..120 {
+            if g.object_view(foe).zone == Zone::Exile {
+                break;
+            }
+            let actions = g.legal_actions();
+            let a = if g.state.pending == Pending::Priority {
+                Action::Pass
+            } else {
+                actions
+                    .iter()
+                    .find(|a| {
+                        **a == Action::ChooseTarget {
+                            target: Target::Card(foe),
+                        }
+                    })
+                    .or_else(|| actions.iter().find(|a| !matches!(a, Action::Concede)))
+                    .unwrap()
+                    .clone()
+            };
+            act(&mut g, a);
+        }
+        assert_eq!(g.object_view(foe).zone, Zone::Exile);
+        assert_eq!(
+            before.iter().sum::<u32>() - g.state.players[p.index()].mana.iter().sum::<u32>(),
+            5
+        );
+        assert_eq!(g.object_view(spell).controller, p);
+        assert_eq!(g.object_view(spell).owner, p.other());
+        g.move_object(spell, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.object_view(foe).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(foe).controller, p.other());
+        assert_eq!(g.object_view(spell).controller, p.other());
+    }
+}
+#[test]
+fn paid_sewer_witch_mass_role_event_binds_all_actual_rats_and_adds_only_one_extra_frog() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        named(&mut g, p, "Quina, Qu Gourmet", Zone::Battlefield);
+        let rat = role295_rat(&mut g, p.other());
+        g.state.objects[rat as usize].controller = p;
+        let mascot = named(&mut g, p, "Three Tree Mascot", Zone::Battlefield);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let foe = role295_rat(&mut g, p.other());
+        let source = named(&mut g, p, "Twisted Sewer-Witch", Zone::Hand);
+        let before = g.state.players[p.index()].mana;
+        act(&mut g, Action::AnnounceCast { card: source });
+        settle(&mut g);
+        assert_eq!(
+            before.iter().sum::<u32>() - g.state.players[p.index()].mana.iter().sum::<u32>(),
+            5
+        );
+        assert!(before[2] - g.state.players[p.index()].mana[2] >= 2);
+        let roles = &g.state.roles.as_ref().unwrap().attached;
+        assert_eq!(roles.len(), 3);
+        for id in [rat, mascot] {
+            assert!(roles.iter().any(|r| r.recipient == g.object_ref(id)));
+        }
+        assert!(
+            !roles
+                .iter()
+                .any(|r| [bear, foe, source].contains(&r.recipient.card))
+        );
+        assert!(
+            roles.iter().all(
+                |r| g.state.objects[r.aura.card as usize].card.role() == Some(RoleKind::Wicked)
+            )
+        );
+        assert!(roles.iter().all(|r| r.timestamp == roles[0].timestamp));
+        let frogs = role295_frogs(&g, p);
+        assert_eq!(frogs.len(), 2); // Rat event + ONE mass Role event.
+        assert!(
+            frogs
+                .iter()
+                .all(|id| g.object_view(*id).attached_to.is_none())
+        );
+    }
+}
+#[test]
+fn paid_mass_roles_preserve_group_indices_through_doubling_and_partial_or_all_stale_recipients() {
+    for p in [Player::P0, Player::P1] {
+        for all_stale in [false, true] {
+            let mut g = setup(p);
+            let mascot = named(&mut g, p, "Three Tree Mascot", Zone::Battlefield);
+            role295_rat(&mut g, p);
+            let doubling = named(&mut g, p, "Doubling Season", Zone::Battlefield);
+            named(&mut g, p, "Quina, Qu Gourmet", Zone::Battlefield);
+            let source = named(&mut g, p, "Twisted Sewer-Witch", Zone::Hand);
+            act(&mut g, Action::AnnounceCast { card: source });
+            let mut frozen = Vec::new();
+            for _ in 0..180 {
+                if let Some(choice) = g.observe(p).replacement_choice
+                    && choice.tokens.iter().any(|t| t.token.role().is_some())
+                {
+                    frozen = g
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter_map(|(id, o)| {
+                            (o.zone == Zone::Battlefield
+                                && o.controller == p
+                                && g.has_subtype(id as CardId, "Rat"))
+                            .then_some(g.object_ref(id as CardId))
+                        })
+                        .collect();
+                    assert_eq!(choice.role_attachments.len(), choice.tokens.len());
+                    assert_eq!(
+                        choice
+                            .role_attachments
+                            .into_iter()
+                            .flatten()
+                            .collect::<Vec<_>>(),
+                        frozen
+                    );
+                    let other = g.observe(p.other()).replacement_choice.unwrap();
+                    assert_eq!(
+                        other
+                            .role_attachments
+                            .into_iter()
+                            .flatten()
+                            .collect::<Vec<_>>(),
+                        frozen
+                    );
+                    break;
+                }
+                let actions = g.legal_actions();
+                let a = if g.state.pending == Pending::Priority {
+                    Action::Pass
+                } else {
+                    actions.iter().find(|a|matches!(a,Action::ChooseReplacement{source,..}if source.card==doubling))
+                        .or_else(||actions.iter().find(|a|!matches!(a,Action::Concede))).unwrap().clone()
+                };
+                act(&mut g, a);
+            }
+            assert_eq!(frozen.len(), 4);
+            let old_mascot = g.object_ref(mascot);
+            if all_stale {
+                for r in &frozen {
+                    g.move_object(r.card, Zone::Exile);
+                }
+            } else {
+                g.move_object(mascot, Zone::Graveyard);
+                g.move_object(mascot, Zone::Battlefield);
+                assert_ne!(g.object_ref(mascot), old_mascot);
+            }
+            assert!(
+                g.observe(p)
+                    .replacement_choice
+                    .unwrap()
+                    .role_attachments
+                    .contains(&Some(old_mascot))
+            );
+            for _ in 0..180 {
+                if g.state.pending == Pending::Priority
+                    && g.state.stack.is_empty()
+                    && g.state.resolving.is_none()
+                    && g.state.pending_triggers.is_empty()
+                {
+                    break;
+                }
+                let actions = g.legal_actions();
+                let a = if g.state.pending == Pending::Priority {
+                    Action::Pass
+                } else {
+                    actions.iter().find(|a|matches!(a,Action::ChooseReplacement{source,..}if source.card==doubling))
+                        .or_else(||actions.iter().find(|a|!matches!(a,Action::Concede))).unwrap().clone()
+                };
+                act(&mut g, a);
+            }
+            let roles = g
+                .state
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.attached.clone());
+            assert_eq!(roles.len(), if all_stale { 0 } else { 3 });
+            assert!(
+                roles
+                    .iter()
+                    .all(|r| frozen.contains(&r.recipient) && r.recipient != old_mascot)
+            );
+            if !all_stale {
+                for recipient in frozen.iter().filter(|r| **r != old_mascot) {
+                    assert_eq!(
+                        roles.iter().filter(|r| r.recipient == *recipient).count(),
+                        1
+                    );
+                }
+            }
+            let frogs = role295_frogs(&g, p);
+            assert_eq!(frogs.len(), 2);
+            assert!(
+                frogs
+                    .iter()
+                    .all(|id| g.object_view(*id).attached_to.is_none())
+            );
+        }
+    }
+}

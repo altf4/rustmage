@@ -1,0 +1,604 @@
+{
+  "schema": 1,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "scope": "All eight pinned printed temporary creature death-trigger grant bodies. Inventory/provenance only, never execution permission. Explicit imports and lexical class references from wildcard packages are authenticated; this is not a transitive Java port.",
+  "initial_consumers": [
+    "Not Dead After All",
+    "Fake Your Own Death",
+    "Undying Malice"
+  ],
+  "cards": [
+    {
+      "name": "Fake Your Own Death",
+      "oracle_id": "ad01df89-29fe-44c7-a133-91425f8ff09c",
+      "mana_cost": "{1}{B}",
+      "type_line": "Instant",
+      "oracle_text": "Until end of turn, target creature gets +2/+0 and gains \"When this creature dies, return it to the battlefield tapped under its owner's control and you create a Treasure token.\" (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+      "status": "implemented_complete_body",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+          "java_sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToBattlefieldUnderOwnerControlTargetEffect.java",
+          "java_sha256": "0fc807f72c6feeb241f8a5b7db20fd2ea9fd67206d5a13b91341b400742affeb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SetTargetPointer.java",
+          "java_sha256": "a8f2e34b69d3cf460248cf90b28dbea3bb31fa6c912d89a6fdb32b0fd46ad4e6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+          "java_sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FakeYourOwnDeath.java",
+          "java_sha256": "38a11e28cebb60c8c2bbe4e1cb24deca9d0ae6ceea8b0b41268c4f0471991918"
+        }
+      ]
+    },
+    {
+      "name": "Galuf's Final Act",
+      "oracle_id": "9268d369-173e-4325-98f6-348beeb8ba62",
+      "mana_cost": "{1}{G}",
+      "type_line": "Instant",
+      "oracle_text": "Until end of turn, target creature gets +1/+0 and gains \"When this creature dies, put a number of +1/+1 counters equal to its power on up to one target creature.\"",
+      "status": "gated_incomplete_body",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+          "java_sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SourcePermanentPowerValue.java",
+          "java_sha256": "aabc6ce8b7bd68b08691830a2a45af0d886a2837c652bbca9e109b5813b0ca9a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/counters/CounterType.java",
+          "java_sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GalufsFinalAct.java",
+          "java_sha256": "213318028406a6a8936edaae9f525edf99b82b3be832b42a688b974bf320721c"
+        }
+      ]
+    },
+    {
+      "name": "Not Dead After All",
+      "oracle_id": "380c367f-73ea-485f-a37b-5af0ba160893",
+      "mana_cost": "{B}",
+      "type_line": "Instant",
+      "oracle_text": "Until end of turn, target creature you control gains \"When this creature dies, return it to the battlefield tapped under its owner's control, then create a Wicked Role token attached to it.\" (Enchanted creature gets +1/+1. When this token is put into a graveyard, each opponent loses 1 life.)",
+      "status": "implemented_complete_body",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+          "java_sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateRoleAttachedTargetEffect.java",
+          "java_sha256": "2a528a7a2d1e4a1c369adcc6b28b1761c279b3dfbfd922df38b53b1ac090adb3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/Card.java",
+          "java_sha256": "86b9a512358a5c6814e62bc2f9cff87be07cf5a248e313686c137f0b76b798b0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/Cards.java",
+          "java_sha256": "2ceaf2939456fd7356ea668af3c3aa642d7319455cf24ebf690109dce09db3d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardsImpl.java",
+          "java_sha256": "e3a32dd4f367a6429bd83cb8c1a1890e314b5dfbbedf8d61f4251797646dc1e0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/RoleType.java",
+          "java_sha256": "dbf5a947685f6d81c10d8f4245efd85bd2ff637851682abf5a361f5b84744d1d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SetTargetPointer.java",
+          "java_sha256": "a8f2e34b69d3cf460248cf90b28dbea3bb31fa6c912d89a6fdb32b0fd46ad4e6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Zone.java",
+          "java_sha256": "4d8040e25af69a6e12c441a029b7cb44f1115d1016148738eafa4d2096f5610e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/Player.java",
+          "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+          "java_sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/util/CardUtil.java",
+          "java_sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/n/NotDeadAfterAll.java",
+          "java_sha256": "f08e34d905896d4810e491f1e60b4a67f1012aac6b6716e6d0c750108bc24612"
+        }
+      ]
+    },
+    {
+      "name": "Perigee Beckoner",
+      "oracle_id": "e0a35a44-e56d-434e-8043-43d5031b2e84",
+      "mana_cost": "{4}{B}",
+      "type_line": "Creature — Horror",
+      "oracle_text": "When this creature enters, until end of turn, another target creature you control gets +2/+0 and gains \"When this creature dies, return it to the battlefield tapped under its owner's control.\"\nWarp {1}{B} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "status": "gated_incomplete_body",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+          "java_sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToBattlefieldUnderOwnerControlTargetEffect.java",
+          "java_sha256": "0fc807f72c6feeb241f8a5b7db20fd2ea9fd67206d5a13b91341b400742affeb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WarpAbility.java",
+          "java_sha256": "9ac044ebe7da1f678c965e9a3f5fd329efaf50d946e8c2b9cf622f750d9d4499"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SetTargetPointer.java",
+          "java_sha256": "a8f2e34b69d3cf460248cf90b28dbea3bb31fa6c912d89a6fdb32b0fd46ad4e6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PerigeeBeckoner.java",
+          "java_sha256": "304c56879e028f4a756e2ad9f4bea320428f8aae0111e8708b05ee6d861831df"
+        }
+      ]
+    },
+    {
+      "name": "Presumed Dead",
+      "oracle_id": "a2d3e3f0-7399-4eb9-a0cf-831710c3d431",
+      "mana_cost": "{1}{B}",
+      "type_line": "Instant",
+      "oracle_text": "Until end of turn, target creature gets +2/+0 and gains \"When this creature dies, return it to the battlefield under its owner's control and suspect it.\" (A suspected creature has menace and can't block.)",
+      "status": "gated_incomplete_body",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+          "java_sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/Card.java",
+          "java_sha256": "86b9a512358a5c6814e62bc2f9cff87be07cf5a248e313686c137f0b76b798b0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/Cards.java",
+          "java_sha256": "2ceaf2939456fd7356ea668af3c3aa642d7319455cf24ebf690109dce09db3d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardsImpl.java",
+          "java_sha256": "e3a32dd4f367a6429bd83cb8c1a1890e314b5dfbbedf8d61f4251797646dc1e0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SetTargetPointer.java",
+          "java_sha256": "a8f2e34b69d3cf460248cf90b28dbea3bb31fa6c912d89a6fdb32b0fd46ad4e6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Zone.java",
+          "java_sha256": "4d8040e25af69a6e12c441a029b7cb44f1115d1016148738eafa4d2096f5610e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/Player.java",
+          "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/util/CardUtil.java",
+          "java_sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PresumedDead.java",
+          "java_sha256": "7c7d14183e748f56ceb657c734095ee103ac0f6a5d1b54da18e8d84cd087bc8e"
+        }
+      ]
+    },
+    {
+      "name": "Rabid Attack",
+      "oracle_id": "4db02b34-efec-437c-ab28-aa318b8879ad",
+      "mana_cost": "{1}{B}",
+      "type_line": "Instant",
+      "oracle_text": "Until end of turn, any number of target creatures you control each get +1/+0 and gain \"When this creature dies, draw a card.\"",
+      "status": "gated_incomplete_body",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+          "java_sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/Effect.java",
+          "java_sha256": "92f49363848fa1b18215e3a0d516923e10d917638a38e5bbad73f274f6a1e917"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RabidAttack.java",
+          "java_sha256": "9acbb7d74d926a3fade7c3ca7330df36f04a1982b3f8a864f100fedc84f2688d"
+        }
+      ]
+    },
+    {
+      "name": "Undying Malice",
+      "oracle_id": "8b061702-1bc3-45aa-a758-446b25034801",
+      "mana_cost": "{B}",
+      "type_line": "Instant",
+      "oracle_text": "Until end of turn, target creature gains \"When this creature dies, return it to the battlefield tapped under its owner's control with a +1/+1 counter on it.\"",
+      "status": "implemented_complete_body",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+          "java_sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToBattlefieldUnderOwnerControlWithCounterTargetEffect.java",
+          "java_sha256": "d22c6075d029e898298f71e835d13b4eff3d5253b1f23fe46f49b1314175d766"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SetTargetPointer.java",
+          "java_sha256": "a8f2e34b69d3cf460248cf90b28dbea3bb31fa6c912d89a6fdb32b0fd46ad4e6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/counters/CounterType.java",
+          "java_sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/u/UndyingMalice.java",
+          "java_sha256": "f43e3222a0f362bb6f935afe796ca1dc888110e34477dcd38d0fa4f923486ef7"
+        }
+      ]
+    },
+    {
+      "name": "Vincent's Limit Break",
+      "oracle_id": "814679b4-51bd-4b07-a7b8-d3375d36ff45",
+      "mana_cost": "{1}{B}",
+      "type_line": "Instant",
+      "oracle_text": "Tiered (Choose one additional cost.)\nUntil end of turn, target creature you control gains \"When this creature dies, return it to the battlefield tapped under its owner's control\" and has the chosen base power and toughness.\n• Galian Beast — {0} — 3/2.\n• Death Gigas — {1} — 5/2.\n• Hellmasker — {3} — 7/2.",
+      "status": "gated_incomplete_body",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Mode.java",
+          "java_sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+          "java_sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "java_sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToBattlefieldUnderOwnerControlTargetEffect.java",
+          "java_sha256": "0fc807f72c6feeb241f8a5b7db20fd2ea9fd67206d5a13b91341b400742affeb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessTargetEffect.java",
+          "java_sha256": "cc450621ce5efa6894bfc8eab4290a28aafb69a3f197f62851095e13d2f97f8f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/TieredAbility.java",
+          "java_sha256": "83c7417ee2f4a3e10db46cc5c65a9f0b57836a416a3ee52e29a146d9848c2fbc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SetTargetPointer.java",
+          "java_sha256": "a8f2e34b69d3cf460248cf90b28dbea3bb31fa6c912d89a6fdb32b0fd46ad4e6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+          "java_sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VincentsLimitBreak.java",
+          "java_sha256": "7e53f949023b5d087d99511c6ea454abc49c3abdb4a7094678ea7bfee726ddac"
+        }
+      ]
+    }
+  ]
+}

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "aca52c6ed5621c963bbe100b243c82a18926b8675549a4453fd2db52fc7947e1",
+  "catalogue_version": "0881a3aabaa1f79ba870fe0306bad19c4fdd831d90d5b965af239122c33926cf",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1887,
-  "implemented_total": 1893,
+  "implemented_standard_cards": 1896,
+  "implemented_total": 1902,
   "token_definitions": 94,
   "emblem_definitions": 1,
   "cards": [
@@ -106,8 +106,8 @@
     {
       "name": "A Tale for the Ages",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "A.I.M. Labs",
@@ -1480,8 +1480,8 @@
     {
       "name": "Asinine Antics",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Assassin's Trophy",
@@ -8596,8 +8596,8 @@
     {
       "name": "Fake Your Own Death",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Falcon's Wing Harness",
@@ -17416,8 +17416,8 @@
     {
       "name": "Mystical Tether",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Naga Fleshcrafter",
@@ -17818,8 +17818,8 @@
     {
       "name": "Not Dead After All",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Not on My Watch",
@@ -21022,8 +21022,8 @@
     {
       "name": "Return Triumphant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Return from the Wilds",
@@ -25858,8 +25858,8 @@
     {
       "name": "Syr Armont, the Redeemer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Syr Ginger, the Meal Ender",
@@ -28378,8 +28378,8 @@
     {
       "name": "Twisted Sewer-Witch",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Twists and Turns // Mycoid Maze",
@@ -28648,8 +28648,8 @@
     {
       "name": "Undying Malice",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Uneasy Alliance",

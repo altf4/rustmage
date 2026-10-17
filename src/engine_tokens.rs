@@ -55,26 +55,52 @@ impl Game {
         capture: bool,
         attachment: Option<ObjectRef>,
     ) -> Vec<ObjectRef> {
-        // Ordinary token batches borrow their groups without a new allocation.
-        let groups: std::borrow::Cow<'_, [TokenGroupView]> = if attachment.is_none() {
-            std::borrow::Cow::Borrowed(groups)
-        } else {
-            std::borrow::Cow::Owned(
-                groups
-                    .iter()
-                    .copied()
-                    .filter(|g| {
-                        g.token.role().is_none()
-                            || attachment
-                                .is_some_and(|r| self.aura_can_enchant(g.token, controller, r))
-                    })
-                    .collect(),
-            )
+        self.create_token_groups_bound(controller, groups, defenders, capture, attachment, None)
+    }
+    pub(super) fn create_token_groups_per_recipient(
+        &mut self,
+        controller: Player,
+        groups: &[TokenGroupView],
+        recipients: &[ObjectRef],
+    ) -> Vec<ObjectRef> {
+        assert!(recipients.len() <= groups.len());
+        self.create_token_groups_bound(controller, groups, None, false, None, Some(recipients))
+    }
+    #[allow(clippy::too_many_arguments)] // Bindings preserve the allocation-free ordinary token path.
+    fn create_token_groups_bound(
+        &mut self,
+        controller: Player,
+        groups: &[TokenGroupView],
+        defenders: Option<&[CombatDefender]>,
+        capture: bool,
+        attachment: Option<ObjectRef>,
+        recipients: Option<&[ObjectRef]>,
+    ) -> Vec<ObjectRef> {
+        let recipient = |index| {
+            recipients
+                .and_then(|r| r.get(index))
+                .copied()
+                .or(attachment)
         };
-        let timestamp = if attachment.is_some()
+        // Keep original group indices when a recipient becomes stale. Replacement
+        // additions have no recipient and must never slide into a removed slot.
+        let valid: Option<Vec<bool>> = (attachment.is_some() || recipients.is_some()).then(|| {
+            groups
+                .iter()
+                .enumerate()
+                .map(|(index, group)| {
+                    group.token.role().is_none()
+                        || recipient(index)
+                            .is_some_and(|r| self.aura_can_enchant(group.token, controller, r))
+                })
+                .collect()
+        });
+        let accepted = |index| valid.as_ref().is_none_or(|v| v[index]);
+        let timestamp = if (attachment.is_some() || recipients.is_some())
             && groups
                 .iter()
-                .any(|g| g.token.role().is_some() && g.amount > 0)
+                .enumerate()
+                .any(|(index, g)| accepted(index) && g.token.role().is_some() && g.amount > 0)
         {
             Some(self.next_role_timestamp())
         } else {
@@ -82,7 +108,9 @@ impl Game {
         };
         let total = groups
             .iter()
-            .try_fold(0u128, |n, g| {
+            .enumerate()
+            .filter(|(index, _)| accepted(*index))
+            .try_fold(0u128, |n, (_, g)| {
                 assert!(g.token.is_token(), "token instruction requires a factory");
                 n.checked_add(g.amount)
             })
@@ -115,7 +143,11 @@ impl Game {
             .try_reserve(fresh)
             .capacity("object allocation exhausted");
         let mut index = 0;
-        for group in groups.iter() {
+        for (group_index, group) in groups.iter().enumerate() {
+            if !accepted(group_index) {
+                continue;
+            }
+            let attachment = recipient(group_index);
             let token = group.token;
             let tapped = group.tapped || self.opponent_entry_requires_tapped(token, controller);
             for _ in 0..group.amount {

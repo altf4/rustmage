@@ -21,6 +21,9 @@ pub struct ReplacementChoiceView {
     pub object: Option<ObjectRef>,
     pub counters: Option<Counters>,
     pub tokens: Vec<TokenGroupView>,
+    /// Parallel to tokens for Role events; None denotes an unbound replacement addition.
+    /// Ordinary token and counter events use an empty vector.
+    pub role_attachments: Vec<Option<ObjectRef>>,
     pub effects: Vec<ReplacementEffectView>,
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -62,6 +65,8 @@ pub(super) enum TokenCompletion {
     JobAttach(ObjectRef),
     RoleAttach(ObjectRef),
     RoleReflexive(Box<RoleReflexiveCompletion>),
+    /// One mass creation event; original group indices retain exact recipients.
+    RoleAttachMany(Vec<ObjectRef>),
     Mobilize,
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -111,6 +116,9 @@ impl ReplacementState {
                 + match &b.completion {
                     TokenCompletion::RoleReflexive(c) => {
                         std::mem::size_of::<RoleReflexiveCompletion>() + c.item.owned_bytes()
+                    }
+                    TokenCompletion::RoleAttachMany(recipients) => {
+                        recipients.len() * std::mem::size_of::<ObjectRef>()
                     }
                     _ => 0,
                 }
@@ -434,6 +442,41 @@ impl Game {
         b.effect = true;
         b.used.push((choice.source, choice.ability));
     }
+    pub(super) fn stage_role_creation(
+        &mut self,
+        player: Player,
+        token: Card,
+        recipients: Vec<ObjectRef>,
+    ) {
+        if recipients.is_empty() {
+            return;
+        }
+        let groups = recipients
+            .iter()
+            .map(|_| TokenGroupView {
+                token,
+                amount: 1,
+                tapped: false,
+            })
+            .collect();
+        let state = self.state.replacements.get_or_insert_with(|| {
+            Box::new(ReplacementState {
+                work: VecDeque::new(),
+                active: None,
+                attachment: None,
+                resume: None,
+                mode: ResumeMode::Program,
+            })
+        });
+        state.work.push_back(Work::Tokens(TokenBatch {
+            player,
+            groups,
+            effect: true,
+            used: Vec::new(),
+            completion: TokenCompletion::RoleAttachMany(recipients),
+        }));
+    }
+
     pub(super) fn stage_token_creation(
         &mut self,
         player: Player,
@@ -651,6 +694,12 @@ impl Game {
                                             true,
                                             Some(c.recipient),
                                         ),
+                                    TokenCompletion::RoleAttachMany(recipients) => self
+                                        .create_token_groups_per_recipient(
+                                            batch.player,
+                                            &batch.groups,
+                                            recipients,
+                                        ),
                                     _ => self.create_token_groups(
                                         batch.player,
                                         &batch.groups,
@@ -796,6 +845,7 @@ impl Game {
                     object: Some(p.object),
                     counters: Some(p.amount),
                     tokens: Vec::new(),
+                    role_attachments: Vec::new(),
                     effects: self.counter_replacements(p, &batch.used),
                 })
             }
@@ -804,6 +854,27 @@ impl Game {
                 object: None,
                 counters: None,
                 tokens: batch.groups.clone(),
+                role_attachments: match &batch.completion {
+                    TokenCompletion::RoleAttach(recipient) => batch
+                        .groups
+                        .iter()
+                        .map(|g| g.token.role().map(|_| *recipient))
+                        .collect(),
+                    TokenCompletion::RoleReflexive(completion) => batch
+                        .groups
+                        .iter()
+                        .map(|group| group.token.role().map(|_| completion.recipient))
+                        .collect(),
+                    TokenCompletion::RoleAttachMany(recipients) => batch
+                        .groups
+                        .iter()
+                        .enumerate()
+                        .map(|(index, g)| {
+                            g.token.role().and_then(|_| recipients.get(index).copied())
+                        })
+                        .collect(),
+                    _ => Vec::new(),
+                },
                 effects: self.token_replacements(batch),
             }),
         }

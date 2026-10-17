@@ -4,7 +4,7 @@ from pathlib import Path
 from scripts import generate_catalogue as g
 from scripts import test_legacy_metadata as metadata
 from scripts.catalogue_preservation import canonical, assert_union
-PARENT='8108a6f3366f8d5553f4059b9c648481769eb420'
+PARENT='e5ebe64954635555938cd315b0f423953eb4e78f'
 NAME='Curse of the Werefox'
 class RoleSuccessFightTests(unittest.TestCase):
  @classmethod

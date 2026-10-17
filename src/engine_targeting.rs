@@ -42,8 +42,8 @@ impl Announcement {
         }
     }
 
-    pub(super) fn cost_options(&self) -> crate::cards::ManaCostOptions {
-        match self.item.kind {
+    pub(super) fn cost_options(&self) -> impl Iterator<Item = ManaCost> + '_ {
+        let options = match self.item.kind {
             StackKind::Spell if self.item.cast.is_some_and(|c| c.method == CastMethod::Warp) => {
                 std::iter::once(self.item.source_card.warp_cost().expect("fixed Warp cost"))
                     .chain([].iter().copied())
@@ -74,7 +74,14 @@ impl Announcement {
             | StackKind::DelayedWarpExile => {
                 unreachable!("triggered ability has no activation cost")
             }
-        }
+        };
+        options.map(|cost| {
+            Game::with_flash_surcharge(
+                cost,
+                self.item.source_card,
+                self.item.cast.is_some_and(|c| c.flash_surcharge),
+            )
+        })
     }
     pub(super) fn needs_evidence(&self) -> bool {
         self.pay_window
@@ -225,7 +232,8 @@ impl Game {
 
     pub(super) fn choose_mana_cost(&mut self, index: u16) {
         let a = self.state.announcing.as_mut().unwrap();
-        a.cost = Some(a.cost_options().nth(index as usize).unwrap());
+        let cost = a.cost_options().nth(index as usize).unwrap();
+        a.cost = Some(cost);
         self.continue_announcement_choices(false);
     }
 
@@ -614,6 +622,7 @@ impl Game {
                 payment,
                 origin,
                 method: CastMethod::Normal,
+                flash_surcharge: false,
                 offspring: None,
                 kicker: None,
                 bargain: None,

@@ -60,7 +60,7 @@ class BargainTests(unittest.TestCase):
      if resources:
       stale=dict(resources[0]['reference']);stale['generation']+=1;self.reject(g,o,{'kind':'ChooseBargain','sacrifice':stale})
     if ann and ann['source_card']==name and o['decision']=='pay_costs':
-     self.assertEqual((o['payment_request']['required'],o['payment_request']['generic']),(required,generic));self.assertEqual(ann['cast'],{'physical_card': None, 'face': 'Normal', 'payment': [0]*6, 'origin':'Exile' if exile else 'Hand','method':'Normal','offspring':None,'kicker':None,'bargain':pay, 'evidence': None})
+     self.assertEqual((o['payment_request']['required'],o['payment_request']['generic']),(required,generic));self.assertEqual(ann['cast'],{'physical_card': None, 'face': 'Normal', 'payment': [0]*6, 'origin':'Exile' if exile else 'Hand','method':'Normal','offspring':None,'kicker':None,'bargain':pay, 'evidence': None, 'flash_surcharge': False})
      if resource_ref:self.assertEqual(objects[resource_ref['card']]['reference'],resource_ref);self.assertEqual(objects[resource_ref['card']]['zone'],'Battlefield')
     if o['library_selection'] and o['resolving']['source_card']==name:
      f=o['library_selection'];self.assertEqual(i,2);self.assertEqual(f['remainder'],'bottom_random');self.assertFalse(f['reveal']);self.assertEqual((f['minimum'],f['maximum']),(2,2));self.assertIsNone(g.observe(other)['library_selection']);self.assertEqual(g.observe(other)['actions'],[])

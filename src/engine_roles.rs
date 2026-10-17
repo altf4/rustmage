@@ -70,6 +70,29 @@ impl Game {
             }
         }
     }
+    pub(super) fn resolve_roles_matching(
+        &mut self,
+        item: &SpellView,
+        token: Card,
+        filter: CreatureFilter,
+    ) {
+        assert!(token.role().is_some(), "predefined Role factory required");
+        let recipients = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, _)| {
+                let id = id as CardId;
+                let recipient = self.object_ref(id);
+                (self.creature_matches(filter, item.controller, item.object, id)
+                    && self.aura_can_enchant(token, item.controller, recipient))
+                .then_some(recipient)
+            })
+            .collect();
+        self.stage_role_creation(item.controller, token, recipients);
+    }
+
     pub(super) fn next_role_timestamp(&mut self) -> u64 {
         let r = self.state.roles.get_or_insert_with(Default::default);
         r.clock = r.clock.checked_add(1).capacity("Role timestamps exhausted");

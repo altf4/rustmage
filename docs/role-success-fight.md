@@ -1,8 +1,8 @@
 # Successful Role creation and reflexive fight — issue304
 
 This delivery completes Curse of the Werefox's entire pinned normal body, on
-actual merged main 8108a6f3366f8d5553f4059b9c648481769eb420. The candidate adds
-exactly one executable Standard identity: 1,887/5,164, with 3,277 still gated.
+actual merged main e5ebe64954635555938cd315b0f423953eb4e78f. The candidate adds
+exactly one executable Standard identity: 1,896/5,164, with 3,268 still gated.
 It retains 5,331 definitions, forty Adventure pairs, thirteen Omen pairs,
 94 token recipes and one emblem. The complete Standard/training goal is unfinished.
 
@@ -69,3 +69,27 @@ All 820 tracked inputs remain fixed in that initial workload. These results reta
 their checkpoint scope; fresh composed gates are pending. An additional native
 self-fight control checks that control changes may make the captured creature a
 legal opponent target without replacing the trigger's independent controller.
+
+
+Original frozen `2cdb597` on actual main `8108a6f` completed every gate before
+this final parent composition: 1,777 unit plus 12 integration tests, all-target
+Clippy, formatting/generator checks, all 453 unique compiler methods (812.946s,
+no failures/errors/skips), all 270 unique API methods (1422.022s, no failures,
+errors or skips), and 100 fixed natural Standard games (334.775s, 81,976 owned
+frames and 163,952 actor/revision denials). All 826 inputs remained unchanged.
+Its immutable library SHA is
+`553c94402694073e25219b8913cf18b7e32ae6b9d1a11ecee519da90e13f2821`.
+These full suites retain that original source scope.
+
+The final actual-main composition retains all six mass/return/enchanted/flash
+Role bodies and all three temporary death-grant bodies. Both independent
+completion variants and their memory accounting remain intact. The new
+Werefox completion now exposes its exact recipient in the inherited public
+replacement attachment bindings; replacement-added Frog groups stay unbound.
+A fresh paid both-seat native regression exercises this combined observation.
+Historical ancestor proofs explicitly pin their delivered catalogues and retain
+live program/helper comparisons; the new current-parent proof changes only
+Curse of the Werefox. All 36 affected compiler/raw/provenance/inventory methods
+pass on the composed source (7.584s). Fresh combined native/library/public and
+100-game gates remain pending. Earlier broad results are not relabeled as fresh
+runs of this later composition.
