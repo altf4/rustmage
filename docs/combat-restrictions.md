@@ -42,5 +42,31 @@ references Disfigure, absent from the pinned catalogue. The corrected fixture
 uses supported Stab; no production runtime fix was needed. Terminal targets are
 cleaned immediately while every shared-library path/hash is retained.
 
-Naturally drawn Standard public acceptance, fresh final native/Clippy and
-independent complete-batch reviews remain required before delivery.
+Frozen production baseline `29a9341a474972f62cdf4b20821c46d19a4304d5`
+passes 1,786 native tests, all-target Clippy and formatting. The immutable optimized
+library SHA-256 is `5fbe5008c9ccafdb79bd8c0c6995be2278387cd14cc8c72b59e63bea63bb41a2`,
+with catalogue fingerprint
+`82ba341fbf950464ed4543ce9a64625c7bb83c63d132e7ce1ce61b9af1929212`.
+The later test-only 436c88c checkpoint strengthens planeswalker loyalty fixtures;
+its five native groups and ten naturally drawn, fully paid public body/seat
+cases pass (28.322 seconds for the public cases).
+
+Fixed-workload diagnostics remain failures in their original scopes. The first
+100-game attempt at policy 026317d stops after 45 completed games: Tiger-Dillo/P1
+seed31202 discarded every enabling Bear Cub before drawing green mana. Policy
+51194d1 retains the last enabling creature/artifact and passes that unchanged seed
+in 1,490 frames. Its ten public cases also pass, but its new 100-game attempt
+fails on Tiger-Dillo/P0 seed30902: the policy spends Fancy Footwork while the source
+is summoning sick, then remains in the positive stage after the buff expires.
+The engine correctly rejects attacks without a current enabling creature.
+
+Policy 8765b1a waits until Tiger-Dillo can legally attack before casting the
+one-turn enabling buff and returns to the enabling stage if the condition ends.
+The unchanged seed30902 passes in 1,342 frames with five paid casts; ten public
+body/seat cases pass in 19.449 seconds. The new fixed 100-game run is pending.
+All of these policy revisions leave production Rust, card programs, decks, seeds,
+schema and optimized library unchanged. Every frozen execution file and library
+hash is verified per gate; no workload failure is relabeled as a pass.
+
+Composition on the final current main, fresh integration checks and two
+independent complete-batch approvals at the final head remain required.
