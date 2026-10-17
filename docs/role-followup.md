@@ -17,10 +17,13 @@ draw while retaining the independent Role instruction.
 
 Raw authentication applies to every opened production, including ordinary
 max-mana-value destruction and self-bargained entry clauses without Role text.
+The latter is detected by its semantic condition through creature, artifact,
+enchantment, land, Aura, Equipment and explicit/short source-name lowering.
 It also closes the inherited ordinary creature-or-enchantment destruction gap.
 Detection follows parenthetical erasure and whitespace stages; execution must
 prove the original raw context. Exact Role/Bargain presentations and intrinsic
-keyword reminders are authenticated in their grammar slots. Sagas must pass
+keyword reminders are authenticated in their grammar slots by the shared
+keyword-line grammar, independently of the permanent host type. Sagas must pass
 the complete strict header/chapter/reminder/sacrifice grammar. Unknown, nested,
 infix and borrowed reminders stay unsupported; no card names grant admission.
 
@@ -51,7 +54,7 @@ and granted ability/attack obligations. They are not natural Standard terminals.
 `examples/standard_role_followup.py --library /absolute/path/librustmage.so`
 runs 100 naturally terminal Standard games, rotating all twelve bodies and seats.
 
-The corrected composed source has passed 22 focused compiler/provenance/Saga
+The corrected composed source has passed 29 focused compiler/provenance/Saga
 methods. Fresh native/Clippy, optimized library, full compiler/API and 100-game
 gates are pending for this corrected composition; earlier source's passing
 native/paid/100-game checks are historical evidence only. Two independent

@@ -251,6 +251,35 @@ def creature_template(card):
 
 
 
+def intrinsic_reminder_line_valid(line):
+    """A complete keyword line proves its own trailing reminder, on any host."""
+    grammar = {
+        'changeling': r'This card is every creature type\.',
+        'deathtouch': r'Any amount of damage this deals to a creature is enough to destroy it\.',
+        'defender': r"This creature can't attack\.",
+        'double strike': r'This creature deals both first-strike and regular combat damage\.',
+        'first strike': r'This creature deals combat damage before creatures without first strike\.',
+        'flash': r'You may cast this spell any time you could cast an instant\.',
+        'flying': r"This creature can't be blocked except by creatures with flying or reach\.",
+        'haste': r'This creature can attack and \{T\} as soon as it comes under your control\.',
+        'hexproof': r"It can't be the target of spells or abilities your opponents control\.",
+        'indestructible': r'''Damage and effects that say "destroy" don't destroy it\.(?: If its toughness is 0 or less, it still dies\.)?''',
+        'lifelink': r'Damage dealt by this creature also causes you to gain that much life\.',
+        'menace': r"This creature can't be blocked except by two or more creatures\.",
+        'reach': r'This creature can block creatures with flying\.',
+        'skulk': r"This creature can't be blocked by creatures with greater power\.",
+        'trample': r"This creature can deal excess combat damage to the player or planeswalker it's attacking\.",
+        'vigilance': r"Attacking doesn't cause this creature to tap\.",
+    }
+    match = re.fullmatch(r'([^()]+) \(([^()]+)\)', line)
+    if match is None:
+        return False
+    words = [word.strip().casefold() for word in match[1].split(',')]
+    return (bool(words) and all(word in INTRINSIC_KEYWORDS for word in words)
+            and words[-1] in grammar
+            and re.fullmatch(grammar[words[-1]], match[2]) is not None)
+
+
 def intrinsic_reminders_valid(card):
     """Authenticate complete intrinsic bodies before any generic text extraction.
 
@@ -268,38 +297,8 @@ def intrinsic_reminders_valid(card):
             break
         bare = stripped
     if creature_template(dict(card, oracle_text=bare)) is not None:
-        # These are semantic keyword productions, anchored to the final keyword
-        # on the same intrinsic line. Matching prose elsewhere proves nothing.
-        grammar = {
-            'changeling': r'This card is every creature type\.',
-            'deathtouch': r'Any amount of damage this deals to a creature is enough to destroy it\.',
-            'defender': r"This creature can't attack\.",
-            'double strike': r'This creature deals both first-strike and regular combat damage\.',
-            'first strike': r'This creature deals combat damage before creatures without first strike\.',
-            'flash': r'You may cast this spell any time you could cast an instant\.',
-            'flying': r"This creature can't be blocked except by creatures with flying or reach\.",
-            'haste': r'This creature can attack and \{T\} as soon as it comes under your control\.',
-            'hexproof': r"It can't be the target of spells or abilities your opponents control\.",
-            'indestructible': r'''Damage and effects that say "destroy" don't destroy it\.(?: If its toughness is 0 or less, it still dies\.)?''',
-            'lifelink': r'Damage dealt by this creature also causes you to gain that much life\.',
-            'menace': r"This creature can't be blocked except by two or more creatures\.",
-            'reach': r'This creature can block creatures with flying\.',
-            'skulk': r"This creature can't be blocked by creatures with greater power\.",
-            'trample': r"This creature can deal excess combat damage to the player or planeswalker it's attacking\.",
-            'vigilance': r"Attacking doesn't cause this creature to tap\.",
-        }
-        for line in raw.splitlines():
-            if not any(c in line for c in '()'):
-                continue
-            match = re.fullmatch(r'([^()]+) \(([^()]+)\)', line)
-            if match is None:
-                return False
-            words = [word.strip().casefold() for word in match[1].split(',')]
-            if (not words or any(word not in INTRINSIC_KEYWORDS for word in words)
-                    or words[-1] not in grammar
-                    or re.fullmatch(grammar[words[-1]], match[2]) is None):
-                return False
-        return True
+        return all(intrinsic_reminder_line_valid(line) for line in raw.splitlines()
+                   if any(c in line for c in '()'))
     if (card.get('layout') == 'normal' and card.get('mana_cost', '') == ''
             and permanent_type(card) in ('Land', 'Basic Land') and not bare.strip()):
         # The complete intrinsic land grammar includes its actual basic subtypes
@@ -439,7 +438,7 @@ def role_consumer_reminders_valid(card):
     productions = (
         r'destroy target creature an opponent controls with mana value [0-9]+ or less\.',
         r'destroy target creature or enchantment\.',
-        r'when this creature enters, if it was bargained,',
+        r'\bif it was bargained,',
     )
     while True:
         normalized = ' '.join(text.casefold().split())
@@ -458,15 +457,9 @@ def role_consumer_reminders_valid(card):
     authenticated = re.sub(
         r'^Bargain \(You may sacrifice an artifact, enchantment, or token as you cast this spell\.\)$',
         'Bargain', authenticated, flags=re.MULTILINE)
-    for line in authenticated.splitlines():
-        if not any(c in line for c in '()'):
-            continue
-        bare = re.sub(r'\([^()]*\)', '', line).strip()
-        intrinsic = dict(card, oracle_text=bare)
-        if (creature_template(intrinsic) is None
-                or not intrinsic_reminders_valid(dict(card, oracle_text=line))):
-            return False
-    return True
+    return all(intrinsic_reminder_line_valid(line)
+               for line in authenticated.splitlines() if any(c in line for c in '()'))
+
 
 
 def role_program(text):

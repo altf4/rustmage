@@ -66,16 +66,37 @@ class RoleFollowupTests(unittest.TestCase):
     for name in ['Independent generic production','Shock']:
      self.assertFalse(self.compile_one(dict(base,name=name,oracle_text=variant))[1]['implemented'],(name,variant))
  def test_generic_bargained_event_preserves_authenticated_intrinsic_reminder(self):
-  base=self.cards['Diminisher Witch'];body='When this creature enters, if it was bargained, draw a card.'
-  clean=dict(base,name='Independent keyword and bargained event',oracle_text='Flying\n'+body)
-  text='Flying (This creature can\'t be blocked except by creatures with flying or reach.)\n'+body
-  expected,row=self.compile_one(clean);self.assertTrue(row['implemented'])
-  actual,row=self.compile_one(dict(clean,oracle_text=text));self.assertTrue(row['implemented'])
-  # The complete semantics, including keyword, cost and type, remain identical.
-  drop=lambda s:[line for line in s.splitlines() if not line.startswith('pub const CATALOGUE_VERSION:')]
-  self.assertEqual(drop(expected),drop(actual))
-  for variant in [text.replace('creatures with flying or reach.','you pay {1}.'),body+' (This creature can\'t be blocked except by creatures with flying or reach.)']:
-   self.assertFalse(self.compile_one(dict(clean,oracle_text=variant))[1]['implemented'])
+  base=self.cards['Diminisher Witch']
+  for noun,typ,keyword,reminder in [('creature','Creature','Flying',"This creature can't be blocked except by creatures with flying or reach."),('artifact','Artifact','Indestructible','Damage and effects that say "destroy" don\'t destroy it.'),('enchantment','Enchantment','Indestructible','Damage and effects that say "destroy" don\'t destroy it.')]:
+   body='When this '+noun+' enters, if it was bargained, draw a card.'
+   clean=dict(base,name='Independent keyword and bargained event',type_line=typ,oracle_text=keyword+'\n'+body)
+   text=keyword+' ('+reminder+')\n'+body
+   expected,row=self.compile_one(clean);self.assertTrue(row['implemented'])
+   actual,row=self.compile_one(dict(clean,oracle_text=text));self.assertTrue(row['implemented'])
+   # The complete semantics, including keyword, cost and type, remain identical.
+   drop=lambda s:[line for line in s.splitlines() if not line.startswith('pub const CATALOGUE_VERSION:')]
+   self.assertEqual(drop(expected),drop(actual))
+   for variant in [keyword+' (You win the game.)\n'+body,body+' ('+reminder+')']:
+    self.assertFalse(self.compile_one(dict(clean,oracle_text=variant))[1]['implemented'])
+ def test_generic_bargained_raw_authentication_survives_every_source_alias(self):
+  base=self.cards['Shatter the Oath']
+  forms=[('creature','Creature','{3}',''),('artifact','Artifact','{3}',''),('enchantment','Enchantment','{3}',''),('land','Land','',''),('Aura','Enchantment — Aura','{3}','Enchant creature\n'),('Equipment','Artifact — Equipment','{3}','Equip {1}\n')]
+  cards=[]
+  for noun,typ,cost,prefix in forms:
+   cards.append(dict(base,name='Fresh Binding',type_line=typ,mana_cost=cost,power='2',toughness='2',oracle_text=prefix+'When this '+noun+' enters, if it was bargained, draw a card.'))
+  for name,subject,typ in [('Fresh Witch','Fresh Witch','Creature'),('Fresh Witch, Watcher','Fresh Witch','Legendary Creature'),('Fresh Witch, Watcher','Fresh Witch, Watcher','Legendary Creature')]:
+   cards.append(dict(base,name=name,type_line=typ,power='2',toughness='2',oracle_text='When '+subject+' enters, if it was bargained, draw a card.'))
+  for card in cards:
+   rust,row=self.compile_one(card);self.assertTrue(row['implemented'],card);self.assertIn('TriggerCondition::SelfBargained',rust)
+   text=card['oracle_text']
+   variants=[text+' (You win the game.)',text+' ((You win the game.))',text+'\n(Draw seven cards.)']
+   for index in range(1,len(text)):
+    if text[index-1].isalpha() and text[index].isalpha():
+     variants.append(text[:index]+'(Draw seven cards.)'+text[index:])
+   for index in [m.end() for m in re.finditer(r'\s+',text)]:
+    variants.append(text[:index]+'((You win the game.)) '+text[index:])
+   for variant in variants:
+    self.assertFalse(self.compile_one(dict(card,oracle_text=variant))[1]['implemented'],(card['name'],variant))
  def test_exact_twelve_admissions_preserve_every_prior_program_and_recipe(self):
   old=subprocess.check_output(['git','-C',str(g.ROOT),'show','804f539567d2f50b27c801915a3eb5afd7f8d692:src/generated/catalogue.rs'],text=True);new=(g.ROOT/'src/generated/catalogue.rs').read_text()
   defs=lambda t:[l for l in t.splitlines() if l.lstrip().startswith('Definition {')]
