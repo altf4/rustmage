@@ -34,8 +34,11 @@ class PlotCompilerTests(unittest.TestCase):
   line=next(l for l in base['oracle_text'].splitlines() if l.startswith('Plot '))
   for text in [base['oracle_text']+'\n'+line,base['oracle_text'].replace('Plot only as a sorcery.','Plot any time.'),base['oracle_text'].replace('You may pay {3}{U}','You may pay {2}{U}')]:
    self.assertFalse(self.admitted(dict(base,oracle_text=text)))
-  for declaration in ['Convoke','Bargain (You may sacrifice an artifact, enchantment, or token as you cast this spell.)','Kicker {1}','Offspring {1}','Flashback {1}','Cycling {1}','Mobilize 1','Saddle 1']:
-   self.assertFalse(self.admitted(dict(base,oracle_text=base['oracle_text']+'\n'+declaration)),declaration)
+  for declaration in [next(l for l in self.rows['Appeal to Eirdu']['oracle_text'].splitlines() if l.startswith('Convoke ')),next(l for l in self.rows['Candy Grapple']['oracle_text'].splitlines() if l.startswith('Bargain ')),'Kicker {1}','Offspring {1}','Flashback {1}','Cycling {1}','Mobilize 1','Saddle 1']:
+   mutant=dict(base,oracle_text=base['oracle_text']+'\n'+declaration)
+   if declaration.startswith('Convoke '):self.assertTrue(g.extract_convoke(mutant)[1])
+   if declaration.startswith('Bargain '):self.assertTrue(g.extract_bargain(mutant)[1])
+   self.assertFalse(self.admitted(mutant),declaration)
   for cost in ['{X}{U}','{Q}','{4294967296}','{4294967295}{1}','{W}junk']:
    self.assertFalse(self.admitted(dict(base,mana_cost=cost)),cost)
   self.assertTrue(self.admitted(dict(base,mana_cost='{4294967295}{U}')))
