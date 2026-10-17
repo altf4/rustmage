@@ -47,8 +47,8 @@ open; it introduces no new Standard card admissions.
 
 Earlier prototype evidence is historical: nine tests and a separate composition
 with Tiered checkpoint `26adbde` preserved all 5,332 definitions/918 helpers. Development
-fixture diagnostics (initial absent-legacy gating placement, structured Fight
+diagnostics (initial absent-legacy gating placement, structured Fight
 matching and imported duplicate test collection) were corrected before the
-passing prototype; none are represented as successful gates. Final source/source
+passing prototype; none are represented as successful gates. Final source
 and library hashes are preserved in the delivery evidence, with all terminal
 build outputs cleaned while every shared-library path/content remains intact.
