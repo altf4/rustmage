@@ -1,7 +1,7 @@
 # Prospective untapped land entry — issue #342
 
 This work audits the complete pinned Standard bodies Spelunking and The Wandering
-Minstrel on actual main f35e953. Both remain gated during development. The same
+Minstrel on actual main f35e953. Both now compile as complete prototype bodies; final-parent gameplay validation and independent reviews remain pending. The same
 Java replacement is used by Gond Gate and Horizon Explorer, which are absent from
 the pinned Standard corpus and are not counted as admissions. The full four roots,
 explicit imports, and relevant effect/token imports pin88 records /52 unique Java
@@ -25,3 +25,14 @@ condition, all-color Elemental creation and fully paid controller-relative
 Town-count boost to other creatures. No residual clause may be erased to admit
 either body. Schema105 is provisionally reserved; final parent/schema and all
 validation claims remain pending.
+
+The initial prototype admits exactly two whole bodies (1,976 Standard on the
+1,974 parent), with one new all-color Elemental factory. Seven paid both-seat
+native groups pass, covering both replacement orders, real shockland payments,
+Spelunking draw/Cave/non-Cave/decline, prospective foreign controller, multiple
+once-only sources, simultaneous source absence, Minstrel threshold/token/all-eight
+mana activation/other-recipient boost and real cleanup. Four compiler methods pass
+with strict actual-parent two-body preservation and generic raw/name/type/cost
+controls. An initial full-native run passes1,912 unit tests and fails only the old
+96-factory count; its corrected97-factory assertion retains the full closure audit.
+No final full-suite or public-workload claim is made yet.

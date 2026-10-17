@@ -471,6 +471,11 @@ pub(crate) enum Instruction {
     PutHandLand {
         tapped: bool,
     },
+    PutHandLandWithLife {
+        tapped: bool,
+        subtype: &'static str,
+        life: u16,
+    },
     JobSelect {
         token: Card,
     },
@@ -1863,6 +1868,9 @@ impl Card {
     /// Opposing entering-kind mask while this source is on the battlefield.
     pub(crate) fn opponent_entry_tapped(self) -> u16 {
         generated::opponent_entry_tapped(self)
+    }
+    pub(crate) fn controlled_entry_untapped(self) -> u16 {
+        generated::controlled_entry_untapped(self)
     }
 
     pub(crate) fn static_modifiers(self) -> &'static [StaticModifier] {

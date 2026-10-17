@@ -858,6 +858,8 @@ def token_program(text):
     """Fixed fully-described creature tokens only; no inferred predefined abilities."""
     if not isinstance(text, str):
         return None
+    if all_colors:=re.fullmatch(r"create (a|an|one|two|three|four|five|six|seven|eight) (tapped )?([0-9]+)/([0-9]+) ([A-Z][A-Za-z'-]*(?: [A-Z][A-Za-z'-]*)*) creature tokens? that[’']s all colors\.",text):
+        return token_program('create '+all_colors[1]+' '+(all_colors[2] or '')+all_colors[3]+'/'+all_colors[4]+' white and blue and black and red and green '+all_colors[5]+' creature token.')
     m = re.fullmatch(r'create (a|an|one|two|three|four|five|six|seven|eight) (tapped )?([0-9]+)/([0-9]+) (.+?) (?:(artifact|enchantment) )?creature tokens?(.*)', text, re.DOTALL)
     if not m:
         return None
@@ -1360,7 +1362,7 @@ def normalize_duration(text):
     return text
 
 
-RULE_LABELS = ('Celebration — ', 'Infusion — ', 'Delirium — ', 'Threshold — ', 'Descend 4 — ', 'Descend 8 — ', 'Ferocious — ', 'Alliance — ')
+RULE_LABELS = ('Celebration — ', 'Infusion — ', 'Delirium — ', 'Threshold — ', 'Descend 4 — ', 'Descend 8 — ', 'Ferocious — ', 'Alliance — ', "The Minstrel's Ballad — ")
 
 def strip_rule_label(text):
     for label in RULE_LABELS:
@@ -2091,11 +2093,15 @@ def hand_grave_land_reminders_valid(card):
 
 
 def hand_land_program(text):
+    if m:=re.fullmatch(r'you may put a land card from your hand onto the battlefield( tapped)?\. If you put a ([A-Z][A-Za-z-]*) onto the battlefield this way, you gain ([1-9][0-9]*) life\.',text):
+        if m[2] in {'Cave','Desert','Forest','Gate','Island','Lair','Locus','Mine','Mountain','Plains','Power-Plant','Sphere','Swamp','Tower','Town'} and int(m[3])<=65535:
+            return ['PutHandLandWithLife { tapped: '+str(bool(m[1])).lower()+', subtype: '+json.dumps(m[2])+', life: '+m[3]+' }']
+        return None
     if m:=re.fullmatch(r'you may put a land card from your hand or graveyard onto the battlefield( tapped)?\.',text):
         return ['PutLandCards { maximum: AmountValue::Fixed(1), tapped: '+str(bool(m[1])).lower()+' }']
     if m:=re.fullmatch(r'you may put a land card from your hand onto the battlefield( tapped)?\.',text):
         return ['PutHandLand { tapped: '+str(bool(m[1])).lower()+' }']
-    if m:=re.fullmatch(r'draw (a card|two cards|three cards|four cards), then (you may put a land card from your hand(?: or graveyard)? onto the battlefield(?: tapped)?\.)',text):
+    if m:=re.fullmatch(r'draw (a card|two cards|three cards|four cards), then (you may put a land card from your hand(?: or graveyard)? onto the battlefield(?: tapped)?\.(?: If you put a [A-Z][A-Za-z-]* onto the battlefield this way, you gain [1-9][0-9]* life\.)?)',text):
         return [f'Draw(PlayerSet::Controller, {DRAW_COUNTS[m[1]]})',*hand_land_program(m[2])]
     return None
 
@@ -2108,6 +2114,10 @@ def statement_program(text):
     if not text:return None
     text = normalize_duration(text[0].lower() + text[1:])
     if land := hand_land_program(text):return land
+    if m:=re.fullmatch(r'((?:other )?creatures you control) get ([+-])X/([+-])X until end of turn, where X is (.+)\.',text):
+        filt=creature_filter(m[1]);value=amount_value(m[4])
+        if filt and value:
+            return [f'GrowCreaturesScaled {{ filter: {filt}, excluding_subtype: None, amount: {value}, power: {1 if m[2]=="+" else -1}, toughness: {1 if m[3]=="+" else -1} }}']
     if (base_set := base_stat_program(text)) and base_set[0]=='None':return base_set[1]
     if text=="this creature can't be blocked this turn.":return ['GrantKeywords { subject: Subject::Source, keywords: Keywords(16384) }']
     if text=='suspect this creature.':return ['Suspect { subject: Subject::Source }']
@@ -4866,6 +4876,31 @@ def land_template(card):
     return 'Land', keywords, triggers, activations, enters, entry
 
 
+def extract_controlled_entry_untapped(card):
+    if (card.get('layout')!='normal' or not isinstance(card.get('oracle_text'),str)
+            or permanent_type(card) not in ('Creature','Artifact Creature','Enchantment Creature','Artifact','Enchantment','Planeswalker')):
+        return card,0
+    body=[];mask=0
+    for line in card['oracle_text'].splitlines():
+        if line.strip() in ('Lands you control enter untapped.','Lands you control enter the battlefield untapped.'):
+            mask|=2
+        else:body.append(line)
+    return dict(card,oracle_text='\n'.join(body)),mask
+
+
+def untapped_entry_reminders_valid(card):
+    raw=card.get('oracle_text','')
+    if not isinstance(raw,str):return True
+    surface=raw;seen=False
+    while True:
+        text=' '.join(surface.casefold().split())
+        seen |= re.search(r'lands you control enter(?: the battlefield)? untapped|if you put a .+ onto the battlefield this way|creatures you control get [+-]x/[+-]x|creature tokens? that[’\']s all colors',text) is not None
+        stripped=re.sub(r'\([^()]*\)','',surface)
+        if stripped==surface:break
+        surface=stripped
+    return not seen or all(intrinsic_reminder_line_valid(line) for line in raw.splitlines() if '(' in line or ')' in line)
+
+
 def extract_opponent_entry_tapped(card):
     """Exact opposing-permanent entry replacements; retain every residual rule."""
     if (card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'), str)
@@ -5405,6 +5440,7 @@ def compile_catalogue(snapshot, target):
     uncounterable_rows = []
     entry_suppression_rows = []
     opponent_entry_tapped_rows = []
+    controlled_entry_untapped_rows = []
     loyalty_rows = []
     supported = []
     coverage = []
@@ -5489,6 +5525,7 @@ def compile_catalogue(snapshot, target):
         card, uncounterable = extract_uncounterable(card)
         card, entry_suppression = extract_entry_trigger_suppression(card)
         card, opponent_entry_tapped = extract_opponent_entry_tapped(card)
+        card, controlled_entry_untapped = extract_controlled_entry_untapped(card)
         card, cycling = cycling_abilities(card)
         card, flashback = extract_flashback(card)
         card, offspring = extract_offspring(card)
@@ -5722,6 +5759,8 @@ def compile_catalogue(snapshot, target):
 
         if not live_static_reminders_valid(original):
             effect='Unsupported'
+        if not untapped_entry_reminders_valid(original):
+            effect = 'Unsupported'
         if not hand_land_reminders_valid(original):
             effect='Unsupported'
         # A complete Tiered parse authenticates its single keyword reminder;
@@ -5851,6 +5890,7 @@ def compile_catalogue(snapshot, target):
             if plot is not None: plot_rows.append(f'        {index} => Some({plot}),')
             if warp is not None: warp_rows.append(f'        {index} => Some({warp}),')
             if entry_suppression: entry_suppression_rows.append(f'        {index} => {entry_suppression},')
+            if controlled_entry_untapped: controlled_entry_untapped_rows.append(f'        {index} => {controlled_entry_untapped},')
             if opponent_entry_tapped: opponent_entry_tapped_rows.append(f'        {index} => {opponent_entry_tapped},')
             if entry_counters: entry_counter_rows.append(f'        {index} => &[{", ".join(entry_counters)}],')
             if target_reduction: target_reduction_rows.append(f'        {index} => Some(&{target_reduction}),')
@@ -5925,7 +5965,7 @@ def compile_catalogue(snapshot, target):
             color_masks.append(color)
             # Clone every compiled property table for the immutable copy; no
             # mutable copy/type-changing engine or runtime card-name dispatch.
-            for table in [live_static_rows,base_set_rows,combat_rows,static_rows,grant_rows,dynamic_rows,scaling_rows,additional_rows,hybrid_rows,reduction_rows,cast_timing_rows,target_reduction_rows,entry_counter_rows,entry_suppression_rows,opponent_entry_tapped_rows,offspring_rows]:
+            for table in [live_static_rows,base_set_rows,combat_rows,static_rows,grant_rows,dynamic_rows,scaling_rows,additional_rows,hybrid_rows,reduction_rows,cast_timing_rows,target_reduction_rows,entry_counter_rows,entry_suppression_rows,opponent_entry_tapped_rows,controlled_entry_untapped_rows,offspring_rows]:
                 prefix=f'        {source_index} =>'
                 table.extend(row.replace(prefix,f'        {index} =>',1) for row in list(table) if row.startswith(prefix))
             offspring_copy_rows.append(f'        {index} => Some(__TOKEN_{key}__),')
@@ -6037,6 +6077,7 @@ def compile_catalogue(snapshot, target):
     lines += ['#[rustfmt::skip]', "pub(super) fn attached_subtype(card: Card) -> Option<&'static str> {", '    match card.0 {', *attached_subtype_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn attached_turn_keywords(card: Card) -> Keywords {', '    match card.0 {', *attached_turn_rows, '        _ => Keywords::NONE,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn dynamic_stats(card: Card) -> Option<DynamicStats> {', '    match card.0 {', *dynamic_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', "pub(super) fn scaling_modifiers(card: Card) -> &'static [ScalingModifier] {", '    match card.0 {', *scaling_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn entry_trigger_suppression(card: Card) -> u16 {', '    match card.0 {', *entry_suppression_rows, '        _ => 0,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn controlled_entry_untapped(card: Card) -> u16 {', '    match card.0 {', *controlled_entry_untapped_rows, '        _ => 0,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn opponent_entry_tapped(card: Card) -> u16 {', '    match card.0 {', *opponent_entry_tapped_rows, '        _ => 0,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn keyword_grants(card: Card) -> &'static [KeywordGrant] {", '    match card.0 {', *grant_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn additional_cost(card: Card) -> Option<AdditionalCost> {', '    match card.0 {', *additional_rows, '        _ => None,', '    }', '}', '']

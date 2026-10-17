@@ -927,7 +927,7 @@ impl Game {
         if destination == Zone::Battlefield {
             let moves = ids
                 .iter()
-                .map(|&id| self.entry_move(id, destination, self.enters_tapped(id)))
+                .map(|&id| self.entry_move(id, destination, false))
                 .collect();
             self.stage_entries(moves, None);
         } else {
