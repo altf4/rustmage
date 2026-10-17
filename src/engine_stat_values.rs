@@ -32,6 +32,17 @@ impl Game {
             && (!filter.basic || o.card.is_basic_land())
     }
     pub(super) fn stat_value(&self, value: StatValue, source: ObjectRef, owner: Player) -> i128 {
+        self.stat_value_without_hand(value, source, owner, None)
+    }
+    /// CR601.2a preflight removes only the exact proposed Hand spell. Plot and
+    /// activation queries retain their real current objects until costs commit.
+    pub(super) fn stat_value_without_hand(
+        &self,
+        value: StatValue,
+        source: ObjectRef,
+        owner: Player,
+        departing: Option<CardId>,
+    ) -> i128 {
         self.stat_value_with(
             value,
             source,
@@ -41,6 +52,7 @@ impl Game {
                     .objects
                     .iter()
                     .enumerate()
+                    .filter(move |(id, o)| departing != Some(*id as CardId) || o.zone != Zone::Hand)
                     .map(|(id, o)| (id as CardId, o))
             },
             self.state.players[owner.index()].life,
@@ -193,8 +205,14 @@ impl Game {
                 .capacity("effect amount representation exhausted"),
         }
     }
-    pub(super) fn stat_expression(&self, expr: StatExpr, source: ObjectRef, owner: Player) -> i128 {
-        self.stat_value(expr.value, source, owner)
+    pub(super) fn stat_expression_without_hand(
+        &self,
+        expr: StatExpr,
+        source: ObjectRef,
+        owner: Player,
+        departing: Option<CardId>,
+    ) -> i128 {
+        self.stat_value_without_hand(expr.value, source, owner, departing)
             .checked_mul(expr.multiplier)
             .and_then(|v| v.checked_add(expr.offset))
             .capacity("stat expression exhausted")

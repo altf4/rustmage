@@ -150,6 +150,9 @@ impl Game {
     }
 
     pub(super) fn stats(&self, id: CardId) -> Stats {
+        self.stats_without_hand(id, None)
+    }
+    pub(super) fn stats_without_hand(&self, id: CardId, departing: Option<CardId>) -> Stats {
         let object = &self.state.objects[id as usize];
         let mut stats = Stats {
             power: object.local_power(),
@@ -158,9 +161,9 @@ impl Game {
         // Characteristic-defining abilities apply in every zone (layer 7a).
         if let Some(base) = object.card.dynamic_stats() {
             let reference = self.object_ref(id);
-            let power = base
-                .power
-                .map(|expr| self.stat_expression(expr, reference, object.owner));
+            let power = base.power.map(|expr| {
+                self.stat_expression_without_hand(expr, reference, object.owner, departing)
+            });
             if let Some(power) = power {
                 stats.power = power
                     .checked_add(object.growth.power)
@@ -179,7 +182,7 @@ impl Game {
                         .and_then(|v| v.checked_sub(p.offset))
                         .capacity("toughness exhausted")
                 } else {
-                    self.stat_expression(expr, reference, object.owner)
+                    self.stat_expression_without_hand(expr, reference, object.owner, departing)
                 };
                 stats.toughness = value
                     .checked_add(object.growth.toughness)
@@ -207,8 +210,12 @@ impl Game {
                     }
                 };
                 if applies {
-                    let value =
-                        self.stat_value(modifier.value, self.object_ref(source), object.owner);
+                    let value = self.stat_value_without_hand(
+                        modifier.value,
+                        self.object_ref(source),
+                        object.owner,
+                        departing,
+                    );
                     stats += Stats {
                         power: modifier
                             .stats

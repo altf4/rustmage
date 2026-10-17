@@ -114,6 +114,7 @@ impl Game {
         mana_value: u64,
     ) -> u64 {
         let recipient = &self.state.objects[id as usize];
+        let departing = (recipient.zone == Zone::Hand).then_some(id);
         let applies = |rule: &crate::cards::SpellReduction, source: CardId| {
             let object = &self.state.objects[source as usize];
             rule.filter.matches_mana_value(recipient.card, mana_value)
@@ -122,7 +123,13 @@ impl Game {
                     CostTurn::Own => self.state.active == actor,
                     CostTurn::Other => self.state.active != actor,
                 }
-                && self.step_guard(rule.guard, actor, self.object_ref(source), object.tapped)
+                && self.step_guard_without_hand(
+                    rule.guard,
+                    actor,
+                    self.object_ref(source),
+                    object.tapped,
+                    departing,
+                )
         };
         let amount = |rule: &crate::cards::SpellReduction, source: CardId| match rule.amount {
             crate::cards::SpellReductionAmount::CreaturePowerCount { minimum } => {
@@ -134,7 +141,8 @@ impl Game {
                         o.zone == Zone::Battlefield
                             && o.owner == actor
                             && o.card.is_creature()
-                            && self.stats(*id as CardId).power >= i128::from(minimum)
+                            && self.stats_without_hand(*id as CardId, departing).power
+                                >= i128::from(minimum)
                     })
                     .count() as u64
             }
@@ -145,7 +153,8 @@ impl Game {
                     .saturating_mul(u64::from(factor))
             }
             crate::cards::SpellReductionAmount::SourcePower => {
-                u64::try_from(self.stats(source).power.max(0)).unwrap_or(u64::MAX)
+                u64::try_from(self.stats_without_hand(source, departing).power.max(0))
+                    .unwrap_or(u64::MAX)
             }
             crate::cards::SpellReductionAmount::CreaturePower { filter, greatest } => {
                 let mut powers = self
@@ -156,7 +165,7 @@ impl Game {
                     .filter(|&(id, _)| {
                         self.creature_matches(filter, actor, self.object_ref(source), id as CardId)
                     })
-                    .map(|(id, _)| self.stats(id as CardId).power);
+                    .map(|(id, _)| self.stats_without_hand(id as CardId, departing).power);
                 // Sum signed values before clamping: negative-power creatures
                 // reduce the total, but cannot create a negative discount.
                 let value = if greatest {
@@ -172,7 +181,7 @@ impl Game {
                 // Widen before multiplying: raw X plus printed generic may exceed
                 // u32 before a legal discount makes its payment representable.
                 let n = self
-                    .stat_value(value, self.object_ref(source), actor)
+                    .stat_value_without_hand(value, self.object_ref(source), actor, departing)
                     .max(0);
                 u64::try_from(n)
                     .unwrap_or(u64::MAX)

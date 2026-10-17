@@ -131,7 +131,7 @@ impl Game {
                 return true;
             }
             let mut count = 0;
-            self.visit_targets(spec.rule, actor, source, |target| {
+            self.visit_cast_targets(spec.rule, actor, source, |target| {
                 if target == Target::Card(source.card) {
                     return false;
                 }
@@ -272,14 +272,39 @@ impl Game {
         source: ObjectRef,
         target: Target,
     ) -> bool {
+        self.target_matches_without_hand(rule, controller, source, target, None)
+    }
+    pub(super) fn cast_target_matches(
+        &self,
+        rule: TargetRule,
+        controller: Player,
+        source: ObjectRef,
+        target: Target,
+    ) -> bool {
+        let departing = self
+            .state
+            .objects
+            .get(source.card as usize)
+            .filter(|o| o.zone == Zone::Hand && o.generation == source.generation)
+            .map(|_| source.card);
+        self.target_matches_without_hand(rule, controller, source, target, departing)
+    }
+    fn target_matches_without_hand(
+        &self,
+        rule: TargetRule,
+        controller: Player,
+        source: ObjectRef,
+        target: Target,
+        departing: Option<CardId>,
+    ) -> bool {
         match rule {
             TargetRule::Union(rules) => {
-                return rules
-                    .iter()
-                    .any(|&rule| self.target_matches(rule, controller, source, target));
+                return rules.iter().any(|&rule| {
+                    self.target_matches_without_hand(rule, controller, source, target, departing)
+                });
             }
             TargetRule::Filtered { base, predicate } => {
-                if !self.target_matches(*base, controller, source, target) {
+                if !self.target_matches_without_hand(*base, controller, source, target, departing) {
                     return false;
                 }
                 let Target::Card(id) = target else {
@@ -297,12 +322,14 @@ impl Game {
                     }
                     TargetPredicate::Damaged => object.damaged_this_turn,
                     TargetPredicate::DealtDamage => object.dealt_damage_this_turn,
-                    TargetPredicate::PowerAtLeast(n) => self.stats(id).power >= i128::from(n),
+                    TargetPredicate::PowerAtLeast(n) => {
+                        self.stats_without_hand(id, departing).power >= i128::from(n)
+                    }
                     TargetPredicate::ToughnessAtLeast(n) => {
-                        self.stats(id).toughness >= i128::from(n)
+                        self.stats_without_hand(id, departing).toughness >= i128::from(n)
                     }
                     TargetPredicate::PowerOrToughnessAtLeast(n) => {
-                        let stats = self.stats(id);
+                        let stats = self.stats_without_hand(id, departing);
                         stats.power >= i128::from(n) || stats.toughness >= i128::from(n)
                     }
                     TargetPredicate::Colors(mask) => object.card.colors() & mask != 0,
@@ -418,6 +445,31 @@ impl Game {
         rule: TargetRule,
         controller: Player,
         source: ObjectRef,
+        emit: impl FnMut(Target) -> bool,
+    ) -> bool {
+        self.visit_targets_without_hand(rule, controller, source, None, emit)
+    }
+    pub(super) fn visit_cast_targets(
+        &self,
+        rule: TargetRule,
+        controller: Player,
+        source: ObjectRef,
+        emit: impl FnMut(Target) -> bool,
+    ) -> bool {
+        let departing = self
+            .state
+            .objects
+            .get(source.card as usize)
+            .filter(|o| o.zone == Zone::Hand && o.generation == source.generation)
+            .map(|_| source.card);
+        self.visit_targets_without_hand(rule, controller, source, departing, emit)
+    }
+    fn visit_targets_without_hand(
+        &self,
+        rule: TargetRule,
+        controller: Player,
+        source: ObjectRef,
+        departing: Option<CardId>,
         mut emit: impl FnMut(Target) -> bool,
     ) -> bool {
         if rule == TargetRule::None {
@@ -425,20 +477,26 @@ impl Game {
         }
         for player in [Player::P0, Player::P1] {
             let target = Target::Player(player);
-            if self.target_matches(rule, controller, source, target) && emit(target) {
+            if self.target_matches_without_hand(rule, controller, source, target, departing)
+                && emit(target)
+            {
                 return true;
             }
         }
         for id in 0..self.state.objects.len() {
             let target = Target::Card(id as CardId);
-            if self.target_matches(rule, controller, source, target) && emit(target) {
+            if self.target_matches_without_hand(rule, controller, source, target, departing)
+                && emit(target)
+            {
                 return true;
             }
         }
         for item in &self.state.stack {
             if item.kind == StackKind::Spell {
                 let target = Target::Spell(item.card);
-                if self.target_matches(rule, controller, source, target) && emit(target) {
+                if self.target_matches_without_hand(rule, controller, source, target, departing)
+                    && emit(target)
+                {
                     return true;
                 }
             }

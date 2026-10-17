@@ -15,7 +15,7 @@ impl Game {
         let reduction = self.state.objects[c.source.card as usize]
             .card
             .target_cost_reduction()?;
-        let matches = |target| self.target_matches(reduction.rule, c.actor, c.source, target);
+        let matches = |target| self.cast_target_matches(reduction.rule, c.actor, c.source, target);
         let mut qualifies = c
             .chosen
             .iter()
@@ -37,7 +37,7 @@ impl Game {
             } else {
                 let mut available = 0;
                 let mut can_qualify = false;
-                self.visit_targets(spec.rule, c.actor, c.source, |target| {
+                self.visit_cast_targets(spec.rule, c.actor, c.source, |target| {
                     if target == Target::Card(c.source.card)
                         || c.chosen
                             .iter()
@@ -85,7 +85,7 @@ impl Game {
             .is_some_and(|r| {
                 targets.iter().any(|b| {
                     self.same_target_object(*b)
-                        && self.target_matches(r.rule, actor, self.object_ref(id), b.target)
+                        && self.cast_target_matches(r.rule, actor, self.object_ref(id), b.target)
                 })
             });
         self.apply_target_discount(id, self.reduced_spell_cost(actor, id, base), qualifies)
