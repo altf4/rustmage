@@ -779,12 +779,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 {
                     state.extra = true;
                 }
-                if i == 12 && state.main_verified {
-                    let source = o
+                if i == 12
+                    && state.main_verified
+                    && let Some(source) = o
                         .objects
                         .iter()
-                        .find(|v| Some(v.id) == state.inset)
-                        .unwrap();
+                        .find(|v| Some(v.id) == state.inset && v.zone == Zone::Battlefield)
+                {
                     if o.active == p {
                         assert!(source.keywords.contains(Keywords::FIRST_STRIKE));
                         state.own_strike = true;

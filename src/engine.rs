@@ -4696,6 +4696,9 @@ mod milling_tests;
 mod damage_trigger_tests;
 
 #[cfg(test)]
+#[path = "engine_attachment_ward_tests.rs"]
+mod attachment_ward_tests;
+#[cfg(test)]
 #[path = "engine_spell_cost_tests.rs"]
 mod spell_cost_tests;
 #[cfg(test)]

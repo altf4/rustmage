@@ -150,6 +150,7 @@ def extract_cost_reductions(card):
                 quantity=candidate;amount=1;source_only=True;filt='CastFilter::Any'
         elif m:=re.fullmatch(r'(?:Vivid — )?This spell costs \{([0-9]+)\} less to cast for each (.+)\.',line):
             quantity=reduction_quantity(m[2]);amount=int(m[1]);source_only=True;filt='CastFilter::Any'
+            if m[2] in ('attacking creature','attacking creatures'):quantity='StatValue::AllAttackingCreatures'
             if '{X}' in card.get('mana_cost','') and amount==1 and m[2]=='creature you control with power 4 or greater':derived='SpellReductionAmount::CreaturePowerCount { minimum: 4 }'
             if m[2]=='creature that attacked this turn':derived=f'SpellReductionAmount::Attackers {{ factor: {amount} }}'
         elif m:=re.fullmatch(r'This spell costs \{X\} less to cast, where X is (?:the number of )?(.+)\.',line):
@@ -1606,6 +1607,7 @@ for _name, _zone, _kinds, _relation, _other, _nonland in [
     ('OtherCreatureYou', 'Battlefield', 1, 0, True, False),
     ('CreatureOpponent', 'Battlefield', 1, 1, False, False),
     ('Permanent', 'Battlefield', 0, -1, False, False),
+    ('PermanentYou', 'Battlefield', 0, 0, False, False),
     ('Nonland', 'Battlefield', 0, -1, False, True),
     ('OtherNonlandYou', 'Battlefield', 0, 0, True, True),
     ('OtherNonland', 'Battlefield', 0, -1, True, True),
@@ -1619,6 +1621,8 @@ for _name, _zone, _kinds, _relation, _other, _nonland in [
     ('ArtifactCreature', 'Battlefield', 17, -1, False, False),
     ('ArtifactCreatureYou', 'Battlefield', 17, 0, False, False),
     ('ArtifactCreatureOpponent', 'Battlefield', 17, 1, False, False),
+    ('ArtifactCreatureEnchantmentOpponent', 'Battlefield', 49, 1, False, False),
+    ('ArtifactYou', 'Battlefield', 16, 0, False, False),
     ('Enchantment', 'Battlefield', 32, -1, False, False),
     ('ArtifactEnchantment', 'Battlefield', 48, -1, False, False),
     ('ArtifactEnchantmentOpponent', 'Battlefield', 48, 1, False, False),
@@ -1646,6 +1650,8 @@ for _name, _kinds, _relation, _nonland, _tapped, _minimum, _maximum in [
                           f'tapped: {str(_tapped).lower()}, min_mana: {_minimum}, max_mana: {_maximum} }}')
 
 EXILE_SUBJECTS = {
+    'target artifact or creature an opponent controls': 'ArtifactCreatureOpponent',
+    'target artifact, creature, or enchantment an opponent controls': 'ArtifactCreatureEnchantmentOpponent',
     'target creature': 'Creature', 'target artifact': 'Artifact',
     'target enchantment': 'Enchantment', 'target artifact or enchantment': 'ArtifactEnchantment',
     'target creature or enchantment': 'CreatureEnchantment',
@@ -1684,6 +1690,7 @@ TARGET_RULES['CreatureEnchantmentPlaneswalker']='TargetRule::Object { zone: Targ
 TARGET_RULES['DefendingCreature'] = 'TargetRule::DefendingCreature'
 TARGET_RULES['LegendaryCreature'] = filtered_target('Creature','Legendary')
 TARGET_RULES['PirateYou'] = filtered_target('CreatureYou','Subtype("Pirate")')
+TARGET_RULES['DwarfYou'] = filtered_target('PermanentYou','Subtype("Dwarf")')
 TARGET_RULES['CaveGraveYou'] = 'TargetRule::Filtered { base: &TargetRule::Object { zone: TargetZone::Graveyard, kinds: 0, relation: 0, other: false, nonland: false, tapped: false, min_mana: 0, max_mana: u32::MAX }, predicate: &TargetPredicate::Subtype("Cave") }'
 TARGET_RULES['VampireYou'] = ('TargetRule::Filtered { base: &TargetRule::Object { zone: TargetZone::Battlefield, kinds: 0, relation: 0, other: false, nonland: false, tapped: false, min_mana: 0, max_mana: 4294967295 }, predicate: &TargetPredicate::Subtype("Vampire") }')
 
@@ -1990,6 +1997,8 @@ def targeted_program(text):
         return ('CreatureVehicle',0,1),[counter_instruction('Targets',m[1],m[2]),f'GrantKeywords {{ subject: Subject::Targets, keywords: Keywords({keywords}) }}']
     if text=='attach this Equipment to up to one target creature you control.':
         return ('CreatureYou',0,1),['AttachSource']
+    if text=='attach this Equipment to target Dwarf you control.':
+        return 'DwarfYou',['AttachSource']
     if text=='attach this Equipment to target Pirate creature you control.':
         return 'PirateYou',['AttachSource']
     if m := re.fullmatch(r'attach this Equipment to target creature you control\.(?: That creature gains (.+) until end of turn\.)?', text):
@@ -2831,6 +2840,55 @@ def activation_cost(text):
     return cost
 
 
+def attachment_ward_route(card):
+    """New typed attachment and linked-union routes, selected by grammar alone."""
+    text='\n'.join(line.strip() for line in re.sub(r'\([^()]*\)', '',card.get('oracle_text','')).casefold().splitlines())
+    return (re.search(r'(?m)^(?:enchanted|equipped) (?:creature|permanent)[^\n]*\bward\b',text) is not None
+            or 'enchant artifact you control' in text.splitlines()
+            or any(phrase in text for phrase in (
+                'exile target artifact or creature an opponent controls until ',
+                'exile target artifact, creature, or enchantment an opponent controls until ')))
+
+
+def attachment_ward_reminders_valid(card):
+    """Authenticate exact reminder syntax and repeated printed costs before extraction."""
+    mana=r'(?:\{(?:[0-9]+|[WUBRGC])\})+'
+    for line in card.get('oracle_text','').splitlines():
+        if '(' not in line and ')' not in line:continue
+        if line.count('(')!=1 or line.count(')')!=1 or not line.endswith(')') or ' (' not in line:return False
+        prefix,reminder=line.rsplit(' (',1)
+        if m:=re.fullmatch(r'Ward ('+mana+r')',prefix):
+            expected=r'Whenever this (?:artifact|enchantment|creature) becomes the target of a spell or ability an opponent controls, counter it unless that player pays '+re.escape(m[1])+r'\.\)'
+        elif m:=re.fullmatch(r'(Enchanted|Equipped) (?:creature|permanent)[^\n]*\bward ('+mana+r')\.',prefix):
+            recipient=m[1].lower()+r' (?:creature|permanent)'
+            expected=r'Whenever (?:'+recipient+r'|it) becomes the target of a spell or ability an opponent controls, counter it unless that player pays '+re.escape(m[2])+r'\.\)'
+        elif m:=re.fullmatch(r'(?:[^\n()]+ — )?Equip ('+mana+r')',prefix):
+            expected=re.escape(m[1])+r': Attach to target creature you control\. Equip only as a sorcery\.\)'
+        elif m:=re.fullmatch(r'Cycling ('+mana+r')',prefix):
+            expected=re.escape(m[1])+r', Discard this card: Draw a card\.\)'
+        elif prefix=='Job select':
+            expected=r'When this Equipment enters, create a 1/1 colorless Hero creature token, then attach this to it\.\)'
+        elif m:=re.fullmatch(r'Crew ([0-9]+)',prefix):
+            expected=r'Tap any number of (?:other untapped )?creatures you control with total power '+re.escape(m[1])+r' or more: This Vehicle becomes an artifact creature until end of turn\.\)'
+        else:return False
+        if re.fullmatch(expected,reminder) is None:return False
+    return True
+
+
+def attachment_grants(text):
+    """Keywords and independently triggered Ward instances; never merge Ward costs."""
+    if not text: return 0, []
+    words=re.split(r',? and |, ',text.casefold())
+    keywords=0; triggers=[]
+    for word in words:
+        if word in KEYWORDS:
+            keywords|=KEYWORDS[word]
+        elif (ward:=ward_word(word)) is not None:
+            triggers.append(('Granted(&TriggerCondition::Ward)',[counter_unless(ward,'Related')],'None'))
+        else:return None
+    return keywords,triggers
+
+
 def aura_template(card):
     if (card.get('layout') != 'normal' or permanent_type(card) != 'Enchantment'
             or card.get('type_line','').split(' — ')[-1] != 'Aura'
@@ -2839,28 +2897,33 @@ def aura_template(card):
     text=re.sub(r'\([^()]*\)', '', card['oracle_text']).strip()
     body=[]
     power,toughness,keywords=0,0,0
-    relation=None
+    relation=None; kinds=1; creature_grants=False; attached_abilities=[]
     for line in text.split('\n'):
         line=line.strip()
-        if line in ('Enchant creature','Enchant creature you control','Enchant creature an opponent controls'):
+        if line in ('Enchant creature','Enchant creature you control','Enchant creature an opponent controls','Enchant artifact you control'):
             if relation is not None: return None
-            relation={'Enchant creature':-1,'Enchant creature you control':0,'Enchant creature an opponent controls':1}[line]
+            relation={'Enchant creature':-1,'Enchant creature you control':0,'Enchant creature an opponent controls':1,'Enchant artifact you control':0}[line]
+            kinds=16 if line=='Enchant artifact you control' else 1
         elif m:=re.fullmatch(r'Enchanted creature gets ([+-][0-9]+)/([+-][0-9]+)(?: and has (.+))?\.',line):
             if max(abs(int(m[1])),abs(int(m[2])))>32767: return None
-            extra=keyword_list(m[3]) if m[3] else 0
+            extra=attachment_grants(m[3])
             if extra is None: return None
-            power+=int(m[1]);toughness+=int(m[2]);keywords|=extra
-        elif m:=re.fullmatch(r'Enchanted creature has (.+)\.',line):
-            extra=keyword_list(m[1])
+            power+=int(m[1]);toughness+=int(m[2]);keywords|=extra[0];attached_abilities.extend(extra[1]);creature_grants=True
+        elif m:=re.fullmatch(r'Enchanted (creature|permanent) has (.+)\.',line):
+            # A creature-only triggered grant needs a live guard on an artifact Aura.
+            creature_grants |= m[1]=='creature'
+            extra=attachment_grants(m[2])
             if extra is None: return None
-            keywords|=extra
+            keywords|=extra[0];attached_abilities.extend(extra[1])
         elif line.startswith('Enchanted creature ') and ('this creature '+line[len('Enchanted creature '):]).casefold() in TEXT_FLAGS:
             keywords|=TEXT_FLAGS[('this creature '+line[len('Enchanted creature '):]).casefold()]
         else:
-            body.append(line.replace('When this Aura enters, ','When this enchantment enters, '))
-    if relation is None: return None
+            body.append(line.replace('When this Aura enters, ','When this enchantment enters, ').replace('until this Aura leaves the battlefield.','until this enchantment leaves the battlefield.'))
+    if relation is None or (kinds!=1 and (creature_grants or power or toughness or keywords)): return None
     result=permanent_program_template(dict(card,type_line='Enchantment',oracle_text='\n'.join(body)))
-    return (*result,relation,power,toughness,keywords) if result else None
+    if result is None:return None
+    effect,intrinsic,abilities,activations,enters=result
+    return effect,intrinsic,[*abilities,*attached_abilities],activations,enters,kinds,relation,power,toughness,keywords
 
 
 def equipment_template(card):
@@ -2897,13 +2960,13 @@ def equipment_template(card):
             attached_abilities.append(ability)
         elif m:=re.fullmatch(r'Equipped creature gets ([+-][0-9]+)/([+-][0-9]+)(?: and has (.+))?\.',line):
             if max(abs(int(m[1])),abs(int(m[2])))>32767: return None
-            extra=keyword_list(m[3]) if m[3] else 0
+            extra=attachment_grants(m[3])
             if extra is None: return None
-            power+=int(m[1]);toughness+=int(m[2]);keywords|=extra
+            power+=int(m[1]);toughness+=int(m[2]);keywords|=extra[0];attached_abilities.extend(extra[1])
         elif m:=re.fullmatch(r'Equipped creature has (.+)\.',line):
-            extra=keyword_list(m[1])
+            extra=attachment_grants(m[1])
             if extra is None: return None
-            keywords|=extra
+            keywords|=extra[0];attached_abilities.extend(extra[1])
         elif m:=re.fullmatch(r'Equip Pirate ((?:\{(?:[0-9]+|[WUBRGC])\})+)',line):
             equips+=1
             body.append(m[1]+': Attach this Equipment to target Pirate creature you control. Activate only as a sorcery.')
@@ -3893,10 +3956,10 @@ def compile_catalogue(snapshot, target):
             elif spell is not None:
                 effect = 'Spell'
             elif aura is not None:
-                _, keywords, abilities, activations, enters, relation, power, toughness, granted = aura
-                target = {-1:'Creature',0:'CreatureYou',1:'CreatureOpponent'}[relation]
+                _, keywords, abilities, activations, enters, enchant_kinds, relation, power, toughness, granted = aura
+                target = 'ArtifactYou' if enchant_kinds==16 else {-1:'Creature',0:'CreatureYou',1:'CreatureOpponent'}[relation]
                 effect = f'Aura({rust_targets(target)})'
-                aura_rows.append(f'        {index} => Some(AuraSpec {{ relation: {relation}, bonus: EquipmentSpec {{ stats: Stats {{ power: {power}, toughness: {toughness} }}, keywords: Keywords({granted}) }} }}),')
+                aura_rows.append(f'        {index} => Some(AuraSpec {{ kinds: {enchant_kinds}, relation: {relation}, bonus: EquipmentSpec {{ stats: Stats {{ power: {power}, toughness: {toughness} }}, keywords: Keywords({granted}) }} }}),')
             elif equipment is not None:
                 effect, keywords, abilities, activations, enters, power, toughness, granted = equipment
                 equipment_rows.append(f'        {index} => Some(EquipmentSpec {{ stats: Stats {{ power: {power}, toughness: {toughness} }}, keywords: Keywords({granted}) }}),')
@@ -3981,6 +4044,8 @@ def compile_catalogue(snapshot, target):
             else:
                 effect,keywords,abilities=saga
                 activations=[];enters=[0,0,0]
+        if attachment_ward_route(original) and not attachment_ward_reminders_valid(original):
+            effect='Unsupported'
         # Later fixed-cost selectors must never revive a rejected variable-cost body.
         if '{X}' in card.get('mana_cost', '') and scalar is None:
             effect = 'Unsupported'

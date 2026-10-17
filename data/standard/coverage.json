@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "4e8832fc8a3e3648b0e2008fe103dc8ea9a92cdfdcc4a658f98a356ded2e48f7",
+  "catalogue_version": "84d4be55aa3bb1d32353177cbedca07b753ed1819d82422cc4186df266ad5c2a",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1791,
-  "implemented_total": 1797,
+  "implemented_standard_cards": 1801,
+  "implemented_total": 1807,
   "token_definitions": 86,
   "emblem_definitions": 1,
   "cards": [
@@ -6382,7 +6382,7 @@
     {
       "name": "Detention Chariot",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -7240,8 +7240,8 @@
     {
       "name": "Dusk Rose Reliquary",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Duskmourn's Domination",
@@ -7294,8 +7294,8 @@
     {
       "name": "Dwarven Mattock",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Dwarven Mauler",
@@ -8602,8 +8602,8 @@
     {
       "name": "Falcon's Wing Harness",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Falcon, Winged Wonder",
@@ -11686,8 +11686,8 @@
     {
       "name": "Hardlight Containment",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Hare Apparent",
@@ -14758,8 +14758,8 @@
     {
       "name": "Lavaspur Boots",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Lazav, Familiar Stranger",
@@ -22960,8 +22960,8 @@
     {
       "name": "Sheltered by Ghosts",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Shepherd of the Clouds",
@@ -24718,8 +24718,8 @@
     {
       "name": "Static Snare",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Station Monitor",
@@ -25540,8 +25540,8 @@
     {
       "name": "Super Strength",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Super Suit",
@@ -27976,8 +27976,8 @@
     {
       "name": "Trapped in the Screen",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Trash the Town",
