@@ -25,7 +25,7 @@ impl Game {
         recipient: u16,
         fight: bool,
     ) {
-        let permanent = |group, creature_only| {
+        let permanent = |group: u16, creature_only: bool| {
             item.targets.iter().find_map(|bound| {
                 if bound.group == group
                     && self.same_target_object(*bound)
