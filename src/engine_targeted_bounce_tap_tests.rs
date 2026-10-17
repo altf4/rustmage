@@ -728,17 +728,20 @@ fn ring_funding_is_pure_exact_and_never_counts_its_targeted_tap_program_as_mana(
             reserve: None,
             source: None,
         };
-        assert!(g.can_fund(goal));
-        assert!(!g.can_fund(super::funding::FundingGoal { generic: 3, ..goal }));
+        assert!(g.can_fund(goal.clone()));
+        assert!(!g.can_fund(super::funding::FundingGoal {
+            generic: 3,
+            ..goal.clone()
+        }));
         assert!(!g.can_fund(super::funding::FundingGoal {
             generic: 0,
             required: [0, 1, 0, 0, 0, 0],
-            ..goal
+            ..goal.clone()
         }));
         assert!(g.can_fund(super::funding::FundingGoal {
             generic: 0,
             required: [0, 0, 0, 0, 0, 2],
-            ..goal
+            ..goal.clone()
         }));
         assert_eq!(g.snapshot(), saved);
         assert_eq!(g.revision(), revision);

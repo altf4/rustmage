@@ -1489,7 +1489,7 @@ pub struct PlayerView {
     pub hand_count: usize,
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct PaymentRequestView {
     pub required: Mana,
     pub generic: u32,
@@ -1498,7 +1498,7 @@ pub struct PaymentRequestView {
 }
 
 /// The choosing player's uncommitted announcement costs.
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct PendingPaymentView {
     pub mana: Mana,
     pub counters: Counters,
@@ -5013,7 +5013,7 @@ impl Game {
                 s.announcing.as_ref().and_then(|announcement| {
                     announcement.payment.map(|mana| PendingPaymentView {
                         mana,
-                        counters: announcement.counter_payment,
+                        counters: announcement.counter_payment.clone(),
                     })
                 })
             } else {
@@ -5249,6 +5249,13 @@ impl Game {
             })
             + 2 * std::mem::size_of::<Vec<CardId>>()
             + s.objects.len() * std::mem::size_of::<Object>()
+            + s.objects
+                .iter()
+                .map(|o| o.counters.owned_bytes())
+                .sum::<usize>()
+            + s.announcing
+                .as_ref()
+                .map_or(0, |a| a.counter_payment.owned_bytes())
             + s.exile_links.len() * std::mem::size_of::<ExileLink>()
             + s.exile_permissions.len() * std::mem::size_of::<ExilePlayPermission>()
             + s.adventures.as_ref().map_or(0, |p| p.bytes())
@@ -6091,3 +6098,7 @@ mod fdn_library_eight_tests;
 #[cfg(test)]
 #[path = "engine_object_name_tests.rs"]
 mod object_name_tests;
+
+#[cfg(test)]
+#[path = "engine_named_counter_tests.rs"]
+mod named_counter_tests;

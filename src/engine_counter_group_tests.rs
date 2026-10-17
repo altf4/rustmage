@@ -240,6 +240,7 @@ fn zimone_doubles_every_existing_counter_kind_on_creatures_or_artifacts_once_per
         plus_one: 2,
         minus_one: 1,
         stun: 2,
+        ..Counters::default()
     };
     g.state.objects[artifact as usize].counters = Counters {
         lore: 0,
@@ -247,6 +248,7 @@ fn zimone_doubles_every_existing_counter_kind_on_creatures_or_artifacts_once_per
         plus_one: 3,
         minus_one: 0,
         stun: 4,
+        ..Counters::default()
     };
     g.state.players[0].mana = [0, 1, 0, 0, 1, 0];
     activate(&mut g, z);
@@ -281,7 +283,8 @@ fn zimone_doubles_every_existing_counter_kind_on_creatures_or_artifacts_once_per
             loyalty: 0,
             plus_one: 2,
             minus_one: 0,
-            stun: 4
+            stun: 4,
+            ..Counters::default()
         }
     );
     assert_eq!(
@@ -291,7 +294,8 @@ fn zimone_doubles_every_existing_counter_kind_on_creatures_or_artifacts_once_per
             loyalty: 0,
             plus_one: 6,
             minus_one: 0,
-            stun: 8
+            stun: 8,
+            ..Counters::default()
         }
     );
     g.state.objects[artifact as usize].tapped = true;

@@ -345,6 +345,7 @@ fn entry_loyalty_and_all_counter_kinds_are_replaced_while_normal_loyalty_activat
             minus_one: 1,
             stun: 1,
             loyalty: 1,
+            ..Counters::default()
         };
         g.effect_counters(
             vec![(g.object_ref(bear), c)],
@@ -358,7 +359,8 @@ fn entry_loyalty_and_all_counter_kinds_are_replaced_while_normal_loyalty_activat
                 plus_one: 2,
                 minus_one: 2,
                 stun: 2,
-                loyalty: 2
+                loyalty: 2,
+                ..Counters::default()
             }
         );
     }

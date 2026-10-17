@@ -290,9 +290,10 @@ fn loyalty_is_in_all_kind_counter_doubling_and_any_kind_payment_space() {
         minus_one: 1,
         stun: 1,
         loyalty: 1,
+        ..Counters::default()
     };
     let mut payments = Vec::new();
-    counter_payments(cost, available, |paid| {
+    counter_payments(cost, &available, |paid| {
         payments.push(paid);
         false
     });
@@ -301,7 +302,7 @@ fn loyalty_is_in_all_kind_counter_doubling_and_any_kind_payment_space() {
     assert!(payments.iter().all(|p| p.total() == 2));
     cost.remove = Some((Some(CounterKind::Loyalty), 1));
     payments.clear();
-    counter_payments(cost, available, |paid| {
+    counter_payments(cost, &available, |paid| {
         payments.push(paid);
         false
     });

@@ -1002,14 +1002,22 @@ impl Game {
                     || evidence::threshold(spec).is_some()
             }) && let Some(payment) = announcement.payment.take()
             {
-                self.pay_activation(&announcement.item, payment, announcement.counter_payment);
+                self.pay_activation(
+                    &announcement.item,
+                    payment,
+                    announcement.counter_payment.clone(),
+                );
             }
             self.pay_additional_cost(&mut announcement);
             announcement.additional_paid = true;
         }
         if let Some(payment) = announcement.payment {
             if matches!(announcement.item.kind, StackKind::ActivatedAbility { .. }) {
-                self.pay_activation(&announcement.item, payment, announcement.counter_payment);
+                self.pay_activation(
+                    &announcement.item,
+                    payment,
+                    announcement.counter_payment.clone(),
+                );
             } else {
                 self.spend_mana(announcement.item.controller, payment);
                 announcement.item.cast.as_mut().unwrap().payment = payment;

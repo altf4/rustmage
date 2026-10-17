@@ -129,7 +129,7 @@ impl Game {
     ) -> bool {
         if route.is_none_or(|r| r == ForageRoute::ExileThree)
             && self.forage_graveyard_count(goal.actor) >= 3
-            && self.can_fund(goal)
+            && self.can_fund(goal.clone())
         {
             return true;
         }
@@ -139,11 +139,11 @@ impl Game {
                 self.additional_candidate(
                     food_cost(),
                     goal.actor,
-                    goal.source.map_or(r, |s| s.0),
+                    goal.source.as_ref().map_or(r, |s| s.0),
                     r,
                 ) && self.can_fund(FundingGoal {
                     reserve: Some((r, food_cost())),
-                    ..goal
+                    ..goal.clone()
                 })
             })
         {

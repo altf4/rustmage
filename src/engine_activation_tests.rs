@@ -272,7 +272,8 @@ fn targeted_counter_cost_is_deferred_until_announcement_completes_and_replays() 
                 loyalty: 0,
                 plus_one: 0,
                 minus_one: 2,
-                stun: 0
+                stun: 0,
+                ..Counters::default()
             }
         })
     );
@@ -357,7 +358,8 @@ fn mixed_counter_payments_are_complete_unique_and_forgery_is_atomic() {
                     loyalty: 0,
                     plus_one: 1,
                     minus_one: 1,
-                    stun: 0
+                    stun: 0,
+                    ..Counters::default()
                 }
             }
         ),
@@ -380,7 +382,8 @@ fn mixed_counter_payments_are_complete_unique_and_forgery_is_atomic() {
             loyalty: 0,
             plus_one: 0,
             minus_one: 1,
-            stun: 1
+            stun: 1,
+            ..Counters::default()
         }
     );
     assert_eq!(

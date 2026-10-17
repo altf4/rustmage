@@ -464,7 +464,7 @@ fn torpor_does_not_suppress_tap_events_and_funding_enumeration_is_pure() {
         reserve: None,
         source: None,
     };
-    assert!(g.can_fund(goal));
+    assert!(g.can_fund(goal.clone()));
     for _ in 0..3 {
         let _ = g.legal_actions();
         let _ = g.observe(Player::P0);

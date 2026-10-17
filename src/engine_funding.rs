@@ -3,7 +3,7 @@
 use super::*;
 use std::collections::HashSet;
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Debug)]
 pub(super) struct FundingGoal {
     pub actor: Player,
     pub required: Mana,
@@ -159,7 +159,7 @@ fn concrete_payment(payment: [u64; 6]) -> Mana {
     payment.map(|n| u32::try_from(n).capacity("mana payment exhausted"))
 }
 fn reserve_obligations(
-    goal: FundingGoal,
+    goal: &FundingGoal,
     object: Option<&Object>,
     kinds: u16,
     keywords: Keywords,
@@ -173,16 +173,16 @@ fn reserve_obligations(
     })
 }
 fn source_obligations(
-    goal: FundingGoal,
+    goal: &FundingGoal,
     object: Option<&Object>,
     kinds: u16,
     keywords: Keywords,
     life: i128,
 ) -> bool {
-    let Some((source, index, counters, definition)) = goal.source else {
+    let Some((source, index, counters, definition)) = goal.source.as_ref() else {
         return true;
     };
-    let ability = &definition.activations()[index as usize];
+    let ability = &definition.activations()[*index as usize];
     if i128::from(ability.cost.life) > life {
         return false;
     }
@@ -202,14 +202,10 @@ fn source_obligations(
             keywords,
             life,
             ability,
-            index as usize,
+            *index as usize,
             goal.actor,
             true,
-        ) && object.counters.plus_one >= counters.plus_one
-            && object.counters.minus_one >= counters.minus_one
-            && object.counters.stun >= counters.stun
-            && object.counters.loyalty >= counters.loyalty
-            && object.counters.lore >= counters.lore
+        ) && object.counters.contains(counters)
     } else {
         // The activated ability already exists independently of its source.
         // Only unpaid costs that use that incarnation require it to remain.
@@ -224,7 +220,7 @@ fn source_obligations(
 fn activation_gain_upper(
     ability: &ActivatedAbility,
     production: ManaProduction,
-    counters: Counters,
+    counters: &Counters,
     life: i128,
 ) -> u128 {
     let mut produced = 0;
@@ -263,10 +259,10 @@ fn activation_gain_upper(
 }
 
 impl<'g> FundingState<'g> {
-    fn from_game(game: &'g Game, goal: FundingGoal) -> Self {
+    fn from_game(game: &'g Game, goal: &FundingGoal) -> Self {
         Self::from_game_with_convoke(game, goal, false)
     }
-    fn from_game_with_convoke(game: &'g Game, goal: FundingGoal, convoke: bool) -> Self {
+    fn from_game_with_convoke(game: &'g Game, goal: &FundingGoal, convoke: bool) -> Self {
         // A prerequisite need not itself produce mana (e.g. a changeling for
         // Mox Jasper). Keep only relevant owned witnesses, including removable
         // mana sources, so virtual sacrifices invalidate later guarded moves.
@@ -298,7 +294,7 @@ impl<'g> FundingState<'g> {
                 (object.zone == Zone::Command && object.card.is_emblem()) || goal.reserve
                     .is_some_and(|(reference, _)| reference.card == *id as CardId)
                     || goal
-                        .source
+                        .source.as_ref()
                         .is_some_and(|(source, _, _, _)| source.card == *id as CardId)
                     || object.zone == Zone::Battlefield
                         && (object.card.attachment_bonus().is_some()
@@ -341,9 +337,10 @@ impl<'g> FundingState<'g> {
             resources,
         }
     }
-    fn obligations(&self, goal: FundingGoal) -> bool {
+    fn obligations(&self, goal: &FundingGoal) -> bool {
         let source = goal
             .source
+            .as_ref()
             .and_then(|(r, _, _, _)| self.resources.iter().find(|s| s.id == r.card));
         let reserve = goal
             .reserve
@@ -494,7 +491,7 @@ impl<'g> FundingState<'g> {
             }),
         }
     }
-    fn moves(&self, goal: FundingGoal) -> Vec<FundingMove> {
+    fn moves(&self, goal: &FundingGoal) -> Vec<FundingMove> {
         let mut moves = Vec::new();
         for (resource, entry) in self.resources.iter().enumerate() {
             let object = &entry.object;
@@ -546,12 +543,16 @@ impl<'g> FundingState<'g> {
                 };
                 // CR605.3c forbids recursively activating the same mana ability
                 // before the enclosing activation has resolved.
-                if goal.source.is_some_and(|(source, pending, _, definition)| {
-                    definition == object.card
-                        && source.card == entry.id
-                        && object.generation == source.generation
-                        && pending as usize == index
-                }) {
+                if goal
+                    .source
+                    .as_ref()
+                    .is_some_and(|(source, pending, _, definition)| {
+                        *definition == object.card
+                            && source.card == entry.id
+                            && object.generation == source.generation
+                            && *pending as usize == index
+                    })
+                {
                     continue;
                 }
                 if !self.guard_available(ability.guard, goal.actor)
@@ -568,7 +569,7 @@ impl<'g> FundingState<'g> {
                 {
                     continue;
                 }
-                activations::counter_payments(ability.cost, object.counters, |counters| {
+                activations::counter_payments(ability.cost, &object.counters, |counters| {
                     funding_cost_payments(self.mana, ability.cost, |payment| {
                         production.in_world(self, entry.id).visit(|production| {
                             moves.push(FundingMove {
@@ -576,7 +577,7 @@ impl<'g> FundingState<'g> {
                                 ability: Some(index as u16),
                                 grantor: None,
                                 payment,
-                                counters,
+                                counters: counters.clone(),
                                 production,
                             });
                             false
@@ -613,11 +614,7 @@ impl<'g> FundingState<'g> {
             if cost.tap {
                 object.tapped = true;
             }
-            object.counters.plus_one -= step.counters.plus_one;
-            object.counters.minus_one -= step.counters.minus_one;
-            object.counters.stun -= step.counters.stun;
-            object.counters.loyalty -= step.counters.loyalty;
-            object.counters.lore -= step.counters.lore;
+            object.counters.pay(&step.counters);
             if cost.sacrifice {
                 object.zone = Zone::Graveyard;
             }
@@ -630,7 +627,7 @@ impl<'g> FundingState<'g> {
                 .capacity("mana representation exhausted");
         }
     }
-    fn key(&self, goal: FundingGoal) -> FundingKey {
+    fn key(&self, goal: &FundingGoal) -> FundingKey {
         // Attachment edges distinguish otherwise interchangeable mana sources.
         let linked = self
             .resources
@@ -644,6 +641,7 @@ impl<'g> FundingState<'g> {
                 kinds: self.kinds(r),
                 protected: goal
                     .source
+                    .as_ref()
                     .is_some_and(|(source, _, _, _)| source.card == r.id),
                 reserved: goal
                     .reserve
@@ -651,7 +649,7 @@ impl<'g> FundingState<'g> {
                 present: r.object.zone == Zone::Battlefield,
                 tapped: r.object.tapped,
                 sick: r.object.summoning_sick,
-                counters: r.object.counters,
+                counters: r.object.counters.clone(),
                 used: r.object.used_abilities,
                 gained: r.object.gained_keywords,
                 // Ownership still determines whose graveyard receives a sacrificed
@@ -677,6 +675,15 @@ impl<'g> FundingState<'g> {
                     r.counters.stun,
                     r.counters.loyalty,
                     r.counters.lore,
+                    [
+                        CounterKind::Incubation,
+                        CounterKind::Bait,
+                        CounterKind::Page,
+                        CounterKind::Divinity,
+                        CounterKind::Revival,
+                        CounterKind::Soul,
+                    ]
+                    .map(|kind| r.counters.get(kind)),
                 ),
                 r.used,
                 r.gained,
@@ -746,7 +753,7 @@ impl<'g> FundingState<'g> {
                             .mana_production()
                             .unwrap()
                             .in_world(self, resource.id),
-                        object.counters,
+                        &object.counters,
                         self.life,
                     ));
                 }
@@ -754,7 +761,7 @@ impl<'g> FundingState<'g> {
         }
         total
     }
-    fn optimistic(&self, goal: FundingGoal) -> bool {
+    fn optimistic(&self, goal: &FundingGoal) -> bool {
         let required =
             u128::from(goal.generic) + goal.required.into_iter().map(u128::from).sum::<u128>();
         if self.total_mana_upper() < required {
@@ -793,12 +800,16 @@ impl<'g> FundingState<'g> {
                 let Some(production) = ability.mana_production() else {
                     continue;
                 };
-                if goal.source.is_some_and(|(source, pending, _, definition)| {
-                    definition == object.card
-                        && source.card == resource.id
-                        && object.generation == source.generation
-                        && pending as usize == index
-                }) || !self.guard_available(ability.guard, goal.actor)
+                if goal
+                    .source
+                    .as_ref()
+                    .is_some_and(|(source, pending, _, definition)| {
+                        *definition == object.card
+                            && source.card == resource.id
+                            && object.generation == source.generation
+                            && *pending as usize == index
+                    })
+                    || !self.guard_available(ability.guard, goal.actor)
                     || !Game::object_activation_available_with_kinds(
                         object,
                         self.kinds(resource),
@@ -892,12 +903,12 @@ impl<'g> FundingState<'g> {
                 .map(|r| u128::from(r.object.card.fixed_mana_value()))
                 .sum::<u128>()
     }
-    fn reachable(&self, goal: FundingGoal, visited: &mut HashSet<FundingKey>) -> bool {
+    fn reachable(&self, goal: &FundingGoal, visited: &mut HashSet<FundingKey>) -> bool {
         self.reachable_with_evidence(goal, None, visited)
     }
     fn reachable_with_evidence(
         &self,
-        goal: FundingGoal,
+        goal: &FundingGoal,
         evidence: Option<u16>,
         visited: &mut HashSet<FundingKey>,
     ) -> bool {
@@ -965,7 +976,7 @@ impl<'g> FundingState<'g> {
                 card,
                 ability,
                 payment: concrete_payment(step.payment),
-                counter_payment: step.counters,
+                counter_payment: step.counters.clone(),
                 production: step.production,
             },
             None => Action::TapMana { card },
@@ -976,12 +987,13 @@ impl Game {
     pub(super) fn can_fund(&self, goal: FundingGoal) -> bool {
         let object = goal
             .source
+            .as_ref()
             .and_then(|(r, _, _, _)| self.state.objects.get(r.card as usize));
         let reserve = goal
             .reserve
             .and_then(|(r, _)| self.state.objects.get(r.card as usize));
         if !reserve_obligations(
-            goal,
+            &goal,
             reserve,
             reserve.map_or(0, |o| self.object_kinds(goal.reserve.unwrap().0.card, o)),
             reserve.map_or(Keywords::NONE, |_| {
@@ -991,11 +1003,13 @@ impl Game {
                 self.granted_subtypes(goal.reserve.unwrap().0.card)
             }),
         ) || !source_obligations(
-            goal,
+            &goal,
             object,
-            object.map_or(0, |o| self.object_kinds(goal.source.unwrap().0.card, o)),
+            object.map_or(0, |o| {
+                self.object_kinds(goal.source.as_ref().unwrap().0.card, o)
+            }),
             object.map_or(Keywords::NONE, |_| {
-                self.keywords(goal.source.unwrap().0.card)
+                self.keywords(goal.source.as_ref().unwrap().0.card)
             }),
             self.state.players[goal.actor.index()].life,
         ) {
@@ -1009,7 +1023,7 @@ impl Game {
         ) {
             return true;
         }
-        FundingState::from_game(self, goal).reachable(goal, &mut HashSet::new())
+        FundingState::from_game(self, &goal).reachable(&goal, &mut HashSet::new())
     }
     pub(super) fn can_fund_convoke(&self, goal: FundingGoal) -> bool {
         if convoke::payable(
@@ -1020,14 +1034,15 @@ impl Game {
         ) {
             return true;
         }
-        FundingState::from_game_with_convoke(self, goal, true).reachable(goal, &mut HashSet::new())
+        FundingState::from_game_with_convoke(self, &goal, true)
+            .reachable(&goal, &mut HashSet::new())
     }
     pub(super) fn can_fund_evidence(&self, goal: FundingGoal, threshold: u16) -> bool {
         if self.can_collect_evidence(goal.actor, threshold) {
-            return self.can_fund(goal);
+            return self.can_fund(goal.clone());
         }
-        FundingState::from_game(self, goal).reachable_with_evidence(
-            goal,
+        FundingState::from_game(self, &goal).reachable_with_evidence(
+            &goal,
             Some(threshold),
             &mut HashSet::new(),
         )
@@ -1075,7 +1090,7 @@ impl Game {
         Some(PaymentRequestView {
             required: goal.required,
             generic: goal.generic,
-            counters: a.counter_payment,
+            counters: a.counter_payment.clone(),
             production: a.production,
         })
     }
@@ -1130,7 +1145,7 @@ impl Game {
                     source: Some((
                         a.item.object,
                         ability,
-                        a.counter_payment,
+                        a.counter_payment.clone(),
                         a.item.source_card,
                     )),
                 },
@@ -1185,7 +1200,7 @@ impl Game {
                     source: Some((
                         announcement.item.object,
                         ability,
-                        announcement.counter_payment,
+                        announcement.counter_payment.clone(),
                         announcement.item.source_card,
                     )),
                 }
@@ -1216,8 +1231,8 @@ impl Game {
             (frame.remaining.colored, frame.remaining.generic)
         } else {
             let goal = self.funding_goal(a);
-            let state = FundingState::from_game(self, goal);
-            if !state.obligations(goal) || a.evidence.as_ref().is_some_and(|e| !e.complete) {
+            let state = FundingState::from_game(self, &goal);
+            if !state.obligations(&goal) || a.evidence.as_ref().is_some_and(|e| !e.complete) {
                 return None;
             }
             (goal.required, goal.generic)
@@ -1233,9 +1248,9 @@ impl Game {
         let goal = self.funding_goal(announcement);
         let convoke = announcement.item.kind == StackKind::Spell
             && announcement.item.source_card.has_convoke();
-        let state = FundingState::from_game_with_convoke(self, goal, convoke);
+        let state = FundingState::from_game_with_convoke(self, &goal, convoke);
         let mut done = false;
-        if state.obligations(goal)
+        if state.obligations(&goal)
             && announcement.evidence.as_ref().is_none_or(|e| e.complete)
             && let Some(domain) = self.mana_payment_domain()
         {
@@ -1261,16 +1276,18 @@ impl Game {
         }
         // An explicit {0} still has a mana component; a pure tap/sacrifice
         // activation cost does not open a mana-ability window.
-        if let Some((_, index, _, definition)) = goal.source
-            && !definition.activations()[index as usize].cost.mana_component
+        if let Some((_, index, _, definition)) = goal.source.as_ref()
+            && !definition.activations()[*index as usize]
+                .cost
+                .mana_component
         {
             return false;
         }
-        for step in state.moves(goal) {
+        for step in state.moves(&goal) {
             let mut next = state.clone();
             next.apply(&step);
             if next.reachable_with_evidence(
-                goal,
+                &goal,
                 announcement.evidence.as_ref().map(|e| e.threshold),
                 &mut HashSet::new(),
             ) && emit(state.action(&step))
@@ -1298,7 +1315,7 @@ impl Game {
             generic: request.cost.generic,
             source: None,
         };
-        let state = FundingState::from_game(self, goal);
+        let state = FundingState::from_game(self, &goal);
         let mut done = false;
         funding_payments(state.mana, goal.required, goal.generic, |payment| {
             if !done {
@@ -1310,10 +1327,10 @@ impl Game {
         if done {
             return true;
         }
-        for step in state.moves(goal) {
+        for step in state.moves(&goal) {
             let mut next = state.clone();
             next.apply(&step);
-            if next.reachable(goal, &mut HashSet::new()) && emit(state.action(&step)) {
+            if next.reachable(&goal, &mut HashSet::new()) && emit(state.action(&step)) {
                 return true;
             }
         }
@@ -1338,7 +1355,7 @@ impl Game {
             generic: request.cost.generic,
             source: None,
         };
-        let state = FundingState::from_game(self, goal);
+        let state = FundingState::from_game(self, &goal);
         let mut done = false;
         funding_payments(state.mana, goal.required, goal.generic, |payment| {
             if !done {
@@ -1352,7 +1369,7 @@ impl Game {
         }
         // A payment request grants a mana-ability window even if the player
         // eventually declines or cannot assemble the whole payment.
-        for step in state.moves(goal) {
+        for step in state.moves(&goal) {
             if emit(state.action(&step)) {
                 return true;
             }
@@ -1387,10 +1404,10 @@ mod equipment_tests {
             generic: 0,
             source: None,
         };
-        let mut state = FundingState::from_game(&g, goal);
+        let mut state = FundingState::from_game(&g, &goal);
         assert!(state.resources.iter().any(|r| r.id == dragon));
-        assert!(state.reachable(goal, &mut HashSet::new()));
-        let key = state.key(goal);
+        assert!(state.reachable(&goal, &mut HashSet::new()));
+        let key = state.key(&goal);
         state
             .resources
             .iter_mut()
@@ -1398,9 +1415,9 @@ mod equipment_tests {
             .unwrap()
             .object
             .zone = Zone::Graveyard;
-        assert!(key != state.key(goal));
-        assert!(!state.reachable(goal, &mut HashSet::new()));
-        assert!(state.moves(goal).is_empty());
+        assert!(key != state.key(&goal));
+        assert!(!state.reachable(&goal, &mut HashSet::new()));
+        assert!(state.moves(&goal).is_empty());
         // Starting restrictions are not rechecked as source-cost obligations
         // after an ability has already legally been announced.
         let declared = FundingGoal {
@@ -1415,7 +1432,7 @@ mod equipment_tests {
                 g.state.objects[mox as usize].card,
             )),
         };
-        assert!(state.obligations(declared));
+        assert!(state.obligations(&declared));
         assert!(!state.guard_available(
             g.state.objects[mox as usize].card.activations()[0].guard,
             Player::P0
@@ -1438,7 +1455,7 @@ mod equipment_tests {
             source: None,
         };
         assert!(
-            !FundingState::from_game(&g, goal)
+            !FundingState::from_game(&g, &goal)
                 .resources
                 .iter()
                 .any(|r| r.id == dragon)
@@ -1462,12 +1479,12 @@ mod equipment_tests {
             generic: 0,
             source: None,
         };
-        let mut state = FundingState::from_game(&g, goal);
-        assert!(state.reachable(goal, &mut HashSet::new()));
+        let mut state = FundingState::from_game(&g, &goal);
+        assert!(state.reachable(&goal, &mut HashSet::new()));
         for resource in &state.resources {
             assert_eq!(state.keywords(resource), g.keywords(resource.id));
         }
-        let before = state.key(goal);
+        let before = state.key(&goal);
         state
             .resources
             .iter_mut()
@@ -1475,9 +1492,9 @@ mod equipment_tests {
             .unwrap()
             .object
             .zone = Zone::Graveyard;
-        assert!(before != state.key(goal));
-        assert!(!state.reachable(goal, &mut HashSet::new()));
-        assert!(state.moves(goal).is_empty());
+        assert!(before != state.key(&goal));
+        assert!(!state.reachable(&goal, &mut HashSet::new()));
+        assert!(state.moves(&goal).is_empty());
     }
     #[test]
     fn funding_keywords_match_live_turn_attacker_artifact_and_tribal_scopes() {
@@ -1522,7 +1539,7 @@ mod equipment_tests {
         // activation goal is evaluated here: compare pure derived keywords.
         for active in [Player::P0, Player::P1] {
             g.state.active = active;
-            let state = FundingState::from_game(&g, goal);
+            let state = FundingState::from_game(&g, &goal);
             for resource in &state.resources {
                 assert_eq!(
                     state.keywords(resource),
@@ -1552,9 +1569,9 @@ mod equipment_tests {
             generic: 0,
             source: None,
         };
-        let mut state = FundingState::from_game(&g, goal);
-        assert!(state.reachable(goal, &mut HashSet::new()));
-        let initial_key = state.key(goal);
+        let mut state = FundingState::from_game(&g, &goal);
+        assert!(state.reachable(&goal, &mut HashSet::new()));
+        let initial_key = state.key(&goal);
         state
             .resources
             .iter_mut()
@@ -1562,11 +1579,11 @@ mod equipment_tests {
             .unwrap()
             .object
             .zone = Zone::Graveyard;
-        assert!(state.key(goal) != initial_key);
-        assert!(!state.reachable(goal, &mut HashSet::new()));
+        assert!(state.key(&goal) != initial_key);
+        assert!(!state.reachable(&goal, &mut HashSet::new()));
         assert!(
             !state
-                .moves(goal)
+                .moves(&goal)
                 .iter()
                 .any(|m| state.resources[m.resource].id == elf)
         );
@@ -1590,7 +1607,7 @@ mod equipment_tests {
             generic: 0,
             source: None,
         };
-        let state = FundingState::from_game(&g, goal);
+        let state = FundingState::from_game(&g, &goal);
         let mut changed = state.clone();
         changed
             .resources
@@ -1599,7 +1616,7 @@ mod equipment_tests {
             .unwrap()
             .object
             .attached_to = Some(g.object_ref(b));
-        assert!(state.key(goal) != changed.key(goal));
+        assert!(state.key(&goal) != changed.key(&goal));
     }
 }
 
@@ -1694,7 +1711,7 @@ mod life_gain_grant_tests {
             g.state.players[1].life_gained_this_turn = 1;
             let state = FundingState::from_game(
                 &g,
-                FundingGoal {
+                &FundingGoal {
                     actor: Player::P0,
                     required: [0; 6],
                     generic: 1,
@@ -1731,11 +1748,11 @@ mod exhaust_funding_tests {
             source: None,
         };
         let saved = g.snapshot();
-        assert!(g.can_fund(goal));
+        assert!(g.can_fund(goal.clone()));
         assert_eq!(g.snapshot(), saved);
         assert!(!g.can_fund(FundingGoal {
             required: [0, 4, 0, 0, 0, 0],
-            ..goal
+            ..goal.clone()
         }));
         act(&mut g, Action::TapMana { card: forest });
         let a=g.legal_actions().into_iter().find(|a|matches!(a,Action::ActivateMana{card,ability:0,production:[0,3,0,0,0,0],..}if *card==loot)).unwrap();
@@ -1745,11 +1762,11 @@ mod exhaust_funding_tests {
         g.finish_cleanup();
         g.state.players[0].mana = [0; 6]; // normal step advancement empties pools
         assert!(!g.object_view(loot).tapped);
-        assert!(!g.can_fund(goal));
+        assert!(!g.can_fund(goal.clone()));
         g.move_object(loot, Zone::Hand);
         g.move_object(loot, Zone::Battlefield);
         assert_eq!(g.object_view(loot).exhausted_abilities, 0);
-        assert!(g.can_fund(goal));
+        assert!(g.can_fund(goal.clone()));
     }
 }
 
@@ -1785,8 +1802,8 @@ mod conditional_keyword_tests {
                 named(&mut g, p, n, Zone::Graveyard);
             }
             let saved = g.snapshot();
-            let mut state = FundingState::from_game(&g, goal(p));
-            let before = state.key(goal(p));
+            let mut state = FundingState::from_game(&g, &goal(p));
+            let before = state.key(&goal(p));
             assert!(
                 state
                     .keywords(state.resources.iter().find(|r| r.id == tomb).unwrap())
@@ -1798,13 +1815,13 @@ mod conditional_keyword_tests {
                     .contains(Keywords::VIGILANCE)
             );
             let step = state
-                .moves(goal(p))
+                .moves(&goal(p))
                 .into_iter()
                 .find(|m| state.resources[m.resource].id == pizza && m.production[3] == 1)
                 .unwrap();
             let action = state.action(&step);
             state.apply(&step);
-            assert!(state.key(goal(p)) != before);
+            assert!(state.key(&goal(p)) != before);
             let mut actual = g.clone();
             act(&mut actual, action);
             for id in [tomb, spine] {
@@ -1839,9 +1856,9 @@ mod conditional_keyword_tests {
                 .find(|c| c.token_info().is_some_and(|t| t.subtypes == "Treasure"))
                 .unwrap();
             let treasure = spawn(&mut g, p, c, Zone::Battlefield);
-            let mut state = FundingState::from_game(&g, goal(p));
+            let mut state = FundingState::from_game(&g, &goal(p));
             let step = state
-                .moves(goal(p))
+                .moves(&goal(p))
                 .into_iter()
                 .find(|m| state.resources[m.resource].id == treasure && m.production[3] == 1)
                 .unwrap();
@@ -1892,7 +1909,7 @@ mod conditional_keyword_tests {
             named(&mut g, Player::P0, n, Zone::Graveyard);
         }
         let s = g.snapshot();
-        let mut state = FundingState::from_game(&g, goal(Player::P0));
+        let mut state = FundingState::from_game(&g, &goal(Player::P0));
         let resource = state.resources.iter().find(|r| r.id == source).unwrap();
         for value in [
             StatValue::ControllerLife,
@@ -1943,7 +1960,7 @@ mod conditional_keyword_tests {
                 defender: Some(CombatDefender::Player(p.other())),
                 blocked: false,
             });
-            let mut state = FundingState::from_game(&g, goal(p));
+            let mut state = FundingState::from_game(&g, &goal(p));
             for id in [spider, paladin, kite] {
                 let r = state.resources.iter().find(|r| r.id == id).unwrap();
                 for value in [
@@ -1995,7 +2012,7 @@ mod conditional_keyword_tests {
             );
             drop(state);
             g.state.attack_declared = true;
-            let state = FundingState::from_game(&g, goal(p));
+            let state = FundingState::from_game(&g, &goal(p));
             assert!(
                 state
                     .keywords(state.resources.iter().find(|r| r.id == kite).unwrap())
@@ -2015,9 +2032,9 @@ mod conditional_keyword_tests {
                 .unwrap();
             let treasure = spawn(&mut g, p, token, Zone::Battlefield);
             let saved = g.snapshot();
-            let mut state = FundingState::from_game(&g, goal(p));
+            let mut state = FundingState::from_game(&g, &goal(p));
             let step = state
-                .moves(goal(p))
+                .moves(&goal(p))
                 .into_iter()
                 .find(|m| state.resources[m.resource].id == treasure)
                 .unwrap();
@@ -2048,7 +2065,7 @@ mod celebration_funding_tests {
                     let id = spawn(&mut g, p, Card::from_name(name).unwrap(), Zone::Battlefield);
                     let state = FundingState::from_game(
                         &g,
-                        FundingGoal {
+                        &FundingGoal {
                             actor: p,
                             required: [0; 6],
                             generic: 1,
@@ -2105,10 +2122,10 @@ mod job_subtype_tests {
             source: None,
             reserve: Some((g.object_ref(bear), spec)),
         };
-        assert!(g.can_fund(goal));
-        let mut virtual_state = FundingState::from_game(&g, goal);
+        assert!(g.can_fund(goal.clone()));
+        let mut virtual_state = FundingState::from_game(&g, &goal);
         assert!(virtual_state.granted_subtypes(bear).contains("Warrior"));
-        assert!(virtual_state.obligations(goal));
+        assert!(virtual_state.obligations(&goal));
         virtual_state
             .resources
             .iter_mut()
@@ -2117,7 +2134,7 @@ mod job_subtype_tests {
             .object
             .zone = Zone::Graveyard;
         assert!(!virtual_state.granted_subtypes(bear).contains("Warrior"));
-        assert!(!virtual_state.obligations(goal));
+        assert!(!virtual_state.obligations(&goal));
         assert!(g.has_subtype(bear, "Warrior"));
     }
 }
@@ -2165,7 +2182,7 @@ mod ability_world_tests {
                 source: None,
                 reserve: Some((source, spec)),
             };
-            let mut world = FundingState::from_game(&g, goal);
+            let mut world = FundingState::from_game(&g, &goal);
             assert!(world.live_applies(source, &effect, bear));
             let provider = world.resources.iter().position(|r| r.id == maha).unwrap();
             world.resources[provider].object.controller = p.other();
@@ -2194,7 +2211,7 @@ mod ability_world_tests {
             g.create_emblem(p, emblem);
             let state = FundingState::from_game(
                 &g,
-                FundingGoal {
+                &FundingGoal {
                     actor: p,
                     required: [0; 6],
                     generic: 0,
@@ -2212,3 +2229,39 @@ mod ability_world_tests {
 #[cfg(test)]
 #[path = "engine_fdn_scaled_mana_tests.rs"]
 mod fdn_six_scaled_tests;
+
+#[cfg(test)]
+mod named_counter_funding_tests {
+    use super::super::ability_timeline_tests::{named, setup};
+    use super::*;
+    #[test]
+    fn named_counter_reservations_use_speculative_counts_and_distinct_keys() {
+        for player in [Player::P0, Player::P1] {
+            let mut game = setup(player);
+            let source = named(&mut game, player, "Gnarlbark Elm", Zone::Battlefield);
+            game.state.objects[source as usize].counters = Counters::of(CounterKind::Soul, 2);
+            let goal = FundingGoal {
+                actor: player,
+                required: [0; 6],
+                generic: 0,
+                reserve: None,
+                source: Some((
+                    game.object_ref(source),
+                    0,
+                    Counters::of(CounterKind::Soul, 2),
+                    game.state.objects[source as usize].card,
+                )),
+            };
+            assert!(game.can_fund(goal.clone()));
+            let mut world = FundingState::from_game(&game, &goal);
+            assert!(world.obligations(&goal));
+            let before = world.key(&goal);
+            let resource = world.resources.iter_mut().find(|r| r.id == source).unwrap();
+            resource.object.counters.remove(CounterKind::Soul, 1);
+            assert!(!world.obligations(&goal));
+            assert!(before != world.key(&goal));
+            assert_eq!(game.object_view(source).counters.get(CounterKind::Soul), 2);
+            assert!(game.can_fund(goal));
+        }
+    }
+}
