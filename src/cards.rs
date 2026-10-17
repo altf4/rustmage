@@ -786,6 +786,8 @@ pub(crate) enum AmountValue {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ResolvedStatValue {
+    /// Capture a signed scalar once, when the instruction resolves.
+    Stat(StatValue),
     /// Evaluate before creating the fixed, until-cleanup layer-7b effect.
     Threshold {
         value: StatValue,

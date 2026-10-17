@@ -78,6 +78,12 @@ def base_stat_program(text):
     """Whole constant 7b setters; each axis is independent of additive bonuses."""
     if not isinstance(text,str) or not text:return None
     text=normalize_duration(text[0].lower()+text[1:])
+    if m:=re.fullmatch(r"this creature's base (power|toughness) becomes equal to (?:the number of )?(.+) until end of turn\.",text):
+        value=stat_value(m[2])
+        if value is None:return None
+        expression='Some(ResolvedStatValue::Stat('+value+'))'
+        p,t=(expression,'None') if m[1]=='power' else ('None',expression)
+        return 'None',['SetResolvedBaseStats { subject: Subject::Source, power: '+p+', toughness: '+t+' }']
     if m:=re.fullmatch(r"this creature's base power and toughness become (-?[0-9]+)/(-?[0-9]+) and (?:it|they) gains? (.+) until end of turn\.",text):
         text=f'this creature has base power and toughness {m[1]}/{m[2]} and gains {m[3]} until end of turn.'
     if m:=re.fullmatch(r'target creature has base power and toughness (-?[0-9]+)/(-?[0-9]+) until end of turn\. If you control ([a-z]+|[0-9]+) or more lands, that creature has base power and toughness (-?[0-9]+)/(-?[0-9]+) until end of turn instead\.',text):

@@ -57,6 +57,9 @@ impl Game {
     }
     fn resolved_stat_value(&self, item: &SpellView, value: ResolvedStatValue) -> Option<i128> {
         match value {
+            ResolvedStatValue::Stat(value) => {
+                Some(self.stat_value(value, item.object, item.controller))
+            }
             ResolvedStatValue::Threshold {
                 value,
                 minimum,

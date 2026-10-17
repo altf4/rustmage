@@ -34,6 +34,13 @@ class ResolvedBaseTests(unittest.TestCase):
   for raw in [c['oracle_text'].replace('six','many'),c['oracle_text'].replace('6/6',str(2**127)+'/6')]:self.assertFalse(self.compile(dict(c,oracle_text=raw))[1],raw)
   c=self.cards['Belligerent Yearling']
   for raw in [c['oracle_text'].replace("that creature's power","that creature's toughness"),c['oracle_text'].replace('until end of turn','until your next turn')]:self.assertFalse(self.compile(dict(c,oracle_text=raw))[1],raw)
+ def test_scalar_snapshot_is_generic_and_original_raw_authenticated(self):
+  base=self.cards['Belligerent Yearling']
+  for axis,value,fragment in [('power','the number of Towns you control','subtype: Some("Town")'),('toughness','your life total','StatValue::ControllerLife')]:
+   body="{3}: Until end of turn, this creature's base "+axis+' becomes equal to '+value+'.'
+   for alias in ['Independent Scalar Snapshot','Shock','Forest']:
+    c=dict(base,name=alias,oracle_text=body);rust,ok=self.compile(c);self.assertTrue(ok,(axis,value,alias));self.assertIn('ResolvedStatValue::Stat(',rust);self.assertIn(fragment,rust)
+    for raw in [body+' (You win the game.)',body.replace('base','ba(Draw seven cards.)se'),body.replace('Until end of turn','Until your next turn'),body.replace(value,'the number of cards anywhere')]:self.assertFalse(self.compile(dict(c,oracle_text=raw))[1],raw)
  def test_exact_three_against_prototype_foundation_preserve_all_other_definitions(self):
   physical={c['oracle_id']:c['name']for c in self.all};a=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',PARENT+':src/generated/catalogue.rs'],text=True),physical);b=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',DELIVERED+':src/generated/catalogue.rs'],text=True),physical);current=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
   proof=assert_union(a,b,changed={n+'#0'for n in NAMES},added=set(),helpers=set(),aliases={});self.assertEqual(proof['preserved_definitions'],5328)
