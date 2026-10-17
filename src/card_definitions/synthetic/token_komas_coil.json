@@ -1,0 +1,11 @@
+{
+  "name": "@token/komas_coil",
+  "catalogue_id": 5335,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "0af40980035189227bb0e2c38b2332ddfb2e97248af9fac69b622d625a7d7d70",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/KomasCoilToken.java",
+  "java_sha256": "cd79b673c2b060ba309db131b64b25920e5d54a638a2be2e9673e8e1b9cec280"
+}

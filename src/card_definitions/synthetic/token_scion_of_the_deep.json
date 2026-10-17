@@ -1,0 +1,11 @@
+{
+  "name": "@token/scion_of_the_deep",
+  "catalogue_id": 5334,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "093f51b30228a9130b14f75be42823994886add0c16514a72f572dfb55ce41a4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/ScionOfTheDeepToken.java",
+  "java_sha256": "3a457b8f47d03821d50d625a7536c1f18ae61ea7222daa2be3510823aa57914e"
+}

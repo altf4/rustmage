@@ -5339,7 +5339,10 @@
     0,
     10,
     1,
-    0
+    0,
+    2,
+    2,
+    16
   ],
   "aliases": [
     [
@@ -5945,6 +5948,18 @@
     [
       "@token/fc4d98b9982bc99c31b60b7c",
       5332
+    ],
+    [
+      "@token/komas_coil",
+      5335
+    ],
+    [
+      "@token/raccoon_3_3_green",
+      5336
+    ],
+    [
+      "@token/scion_of_the_deep",
+      5334
     ],
     [
       "A Killer Among Us",
@@ -27685,6 +27700,24 @@
       "name": "Cat Token",
       "subtypes": "Cat",
       "colors": 1
+    },
+    {
+      "factory_identity": "@token/scion_of_the_deep",
+      "name": "Scion of the Deep",
+      "subtypes": "Octopus",
+      "colors": 2
+    },
+    {
+      "factory_identity": "@token/komas_coil",
+      "name": "Koma's Coil",
+      "subtypes": "Serpent",
+      "colors": 2
+    },
+    {
+      "factory_identity": "@token/raccoon_3_3_green",
+      "name": "Raccoon Token",
+      "subtypes": "Raccoon",
+      "colors": 16
     }
   ],
   "emblems": [
@@ -180086,6 +180119,87 @@
       "standard_legal": false,
       "legendary": false,
       "kind": 0,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5334,
+      "module": "card_5334",
+      "path": "synthetic/token_scion_of_the_deep.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/scion_of_the_deep",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Octopus",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5335,
+      "module": "card_5335",
+      "path": "synthetic/token_komas_coil.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/komas_coil",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Serpent",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5336,
+      "module": "card_5336",
+      "path": "synthetic/token_raccoon_3_3_green.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/raccoon_3_3_green",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Raccoon",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
       "basic": false,
       "mana_color": null,
       "colored": [
