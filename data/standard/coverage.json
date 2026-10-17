@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "b73cd3f85c37f013b7887a958de384d10088b2f17fa1fb8a671043aaca249a0f",
+  "catalogue_version": "318b57bb8fe2ba5fc1cdd9cb0e5b3d502cfbec5bf46e0f1698b50bc8862a102b",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1838,
-  "implemented_total": 1844,
-  "token_definitions": 93,
+  "implemented_standard_cards": 1844,
+  "implemented_total": 1850,
+  "token_definitions": 94,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -2302,8 +2302,8 @@
     {
       "name": "Beluna Grandsquall // Seek Thrills",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Beluna's Gatekeeper // Entry Denied",
@@ -3142,8 +3142,8 @@
     {
       "name": "Bramble Familiar // Fetch Quest",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Brambleback Brute",
@@ -10594,8 +10594,8 @@
     {
       "name": "Glamdring, Foe-hammer // Gleam of Death",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Glamer Gifter",
@@ -17170,8 +17170,8 @@
     {
       "name": "Most Decrepit Old Bird // Speak Secrets",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Most Valuable Slayer",
@@ -18940,8 +18940,8 @@
     {
       "name": "Picklock Prankster // Free the Fae",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Picnic Ruiner // Stolen Goodies",
@@ -27364,8 +27364,8 @@
     {
       "name": "Thranduil, Sindarin Liege // Silvan Rally",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Thranduil, the Elvenking",
@@ -31106,6 +31106,6 @@
       "implementation": null
     }
   ],
-  "adventure_definitions": 31,
+  "adventure_definitions": 37,
   "omen_definitions": 13
 }

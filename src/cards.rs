@@ -305,6 +305,30 @@ pub(crate) struct AdditionalCost {
     pub filter: SacrificeFilter,
 }
 
+/// Public qualities for a non-targeted choice from one exact milling event.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum MilledFilter {
+    Kinds(u8),
+    KindsOrSubtype { kinds: u8, subtype: &'static str },
+    Adventure,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum MilledDestination {
+    Hand,
+    Battlefield,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum MilledCount {
+    Range { minimum: u16, maximum: u16 },
+    All,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct MilledSelectionSpec {
+    pub filter: MilledFilter,
+    pub count: MilledCount,
+    pub destination: MilledDestination,
+}
+
 /// Card qualities for a non-targeted choice from an exact milled batch.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum RecoveryFilter {
@@ -504,6 +528,7 @@ pub(crate) enum Instruction {
     Mill(PlayerSet, MillAmount),
     MayMill(u16),
     RecoverMilled(RecoveryFilter),
+    SelectMilled(MilledSelectionSpec),
     AttachSource,
     TapAttached,
     ChooseObjects {
@@ -938,6 +963,7 @@ pub(crate) enum CastTarget {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum CastFilter {
+    PermanentAdventure,
     Any,
     Creature,
     Noncreature,
@@ -970,6 +996,10 @@ impl CastFilter {
     pub(crate) fn matches_mana_value(self, card: Card, mana_value: u64) -> bool {
         match self {
             Self::Any => true,
+            Self::PermanentAdventure => {
+                card.adventure_spell().is_some()
+                    && card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256) != 0
+            }
             // Contextual cast observers use Game::cast_filter_matches instead.
             Self::Targeted { .. } => false,
             Self::Multicolored => card.colors().count_ones() >= 2,
@@ -1018,6 +1048,7 @@ pub(crate) enum SpellReductionAmount {
         greatest: bool,
     },
     SourcePower,
+    EquippedPower,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct SpellReduction {
