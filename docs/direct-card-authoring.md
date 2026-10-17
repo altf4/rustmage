@@ -113,3 +113,27 @@ entry counters use typed entry-counter rules or the surrounding entry effect;
 this storage change does not admit the Foundations consumers or implement
 their remaining triggers and costs. In particular, adding a counter as an
 activation cost still needs its own rules implementation and tests.
+
+## Chosen values and fixed control effects
+
+Use `CardExtras::entry_choice` for mandatory color or creature-type choices made
+as a permanent enters. These suspend the owned entry batch before its counter
+replacements and commit; they are not triggered abilities. `ChoiceColor` permits
+only the five colors, and `CreatureType` validates names against the pinned type
+list. Chosen values belong to an exact object incarnation, survive control
+changes, and clear on zone changes. `ObjectView.entry_choice` exposes the saved
+value for visible objects; `Observation.entry_value` describes a pending visible
+choice. Submit `Action::ChooseEntryValue` through the normal legal-action API.
+
+Reuse `ManaProduction::ChosenColor`, `CastFilter::SourceChosenColor` and typed
+chosen static fragments rather than branching on card names. Chosen creature
+subtypes participate in layer four; chosen stat bonuses use the shared actual
+and speculative characteristic queries. These primitives do not supply restricted
+mana spending or every effect associated with choosing a value.
+
+`Instruction::GainControl` performs a fixed control transfer to its selected
+player. It supersedes earlier temporary transfers even when the recipient already
+controls the permanent. It does not implement control that lasts only while an
+Aura remains attached. `CreatureDiesAttackState` tests the frozen death event,
+and `MayPayControllerLife` checks affordability before offering its branch; its
+program must explicitly perform the life loss and subsequent effects.
