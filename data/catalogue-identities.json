@@ -5342,7 +5342,8 @@
     0,
     2,
     2,
-    16
+    16,
+    1
   ],
   "aliases": [
     [
@@ -27718,6 +27719,12 @@
       "name": "Raccoon Token",
       "subtypes": "Raccoon",
       "colors": 16
+    },
+    {
+      "factory_identity": "@token/cat_beast_2_2_white",
+      "name": "Cat Beast Token",
+      "subtypes": "Cat Beast",
+      "colors": 1
     }
   ],
   "emblems": [
@@ -180196,6 +180203,33 @@
       "facts_sha256": null,
       "mana_cost": "",
       "type_line": "Creature — Raccoon",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5337,
+      "module": "card_5337",
+      "path": "synthetic/token_cat_beast_2_2_white.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/cat_beast_2_2_white",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Cat Beast",
       "oracle_keywords": [],
       "standard_legal": false,
       "legendary": false,
