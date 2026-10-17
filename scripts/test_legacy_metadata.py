@@ -35,6 +35,17 @@ class LegacyMetadataTests(unittest.TestCase):
                                  'colored: [0, 1, 0, 0, 0, 0], generic: 2']:
                     self.assertIn(fragment, line)
                 self.assertNotEqual(row['implementation'], 'explicit')
+                # The original reported case used the complete Scavenger front,
+                # then renamed it to a fixture identity and added Discover.
+                warded = dict(self.creature(name), power='4', toughness='4',
+                              mana_cost='{3}{B}', colors=['B'],
+                              oracle_text='Flying\nWard—Discard a card.')
+                line, row = self.definition(warded)
+                self.assertTrue(row['implemented'])
+                self.assertIn('Effect::Creature(4, 4)', line)
+                self.assertIn('Ward', line)
+                warded['oracle_text'] += '\nDiscover 4.'
+                self.assertFalse(self.definition(warded)[1]['implemented'])
 
     def test_all_reserved_names_compile_supplied_spell_kind_target_amount_and_cost(self):
         for name, _, _, _ in g.LEGACY:
