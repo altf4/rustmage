@@ -47,7 +47,7 @@ fn every_complete_authored_mode_combination_is_paid_in_both_seats() {
                 let enemy = named(&mut g, q, "Bear Cub", Zone::Battlefield);
                 let extra = named(&mut g, q, "Bear Cub", Zone::Battlefield);
                 let artifact = named(&mut g, q, "Hullcarver", Zone::Battlefield);
-                let enchantment = named(&mut g, q, "Glorious Anthem", Zone::Battlefield);
+                let enchantment = named(&mut g, q, "Anthem of Champions", Zone::Battlefield);
                 if name == "Rustler Rampage" {
                     for id in [own, enemy, extra] {
                         g.state.objects[id as usize].tapped = true;
