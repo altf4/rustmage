@@ -21,15 +21,16 @@ reviewed Crew, actual-payment and replacement foundations. Coverage is
 1,772/5,164, with 86 token factories, one emblem and observation schema 77.
 All 1,636 native tests pass. A complete 336-method compiler run passed before
 review found overly broad parenthetical removal; exact reminder authentication
-and 50 additional negative controls now close that admission hole. The final
-337-method compiler run is in progress.
+and 50 additional negative controls now close that admission hole. The complete
+337-method compiler/data suite passes in 537.691 seconds.
 
 The optimized Saga Standard100 workload completes naturally with every chapter
 and final sacrifice verified in both seats, printed creature bodies/keywords
 and actual creature-Saga attacks. It checks 102,849 owned replays and dropped-parent
 children, 205,698 wrong-actor/stale-revision denials and 36 private choice frames.
-Initial logical state is 20,312 bytes; maximum is 21,192. The final full public
-baseline and independent exact-head review confirmations remain pending.
+Initial logical state is 20,312 bytes; maximum is 21,192. The complete 226-method public baseline passes in 792.491s on the earlier
+immutable fingerprint; all 24 paid Saga cases also pass in 65.999s on the final
+metadata-only fingerprint. Independent exact-head confirmations remain pending.
 These workloads do not prove complete Standard rules or full-deck performance.
 
 [Adventure spell faces and owned normal-play exile permissions (#254)](https://github.com/altf4/rustmage/issues/254)
