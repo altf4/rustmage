@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "4e414d55474381cf4263b6d5f4a31aa2987b0f9f0e785424d761f89c00b619d2",
+  "catalogue_version": "4cf0215661aa81cc431c52f3a9039a9ea891d870acbc40b4387d714b9b254ebb",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1818,
-  "implemented_total": 1824,
+  "implemented_standard_cards": 1826,
+  "implemented_total": 1832,
   "token_definitions": 87,
   "emblem_definitions": 1,
   "cards": [
@@ -11,31 +11,31 @@
       "name": "Plains",
       "standard_legal": true,
       "implemented": true,
-      "implementation": "explicit"
+      "implementation": "land_template"
     },
     {
       "name": "Island",
       "standard_legal": true,
       "implemented": true,
-      "implementation": "explicit"
+      "implementation": "land_template"
     },
     {
       "name": "Swamp",
       "standard_legal": true,
       "implemented": true,
-      "implementation": "explicit"
+      "implementation": "land_template"
     },
     {
       "name": "Mountain",
       "standard_legal": true,
       "implemented": true,
-      "implementation": "explicit"
+      "implementation": "land_template"
     },
     {
       "name": "Forest",
       "standard_legal": true,
       "implemented": true,
-      "implementation": "explicit"
+      "implementation": "land_template"
     },
     {
       "name": "Grizzly Bears",
@@ -59,7 +59,7 @@
       "name": "Llanowar Elves",
       "standard_legal": true,
       "implemented": true,
-      "implementation": "explicit"
+      "implementation": "permanent_template"
     },
     {
       "name": "Lightning Bolt",
@@ -71,13 +71,13 @@
       "name": "Shock",
       "standard_legal": true,
       "implemented": true,
-      "implementation": "explicit"
+      "implementation": "spell_template"
     },
     {
       "name": "Giant Growth",
       "standard_legal": true,
       "implemented": true,
-      "implementation": "explicit"
+      "implementation": "spell_template"
     },
     {
       "name": "Divination",
@@ -2146,8 +2146,8 @@
     {
       "name": "Beanstalk Wurm // Plant Beans",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Bear Cub",
@@ -2290,8 +2290,8 @@
     {
       "name": "Bellowing Bruiser // Beat a Path",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Bellowing Crier",
@@ -2308,8 +2308,8 @@
     {
       "name": "Beluna's Gatekeeper // Entry Denied",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Bender's Waterskin",
@@ -2344,8 +2344,8 @@
     {
       "name": "Beorn, Reluctant Host // Till and Tend",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Berta, Wise Extrapolator",
@@ -2860,8 +2860,8 @@
     {
       "name": "Bofur, Reliable Guardian // Concerted Care",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Boggart Cursecrafter",
@@ -13438,8 +13438,8 @@
     {
       "name": "Ishgard, the Holy See // Faith & Grief",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "It Doesn't Add Up",
@@ -29164,8 +29164,8 @@
     {
       "name": "Velvetwing Butterflies // Gaze in Wonder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Venat, Heart of Hydaelyn // Hydaelyn, the Mothercrystal",
@@ -30664,8 +30664,8 @@
     {
       "name": "Woodland Acolyte // Mend the Wilds",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Woodland Weavemaster",
@@ -31106,6 +31106,6 @@
       "implementation": null
     }
   ],
-  "adventure_definitions": 19,
+  "adventure_definitions": 27,
   "omen_definitions": 13
 }

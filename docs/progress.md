@@ -8,7 +8,7 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Requirement | Current evidence | Remaining work |
 | --- | --- | --- |
 | Full legal identity pool | 5,164 frozen oracle identities, Java reconciliation and native catalogue tests | Maintain reviewed data versions; implement missing Java-source cards directly |
-| All card semantics | Coverage manifest and runtime admission agree: 1,817 executable Standard identities | 3,347 identities; many reusable mechanics plus card-specific rules |
+| All card semantics | Coverage manifest and runtime admission agree: 1,825 executable Standard identities | 3,339 identities; many reusable mechanics plus card-specific rules |
 | Gameplay enforcement | Implemented timing, payment, targets, stack, source-aware damage, strike steps, 15 keywords, typed programs, trigger ordering and regression tests | Wider events/cross-group relationships, replacement/prevention, layers, wider counter mechanics, broader token abilities/copies, modes/costs, remaining keywords and mechanics |
 | In-process library | Rust rlib and C ABI/cdylib; Python ctypes tests including complete games | Batched/packed training interface and model hooks |
 | Branch/restore | Isolated COW object/library buffers, owned continuations, local RNG, reusable snapshots, replay/invariant tests | Cover every new continuation/mechanic; search over information sets |
@@ -27,7 +27,7 @@ fresh public methods pass in 712.402 seconds. The
 [composition record](review-pr-258.md) tracks exact source/library identities,
 canonical preservation, meaningful cross-mechanic cases and current gate status.
 
-The current candidate integrates all thirteen complete Omen pairs with the three
+The Omen parent integrates all thirteen complete Omen pairs with the three
 adjacent graveyard/search consumers: 1,817/5,164 identities, 3,347 gated,
 87 token recipes, one emblem, nineteen Adventure and thirteen Omen helpers,
 observation schema80. The union retains chosen-spell timing, selected-face X,
@@ -40,7 +40,7 @@ owned replays / 733,070 denials. The [union review record](review-pr-275.md)
 identifies the exact source/library, preservation proof and independent reviews.
 Final exact-head approvals are recorded in the PR comments before merge.
 
-The other 56 true Adventure parents and 54 Saga parents
+The other 48 true Adventure parents and 54 Saga parents
 remain part of the full goal, alongside wider Ward/Role/disguise/cloak/control
 and other required semantics. Full rules enforcement across Standard, efficient
 training interfaces and full-deck performance remain incomplete.
@@ -56,3 +56,5 @@ audit every supported card/required mechanic, illegal-action paths, every pendin
 choice's restore/replay, hidden information, native/Python integration and full
 workload performance. A zero unsupported-card counter alone will not prove rules
 correctness.
+
+The [eight-pair Adventure candidate](adventure-land-targets.md) adds accumulating turn-bound land allowances and complete typed target movement/protection variants. Its combined coverage is 1,825/5,164, with 3,339 still gated. Validation passes: 1,710 native tests, all-target Clippy, all 388 unique compiler/data/provenance checks, 247 unique fresh public API methods and 100 natural Standard games with 79,608 owned frames / 159,216 denials. Two independent nonauthor final-head reviews remain required.

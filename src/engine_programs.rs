@@ -1135,13 +1135,24 @@ impl Game {
                 Instruction::ExileWarpedPermanent => self.exile_warped_permanent(&item),
                 Instruction::Crew { .. } => self.resolve_crew(&item),
                 Instruction::BecomeSaddled { .. } => self.resolve_saddle(&item),
-                Instruction::BottomLibrary => {
+                Instruction::AdditionalLandPlays(amount) => {
+                    let available =
+                        &mut self.state.players[item.controller.index()].extra_land_plays_remaining;
+                    *available = available
+                        .checked_add(amount)
+                        .capacity("land allowance exhausted");
+                }
+                Instruction::TopLibrary | Instruction::BottomLibrary => {
                     for bound in &item.targets {
                         if self.valid_library_target(&item, *bound) {
                             self.move_target_to_library(
                                 item.object,
                                 bound.object.unwrap(),
-                                LibraryDestination::Bottom,
+                                if instruction == Instruction::TopLibrary {
+                                    LibraryDestination::Top
+                                } else {
+                                    LibraryDestination::Bottom
+                                },
                             );
                         }
                     }
