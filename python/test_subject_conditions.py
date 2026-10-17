@@ -1,6 +1,6 @@
 """Public library acceptance for exact live target/entry conditions."""
 import unittest
-from rustmage import EngineError, Game
+from rustmage import OBSERVATION_SCHEMA, EngineError, Game
 
 NAMES = ['Aunt May', 'Dreamdew Entrancer', 'Fear of Immobility', 'Hazardroot Herbalist', 'Ingenious Leonin', 'Little Bear', 'Thwip!', 'Wakandan Royal Guard', 'Yip Yip!']
 
@@ -80,7 +80,7 @@ class SubjectConditionTests(unittest.TestCase):
                             if subject and not any(v['id'] == packet['id'] for v in after['stack']):
                                 current = next((v for v in after['objects'] if v['reference'] == subject['reference']), None)
                                 self.assertIsNotNone(current)
-                                self.assertEqual(after['schema'], 104)
+                                self.assertEqual(after['schema'], OBSERVATION_SCHEMA)
                                 owner = int(seat[1])
                                 plus = current['counters']['plus_one'] - subject['counters']['plus_one']
                                 if i == 0:

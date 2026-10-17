@@ -1,6 +1,6 @@
 """Independent public ABI acceptance for target-owner library destinations."""
 import unittest
-from rustmage import EngineError, Game
+from rustmage import OBSERVATION_SCHEMA, EngineError, Game
 
 NAMES = [
     'Chrome Companion', 'Hoverstone Pilgrim', 'Jade-Cast Sentinel',
@@ -103,7 +103,7 @@ class LibraryTuckTests(unittest.TestCase):
                                 owner = int(target['owner'][1])
                                 self.assertEqual(after['players'][owner]['library_count'], obs['players'][owner]['library_count'] + 1)
                                 self.assertEqual(after['players'][owner]['hand_count'], obs['players'][owner]['hand_count'])
-                                self.assertEqual(after['schema'], 104)
+                                self.assertEqual(after['schema'], OBSERVATION_SCHEMA)
                                 movement = after['last_target_library_move']
                                 self.assertEqual(movement['target_before'], target['reference'])
                                 self.assertEqual(movement['card'], target['card'])

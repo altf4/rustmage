@@ -1,7 +1,7 @@
 """Whole temporary death spells in paid, naturally terminal Standard games."""
 import json,re,unittest
 from pathlib import Path
-from rustmage import Game
+from rustmage import OBSERVATION_SCHEMA, Game
 from test_role_consumers import RoleConsumerTests
 NAMES=['Not Dead After All','Fake Your Own Death','Undying Malice']
 BASICS=['Plains','Island','Swamp','Mountain','Forest']
@@ -19,7 +19,7 @@ class TemporaryDeathGrantTests(unittest.TestCase):
   with Game([deck,deck],seed=seed,starting_player=p,deck_rules='Standard',library=library) as g:
    stage='setup';recipient=None;old=None;source=None;frames=0;paid=False;death=False;attacked=False;returned=False
    for iteration in range(30000):
-    head=g.observe('P0');self.assertEqual((head['schema'],head['catalogue']),(104,FP))
+    head=g.observe('P0');self.assertEqual((head['schema'],head['catalogue']),(OBSERVATION_SCHEMA,FP))
     if head['outcome'] is not None:
      self.assertEqual(stage,'finish',(name,p,seed,stage,iteration));self.assertTrue(paid and death and returned and attacked,(name,p,paid,death,returned,attacked))
      return dict(frames=frames,card=name,seat=p,outcome=head['outcome'])

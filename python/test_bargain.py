@@ -2,7 +2,7 @@
 import json
 from pathlib import Path
 import unittest
-from rustmage import EngineError, Game
+from rustmage import OBSERVATION_SCHEMA, EngineError, Game
 NAMES=["Archon's Glory","Candy Grapple","Farsight Ritual","Hamlet Glutton","High Fae Negotiator","Ice Out","Johann's Stopgap","Kellan's Lightblades","Tenacious Tomeseeker","Troublemaker Ouphe"]
 BASICS=['Plains','Island','Swamp','Mountain','Forest']
 FACTS={c['name']:c for c in json.loads((Path(__file__).resolve().parents[1]/'data/standard/cards.json').read_text())['cards']}
@@ -106,7 +106,7 @@ class BargainTests(unittest.TestCase):
     if a['kind']=='PayCosts' and ann and ann['source_card']==name:paid=True;source=ann['object'];self.assertEqual(sum(a['payment']),sum(required)+generic)
     if a['kind']=='SelectLibrary' and o['resolving']['source_card']==name:selected.append(a['card'])
     if a['kind']=='Pass' and o['stack'] and o['stack'][-1]['source_card']==name:root=o['stack'][-1];base=o
-    after=self.replay(g,o,j);self.assertEqual(after['schema'],104)
+    after=self.replay(g,o,j);self.assertEqual(after['schema'],OBSERVATION_SCHEMA)
     if a['kind']=='PayCosts' and ann and ann['source_card']==name and resource_ref:
      v=next((v for v in after['objects'] if v['id']==resource_ref['card']),None);self.assertTrue(v is None or v['zone'] in ('Graveyard','Outside'))
     if root and not any(v['id']==root['id'] for v in after['stack']+after['waiting_triggers']) and not(after['announcing'] and after['announcing']['id']==root['id']) and not(after['resolving'] and after['resolving']['id']==root['id']):

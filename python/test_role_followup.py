@@ -1,7 +1,7 @@
 """Paid complete Role follow-ups; legal Standard self-play and real foreign casting."""
 import json,re,unittest
 from pathlib import Path
-from rustmage import Game
+from rustmage import OBSERVATION_SCHEMA, Game
 import test_role_consumers as prior
 NAMES=['Become Brutes','Cursed Courtier','Cut In','Diminisher Witch',"Eriette's Whisper",'Merry Bards','Protective Parents','Shatter the Oath','Spellbook Vendor',"The Witch's Vanity",'Unassuming Sage',"Witch's Mark"]
 ROLES=['Monster','Cursed','Young Hero','Cursed','Wicked','Young Hero','Young Hero','Wicked','Sorcerer','Wicked','Sorcerer','Wicked']
@@ -10,7 +10,7 @@ SAGA='Korvold and the Noble Thief'
 ROOT=Path(__file__).resolve().parents[1]
 FACTS={v['name']:v for v in json.loads((ROOT/'data/standard/cards.json').read_text())['cards']}
 FP=json.loads((ROOT/'data/standard/coverage.json').read_text())['catalogue_version']
-SCHEMA=99
+SCHEMA=OBSERVATION_SCHEMA
 class RoleFollowupTests(unittest.TestCase):
  frame=prior.RoleConsumerTests.frame
  def test_all_twelve_paid_complete_bodies_both_seats(self):

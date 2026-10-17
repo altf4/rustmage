@@ -2,7 +2,7 @@
 import json
 from pathlib import Path
 import unittest
-from rustmage import EngineError, Game
+from rustmage import OBSERVATION_SCHEMA, EngineError, Game
 
 NAMES = ['Baseball Bat', "Captain America's Shield", 'Stormbeacon Blade', 'Thunder Lasso', 'Ultima Weapon', 'Candlestick', 'Diamond Pick-Axe', "Medic's Kitesail", 'Pirate Hat', 'Web-Shooters']
 BONUS = [(1, 1), (0, 8), (3, 0), (1, 1), (7, 7), (1, 1), (1, 1), (1, 0), (1, 1), (1, 1)]
@@ -176,7 +176,7 @@ class AttachmentAttackTests(unittest.TestCase):
                     elif i == 5 and packet['source_card'] == name and isinstance(packet['kind'], dict) and packet['kind']['ActivatedAbility']['ability'] == 0:
                         root, baseline = packet, obs
                 after = self.replay(game, obs, j)
-                self.assertEqual(after['schema'], 104)
+                self.assertEqual(after['schema'], OBSERVATION_SCHEMA)
                 if frame:
                     window, library_count, grave_count = surveil
                     if after['library_choice']:

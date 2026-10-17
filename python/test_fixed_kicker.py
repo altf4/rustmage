@@ -2,7 +2,7 @@
 import json
 from pathlib import Path
 import unittest
-from rustmage import EngineError, Game
+from rustmage import OBSERVATION_SCHEMA, EngineError, Game
 
 NAMES = ['Burst Lightning', 'Firebending Lesson', 'Gatekeeper of Malakir', 'Grow from the Ashes', 'Into the Roil', 'Whoosh!', 'Nullpriest of Oblivion', 'Sun-Blessed Healer', "Zuko's Conviction", 'Gnarlid Colony']
 FACTS = {c['name']: c for c in json.loads((Path(__file__).resolve().parents[1] / 'data/standard/cards.json').read_text())['cards']}
@@ -136,7 +136,7 @@ class FixedKickerTests(unittest.TestCase):
                     if packet['source_card'] == name:
                         root, baseline = packet, obs
                 after = self.replay(game, obs, j)
-                self.assertEqual(after['schema'], 104)
+                self.assertEqual(after['schema'], OBSERVATION_SCHEMA)
                 if root and not any(p['id'] == root['id'] for p in after['stack']) and not (after['resolving'] and after['resolving']['id'] == root['id']):
                     if root['kind'] != 'Spell':
                         self.assertTrue(pay)

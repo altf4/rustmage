@@ -3,7 +3,7 @@ import json
 import os
 from pathlib import Path
 import unittest
-from rustmage import Game, EngineError
+from rustmage import OBSERVATION_SCHEMA, Game, EngineError
 import test_adventure
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -41,7 +41,7 @@ class TriggerSourceBindingTests(unittest.TestCase):
             for iteration in range(16000):
                 head=g.observe('P0');self.assertIsNone(head['outcome'],(player,victim_name,stage,iteration))
                 o=g.observe(head['actor']);actor=o['actor']
-                self.assertEqual((o['schema'],o['catalogue']),(104,EXPECTED))
+                self.assertEqual((o['schema'],o['catalogue']),(OBSERVATION_SCHEMA,EXPECTED))
                 objects={v['id']:v for v in o['objects']}
                 private=g.observe(player)
                 hand=[v for v in private['objects'] if v['zone']=='Hand' and v['owner']==player]

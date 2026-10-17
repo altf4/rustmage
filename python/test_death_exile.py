@@ -1,7 +1,7 @@
 """Complete paid temporary death-exile bodies in naturally drawn Standard games."""
 import json,os,unittest
 from pathlib import Path
-from rustmage import Game
+from rustmage import OBSERVATION_SCHEMA, Game
 from test_role_consumers import RoleConsumerTests
 FP=json.loads((Path(__file__).resolve().parents[1]/'data/standard/coverage.json').read_text())['catalogue_version']
 BASICS=['Plains','Island','Swamp','Mountain','Forest']
@@ -23,7 +23,7 @@ class DeathExileTests(unittest.TestCase):
     head=g.observe('P0')
     if head['outcome']is not None:
      self.assertEqual(stage,'finish',(name,p,mode,seed,stage,iteration));self.assertTrue(paid);return dict(name=name,mode=mode,seat=p,seed=seed,frames=frames)
-    o=g.observe(head['actor']);actor=o['actor'];self.assertEqual((o['schema'],o['catalogue']),(104,FP));objects={v['id']:v for v in o['objects']};quiet=o['decision']=='priority' and not o['stack'] and not o['announcing'] and not o['resolving']
+    o=g.observe(head['actor']);actor=o['actor'];self.assertEqual((o['schema'],o['catalogue']),(OBSERVATION_SCHEMA,FP));objects={v['id']:v for v in o['objects']};quiet=o['decision']=='priority' and not o['stack'] and not o['announcing'] and not o['resolving']
     def own(player):return [v for v in objects.values()if v['zone']=='Battlefield' and v['controller']==player]
     def hand(player):return [v for v in g.observe(player)['objects']if v['zone']=='Hand' and v['owner']==player]
     def available(player):

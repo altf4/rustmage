@@ -1,7 +1,7 @@
 """Naturally drawn, paid complete effective-base-power and casting-rule bodies."""
 import json,os,unittest
 from pathlib import Path
-from rustmage import Game,EngineError
+from rustmage import OBSERVATION_SCHEMA, Game,EngineError
 from test_role_consumers import RoleConsumerTests
 FP=json.loads((Path(__file__).resolve().parents[1]/'data/standard/coverage.json').read_text())['catalogue_version']
 BASICS=['Forest','Plains','Island','Mountain','Swamp']
@@ -26,7 +26,7 @@ class BasePowerPublicTests(unittest.TestCase):
      self.assertEqual(stage,'finish',(name,variant,p,seed,stage,iteration));self.assertTrue(paid);self.assertTrue(effect_seen)
      if name!='Sovereign Okinec Ahau':self.assertTrue(blocked)
      return dict(name=name,variant=variant,player=p,frames=frames,paid=True)
-    o=g.observe(head['actor']);actor=o['actor'];self.assertEqual((o['schema'],o['catalogue']),(104,FP));objects={v['id']:v for v in o['objects']};field=[v for v in objects.values()if v['zone']=='Battlefield'];mine=[v for v in field if v['controller']==p];foes=[v for v in field if v['controller']==q]
+    o=g.observe(head['actor']);actor=o['actor'];self.assertEqual((o['schema'],o['catalogue']),(OBSERVATION_SCHEMA,FP));objects={v['id']:v for v in o['objects']};field=[v for v in objects.values()if v['zone']=='Battlefield'];mine=[v for v in field if v['controller']==p];foes=[v for v in field if v['controller']==q]
     ally=next((v for v in mine if v['card']=='Bear Cub'),None);body=objects.get(source);quiet=o['decision']=='priority'and not o['stack']and not o['announcing']and not o['resolving'];main=actor==p and o['active']==p and o['step']=='Main1'
     if body is not None and body['zone']=='Battlefield'and name!='Sovereign Okinec Ahau'and actor==q and o['active']==p and o['decision']=='priority':
      self.assertTrue(o['casting_prohibited']);self.assertFalse(g.observe(p)['casting_prohibited'])

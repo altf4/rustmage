@@ -1,7 +1,7 @@
 """Naturally drawn, paid direct Rust Auras in Standard, with owned action replay."""
 import json, os, unittest
 from pathlib import Path
-from rustmage import Game
+from rustmage import Game, OBSERVATION_SCHEMA
 from test_role_consumers import RoleConsumerTests
 FACTS=json.loads((Path(__file__).resolve().parents[1]/'data/standard/coverage.json').read_text())
 CASES=['Fresh Start','Frozen in Ice','Stop Cold',"Enchanted River's Grasp"]
@@ -24,7 +24,7 @@ class AbilityRemovalPublicTests(unittest.TestCase):
     if head['outcome']is not None:
      self.assertEqual(stage,'finish',(name,p,seed,stage,iteration));self.assertTrue(paid);self.assertTrue(seen)
      return dict(name=name,player=p,frames=frames,paid=True)
-    o=g.observe(head['actor']);actor=o['actor'];self.assertEqual((o['schema'],o['catalogue']),(106,FACTS['catalogue_version']))
+    o=g.observe(head['actor']);actor=o['actor'];self.assertEqual((o['schema'],o['catalogue']),(OBSERVATION_SCHEMA,FACTS['catalogue_version']))
     objects={v['id']:v for v in o['objects']};field=[v for v in objects.values()if v['zone']=='Battlefield'];mine=[v for v in field if v['controller']==p];quiet=o['decision']=='priority'and not o['stack']and not o['announcing']and not o['resolving'];elf=next((v for v in mine if v['card']=='Llanowar Elves'),None)
     if stage=='wait_aura'and quiet:
      body=objects.get(source);recipient=objects.get(target)
