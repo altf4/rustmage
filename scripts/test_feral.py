@@ -45,7 +45,29 @@ class FeralCompilerTests(unittest.TestCase):
      face['oracle_text']='\n'.join(lines)
      if replacement=='single graveyard' and depth==0:self.assertTrue(self.admitted(c))
      elif '(' in face['oracle_text']:self.assertFalse(self.admitted(c),(name,replacement,depth))
+ def test_legacy_names_keep_the_complete_generic_same_graveyard_body(self):
+  for name in [NAME,'Arashin Sunshield','Griffnaut Tracker']:
+   original=copy.deepcopy(self.cards[name]);normal=original['card_faces'][0] if original.get('card_faces') else original
+   for alias in ['Grizzly Bears','Llanowar Elves','Shock','Quick Study']:
+    c=dict(normal,name=alias,layout='normal',oracle_id=original['oracle_id'],colors=[v for v in 'WUBRG' if v in normal['mana_cost']])
+    rust,m=self.compile(c);row=next(line for line in rust.splitlines() if 'Definition {' in line and 'name: '+json.dumps(alias)+',' in line)
+    self.assertTrue(self.admitted(c),(name,alias));self.assertIn('effect: Effect::Creature('+normal['power']+', '+normal['toughness']+')',row)
+    self.assertIn('constraint: TargetGroupConstraint::SameGraveyard',row);self.assertIn('Instruction::Exile',row)
+    if name=='Arashin Sunshield':self.assertIn('Instruction::Tap',row);self.assertNotIn('activated: &[]',row)
+    if name in [NAME,'Griffnaut Tracker']:self.assertIn('keywords: Keywords('+('129' if name==NAME else '1')+')',row)
+    self.assertNotEqual(next(v['implementation']for v in m['cards']if v['name']==alias),'explicit')
+    for residual in ['\nDiscover 4.',' (You win the game.)','\nWhenever you draw a card, discover 4.']:
+     bad=copy.deepcopy(c);bad['oracle_text']+=residual;self.assertFalse(self.admitted(bad),(name,alias,residual))
+ def test_legacy_names_cannot_revive_unknown_graveyard_constraints(self):
+  for name in [NAME,'Arashin Sunshield','Griffnaut Tracker']:
+   original=copy.deepcopy(self.cards[name]);normal=original['card_faces'][0] if original.get('card_faces') else original
+   for alias in ['Grizzly Bears','Llanowar Elves','Shock','Quick Study']:
+    for replacement in ['from two graveyards','from a single hand','from a single graveyard of your choice and draw a card','from a single graveyard (Draw a card.)','from a single graveyard (','from a single graveyard ((Then shuffle this card into its owner\'s library.))']:
+     c=dict(normal,name=alias,layout='normal',oracle_id=original['oracle_id'],colors=[v for v in 'WUBRG' if v in normal['mana_cost']])
+     c['oracle_text']=c['oracle_text'].replace('from a single graveyard',replacement)
+     self.assertFalse(self.admitted(c),(name,alias,replacement))
  def test_unconstrained_graveyard_template_retains_its_distinct_semantics(self):
+  self.assertTrue(self.admitted(self.cards['Rooftop Percher']))
   self.assertEqual(g.targeted_program('exile up to two target cards from graveyards.')[0],('CardGrave',0,2))
   self.assertEqual(g.targeted_program('exile up to two target cards from a single graveyard.')[0],('CardSingleGrave',0,2))
  def test_all_feral_provenance_records_match_checked_out_and_pinned_java(self):

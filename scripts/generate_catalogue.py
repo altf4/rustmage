@@ -3921,6 +3921,19 @@ def compile_catalogue(snapshot, target):
     replacement_rows=[]
     for index, name in enumerate(names):
         original = cards.get(name, {})
+        raw_graveyard_body = original.get('oracle_text', '')
+        graveyard_route_surface = raw_graveyard_body
+        graveyard_route_seen = False
+        single_graveyard_seen = False
+        while True:
+            normalized_graveyard_surface = ' '.join(graveyard_route_surface.casefold().split())
+            single_graveyard_seen |= 'single graveyard' in normalized_graveyard_surface
+            graveyard_route_seen |= (single_graveyard_seen
+                                     or 'exile up to two target cards' in normalized_graveyard_surface)
+            stripped = re.sub(r'\([^()]*\)', '', graveyard_route_surface)
+            if stripped == graveyard_route_surface:
+                break
+            graveyard_route_surface = stripped
         if (original.get('layout') == 'normal' and 'Vehicle' in original.get('type_line','').split(' — ')[-1].split()
                 and all(original.get(axis, '') == '*' or original.get(axis, '').isdigit() for axis in ('power','toughness'))):
             pt = [0 if original[axis] == '*' else int(original[axis]) for axis in ('power','toughness')]
@@ -3965,7 +3978,7 @@ def compile_catalogue(snapshot, target):
         abilities = []
         entry = 'Never'
         land = land_template(card)
-        if name in legacy:
+        if name in legacy and not graveyard_route_seen:
             effect, fallback_cost, color = legacy[name]
             # Lands have no mana cost. Their legacy cost token encodes colour only.
             cost = '' if effect == 'Land' else card.get('mana_cost', fallback_cost)
@@ -4102,16 +4115,7 @@ def compile_catalogue(snapshot, target):
         # The new single-graveyard route has no audited parenthetical reminders.
         # Generic inherited templates may strip them, so authenticate the original
         # entire body before final admission, without selecting any card name.
-        raw_graveyard_body = original.get('oracle_text', '')
-        graveyard_route_surface = raw_graveyard_body
-        graveyard_route_seen = False
-        while True:
-            graveyard_route_seen |= 'single graveyard' in ' '.join(graveyard_route_surface.casefold().split())
-            stripped = re.sub(r'\([^()]*\)', '', graveyard_route_surface)
-            if stripped == graveyard_route_surface:
-                break
-            graveyard_route_surface = stripped
-        if (graveyard_route_seen
+        if (single_graveyard_seen
                 and any(char in raw_graveyard_body for char in '()')):
             effect = 'Unsupported'
         offspring_key=None
@@ -4199,7 +4203,7 @@ def compile_catalogue(snapshot, target):
         exhaust_mask=sum(1<<i for i,a in enumerate(activations) if a[0].get('exhaust',False))
         if exhaust_mask and effect!='Unsupported':exhaust_rows.append(f'        {index} => {exhaust_mask},')
         coverage.append({'name': name, 'standard_legal': name in standard_names, 'implemented': effect != 'Unsupported',
-                         'implementation': 'bargain_template' if bargain and effect != 'Unsupported' else 'explicit' if name in legacy else 'land_template' if land else 'creature_template' if template else 'trigger_template' if trigger_template else 'modal_template' if modal else 'spell_template' if spell else 'aura_template' if aura else 'equipment_template' if equipment else 'permanent_template' if permanent else 'static_template' if static else None})
+                         'implementation': 'bargain_template' if bargain and effect != 'Unsupported' else 'explicit' if name in legacy and not graveyard_route_seen else 'land_template' if land else 'creature_template' if template else 'trigger_template' if trigger_template else 'modal_template' if modal else 'spell_template' if spell else 'aura_template' if aura else 'equipment_template' if equipment else 'permanent_template' if permanent else 'static_template' if static else None})
 
     # Only factories referenced by wholly accepted cards enter the executable catalogue.
     used_tokens = sorted(set(re.findall(r'__TOKEN_([0-9a-f]+)__', '\n'.join(definitions+replacement_rows))))
