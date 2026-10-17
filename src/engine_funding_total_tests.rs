@@ -251,3 +251,100 @@ fn foreign_owned_sources_fund_only_their_controller_without_mutation() {
         }));
     }
 }
+
+// These sources each sacrifice themselves, so the full physical search tree is
+// finite. Deliberately use neither canonical keys nor the optimistic bounds.
+fn exhaustive_owned_evidence(state: &FundingState<'_>, target: FundingGoal, evidence: u16) -> bool {
+    if !state.obligations(target) {
+        return false;
+    }
+    let grave_value: u128 = state
+        .game
+        .state
+        .objects
+        .iter()
+        .enumerate()
+        .map(|(id, actual)| {
+            let object = state
+                .resources
+                .iter()
+                .find(|r| r.id as usize == id)
+                .map_or(actual, |r| &r.object);
+            if object.owner == target.actor
+                && object.zone == Zone::Graveyard
+                && !object.card.is_token()
+            {
+                u128::from(object.card.fixed_mana_value())
+            } else {
+                0
+            }
+        })
+        .sum();
+    if payable(state.mana, target.required, target.generic) && grave_value >= u128::from(evidence) {
+        return true;
+    }
+    state.moves(target).into_iter().any(|step| {
+        let mut next = state.clone();
+        next.apply(&step);
+        exhaustive_owned_evidence(&next, target, evidence)
+    })
+}
+
+#[test]
+fn mixed_owner_sacrifices_preserve_exact_evidence_reachability() {
+    let pizza = Card::from_name("Omni-Cheese Pizza").unwrap();
+    let value = u16::try_from(pizza.fixed_mana_value()).unwrap();
+    assert!(value > 0);
+    for actor in [Player::P0, Player::P1] {
+        for ownership in 0..4 {
+            for existing_grave in [false, true] {
+                let mut g = scenario();
+                for index in 0..2 {
+                    let owner = if ownership & (1 << index) == 0 {
+                        actor
+                    } else {
+                        actor.other()
+                    };
+                    let id = spawn(&mut g, owner, pizza, Zone::Battlefield);
+                    g.state.objects[id as usize].controller = actor;
+                }
+                if existing_grave {
+                    spawn(
+                        &mut g,
+                        actor,
+                        Card::from_name("Cancel").unwrap(),
+                        Zone::Graveyard,
+                    );
+                }
+                for pool in 1..=2 {
+                    g.state.players[actor.index()].mana[4] = pool;
+                    for generic in 0..=2 {
+                        let target = FundingGoal {
+                            actor,
+                            required: [0, 0, 1, 0, 0, 0],
+                            ..goal(generic)
+                        };
+                        for evidence in [0, value, 2 * value, 2 * value + 4] {
+                            let mut state = FundingState::from_game(&g, target);
+                            let expected = exhaustive_owned_evidence(&state, target, evidence);
+                            for reverse in [false, true] {
+                                if reverse {
+                                    state.resources.reverse();
+                                }
+                                assert_eq!(
+                                    state.reachable_with_evidence(
+                                        target,
+                                        Some(evidence),
+                                        &mut HashSet::new()
+                                    ),
+                                    expected,
+                                    "actor{actor:?}ownership{ownership}grave{existing_grave}pool{pool}generic{generic}evidence{evidence}reverse{reverse}"
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

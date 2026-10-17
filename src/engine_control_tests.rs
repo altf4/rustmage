@@ -73,6 +73,23 @@ fn settle(g: &mut Game) {
     panic!("unsettled {:?}", g.state.pending);
 }
 
+fn finish_announcement(g: &mut Game) {
+    for _ in 0..100 {
+        if g.state.pending == Pending::Priority {
+            return;
+        }
+        let actions = g.legal_actions();
+        let action = actions
+            .iter()
+            .find(|a| matches!(a, Action::FinishTargets))
+            .or_else(|| actions.iter().find(|a| !matches!(a, Action::Concede)))
+            .unwrap()
+            .clone();
+        act(g, action);
+    }
+    panic!("announcement did not finish");
+}
+
 fn grant(g: &mut Game, actor: Player, name: &str) -> CardId {
     let id = spawn(
         g,
@@ -180,6 +197,306 @@ fn real_paid_korvold_all_three_chapters_grant_foreign_routes_both_seats() {
             act(&mut child, action);
             settle(&mut child);
         }
+    }
+}
+
+#[test]
+fn paid_land_grants_use_foreign_land_casters_quota_and_offturn_owner_grants_expire() {
+    for actor in [Player::P0, Player::P1] {
+        let (base, [beans, midgar, ishgard]) = korvold_grants_for(
+            actor,
+            [
+                "Beanstalk Wurm // Plant Beans",
+                "Midgar, City of Mako // Reactor Raid",
+                "Ishgard, the Holy See // Faith & Grief",
+            ],
+        );
+        for (land, spare) in [(midgar, ishgard), (ishgard, midgar)] {
+            let mut g = base.clone();
+            let owner = actor.other();
+            spawn(
+                &mut g,
+                owner,
+                Card::from_name("Whirlwing Stormbrood // Dynamic Soar").unwrap(),
+                Zone::Battlefield,
+            );
+            let owners_beans = spawn(
+                &mut g,
+                owner,
+                Card::from_name("Beanstalk Wurm // Plant Beans").unwrap(),
+                Zone::Hand,
+            );
+            g.state.players[owner.index()].mana = [30; 6];
+            act(&mut g, Action::Pass);
+            act(&mut g, Action::AnnounceAdventure { card: owners_beans });
+            settle(&mut g);
+            assert_eq!(g.state.active, actor);
+            assert_eq!(g.state.players[owner.index()].extra_land_plays_remaining, 1);
+            act(&mut g, Action::AnnounceAdventure { card: beans });
+            settle(&mut g);
+            assert_eq!(g.state.players[actor.index()].extra_land_plays_remaining, 1);
+            let basic = spawn(&mut g, actor, Card::Forest, Zone::Hand);
+            act(&mut g, Action::PlayLand { card: basic });
+            act(&mut g, Action::PlayLand { card: land });
+            assert_eq!(g.state.objects[land as usize].owner, owner);
+            assert_eq!(g.state.objects[land as usize].controller, actor);
+            assert_eq!(g.state.players[actor.index()].extra_land_plays_remaining, 0);
+            assert_eq!(g.state.players[owner.index()].extra_land_plays_remaining, 1);
+            let before = g.snapshot();
+            assert_eq!(
+                g.apply(actor, Action::PlayLand { card: spare }),
+                Err(Error::IllegalAction)
+            );
+            assert_eq!(g.snapshot(), before);
+            let turn = g.state.turn;
+            for _ in 0..200 {
+                if g.state.turn > turn
+                    && g.state.active == owner
+                    && g.state.step == Step::Main1
+                    && g.state.pending == Pending::Priority
+                {
+                    break;
+                }
+                let action = g
+                    .legal_actions()
+                    .into_iter()
+                    .find(|a| !matches!(a, Action::Concede))
+                    .unwrap();
+                act(&mut g, action);
+            }
+            assert_eq!(g.state.active, owner);
+            assert_eq!(g.state.step, Step::Main1);
+            assert_eq!(g.state.players[owner.index()].extra_land_plays_remaining, 0);
+            assert_eq!(g.state.players[actor.index()].extra_land_plays_remaining, 0);
+            assert!(
+                g.state.objects[land as usize].tapped,
+                "the owner's untap cannot untap a foreign-controlled land"
+            );
+            assert!(!g.can_play_exiled(owner, spare));
+            let first = spawn(&mut g, owner, Card::Forest, Zone::Hand);
+            let second = spawn(&mut g, owner, Card::Forest, Zone::Hand);
+            act(&mut g, Action::PlayLand { card: first });
+            let before = g.snapshot();
+            assert_eq!(
+                g.apply(owner, Action::PlayLand { card: second }),
+                Err(Error::IllegalAction)
+            );
+            assert_eq!(g.snapshot(), before);
+            for _ in 0..200 {
+                if g.state.active == actor
+                    && g.state.step == Step::Main1
+                    && g.state.pending == Pending::Priority
+                {
+                    break;
+                }
+                let action = g
+                    .legal_actions()
+                    .into_iter()
+                    .find(|a| !matches!(a, Action::Concede))
+                    .unwrap();
+                act(&mut g, action);
+            }
+            assert!(!g.state.objects[land as usize].tapped);
+            let mana = g.legal_actions().into_iter().find(|a| matches!(a, Action::TapMana { card } | Action::AnnounceMana { card, .. } if *card == land)).expect("caster can use foreign land");
+            act(&mut g, mana);
+            settle(&mut g);
+            assert!(g.state.players[actor.index()].mana.iter().sum::<u32>() > 0);
+            assert_eq!(g.state.players[owner.index()].mana, [0; 6]);
+        }
+    }
+}
+
+#[test]
+fn korvold_foreign_adventure_right_outlives_generic_deadline_and_stays_normal_only() {
+    for actor in [Player::P0, Player::P1] {
+        let (mut g, [giant, _, _]) = korvold_grants(actor);
+        let turn = g.state.turn;
+        act(&mut g, Action::AnnounceAdventure { card: giant });
+        settle(&mut g);
+        assert!(g.can_play_adventure(actor, giant));
+        assert!(!g.can_play_adventure(actor.other(), giant));
+        assert!(
+            !g.state
+                .exile_permissions
+                .iter()
+                .any(|p| p.object.card == giant)
+        );
+        for _ in 0..300 {
+            if g.state.turn > turn
+                && g.state.active == actor
+                && g.state.step == Step::Main1
+                && g.state.pending == Pending::Priority
+            {
+                break;
+            }
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| !matches!(a, Action::Concede))
+                .unwrap();
+            act(&mut g, action);
+        }
+        assert!(g.state.turn > turn);
+        assert!(g.can_play_adventure(actor, giant));
+        let before = g.snapshot();
+        assert_eq!(
+            g.apply(actor, Action::AnnounceAdventure { card: giant }),
+            Err(Error::IllegalAction)
+        );
+        assert_eq!(g.snapshot(), before);
+        g.state.players[actor.index()].mana = [30; 6];
+        act(&mut g, Action::AnnounceExile { card: giant });
+        settle(&mut g);
+        assert_eq!(g.state.objects[giant as usize].zone, Zone::Battlefield);
+        assert_eq!(g.state.objects[giant as usize].controller, actor);
+        assert_eq!(g.state.objects[giant as usize].owner, actor.other());
+    }
+}
+
+#[test]
+fn paid_foreign_omen_searches_caster_library_but_shuffles_source_into_owner_library() {
+    for actor in [Player::P0, Player::P1] {
+        let (mut g, [_, bloom, _]) = korvold_grants(actor);
+        let owner = actor.other();
+        let caster_len = g.state.players[actor.index()].library.len();
+        let owner_len = g.state.players[owner.index()].library.len();
+        let mut expected_rng = g.state.rng;
+        let mut expected_caster = g.state.players[actor.index()].library.clone();
+        let mut expected_owner = g.state.players[owner.index()].library.clone();
+        act(&mut g, Action::AnnounceOmen { card: bloom });
+        for _ in 0..100 {
+            if matches!(g.state.pending, Pending::EffectSearch { .. }) {
+                break;
+            }
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| !matches!(a, Action::Concede))
+                .unwrap();
+            act(&mut g, action);
+        }
+        let mut selected = Vec::new();
+        for _ in 0..2 {
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::ChooseSearch { .. }))
+                .unwrap();
+            if let Action::ChooseSearch { card } = action {
+                selected.push(card);
+            }
+            act(&mut g, action);
+        }
+        act(&mut g, Action::FinishSearch);
+        let own = g.observe(actor).search_distribution.unwrap();
+        let other = g.observe(owner).search_distribution.unwrap();
+        assert_eq!(
+            serde_json::to_value(&own).unwrap(),
+            serde_json::to_value(&other).unwrap()
+        );
+        assert_eq!(own.candidates.len(), 2);
+        assert!(own.candidates.iter().all(|o| selected.contains(&o.id)));
+        act(
+            &mut g,
+            Action::ChooseSearchBattlefield { card: selected[0] },
+        );
+        settle(&mut g);
+        assert_eq!(g.state.players[actor.index()].library.len(), caster_len - 2);
+        assert_eq!(g.state.players[owner.index()].library.len(), owner_len + 1);
+        assert_eq!(g.state.objects[bloom as usize].zone, Zone::Library);
+        assert_eq!(g.state.objects[bloom as usize].owner, owner);
+        assert_eq!(g.state.objects[selected[0] as usize].controller, actor);
+        assert_eq!(g.state.objects[selected[1] as usize].zone, Zone::Hand);
+        assert!(
+            g.observe(owner)
+                .objects
+                .iter()
+                .any(|o| o.id == selected[1] && o.zone == Zone::Hand)
+        );
+        assert!(!g.can_play_adventure(actor, bloom));
+        expected_caster.retain(|id| !selected.contains(id));
+        expected_rng.shuffle(&mut expected_caster);
+        expected_owner.push(bloom);
+        expected_rng.shuffle(&mut expected_owner);
+        assert_eq!(g.state.rng, expected_rng);
+        assert_eq!(g.state.players[actor.index()].library, expected_caster);
+        assert_eq!(g.state.players[owner.index()].library, expected_owner);
+    }
+}
+
+#[test]
+fn paid_foreign_inset_counters_route_to_owner_graveyard_without_exile_rights_or_shuffle() {
+    for actor in [Player::P0, Player::P1] {
+        let (base, [giant, bloom, _]) = korvold_grants(actor);
+        for (id, action) in [
+            (giant, Action::AnnounceAdventure { card: giant }),
+            (bloom, Action::AnnounceOmen { card: bloom }),
+        ] {
+            let mut g = base.clone();
+            let owner = actor.other();
+            let libraries = [
+                g.state.players[0].library.clone(),
+                g.state.players[1].library.clone(),
+            ];
+            act(&mut g, action);
+            finish_announcement(&mut g);
+            let counter = spawn(
+                &mut g,
+                owner,
+                Card::from_name("Negate").unwrap(),
+                Zone::Hand,
+            );
+            g.state.players[owner.index()].mana = [30; 6];
+            act(&mut g, Action::Pass);
+            act(&mut g, Action::AnnounceCast { card: counter });
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Spell(id),
+                },
+            );
+            finish_announcement(&mut g);
+            settle(&mut g);
+            assert_eq!(g.state.objects[id as usize].zone, Zone::Graveyard);
+            assert_eq!(g.state.objects[id as usize].owner, owner);
+            assert!(!g.can_play_exiled(actor, id));
+            assert!(!g.can_play_exiled(owner, id));
+            assert_eq!(g.state.players[0].library, libraries[0]);
+            assert_eq!(g.state.players[1].library, libraries[1]);
+        }
+    }
+}
+
+#[test]
+fn stale_or_other_player_grant_cannot_mask_independent_valid_permission() {
+    for actor in [Player::P0, Player::P1] {
+        let mut g = setup(actor);
+        let id = grant(&mut g, actor, "Grabby Giant // That's Mine");
+        let reference = g.object_ref(id);
+        let mut stale = reference;
+        stale.generation += 1;
+        g.state.exile_permissions.insert(
+            0,
+            ExilePlayPermission {
+                object: stale,
+                player: actor,
+                expires_turn: g.state.turn,
+            },
+        );
+        g.state.exile_permissions.insert(
+            1,
+            ExilePlayPermission {
+                object: reference,
+                player: actor.other(),
+                expires_turn: g.state.turn,
+            },
+        );
+        assert!(g.can_play_exiled(actor, id));
+        assert!(g.can_play_exiled(actor.other(), id));
+        act(&mut g, Action::AnnounceAdventure { card: id });
+        settle(&mut g);
+        assert!(g.can_play_adventure(actor, id));
+        assert!(!g.can_play_exiled(actor.other(), id));
     }
 }
 
