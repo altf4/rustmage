@@ -51,6 +51,37 @@ class DirectCardTests(unittest.TestCase):
             path.with_suffix('.json').rename(renamed)
             with self.assertRaises(ValueError): linker.load(root)
 
+    def test_emitted_physical_metadata_is_pinned_per_card(self):
+        import copy
+        metadata, records, _ = linker.load()
+        card = next(c for c in metadata['cards'] if c['name'] == 'Llanowar Elves')
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root/'data/standard').mkdir(parents=True)
+            (root/'data/standard/cards.json').write_bytes((linker.ROOT/'data/standard/cards.json').read_bytes())
+            path = root/'src/card_definitions'/card['path']
+            path.parent.mkdir(parents=True)
+            path.write_text('pub const RULES: CardRules = CardRules::EMPTY;')
+            record = {k:v for k,v in records[card['index']].items() if k not in ['source','relative']}
+            path.with_suffix('.json').write_text(json.dumps(record))
+            (root/'src/card_definitions/mod.rs').write_text('// module')
+            def check(value):
+                (root/'data/catalogue-identities.json').write_text(json.dumps(value))
+                return linker.load(root)
+            minimal = dict(metadata, cards=[card])
+            check(minimal)
+            for field,value in [('mana_cost','{9}'),('generic',9),('colored',[0]*6),
+                                ('type_line','Artifact'),('kind',16),('mana_color',None),
+                                ('legendary',True),('standard_legal',False)]:
+                changed=copy.deepcopy(minimal)
+                changed['cards'][0][field]=value
+                with self.assertRaisesRegex(ValueError,'pinned physical metadata changed'):
+                    check(changed)
+            changed=copy.deepcopy(minimal)
+            changed['colors'][card['index']] ^= 1
+            with self.assertRaisesRegex(ValueError,'pinned physical metadata changed'):
+                check(changed)
+
     def test_authored_java_provenance(self):
         _, records, _ = linker.load()
         authored = [r for r in records.values() if 'java_source' in r]

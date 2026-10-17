@@ -30,5 +30,15 @@
     "source_fix": "Fixed-size shared imports replace quadratic sibling globs",
     "report": "/home/altf4/.cache/rustmage-memory-proof-7ayqrul1/report/summary.json",
     "scope": "Compiled catalogue snapshot test; full post-migration rules/release validation remains pending"
+  },
+  "validation": {
+    "full_validation_head": "d19ad6ab4ea973eec134a7a0fb4d217d7e9d8d61",
+    "native_unit_tests": 1941,
+    "integration_tests": 12,
+    "clippy": "all-targets warnings denied PASS",
+    "validation_seconds": 179.75287205100017,
+    "report": "/home/altf4/.cache/rustmage-validation-qxdu5ing/report/result.json",
+    "physical_pin_change": "Metadata/provenance validation only; rendered definitions/helper links unchanged except catalogue fingerprint",
+    "remaining": "Final metadata tests, independent final-head reviews"
   }
 }

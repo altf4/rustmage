@@ -7,6 +7,8 @@ ROOT=Path(__file__).resolve().parents[1]
 def canonical(value):return json.dumps(value,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()
 def quote(value):return json.dumps(value,ensure_ascii=False)
 def boolean(value):return str(value).lower()
+def physical_digest(metadata,card):
+    return hashlib.sha256(canonical(dict(card=card,intrinsic_colors=metadata['colors'][card['index']]))).hexdigest()
 def load(root=ROOT):
     metadata=json.loads((root/'data/catalogue-identities.json').read_text())
     facts={c['oracle_id']:c for c in json.loads((root/'data/standard/cards.json').read_text())['cards']}
@@ -25,6 +27,7 @@ def load(root=ROOT):
         if path!=expected.with_suffix('.json'):raise ValueError('card must use pinned canonical set/path: '+card['path'])
         if card['facts_sha256']:
             if record.get('facts_sha256')!=card['facts_sha256'] or hashlib.sha256(canonical(facts[card['oracle_id']])).hexdigest()!=card['facts_sha256']:raise ValueError('pinned facts changed: '+card['name'])
+        if record.get('physical_metadata_sha256')!=physical_digest(metadata,card):raise ValueError('pinned physical metadata changed: '+card['name'])
         source=path.with_suffix('.rs')
         if not source.is_file():raise ValueError('missing typed Rust: '+str(source))
         if type(record.get('complete')) is not bool:raise ValueError('missing complete declaration: '+str(path))

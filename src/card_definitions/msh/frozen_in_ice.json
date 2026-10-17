@@ -10,5 +10,6 @@
   },
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/f/FrozenInIce.java",
-  "java_sha256": "fea8383c8dbaaa9192f10511e8cf2a5dcde43f29a66904099932de63f09d52d4"
+  "java_sha256": "fea8383c8dbaaa9192f10511e8cf2a5dcde43f29a66904099932de63f09d52d4",
+  "physical_metadata_sha256": "e591f60fc120a449a486843c0a43a103776e65808d7b03ccc8d28621d3428dad"
 }

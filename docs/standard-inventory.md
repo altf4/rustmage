@@ -30,7 +30,7 @@ set entries are deliberately excluded from active implementation counts.
 
 ## Native definitions and coverage
 
-`scripts/generate_catalogue.py` compiles facts into immutable native definitions
+`scripts/link_catalogue.py` compiles facts into immutable native definitions
 and a sorted name index. Games store a two-byte `Card` identity. They do not parse
 JSON or allocate card descriptions during actions, clones, or restoration. Card
 IDs belong to the compiled catalogue fingerprint; observations record that
@@ -76,8 +76,8 @@ explicit data update:
 ```sh
 python3 scripts/fetch_standard.py --as-of 2026-10-15 --output data/standard/cards.json
 python3 scripts/inventory_standard.py --xmage /path/to/pinned/mage
-python3 scripts/generate_catalogue.py
-python3 scripts/generate_catalogue.py --check
+python3 scripts/link_catalogue.py
+python3 scripts/link_catalogue.py --check
 python3 -m unittest discover -s scripts -p 'test_*.py' -v
 cargo test
 cargo run --bin coverage

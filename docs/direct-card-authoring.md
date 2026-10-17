@@ -46,3 +46,8 @@ regression workload, not full-set or all-Standard acceptance.
 the compiled before/after definitions, all helper values and immutable globals.
 The all-Standard goal remains open; finish one complete set with full-game tests
 before advancing to the next set.
+
+Each paired record pins both the full Oracle facts and its reviewed physical
+metadata (including intrinsic colors). Changes to costs, types or legality in the
+identity manifest require an explicit per-card provenance update; the linker
+rejects accidental drift. Synthetic entries carry the same metadata pin.

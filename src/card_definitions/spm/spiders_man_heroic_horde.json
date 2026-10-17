@@ -7,5 +7,6 @@
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c60c203637d7ac89954684c69b8840488f17987c6ff4044c4918985450f17576"
-  }
+  },
+  "physical_metadata_sha256": "461aa1cdecfde973f7f38419d5ebfe1ab01ce6fc8be415b1afea8e68c2b1e69e"
 }
