@@ -92,6 +92,12 @@ impl Game {
         let p = &self.state.players[player.index()];
         let (value, minimum, maximum) = match guard {
             StepGuard::Always => return true,
+            StepGuard::SourcePowerAtLeast(minimum) => {
+                return self.on_battlefield(source.card)
+                    && self.object_ref(source.card) == source
+                    && self.stats_without_hand(source.card, departing).power
+                        >= i128::from(minimum);
+            }
             StepGuard::SourceToughnessAtMost(maximum) => {
                 return self.on_battlefield(source.card)
                     && self.object_ref(source.card) == source

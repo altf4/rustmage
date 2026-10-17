@@ -4,7 +4,7 @@ from pathlib import Path
 from scripts import generate_catalogue as g
 from scripts import test_legacy_metadata as metadata
 from scripts.catalogue_preservation import canonical,assert_union
-PARENT='b39084973f5e4d1d347f99322080c315df2fc7bc'
+PARENT='5d103e7a3172e4742687d3f77f3ed814264b1532'
 class DeathExileTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):
