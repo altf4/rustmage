@@ -323,9 +323,7 @@ fn all_eleven_paid_whole_bodies_every_mode_both_seats_and_foreign_spell_ownershi
                         blocked: false,
                     });
                 }
-                let token = Card::ALL
-                    .iter()
-                    .copied()
+                let token = Card::catalogue()
                     .find(|c| c.token_info().is_some_and(|t| t.subtypes == "Treasure"))
                     .unwrap();
                 let treasure = spawn(&mut g, p.other(), token, Zone::Battlefield);
@@ -503,9 +501,7 @@ fn paid_combined_mode_partial_group_invalidity_stale_target_and_counter_never_re
                 player.mana = [30; 6];
             }
             let target = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
-            let token = Card::ALL
-                .iter()
-                .copied()
+            let token = Card::catalogue()
                 .find(|c| c.token_info().is_some_and(|t| t.subtypes == "Treasure"))
                 .unwrap();
             let treasure = spawn(&mut g, p.other(), token, Zone::Battlefield);
