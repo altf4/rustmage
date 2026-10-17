@@ -313,10 +313,12 @@ fn source_indices_follow_every_admitted_definition_and_round_trip_restore() {
     let mut g = scenario();
     for &card in &Card::ALL {
         let id = spawn(&mut g, Player::P0, card, Zone::Battlefield);
-        let life = card
-            .triggers()
-            .iter()
-            .any(|a| matches!(a.condition.event(), TriggerCondition::LifeGained { .. }));
+        let life = card.triggers().iter().any(|a| {
+            matches!(
+                a.condition.event(),
+                TriggerCondition::LifeGained { .. } | TriggerCondition::LifeLost { .. }
+            )
+        });
         let death = card.triggers().iter().any(|a| {
             matches!(
                 a.condition.event(),

@@ -786,6 +786,29 @@ pub struct SpellView {
 
 impl SpellView {
     fn needs_target_controller_lki(&self) -> bool {
+        // Legacy event packets can have no typed ability entry. They cannot
+        // contain a typed relational target plan and must not enter program().
+        match self.kind {
+            StackKind::TriggeredAbility { ability }
+                if self
+                    .trigger_definition()
+                    .triggers()
+                    .get(ability as usize)
+                    .is_none() =>
+            {
+                return false;
+            }
+            StackKind::ActivatedAbility { ability }
+                if self
+                    .source_card
+                    .activations()
+                    .get(ability as usize)
+                    .is_none() =>
+            {
+                return false;
+            }
+            _ => {}
+        }
         let needs = |spec: TargetSpec| {
             matches!(
                 spec.rule,
