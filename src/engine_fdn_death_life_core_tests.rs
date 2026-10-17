@@ -1,11 +1,11 @@
-//! Gated printed consumers exercise the two primitives without admitting cards.
+//! Regression tests for frozen death state and controller life payment.
 use super::ability_timeline_tests::{cast, checked, named, settle, setup};
 use super::tests::spawn;
 use super::*;
 
 fn fixture(g: &mut Game, p: Player, name: &str) -> CardId {
     let card = Card::from_name(name).unwrap();
-    assert!(!card.is_supported());
+    assert!(card.is_supported());
     let id = spawn(g, p, card, Zone::Hand);
     cast(g, id, None, &[]);
     settle(g);

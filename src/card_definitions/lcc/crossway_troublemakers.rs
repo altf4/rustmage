@@ -1,4 +1,4 @@
-// Gated core consumer: whole-card admission awaits the reviewed consumer batch.
+// Direct typed behavior from complete Oracle and pinned XMage sources.
 const ATTACKING_VAMPIRES: KeywordGrant = KeywordGrant {
     condition: None,
     requires_life_gain: false,
