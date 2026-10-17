@@ -140,9 +140,9 @@ fn qualifying_first_cast_ignores_permanents_counts_preentry_and_resets_both_play
         paid(&mut g, p, "Bear Cub", None);
         let source = paid(&mut g, p, NAMES[0], None);
         paid(&mut g, p, "Quick Study", None);
-        assert_eq!(g.object_view(source).power, Some(3));
+        assert_eq!(g.object_view(source).power, 3);
         paid(&mut g, p, "Quick Study", None);
-        assert_eq!(g.object_view(source).power, Some(3));
+        assert_eq!(g.object_view(source).power, 3);
         assert_eq!(g.state.players[p.index()].instant_sorcery_cast_this_turn, 2);
         // Exercise the actual turn-start reset for BOTH players, including an
         // off-turn caster's history; no source-local ability-use substitute.
@@ -160,7 +160,7 @@ fn qualifying_first_cast_ignores_permanents_counts_preentry_and_resets_both_play
         paid(&mut before, p, "Quick Study", None);
         let entered = paid(&mut before, p, NAMES[0], None);
         paid(&mut before, p, "Quick Study", None);
-        assert_eq!(before.object_view(entered).power, Some(1));
+        assert_eq!(before.object_view(entered).power, 1);
     }
 }
 #[test]
@@ -172,14 +172,14 @@ fn chosen_adventure_face_consumes_qualifying_ordinal_while_normal_parent_does_no
         priority(&mut g, p);
         act(&mut g, Action::AnnounceAdventure { card: boar });
         drive(&mut g, Some(Target::Card(alchemist)));
-        assert_eq!(g.object_view(alchemist).power, Some(5));
+        assert_eq!(g.object_view(alchemist).power, 5);
         assert_eq!(g.state.players[p.index()].instant_sorcery_cast_this_turn, 1);
         priority(&mut g, p);
         act(&mut g, Action::AnnounceExile { card: boar });
         drive(&mut g, None);
         assert_eq!(g.state.players[p.index()].instant_sorcery_cast_this_turn, 1);
         paid(&mut g, p, "Quick Study", None);
-        assert_eq!(g.object_view(alchemist).power, Some(5));
+        assert_eq!(g.object_view(alchemist).power, 5);
     }
 }
 #[test]
@@ -279,6 +279,128 @@ fn attack_alone_is_declared_batch_not_live_attackers_and_creates_real_food() {
                 drive(&mut g, None);
                 assert_eq!(g.state.players[p.index()].life, life + 3);
                 assert_ne!(g.state.objects[token as usize].zone, Zone::Battlefield);
+            }
+        }
+    }
+}
+
+fn foreign_grants(actor: Player, names: [&str; 3]) -> (Game, [CardId; 3]) {
+    let mut g = setup(actor);
+    let cards = names.map(|name| {
+        spawn(
+            &mut g,
+            actor.other(),
+            Card::from_name(name).unwrap(),
+            Zone::Library,
+        )
+    });
+    // The opponent naturally draws once on each intervening turn before III.
+    for _ in 0..2 {
+        spawn(&mut g, actor.other(), Card::Forest, Zone::Library);
+    }
+    let saga = spawn(
+        &mut g,
+        actor,
+        Card::from_name("Korvold and the Noble Thief").unwrap(),
+        Zone::Hand,
+    );
+    act(&mut g, Action::AnnounceCast { card: saga });
+    drive(&mut g, None);
+    assert_eq!(g.state.objects[saga as usize].counters.lore, 1);
+    let mut second = false;
+    for _ in 0..1500 {
+        if g.state.objects[saga as usize].counters.lore == 2 {
+            second = true;
+        }
+        if cards.iter().all(|&id| g.can_play_exiled(actor, id)) {
+            break;
+        }
+        let actions = g.legal_actions();
+        let action = actions
+            .iter()
+            .find(|a| matches!(a, Action::Pass | Action::FinishTargets))
+            .or_else(|| actions.iter().find(|a| !matches!(a, Action::Concede)))
+            .unwrap()
+            .clone();
+        act(&mut g, action);
+    }
+    assert!(second);
+    assert_eq!(g.state.objects[saga as usize].zone, Zone::Graveyard);
+    assert!(cards.iter().all(|&id| g.can_play_exiled(actor, id)));
+    assert!(
+        cards
+            .iter()
+            .all(|&id| !g.can_play_exiled(actor.other(), id))
+    );
+    assert_eq!(
+        g.state
+            .objects
+            .iter()
+            .filter(|o| o.zone == Zone::Battlefield
+                && o.controller == actor
+                && o.card
+                    .token_info()
+                    .is_some_and(|t| t.name == "Treasure Token"))
+            .count(),
+        2
+    );
+    g.state.players[actor.index()].mana = [30; 6];
+    (g, cards)
+}
+
+#[test]
+fn actual_foreign_permission_casts_both_faces_and_controller_owned_event_effects() {
+    for p in [Player::P0, Player::P1] {
+        for (i, name) in NAMES.iter().enumerate() {
+            let (mut g, [source, _, _]) = foreign_grants(p, [name, "Bear Cub", "Forest"]);
+            let target = match i {
+                0 => named(&mut g, p, "Shock", Zone::Graveyard),
+                _ => named(&mut g, p, "Bear Cub", Zone::Battlefield),
+            };
+            let target_ref = g.object_ref(target);
+            act(&mut g, Action::AnnounceAdventure { card: source });
+            drive(&mut g, Some(Target::Card(target)));
+            assert_eq!(g.state.objects[source as usize].zone, Zone::Exile);
+            assert!(g.can_play_adventure(p, source));
+            assert!(!g.can_play_adventure(p.other(), source));
+            if i == 0 {
+                assert_eq!(g.state.players[p.index()].library.last(), Some(&target));
+            }
+            if i == 1 {
+                assert_eq!(g.state.objects[target as usize].zone, Zone::Hand);
+            }
+            if i == 2 {
+                assert_eq!(g.object_view(target).power, 4);
+                assert_eq!(g.object_ref(target), target_ref);
+            }
+            priority(&mut g, p);
+            act(&mut g, Action::AnnounceExile { card: source });
+            drive(&mut g, None);
+            assert_eq!(g.object_view(source).controller, p);
+            assert_eq!(g.object_view(source).owner, p.other());
+            if i == 0 {
+                // Bubble Up was already the first qualifying cast before this normal entered.
+                paid(&mut g, p, "Quick Study", None);
+                assert_eq!(g.object_view(source).power, 1);
+            } else if i == 1 {
+                let before = g.state.players[p.other().index()].life;
+                paid(&mut g, p, "Quick Study", None);
+                assert_eq!(g.state.players[p.other().index()].life, before);
+                paid(&mut g, p.other(), "Quick Study", None);
+                assert_eq!(g.state.players[p.other().index()].life, before - 1);
+            } else {
+                g.state.objects[source as usize].summoning_sick = false;
+                g.state.step = Step::Attackers;
+                g.state.pending = Pending::Attackers;
+                act(&mut g, Action::Attack { card: source });
+                act(&mut g, Action::FinishAttackers);
+                drive(&mut g, None);
+                assert_eq!(food(&g, p), 1);
+                assert_eq!(food(&g, p.other()), 0);
+                assert!(g.state.objects.iter().any(|o| o.zone == Zone::Battlefield
+                    && o.card.token_info().is_some_and(|t| t.name == "Food Token")
+                    && o.owner == p
+                    && o.controller == p));
             }
         }
     }
