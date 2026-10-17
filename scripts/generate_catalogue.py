@@ -3647,6 +3647,16 @@ def adventure_faces(card, mechanic="Adventure"):
             # CR715 supplies this completion for every Adventure, independently of
             # whether Oracle includes reminder text. No residual sentence is erased.
             text = re.sub(r' \(Then exile this card\. You may (?:cast the (?:creature|artifact|enchantment)|play the land) later from exile\.\)', '', text)
+        # Only audited reminder text may pass to generic face templates, which
+        # historically strip parentheticals. Unknown clauses are not reminders
+        # merely because a data source puts them inside parentheses.
+        checked = text.replace(
+            'Food token. (It\'s an artifact with "{2}, {T}, Sacrifice this token: You gain 3 life.")',
+            'Food token.')
+        checked = checked.replace(
+            "Menace (This creature can't be blocked except by two or more creatures.)", 'Menace')
+        if '(' in checked or ')' in checked:
+            return None
         normal = dict(face, layout='normal', oracle_id=card['oracle_id'],
                       oracle_text=text, keywords=[],
                       colors=[c for c in 'WUBRG' if c in face['mana_cost']])

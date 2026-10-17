@@ -27,4 +27,8 @@ class OmenCompilerTests(unittest.TestCase):
    for cost in ['{X}{U}','{Y}','{W/P}','{4294967296}','']:
     c=copy.deepcopy(self.cards[n]);c['card_faces'][1]['mana_cost']=cost;c['mana_cost']=' // '.join(f['mana_cost'] for f in c['card_faces'] if f['mana_cost']);self.assertFalse(self.admitted(c))
   c=copy.deepcopy(self.cards[NAMES[0]]);c['card_faces'][0]['oracle_text']=c['card_faces'][0]['oracle_text'].replace('pays {2}.','pays {3}.');self.assertFalse(self.admitted(c))
+ def test_omen_completion_cannot_be_smuggled_into_adventure_type(self):
+  for n in NAMES:
+   c=copy.deepcopy(self.cards[n]);c['card_faces'][1]['type_line']=c['card_faces'][1]['type_line'].replace('Omen','Adventure');c['type_line']=' // '.join(f['type_line']for f in c['card_faces'])
+   with self.subTest(card=n):self.assertFalse(self.admitted(c))
 if __name__=='__main__':unittest.main()

@@ -25,6 +25,18 @@ class AdventureCompilerTests(unittest.TestCase):
    for face in [0,1]:
     c=copy.deepcopy(self.rows[name]);c['card_faces'][face]['oracle_text']+='\nDiscover 3.'
     with self.subTest(name=name,face=face):self.assertFalse(self.admitted(c))
+ def test_unknown_parentheticals_on_either_face_fail_closed(self):
+  for name in NAMES:
+   self.assertTrue(self.admitted(self.rows[name]))
+   for face in [0,1]:
+    for suffix in [' (You win the game.)',' (Draw a card.)',' (Unknown reminder.)']:
+     c=copy.deepcopy(self.rows[name]);c['card_faces'][face]['oracle_text']+=suffix
+     with self.subTest(name=name,face=face,suffix=suffix):self.assertFalse(self.admitted(c))
+  for name in NAMES:
+   for face,f in enumerate(self.rows[name]['card_faces']):
+    if 'Sacrifice this token: You gain 3 life.' not in f['oracle_text'] and 'Menace (' not in f['oracle_text']:continue
+    c=copy.deepcopy(self.rows[name]);c['card_faces'][face]['oracle_text']=f['oracle_text'].replace('You gain 3 life.', 'You win the game.').replace("two or more creatures.","two or more creatures. You win the game.")
+    with self.subTest(name=name,face=face):self.assertFalse(self.admitted(c))
  def test_real_omen_cards_never_get_adventure_definitions(self):
   cards=[c for c in self.rows.values()if c.get('layout')=='adventure'and 'Omen'in c['card_faces'][1]['type_line']]
   self.assertEqual(len(cards),13)
