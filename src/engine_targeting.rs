@@ -741,7 +741,7 @@ impl Game {
                 let object = &self.state.objects[id as usize];
                 return match *predicate {
                     TargetPredicate::Blocking => self.state.blocking.contains(&id),
-                    TargetPredicate::Nontoken => !object.card.is_token(),
+                    TargetPredicate::Nontoken => !object.is_token(),
                     TargetPredicate::Attacking => self.state.attackers.iter().any(|a| a.card == id),
                     TargetPredicate::AttackingOrBlocking => {
                         self.state.attackers.iter().any(|a| a.card == id)
@@ -769,7 +769,7 @@ impl Game {
                     }
                     TargetPredicate::WithoutKinds(kinds) => self.current_kinds(id) & kinds == 0,
                     TargetPredicate::WithoutSubtype(subtype) => !self.has_subtype(id, subtype),
-                    TargetPredicate::Token => object.card.is_token(),
+                    TargetPredicate::Token => object.is_token(),
                     TargetPredicate::Subtype(subtype) => self.has_subtype(id, subtype),
                     TargetPredicate::Permanent => {
                         self.current_kinds(id) & (1 | 2 | 16 | 32 | 64 | 256) != 0
@@ -854,7 +854,7 @@ impl Game {
                             TargetZone::Graveyard => Zone::Graveyard,
                         };
                         obj.zone == expected
-                            && (expected != Zone::Graveyard || !obj.card.is_token())
+                            && (expected != Zone::Graveyard || !obj.is_token())
                             && (kinds == 0 || self.current_kinds(id) & u16::from(kinds) != 0)
                             && (relation == -1
                                 || (if expected == Zone::Battlefield {

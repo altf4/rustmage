@@ -38,7 +38,7 @@ impl Game {
                             | Zone::Stack
                             | Zone::Command
                     )
-                    && !card.card.is_token()
+                    && !card.is_token()
                     && !card.card.is_emblem()
             })
     }

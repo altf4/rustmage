@@ -199,7 +199,7 @@ impl Game {
                     event.before.zone,
                     Zone::Battlefield | Zone::Graveyard | Zone::Stack | Zone::Exile
                 )
-                && !event.before.card.is_token()
+                && !event.before.is_token()
                 && !event.before.card.is_emblem()
                 && self.object_ref(event.after.card) == event.after
                 && self.state.objects[event.after.card as usize].zone == Zone::Hand
@@ -243,11 +243,7 @@ impl Game {
                 index += 1;
             } else {
                 self.state.exile_links.swap_remove(index);
-                if valid
-                    && !self.state.objects[link.exiled.card as usize]
-                        .card
-                        .is_token()
-                {
+                if valid && !self.state.objects[link.exiled.card as usize].is_token() {
                     returning.push((link.exiled.card, link.return_zone));
                 }
             }

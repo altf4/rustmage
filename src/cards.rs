@@ -543,6 +543,10 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    CreateCopyToken {
+        subject: Subject,
+        amount: u16,
+    },
     /// Skip instructions unless this is the specified successful resolution this turn.
     IfThisAbilityResolutionNumber {
         number: u64,
@@ -1183,9 +1187,11 @@ pub(crate) struct CreatureFilter {
 }
 
 impl CreatureFilter {
+    #[allow(clippy::too_many_arguments)]
     pub(crate) fn matches_characteristics(
         self,
         card: Card,
+        token: bool,
         kinds: u16,
         added: GrantedSubtypes,
         yours: bool,
@@ -1199,7 +1205,7 @@ impl CreatureFilter {
         }) && (!self.other || !same)
             && self.subtype.is_none_or(|subtype| added.has(card, subtype))
             && (!self.attacking || attacking)
-            && self.tokens.is_none_or(|tokens| card.is_token() == tokens)
+            && self.tokens.is_none_or(|tokens| token == tokens)
             && (!self.artifact || kinds & 16 != 0)
     }
 }
@@ -1221,6 +1227,7 @@ impl KeywordGrant {
     pub(crate) fn matches_characteristics(
         self,
         card: Card,
+        token: bool,
         kinds: u16,
         added: GrantedSubtypes,
         yours: bool,
@@ -1237,7 +1244,7 @@ impl KeywordGrant {
             && (!self.source_only || same)
             // A tribal noun may also describe a noncreature kindred permanent.
             && (self.filter.subtype.is_some() || kinds & 1 != 0)
-            && self.filter.matches_characteristics(card, kinds, added, yours, same, attacking)
+            && self.filter.matches_characteristics(card, token, kinds, added, yours, same, attacking)
     }
 }
 

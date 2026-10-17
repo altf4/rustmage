@@ -41,6 +41,7 @@ impl CharacteristicQuery<'_> {
             && self.is_creature(id)
             && filter.matches_characteristics(
                 object.card,
+                CharacteristicWorld::is_token(self, id),
                 self.current_kinds(id),
                 self.granted_subtypes(id),
                 object.controller == controller,
@@ -370,6 +371,7 @@ impl CharacteristicQuery<'_> {
                     || self.state.players[object.controller.index()].life_gained_this_turn > 0)
                     && grant.matches_characteristics(
                         target.card,
+                        target.is_token(),
                         self.current_kinds(id),
                         self.granted_subtypes(id),
                         target.controller == object.controller,
@@ -664,7 +666,8 @@ impl CharacteristicQuery<'_> {
             } else {
                 self.keywords(id)
             },
-            token: obj.card.token_info(),
+            copy_recipe: self.copy_recipe(self.object_ref(id)),
+            token: self.object_token_info(id),
             emblem: obj.card.emblem_info(),
         }
     }

@@ -467,6 +467,7 @@ impl<'g> FundingState<'g> {
                             || self.life_gained[source.object.controller.index()])
                         && grant.matches_characteristics(
                             target.object.card,
+                            target.object.is_token(),
                             self.game.object_kinds(target.id, &target.object),
                             self.granted_subtypes(target.id),
                             target.object.controller == source.object.controller,
@@ -923,7 +924,7 @@ impl<'g> FundingState<'g> {
             .state
             .objects
             .iter()
-            .filter(|o| o.owner == self.actor && o.zone == Zone::Graveyard && !o.card.is_token())
+            .filter(|o| o.owner == self.actor && o.zone == Zone::Graveyard && !o.is_token())
             .map(|o| u128::from(o.card.fixed_mana_value()))
             .sum();
         actual
@@ -934,7 +935,7 @@ impl<'g> FundingState<'g> {
                     r.object.owner == self.actor
                         && r.object.zone == Zone::Graveyard
                         && self.game.state.objects[r.id as usize].zone != Zone::Graveyard
-                        && !r.object.card.is_token()
+                        && !r.object.is_token()
                 })
                 .map(|r| u128::from(r.object.card.fixed_mana_value()))
                 .sum::<u128>()
@@ -972,7 +973,7 @@ impl<'g> FundingState<'g> {
                     .filter(|r| {
                         r.object.controller == self.actor
                             && r.object.zone == Zone::Battlefield
-                            && !r.object.card.is_token()
+                            && !r.object.is_token()
                             && r.object.card.activations().iter().any(|a| {
                                 a.cost.sacrifice
                                     && (!a.cost.tap || !r.object.tapped)

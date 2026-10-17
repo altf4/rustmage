@@ -49,6 +49,7 @@ impl Game {
             (Stats::default(), Stats::default())
         };
         DamageFacts {
+            token: object.is_token(),
             controller: object.controller,
             kinds: self.current_kinds(id),
             power: stats.power,
@@ -101,7 +102,7 @@ impl Game {
                     && (!filter.attacking || facts.attacking)
                     && filter
                         .tokens
-                        .is_none_or(|tokens| facts.card.is_token() == tokens)
+                        .is_none_or(|tokens| facts.is_token() == tokens)
                     && (!filter.artifact || facts.card.is_artifact())
                     && match qualification {
                         DamageQualification::Any => true,

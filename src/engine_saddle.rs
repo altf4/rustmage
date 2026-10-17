@@ -398,7 +398,7 @@ mod tests {
                         .filter(|o| {
                             o.owner == p
                                 && o.zone == Zone::Battlefield
-                                && o.card.is_token()
+                                && o.is_token()
                                 && o.card.has_subtype(subtype)
                         })
                         .count()
@@ -600,7 +600,7 @@ mod tests {
                     );
                 } else {
                     assert!(g.state.objects.iter().any(|o| o.zone == Zone::Battlefield
-                        && o.card.is_token()
+                        && o.is_token()
                         && o.card.has_subtype("Elephant")));
                 }
             }

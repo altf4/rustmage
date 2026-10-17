@@ -136,7 +136,7 @@ impl Game {
             return;
         };
         let owner = object.owner;
-        let is_card = !object.card.is_token();
+        let is_card = !object.is_token();
         let event = self.move_object(subject.card, Zone::Exile);
         if is_card && event.moved && event.destination == Zone::Exile {
             let state = self.state.warp.get_or_insert_with(Default::default);
@@ -172,7 +172,7 @@ impl Game {
                 && o.generation == p.object.generation
                 && self.state.turn > p.exiled_turn
                 && !o.card.is_land()
-                && !o.card.is_token()
+                && !o.is_token()
                 && o.card.is_supported()
         })
     }

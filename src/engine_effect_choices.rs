@@ -81,7 +81,7 @@ impl Game {
             && (!f.source_only || object == choice.source)
             && (!f.nonland || !o.card.is_land())
             && (!f.other || object != choice.source)
-            && f.tokens.is_none_or(|token| o.card.is_token() == token)
+            && f.tokens.is_none_or(|token| o.is_token() == token)
             && f.subtype
                 .is_none_or(|subtype| self.has_subtype(object.card, subtype))
     }

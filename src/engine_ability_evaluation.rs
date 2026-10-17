@@ -149,6 +149,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 || (grant.requires_life_gain && !world.gained_life(provider.controller))
                 || !grant.matches_characteristics(
                     target.card,
+                    target.is_token(),
                     world.kinds(id),
                     world.subtypes(id),
                     own,
