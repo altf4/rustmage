@@ -48,6 +48,7 @@ class CombatRestrictionTests(unittest.TestCase):
      else:
       enabled=(artifact is not None if name=='Mouser Mark III' else any(v['id']!=source and v.get('power',0)>=4 and v['kinds']&1 for v in own) if name=='Tiger-Dillo' else body['power']>=6 if name=='Technodrome' else len(lessons)>=3 and mana_paid)
       if enabled:stage='positive'
+      elif stage=='positive':stage='enable'
       if actor==p and o['decision']=='attackers' and not body['tapped'] and not body['summoning_sick'] and not enabled:
        self.assertFalse(any(a['kind'] in ['Attack','AttackPlaneswalker'] and a['card']==source for a in o['actions']))
     def score(a):
@@ -59,7 +60,7 @@ class CombatRestrictionTests(unittest.TestCase):
       if stage=='setup' and name=='Pacifism' and n=='Bear Cub' and ally is None:return 2800
       if stage=='enable' and name=='Mouser Mark III' and n=='Candy Trail':return 3400
       if stage=='enable' and name=='Tiger-Dillo' and n=='Bear Cub' and ally is None:return 3400
-      if stage in ['enable','footwork'] and name in ['Tiger-Dillo','Technodrome'] and n=='Fancy Footwork' and main and ((name=='Tiger-Dillo' and ally is not None) or (name=='Technodrome' and body['counters']['plus_one']>=1)):return 3500
+      if stage in ['enable','footwork'] and name in ['Tiger-Dillo','Technodrome'] and n=='Fancy Footwork' and main and ((name=='Tiger-Dillo' and ally is not None and not body['summoning_sick']) or (name=='Technodrome' and body['counters']['plus_one']>=1)):return 3500
       if stage=='enable' and name=='Technodrome' and n=='Candy Trail' and artifact is None:return 3400
       if stage=='enable' and name=='The Lion-Turtle' and len(lessons)<3 and n=='Abandon Attachments':return 3400
       if stage=='finish' and n in ['Bear Cub','Chrome Companion','Bygone Colossus','Llanowar Elves']:return 2800
