@@ -209,6 +209,7 @@ impl Game {
         out
     }
     fn commit_counter_placements(&mut self, placements: Vec<CounterPlacement>) {
+        let mut lore = Vec::new();
         for p in placements {
             if let Some(index) = p.entry_index {
                 self.state
@@ -220,12 +221,19 @@ impl Game {
             } else if self.on_battlefield(p.object.card)
                 && self.object_ref(p.object.card) == p.object
             {
+                let before = self.state.objects[p.object.card as usize].counters.lore;
                 for kind in CounterKind::ALL {
                     self.state.objects[p.object.card as usize]
                         .counters
                         .add(kind, p.amount.get(kind));
                 }
+                if p.amount.lore > 0 {
+                    lore.push((p.object, before));
+                }
             }
+        }
+        for (object, before) in lore {
+            self.lore_counters_added(object, before);
         }
     }
     pub(super) fn stage_counter_placements(
@@ -311,7 +319,11 @@ impl Game {
                     .any(|e| matches!(e, ReplacementSpec::Counters { .. }))
             })
         {
+            let before = self.state.objects[id as usize].counters.lore;
             self.state.objects[id as usize].counters.add(kind, amount);
+            if kind == CounterKind::Lore {
+                self.lore_counters_added(self.object_ref(id), before);
+            }
             return;
         }
         let mut counters = Counters::default();

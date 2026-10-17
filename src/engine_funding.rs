@@ -177,6 +177,7 @@ fn source_obligations(
             && object.counters.minus_one >= counters.minus_one
             && object.counters.stun >= counters.stun
             && object.counters.loyalty >= counters.loyalty
+            && object.counters.lore >= counters.lore
     } else {
         // The activated ability already exists independently of its source.
         // Only unpaid costs that use that incarnation require it to remain.
@@ -494,6 +495,7 @@ impl<'g> FundingState<'g> {
             object.counters.minus_one -= step.counters.minus_one;
             object.counters.stun -= step.counters.stun;
             object.counters.loyalty -= step.counters.loyalty;
+            object.counters.lore -= step.counters.lore;
             if cost.sacrifice {
                 object.zone = Zone::Graveyard;
             }
@@ -549,6 +551,7 @@ impl<'g> FundingState<'g> {
                     r.counters.minus_one,
                     r.counters.stun,
                     r.counters.loyalty,
+                    r.counters.lore,
                 ),
                 r.used,
                 r.gained,

@@ -15,7 +15,7 @@ mod saddle;
 pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 76;
+pub const OBSERVATION_SCHEMA: u32 = 77;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
 #[path = "engine_mobilize.rs"]
@@ -35,6 +35,8 @@ pub use subtypes::GrantedSubtypes;
 
 #[path = "engine_replacements.rs"]
 mod replacements;
+#[path = "engine_sagas.rs"]
+mod sagas;
 pub use replacements::{
     CreatedTokenChoiceView, ReplacementChoiceView, ReplacementEffectView, TokenGroupView,
 };

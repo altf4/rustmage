@@ -32,6 +32,7 @@ impl Game {
                 || object.counters.minus_one > 0
                 || object.counters.stun > 0
                 || object.counters.loyalty > 0
+                || object.counters.lore > 0
                 || attachments.into_iter().any(|attachment| {
                     attachment.zone == Zone::Battlefield
                         && attachment.attached_to == Some(source)
@@ -56,7 +57,8 @@ impl Game {
             counter: object.counters.plus_one > 0
                 || object.counters.minus_one > 0
                 || object.counters.stun > 0
-                || object.counters.loyalty > 0,
+                || object.counters.loyalty > 0
+                || object.counters.lore > 0,
             plus_one: object.counters.plus_one > 0,
             modified: self.is_modified(id),
             attacking: self.state.attackers.iter().any(|a| a.card == id),

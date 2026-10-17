@@ -338,6 +338,7 @@ fn entry_loyalty_and_all_counter_kinds_are_replaced_while_normal_loyalty_activat
         settle(&mut g);
         let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
         let c = Counters {
+            lore: 0,
             plus_one: 1,
             minus_one: 1,
             stun: 1,
@@ -351,6 +352,7 @@ fn entry_loyalty_and_all_counter_kinds_are_replaced_while_normal_loyalty_activat
         assert_eq!(
             g.state.objects[bear as usize].counters,
             Counters {
+                lore: 0,
                 plus_one: 2,
                 minus_one: 2,
                 stun: 2,
@@ -382,7 +384,7 @@ fn admitted_factory_closure_has_no_nested_entry_counter_event_including_offsprin
     let factories = Card::catalogue()
         .filter(|c| c.is_token())
         .collect::<Vec<_>>();
-    assert_eq!(factories.len(), 84);
+    assert_eq!(factories.len(), 86);
     for card in factories {
         assert_eq!(
             card.enters_counters(),
