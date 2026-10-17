@@ -35,6 +35,16 @@ class FeralCompilerTests(unittest.TestCase):
     c=copy.deepcopy(self.cards[name]);face=c['card_faces'][0] if c.get('card_faces') else c
     face['oracle_text']=face['oracle_text'].replace('single graveyard',replacement)
     self.assertFalse(self.admitted(c),(name,replacement))
+ def test_route_is_detected_at_every_parenthetical_erasure_stage(self):
+  for name in [NAME,'Arashin Sunshield','Griffnaut Tracker']:
+   for replacement in ['single graveyard','single(You win the game.) graveyard','single (Draw a card.)graveyard','single(You win the game.)(Draw a card.) GRAVEYARD','single\tgraveyard','single\ngraveyard']:
+    for depth in range(4):
+     c=copy.deepcopy(self.cards[name]);face=c['card_faces'][0] if c.get('card_faces') else c
+     lines=face['oracle_text'].splitlines()
+     lines=[('('*depth+line.replace('single graveyard',replacement)+')'*depth) if 'single graveyard' in line else line for line in lines]
+     face['oracle_text']='\n'.join(lines)
+     if replacement=='single graveyard' and depth==0:self.assertTrue(self.admitted(c))
+     elif '(' in face['oracle_text']:self.assertFalse(self.admitted(c),(name,replacement,depth))
  def test_unconstrained_graveyard_template_retains_its_distinct_semantics(self):
   self.assertEqual(g.targeted_program('exile up to two target cards from graveyards.')[0],('CardGrave',0,2))
   self.assertEqual(g.targeted_program('exile up to two target cards from a single graveyard.')[0],('CardSingleGrave',0,2))

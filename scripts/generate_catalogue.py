@@ -4103,8 +4103,15 @@ def compile_catalogue(snapshot, target):
         # Generic inherited templates may strip them, so authenticate the original
         # entire body before final admission, without selecting any card name.
         raw_graveyard_body = original.get('oracle_text', '')
-        graveyard_route_surface = re.sub(r'\([^()]*\)', '', raw_graveyard_body).casefold()
-        if ('single graveyard' in graveyard_route_surface
+        graveyard_route_surface = raw_graveyard_body
+        graveyard_route_seen = False
+        while True:
+            graveyard_route_seen |= 'single graveyard' in ' '.join(graveyard_route_surface.casefold().split())
+            stripped = re.sub(r'\([^()]*\)', '', graveyard_route_surface)
+            if stripped == graveyard_route_surface:
+                break
+            graveyard_route_surface = stripped
+        if (graveyard_route_seen
                 and any(char in raw_graveyard_body for char in '()')):
             effect = 'Unsupported'
         offspring_key=None
