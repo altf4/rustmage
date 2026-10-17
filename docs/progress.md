@@ -147,15 +147,15 @@ and the wider training/search goal remain incomplete.
 
 
 The [temporary creature death grants](temporary-death-grants.md) add three whole
-spells on actual merged main16f0604: 1,895/5,164 Standard identities, 3,269 gated,
-schema88. Exact-parent comparison preserves 5,328 other definitions and all882
+spells on actual merged main 16f0604: 1,895/5,164 Standard identities, 3,269 gated,
+schema 88. Exact-parent comparison preserves 5,328 other definitions and all 882
 helpers/colors/aliases/recipes/flags. Frozen ecedec2 passes 1,804 native tests,
-Clippy/formatting and 100 natural Standard games: 79,647 owned frames and159,294
-actor/revision denials. Its full460 compiler run has459 passes and one stale
-inventory failure; its full271 public run has268 passing methods and three
+Clippy/formatting and 100 natural Standard games: 79,647 owned frames and 159,294
+actor/revision denials. Its full 460 compiler run has 459 passes and one stale
+inventory failure; its full 271 public run has 268 passing methods and three
 stale-schema methods (49 subtest failures). These broad runs are not relabeled
 green. After metadata-only correction and exact production/generator/card-data
-identity proof, fresh10 affected compiler methods and four public methods
+identity proof, fresh 10 affected compiler methods and four public methods
 (50 inherited Role cases plus all three grant spells in both seats) pass without
 errors or skips. Policy logic is unchanged except explicit schema assertion
 metadata. Both independent reviewers clear production; exact final-head
