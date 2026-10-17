@@ -5946,3 +5946,7 @@ mod fdn_cast_combat_eight_tests;
 #[cfg(test)]
 #[path = "engine_fdn_program_seven_tests.rs"]
 mod fdn_program_seven_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_events_seven_tests.rs"]
+mod fdn_events_seven_tests;

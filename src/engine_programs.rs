@@ -1626,6 +1626,32 @@ impl Game {
                     self.start_resolution_forage(skip);
                     return;
                 }
+                Instruction::CreateTokensReflexive {
+                    token,
+                    amount,
+                    ability,
+                } => {
+                    self.stage_token_creation(
+                        item.controller,
+                        token,
+                        u128::from(amount),
+                        false,
+                        replacements::TokenCompletion::Reflexive {
+                            item: Box::new(item.clone()),
+                            ability,
+                        },
+                    );
+                }
+                Instruction::SacrificeSourceIfAttachedCounters { minimum } => {
+                    if self.attached_subject(&item).is_some_and(|id| {
+                        self.state.objects[id as usize].counters.plus_one >= minimum
+                    }) && self.on_battlefield(item.card)
+                        && self.object_ref(item.card) == item.object
+                        && self.state.objects[item.card as usize].controller == item.controller
+                    {
+                        self.sacrifice_batch(&[(item.controller, item.card)]);
+                    }
+                }
                 Instruction::Reflexive { ability } => {
                     self.queue_reflexive(&item, ability, None);
                 }

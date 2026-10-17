@@ -142,9 +142,26 @@ impl Announcement {
 
 impl Game {
     pub(super) fn target_spec(&self, item: &SpellView) -> TargetPlan {
-        item.program()
+        let plan = item
+            .program()
             .map(|(plan, _)| plan)
-            .unwrap_or(TargetPlan::NONE)
+            .unwrap_or(TargetPlan::NONE);
+        if let TargetPlan::Single(mut spec) = plan
+            && matches!(spec.rule, TargetRule::GraveCreatureSourcePower { .. })
+        {
+            let power =
+                if self.on_battlefield(item.card) && self.object_ref(item.card) == item.object {
+                    self.stats(item.card).power
+                } else {
+                    item.source_facts.power
+                };
+            spec.rule = TargetRule::GraveCreatureSourcePower {
+                maximum: Some(power),
+            };
+            TargetPlan::Single(spec)
+        } else {
+            plan
+        }
     }
 
     // A spell will leave its origin before targets are chosen (CR601.2a/c).
@@ -449,6 +466,17 @@ impl Game {
         departing: Option<CardId>,
     ) -> bool {
         match rule {
+            TargetRule::GraveCreatureSourcePower { maximum } => {
+                let Target::Card(id) = target else {
+                    return false;
+                };
+                return self.state.objects.get(id as usize).is_some_and(|o| {
+                    o.zone == Zone::Graveyard
+                        && o.owner == controller
+                        && o.card.is_creature()
+                        && maximum.is_some_and(|max| i128::from(o.card.fixed_mana_value()) <= max)
+                });
+            }
             TargetRule::GraveCreaturePower {
                 excluded_subtype,
                 maximum,
