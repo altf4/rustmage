@@ -1,8 +1,8 @@
 # Simultaneous non-targeted battlefield returns
 
 Issue #306 implements complete Aetherize and River’s Rebuke on actual main
-8108a6f. Prototype coverage is 1,888/5,164 Standard identities, 3,276 gated;
-observation schema86 is unchanged. This is an incomplete candidate, not full
+c023295. Composed coverage is 1,898/5,164 Standard identities, 3,266 gated;
+observation schema89 is inherited unchanged. This is an incomplete candidate, not full
 Standard support.
 
 The immutable ReturnBattlefield instruction selects a live battlefield group at

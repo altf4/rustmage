@@ -34,7 +34,7 @@ class BattlefieldReturnTests(unittest.TestCase):
    for suffix in [' Draw seven cards. You win the game.','\nYou win the game.']:self.assertFalse(self.compile(dict(c,oracle_text=c['oracle_text']+suffix))[1])
  def test_current_parent_exact_two(self):
   from scripts.catalogue_preservation import canonical,assert_union
-  old=subprocess.check_output(['git','-C',str(g.ROOT),'show','8108a6f3366f8d5553f4059b9c648481769eb420:src/generated/catalogue.rs'],text=True);physical={c['oracle_id']:c['name'] for c in json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards']};before=canonical(old,physical);after=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical);report=assert_union(before,after,changed={n+'#0' for n in NAMES},added=set(),helpers=set(),aliases={});self.assertEqual(report['preserved_definitions'],5329)
+  old=subprocess.check_output(['git','-C',str(g.ROOT),'show','c0232954838cf71203a5be7c0e8fc80a66f6bf26:src/generated/catalogue.rs'],text=True);physical={c['oracle_id']:c['name'] for c in json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards']};before=canonical(old,physical);after=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical);report=assert_union(before,after,changed={n+'#0' for n in NAMES},added=set(),helpers=set(),aliases={});self.assertEqual(report['preserved_definitions'],5329)
   mutant=copy.deepcopy(after);mutant['definitions']['Plains#0']='unrelated mutation'
   with self.assertRaises(AssertionError):assert_union(before,mutant,changed={n+'#0' for n in NAMES},added=set(),helpers=set(),aliases={})
  def test_full_pinned_sources_and_direct_imports(self):
