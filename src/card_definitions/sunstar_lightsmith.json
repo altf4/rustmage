@@ -1,0 +1,9 @@
+{
+  "name": "Sunstar Lightsmith",
+  "oracle_id": "132de6c2-4ca2-41da-9c78-caa59838b641",
+  "facts_sha256": "fd40b1ccfac71468c47e06d6b7eff2c15192d4e58db124241bbced41d945b333",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SunstarLightsmith.java",
+  "java_sha256": "64e789612e0b7ffb3caa8473020c3773f5bf96a4982ae196787b0a882d20ea6a",
+  "complete": true
+}

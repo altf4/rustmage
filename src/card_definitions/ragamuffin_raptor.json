@@ -1,0 +1,9 @@
+{
+  "name": "Ragamuffin Raptor",
+  "oracle_id": "71b81f3f-6092-4819-8529-e27bccfcf088",
+  "facts_sha256": "df47cf90c22fa3b54e251044bff4a5642d0991ada6e4424a1d2b6e982300295e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RagamuffinRaptor.java",
+  "java_sha256": "a8ea2ac382c39c5fe05c16dccd414827224cb81dbace5dadc4470bd776c0d090",
+  "complete": true
+}

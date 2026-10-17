@@ -1,0 +1,9 @@
+{
+  "name": "Daring Mechanic",
+  "oracle_id": "9b1d79b7-a812-4f48-9be0-789294da3b56",
+  "facts_sha256": "455a562032f66b4ee9f8b7cd79aaf77b80968a433e53703a6a50e55c643db341",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DaringMechanic.java",
+  "java_sha256": "16bd57c91fee9fe45d4b2b1ad53c814365724bc8f4eb8799ab5dea9aa9b0fb47",
+  "complete": true
+}

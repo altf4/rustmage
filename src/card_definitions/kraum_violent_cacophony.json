@@ -1,0 +1,9 @@
+{
+  "name": "Kraum, Violent Cacophony",
+  "oracle_id": "1d764f70-985e-4cf0-9482-f30f73b9baf1",
+  "facts_sha256": "488ce6c563c8665eada6db54593ff4ceda3dd697d2ad855d18154a113b02b941",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KraumViolentCacophony.java",
+  "java_sha256": "fc7645e63ea741f2eb9cc94db493c9e241ed13e79696a058aad72c6ce0a57a40",
+  "complete": true
+}
