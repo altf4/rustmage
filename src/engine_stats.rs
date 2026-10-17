@@ -144,6 +144,10 @@ impl Game {
                 .entry_trigger_suppression()
                 != 0
             || self.state.objects[id as usize].card.opponent_entry_tapped() != 0
+            || self.state.objects[id as usize]
+                .card
+                .static_cast_restriction()
+                != 0
             || !self.state.objects[id as usize]
                 .card
                 .cast_timing_grants()
@@ -177,7 +181,8 @@ impl Game {
     pub(super) fn stats(&self, id: CardId) -> Stats {
         self.stats_without_hand(id, None)
     }
-    pub(super) fn stats_without_hand(&self, id: CardId, departing: Option<CardId>) -> Stats {
+    // CR208.4b: characteristic definitions and setters, before modifiers/counters.
+    pub(super) fn base_stats_without_hand(&self, id: CardId, departing: Option<CardId>) -> Stats {
         let object = &self.state.objects[id as usize];
         let mut stats = if let Some((power, toughness)) = object.card.vehicle_stats() {
             if !self.is_creature(id) {
@@ -221,6 +226,26 @@ impl Game {
         if battlefield_creature {
             stats = self.apply_base_stat_layers(id, stats, departing);
         }
+        stats
+    }
+
+    pub(super) fn stats_without_hand(&self, id: CardId, departing: Option<CardId>) -> Stats {
+        self.layered_stats_without_hand(id, departing).1
+    }
+    pub(super) fn layered_stats_without_hand(
+        &self,
+        id: CardId,
+        departing: Option<CardId>,
+    ) -> (Stats, Stats) {
+        let object = &self.state.objects[id as usize];
+        let base = self.base_stats_without_hand(id, departing);
+        // A Vehicle has no effective creature stats while it is not a creature.
+        // Counters remain on it, ready for a later successful crew.
+        if object.card.vehicle_stats().is_some() && !self.is_creature(id) {
+            return (base, base);
+        }
+        let mut stats = base;
+        let battlefield_creature = object.zone == Zone::Battlefield && self.is_creature(id);
         if matches!(object.card.effect(), Effect::Creature(..))
             || object.card.vehicle_stats().is_some()
             || object.card.dynamic_stats().is_some()
@@ -252,7 +277,7 @@ impl Game {
                 .capacity(toughness_resource);
         }
         if !battlefield_creature {
-            return stats;
+            return (base, stats);
         }
         stats += self.live_static_bonus(id);
         stats += self.attachment_bonus(id).0;
@@ -318,6 +343,6 @@ impl Game {
                 }
             }
         }
-        stats
+        (base, stats)
     }
 }

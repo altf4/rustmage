@@ -31,7 +31,7 @@ mod gift;
 mod gift_tests;
 pub use gift::{GiftContext, GiftDeclaration};
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 101;
+pub const OBSERVATION_SCHEMA: u32 = 103;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
 #[path = "engine_mobilize.rs"]
@@ -126,6 +126,8 @@ mod roles;
 #[path = "engine_sba.rs"]
 mod sba;
 pub use roles::{RoleGroupView, RoleTimestampView};
+#[path = "engine_base_power.rs"]
+mod base_power;
 #[path = "engine_base_stats.rs"]
 mod base_stats;
 pub use base_stats::{BaseStatsEffectView, ResolvedStatSubjectView};
@@ -961,6 +963,7 @@ struct DamageChoice {
 pub struct DamageFacts {
     pub kinds: u16,
     pub power: i128,
+    pub power_above_base: bool,
     pub granted_subtypes: GrantedSubtypes,
     pub card: Card,
     pub battlefield: bool,
@@ -974,6 +977,7 @@ impl DamageFacts {
         Self {
             kinds: view.kinds,
             power: view.power,
+            power_above_base: view.power_above_base,
             granted_subtypes: view.granted_subtypes,
             card: view.card,
             battlefield: view.zone == Zone::Battlefield,
@@ -1289,6 +1293,8 @@ pub struct ObjectView {
     pub attacking: bool,
     pub power: i128,
     pub toughness: i128,
+    /// Frozen effective power exceeds its CR208.4b base, before damage/departure.
+    pub power_above_base: bool,
     pub keywords: Keywords,
     pub token: Option<&'static TokenInfo>,
     pub emblem: Option<&'static EmblemInfo>,
@@ -2260,6 +2266,8 @@ impl Game {
                 let sorcery = actor == s.active
                     && matches!(s.step, Step::Main1 | Step::Main2)
                     && s.stack.is_empty();
+                let casting_prohibited =
+                    s.casting_prohibited || self.static_casting_prohibited(actor);
                 for (i, obj) in s.objects.iter().enumerate() {
                     let card = i as CardId;
                     let authorized_origin = match obj.zone {
@@ -2300,7 +2308,7 @@ impl Game {
                     {
                         return true;
                     }
-                    if s.casting_prohibited {
+                    if casting_prohibited {
                         if obj.card.is_land()
                             && sorcery
                             && (obj.zone == Zone::Hand || self.can_play_exiled(actor, card))
@@ -3576,13 +3584,10 @@ impl Game {
             obj.card
         };
         let inset = definition.inset_parent().is_some();
-        let stats = if inset {
-            Stats {
-                power: 0,
-                toughness: 0,
-            }
+        let (base, stats) = if inset {
+            (Stats::default(), Stats::default())
         } else {
-            self.stats(id)
+            self.layered_stats_without_hand(id, None)
         };
         ObjectView {
             kinds: self.current_kinds(id),
@@ -3607,6 +3612,9 @@ impl Game {
             attacking: self.state.attackers.iter().any(|a| a.card == id),
             power: stats.power,
             toughness: stats.toughness,
+            power_above_base: obj.zone == Zone::Battlefield
+                && self.is_creature(id)
+                && stats.power > base.power,
             keywords: if inset {
                 definition.info().keywords
             } else {
@@ -4488,7 +4496,7 @@ impl Game {
             .map(|(i, _)| self.object_view(i as CardId))
             .collect();
         Observation {
-            casting_prohibited: s.casting_prohibited,
+            casting_prohibited: s.casting_prohibited || self.static_casting_prohibited(viewer),
             replacement_choice: self.replacement_choice(viewer),
             created_token_choice: self.created_token_choice(),
             mana_payment: owns_choice.then(|| self.mana_payment_domain()).flatten(),

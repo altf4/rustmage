@@ -1,0 +1,476 @@
+{
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "parent": "f35e95302aad7924be38def41598dcf9013c0fb7",
+  "status": "Three complete bodies validated on actual joint-land parent; final published-head independent reviews gate merge.",
+  "proposed_complete": [
+    "Kutzil, Malamet Exemplar",
+    "Sovereign Okinec Ahau",
+    "Voice of Victory"
+  ],
+  "cards": [
+    {
+      "name": "Kutzil, Malamet Exemplar",
+      "oracle_id": "3233af43-7826-4895-b67e-03c6102c2cd5",
+      "mana_cost": "{1}{G}{W}",
+      "type_line": "Legendary Creature \u2014 Cat Warrior",
+      "oracle_text": "Your opponents can't cast spells during your turn.\nWhenever one or more creatures you control each with power greater than its base power deals combat damage to a player, draw a card.",
+      "java_source": "Mage.Sets/src/mage/cards/k/KutzilMalametExemplar.java",
+      "java_sha256": "4842428a663adc27d8a611385f181a22a49d43f40c27730b59c7cd61dd4fb58b",
+      "explicit_imports": [
+        "mage.MageInt",
+        "mage.abilities.common.OneOrMoreCombatDamagePlayerTriggeredAbility",
+        "mage.abilities.common.SimpleStaticAbility",
+        "mage.abilities.effects.common.DrawCardSourceControllerEffect",
+        "mage.abilities.effects.common.ruleModifying.CantCastDuringYourTurnEffect",
+        "mage.cards.CardImpl",
+        "mage.cards.CardSetInfo",
+        "mage.constants.CardType",
+        "mage.constants.SubType",
+        "mage.constants.SuperType",
+        "mage.filter.common.FilterCreaturePermanent",
+        "mage.filter.predicate.mageobject.PowerGreaterThanBasePowerPredicate",
+        "java.util.UUID"
+      ],
+      "wildcard_imports": [],
+      "direct_import_sources": [
+        {
+          "import": "mage.MageInt",
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "import": "mage.abilities.common.OneOrMoreCombatDamagePlayerTriggeredAbility",
+          "java_source": "Mage/src/main/java/mage/abilities/common/OneOrMoreCombatDamagePlayerTriggeredAbility.java",
+          "java_sha256": "bd049af604d636cbafb61dcbb6ef46b80207734f4f606bc6c902f017ada0a2e1"
+        },
+        {
+          "import": "mage.abilities.common.SimpleStaticAbility",
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "import": "mage.abilities.effects.common.DrawCardSourceControllerEffect",
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "import": "mage.abilities.effects.common.ruleModifying.CantCastDuringYourTurnEffect",
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/CantCastDuringYourTurnEffect.java",
+          "java_sha256": "eaae2c161a24b18f272dc7b26a726f1c171f68bdf2d4ee7c3a6902ea2247a276"
+        },
+        {
+          "import": "mage.cards.CardImpl",
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "import": "mage.cards.CardSetInfo",
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "import": "mage.constants.CardType",
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "import": "mage.constants.SubType",
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "import": "mage.constants.SuperType",
+          "java_source": "Mage/src/main/java/mage/constants/SuperType.java",
+          "java_sha256": "4ec4cf97e8c73dee7d1d0e4be9f4b90eb980dcdcd26698fcb610aed30da9e6cc"
+        },
+        {
+          "import": "mage.filter.common.FilterCreaturePermanent",
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "import": "mage.filter.predicate.mageobject.PowerGreaterThanBasePowerPredicate",
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/PowerGreaterThanBasePowerPredicate.java",
+          "java_sha256": "d109a5f330b2bf258b10bec395932cee250b4043d7557bbd502d4fdaeb503ad2"
+        }
+      ],
+      "layout": "normal",
+      "cmc": 3.0,
+      "power": "3",
+      "toughness": "3",
+      "colors": [
+        "G",
+        "W"
+      ],
+      "color_identity": [
+        "G",
+        "W"
+      ],
+      "keywords": [],
+      "reference_printing": {
+        "id": "c9f88a40-a6ed-4c1f-a309-011aca1acddd",
+        "set": "lci",
+        "collector_number": "232",
+        "released_at": "2023-11-17"
+      },
+      "facts": {
+        "oracle_id": "3233af43-7826-4895-b67e-03c6102c2cd5",
+        "name": "Kutzil, Malamet Exemplar",
+        "layout": "normal",
+        "mana_cost": "{1}{G}{W}",
+        "cmc": 3.0,
+        "type_line": "Legendary Creature \u2014 Cat Warrior",
+        "oracle_text": "Your opponents can't cast spells during your turn.\nWhenever one or more creatures you control each with power greater than its base power deals combat damage to a player, draw a card.",
+        "power": "3",
+        "toughness": "3",
+        "colors": [
+          "G",
+          "W"
+        ],
+        "color_identity": [
+          "G",
+          "W"
+        ],
+        "keywords": [],
+        "reference_printing": {
+          "id": "c9f88a40-a6ed-4c1f-a309-011aca1acddd",
+          "set": "lci",
+          "collector_number": "232",
+          "released_at": "2023-11-17"
+        }
+      }
+    },
+    {
+      "name": "Sovereign Okinec Ahau",
+      "oracle_id": "087b2490-e415-44e2-a674-3b5619a0fad5",
+      "mana_cost": "{2}{G}{W}",
+      "type_line": "Legendary Creature \u2014 Cat Noble",
+      "oracle_text": "Ward {2}\nWhenever Sovereign Okinec Ahau attacks, for each creature you control with power greater than that creature's base power, put a number of +1/+1 counters on that creature equal to the difference.",
+      "java_source": "Mage.Sets/src/mage/cards/s/SovereignOkinecAhau.java",
+      "java_sha256": "68943fb16c48b07b414d7d2a41b5a4e660934e29805bca49af064865a8112ed6",
+      "explicit_imports": [
+        "mage.MageInt",
+        "mage.abilities.Ability",
+        "mage.abilities.common.AttacksTriggeredAbility",
+        "mage.abilities.effects.OneShotEffect",
+        "mage.abilities.costs.mana.ManaCostsImpl",
+        "mage.abilities.keyword.WardAbility",
+        "mage.cards.CardImpl",
+        "mage.cards.CardSetInfo",
+        "mage.counters.CounterType",
+        "mage.filter.StaticFilters",
+        "mage.game.Game",
+        "mage.game.permanent.Permanent",
+        "java.util.UUID"
+      ],
+      "wildcard_imports": [
+        "mage.constants.*"
+      ],
+      "direct_import_sources": [
+        {
+          "import": "mage.MageInt",
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "import": "mage.abilities.Ability",
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "import": "mage.abilities.common.AttacksTriggeredAbility",
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+          "java_sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+        },
+        {
+          "import": "mage.abilities.effects.OneShotEffect",
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "import": "mage.abilities.costs.mana.ManaCostsImpl",
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "import": "mage.abilities.keyword.WardAbility",
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+          "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+        },
+        {
+          "import": "mage.cards.CardImpl",
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "import": "mage.cards.CardSetInfo",
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "import": "mage.counters.CounterType",
+          "java_source": "Mage/src/main/java/mage/counters/CounterType.java",
+          "java_sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+        },
+        {
+          "import": "mage.filter.StaticFilters",
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "import": "mage.game.Game",
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "import": "mage.game.permanent.Permanent",
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        }
+      ],
+      "layout": "normal",
+      "cmc": 4.0,
+      "power": "3",
+      "toughness": "4",
+      "colors": [
+        "G",
+        "W"
+      ],
+      "color_identity": [
+        "G",
+        "W"
+      ],
+      "keywords": [
+        "Ward"
+      ],
+      "reference_printing": {
+        "id": "70c75aa7-e2f9-4a69-8086-c982019ca714",
+        "set": "lci",
+        "collector_number": "240",
+        "released_at": "2023-11-17"
+      },
+      "facts": {
+        "oracle_id": "087b2490-e415-44e2-a674-3b5619a0fad5",
+        "name": "Sovereign Okinec Ahau",
+        "layout": "normal",
+        "mana_cost": "{2}{G}{W}",
+        "cmc": 4.0,
+        "type_line": "Legendary Creature \u2014 Cat Noble",
+        "oracle_text": "Ward {2}\nWhenever Sovereign Okinec Ahau attacks, for each creature you control with power greater than that creature's base power, put a number of +1/+1 counters on that creature equal to the difference.",
+        "power": "3",
+        "toughness": "4",
+        "colors": [
+          "G",
+          "W"
+        ],
+        "color_identity": [
+          "G",
+          "W"
+        ],
+        "keywords": [
+          "Ward"
+        ],
+        "reference_printing": {
+          "id": "70c75aa7-e2f9-4a69-8086-c982019ca714",
+          "set": "lci",
+          "collector_number": "240",
+          "released_at": "2023-11-17"
+        }
+      }
+    },
+    {
+      "name": "Voice of Victory",
+      "facts": {
+        "oracle_id": "b12cbda1-ac09-49eb-96b3-a4df27bc37ea",
+        "name": "Voice of Victory",
+        "layout": "normal",
+        "mana_cost": "{1}{W}",
+        "cmc": 2.0,
+        "type_line": "Creature \u2014 Human Bard",
+        "oracle_text": "Mobilize 2 (Whenever this creature attacks, create two tapped and attacking 1/1 red Warrior creature tokens. Sacrifice them at the beginning of the next end step.)\nYour opponents can't cast spells during your turn.",
+        "power": "1",
+        "toughness": "3",
+        "colors": [
+          "W"
+        ],
+        "color_identity": [
+          "W"
+        ],
+        "keywords": [
+          "Mobilize"
+        ],
+        "all_parts": [
+          {
+            "id": "7edc0515-a130-45a7-aa09-0e23bba41587",
+            "component": "token",
+            "name": "Warrior",
+            "type_line": "Token Creature \u2014 Warrior"
+          },
+          {
+            "id": "73f24785-c7b3-46ab-833e-666af3d86c63",
+            "component": "combo_piece",
+            "name": "Voice of Victory",
+            "type_line": "Creature \u2014 Human Bard"
+          }
+        ],
+        "reference_printing": {
+          "id": "ec3de5f4-bb55-4ab9-995f-f3e0dc22c1bb",
+          "set": "tdm",
+          "collector_number": "33",
+          "released_at": "2025-04-11"
+        }
+      },
+      "java_source": "Mage.Sets/src/mage/cards/v/VoiceOfVictory.java",
+      "java_sha256": "0386b8825e5439b5f2e32e238ba9c8c7d54e3d55d3fe43980855c785e8fc9a21",
+      "explicit_imports": [
+        "mage.MageInt",
+        "mage.abilities.common.SimpleStaticAbility",
+        "mage.abilities.effects.common.ruleModifying.CantCastDuringYourTurnEffect",
+        "mage.abilities.keyword.MobilizeAbility",
+        "mage.constants.SubType",
+        "mage.cards.CardImpl",
+        "mage.cards.CardSetInfo",
+        "mage.constants.CardType"
+      ],
+      "wildcard_imports": [],
+      "direct_import_sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/CantCastDuringYourTurnEffect.java",
+          "java_sha256": "eaae2c161a24b18f272dc7b26a726f1c171f68bdf2d4ee7c3a6902ea2247a276"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MobilizeAbility.java",
+          "java_sha256": "84ea782ab71b1b147b349c5f5ac8b2c03ae60211c95393a2e4e994da8ee5eac8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        }
+      ]
+    }
+  ],
+  "source_records": 35,
+  "unique_source_count": 25,
+  "unique_sources": [
+    {
+      "java_source": "Mage.Sets/src/mage/cards/k/KutzilMalametExemplar.java",
+      "java_sha256": "4842428a663adc27d8a611385f181a22a49d43f40c27730b59c7cd61dd4fb58b"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/s/SovereignOkinecAhau.java",
+      "java_sha256": "68943fb16c48b07b414d7d2a41b5a4e660934e29805bca49af064865a8112ed6"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/v/VoiceOfVictory.java",
+      "java_sha256": "0386b8825e5439b5f2e32e238ba9c8c7d54e3d55d3fe43980855c785e8fc9a21"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/MageInt.java",
+      "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+      "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "java_sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/OneOrMoreCombatDamagePlayerTriggeredAbility.java",
+      "java_sha256": "bd049af604d636cbafb61dcbb6ef46b80207734f4f606bc6c902f017ada0a2e1"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/CantCastDuringYourTurnEffect.java",
+      "java_sha256": "eaae2c161a24b18f272dc7b26a726f1c171f68bdf2d4ee7c3a6902ea2247a276"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/MobilizeAbility.java",
+      "java_sha256": "84ea782ab71b1b147b349c5f5ac8b2c03ae60211c95393a2e4e994da8ee5eac8"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "java_sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+      "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+      "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+      "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+      "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/constants/SuperType.java",
+      "java_sha256": "4ec4cf97e8c73dee7d1d0e4be9f4b90eb980dcdcd26698fcb610aed30da9e6cc"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/counters/CounterType.java",
+      "java_sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+      "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+      "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/PowerGreaterThanBasePowerPredicate.java",
+      "java_sha256": "d109a5f330b2bf258b10bec395932cee250b4043d7557bbd502d4fdaeb503ad2"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/Game.java",
+      "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+      "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+    }
+  ]
+}

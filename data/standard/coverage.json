@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "1e310a3382de48a388ae479cf50c98697b7d65cf76f86372092a30f954b9552f",
+  "catalogue_version": "e41c4e6943ee0ce775170a27b148256fb9adadcddcd314e4f3c20a3d1fcd08cb",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1974,
-  "implemented_total": 1980,
+  "implemented_standard_cards": 1977,
+  "implemented_total": 1983,
   "token_definitions": 96,
   "emblem_definitions": 1,
   "cards": [
@@ -14554,8 +14554,8 @@
     {
       "name": "Kutzil, Malamet Exemplar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Kwia Vigorbloom",
@@ -23932,8 +23932,8 @@
     {
       "name": "Sovereign Okinec Ahau",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Sower of Chaos",
@@ -29572,7 +29572,7 @@
     {
       "name": "Voice of Victory",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {

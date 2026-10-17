@@ -2107,6 +2107,9 @@ impl Game {
                         .collect();
                     self.effect_counters(affected, replacements::ResumeMode::Program);
                 }
+                Instruction::PutPowerExcessCounters { filter } => {
+                    self.put_power_excess_counters(&item, filter);
+                }
                 Instruction::DoubleCounters => {
                     // Doubling puts the existing quantity of each kind on the object.
                     // Replacement effects modify that added quantity, not the old total.

@@ -32,7 +32,7 @@ class TieredPublicTests(unittest.TestCase):
   with Game([own,enemy] if p=='P0' else [enemy,own],seed=seed,starting_player=p,deck_rules='Standard',library=library or os.environ.get('RUSTMAGE_TEST_LIBRARY')) as g:
    stage='setup';source=target=fighter=victim=None;before_ref=None;paid=proved=attacked=False;frames=0;life=0;dest_chosen=False;actual_payment=None;cast_total=None;owner_library_before=None
    for iteration in range(40000):
-    head=g.observe('P0');self.assertEqual((head['schema'],head['catalogue']),(101,FP))
+    head=g.observe('P0');self.assertEqual((head['schema'],head['catalogue']),(103,FP))
     if head['outcome'] is not None:
      self.assertTrue(paid and proved and attacked,(name,p,mode,seed,stage,iteration,paid,proved,attacked));self.assertEqual(stage,'finish');return dict(name=name,player=p,mode=mode,bottom=bottom,frames=frames,paid=actual_payment)
     o=g.observe(head['actor']);actor=o['actor'];objects={v['id']:v for v in o['objects']};own_field=[v for v in objects.values()if v['zone']=='Battlefield'and v['controller']==p];enemy_field=[v for v in objects.values()if v['zone']=='Battlefield'and v['controller']==q];ally=next((v for v in own_field if v['card']=='Bear Cub'),None);foe=next((v for v in enemy_field if v['card']=='Bear Cub'),None);hand=[v for v in g.observe(p)['objects']if v['zone']=='Hand'and v['owner']==p];quiet=o['decision']=='priority'and not o['stack']and not o['announcing']and not o['resolving']
