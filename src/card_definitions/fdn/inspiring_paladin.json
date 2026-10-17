@@ -3,10 +3,35 @@
   "catalogue_id": 2189,
   "oracle_id": "95efbb81-2418-42ed-ae34-5759efff8253",
   "facts_sha256": "6fc0fdc9e74e7fc922ff530abf069d56e0189f6df2b671e85dc7ef8572540f6f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b238a0c647e763fd0521c3a00b0bdebd1515173dfd6ce3d43a0d9c4ad88404b3"
   },
-  "physical_metadata_sha256": "34d34caada40b24bf0e7c840e6a67683e801ea56ace8cf3f2e401745931f00c4"
+  "physical_metadata_sha256": "34d34caada40b24bf0e7c840e6a67683e801ea56ace8cf3f2e401745931f00c4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/InspiringPaladin.java",
+  "java_sha256": "2bbbb23721c8f6ba7182c2fe89d6a0654d68c3fc953c7e0bb68c828a6c9af542",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+      "sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/MyTurnCondition.java",
+      "sha256": "a6c7cf96d2fdec34c9c999ad4b486627d257eeac9b7e7de139f104ac1ef45d90"
+    }
+  ]
 }

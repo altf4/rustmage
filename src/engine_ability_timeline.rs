@@ -36,6 +36,8 @@ impl Card {
                             | StaticAbilityFragment::AttachmentTrigger(..)
                             | StaticAbilityFragment::AttachmentMana(..)
                             | StaticAbilityFragment::CounterKeyword(..)
+                            | StaticAbilityFragment::CounterKeywordOwnTurn(..)
+                            | StaticAbilityFragment::DeathBaronLord
                             | StaticAbilityFragment::LiveKeywords(..)
                     )
                 })

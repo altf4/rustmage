@@ -154,6 +154,23 @@ impl CharacteristicQuery<'_> {
         // maintain it, and snapshots own it; no derived stat cache needs invalidation.
         for &source in &self.state.static_sources {
             let object = &self.state.objects[source as usize];
+            if object.card.static_ability_groups().iter().any(|group| {
+                group
+                    .fragments
+                    .iter()
+                    .any(|fragment| matches!(fragment, StaticAbilityFragment::DeathBaronLord))
+            }) && ability_world::CharacteristicWorld::death_baron_applies(
+                self,
+                self.object_ref(source),
+                id,
+            ) && self.continuous_fragment_available(source, |fragment| {
+                matches!(fragment, StaticAbilityFragment::DeathBaronLord)
+            }) {
+                stats += Stats {
+                    power: 1,
+                    toughness: 1,
+                };
+            }
             for (index, modifier) in object.card.scaling_modifiers().iter().enumerate() {
                 if !self.continuous_fragment_available(source, |fragment| {
                     matches!(fragment,
@@ -299,6 +316,30 @@ impl CharacteristicQuery<'_> {
                 for &(kind, grant) in object.card.counter_keyword_grants() {
                     if target.counters.get(kind) > 0 {
                         keywords = keywords.union(grant);
+                    }
+                }
+            }
+            for group in object.card.static_ability_groups() {
+                for fragment in group.fragments {
+                    match *fragment {
+                        StaticAbilityFragment::DeathBaronLord
+                            if ability_world::CharacteristicWorld::death_baron_applies(
+                                self,
+                                self.object_ref(source),
+                                id,
+                            ) =>
+                        {
+                            keywords = keywords.union(Keywords::DEATHTOUCH)
+                        }
+                        StaticAbilityFragment::CounterKeywordOwnTurn(kind, grant)
+                            if object.controller == self.state.active
+                                && target.controller == object.controller
+                                && self.is_creature(id)
+                                && target.counters.get(kind) > 0 =>
+                        {
+                            keywords = keywords.union(grant)
+                        }
+                        _ => (),
                     }
                 }
             }
