@@ -20,7 +20,7 @@ all-target Clippy, formatting/generated checks, 334 clean compiler/data tests
 (377.673 seconds), and 225 unique fresh public-library tests (510.027 seconds)
 pass. The public collection explicitly pins parent and subprocess constructors
 and verifies schema76/fingerprint before discovery. Its immutable library is
-`/home/altf4/.cache/rustmage-root253/librustmage-92dcc-schema76.so`, SHA256
+`<cache>/rustmage-root253/librustmage-92dcc-schema76.so`, SHA256
 `118a17ec5a620c2695bdd6b8938cc01016b6fcb772f1ae02c3d661881adb1585`;
 fingerprint `92dcc6649eaf01aa27336a8c42d9e204324ff669782f85afd3cb01300bd32543`.
 
@@ -30,8 +30,8 @@ branches, 6,247 private frames and 108,419 denials; payments records 104,413
 replays, 1,330 frames and 208,826 denials; replacements records 187,965 replays,
 44 frames and 375,930 denials, including real Warp/exile/recast routes. Initial
 logical state is 20,296 bytes; respective maxima are 23,532/23,568/21,144 bytes.
-Logs are `/tmp/rustmage-root253-all3-{native,compiler,public,clippy,check,generated}.log`
-and `/tmp/rustmage-root253-all3-standard-{crew,cast_payments,replacements}.log`.
+Logs are `<temp>/rustmage-root253-all3-{native,compiler,public,clippy,check,generated}.log`
+and `<temp>/rustmage-root253-all3-standard-{crew,cast_payments,replacements}.log`.
 These partial-card workloads establish no complete-Standard performance claim.
 
 Independent nonauthor library reviewer `attachment_rules_214` audits all24 full
@@ -44,7 +44,7 @@ Four extra publicly cast/paid Caravan/Bear/Caradora/Michelangelo/Loading Zone
 cross cases prove noncommuting counter results4/6, both seats/orders, privacy and
 parent-closed restore. It independently executes the integrator-built Crew100
 (not its own build) and reproduces all95,925 vectors and20,296/23,532 bytes.
-Report `/tmp/issue250-library-review-combined-7379.md`.
+Report `<temp>/issue250-library-review-combined-7379.md`.
 
 Independent nonauthor Crew rules reviewer `review_explore_library` audits the
 complete24 bodies and CR702.122, signed costs/history and live-kind routing. Its
@@ -55,7 +55,7 @@ source reincarnation. Its480 compiler controls pass96positive/384negative.
 Its own public48 pass56.475s with266 private frames,126 newly allocated Crew
 packets and35,546 parent-closed actions, proving no forged cast/payment event.
 Its own separately compiled exact-source Crew100 reproduces95,925 and all
-effect vectors/20,296/23,532 bytes. Report `/tmp/issue253-rules-review.md`.
+effect vectors/20,296/23,532 bytes. Report `<temp>/issue253-rules-review.md`.
 This reviewer authored merged replacement foundation252; its independent scope
 here is nonauthored Crew and root composition, not a second review of its own
 previously reviewed foundation. Neither reviewer claims root's full collections

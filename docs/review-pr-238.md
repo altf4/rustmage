@@ -16,7 +16,7 @@ Independent probes compare100,000 five-color/required-colorless/generic matching
 
 All ten full constructors, shared Convoke helper and primary rules were audited. All88 hash records across56 Java files match pin and checkout. Canonical comparison verifies10 changed/5,250 preserved definitions, one new factory, all76 prior recipes/metadata, all530 old numeric helper arms plus two additions, ordinary identities/colors and exactly nine intrinsic Convoke identities.
 
-Actual evidence prefix `/tmp/issue233-rules-review-`: `rust-final.log`, `compiler.log`, `python-final.log`, `public32.log`, `standard.log`, `clippy-final.log`, `fmt-final.log`, `final-delta-native.log`, `sources.log`, `semantic-final.log`, `hall.log`, `negative.log`, `native-independent.log`, `public-converter.log`, `parent-size.log` and `verdict.log`. Earlier schema-failing baseline and setup probes are excluded. Immutable library SHA256 is `be8728efd5c3605de4959ccb09b1c5c594f35ac252c59be73d58663ab421c9c4`.
+Actual evidence prefix `<temp>/issue233-rules-review-`: `rust-final.log`, `compiler.log`, `python-final.log`, `public32.log`, `standard.log`, `clippy-final.log`, `fmt-final.log`, `final-delta-native.log`, `sources.log`, `semantic-final.log`, `hall.log`, `negative.log`, `native-independent.log`, `public-converter.log`, `parent-size.log` and `verdict.log`. Earlier schema-failing baseline and setup probes are excluded. Immutable library SHA256 is `be8728efd5c3605de4959ccb09b1c5c594f35ac252c59be73d58663ab421c9c4`.
 
 ## Library/API — `/root/independent_library_189`
 
@@ -26,6 +26,6 @@ The complete200-test Python collection ran432.579seconds:199 passed; one NUL-bou
 
 Additional instrumentation of all32 paid scenarios passes24.026seconds, verifying115 private frames,586 rejected malformed/stale/illegal submissions and267 legal contribution/payment branches after their immediate parent closes. Selected taps remain deferred and original ancestors remain unchanged. Full constructors, joint funding, phase closure, exact references, actual/virtual resource exclusivity, non-targeting taps and source-independent Winter packets were independently audited.
 
-Actual evidence prefix `/tmp/issue233-library-review-`: `rust.log`, `python.log`, `nul.log`, `final-native-delta.log`, `release.log`, `clippy.log`, `fmt.log`, `catalogue.log`, `standard.log`, `semantic.log`, `public-probe.log` and `verdict.log`; injection support is `support/sitecustomize.py` under that prefix. Immutable `target/review-233-library/librustmage-ec506f0.so` has the same SHA256 listed above.
+Actual evidence prefix `<temp>/issue233-library-review-`: `rust.log`, `python.log`, `nul.log`, `final-native-delta.log`, `release.log`, `clippy.log`, `fmt.log`, `catalogue.log`, `standard.log`, `semantic.log`, `public-probe.log` and `verdict.log`; injection support is `support/sitecustomize.py` under that prefix. Immutable `target/review-233-library/librustmage-ec506f0.so` has the same SHA256 listed above.
 
 This final review record and integrated acceptance measurements change documentation only. Both runtime approvals remain valid; no findings remain.

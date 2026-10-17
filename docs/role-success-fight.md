@@ -83,7 +83,7 @@ main e5ebe, holds all 838 inputs fixed. It separately passes:
   81,976 owned frames and 163,952 actor/revision denials.
 
 The final immutable library is
-`/home/altf4/.cache/rustmage-immutable/werefox305-c865dcb-0881-schema89-9fbc0236ba53.so`,
+`<cache>/rustmage-immutable/werefox305-c865dcb-0881-schema89-9fbc0236ba53.so`,
 SHA256 `9fbc0236ba5352666b1c7f88f061ede2819a6cd5b73dc85e9c037673c56b4a9e`,
 schema89, fingerprint
 `0881a3aabaa1f79ba870fe0306bad19c4fdd831d90d5b965af239122c33926cf`.

@@ -13,7 +13,7 @@ Fresh-release Standard100 reproduced all vectors and 192,778 decisions/replays, 
 
 All twelve complete constructors and 75 recursive source records across 50 pinned Java files were audited. Canonical comparison preserves 5,246 other definitions, all 74 token factories and their metadata, ordinary identities/colors and all 504 previous typed helper arms; thirteen helpers are added.
 
-Actual evidence uses prefix `/tmp/issue224-rules-review-`: `native.log`, `compiler.log`, `compiler-fixed.log`, `bargain-fixed.log`, `compiler-probe.log`, `catalogue.log`, `release.log`, `standard100.log`, `public-probe.log`, `provenance.log`, `constructors.log` and `canonical.log`.
+Actual evidence uses prefix `<temp>/issue224-rules-review-`: `native.log`, `compiler.log`, `compiler-fixed.log`, `bargain-fixed.log`, `compiler-probe.log`, `catalogue.log`, `release.log`, `standard100.log`, `public-probe.log`, `provenance.log`, `constructors.log` and `canonical.log`.
 
 ## Library/API — `/root/independent_library_189`
 
@@ -23,4 +23,4 @@ Expanded public probes passed 64 scalar frames, 404 legal forks, 832 atomic wron
 
 Python used an immutable explicitly selected finished release library, SHA256 `d56b77b3ef15e26b4b1f62ff9d44f9540a1aa94a6dcb678aeb5de1d6f4cf4516`. One subprocess test resets PYTHONPATH and initially used the byte-identical freshly built default library; it also passed a separate rerun with explicit stable-library injection. No mapped shared library was overwritten.
 
-Actual evidence uses prefix `/tmp/issue224-library-review-`: `rust.log`, `release.log`, `python.log`, `standard.log`, `probe.log`, `compiler-probe.log`, `final-compiler.log`, `semantic.log`, `java.log`, `child.log`, `clippy.log`, `format.log`, `catalogue.log` and `verdict.log`. Exact PR metadata is `pr.json`; probe and semantic scripts use the same prefix.
+Actual evidence uses prefix `<temp>/issue224-library-review-`: `rust.log`, `release.log`, `python.log`, `standard.log`, `probe.log`, `compiler-probe.log`, `final-compiler.log`, `semantic.log`, `java.log`, `child.log`, `clippy.log`, `format.log`, `catalogue.log` and `verdict.log`. Exact PR metadata is `pr.json`; probe and semantic scripts use the same prefix.

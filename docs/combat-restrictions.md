@@ -88,7 +88,7 @@ ten complete vectors, 93,895 owned frames and 187,790 actor/revision denials.
 All 852 frozen execution files and the immutable library hash remain unchanged.
 
 The final optimized library is
-`/home/altf4/.cache/rustmage-immutable/combat309-69943a1-995c-schema89-e4f7906b304c.so`,
+`<cache>/rustmage-immutable/combat309-69943a1-995c-schema89-e4f7906b304c.so`,
 SHA256 `e4f7906b304ce5d4abecf0feeb2c2a875d14a3f362c51f709029c13213a05d5e`,
 schema89, fingerprint
 `995c10d2b1e8c94c6d014d4cfb3e083ee681433bb8b246d1833f648539c0fb92`.

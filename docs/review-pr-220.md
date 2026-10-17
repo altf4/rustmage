@@ -11,7 +11,7 @@ Independently passed 1,393 Rust tests, 174 fresh-release Python tests (208.551 s
 
 A separate sixteen-scenario public probe checked 108 search-frame observations against 11,832 independent Oracle predicate decisions, rejected 384 invalid actor/nonmatching/duplicate/out-of-range actions atomically, and exercised forty-eight accepted-zero forks despite matches, sixty deferred selections, forty-eight commits and twenty-four exact revealed-generation checks. Both-viewer privacy and parent isolation held.
 
-Evidence: `/tmp/issue217-library-review-rust.log`, `release.log`, `python.log`, `standard.log` and `probe.log`, with each latter name using the same `/tmp/issue217-library-review-` prefix. Independent probe source: `/tmp/issue217-library-review-probe.py`.
+Evidence: `<temp>/issue217-library-review-rust.log`, `release.log`, `python.log`, `standard.log` and `probe.log`, with each latter name using the same `<temp>/issue217-library-review-` prefix. Independent probe source: `<temp>/issue217-library-review-probe.py`.
 
 ## Rules/compiler reviewer — `/root/search_rules_217`
 
@@ -20,4 +20,4 @@ Independently passed 1,393 Rust tests, 266 compiler/data tests (368.543 seconds)
 
 Read all nineteen complete Java constructors and verified all 148 hash records across 67 files. Canonical audit confirms exactly nineteen changed/5,237 preserved definitions, one new factory, all 72 old recipes/ordinary IDs/colors retained and 476 old helper arms preserved with five additions. Checked ordinary captured pre-discard sources, exact tapped-entry transaction and complete optional/mandatory death/token residuals.
 
-Evidence: `/tmp/issue217-rules-review-native.log`, `compiler.log`, `standard100.log`, `canonical.log`, `constructors.log`, `extra-audit.log`, `mutants.log`, `probe.log`, `release.log`, `scope.log` and `verdict.log`, with each latter name using the same `/tmp/issue217-rules-review-` prefix.
+Evidence: `<temp>/issue217-rules-review-native.log`, `compiler.log`, `standard100.log`, `canonical.log`, `constructors.log`, `extra-audit.log`, `mutants.log`, `probe.log`, `release.log`, `scope.log` and `verdict.log`, with each latter name using the same `<temp>/issue217-rules-review-` prefix.

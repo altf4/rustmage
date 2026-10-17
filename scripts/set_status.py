@@ -6,8 +6,10 @@ import json
 from pathlib import Path
 if __package__:
     from .inventory_standard import name_key, set_entries
+    from .source_paths import xmage_source
 else:
     from inventory_standard import name_key, set_entries
+    from source_paths import xmage_source
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -77,7 +79,7 @@ def main():
     mode=parser.add_mutually_exclusive_group()
     mode.add_argument('--freeze', action='store_true')
     mode.add_argument('--check', action='store_true', help='Authenticate full membership against pinned source')
-    parser.add_argument('--xmage', type=Path, default=Path('/home/altf4/Code/mage'))
+    parser.add_argument('--xmage', type=Path, default=xmage_source())
     args = parser.parse_args()
     code = args.set.upper()
     path = ROOT / 'data/sets' / (code.lower() + '.json')

@@ -22,14 +22,14 @@ The closed compiler authenticates the entire Crew declaration and recognized his
 
 Primary rules: [2026-09-25 Comprehensive Rules](https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf),301.7,302.6,702.122. The snapshot reminder uses an older abbreviated description without `other untapped`; current cost semantics follow the current rules, including self-Crew rejection.
 
-Pinned Java492369c7844b8d76479f0393ff9eb6b0b0cf30d7. All24 complete constructors, CrewAbility and AddCardTypeSourceEffect were read. The [all-section manifest](crew-vehicles-admissions.json) records214 hashes across110 unique pinned Java files:24 complete bodies, six explicitly gated relatives and shared helpers. Every record was checked against both the checkout bytes and pinned Git blob. Initial full-constructor audit is retained at `/tmp/issue-crew-scout-full-constructors.log`.
+Pinned Java492369c7844b8d76479f0393ff9eb6b0b0cf30d7. All24 complete constructors, CrewAbility and AddCardTypeSourceEffect were read. The [all-section manifest](crew-vehicles-admissions.json) records214 hashes across110 unique pinned Java files:24 complete bodies, six explicitly gated relatives and shared helpers. Every record was checked against both the checkout bytes and pinned Git blob. Initial full-constructor audit is retained at `<temp>/issue-crew-scout-full-constructors.log`.
 
 Checkpoint native:1,577 tests pass, including seven Crew groups. All24 have paid hardcasts and real Crew under both controllers, per-action clone/restore/stale-index replay, exact source/paid-history checks, zero/negative/excess/repeated subsets, actual/virtual mana sickness, Orb/Thrull entry suppression and actual cleanup attachment/SBA behavior. Four compiler methods pass, with malformed/overflow costs, declared counts, unknown residuals, external Vehicle subjects and unsupported compositions rejected. Completed compiler/public workload and final broad Python/native/lint results appear below.
 
 
 ## Standalone acceptance and preservation
 
-`python/test_crew.py` passes48 actual-paid full-body scenarios (all24 under both controllers) in56.306seconds using immutable `/home/altf4/.cache/rustmage-immutable/crew-dd98399-schema74.so`, SHA256 `c4c9d7713a324e385ed8fef162e26ab70d41d8790e9630ea253aea5086b8b149`. Both viewers' observations round-trip after every action; private Crew frames deny the wrong actor and self-contribution, and parent-closed children remain usable. Actual tests cover paid Cycling for both bodies, three Vehicle mana abilities, Fabricator's real second draw through Thrill, Warship's real destruction into a Clue, both searches, Scry2, target boosts/keywords, draw/discard, tokens, life and attacks. The first pilot's token-count/keyword/optional-search fixture mistakes were corrected without changing runtime.
+`python/test_crew.py` passes48 actual-paid full-body scenarios (all24 under both controllers) in56.306seconds using immutable `<cache>/rustmage-immutable/crew-dd98399-schema74.so`, SHA256 `c4c9d7713a324e385ed8fef162e26ab70d41d8790e9630ea253aea5086b8b149`. Both viewers' observations round-trip after every action; private Crew frames deny the wrong actor and self-contribution, and parent-closed children remain usable. Actual tests cover paid Cycling for both bodies, three Vehicle mana abilities, Fabricator's real second draw through Thrill, Warship's real destruction into a Clue, both searches, Scry2, target boosts/keywords, draw/discard, tokens, life and attacks. The first pilot's token-count/keyword/optional-search fixture mistakes were corrected without changing runtime.
 
 `examples/standard_crew.rs` completes100 legal60-card Standard games twice with byte-identical full vectors:95,925 decisions/replays,95,925 parent-closed branches,6,247 private Crew frames and108,419 invalid/stale denials. Every card has both-seat positive paid cast, Crew, entry and attack witnesses; both Cycling abilities, all three mana abilities, Fabricator's real Thrill draw and Warship's real death have separate nonzero effect ledgers. Ordinary combat/draw outcomes end every game. Both source spells and graveyard versions retain printed noncreature identity. Initial logical state is20,184bytes, compared with the measured exact parent20,152 (+32); this is combined layout accounting, not a per-object animation flag. Workload maximum is23,084bytes. No Java throughput comparison is claimed.
 
@@ -38,9 +38,9 @@ The original324-method compiler run exposed exactly three historical negative li
 Canonical comparison against main74c1f0c3 proves exactly24 definitions changed and5,243 unchanged; all5,267 identities and color masks, all83 token recipes and one emblem are unchanged. All597 prior numeric helper arms are unchanged;75 immutable printed-Vehicle metadata arms and Lumbering's one actual dynamic-CDA arm are added. Snapshot/replay compatibility is catalogue-fingerprint scoped.
 
 
-Final fresh-library Python collection passes all218 methods in562.326seconds, including the48 new paid scenarios. The external runner explicitly supplies the same immutable library to every Game constructor and the isolated NUL-card subprocess; no stale default library or ignored environment override supplies evidence. Runner and log: `/tmp/issue250-python-fresh-runner.py`, `/tmp/issue250-python-full-fresh.log`.
+Final fresh-library Python collection passes all218 methods in562.326seconds, including the48 new paid scenarios. The external runner explicitly supplies the same immutable library to every Game constructor and the isolated NUL-card subprocess; no stale default library or ignored environment override supplies evidence. Runner and log: `<temp>/issue250-python-fresh-runner.py`, `<temp>/issue250-python-full-fresh.log`.
 
-An optimized standalone benchmark linked against the release library completes1,000 smoke games/571,049 decisions in2.845seconds, approximately200,697 decisions/second; measured clone216.60ns and restore228.03ns. This includes native smoke policy/observation construction, excludes model/tensor/JSON, and is not an XMage speed/parity comparison. Log `/tmp/issue250-benchmark1000-final.log`. The final lint-only pilot rewrite reproduces all100-game output vectors exactly; logs `/tmp/issue250-standard100-first.log`, `/tmp/issue250-standard100-second.log`, `/tmp/issue250-standard100-final.log`. The initial Standard pilot incorrectly used non-Standard Hill Giant, omitted a legal mana-conversion action and attributed its Thopter's flying to Broadcast Rambler; all three fixture errors were corrected without changing production.
+An optimized standalone benchmark linked against the release library completes1,000 smoke games/571,049 decisions in2.845seconds, approximately200,697 decisions/second; measured clone216.60ns and restore228.03ns. This includes native smoke policy/observation construction, excludes model/tensor/JSON, and is not an XMage speed/parity comparison. Log `<temp>/issue250-benchmark1000-final.log`. The final lint-only pilot rewrite reproduces all100-game output vectors exactly; logs `<temp>/issue250-standard100-first.log`, `<temp>/issue250-standard100-second.log`, `<temp>/issue250-standard100-final.log`. The initial Standard pilot incorrectly used non-Standard Hill Giant, omitted a legal mana-conversion action and attributed its Thopter's flying to Broadcast Rambler; all three fixture errors were corrected without changing production.
 
 Final runtime/catalogue fingerprint: `8ea9ef36298eff71fd9ee7add7d2512e4ab11c5717931241b5f0d8b29115924b`. Production is unchanged from the reviewed all24 checkpoint `dd98399`; subsequent changes are acceptance, test corrections, provenance and evidence. Completed disposable Cargo outputs are removed after validation while every shared-library exact path is retained.
 
@@ -72,8 +72,8 @@ denials and all eighty effect cells. All two hundred games end naturally.
 Initial logical state is 20,280 bytes; maxima are 23,516 (Crew) and 23,552
 (payment). These focused combined results supplement the 1,608 native tests;
 they do not stand in for the pending final full collections after replacement
-composition. Evidence logs are `/tmp/rustmage-root253-public-focused.log` and
-`/tmp/rustmage-root253-standard-{crew,payments}.log`.
+composition. Evidence logs are `<temp>/rustmage-root253-public-focused.log` and
+`<temp>/rustmage-root253-standard-{crew,payments}.log`.
 
 ## Complete payment and replacement composition
 
@@ -97,7 +97,7 @@ formatting and generated checks pass. The clean compiler/data collection passes
 334 tests in 377.673 seconds. The final fresh public collection passes all 225 unique methods in 510.027
 seconds. It explicitly asserts the immutable library's schema/fingerprint, with
 the same explicit path in its subprocess. The immutable library is
-`/home/altf4/.cache/rustmage-root253/librustmage-92dcc-schema76.so`, SHA256
+`<cache>/rustmage-root253/librustmage-92dcc-schema76.so`, SHA256
 `118a17ec5a620c2695bdd6b8938cc01016b6fcb772f1ae02c3d661881adb1585`.
 
 All three exact-source Standard100 drivers pass with natural terminal outcomes

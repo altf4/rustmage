@@ -25,7 +25,7 @@ Independent evidence includes:
 - Thirty-two additional paid games with 5,690 parent-closed actions witnessing real entry, attachment and subtype behavior. This separate entry witness does not claim independently exercising every residual; the full public suite and Standard100 do so.
 - Independently compiled final Standard100 with the exact complete vector above, plus final-example lint and formatting.
 
-The durable development report is `/tmp/issue246-rules-review-final.md`; individual logs are named there. All completed disposable outputs were cleaned while retaining shared libraries, source, Git state and evidence.
+The durable development report is `<temp>/issue246-rules-review-final.md`; individual logs are named there. All completed disposable outputs were cleaned while retaining shared libraries, source, Git state and evidence.
 
 ## Independent library/API review
 
@@ -35,7 +35,7 @@ The source review covers recipient/source/controller provenance, live and captur
 
 Five additional native adverse groups cover duplicate grants after source/recipient departure, late Ninja discard-counter overflow retaining the already committed draw, late Summoner entry-generation failure retaining its private frame, exact third-draw packets and both actual-departure lifelink controls. Four independently driven paid public games add 2,227 parent-closed replays, six private observations, sixteen atomic rejections and four paid opposing Unsummon responses; Summoner chooses a different legal planeswalker defender after its original attacker leaves.
 
-Its independently compiled final Standard100 passes with the exact complete vector above (`/tmp/issue236-library-standard100-ae7.log`). It independently verified the remote PR and approved `da09620f307860be55fef446c3cce15ba2a81716` with no unresolved finding. The detailed final report is `/tmp/issue236-library-review-core-9d.md`.
+Its independently compiled final Standard100 passes with the exact complete vector above (`<temp>/issue236-library-standard100-ae7.log`). It independently verified the remote PR and approved `da09620f307860be55fef446c3cce15ba2a81716` with no unresolved finding. The detailed final report is `<temp>/issue236-library-review-core-9d.md`.
 
 ## Scope
 

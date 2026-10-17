@@ -69,7 +69,7 @@ immutable export for public acceptance. Production, generator, data and policy
 bytes equal `721fb951560e5326a4b75d2d9e7600fa12897bec`; their only difference is a
 new native fixture's expected promised Treasure. The optimized library remains:
 
-`/home/altf4/.cache/rustmage-immutable/gift312-721fb95-2bff-schema94-87d27d0258d2.so`
+`<cache>/rustmage-immutable/gift312-721fb95-2bff-schema94-87d27d0258d2.so`
 
 SHA-256: `87d27d0258d2f2bd811d206e54a699472a51567941445927542b5888f452a716`.
 Catalogue: `2bff2197796a4c74703b5736b161a099dd1fd88cb385fb45fde0c78f0dca462c`.

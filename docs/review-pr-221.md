@@ -11,7 +11,7 @@ Verdict: clean; no actionable findings. Independently passed 1,409 Rust tests (1
 
 Audited all ten complete bodies and pinned constructors, declarations before targets, combined typed costs and locked totals, historical paid-entry context, source reincarnation, Gnarlid entry replacement and live grants, single-operation branches, fizzles, search privacy and atomic rollback. Four both-seat constrained-resource scenarios prove decline-only choices, sixteen atomic illegal-action rejections, four isolated continuations, twenty-six replay/stale checks, two unpaid Gatekeeper entries without ETBs and two unpaid bounces without draws.
 
-Actual evidence: `/tmp/issue218-library-review-rust.log`, `release.log`, `python.log`, `standard.log` and `probe.log`, each latter file using the same `/tmp/issue218-library-review-` prefix. Probe source: `/tmp/issue218-library-review-probe.py`.
+Actual evidence: `<temp>/issue218-library-review-rust.log`, `release.log`, `python.log`, `standard.log` and `probe.log`, each latter file using the same `<temp>/issue218-library-review-` prefix. Probe source: `<temp>/issue218-library-review-probe.py`.
 
 ## Rules/compiler — `/root/independent_library_189`
 
@@ -19,4 +19,4 @@ Verdict: approved; no actionable findings. Independently passed 1,409 Rust tests
 
 Canonical audit confirms ten changed/5,247 unchanged definitions, all 73 previous recipes and ordinary IDs/colors, 481 prior helper arms preserved with twelve additions, and all 116 provenance records across 63 Java files verified against the pin.
 
-Actual evidence: `/tmp/issue218-rules-review-rust.log`, `compiler.log`, `standard100.log`, `semantic.log`, `grammar.log`, `probes.log`, `funding-probe.log`, `synthetic-probe.log` and `catalogue.log`, each latter file using the same `/tmp/issue218-rules-review-` prefix.
+Actual evidence: `<temp>/issue218-rules-review-rust.log`, `compiler.log`, `standard100.log`, `semantic.log`, `grammar.log`, `probes.log`, `funding-probe.log`, `synthetic-probe.log` and `catalogue.log`, each latter file using the same `<temp>/issue218-rules-review-` prefix.

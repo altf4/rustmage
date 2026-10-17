@@ -1,6 +1,11 @@
 """Pinned full-source provenance; no rules text is compiled."""
 import hashlib,json,os,re,subprocess,unittest
 from pathlib import Path
+if __package__:
+    from .source_paths import xmage_source
+else:
+    from source_paths import xmage_source
+
 ROOT=Path(__file__).resolve().parents[1]
 
 NAME = 'Curse of the Werefox'
@@ -15,7 +20,7 @@ class RoleSuccessFightTests(unittest.TestCase):
     def test_full_metadata_and_unique_pinned_source_provenance(self):
         m = json.loads((ROOT / 'docs/role-success-fight-provenance.json').read_text())
         self.assertEqual(m['card'], self.card)
-        root = Path(os.environ.get('RUSTMAGE_XMAGE_SOURCE', '/home/altf4/Code/mage'))
+        root = xmage_source()
         if not root.exists():
             self.skipTest('set RUSTMAGE_XMAGE_SOURCE to verify pinned Java provenance')
         self.assertEqual(len({s['java_source'] for s in m['sources']}), len(m['sources']))

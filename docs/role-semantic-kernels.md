@@ -76,7 +76,7 @@ naturally terminal Standard body/mode/seat cases: the sixteen six-body cases
 in 45.842 seconds and all 26 parent target-exclusion cases in 63.146 seconds.
 
 The final immutable library is
-`/home/altf4/.cache/rustmage-immutable/roles295-3e681b6-aaf3-schema87-5ba70b459597.so`,
+`<cache>/rustmage-immutable/roles295-3e681b6-aaf3-schema87-5ba70b459597.so`,
 SHA256 `5ba70b459597fda7f99649187cd7d358a757d772fe92c7f1db6e54fe74e8830b`,
 schema87, fingerprint
 `aaf3add17ed8e6e8421a93e7beaa4314a35ff3244378a9384a323b010cc09bdc`.

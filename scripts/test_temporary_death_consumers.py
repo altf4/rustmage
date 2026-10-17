@@ -1,6 +1,11 @@
 """Pinned full-source provenance; no rules text is compiled."""
 import hashlib,json,os,re,subprocess,unittest
 from pathlib import Path
+if __package__:
+    from .source_paths import xmage_source
+else:
+    from source_paths import xmage_source
+
 ROOT=Path(__file__).resolve().parents[1]
 
 NAMES = {"Galuf's Final Act", 'Rabid Attack', 'Perigee Beckoner', 'Presumed Dead', 'Person of Interest', "It Doesn't Add Up", 'Absolving Lammasu', 'Reasonable Doubt', 'Convenient Target'}
@@ -23,7 +28,7 @@ class TemporaryDeathConsumerTests(unittest.TestCase):
                 path = source['java_source']
                 if path in seen:
                     continue
-                b = subprocess.check_output(['git', '-C', '/home/altf4/Code/mage', 'show', m['java_revision'] + ':' + path])
+                b = subprocess.check_output(['git', '-C', str(xmage_source()), 'show', m['java_revision'] + ':' + path])
                 self.assertEqual(hashlib.sha256(b).hexdigest(), source['java_sha256'])
                 seen.add(path)
         self.assertEqual(len(seen), 140)

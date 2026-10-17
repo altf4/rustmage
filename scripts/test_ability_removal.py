@@ -6,6 +6,11 @@ import subprocess
 import unittest
 from pathlib import Path
 
+if __package__:
+    from .source_paths import xmage_source
+else:
+    from source_paths import xmage_source
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -29,7 +34,7 @@ class AbilityRemovalInventoryTests(unittest.TestCase):
         self.assertEqual(len(unique), 114)
         self.assertEqual(unique, {r['java_source']: r['java_sha256'] for r in manifest['unique_sources']})
         for source, sha in unique.items():
-            raw = subprocess.check_output(['git', '-C', '/home/altf4/Code/mage', 'show',
+            raw = subprocess.check_output(['git', '-C', str(xmage_source()), 'show',
                                            manifest['java_revision'] + ':' + source])
             self.assertEqual(hashlib.sha256(raw).hexdigest(), sha, source)
 

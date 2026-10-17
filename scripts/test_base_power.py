@@ -1,6 +1,11 @@
 """Pinned full-source provenance; no rules text is compiled."""
 import hashlib,json,os,re,subprocess,unittest
 from pathlib import Path
+if __package__:
+    from .source_paths import xmage_source
+else:
+    from source_paths import xmage_source
+
 ROOT=Path(__file__).resolve().parents[1]
 
 class BasePowerAuditTests(unittest.TestCase):
@@ -25,6 +30,6 @@ class BasePowerAuditTests(unittest.TestCase):
         self.assertEqual(audit['unique_source_count'], len(seen))
         self.assertEqual({r['java_source']: r['java_sha256'] for r in audit['unique_sources']}, seen)
         for path, digest in seen.items():
-            blob = subprocess.check_output(['git', '-C', '/home/altf4/Code/mage', 'show', audit['java_revision'] + ':' + path])
+            blob = subprocess.check_output(['git', '-C', str(xmage_source()), 'show', audit['java_revision'] + ':' + path])
             self.assertEqual(hashlib.sha256(blob).hexdigest(), digest)
-            self.assertEqual((Path('/home/altf4/Code/mage') / path).read_bytes(), blob)
+            self.assertEqual((xmage_source() / path).read_bytes(), blob)

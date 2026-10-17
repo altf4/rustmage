@@ -70,7 +70,7 @@ Death grants its exact recipient an ability, River's Rebuke returns that creatur
 the same physical card is recast, and Stab kills the new incarnation permanently
 without creating Treasure. Every action retains owned branch/restore/view and
 actor/revision checks. The final optimized library is
-`/home/altf4/.cache/rustmage-immutable/returns307-0347dc9-47ef-schema89-255f51f40463.so`,
+`<cache>/rustmage-immutable/returns307-0347dc9-47ef-schema89-255f51f40463.so`,
 SHA256 `255f51f4046384aed117302030817baae93537e17563d0772674698e44fae5fd`,
 schema89, catalogue fingerprint
 `47ef06451233ccf6e22f6e2e09bdc8cfb63fce96c87c52942e81d291a8efdf98`.

@@ -25,7 +25,7 @@ Its independent evidence includes standalone 1,565 native tests, four public met
 
 Four extra native adverse groups cover source-entry suppression without suppressing Warp registration, genuine selected-Warp-cost reduction/locking with unchanged printed mana value, optional-zero/partially stale ETB targets after source departure, and Pirates' intervening condition after its artifact leaves. An initial incorrect Mouse-discount expectation was corrected to the printed one-mana discount. A shared Cargo target initially reused a copied-probe binary; that count is excluded, and the combined 1,582-test run uses a distinct target. The final combined library hash is independently reproduced in a second fresh target.
 
-Durable report: `/tmp/issue247-rules-review.md`. All completed disposable outputs were cleaned; every shared-library path, immutable library, source and evidence log was preserved.
+Durable report: `<temp>/issue247-rules-review.md`. All completed disposable outputs were cleaned; every shared-library path, immutable library, source and evidence log was preserved.
 
 ## Independent library/API review
 
@@ -35,7 +35,7 @@ Four additional native adverse groups cover mixed-controller delayed abilities a
 
 Combined evidence uses its own matching fresh immutable library: nine public methods/116 paid scenarios pass in 72.127 seconds; focused six Job/composition plus four Warp compiler methods, 234 rerun negatives and canonical preservation pass. It independently compiles and passes **both** combined Standard100 drivers with the complete vectors above. Its retained clean standalone 212-method API/native 1,565 baseline plus these combined checks is not represented as a clean independent combined 217-method API/1,582-native/full-320-compiler run.
 
-Durable report: `/tmp/issue245-library-review-d676.md`. It independently verified the exact remote head and approved `8c985f53` without findings; final metadata/review documentation is reconfirmed separately. Completed reproducible artifacts were cleaned while preserving all libraries and evidence.
+Durable report: `<temp>/issue245-library-review-d676.md`. It independently verified the exact remote head and approved `8c985f53` without findings; final metadata/review documentation is reconfirmed separately. Completed reproducible artifacts were cleaned while preserving all libraries and evidence.
 
 ## Remaining full goal
 

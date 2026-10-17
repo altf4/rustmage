@@ -46,7 +46,7 @@ and layer order. Each action verifies owned clone/index/raw/restore after parent
 drop, both observations and wrong-actor/stale rejection.
 
 The optimized immutable library is
-`/home/altf4/.cache/rustmage-immutable/resolved328-3943ad7-ec7a-schema98-396fef6a172a.so`,
+`<cache>/rustmage-immutable/resolved328-3943ad7-ec7a-schema98-396fef6a172a.so`,
 SHA256 `396fef6a172aae872dad71ad5bfaba46e6039d8aef6edecd4d5d8285650ecadf`,
 catalogue `ec7ab5b89bfa6b576492517b789af763ecd300cd0a86e6f9871f029bc5b3c85b`.
 

@@ -12,7 +12,7 @@ Reviewed all fifteen complete bodies, closed grammar, exact sorted public permis
 
 A separate public adverse probe exercised **725 permission frames**, **3,748 rejected illegal paths without mutation**, **40 isolated consumption branches** (25 spells and 15 lands), **16 expiry denials** and **18 opponent-turn instant opportunities**. Sorted exact permissions matched both viewers throughout.
 
-Evidence: `/tmp/pr210-library-review-{rust,release,python,standard,probe}.log`; probe `/tmp/pr210-library-review-probe.py`.
+Evidence: `<temp>/pr210-library-review-{rust,release,python,standard,probe}.log`; probe `<temp>/pr210-library-review-probe.py`.
 
 ## Rules and compiler
 
@@ -24,7 +24,7 @@ Verified **149 provenance hashes across 52 Java files**, exactly **fifteen chang
 
 Additional public instrumentation passed **10,190 observations**, **2,086 permission checks**, **896 wrong-owner exclusions**, **356 land-timing / 610 noninstant-timing exclusions**, **952 atomic hand-path bypass rejections** and twenty proper exile announcements.
 
-Evidence: `/tmp/pr210-rules-review-{verdict,native,compiler,standard100,python,audit,negative,provenance,public-probe}.log`; supplementary scripts share that prefix. Both reviewers rechecked frozen HEAD and clean tracked status.
+Evidence: `<temp>/pr210-rules-review-{verdict,native,compiler,standard100,python,audit,negative,provenance,public-probe}.log`; supplementary scripts share that prefix. Both reviewers rechecked frozen HEAD and clean tracked status.
 
 ## Integration
 

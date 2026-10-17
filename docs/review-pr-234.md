@@ -18,7 +18,7 @@ Two added native adverse groups pass under both controllers. A late first-saddle
 
 All nineteen primary constructors and Oracle bodies, exact signed completion arithmetic and CR702.171 were audited. Canonical comparison verifies nineteen changed/5,239 preserved definitions, two added factories, all 74 old recipes/metadata, all 5,183 ordinary IDs/colors and all 530 earlier helper arms. All 282 recursive hash records across 127 Java files match both pin and checkout.
 
-Actual evidence uses prefix `/tmp/issue230-library-review-`: `rust.log`, `python.log`, `clippy.log`, `fmt.log`, `catalogue.log`, `standard.log`, `semantic.log`, `public-probe-final.log`, `native-probes-final.log` and `verdict.log`. Constructor injection is `support/sitecustomize.py` under that prefix. Earlier mixed setup logs are excluded.
+Actual evidence uses prefix `<temp>/issue230-library-review-`: `rust.log`, `python.log`, `clippy.log`, `fmt.log`, `catalogue.log`, `standard.log`, `semantic.log`, `public-probe-final.log`, `native-probes-final.log` and `verdict.log`. Constructor injection is `support/sitecustomize.py` under that prefix. Earlier mixed setup logs are excluded.
 
 ## Rules/compiler — `/root/review_explore_library`
 
@@ -28,6 +28,6 @@ The reviewer added 246 whole-body, cost, threshold, event and composition negati
 
 A real paid probe under both controllers casts a fresh summoning-sick Glider, gives an owned 0/5 Turtle −2 power with actual Stab, then legally selects that negative non-Mount and three Bears plus another zero-power Turtle beyond the threshold. All five cost taps are genuine; designation appears only on resolution. Parent-closed branches resolve normally or actually Shock the source before Saddle resolves, preserving paid taps and leaving no designation. Untouched ancestors and 2,849 owned replays agree. Four separate paid Unsummon-after-attack routes prove that token residuals survive source departure while source-directed buffs never rebind to a new incarnation, with 36 child actions.
 
-Actual evidence uses prefix `/tmp/issue230-rules-review-`: `rust.log`, `native10.log`, `compiler.log`, `python.log`, `public42.log`, `standard.log`, `negative.log`, `provenance.log`, `semantic.log`, `public-negative-final.log`, `source-left.log`, `clippy.log` and `fmt.log`. Earlier setup-error logs are excluded.
+Actual evidence uses prefix `<temp>/issue230-rules-review-`: `rust.log`, `native10.log`, `compiler.log`, `python.log`, `public42.log`, `standard.log`, `negative.log`, `provenance.log`, `semantic.log`, `public-negative-final.log`, `source-left.log`, `clippy.log` and `fmt.log`. Earlier setup-error logs are excluded.
 
 The final acceptance update and this record change documentation only; both runtime approvals remain tied to the frozen head above. No findings remain.

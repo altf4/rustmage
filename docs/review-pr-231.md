@@ -15,7 +15,7 @@ A separate paid public probe starts with Graveyard mana value seven, actually ma
 
 The full 288-test compiler suite passes (564.559 seconds), alongside 105 independent unknown-residual/composite/numeric-overflow negatives. Those checks remain applicable after an explicit source diff proves scripts, generated catalogue and the complete manifest unchanged by the runtime fix. All 360 recursive hash records across 147 pinned Java files match. Canonical comparison covers all 5,258 rows and preserves 5,248 definitions, all factories, identities and colors.
 
-Actual evidence: `/tmp/issue226-rules-native.log`, `/tmp/issue226-rules-compiler.log`, `/tmp/issue226-rules-negative.log`, `/tmp/issue226-rules-fixed-native.log`, `fixed-release.log`, `fixed-standard100.log`, `fixed-public.log`, `fixed-early-final.log`, `fixed-no-window.log`, `fixed-clippy.log` and `fixed-fmt.log`, each latter file using prefix `/tmp/issue226-rules-`. The complete review is `/tmp/issue226-rules-review-c4de09f.md`, including its separate fixed-head approval.
+Actual evidence: `<temp>/issue226-rules-native.log`, `<temp>/issue226-rules-compiler.log`, `<temp>/issue226-rules-negative.log`, `<temp>/issue226-rules-fixed-native.log`, `fixed-release.log`, `fixed-standard100.log`, `fixed-public.log`, `fixed-early-final.log`, `fixed-no-window.log`, `fixed-clippy.log` and `fixed-fmt.log`, each latter file using prefix `<temp>/issue226-rules-`. The complete review is `<temp>/issue226-rules-review-c4de09f.md`, including its separate fixed-head approval.
 
 ## Library/API — `/root/independent_library_189`
 
@@ -25,6 +25,6 @@ The original public Pizza reproduction now succeeds in four both-seat before/aft
 
 Instrumentation of all 52 evidence scenarios verifies 105 private frames, 369 atomic rejections, 31 declines including ten partial selections, 58 actual commits, eight zero-value extras, and 105 successful child actions after closing parent handles. Actor privacy, untouched ancestors and forbidden mana windows hold. Independent canonical/provenance comparison preserves all 74 recipes, 517 previous helpers plus five additions, ordinary IDs/colors and all 360 records across 147 files.
 
-Actual evidence uses prefix `/tmp/issue226-library-review-fixed-`: `rust.log`, `release.log`, `python.log`, `standard.log`, `clippy.log`, `fmt.log`, `semantic.log`, `pizza.log`, `short.log`, `probe.log`, `native-probes.log` and `verdict.log`. Support code is `/tmp/issue226-library-review-fixed-support/sitecustomize.py`.
+Actual evidence uses prefix `<temp>/issue226-library-review-fixed-`: `rust.log`, `release.log`, `python.log`, `standard.log`, `clippy.log`, `fmt.log`, `semantic.log`, `pizza.log`, `short.log`, `probe.log`, `native-probes.log` and `verdict.log`. Support code is `<temp>/issue226-library-review-fixed-support/sitecustomize.py`.
 
 This final record and acceptance update change documentation only; runtime approval remains tied to the frozen head above.

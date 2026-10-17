@@ -1,6 +1,11 @@
 """Pinned full-source provenance; no rules text is compiled."""
 import hashlib,json,os,re,subprocess,unittest
 from pathlib import Path
+if __package__:
+    from .source_paths import xmage_source
+else:
+    from source_paths import xmage_source
+
 ROOT=Path(__file__).resolve().parents[1]
 
 class TriggerSourceBindingProvenanceTests(unittest.TestCase):
@@ -15,7 +20,7 @@ class TriggerSourceBindingProvenanceTests(unittest.TestCase):
         row = manifest['cards'][0]
         for key in ['name', 'oracle_id', 'mana_cost', 'type_line', 'oracle_text', 'power', 'toughness']:
             self.assertEqual(row[key], self.card[key])
-        root = Path(os.environ.get('RUSTMAGE_XMAGE_SOURCE', '/home/altf4/Code/mage'))
+        root = xmage_source()
         for record in row['sources']:
             blob = subprocess.check_output(['git', '-C', str(root), 'show', manifest['java_revision'] + ':' + record['java_source']])
             self.assertEqual(hashlib.sha256(blob).hexdigest(), record['java_sha256'])
