@@ -31,7 +31,7 @@ mod gift;
 mod gift_tests;
 pub use gift::{GiftContext, GiftDeclaration};
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 99;
+pub const OBSERVATION_SCHEMA: u32 = 100;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
 #[path = "engine_mobilize.rs"]
@@ -129,6 +129,9 @@ pub use roles::{RoleGroupView, RoleTimestampView};
 #[path = "engine_base_stats.rs"]
 mod base_stats;
 pub use base_stats::{BaseStatsEffectView, ResolvedStatSubjectView};
+#[path = "engine_live_static_stats.rs"]
+mod live_static_stats;
+pub use live_static_stats::LiveStaticSourceView;
 #[path = "engine_search.rs"]
 mod search;
 pub use explore::{ExploreChoiceView, ExploreEventView, ExplorerView, RevealedLibraryCard};
@@ -367,6 +370,7 @@ define_actions! {
     },
     SelectMilled { object: ObjectRef },
     FinishMilledSelection,
+    ChooseEntryTimestamp { object: ObjectRef },
     ChooseEntryLife {
         pay: bool,
     },
@@ -1092,6 +1096,9 @@ enum Pending {
         player: Player,
         filter: RecoveryFilter,
     },
+    EntryTimestamp {
+        player: Player,
+    },
     EntryLife {
         player: Player,
     },
@@ -1516,6 +1523,7 @@ pub struct Observation {
     pub role_choices: Vec<RoleGroupView>,
     pub role_timestamps: Vec<RoleTimestampView>,
     pub base_stat_effects: Vec<BaseStatsEffectView>,
+    pub live_static_sources: Vec<LiveStaticSourceView>,
     pub resolved_stat_subjects: Vec<ResolvedStatSubjectView>,
     pub legend_choices: Vec<LegendGroupView>,
     pub stack: Vec<SpellView>,
@@ -1539,6 +1547,7 @@ pub struct Observation {
     pub effect_choice: Option<EffectChoiceView>,
     pub aura_entry: Option<entries::AuraEntryView>,
     pub entry_life: Option<entries::EntryLifeView>,
+    pub entry_timestamps: Option<entries::EntryTimestampView>,
     pub additional_cost: Option<AdditionalCostView>,
     pub forage: Option<ForageView>,
     pub evidence: Option<EvidenceView>,
@@ -1788,6 +1797,7 @@ impl Game {
             | Pending::ConniveOrder { player }
             | Pending::ResolutionMana { player }
             | Pending::AdditionalCost { player }
+            | Pending::EntryTimestamp { player }
             | Pending::EntryLife { player }
             | Pending::AuraEntry { player }
             | Pending::EffectChoice { player }
@@ -2092,6 +2102,13 @@ impl Game {
             Pending::ResolutionMana { .. } => {
                 if self.visit_resolution_payment(&mut emit) {
                     return true;
+                }
+            }
+            Pending::EntryTimestamp { .. } => {
+                for object in self.entry_timestamp_candidates() {
+                    if emit(Action::ChooseEntryTimestamp { object }) {
+                        return true;
+                    }
                 }
             }
             Pending::EntryLife { .. } => {
@@ -2973,6 +2990,7 @@ impl Game {
             Action::PayResolutionMana { payment } => self.finish_resolution_payment(Some(payment)),
             Action::DeclineResolutionMana => self.finish_resolution_payment(None),
             Action::ChooseAdditionalCost { object } => self.choose_additional_cost(object),
+            Action::ChooseEntryTimestamp { object } => self.choose_entry_timestamp(object),
             Action::ChooseEntryLife { pay } => self.choose_entry_life(pay),
             Action::ChooseAuraAttachment { object } => self.choose_aura_attachment(object),
             Action::Keep => {
@@ -3638,6 +3656,21 @@ impl Game {
 
     /// Capture every pre-event characteristic before any simultaneous departure.
     fn move_objects_raw(&mut self, ids: &[CardId], destination: Zone) -> Vec<ZoneChange> {
+        if destination == Zone::Battlefield {
+            let count = ids
+                .iter()
+                .filter(|&&id| {
+                    let o = &self.state.objects[id as usize];
+                    o.zone != Zone::Battlefield
+                        && !o.card.is_token()
+                        && !o.card.is_emblem()
+                        && (o.card.base_stat_setter().is_some()
+                            || !o.card.live_static_effects().is_empty()
+                            || o.card.role().is_some())
+                })
+                .count();
+            assert!(count <= 1, "simultaneous timestamp entry must be staged");
+        }
         let before: Vec<_> = ids
             .iter()
             .map(|&id| {
@@ -3864,6 +3897,7 @@ impl Game {
         if before.zone == Zone::Battlefield {
             self.forget_role(before.reference);
             self.forget_base_stats(before.reference);
+            self.forget_live_static_source(before.reference);
             // Abilities use the source's actual last-known keywords if it leaves,
             // including gains made after that ability was announced.
             for item in self
@@ -4559,6 +4593,7 @@ impl Game {
                 Pending::EffectDiscard { .. } => "effect_discard",
                 Pending::HandDefender { .. } => "hand_defender",
                 Pending::EffectChoice { .. } => "effect_choice",
+                Pending::EntryTimestamp { .. } => "entry_timestamps",
                 Pending::EntryLife { .. } => "entry_life",
                 Pending::AuraEntry { .. } => "aura_entry",
                 Pending::Attackers => "attackers",
@@ -4607,6 +4642,7 @@ impl Game {
             effect_choice: self.effect_choice_view(viewer),
             aura_entry: self.aura_entry_view(viewer),
             entry_life: self.entry_life_view(viewer),
+            entry_timestamps: self.entry_timestamp_view(),
             additional_cost: self.additional_cost_view(viewer),
             forage: self.forage_view(viewer),
             evidence: self.evidence_view(viewer),
@@ -4641,6 +4677,11 @@ impl Game {
                 .roles
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.base_stats.clone()),
+            live_static_sources: self
+                .state
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.live_static.clone()),
             resolved_stat_subjects: s
                 .roles
                 .as_ref()
@@ -5112,7 +5153,10 @@ mod equipment_tests;
 
 #[path = "engine_entries.rs"]
 mod entries;
-pub use entries::{AuraAttachmentView, AuraEntryView, EntryLifeSelection, EntryLifeView};
+pub use entries::{
+    AuraAttachmentView, AuraEntryView, EntryLifeSelection, EntryLifeView, EntryTimestampObjectView,
+    EntryTimestampView,
+};
 
 #[cfg(test)]
 #[path = "engine_aura_tests.rs"]
@@ -5601,6 +5645,10 @@ mod hand_land_tests;
 #[cfg(test)]
 #[path = "engine_base_stats_tests.rs"]
 mod base_stats_tests;
+
+#[cfg(test)]
+#[path = "engine_live_static_rules_tests.rs"]
+mod live_static_rules_tests;
 
 #[cfg(test)]
 #[path = "engine_tiered_tests.rs"]

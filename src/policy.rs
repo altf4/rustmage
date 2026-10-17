@@ -116,6 +116,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 }
             }
             Action::AnnounceAdventure { .. } | Action::AnnounceOmen { .. } => 30,
+            Action::ChooseEntryTimestamp { .. } => 120,
             Action::ChooseReplacement { .. } => 120,
             Action::ChooseCreatedToken { .. } => 120,
             Action::ChooseEndure { put_counters } => {

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "5d88b288481c68b6a5d4bf99ec29073bc035a0ea33d9cc7a63e769ac71506afd",
+  "catalogue_version": "2611f64601bb2d777463426f1be5f75b3ebeb3d8b8fcd9d5863fae138b77fb13",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1968,
-  "implemented_total": 1974,
+  "implemented_standard_cards": 1972,
+  "implemented_total": 1978,
   "token_definitions": 95,
   "emblem_definitions": 1,
   "cards": [
@@ -460,8 +460,8 @@
     {
       "name": "Aettir and Priwen",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Affectionate Indrik",
@@ -1300,8 +1300,8 @@
     {
       "name": "Archon of the Wild Rose",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Archon's Glory",
@@ -3520,8 +3520,8 @@
     {
       "name": "Burden of Proof",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Burdened Stoneback",
@@ -15784,8 +15784,8 @@
     {
       "name": "Maha, Its Feathers Night",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Mai, Jaded Edge",
