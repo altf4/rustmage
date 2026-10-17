@@ -233,7 +233,12 @@ impl Game {
             let events = self.move_objects_raw(&ids, destination);
             self.finish_zone_events(&events, &[]);
             for event in events {
-                if event.moved && !self.state.known_hand.contains(&event.after) {
+                if event.moved
+                    && event.destination == Zone::Hand
+                    && self.state.objects[event.after.card as usize].zone == Zone::Hand
+                    && self.object_ref(event.after.card) == event.after
+                    && !self.state.known_hand.contains(&event.after)
+                {
                     self.state.known_hand.push(event.after);
                 }
             }
