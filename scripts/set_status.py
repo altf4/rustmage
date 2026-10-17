@@ -4,7 +4,10 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
-from scripts.inventory_standard import name_key, set_entries
+if __package__:
+    from .inventory_standard import name_key, set_entries
+else:
+    from inventory_standard import name_key, set_entries
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -43,9 +46,11 @@ def freeze(root, xmage, code):
             members.setdefault(card['oracle_id'], dict(name=card['name'], oracle_id=card['oracle_id'], facts_sha256=digest(card), printings=[]))
     return dict(schema=1, set=code, xmage_revision=inventory['xmage_source_commit'], table=table,
                 scope='All physical set card identities, including reprints and starter products; cosmetic printings counted once',
-                cards=sorted(members.values(), key=lambda c: c['name']), unresolved=sorted(unresolved))
+                card_count=len(members)+len(unresolved), cards=sorted(members.values(), key=lambda c: c['name']), unresolved=sorted(unresolved))
 
 def status(root, manifest):
+    if manifest['card_count'] != len(manifest['cards'])+len(manifest['unresolved']):
+        raise ValueError('incomplete set manifest')
     facts = {c['oracle_id']: c for c in json.loads((root / 'data/standard/cards.json').read_text())['cards']}
     coverage = {c['name']: c for c in json.loads((root / 'data/standard/coverage.json').read_text())['cards']}
     seen = set()
@@ -67,7 +72,9 @@ def status(root, manifest):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('set', help='Full set code, e.g. FDN')
-    parser.add_argument('--freeze', action='store_true')
+    mode=parser.add_mutually_exclusive_group()
+    mode.add_argument('--freeze', action='store_true')
+    mode.add_argument('--check', action='store_true', help='Authenticate full membership against pinned source')
     parser.add_argument('--xmage', type=Path, default=Path('/home/altf4/Code/mage'))
     args = parser.parse_args()
     code = args.set.upper()
@@ -76,7 +83,10 @@ def main():
         manifest = freeze(ROOT, args.xmage, code)
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n')
-    print(json.dumps(status(ROOT, json.loads(path.read_text())), ensure_ascii=False, indent=2))
+    manifest=json.loads(path.read_text())
+    if args.check and manifest != freeze(ROOT, args.xmage, code):
+        raise ValueError('full set membership differs from pinned source')
+    print(json.dumps(status(ROOT, manifest), ensure_ascii=False, indent=2))
 
 if __name__ == '__main__':
     main()

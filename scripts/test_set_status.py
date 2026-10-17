@@ -24,8 +24,13 @@ class SetStatusTests(unittest.TestCase):
         manifest = json.loads((ROOT / 'data/sets/fdn.json').read_text())
         duplicate = copy.deepcopy(manifest)
         duplicate['cards'].append(duplicate['cards'][0])
+        duplicate['card_count'] += 1
         with self.assertRaisesRegex(ValueError, 'duplicate set Oracle identity'):
             set_status.status(ROOT, duplicate)
+        incomplete = copy.deepcopy(manifest)
+        incomplete['cards'].pop()
+        with self.assertRaisesRegex(ValueError, 'incomplete set manifest'):
+            set_status.status(ROOT, incomplete)
         stale = copy.deepcopy(manifest)
         stale['cards'][0]['facts_sha256'] = '0' * 64
         with self.assertRaisesRegex(ValueError, 'set facts changed'):
