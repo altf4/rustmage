@@ -340,7 +340,7 @@ mod tests {
             named(&mut g, p, "SP//dr, Piloted by Peni", Zone::Battlefield);
             named(&mut g, p, "Yathan Tombguard", Zone::Battlefield);
             let source = cast(&mut g, p, "Summon: Choco/Mog");
-            assert_eq!(g.state.objects[source as usize].counters.total(), 1);
+            assert_eq!(g.counter_amounts(source).total(), 1);
             assert_eq!(g.state.objects[source as usize].counters.lore, 1);
             g.state.objects[source as usize].summoning_sick = false;
             g.state.step = Step::Attackers;
@@ -367,7 +367,7 @@ mod tests {
             settle(&mut g);
             assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, drawn + 2);
             assert_eq!(g.state.players[p.index()].life, life - 1);
-            assert_eq!(g.state.objects[source as usize].counters.total(), 0);
+            assert_eq!(g.counter_amounts(source).total(), 0);
         }
     }
     #[test]
@@ -726,14 +726,10 @@ mod tests {
                 .find(|a| a.cost.remove == Some((None, 1)))
                 .unwrap()
                 .cost;
-            super::super::activations::counter_payments(
-                cost,
-                &g.state.objects[source as usize].counters,
-                |p| {
-                    payments.push(p);
-                    false
-                },
-            );
+            super::super::activations::counter_payments(cost, g.counter_amounts(source), |p| {
+                payments.push(p);
+                false
+            });
             assert_eq!(
                 payments,
                 vec![Counters {

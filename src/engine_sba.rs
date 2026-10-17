@@ -147,8 +147,16 @@ impl Game {
                 || batch.lost.iter().any(|&lost| lost);
             // The check consumes this interval's deathtouch history, even when
             // indestructible prevents destruction. New entrants start clear.
-            for object in &mut self.state.objects {
-                object.deathtouch_since_sba = false;
+            // Preserve shared hot rows when there is no history to consume.
+            if self
+                .state
+                .objects
+                .iter()
+                .any(|object| object.deathtouch_since_sba)
+            {
+                for object in &mut self.state.objects {
+                    object.deathtouch_since_sba = false;
+                }
             }
             if !changed {
                 return;

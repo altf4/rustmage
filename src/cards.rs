@@ -1212,10 +1212,13 @@ pub enum CounterKind {
     Divinity,
     Revival,
     Soul,
+    Fellowship,
+    Wish,
+    Stash,
 }
 impl CounterKind {
     /// Stable allocation order for mixed counter costs; existing kinds stay first.
-    pub const ALL: [Self; 11] = [
+    pub const ALL: [Self; 14] = [
         Self::PlusOne,
         Self::MinusOne,
         Self::Stun,
@@ -1227,8 +1230,11 @@ impl CounterKind {
         Self::Divinity,
         Self::Revival,
         Self::Soul,
+        Self::Fellowship,
+        Self::Wish,
+        Self::Stash,
     ];
-    fn is_named(self) -> bool {
+    pub(crate) fn is_named(self) -> bool {
         matches!(
             self,
             Self::Incubation
@@ -1237,11 +1243,14 @@ impl CounterKind {
                 | Self::Divinity
                 | Self::Revival
                 | Self::Soul
+                | Self::Fellowship
+                | Self::Wish
+                | Self::Stash
         )
     }
 }
 
-/// Immutable catalogue initializer: preserves compact Copy constants in card files.
+/// Common live fields and catalogue initializers remain compact Copy values.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub(crate) struct InitialCounters {
     #[serde(default, skip_serializing_if = "is_zero_counter")]
@@ -1257,7 +1266,7 @@ pub(crate) struct InitialCounters {
 /// zero entries make equality, hashing, serialization and branching canonical.
 #[derive(Clone, Debug, PartialEq, Eq, Hash, Serialize)]
 #[serde(transparent)]
-pub(crate) struct NamedCounters(Vec<(CounterKind, u64)>);
+pub(crate) struct NamedCounters(pub(crate) Vec<(CounterKind, u64)>);
 impl<'de> Deserialize<'de> for NamedCounters {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         let mut values = Vec::<(CounterKind, u64)>::deserialize(deserializer)?;
@@ -1275,8 +1284,8 @@ impl<'de> Deserialize<'de> for NamedCounters {
     }
 }
 
-/// Owned live counters. The five common kinds stay inline; additional kinds cost
-/// one nullable pointer per value, rather than a u64 per supported counter kind.
+/// Owned public counter values and payments. Live objects keep their hot fields
+/// separately from the game state's optional copy-on-write named-counter rows.
 #[derive(Clone, Debug, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct Counters {
     #[serde(default, skip_serializing_if = "is_zero_counter")]
@@ -1304,7 +1313,78 @@ impl From<InitialCounters> for Counters {
         }
     }
 }
+/// Allocation-free amounts shared by actual and speculative rules queries.
+#[derive(Clone, Copy, Default)]
+pub(crate) struct CounterAmounts<'a> {
+    pub hot: InitialCounters,
+    pub named: Option<&'a NamedCounters>,
+}
+impl<'a> From<&'a Counters> for CounterAmounts<'a> {
+    fn from(value: &'a Counters) -> Self {
+        Self {
+            hot: value.hot(),
+            named: value.named.as_deref(),
+        }
+    }
+}
+impl CounterAmounts<'_> {
+    pub(crate) fn get(self, kind: CounterKind) -> u64 {
+        match kind {
+            CounterKind::PlusOne => self.hot.plus_one,
+            CounterKind::MinusOne => self.hot.minus_one,
+            CounterKind::Stun => self.hot.stun,
+            CounterKind::Loyalty => self.hot.loyalty,
+            CounterKind::Lore => self.hot.lore,
+            _ => self
+                .named
+                .and_then(|v| {
+                    v.0.binary_search_by_key(&kind, |(k, _)| *k)
+                        .ok()
+                        .map(|i| v.0[i].1)
+                })
+                .unwrap_or(0),
+        }
+    }
+    pub(crate) fn total(self) -> u128 {
+        u128::from(self.hot.plus_one)
+            + u128::from(self.hot.minus_one)
+            + u128::from(self.hot.stun)
+            + u128::from(self.hot.loyalty)
+            + u128::from(self.hot.lore)
+            + self
+                .named
+                .map_or(0, |v| v.0.iter().map(|(_, n)| u128::from(*n)).sum())
+    }
+    pub(crate) fn has_any(self) -> bool {
+        (self.hot.plus_one | self.hot.minus_one | self.hot.stun | self.hot.loyalty | self.hot.lore)
+            != 0
+            || self.named.is_some()
+    }
+    pub(crate) fn available(self, kind: Option<CounterKind>) -> u128 {
+        kind.map_or_else(|| self.total(), |kind| u128::from(self.get(kind)))
+    }
+    pub(crate) fn contains(self, payment: &Counters) -> bool {
+        CounterKind::ALL
+            .into_iter()
+            .all(|kind| self.get(kind) >= payment.get(kind))
+    }
+    pub(crate) fn to_owned(self) -> Counters {
+        let mut result: Counters = self.hot.into();
+        result.named = self.named.map(|v| Box::new(v.clone()));
+        result
+    }
+}
 impl Counters {
+    pub(crate) fn hot(&self) -> InitialCounters {
+        InitialCounters {
+            lore: self.lore,
+            plus_one: self.plus_one,
+            minus_one: self.minus_one,
+            stun: self.stun,
+            loyalty: self.loyalty,
+        }
+    }
+
     pub fn get(&self, kind: CounterKind) -> u64 {
         match kind {
             CounterKind::PlusOne => self.plus_one,
@@ -1322,6 +1402,17 @@ impl Counters {
                 })
                 .unwrap_or(0),
         }
+    }
+    /// Canonical named storage is nonempty whenever it exists. Presence queries
+    /// need neither wide quantity arithmetic nor a scan of cold counter rows.
+    #[inline]
+    pub fn is_empty(&self) -> bool {
+        (self.plus_one | self.minus_one | self.stun | self.loyalty | self.lore) == 0
+            && self.named.is_none()
+    }
+    #[inline]
+    pub fn has_any(&self) -> bool {
+        !self.is_empty()
     }
     pub fn total(&self) -> u128 {
         u128::from(self.plus_one)
@@ -1344,10 +1435,7 @@ impl Counters {
         self.set(kind, amount);
         self
     }
-    pub(crate) fn available(&self, kind: Option<CounterKind>) -> u128 {
-        kind.map_or_else(|| self.total(), |kind| u128::from(self.get(kind)))
-    }
-    fn set(&mut self, kind: CounterKind, amount: u64) {
+    pub(crate) fn set(&mut self, kind: CounterKind, amount: u64) {
         match kind {
             CounterKind::PlusOne => self.plus_one = amount,
             CounterKind::MinusOne => self.minus_one = amount,
@@ -1408,17 +1496,6 @@ impl Counters {
             std::mem::size_of::<NamedCounters>()
                 + v.0.capacity() * std::mem::size_of::<(CounterKind, u64)>()
         })
-    }
-    pub(crate) fn contains(&self, payment: &Self) -> bool {
-        self.plus_one >= payment.plus_one
-            && self.minus_one >= payment.minus_one
-            && self.stun >= payment.stun
-            && self.loyalty >= payment.loyalty
-            && self.lore >= payment.lore
-            && payment
-                .named
-                .as_ref()
-                .is_none_or(|v| v.0.iter().all(|(kind, n)| self.get(*kind) >= *n))
     }
     pub(crate) fn pay(&mut self, payment: &Self) {
         self.plus_one -= payment.plus_one;

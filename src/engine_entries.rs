@@ -279,7 +279,7 @@ impl Game {
         let mut counter_order = moves
             .iter()
             .enumerate()
-            .filter(|(_, m)| m.destination == Zone::Battlefield && m.counters.total() > 0)
+            .filter(|(_, m)| m.destination == Zone::Battlefield && m.counters.has_any())
             .map(|(i, _)| i)
             .collect::<Vec<_>>();
         counter_order.sort_by_key(|&i| (moves[i].controller != self.state.active, i));
@@ -299,7 +299,7 @@ impl Game {
         };
         let counter_replacements = batch.moves.iter().any(|m| {
             m.destination == Zone::Battlefield
-                && m.counters.total() > 0
+                && m.counters.has_any()
                 && (!m.before.card.replacement_effects().is_empty()
                     || self.state.static_sources.iter().any(|&id| {
                         self.state.objects[id as usize]
@@ -598,7 +598,7 @@ impl Game {
                 let index = batch.counter_order[batch.counter_next];
                 batch.counter_next += 1;
                 let m = &batch.moves[index];
-                if m.destination != Zone::Battlefield || m.skipped || m.counters.total() == 0 {
+                if m.destination != Zone::Battlefield || m.skipped || m.counters.is_empty() {
                     continue;
                 }
                 let p = replacements::CounterPlacement {

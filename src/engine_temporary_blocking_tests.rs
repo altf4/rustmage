@@ -431,7 +431,7 @@ fn brambleback_removes_any_supported_counter_kind_and_requires_an_actual_counter
             counter_payment: Counters::default(),
         };
         reject(&mut g, empty);
-        g.state.objects[source as usize].counters.add(kind, 1);
+        g.add_counter(source, kind, 1);
         activate(&mut g, source, target);
         assert_eq!(g.object_view(source).counters, Counters::default());
         settle(&mut g, target);

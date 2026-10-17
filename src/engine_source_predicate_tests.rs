@@ -358,7 +358,7 @@ fn modified_flying_counts_each_counter_any_equipment_only_owned_aura_and_exact_i
             };
             g.state.objects[id as usize].used_abilities = 1;
             if let Some(c) = counter {
-                g.state.objects[id as usize].counters.add(c, 1);
+                g.add_counter(id, c, 1);
             }
             let attached = attachment.map(|n| {
                 let a = named(

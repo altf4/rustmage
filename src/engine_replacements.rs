@@ -204,7 +204,7 @@ fn counter_applies(spec: ReplacementSpec, p: &CounterPlacement) -> bool {
     };
     matches_filter(filter, p)
         && (!effects_only || p.effect)
-        && kind.map_or_else(|| p.amount.total() > 0, |k| p.amount.get(k) > 0)
+        && kind.map_or_else(|| p.amount.has_any(), |k| p.amount.get(k) > 0)
 }
 fn modify_counter(spec: ReplacementSpec, p: &mut CounterPlacement) {
     let ReplacementSpec::Counters {
@@ -404,9 +404,7 @@ impl Game {
             {
                 let before = self.state.objects[p.object.card as usize].counters.lore;
                 for kind in CounterKind::ALL {
-                    self.state.objects[p.object.card as usize]
-                        .counters
-                        .add(kind, p.amount.get(kind));
+                    self.add_counter(p.object.card, kind, p.amount.get(kind));
                 }
                 for kind in CounterKind::ALL {
                     self.self_counters_added(p.object, kind, p.amount.get(kind), p.placed_by);
@@ -425,7 +423,7 @@ impl Game {
         mut placements: Vec<CounterPlacement>,
         mode: ResumeMode,
     ) {
-        placements.retain(|p| p.amount.total() > 0);
+        placements.retain(|p| p.amount.has_any());
         if placements.is_empty() {
             return;
         }
@@ -510,7 +508,7 @@ impl Game {
             })
         {
             let before = self.state.objects[id as usize].counters.lore;
-            self.state.objects[id as usize].counters.add(kind, amount);
+            self.add_counter(id, kind, amount);
             let placed_by = self
                 .state
                 .resolving

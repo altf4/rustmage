@@ -26,6 +26,7 @@ struct FundingState<'g> {
     mana: [u128; 6],
     life: i128,
     resources: Vec<Resource>,
+    named_counters: live_counters::Rows,
     convoke: bool,
 }
 impl ability_world::CharacteristicWorld for FundingState<'_> {
@@ -39,6 +40,13 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
             .map_or(&self.game.state.objects[id as usize], |resource| {
                 &resource.object
             })
+    }
+    fn counter_amounts(&self, id: CardId) -> CounterAmounts<'_> {
+        live_counters::amounts(
+            &self.named_counters,
+            self.reference(id),
+            self.object(id).counters,
+        )
     }
     fn life(&self, player: Player) -> i128 {
         if player == self.actor {
@@ -76,7 +84,7 @@ struct ResourceKey {
     present: bool,
     tapped: bool,
     sick: bool,
-    counters: Counters,
+    counters: InitialCounters,
     used: u64,
     gained: Keywords,
     owned: bool,
@@ -92,6 +100,7 @@ struct FundingKey {
     // Equivalent sources are interchangeable for feasibility. Protect the
     // enclosing ability's source separately, even if its printed card matches.
     resources: Vec<ResourceKey>,
+    named_counters: live_counters::Rows,
 }
 
 fn payable<N: Copy + Into<u128>>(pool: [N; 6], required: Mana, generic: u32) -> bool {
@@ -175,6 +184,7 @@ fn reserve_obligations(
 fn source_obligations(
     goal: &FundingGoal,
     object: Option<&Object>,
+    amounts: CounterAmounts<'_>,
     kinds: u16,
     keywords: Keywords,
     life: i128,
@@ -198,6 +208,7 @@ fn source_obligations(
     if let Some(object) = current {
         Game::object_activation_available_with_kinds(
             object,
+            amounts,
             kinds,
             keywords,
             life,
@@ -205,7 +216,7 @@ fn source_obligations(
             *index as usize,
             goal.actor,
             true,
-        ) && object.counters.contains(counters)
+        ) && amounts.contains(counters)
     } else {
         // The activated ability already exists independently of its source.
         // Only unpaid costs that use that incarnation require it to remain.
@@ -217,12 +228,13 @@ fn source_obligations(
 /// ability. Converters may improve colors but cannot create spendable quantity.
 /// Overlapping resource/life/counter costs across abilities are deliberately
 /// counted independently: this can only overestimate what a legal path gains.
-fn activation_gain_upper(
+fn activation_gain_upper<'a>(
     ability: &ActivatedAbility,
     production: ManaProduction,
-    counters: &Counters,
+    counters: impl Into<CounterAmounts<'a>>,
     life: i128,
 ) -> u128 {
+    let counters = counters.into();
     let mut produced = 0;
     production.visit(|mana| {
         produced = produced.max(mana.into_iter().map(u128::from).sum::<u128>());
@@ -335,6 +347,7 @@ impl<'g> FundingState<'g> {
             mana: game.state.players[goal.actor.index()].mana.map(u128::from),
             life: game.state.players[goal.actor.index()].life,
             resources,
+            named_counters: game.state.named_counters.clone(),
         }
     }
     fn obligations(&self, goal: &FundingGoal) -> bool {
@@ -354,6 +367,9 @@ impl<'g> FundingState<'g> {
         ) && source_obligations(
             goal,
             source.map(|r| &r.object),
+            source.map_or(CounterAmounts::default(), |r| {
+                ability_world::CharacteristicWorld::counter_amounts(self, r.id)
+            }),
             source.map_or(0, |r| self.kinds(r)),
             source.map_or(Keywords::NONE, |r| self.keywords(r)),
             self.life,
@@ -405,7 +421,9 @@ impl<'g> FundingState<'g> {
                     && target.object.controller == source.object.controller
                 {
                     for &(kind, grant) in source.object.card.counter_keyword_grants() {
-                        if target.object.counters.get(kind) > 0 {
+                        if ability_world::CharacteristicWorld::counter_count(self, target.id, kind)
+                            > 0
+                        {
                             keywords = keywords.union(grant);
                         }
                     }
@@ -431,7 +449,9 @@ impl<'g> FundingState<'g> {
                             ) if source.object.controller == self.active
                                 && target.object.controller == source.object.controller
                                 && self.kinds(target) & 1 != 0
-                                && target.object.counters.get(kind) > 0 =>
+                                && ability_world::CharacteristicWorld::counter_count(
+                                    self, target.id, kind,
+                                ) > 0 =>
                             {
                                 keywords = keywords.union(grant)
                             }
@@ -562,6 +582,7 @@ impl<'g> FundingState<'g> {
                 if !self.guard_available(ability.guard, goal.actor)
                     || !Game::object_activation_available_with_kinds(
                         object,
+                        ability_world::CharacteristicWorld::counter_amounts(self, entry.id),
                         self.kinds(entry),
                         self.keywords(entry),
                         self.life,
@@ -573,22 +594,26 @@ impl<'g> FundingState<'g> {
                 {
                     continue;
                 }
-                activations::counter_payments(ability.cost, &object.counters, |counters| {
-                    funding_cost_payments(self.mana, ability.cost, |payment| {
-                        production.in_world(self, entry.id).visit(|production| {
-                            moves.push(FundingMove {
-                                resource,
-                                ability: Some(index as u16),
-                                grantor: None,
-                                payment,
-                                counters: counters.clone(),
-                                production,
+                activations::counter_payments(
+                    ability.cost,
+                    ability_world::CharacteristicWorld::counter_amounts(self, entry.id),
+                    |counters| {
+                        funding_cost_payments(self.mana, ability.cost, |payment| {
+                            production.in_world(self, entry.id).visit(|production| {
+                                moves.push(FundingMove {
+                                    resource,
+                                    ability: Some(index as u16),
+                                    grantor: None,
+                                    payment,
+                                    counters: counters.clone(),
+                                    production,
+                                });
+                                false
                             });
-                            false
                         });
-                    });
-                    false
-                });
+                        false
+                    },
+                );
             }
         }
         // Try producing missing required types first; this changes only traversal
@@ -610,6 +635,7 @@ impl<'g> FundingState<'g> {
         for (pool, paid) in self.mana.iter_mut().zip(step.payment) {
             *pool -= u128::from(paid);
         }
+        let id = self.resources[step.resource].id;
         let object = &mut self.resources[step.resource].object;
         if let Some(index) = step.ability {
             let cost = object.card.activations()[index as usize].cost;
@@ -618,9 +644,19 @@ impl<'g> FundingState<'g> {
             if cost.tap {
                 object.tapped = true;
             }
-            object.counters.pay(&step.counters);
+            let reference = ObjectRef {
+                card: id,
+                generation: object.generation,
+            };
+            let mut counters =
+                live_counters::amounts(&self.named_counters, reference, object.counters).to_owned();
+            counters.pay(&step.counters);
+            object.counters = counters.hot();
+            live_counters::set(&mut self.named_counters, reference, counters.named);
             if cost.sacrifice {
                 object.zone = Zone::Graveyard;
+                object.counters = InitialCounters::default();
+                live_counters::set(&mut self.named_counters, reference, None);
             }
         } else {
             object.tapped = true;
@@ -633,10 +669,11 @@ impl<'g> FundingState<'g> {
     }
     fn key(&self, goal: &FundingGoal) -> FundingKey {
         // Attachment edges distinguish otherwise interchangeable mana sources.
-        let linked = self
-            .resources
-            .iter()
-            .any(|r| r.object.attached_to.is_some());
+        let linked = self.named_counters.is_some()
+            || self
+                .resources
+                .iter()
+                .any(|r| r.object.attached_to.is_some());
         let mut resources: Vec<_> = self
             .resources
             .iter()
@@ -653,7 +690,7 @@ impl<'g> FundingState<'g> {
                 present: r.object.zone == Zone::Battlefield,
                 tapped: r.object.tapped,
                 sick: r.object.summoning_sick,
-                counters: r.object.counters.clone(),
+                counters: r.object.counters,
                 used: r.object.used_abilities,
                 gained: r.object.gained_keywords,
                 // Ownership still determines whose graveyard receives a sacrificed
@@ -673,7 +710,13 @@ impl<'g> FundingState<'g> {
                 r.present,
                 r.tapped,
                 r.sick,
-                CounterKind::ALL.map(|kind| r.counters.get(kind)),
+                [
+                    r.counters.plus_one,
+                    r.counters.minus_one,
+                    r.counters.stun,
+                    r.counters.loyalty,
+                    r.counters.lore,
+                ],
                 r.used,
                 r.gained,
                 r.attacking,
@@ -684,6 +727,7 @@ impl<'g> FundingState<'g> {
             mana: self.mana,
             life: self.life,
             resources,
+            named_counters: self.named_counters.clone(),
         }
     }
     /// Pure funding moves never create new resources, untap them, restore
@@ -742,7 +786,7 @@ impl<'g> FundingState<'g> {
                             .mana_production()
                             .unwrap()
                             .in_world(self, resource.id),
-                        &object.counters,
+                        ability_world::CharacteristicWorld::counter_amounts(self, resource.id),
                         self.life,
                     ));
                 }
@@ -801,6 +845,7 @@ impl<'g> FundingState<'g> {
                     || !self.guard_available(ability.guard, goal.actor)
                     || !Game::object_activation_available_with_kinds(
                         object,
+                        ability_world::CharacteristicWorld::counter_amounts(self, resource.id),
                         self.kinds(resource),
                         self.keywords(resource),
                         self.life,
@@ -825,7 +870,9 @@ impl<'g> FundingState<'g> {
                     );
                 }
                 if let Some((kind, amount)) = cost.remove {
-                    let count = object.counters.available(kind);
+                    let count =
+                        ability_world::CharacteristicWorld::counter_amounts(self, resource.id)
+                            .available(kind);
                     uses = uses.min(u64::try_from(count / u128::from(amount)).unwrap_or(u64::MAX));
                 }
                 let mut maximum = [0u32; 6];
@@ -994,6 +1041,11 @@ impl Game {
         ) || !source_obligations(
             &goal,
             object,
+            goal.source
+                .as_ref()
+                .map_or(CounterAmounts::default(), |(r, _, _, _)| {
+                    self.counter_amounts(r.card)
+                }),
             object.map_or(0, |o| {
                 self.object_kinds(goal.source.as_ref().unwrap().0.card, o)
             }),
@@ -1658,6 +1710,7 @@ mod own_turn_guard_tests {
                 mana: [0; 6],
                 life: 20,
                 resources: Vec::new(),
+                named_counters: None,
                 convoke: false,
             };
             assert!(state.guard_available(ActivationGuard::OwnTurn, active));
@@ -2231,7 +2284,7 @@ mod named_counter_funding_tests {
         for player in [Player::P0, Player::P1] {
             let mut game = setup(player);
             let source = named(&mut game, player, "Gnarlbark Elm", Zone::Battlefield);
-            game.state.objects[source as usize].counters = Counters::of(CounterKind::Soul, 2);
+            game.set_counters(source, Counters::of(CounterKind::Soul, 2));
             let goal = FundingGoal {
                 actor: player,
                 required: [0; 6],
@@ -2248,8 +2301,14 @@ mod named_counter_funding_tests {
             let mut world = FundingState::from_game(&game, &goal);
             assert!(world.obligations(&goal));
             let before = world.key(&goal);
-            let resource = world.resources.iter_mut().find(|r| r.id == source).unwrap();
-            resource.object.counters.remove(CounterKind::Soul, 1);
+            let mut counters =
+                ability_world::CharacteristicWorld::counter_amounts(&world, source).to_owned();
+            counters.remove(CounterKind::Soul, 1);
+            live_counters::set(
+                &mut world.named_counters,
+                game.object_ref(source),
+                counters.named,
+            );
             assert!(!world.obligations(&goal));
             assert!(before != world.key(&goal));
             assert_eq!(game.object_view(source).counters.get(CounterKind::Soul), 2);

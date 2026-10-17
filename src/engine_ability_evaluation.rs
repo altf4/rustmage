@@ -124,14 +124,14 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             if provider.controller != world.game().state.active
                 || !own
                 || world.kinds(id) & 1 == 0
-                || target.counters.get(kind) == 0
+                || world.counter_count(id, kind) == 0
             {
                 return None;
             }
             value
         }
         StaticAbilityFragment::CounterKeyword(_, kind, value) => {
-            if !own || world.kinds(id) & 1 == 0 || target.counters.get(kind) == 0 {
+            if !own || world.kinds(id) & 1 == 0 || world.counter_count(id, kind) == 0 {
                 return None;
             }
             value

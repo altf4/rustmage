@@ -582,9 +582,7 @@ fn tier_cost_combines_before_power_reduction_and_locks_before_mana_sacrifice() {
             .find(|c| c.token_info().is_some_and(|i| i.name == "Treasure Token"))
             .unwrap();
         let token = spawn(&mut g, p, treasure, Zone::Battlefield);
-        g.state.objects[bunny as usize]
-            .counters
-            .add(CounterKind::MinusOne, 1);
+        g.add_counter(bunny, CounterKind::MinusOne, 1);
         let ability = g.state.objects[sword as usize]
             .card
             .activations()

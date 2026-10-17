@@ -573,17 +573,20 @@ fn conditional_late_overflow_restores_earlier_tap_growth_life_and_all_rng_state(
                     let top = *g.state.players[0].library.last().unwrap();
                     g.state.objects[top as usize].generation = u64::MAX;
                 } else {
-                    g.state.objects[target as usize].counters = if name == "Fear of Immobility" {
-                        Counters {
-                            stun: u64::MAX,
-                            ..Counters::default()
-                        }
-                    } else {
-                        Counters {
-                            plus_one: u64::MAX - 1,
-                            ..Counters::default()
-                        }
-                    };
+                    g.set_counters(
+                        target,
+                        if name == "Fear of Immobility" {
+                            Counters {
+                                stun: u64::MAX,
+                                ..Counters::default()
+                            }
+                        } else {
+                            Counters {
+                                plus_one: u64::MAX - 1,
+                                ..Counters::default()
+                            }
+                        },
+                    );
                 }
             }
         }
