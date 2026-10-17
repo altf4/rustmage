@@ -20,17 +20,17 @@ Royal Ward, Sorcerer scry and Young Hero's intervening-if trigger belong to the
 enchanted creature's controller. Wicked's graveyard trigger belongs to the Aura's
 controller. Existing immutable granted-ability packets survive grantor departure.
 
-Validation so far: eight native groups pass for all six factories, both-controller
+Validation so far: nine native groups pass for all six factories, both-controller
 coexistence, timestamp replacement and simultaneous choice, real Doubling Season,
 paid Adventure spell/normal-face casts, Ward payment/decline and detached-source
-attack triggers with privacy and intervening-if checks. A ninth group tests the
-eight ordinary consumers through paid casts and activations. Compiler controls
+attack triggers with privacy and intervening-if checks. The ninth group passes the eight ordinary consumers through paid casts and activations.
+The complete native suite passes 1,721 unit tests plus 12 integration tests. Compiler controls
 cover renamed whole programs, authenticated raw reminders and unknown residuals.
 The semantic catalogue proof preserves 5,299 prior definitions, all 817 prior helper
 arms and all 5,311 prior color facts; twelve complete definitions change, four
 Adventure helpers and six token recipes are added. Prior token IDs can shift.
 
-Pending: finish the ninth native group and broad gates, fresh public Standard
+Pending: broad compiler/API gates, fresh public Standard
 acceptance, remaining layering/illegal-attachment boundaries, final provenance
 review, and two independent nonauthor exact-head reviews. This does not claim that
 all Standard rules, control-changing effects or all Role consumers are complete.
