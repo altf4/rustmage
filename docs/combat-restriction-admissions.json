@@ -1,0 +1,380 @@
+{
+  "schema": 1,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "scope": "Five complete combat-restriction bodies; full card Java records and explicit direct imports only, not a transitive port or execution whitelist",
+  "cards": [
+    {
+      "name": "Mouser Mark III",
+      "oracle_id": "ad0c6d46-a1ca-4a9f-93f0-4a4dc31868e6",
+      "mana_cost": "{1}{U/R}",
+      "type_line": "Artifact Creature \u2014 Robot",
+      "oracle_text": "This creature can't attack unless you control another artifact.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MouserMarkIII.java",
+          "java_sha256": "5b8fdab7d707c2774e935ad1d77f99bc20494efb45a2083ae43a5165799c56b8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/RestrictionEffect.java",
+          "java_sha256": "408c7ac5e439f5c6f0f176525253ccdcf8a3ea563323128e2a167716ebe26a4f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+          "java_sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+          "java_sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        }
+      ]
+    },
+    {
+      "name": "Pacifism",
+      "oracle_id": "5f5e0b10-c8cf-450c-bfd3-bcb0528ec330",
+      "mana_cost": "{1}{W}",
+      "type_line": "Enchantment \u2014 Aura",
+      "oracle_text": "Enchant creature\nEnchanted creature can't attack or block.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/Pacifism.java",
+          "java_sha256": "36152f953632dd13593e23e68eee2ecd25fb2391590c8d3160f56bfeb1c28ec9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/combat/CantAttackBlockAttachedEffect.java",
+          "java_sha256": "d78155f9b01ffc823d4c3c0faec891a723d6d2e00152803ccaf34ca43cd3bddf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AttachmentType.java",
+          "java_sha256": "7931287bfa8563637d894de3e49b3d5fb3f15da417940ef4cc0c416f20976d24"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Zone.java",
+          "java_sha256": "4d8040e25af69a6e12c441a029b7cb44f1115d1016148738eafa4d2096f5610e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ]
+    },
+    {
+      "name": "Technodrome",
+      "oracle_id": "51c0b46c-c379-420a-a4a4-d18724c759aa",
+      "mana_cost": "{2}",
+      "type_line": "Artifact Creature \u2014 Construct",
+      "oracle_text": "Reach, trample\nThis creature can't attack or block unless its power is 6 or greater.\n{T}, Sacrifice another artifact: Draw a card. Put a +1/+1 counter on this creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/Technodrome.java",
+          "java_sha256": "b7a8b65a085f7bee2608a24b20ffce3ac3edffb10a9d5309445b14b22d6ca828"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageObject.java",
+          "java_sha256": "061a5412bcd48f83d961a10c987ddb072ab3ed3712ba70135305fb88565fa55a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+          "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "java_sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/combat/CantAttackBlockUnlessConditionSourceEffect.java",
+          "java_sha256": "eae1b953cf0978bb9d72c50ce376d715e56b4df86b6e9233d658a717fc4c6bf9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+          "java_sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+          "java_sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/counters/CounterType.java",
+          "java_sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        }
+      ]
+    },
+    {
+      "name": "The Lion-Turtle",
+      "oracle_id": "fff728a1-56f5-4e97-91e2-19aba5772909",
+      "mana_cost": "{1}{G}{U}",
+      "type_line": "Legendary Creature \u2014 Elder Cat Turtle",
+      "oracle_text": "Reach, vigilance\nWhen The Lion-Turtle enters, you gain 3 life.\nThe Lion-Turtle can't attack or block unless there are three or more Lesson cards in your graveyard.\n{T}: Add one mana of any color.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TheLionTurtle.java",
+          "java_sha256": "09053187145bf7ac40b5e7fea22896d013fb743b3e1edfa1084aecf30eef1ad3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/LessonsInGraveCondition.java",
+          "java_sha256": "919914e0997c75d2cd2113b586c13bc87ea70f949f1e2788aea4ecb74174c0e2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/combat/CantAttackBlockUnlessConditionSourceEffect.java",
+          "java_sha256": "eae1b953cf0978bb9d72c50ce376d715e56b4df86b6e9233d658a717fc4c6bf9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+          "java_sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "java_sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+          "java_sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SuperType.java",
+          "java_sha256": "4ec4cf97e8c73dee7d1d0e4be9f4b90eb980dcdcd26698fcb610aed30da9e6cc"
+        }
+      ]
+    },
+    {
+      "name": "Tiger-Dillo",
+      "oracle_id": "b6e82d4f-4fbf-495c-bebd-982d2a855ad0",
+      "mana_cost": "{1}{R}",
+      "type_line": "Creature \u2014 Cat Armadillo",
+      "oracle_text": "This creature can't attack or block unless you control another creature with power 4 or greater.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TigerDillo.java",
+          "java_sha256": "4f3c6431426845a60eeb8329f1a9be377f3336793bee19d51686ef27ec6f5d7a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+          "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+          "java_sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/combat/CantAttackBlockUnlessConditionSourceEffect.java",
+          "java_sha256": "eae1b953cf0978bb9d72c50ce376d715e56b4df86b6e9233d658a717fc4c6bf9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/hint/ConditionHint.java",
+          "java_sha256": "272def725fb6168ac551239c85a0c7b4908d18ac1f51092cd7a5fd2e77e6d6ce"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/hint/Hint.java",
+          "java_sha256": "5b3e37a154109935f244c02a79a0182695daad1bee2180f5f0b407bdf630509a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ComparisonType.java",
+          "java_sha256": "33b0abc2b4214ece7d2f842b9f000d967dd8fb4e6cb073cb34eeab7e304731ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+          "java_sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+          "java_sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/PowerPredicate.java",
+          "java_sha256": "909b9038e02c0653920408059e987b6ee3cfad717900e62e78c597285f137dde"
+        }
+      ]
+    }
+  ]
+}

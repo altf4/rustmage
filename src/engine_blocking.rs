@@ -9,6 +9,7 @@ impl Game {
                 && self.is_creature(id)
                 && !b.tapped
                 && !self.keywords(id).contains(Keywords::CANT_BLOCK)
+                && !self.combat_restricted(id, false)
         })
     }
 

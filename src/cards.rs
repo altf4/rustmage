@@ -1123,8 +1123,18 @@ pub(crate) enum StepValue {
     TotalCreatureToughness,
     SpellsCast,
 }
+/// Continuous restrictions are not abilities granted to their subject.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct CombatRestriction {
+    pub subject: Subject,
+    pub attack: bool,
+    pub block: bool,
+    pub unless: Option<StepGuard>,
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StepGuard {
+    SourcePowerAtLeast(u16),
     SourceToughnessAtMost(u16),
     Outlaw,
     Always,
@@ -1576,6 +1586,9 @@ pub type Mana = [u32; 6];
 impl Card {
     /// Intrinsic colors (W=1, U=2, B=4, R=8, G=16), including both hybrid halves
     /// and token colors. Unsupported multiple-face identities describe the front.
+    pub(crate) fn combat_restriction(self) -> Option<CombatRestriction> {
+        generated::combat_restriction(self)
+    }
     pub(crate) fn attached_turn_keywords(self) -> Keywords {
         generated::attached_turn_keywords(self)
     }
