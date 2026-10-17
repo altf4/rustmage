@@ -1,71 +1,25 @@
-# Attachment-granted Ward and typed Aura legality
+# Typed Aura legality and attachment Ward
 
-Issue257 extends the existing exact-stack Ward payment kernel to ordinary Aura
-and Equipment grants. Each printed or granted Ward instance remains a separate
-trigger owned by the recipient's controller. Already queued packets survive
-removing the attachment. Grants use the existing immutable programs and indexed
-attachment observers; Ward is not a keyword bit.
+Issue257 adds ten complete Standard bodies: Dusk Rose Reliquary, Trapped in the Screen, Dwarven Mattock, Falcon's Wing Harness, Lavaspur Boots, Hardlight Containment, Sheltered by Ghosts, Super Strength, Detention Chariot and Static Snare. Catalogue1770/5164 Standard identities,1776 total supported deck identities,84 token recipes and1emblem; observation schema77. Fingerprint `08c0db32dc05bdfb0685654ced93f05078fb3adc86d2e6ee316cb301cb50f9f8`.
 
-`AuraSpec.kinds` is an immutable enchant kind predicate, evaluated using current
-object characteristics alongside the existing controller relation. All prior
-Aura helper rows gain only `kinds: 1`, preserving their exact creature predicate;
-Hardlight Containment uses artifact mask16. Casting targets and existing entry,
-attachment and state-based checks retain their appropriate targeting distinctions.
-The ability recipient lookup now accepts a legal noncreature enchanted artifact;
-Equipment grants still require a creature recipient and noncreature Equipment.
+Aura specifications carry an immutable kind mask and controller relation. The shared predicate enforces enchant restrictions in targeting, entry and attachment state-based actions. Hardlight Containment can enchant a noncreature artifact; creature-only static/conditional keyword grants on artifact-only Auras remain closed until complete noncreature keyword routing is available. Source guards retain the original noncreature attachment requirement: creature Auras cannot enchant under303.4d and creature Equipment cannot remain attached.
 
-The complete initial admissions are Dusk Rose Reliquary,Trapped in the Screen,
-Dwarven Mattock,Falcon's Wing Harness,Lavaspur Boots,Hardlight Containment,
-Sheltered by Ghosts and Super Strength. The shared linked-exile target union also
-admits two complete non-Ward neighbors: Detention Chariot (Crew3,cyclingW,6/6)
-and Static Snare (flash,discount per attacking creature). Their constructors were
-read in full; acceptance must cover these residuals as well as linked exile.
-All ten names are grammar-derived, with no name-specific admission override.
+Each granted Ward instance belongs to the enchanted or equipped permanent's controller, including Super Strength attached to an opponent's creature. Multiple instances remain separate packets, carry exact recipient/source references, and preserve their captured costs when attachments leave. Existing fixed-mana and nonmana Ward payment/counter behavior is reused. Own spells do not trigger Ward and uncounterable spells remain uncounterable. Linked exile uses the same exact-incarnation release machinery as existing complete bodies.
 
-Local schema77,1770 Standard/1776total,84 token recipes. Catalogue fingerprint
-`d676d3a798a26663fc0c0206d7ea5c8d2e359b5310c78a12bf176dd73ee80fca`.
-Exactly10 complete definitions change against main d3f8;5258 definitions are
-byte-identical. Helper changes also include the narrow default Aura representation
-and real new additional costs/equip/crew/cycling/reduction data; no claim of wholly
-byte-identical helper tables is made.
+The ten bodies include every remaining cost, entry effect, equip ability, keyword/stat grant, cycling, Crew and exile-return instruction. General artifact/creature union grammar also admits Detention Chariot and Static Snare; these collateral admissions are audited in full rather than name-filtered away. Static Snare's unqualified reduction counts all attacking creatures, including opposing creatures. A separate typed count preserves the existing controller-only attacker consumers and locks the actual reduced cost at announcement.
 
-`attachment-ward-admissions.json` pins all10 full constructors plus initial shared
-helpers to Java492369c7844b8d76479f0393ff9eb6b0b0cf30d7. `ward-inventory.json`
-preserves the149-card whole Standard Ward-text inventory including all faces;
-29 were supported on baseline,120 gated. Eight Ward additions leave112 baseline
-Ward-related gated cards; two extra admissions do not themselves mention Ward.
-Future mixed/dynamic/OR costs,Role tokens,global grants,disguise/cloak,Prepared
-and Ward suppression remain explicit whole-body backlog. Existing mana,life,
-discard,creature sacrifice,poison and evidence Ward payment remains reused.
+`attachment-ward-admissions.json` pins73 full-file records spanning20 unique Java paths to revision492369c7844b8d76479f0393ff9eb6b0b0cf30d7. `ward-inventory.json` records149 Standard identities with Ward text across all faces:29 supported on baseline, eight Ward-text additions,112 still gated; the two other new bodies do not mention Ward. Remaining mixed/dynamic/OR costs, Role tokens, global grants, disguise/cloak, Prepared and Ward suppression remain whole-body backlog. The inventory is not a claim that all149 bodies are executable.
 
-Checkpoint evidence: all1612 preexisting unit tests passed on initial core;
-8 new native groups passed on the full ten-admission core;4 focused compiler
-methods passed with complete-body/cost/layout/unknown-residual negatives.
-Full paid public-library,Standard and broad final acceptance are still pending.
+Canonical comparison covers all5268 definitions by position and token factory identity:10 changed,5258 preserved, all5183 ordinary IDs and all84 token recipes+1emblem retained. Shared helper changes include the narrow default Aura representation and the complete additional-cost/equip/Crew/cycling/reduction programs. Duplicate printed Offspring labels are never used as unique identities.
 
+Validation:1635 native tests (1623 unit+12 integration) pass on the frozen runtime; all339 predecessor compiler/data tests pass396.945s. A broader340-method run with the initial reminder guard passes460.311s; final six-method targeted rerun passes0.259s after the capitalization/indentation refinements. The latter refinements were also checked by160 independent controls. The broad run began before those two negative-path refinements, so it is not described as a fresh all340 run of the final guard. All-target Clippy, formatting, regenerated catalogue and pinned-source checks pass. An earlier full public run completed228 methods but failed360 subcase schema assertions (every failure was77 !=76);59 explicit historical schema fixtures were updated without changing behavior assertions. The corrected full228-method public collection passes839.783s on the retained d676 immutable. The final08c catalogue has byte-identical programs and adds a strict compiler reminder guard; its fresh56 paid scenarios pass105.541s and its repeated100-game workload passes with identical counters.
 
-The acceptance pilot found Static Snare initially reused the controller-only
-attacker count, incorrectly charging5 during an opponent's attack. A distinct
-`AllAttackingCreatures` earlier-layer value now implements its unqualified
-cost reduction while all existing own-attacker consumers retain their previous
-value. Both-seat native actual one/two-attacker payments validate4/3 costs;
-real paid public regression and the Standard driver assert4 with one enemy
-attacker. Cost locking continues through the existing announcement kernel.
-Artifact-only Auras remain closed against static keyword/creature-conditional
-grants until their complete noncreature keyword routing is implemented.
+The optimized Standard workload constructs legal60-card decks and checks actual paid entry/equip/Ward pay+decline, granted stats/keywords, linked exile and return, Chariot cycling+Crew, and Static Snare's cost during an opponent attack. Every action has parent-closed cloning, snapshot restore/replay and wrong-actor/stale-revision denials, and every game must reach a natural terminal outcome. Policy corrections retain the required setup Pizza and require the full equip cost rather than spending setup artifacts on unnecessary mana conversion; those were driver issues, with no engine change.
 
-The corrected core passes1623 unit tests plus12 integration tests(all targets),
-including11 new native groups. Broad compiler baseline had337passing methods
-and one stale additional-cost-count fixture(10→11 due Reliquary); corrected
-fixture plus final five-method focused module passes6 methods in3.070s.
-Final public/Standard and fresh broad acceptance remain in progress.
+Rule runtime is unchanged from3264ad12af970f10807ac621a6ca0c60f7f6c41b. Final08c provenance uses immutable `/home/altf4/.cache/rustmage-immutable/author257-08c0db-schema77.so`, SHA256 `d7b2b65456f76b15386031cf400c6d708b9c2884c30f59e054bc9e3a713c3746`. The earlier d676 library remains preserved at its exact path and SHA. Evidence logs are `/tmp/issue257-native-08c-final.log`, `/tmp/issue257-compiler-full-reminder-final.log`, `/tmp/issue257-python-full-corrected.log`, `/tmp/issue257-public-08c-final.log`, `/tmp/issue257-standard-100-08c-final.log`, `/tmp/issue257-clippy-08c-final.log` and `/tmp/issue257-canonical.log`. Two independent nonauthor exact-final-head reviews are required before merge.
 
+Independent review found that inherited generic templates removed arbitrary parenthetical text. This batch now authenticates exact reminders for its new granted-Ward, artifact-Aura and linked-union grammar routes before full admission, with repeated costs and source/recipient syntax preserved. Detection canonicalizes case and line-edge whitespace exactly as the underlying parsers do, while authentication checks the original text. Six focused compiler methods include unknown/mismatched reminders, capitalization and indentation controls; independent review adds160 controls. All5268 generated definitions/helpers/color lines remain byte-identical; only the provenance fingerprint changes. The wider inherited-template audit remains [issue261](https://github.com/altf4/rustmage/issues/261).
 
-Final shared grantor check retains the original noncreature-source requirement
-for all attachments: a creature Aura cannot legally enchant(303.4d), and a
-creature Equipment cannot remain attached. This removes an unnecessary Aura
-exception from the initial checkpoint without changing any admitted reachable
-route. All56 real paid public cases pass on the corrected5495 core(83.805s);
-final fresh full-suite acceptance follows the final one-line guard restoration.
-Selected additional helper provenance includes linked exile,attachment,
-sacrifice costs,Ward counter-unless-pay and Static Snare's all-player count.
+The first complete optimized100-game run on the retained d676 fingerprint passes194807 parent-closed replays,389614 illegal/stale denials and2310 private frames; initial logical state20296 bytes, maximum21072. All ten bodies have five complete effect witnesses per seat; all eight Ward bodies pay once and decline twice per seat. Every game reaches a natural terminal outcome. The repeat against final08c completes with exactly the same194807/389614/2310 counters, full effect/payment/decline vectors and20296/21072-byte measurements; `/tmp/issue257-standard-100-08c-final.log`.
+
+All author build/test processes completed before cleanup removed1957 disposable files (493024989 logical bytes); all five shared-library paths were retained and SHA-verified. Immutable libraries, source, Git history, manifests and logs remain intact; record `/tmp/issue257-cleanup-final.json`.
