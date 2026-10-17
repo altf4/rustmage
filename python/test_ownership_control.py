@@ -136,7 +136,12 @@ class OwnershipControlTests(unittest.TestCase):
                         if actor==player and stage=='setup' and n==SAGA:return -500
                         if actor==player and n in BASICS and len([v for v in hand if v['card'] in BASICS])<=2:return -400
                         return 2300 if n in ['Shock','Thrill of Possibility','Whirlwing Stormbrood // Dynamic Soar'] else 1500
-                    if k=='Attack':return 2800 if finishing else -1000
+                    if k=='Attack':
+                        if not finishing:return -1000
+                        if route=='Omen' or attacked or mana_witness:return 2800
+                        # Give the newly cast foreign creature its actual combat
+                        # witness before an established army can end the game.
+                        return 2900 if actor==player and a['card']==source else -1000
                     return {'Keep':3500,'PayCosts':3000,'ChooseSpellCost':2400,'PutTrigger':2400,'FinishTargets':2300,'FinishSearch':2300,'FinishAttackers':2400,'FinishBlockers':2400,'DeclineEffectPayment':500,'Pass':0}.get(k,1000)
                 j=max(range(len(o['actions'])),key=lambda j:score(o['actions'][j]));action=o['actions'][j]
                 self.assertGreaterEqual(score(action),0,(player,seed,mode,stage,name,o['decision'],o['actions']))
