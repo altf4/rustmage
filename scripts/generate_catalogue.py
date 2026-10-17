@@ -5408,6 +5408,11 @@ def compile_catalogue(snapshot, target):
     # Reuse the complete-body compiler for each genuine face, then admit only the
     # conjunction. This is not a normal-layout fallback for the physical parent.
     for parent, original in list(cards.items()):
+        direct=authored.get(original.get('oracle_id'))
+        if direct is not None:
+            if direct_cards.digest(original)!=direct['facts_sha256']:
+                raise ValueError('authored facts changed: '+parent)
+            continue
         raw_faces = original.get("card_faces")
         mechanic = "Omen" if isinstance(raw_faces, list) and raw_faces and isinstance(raw_faces[-1], dict) and raw_faces[-1].get("type_line", "").endswith(" — Omen") else "Adventure"
         faces = adventure_faces(original, mechanic)

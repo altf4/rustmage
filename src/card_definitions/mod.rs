@@ -32,6 +32,15 @@ impl CardRules {
             !matches!(self.effect, Effect::Unsupported),
             "complete authored card lacks behavior"
         );
+        if let Some(costs) = self.mode_costs {
+            match self.effect {
+                Effect::Modal(modes) => assert!(
+                    costs.len() == modes.len(),
+                    "modal additional-cost table mismatch"
+                ),
+                _ => panic!("modal costs require modal behavior"),
+            }
+        }
         self.effect
     }
 }

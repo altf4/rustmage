@@ -8,10 +8,10 @@ class DirectCardTests(unittest.TestCase):
   facts=json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards']
   cards=[c for c in facts if c['oracle_id']in records]
   self.assertEqual(len(cards),4)
-  with patch.object(g,'modal_reminder_text',wraps=g.modal_reminder_text) as parser:
+  with patch.object(g,'modal_reminder_text',wraps=g.modal_reminder_text) as parser, patch.object(g,'adventure_faces',wraps=g.adventure_faces) as faces:
    payload=json.dumps(cards,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()
    rust,coverage=g.compile_catalogue(dict(cards=cards,card_count=len(cards),cards_sha256=hashlib.sha256(payload).hexdigest()),dict(banned_card_names=[]))
-  self.assertTrue(all(call.args[0].get('oracle_id') not in records for call in parser.call_args_list))
+  self.assertTrue(all(call.args[0].get('oracle_id') not in records for call in parser.call_args_list + faces.call_args_list))
   self.assertEqual(sum(r['implementation']=='authored_rust'for r in coverage['cards']),4)
   self.assertTrue(all(r['implemented']for r in coverage['cards']if r['standard_legal']))
  def test_authored_java_provenance(self):
