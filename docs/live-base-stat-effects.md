@@ -57,3 +57,16 @@ and the third stopped on a test-only lookup error (token names use catalogue
 identities rather than the normal card-name alias index). The fixture now selects
 the existing Detective token from the catalogue. This is not a runtime fix or an
 admission, and the failed run remains in the delivery evidence.
+
+The second primitive run at77d0aea also stopped in that fixture: token metadata
+labels differ from definition names. The test now uses the already executable
+2/2 Detective April, Reporter of the Weird, avoiding token alias assumptions.
+Both failed terminal targets were cleaned with all SO paths/hashes retained.
+
+The prototype additionally stages controller-owned timestamp ordering within the
+existing entry batch. Choices run in APNAP order, defer all static/Role source
+timestamps until every incoming object and attachment is present, and finish
+before entry events inspect derived stats. Continuous abilities of one source
+share a timestamp; live condition/value changes do not refresh it. The public
+choice exposes only objects committed to public entry, with exact pre-entry
+incarnations. This still admits zero cards and awaits focused validation.

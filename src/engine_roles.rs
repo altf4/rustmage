@@ -18,6 +18,8 @@ pub struct RoleGroupView {
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct RoleState {
     clock: u64,
+    /// Only true while an entry transaction assigns one simultaneous timestamp group.
+    pub deferred_timestamps: bool,
     pub attached: Vec<RoleTimestampView>,
     pub base_stats: Vec<BaseStatsEffectView>,
     pub live_static: Vec<LiveStaticSourceView>,
@@ -100,8 +102,47 @@ impl Game {
 
     pub(super) fn next_role_timestamp(&mut self) -> u64 {
         let r = self.state.roles.get_or_insert_with(Default::default);
+        if r.deferred_timestamps {
+            return 0;
+        }
         r.clock = r.clock.checked_add(1).capacity("Role timestamps exhausted");
         r.clock
+    }
+    pub(super) fn static_source_timestamp(&mut self, source: ObjectRef) -> u64 {
+        // All continuous abilities of a permanent share its most recent timestamp.
+        if let Some(r) = &self.state.roles {
+            if let Some(v) = r
+                .base_stats
+                .iter()
+                .find(|v| v.static_source && v.source == source)
+            {
+                return v.timestamp;
+            }
+            if let Some(v) = r.live_static.iter().find(|v| v.source == source) {
+                return v.timestamp;
+            }
+        }
+        self.next_role_timestamp()
+    }
+    pub(super) fn assign_static_source_timestamp(&mut self, source: ObjectRef) {
+        let timestamp = self.next_role_timestamp();
+        if let Some(r) = &mut self.state.roles {
+            for v in &mut r.base_stats {
+                if v.static_source && v.source == source {
+                    v.timestamp = timestamp;
+                }
+            }
+            for v in &mut r.live_static {
+                if v.source == source {
+                    v.timestamp = timestamp;
+                }
+            }
+            for v in &mut r.attached {
+                if v.aura == source {
+                    v.timestamp = timestamp;
+                }
+            }
+        }
     }
     pub(super) fn record_role(&mut self, aura: ObjectRef, recipient: ObjectRef, timestamp: u64) {
         let r = self.state.roles.get_or_insert_with(Default::default);

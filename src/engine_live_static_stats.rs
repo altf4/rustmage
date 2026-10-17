@@ -28,7 +28,7 @@ impl Game {
         {
             return;
         }
-        let timestamp = self.next_role_timestamp();
+        let timestamp = self.static_source_timestamp(source);
         self.state
             .roles
             .get_or_insert_with(Default::default)
@@ -53,12 +53,7 @@ impl Game {
         {
             return;
         }
-        let timestamp = self.next_role_timestamp();
-        for e in &mut self.state.roles.as_mut().unwrap().live_static {
-            if e.source == source {
-                e.timestamp = timestamp;
-            }
-        }
+        self.assign_static_source_timestamp(source);
     }
     fn live_static_applies(
         &self,
@@ -337,18 +332,159 @@ mod tests {
             assert_eq!((g.stats(target).power, g.stats(target).toughness), (2, 2)); // 1/1 base plus Pick.
             let detective = named(&mut g, p.other(), "Person of Interest");
             assert!(!g.live_static_forbids_block(target, detective));
-            g.state.objects[detective as usize].card = Card::catalogue()
-                .find(|card| card.name() == "Detective Token")
-                .unwrap();
+            g.state.objects[detective as usize].card =
+                Card::from_name("April, Reporter of the Weird").unwrap();
             assert!(g.live_static_forbids_block(target, detective));
-            g.state.objects[target as usize].card = Card::catalogue()
-                .find(|card| card.name() == "Detective Token")
-                .unwrap();
+            g.state.objects[target as usize].card =
+                Card::from_name("April, Reporter of the Weird").unwrap();
             assert_eq!(g.stats(target).power, 5); // 2 printed +2 conditional +1 Pick.
             assert!(!g.live_static_forbids_block(target, detective));
             g.state.objects[aura as usize].controller = p.other();
             assert_eq!(g.stats(target).power, 2);
             assert!(g.live_static_forbids_block(target, detective));
+        }
+    }
+}
+
+#[cfg(test)]
+mod timestamp_tests {
+    use super::super::tests::{scenario, spawn};
+    use super::*;
+    fn checked(g: &mut Game, action: Action) {
+        let actor = g.actor().unwrap();
+        let revision = g.revision();
+        let index = g.legal_actions().iter().position(|a| *a == action).unwrap();
+        let before = g.snapshot();
+        assert_eq!(
+            g.apply(actor.other(), action.clone()),
+            Err(Error::WrongActor)
+        );
+        assert_eq!(g.snapshot(), before);
+        let mut child = {
+            let parent = g.clone();
+            parent.clone()
+        };
+        child.apply_index(actor, revision, index).unwrap();
+        g.apply(actor, action.clone()).unwrap();
+        assert_eq!(child.snapshot(), g.snapshot());
+        for p in [Player::P0, Player::P1] {
+            assert_eq!(
+                serde_json::to_value(child.observe(p)).unwrap(),
+                serde_json::to_value(g.observe(p)).unwrap()
+            );
+        }
+        let after = g.snapshot();
+        g.restore(&before).unwrap();
+        assert_eq!(
+            g.apply_index(actor, revision, index),
+            Err(Error::StaleRevision)
+        );
+        g.apply(actor, action).unwrap();
+        assert_eq!(g.snapshot(), after);
+    }
+    #[test]
+    fn live_static_primitives_simultaneous_entries_choose_apnap_owned_order() {
+        for active in [Player::P0, Player::P1] {
+            for reverse in [false, true] {
+                let mut g = scenario();
+                g.state.active = active;
+                g.state.priority = active;
+                let mut ids = Vec::new();
+                for p in [active.other(), active] {
+                    for name in ["Doc Ock, Sinister Scientist", "Snooping Page"] {
+                        ids.push(spawn(
+                            &mut g,
+                            p,
+                            Card::from_name(name).unwrap(),
+                            Zone::Graveyard,
+                        ));
+                    }
+                }
+                let moves = ids
+                    .iter()
+                    .map(|&id| g.entry_move(id, Zone::Battlefield, false))
+                    .collect();
+                g.stage_entries(moves, None);
+                assert!(g.advance_entries());
+                assert_eq!(g.actor(), Some(active));
+                assert!(
+                    ids.iter()
+                        .all(|&id| g.state.objects[id as usize].zone == Zone::Graveyard)
+                );
+                let view = g.observe(active.other()).entry_timestamps.unwrap();
+                assert_eq!(view.controller, active);
+                assert_eq!(view.candidates.len(), 2);
+                let illegal = Action::ChooseEntryTimestamp {
+                    object: g.object_ref(ids[0]),
+                };
+                let before = g.snapshot();
+                assert!(g.apply(active, illegal).is_err());
+                assert_eq!(g.snapshot(), before);
+                let first = if reverse { 3 } else { 2 };
+                let object = g.object_ref(ids[first]);
+                checked(&mut g, Action::ChooseEntryTimestamp { object });
+                assert_eq!(g.actor(), Some(active.other()));
+                let second = if reverse { 0 } else { 1 };
+                let object = g.object_ref(ids[second]);
+                checked(&mut g, Action::ChooseEntryTimestamp { object });
+                assert!(g.state.entry_batch.is_none());
+                assert!(ids.iter().all(|&id| g.on_battlefield(id)));
+                let rows = &g.state.roles.as_ref().unwrap().base_stats;
+                let stamp = |id| rows.iter().find(|v| v.source.card == id).unwrap().timestamp;
+                assert!(stamp(ids[first]) < stamp(ids[5 - first]));
+                assert!(stamp(ids[2]) < stamp(ids[0]) && stamp(ids[3]) < stamp(ids[1]));
+                assert!(stamp(ids[second]) < stamp(ids[1 - second]));
+                assert!(g.observe(active).entry_timestamps.is_none());
+                assert!(!g.state.roles.as_ref().unwrap().deferred_timestamps);
+            }
+        }
+    }
+    #[test]
+    fn live_static_primitives_simultaneous_role_and_static_use_one_ordered_clock() {
+        for p in [Player::P0, Player::P1] {
+            for role_first in [false, true] {
+                let mut g = scenario();
+                g.state.active = p;
+                g.state.priority = p;
+                let bear = spawn(
+                    &mut g,
+                    p,
+                    Card::from_name("Bear Cub").unwrap(),
+                    Zone::Battlefield,
+                );
+                let doc = spawn(
+                    &mut g,
+                    p,
+                    Card::from_name("Doc Ock, Sinister Scientist").unwrap(),
+                    Zone::Graveyard,
+                );
+                let curse = Card::catalogue()
+                    .find(|c| c.role() == Some(crate::cards::RoleKind::Cursed))
+                    .unwrap();
+                let aura = spawn(&mut g, p, curse, Zone::Exile);
+                let mut m = g.entry_move(aura, Zone::Battlefield, false);
+                m.attachment = Some(g.object_ref(bear));
+                let d = g.entry_move(doc, Zone::Battlefield, false);
+                g.stage_entries(vec![m, d], None);
+                assert!(g.advance_entries());
+                let object = g.object_ref(if role_first { aura } else { doc });
+                checked(&mut g, Action::ChooseEntryTimestamp { object });
+                let r = g.state.roles.as_ref().unwrap();
+                let role = r
+                    .attached
+                    .iter()
+                    .find(|v| v.aura.card == aura)
+                    .unwrap()
+                    .timestamp;
+                let stat = r
+                    .base_stats
+                    .iter()
+                    .find(|v| v.source.card == doc)
+                    .unwrap()
+                    .timestamp;
+                assert_eq!(role < stat, role_first);
+                assert_eq!((g.stats(bear).power, g.stats(bear).toughness), (1, 1));
+            }
         }
     }
 }

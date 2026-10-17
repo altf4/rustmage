@@ -366,6 +366,7 @@ define_actions! {
     },
     SelectMilled { object: ObjectRef },
     FinishMilledSelection,
+    ChooseEntryTimestamp { object: ObjectRef },
     ChooseEntryLife {
         pay: bool,
     },
@@ -1084,6 +1085,9 @@ enum Pending {
         player: Player,
         filter: RecoveryFilter,
     },
+    EntryTimestamp {
+        player: Player,
+    },
     EntryLife {
         player: Player,
     },
@@ -1529,6 +1533,7 @@ pub struct Observation {
     pub effect_choice: Option<EffectChoiceView>,
     pub aura_entry: Option<entries::AuraEntryView>,
     pub entry_life: Option<entries::EntryLifeView>,
+    pub entry_timestamps: Option<entries::EntryTimestampView>,
     pub additional_cost: Option<AdditionalCostView>,
     pub forage: Option<ForageView>,
     pub evidence: Option<EvidenceView>,
@@ -1778,6 +1783,7 @@ impl Game {
             | Pending::ConniveOrder { player }
             | Pending::ResolutionMana { player }
             | Pending::AdditionalCost { player }
+            | Pending::EntryTimestamp { player }
             | Pending::EntryLife { player }
             | Pending::AuraEntry { player }
             | Pending::EffectChoice { player }
@@ -2082,6 +2088,13 @@ impl Game {
             Pending::ResolutionMana { .. } => {
                 if self.visit_resolution_payment(&mut emit) {
                     return true;
+                }
+            }
+            Pending::EntryTimestamp { .. } => {
+                for object in self.entry_timestamp_candidates() {
+                    if emit(Action::ChooseEntryTimestamp { object }) {
+                        return true;
+                    }
                 }
             }
             Pending::EntryLife { .. } => {
@@ -2962,6 +2975,7 @@ impl Game {
             Action::PayResolutionMana { payment } => self.finish_resolution_payment(Some(payment)),
             Action::DeclineResolutionMana => self.finish_resolution_payment(None),
             Action::ChooseAdditionalCost { object } => self.choose_additional_cost(object),
+            Action::ChooseEntryTimestamp { object } => self.choose_entry_timestamp(object),
             Action::ChooseEntryLife { pay } => self.choose_entry_life(pay),
             Action::ChooseAuraAttachment { object } => self.choose_aura_attachment(object),
             Action::Keep => {
@@ -3625,6 +3639,22 @@ impl Game {
 
     /// Capture every pre-event characteristic before any simultaneous departure.
     fn move_objects_raw(&mut self, ids: &[CardId], destination: Zone) -> Vec<ZoneChange> {
+        if destination == Zone::Battlefield {
+            let mut counts = [0usize; 2];
+            for &id in ids {
+                let o = &self.state.objects[id as usize];
+                if o.card.base_stat_setter().is_some()
+                    || !o.card.live_static_effects().is_empty()
+                    || o.card.role().is_some()
+                {
+                    counts[o.controller.index()] += 1;
+                }
+            }
+            assert!(
+                counts.iter().all(|&n| n <= 1),
+                "timestamp-choice entry must be staged"
+            );
+        }
         let before: Vec<_> = ids
             .iter()
             .map(|&id| {
@@ -4546,6 +4576,7 @@ impl Game {
                 Pending::EffectDiscard { .. } => "effect_discard",
                 Pending::HandDefender { .. } => "hand_defender",
                 Pending::EffectChoice { .. } => "effect_choice",
+                Pending::EntryTimestamp { .. } => "entry_timestamps",
                 Pending::EntryLife { .. } => "entry_life",
                 Pending::AuraEntry { .. } => "aura_entry",
                 Pending::Attackers => "attackers",
@@ -4594,6 +4625,7 @@ impl Game {
             effect_choice: self.effect_choice_view(viewer),
             aura_entry: self.aura_entry_view(viewer),
             entry_life: self.entry_life_view(viewer),
+            entry_timestamps: self.entry_timestamp_view(),
             additional_cost: self.additional_cost_view(viewer),
             forage: self.forage_view(viewer),
             evidence: self.evidence_view(viewer),
@@ -5107,7 +5139,10 @@ mod equipment_tests;
 
 #[path = "engine_entries.rs"]
 mod entries;
-pub use entries::{AuraAttachmentView, AuraEntryView, EntryLifeSelection, EntryLifeView};
+pub use entries::{
+    AuraAttachmentView, AuraEntryView, EntryLifeSelection, EntryLifeView, EntryTimestampObjectView,
+    EntryTimestampView,
+};
 
 #[cfg(test)]
 #[path = "engine_aura_tests.rs"]

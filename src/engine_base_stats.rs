@@ -16,7 +16,7 @@ impl Game {
             return;
         };
         let object = self.object_ref(id);
-        let timestamp = self.next_role_timestamp();
+        let timestamp = self.static_source_timestamp(object);
         self.state
             .roles
             .get_or_insert_with(Default::default)

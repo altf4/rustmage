@@ -35,6 +35,8 @@ pub(super) struct EntryBatch {
     pub next: usize,
     pub counter_next: usize,
     pub counter_order: Vec<usize>,
+    pub timestamp_order: Vec<usize>,
+    pub timestamps_ready: bool,
     pub resume: Option<Pending>,
     pub shuffle_after: Option<Player>,
     /// A surrounding effect waits for this immediate entry before its next event.
@@ -48,6 +50,7 @@ impl EntryBatch {
                 * std::mem::size_of::<GiftContext>()
             + self.choices.len() * std::mem::size_of::<usize>()
             + self.counter_order.len() * std::mem::size_of::<usize>()
+            + self.timestamp_order.len() * std::mem::size_of::<usize>()
             + self.replacement_resume.as_ref().map_or(0, |f| f.bytes())
     }
 }
@@ -230,6 +233,8 @@ impl Game {
             next: 0,
             counter_next: 0,
             counter_order,
+            timestamp_order: Vec::new(),
+            timestamps_ready: false,
             resume: None,
             shuffle_after,
             replacement_resume: None,
@@ -246,7 +251,10 @@ impl Game {
                             .any(|e| matches!(e, crate::cards::ReplacementSpec::Counters { .. }))
                     }))
         });
-        if batch.choices.is_empty() && !counter_replacements {
+        if batch.choices.is_empty()
+            && !counter_replacements
+            && !self.entry_needs_timestamp_choice(&batch)
+        {
             self.commit_entries(batch);
         } else {
             self.state.entry_batch = Some(Box::new(batch));
@@ -305,6 +313,22 @@ impl Game {
         counters
     }
     fn commit_entries(&mut self, batch: EntryBatch) {
+        let mut timestamp_order = batch.timestamp_order.clone();
+        if !batch.timestamps_ready {
+            // No group has multiple objects, so APNAP determines the order uniquely.
+            assert!(!self.entry_needs_timestamp_choice(&batch));
+            timestamp_order = self.entry_timestamp_indices(&batch);
+        }
+        let timestamp_cards: Vec<_> = timestamp_order
+            .iter()
+            .map(|&i| batch.moves[i].before.id)
+            .collect();
+        if !timestamp_cards.is_empty() {
+            self.state
+                .roles
+                .get_or_insert_with(Default::default)
+                .deferred_timestamps = true;
+        }
         // Apply quantities captured before this event's replacement choices.
         // No incoming permanent or same-event life payment changes those values.
         let moves: Vec<_> = batch
@@ -386,6 +410,17 @@ impl Game {
             {
                 let timestamp = self.next_role_timestamp();
                 self.record_role(source, target, timestamp);
+            }
+        }
+        if !timestamp_cards.is_empty() {
+            self.state.roles.as_mut().unwrap().deferred_timestamps = false;
+            for id in timestamp_cards {
+                if let Some(event) = events
+                    .iter()
+                    .find(|e| e.before.id == id && e.moved && e.destination == Zone::Battlefield)
+                {
+                    self.assign_static_source_timestamp(event.after);
+                }
             }
         }
         self.finish_zone_events(&events, &[]);
@@ -490,6 +525,9 @@ impl Game {
                     return true;
                 }
             }
+            if self.advance_entry_timestamps() {
+                return true;
+            }
             let mut batch = *self.state.entry_batch.take().unwrap();
             self.state.pending = batch.resume.clone().unwrap();
             let replacement_resume = batch.replacement_resume.take();
@@ -590,6 +628,133 @@ impl Game {
                 .collect(),
             selected: batch.selected_attachments(viewer, &self.state.known_hand),
             selected_life: batch.selected_life(viewer, &self.state.known_hand),
+        })
+    }
+}
+
+/// Public objects about to receive simultaneous timestamps, oldest first.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct EntryTimestampObjectView {
+    pub object: ObjectRef,
+    pub card: Card,
+    pub controller: Player,
+}
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct EntryTimestampView {
+    pub controller: Player,
+    pub candidates: Vec<EntryTimestampObjectView>,
+    pub selected: Vec<EntryTimestampObjectView>,
+}
+impl Game {
+    fn entry_has_timestamp(m: &EntryMove) -> bool {
+        m.destination == Zone::Battlefield
+            && !m.skipped
+            && (m.before.card.base_stat_setter().is_some()
+                || !m.before.card.live_static_effects().is_empty()
+                || m.before.card.role().is_some())
+    }
+    fn entry_timestamp_indices(&self, batch: &EntryBatch) -> Vec<usize> {
+        let mut ids: Vec<_> = batch
+            .moves
+            .iter()
+            .enumerate()
+            .filter_map(|(i, m)| Self::entry_has_timestamp(m).then_some(i))
+            .collect();
+        ids.sort_by_key(|&i| batch.moves[i].controller != self.state.active);
+        ids
+    }
+    fn entry_needs_timestamp_choice(&self, batch: &EntryBatch) -> bool {
+        [Player::P0, Player::P1].iter().any(|&p| {
+            batch
+                .moves
+                .iter()
+                .filter(|m| m.controller == p && Self::entry_has_timestamp(m))
+                .count()
+                > 1
+        })
+    }
+    fn remaining_timestamp_indices(&self) -> Vec<usize> {
+        let batch = self.state.entry_batch.as_ref().unwrap();
+        let ids: Vec<_> = self
+            .entry_timestamp_indices(batch)
+            .into_iter()
+            .filter(|i| !batch.timestamp_order.contains(i))
+            .collect();
+        let Some(&first) = ids.first() else {
+            return ids;
+        };
+        let controller = batch.moves[first].controller;
+        ids.into_iter()
+            .filter(|&i| batch.moves[i].controller == controller)
+            .collect()
+    }
+    fn advance_entry_timestamps(&mut self) -> bool {
+        loop {
+            let ids = self.remaining_timestamp_indices();
+            if ids.is_empty() {
+                self.state.entry_batch.as_mut().unwrap().timestamps_ready = true;
+                return false;
+            }
+            if ids.len() == 1 {
+                self.state
+                    .entry_batch
+                    .as_mut()
+                    .unwrap()
+                    .timestamp_order
+                    .push(ids[0]);
+                continue;
+            }
+            let player = self.state.entry_batch.as_ref().unwrap().moves[ids[0]].controller;
+            self.state.pending = Pending::EntryTimestamp { player };
+            return true;
+        }
+    }
+    pub(super) fn entry_timestamp_candidates(&self) -> Vec<ObjectRef> {
+        let batch = self.state.entry_batch.as_ref().unwrap();
+        self.remaining_timestamp_indices()
+            .into_iter()
+            .map(|i| batch.moves[i].before.reference)
+            .collect()
+    }
+    pub(super) fn choose_entry_timestamp(&mut self, object: ObjectRef) {
+        let i = self
+            .remaining_timestamp_indices()
+            .into_iter()
+            .find(|&i| {
+                self.state.entry_batch.as_ref().unwrap().moves[i]
+                    .before
+                    .reference
+                    == object
+            })
+            .expect("validated timestamp choice");
+        self.state
+            .entry_batch
+            .as_mut()
+            .unwrap()
+            .timestamp_order
+            .push(i);
+    }
+    pub(super) fn entry_timestamp_view(&self) -> Option<EntryTimestampView> {
+        let Pending::EntryTimestamp { player } = self.state.pending else {
+            return None;
+        };
+        let batch = self.state.entry_batch.as_ref()?;
+        let view = |i: usize| {
+            let m = &batch.moves[i];
+            EntryTimestampObjectView {
+                object: m.before.reference,
+                card: m.before.card,
+                controller: m.controller,
+            }
+        };
+        Some(EntryTimestampView {
+            controller: player,
+            candidates: self
+                .remaining_timestamp_indices()
+                .into_iter()
+                .map(view)
+                .collect(),
+            selected: batch.timestamp_order.iter().copied().map(view).collect(),
         })
     }
 }
