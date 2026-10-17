@@ -23,12 +23,13 @@ class AdventureMilledSelectionTests(unittest.TestCase):
   deck=sum(([n]*8 for n in BASICS),[])+sum(([n]*4 for n in [name,support,'Bear Cub','Bygone Colossus','Chrome Companion','Quick Study','Shock']),[])
   self.assertEqual(len(deck),60)
   with Game([deck,deck],seed=seed,starting_player=p,deck_rules='Standard',library=library) as g:
-   stage='setup';source=None;frames=0;attacked=False;attached=False;before_library=None;descriptors=set();choices=0;recipients=[]
+   stage='setup';source=None;frames=0;attacked=False;attached=False;before_library=None;descriptors=set();choices=0;recipients=[];reducer_paid=False;reducer_spell=None;expected_generic=None
    for _ in range(30000):
     o=g.observe('P0')
     if o['outcome'] is not None:
      self.assertEqual(stage,'finish',(name,p,seed,stage));self.assertTrue(attacked,(name,p,seed));self.assertTrue({'Adventure','Normal'}<=descriptors)
      if i==5:self.assertTrue(attached)
+     if i in [4,5]:self.assertTrue(reducer_paid,(name,p,seed))
      return frames
     o=g.observe(o['actor']);actor=o['actor'];objects={v['id']:v for v in o['objects']};hand=[v for v in objects.values() if v['owner']==p and v['zone']=='Hand'];own=[v for v in objects.values() if v['owner']==p and v['zone']=='Battlefield'];lands=[v for v in own if v['card']in BASICS]
     quiet=o['decision']=='priority' and not o['stack'] and not o['announcing'] and not o['resolving']
@@ -52,9 +53,11 @@ class AdventureMilledSelectionTests(unittest.TestCase):
     def score(a):
      k=a['kind'];n=objects.get(a.get('card'),{}).get('card','')
      if k in ['Concede','Mulligan','Cast','BeginCast','AnnounceWarp','AnnounceFlashback','AnnouncePlot']:return -2000
-     if k=='AnnounceAdventure':return 2900 if actor==p and stage=='setup' and n==name and len(lands)>=8 else -1000
+     if k=='AnnounceAdventure':return 2900 if actor==p and stage=='setup' and n==name and len(lands)>=8 and (i not in [4,5] or any(v['card']==(support if i==4 else 'Quick Study') for v in hand)) else -1000
      if k=='AnnounceExile':return 2900 if actor==p and stage=='normal' and a['card']==source else -1000
-     if k=='AnnounceCast':return 2300 if stage=='finish' and n in ['Bear Cub','Bygone Colossus','Chrome Companion'] else -1000
+     if k=='AnnounceCast':
+      if stage=='finish' and actor==p and not reducer_paid and (i==4 and n==support or i==5 and attached and n=='Quick Study'):return 2700
+      return 2300 if stage=='finish' and n in ['Bear Cub','Bygone Colossus','Chrome Companion'] else -1000
      if k in ['AnnounceActivate','Activate','BeginActivate']:return 2600 if i==5 and stage=='finish' and actor==p and a.get('card')==source and not attached and allies else -1000
      if k=='ChooseTarget':return 2800 if actor==p and a['target'].get('Card') in [v['id']for v in allies] else -1000
      if k=='SelectMilled':return 2800
@@ -65,17 +68,26 @@ class AdventureMilledSelectionTests(unittest.TestCase):
      if k in ['PayCosts','PutTrigger','FinishTargets','FinishSearch','FinishAttackers','FinishBlockers','Keep','ChooseSpellCost']:return 2400
      if k in ['Discard','Bottom']:
       if actor==p and stage!='finish' and n==name:return -1000
+      if actor==p and i in [4,5] and not reducer_paid and n==(support if i==4 else 'Quick Study') and sum(v['card']==n for v in hand)<=1:return -1000
       if actor==p and stage=='setup' and n in BASICS and len(lands)<8:return 200
       return 2200
-     if k=='Attack':return 2800 if stage=='finish' else -1000
+     if k=='Attack':return 2800 if stage=='finish' and (i not in [4,5] or reducer_paid) else -1000
      if k=='Pass':return 0
      return 1000
     j=max(range(len(o['actions'])),key=lambda j:score(o['actions'][j]));a=o['actions'][j];self.assertGreaterEqual(score(a),0,(name,p,stage,o['decision']))
     if a['kind']=='AnnounceAdventure':source=a['card'];before_library=o['players'][pi]['library_count'];stage='wait_inset'
     if a['kind']=='AnnounceExile':stage='wait_normal'
+    if a['kind']=='AnnounceCast' and actor==p and stage=='finish' and not reducer_paid and (i==4 and objects[a['card']]['card']==support or i==5 and attached and objects[a['card']]['card']=='Quick Study'):
+     reducer_spell=a['card'];expected_generic=0 if i==4 else max(0,2-objects[objects[source]['attached_to']['card']]['power'])
+    paying_reduced=bool(a['kind']=='PayCosts' and actor==p and o['announcing'] and o['announcing']['card']==reducer_spell)
+    if paying_reduced:
+     self.assertEqual(o['payment_request']['generic'],expected_generic);self.assertEqual(o['payment_request']['required'][1],1)
+     blue_before=o['players'][pi]['mana'][1]
     if a['kind']=='SelectMilled':choices+=1;recipients.append(a['object'])
     if a['kind']=='Attack' and actor==p and (a['card']==source or i==5 and attached and objects[source]['attached_to']['card']==a['card']):attacked=True
     before=[g.observe(v)for v in ['P0','P1']]
     with self.assertRaisesRegex(EngineError,'WrongActor'):g.act(dict(o,actor='P1'if actor=='P0'else'P0'),a)
     self.assertEqual(before,[g.observe(v)for v in ['P0','P1']]);self.replay(g,o,j);frames+=1
+    if paying_reduced:
+     after=g.observe(p);paid=next(v for v in after['objects']if v['id']==reducer_spell);self.assertEqual(paid['zone'],'Stack');self.assertEqual(paid['controller'],p);self.assertLess(after['players'][pi]['mana'][1],blue_before);reducer_paid=True
    self.fail((name,p,seed,stage,'no natural terminal outcome'))
