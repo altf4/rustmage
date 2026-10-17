@@ -4583,6 +4583,10 @@ def compile_catalogue(snapshot, target):
         # Rejected timing syntax/source shapes must not be revived by legacy selectors.
         if timing_seen and not timing_grants and flash_surcharge is None:
             effect = 'Unsupported'
+        # The paid timing action composes normal/Flashback casts. A separate
+        # Warp declaration cannot yet choose both Warp and this extra cost.
+        if flash_surcharge is not None and warp_seen:
+            effect = 'Unsupported'
         if flash_surcharge is not None:
             checked_flash = role_reminder_text(original.get('oracle_text', ''))
             if '(' in checked_flash or ')' in checked_flash:

@@ -72,6 +72,8 @@ class RoleSemanticCompilerTests(unittest.TestCase):
                          original['oracle_text'].replace('pay {2}','pay {4294967296}'),
                          original['oracle_text'].replace('more to cast it.','more to cast it. (Draw seven cards.)')]:
                 self.assertFalse(metadata.LegacyMetadataTests().definition(dict(original,oracle_text=text))[1]['implemented'],text)
+        combined=dict(self.cards['Asinine Antics'],name='Independent mixed Warp cost',type_line='Creature — Illusion',power='3',toughness='3',keywords=[],oracle_text='Warp {1}{U}\nYou may cast this spell as though it had flash if you pay {2} more to cast it.\nFlying')
+        self.assertFalse(metadata.LegacyMetadataTests().definition(combined)[1]['implemented'])
 
     def test_complete_return_binds_successful_entry_and_authenticates_young_hero_reminder(self):
         original=self.cards['Return Triumphant']

@@ -978,6 +978,24 @@ fn paid_mass_roles_preserve_group_indices_through_doubling_and_partial_or_all_st
                             .then_some(g.object_ref(id as CardId))
                         })
                         .collect();
+                    assert_eq!(choice.role_attachments.len(), choice.tokens.len());
+                    assert_eq!(
+                        choice
+                            .role_attachments
+                            .into_iter()
+                            .flatten()
+                            .collect::<Vec<_>>(),
+                        frozen
+                    );
+                    let other = g.observe(p.other()).replacement_choice.unwrap();
+                    assert_eq!(
+                        other
+                            .role_attachments
+                            .into_iter()
+                            .flatten()
+                            .collect::<Vec<_>>(),
+                        frozen
+                    );
                     break;
                 }
                 let actions = g.legal_actions();
@@ -1000,6 +1018,13 @@ fn paid_mass_roles_preserve_group_indices_through_doubling_and_partial_or_all_st
                 g.move_object(mascot, Zone::Battlefield);
                 assert_ne!(g.object_ref(mascot), old_mascot);
             }
+            assert!(
+                g.observe(p)
+                    .replacement_choice
+                    .unwrap()
+                    .role_attachments
+                    .contains(&Some(old_mascot))
+            );
             for _ in 0..180 {
                 if g.state.pending == Pending::Priority
                     && g.state.stack.is_empty()

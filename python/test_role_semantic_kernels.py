@@ -31,11 +31,12 @@ class RoleSemanticTests(unittest.TestCase):
         deck=['Plains']*7+['Island']*7+['Swamp']*6+['Mountain']*5+['Forest']*7+sum(([n]*4 for n in [name,*support]),[])
         self.assertEqual(len(deck),60)
         with Game([deck,deck],seed=seed,starting_player=p,deck_rules='Standard',library=library) as g:
-            stage='setup';source=None;recipient=None;foe_id=None;frames=0;paid=False;seen=False;attacked=False;pre_enchanted=False;spell_started=False;death_seen=False;returned_ref=None
+            stage='setup';source=None;recipient=None;foe_id=None;frames=0;paid=False;seen=False;attacked=False;pre_enchanted=False;spell_started=False;death_seen=False;returned_ref=None;young_seen=False;wicked=None;wicked_life=None
             for iteration in range(35000):
                 head=g.observe('P0');self.assertEqual((head['schema'],head['catalogue']),(87,FP))
                 if head['outcome'] is not None:
-                    self.assertEqual(stage,'finish',(name,p,stage,iteration));self.assertTrue(paid);self.assertTrue(seen);self.assertTrue(attacked)
+                    self.assertEqual(stage,'finish',(name,p,stage,iteration));self.assertTrue(paid);self.assertTrue(seen);self.assertTrue(attacked,(name,p,head['turn'],head['outcome'],recipient))
+                    if i==0:self.assertTrue(young_seen)
                     return frames
                 o=g.observe(head['actor']);actor=o['actor'];objects={v['id']:v for v in o['objects']};mine=g.observe(p)
                 own=[v for v in objects.values() if v['zone']=='Battlefield' and v['controller']==p]
@@ -44,6 +45,7 @@ class RoleSemanticTests(unittest.TestCase):
                 mascot=next((v for v in own if v['card']=='Three Tree Mascot'),None)
                 foe=next((v for v in enemy if v['card']=='Bear Cub'),None)
                 body=objects.get(source);quiet=o['decision']=='priority' and not o['stack'] and not o['announcing'] and not o['resolving']
+                if i==0 and seen and objects.get(recipient,{}).get('counters',{}).get('plus_one',0)>0:young_seen=True
                 def hand(player):return [v for v in g.observe(player)['objects'] if v['zone']=='Hand' and v['owner']==player]
                 def available(player):
                     mana=list(o['players'][int(player[-1])]['mana'])
@@ -68,7 +70,7 @@ class RoleSemanticTests(unittest.TestCase):
                     elif i==1 and body['zone']=='Battlefield':
                         rats=[v for v in own if v['card']=='Three Tree Mascot' or v['token'] and v['token']['subtypes']=='Rat']
                         self.assertEqual(len(rats),2)
-                        self.assertTrue(all(role('Wicked',v['id']) for v in rats));self.assertFalse(role('Wicked',recipient));seen=True;stage='finish'
+                        self.assertTrue(all(role('Wicked',v['id']) for v in rats));self.assertFalse(role('Wicked',recipient));seen=True;wicked=role('Wicked',mascot['id'])['id'];stage='break_wicked'
                     elif i==2 and role('Monster',recipient):
                         self.assertEqual(objects[recipient]['power'],4);self.assertEqual(objects[source]['power'],int(FACTS[name]['power']));seen=True;stage='finish'
                     elif i==3 and role('Cursed',foe_id):
@@ -79,6 +81,8 @@ class RoleSemanticTests(unittest.TestCase):
                     elif i==5 and body['zone']=='Battlefield' and objects[foe_id]['zone']=='Exile':stage='remove_tether'
                 if i==5 and stage=='wait_return' and quiet and objects[foe_id]['zone']=='Battlefield':
                     self.assertEqual(objects[foe_id]['controller'],q);self.assertEqual(body['zone'],'Graveyard');seen=True;stage='finish'
+                if i==1 and stage=='wait_wicked' and quiet:
+                    self.assertNotIn(wicked,objects);self.assertEqual(o['players'][1-pi]['life'],wicked_life-1);stage='finish'
                 def score(a):
                     k=a['kind'];n=objects.get(a.get('card'),{}).get('card','')
                     if k in ['Concede','Mulligan','Cast','BeginCast','Activate','BeginActivate','AnnounceWarp','AnnounceOmen','AnnounceAdventure','AnnounceExile','AnnounceFlashback','AnnouncePlot']:return -2000
@@ -91,6 +95,7 @@ class RoleSemanticTests(unittest.TestCase):
                         if i==4 and actor==p and n=='Royal Treatment' and stage=='setup' and ready:return 4100
                         if i==3 and flash and actor==q and n=='Royal Treatment' and stage=='setup' and ready:return 4100
                         if i==5 and actor==p and n=='Disenchant' and stage=='remove_tether':return 4100
+                        if i==1 and actor==p and n=='Disenchant' and stage=='break_wicked':return 4100
                         if n in ['Bear Cub','Three Tree Mascot']:
                             existing=next((v for v in (own if actor==p else enemy) if v['card']==n),None)
                             return 2500 if stage=='finish' or existing is None and stage=='setup' else -1000
@@ -99,13 +104,14 @@ class RoleSemanticTests(unittest.TestCase):
                     if k=='ChooseTarget':
                         wanted=recipient
                         source_name=(o['announcing']or{}).get('source_card','')
-                        if source_name=='Disenchant':wanted=source
+                        if source_name=='Disenchant':wanted=wicked if i==1 else source
                         elif source_name=='Royal Treatment' and i==3:wanted=foe_id
                         elif i==5 and stage=='wait_source':wanted=foe_id
                         return 3500 if a['target'].get('Card')==wanted else -1000
                     if k=='PlayLand':return 1800-20*sum(v['controller']==actor and v['zone']=='Battlefield' and v['card']==n for v in objects.values())
-                    if k in ['TapMana','ActivateMana','AnnounceMana']:return 2100 if o['decision'] in ['pay_costs','resolution_mana'] and n in BASICS else -1000
-                    if k in ['PayCosts','PutTrigger','FinishTargets','FinishSearch','FinishAttackers','FinishBlockers','Keep','ChooseSpellCost']:return 3000
+                    if k in ['TapMana','ActivateMana','AnnounceMana']:return 2100 if o['decision'] in ['pay_costs','resolution_mana'] else -1000
+                    if k in ['FinishAttackers','FinishBlockers']:return 2400
+                    if k in ['PayCosts','PutTrigger','FinishTargets','FinishSearch','Keep','ChooseSpellCost']:return 3000
                     if k in ['Discard','Bottom']:
                         protected=[name,'Murder' if i==0 else 'Royal Treatment' if i in [3,4] else 'Disenchant' if i==5 else name]
                         return -500 if actor==p and stage!='finish' and n in protected and sum(v['card']==n for v in hand(actor))<=1 else 1500
@@ -115,7 +121,7 @@ class RoleSemanticTests(unittest.TestCase):
                 if stage=='setup' and ready:
                     recipient=ally['id'];foe_id=foe['id']
                 index=max(range(len(o['actions'])),key=lambda j:score(o['actions'][j]));a=o['actions'][index]
-                self.assertGreaterEqual(score(a),0,(name,p,seed,stage,o['decision']))
+                self.assertGreaterEqual(score(a),0,(name,p,seed,stage,o['decision'],o['actions'],o['announcing'],available(actor)))
                 if a['kind'] in ['AnnounceCast','AnnounceFlashSurcharge']:
                     card=objects[a['card']]['card']
                     if actor==p and card==name:source=a['card'];spell_started=True;stage='wait_source'
@@ -123,6 +129,7 @@ class RoleSemanticTests(unittest.TestCase):
                     elif i==4 and card=='Royal Treatment' and stage=='setup':stage='wait_enchant'
                     elif i==3 and card=='Royal Treatment' and stage=='setup':stage='wait_hexproof'
                     elif i==5 and card=='Disenchant' and stage=='remove_tether':stage='wait_return'
+                    elif i==1 and card=='Disenchant' and stage=='break_wicked':wicked_life=o['players'][1-pi]['life'];stage='wait_wicked'
                 if a['kind']=='PayCosts' and o['announcing'] and o['announcing']['card']==source:
                     self.assertEqual(sum(a['payment']),sum(int(t) if t.isdecimal() else 1 for t in re.findall(r'\{([0-9WUBRGC]+)\}',FACTS[name]['mana_cost']))+(2 if flash and i in [3,5] else 0))
                     self.assertEqual(o['announcing']['cast']['flash_surcharge'],flash and i in [3,5]);paid=True
