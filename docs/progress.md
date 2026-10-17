@@ -8,7 +8,7 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Requirement | Current evidence | Remaining work |
 | --- | --- | --- |
 | Full legal identity pool | 5,164 frozen oracle identities, Java reconciliation and native catalogue tests | Maintain reviewed data versions; implement missing Java-source cards directly |
-| All card semantics | Coverage manifest and runtime admission agree: 1,811 executable Standard identities | 3,353 identities; many reusable mechanics plus card-specific rules |
+| All card semantics | Coverage manifest and runtime admission agree: 1,817 executable Standard identities | 3,347 identities; many reusable mechanics plus card-specific rules |
 | Gameplay enforcement | Implemented timing, payment, targets, stack, source-aware damage, strike steps, 15 keywords, typed programs, trigger ordering and regression tests | Wider events/cross-group relationships, replacement/prevention, layers, wider counter mechanics, broader token abilities/copies, modes/costs, remaining keywords and mechanics |
 | In-process library | Rust rlib and C ABI/cdylib; Python ctypes tests including complete games | Batched/packed training interface and model hooks |
 | Branch/restore | Isolated COW object/library buffers, owned continuations, local RNG, reusable snapshots, replay/invariant tests | Cover every new continuation/mechanic; search over information sets |
@@ -27,15 +27,15 @@ fresh public methods pass in 712.402 seconds. The
 [composition record](review-pr-258.md) tracks exact source/library identities,
 canonical preservation, meaningful cross-mechanic cases and current gate status.
 
-The current candidate adds ten complete Omen pairs, including Whirlwing's
-chosen-spell timing permissions, to that baseline: 1,811/5,164 identities,
-3,353 gated, 87 token recipes, one emblem, nineteen Adventure and ten Omen helpers,
-observation schema79. The strict combined compiler controls and both-parent
-canonical/provenance checks pass. Full runtime/compiler/public/100-game validation
-and two independent final-head reviews are tracked in [the timing record](cast-timing.md)
-and dependent PRs #263/#268; pending gates are not reported as complete.
+The current candidate integrates all thirteen complete Omen pairs with the three
+adjacent graveyard/search consumers: 1,817/5,164 identities, 3,347 gated,
+87 token recipes, one emblem, nineteen Adventure and thirteen Omen helpers,
+observation schema80. The union retains chosen-spell timing, selected-face X,
+same-graveyard target constraints and private split-search destinations.
+The individual kernel records scope their frozen source evidence. Full union
+validation and two independent nonauthor final-head reviews remain pending.
 
-The other 56 true Adventure parents, three Omen parents and 54 Saga parents
+The other 56 true Adventure parents and 54 Saga parents
 remain part of the full goal, alongside wider Ward/Role/disguise/cloak/control
 and other required semantics. Full rules enforcement across Standard, efficient
 training interfaces and full-deck performance remain incomplete.

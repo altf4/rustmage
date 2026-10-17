@@ -26,8 +26,18 @@ pub(crate) struct SpellMode {
     pub program: &'static [Instruction],
 }
 
+/// A relationship between distinct bindings within one occurrence of target.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum TargetGroupConstraint {
+    SameGraveyard,
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetRule {
+    Grouped {
+        base: &'static TargetRule,
+        constraint: TargetGroupConstraint,
+    },
     None,
     Union(&'static [TargetRule]),
     Filtered {
@@ -253,6 +263,7 @@ impl SearchFilter {
 pub enum SearchDestination {
     Hand,
     Battlefield,
+    BattlefieldThenHand { battlefield: u16 },
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -538,6 +549,13 @@ pub(crate) enum Instruction {
     },
     GrowCreatures {
         filter: CreatureFilter,
+        power: i32,
+        toughness: i32,
+    },
+    GrowCreaturesScaled {
+        filter: CreatureFilter,
+        excluding_subtype: Option<&'static str>,
+        amount: AmountValue,
         power: i32,
         toughness: i32,
     },

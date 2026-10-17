@@ -143,13 +143,21 @@ impl Game {
             if spec.min == 0 {
                 return true;
             }
-            let mut count = 0;
+            let mut count = [0usize; 2];
             self.visit_cast_targets(spec.rule, actor, source, |target| {
                 if target == Target::Card(source.card) {
                     return false;
                 }
-                count += 1;
-                count >= usize::from(spec.min)
+                let bucket = if matches!(spec.rule, TargetRule::Grouped { .. }) {
+                    let Target::Card(id) = target else {
+                        return false;
+                    };
+                    self.state.objects[id as usize].owner.index()
+                } else {
+                    0
+                };
+                count[bucket] += 1;
+                count[bucket] >= usize::from(spec.min)
             })
         };
         match plan {
@@ -168,16 +176,51 @@ impl Game {
             if spec.min == 0 {
                 return true;
             }
-            let mut count = 0;
-            self.visit_targets(spec.rule, actor, source, |_| {
-                count += 1;
-                count >= usize::from(spec.min)
+            let mut count = [0usize; 2];
+            self.visit_targets(spec.rule, actor, source, |target| {
+                let bucket = if matches!(spec.rule, TargetRule::Grouped { .. }) {
+                    let Target::Card(id) = target else {
+                        return false;
+                    };
+                    self.state.objects[id as usize].owner.index()
+                } else {
+                    0
+                };
+                count[bucket] += 1;
+                count[bucket] >= usize::from(spec.min)
             })
         };
         match plan {
             TargetPlan::Single(spec) => available(spec),
             TargetPlan::Groups(groups) => groups.iter().copied().all(available),
         }
+    }
+
+    /// Graveyard identity is its owner's player, never the battlefield controller.
+    /// Bindings already own exact incarnations; this relationship adds no state.
+    pub(super) fn target_group_compatible(
+        &self,
+        rule: TargetRule,
+        group: u16,
+        chosen: &[BoundTarget],
+        target: Target,
+    ) -> bool {
+        let TargetRule::Grouped {
+            constraint: TargetGroupConstraint::SameGraveyard,
+            ..
+        } = rule
+        else {
+            return true;
+        };
+        let Target::Card(id) = target else {
+            return false;
+        };
+        let Some(object) = self.state.objects.get(id as usize) else {
+            return false;
+        };
+        object.zone == Zone::Graveyard && chosen.iter().filter(|b| b.group == group).all(|b| {
+            matches!(b.target, Target::Card(other) if self.state.objects.get(other as usize).is_some_and(|o| o.owner == object.owner))
+        })
     }
 
     pub(super) fn choose_mana_cost(&mut self, index: u16) {
@@ -311,6 +354,14 @@ impl Game {
         departing: Option<CardId>,
     ) -> bool {
         match rule {
+            TargetRule::Grouped {
+                base,
+                constraint: TargetGroupConstraint::SameGraveyard,
+            } => {
+                return matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o| o.zone == Zone::Graveyard))
+                    && self
+                        .target_matches_without_hand(*base, controller, source, target, departing);
+            }
             TargetRule::Union(rules) => {
                 return rules.iter().any(|&rule| {
                     self.target_matches_without_hand(rule, controller, source, target, departing)

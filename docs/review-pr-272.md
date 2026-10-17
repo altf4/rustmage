@@ -1,0 +1,38 @@
+# PR #272: complete split-library-search consumers
+
+> Historical component evidence: counts, schemas, hashes and pending gates below refer to that component branch. The authoritative combined delivery is [PR275](review-pr-275.md).
+
+Issue #269 adds Bloomvine Regent // Claim Territory and Troop of Ponies as complete bodies. Published runtime composition `2e38d20` merges reviewed Whirl main `1f632809` into the Bloom branch; it has 1,813/5,164 executable Standard identities, 3,351 gated, 87 token factories, one emblem, 19 Adventure and 11 Omen helpers (5,301 definitions), schema 80. Feral and Scavenger remain outside this branch. PR #272 remains a draft; final remaining-Omen delivery is planned as a separately reviewed union with 267/271/272 ancestry.
+
+## Exact artifact and whole-body rules
+
+Final fingerprint `8b551da906d29414c5dbc8a47c33221f3e490b4dfb051b427d4f1f1f497712bc`. Immutable `/home/altf4/.cache/rustmage-immutable/bloomvine269-composed-2e38d20-8b551-schema80.so`, SHA256 `c32364f1aad313ba8e6e677c93a37ae9e273d03c4ee637f5387ac4e67e89e239`.
+
+`SearchDestination::BattlefieldThenHand` selects zero/one/two qualified cards privately, then reveals both if two were found and requires one explicit battlefield assignment. One found is forced onto the battlefield tapped; the other selected card enters hand revealed. No cards move until the commitment boundary. The selection and mandatory destination continuation is owned in an optional boxed SearchChoice; snapshots restore selected IDs, public reveal, zone moves and RNG. Observation schema 80 adds only public selected-candidate distribution and hides the actor-only library choice from the other player.
+
+Claim Territory performs its search shuffle and then successful exact physical-source owner-library completion shuffle. Troop performs only the search shuffle; its real 2 mana/tap/self-sacrifice cost leaves the source in its graveyard. No duplicate physical card or Adventure grant is created. Countered Omen has no search/success shuffle. A late source-incarnation overflow rolls back the entire destination commit, known hand, both moved lands, search shuffle and RNG.
+
+Bloomvine retains printed 4/5 flying and self/other-owned Dragon entry events that gain 3 life. Troop retains printed 2/1 body, normal generic 2 cost, sickness/tapped/funding restrictions and complete activated search. Both bodies are admitted by generic complete grammar. New search routes bypass legacy name selectors, preserving actual full-body stats/activations even when renamed to a legacy alias; unsupported count/reveal/tapped/destination changes and bare/parenthetical residuals reject. Parenthesis removal is used only at every intermediate detection stage; admission never rewrites raw unknown rules. Reviewed chosen-face timing and all its strict controls remain intact.
+
+## Completed composed validation
+
+- 1,681 native tests pass:1,669 unit in 8.56s and 12 integration; all-target Clippy in 41.11s. New cross group in both seats casts real intrinsic-Flash Whirl during the opponent turn, triggers Bloomvine's 3 life, then casts Claim Territory off-turn through Whirl's chosen-spell permission while a Horse creature remains illegal. Search distribution, exact physical source and every-action owned-parent-closed replay/both views remain checked.
+- 35 focused compiler methods pass in 5.008s across Adventure,attachment-Ward,Saga,Omen,chosen-spell timing and split search. Whole renamed bodies and unsupported residuals under legacy aliases are explicitly checked. Final generated-file, formatting and whitespace checks also pass.
+- Four unique focused public methods pass in 23.037s, covering 12 actual-paid scenarios: Bloomvine self/own/opponent Dragon plus attack; Claim Territory zero/one/two choices; Troop actual attack followed by funded tap/sacrifice; Whirl normal/inset and granted Dragon/Adventure casts in both seats. Every constructor explicitly selects the immutable and asserts schema 80/full fingerprint.
+- Legal Standard100 passes all three routes in both seats: 74,334 owned/parent-closed decisions, 148,668 wrong-actor/stale denials, 201 private search frames and 67 public distributions. Route/seat vectors are [[17,17],[17,16],[17,16]]. Every normal source attacks; games end naturally without concession. The final composed run reproduces the earlier deterministic totals.
+
+Canonical comparison against all5,300 Whirl-main definitions changes exactly2 ordinary bodies and preserves5,298 others, all5,300 color rows,87factories/emblem and783 prior helper arms. Against all5,300 prior-Bloom definitions, exactly1 ordinary Whirl body changes and5,299 remain; all782 prior helper arms/colors/factories survive. All1,648 provenance records/578 unique Java paths match both checkout bytes and pinned492369c7844b8d76479f0393ff9eb6b0b0cf30d7 Git blobs. The split-consumer manifest itself has32 full-file records for both constructors/imports/explicit semantic bases; the Omen inventory still tracks all13 parents.
+
+Evidence: `/tmp/issue269-whirl-{native,clippy,compiler-focused,paid,standard100,preservation}.log`, preservation `.py/.json`, explicit constructor runner `/tmp/issue269-whirl-paid-runner.py`. Quota-blocked startup attempts are excluded from the completed gates.
+
+## Earlier isolated evidence and independent findings
+
+Before Whirl composition, frozen0bd/2dffe39 source (fingerprintf8dd4ded65a5666932577171ec79424cf43c4b506d0d21b87ce860c103531cf0,schema 80) passes all 361 compiler/data methods in 439.574s, all 239 unique public methods in 818.168s,1,676 native tests and all-target Clippy in 15.42s. Its immutable `/home/altf4/.cache/rustmage-immutable/bloomvine269-0bd0682-f8dd-schema80.so`, SHA256 `f5025dd6fd561ef3815c6893cac3df4b5a0a77fe990e3750843d86e00537e41d`, is retained. Legal Standard100 completes74334owned/parent-closed frames,148668wrong-actor/stale denials,201private search frames and67public distributions, with complete routes/both-seat vectors. Those broad gates precede both Whirl composition and the later compiler-only legacy-selector correction, and are not claimed as a fresh final-union baseline.
+
+An independent nonauthor review found that synthetic Troop bodies renamed to Grizzly Bears/other legacy aliases could lose their real rules or revive unsupported bare effects through inherited selectors. The generic search-route dispatch correction resolves this; an isolated proof changes only the catalogue fingerprint for the5300real pre-composition definitions. Independent review also supplied four both-seat native opposite-destination forks with exact RNG/library equivalence, privacy and invalid-action checks, four paid public cases,260 compiler controls and full578Java/canonical auditing. Report `/tmp/rustmage-bloom-independent-review.md` retains its precisely scoped preliminary review; final union still requires two fresh independent nonauthor confirmations.
+
+## Cleanup and limits
+
+All completed exclusive build targets are cleaned immediately after terminal validation. Initial cleanup removes2,583 files/680055581logical bytes while retaining9 shared-library paths; composed cleanup removes2,092 files/508543008logical bytes and retains6 paths. Every retained file's SHA is verified. Logical sizes include hard links and are not measured physical recovery. Source/worktrees, all immutable libraries and evidence remain intact.
+
+Acceptance timings include JSON, both views, illegal-action checks and owned branching/replay; they are not isolated engine throughput. Optional boxed search continuation reduces permanently inline choice storage, but no per-node allocation benchmark is claimed. All-Standard migration, opponent-owned casting/control issue265 and remaining broader mechanics remain incomplete.

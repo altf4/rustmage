@@ -24,8 +24,7 @@
           "oracle_text": "Search your library for up to two basic Forest cards, reveal them, put one onto the battlefield tapped and the other into your hand, then shuffle. (Also shuffle this card.)"
         }
       ],
-      "status": "gated_incomplete_residual",
-      "remaining_obligation": "Search up to two basic Forest cards with split battlefield-tapped/hand destinations and subsequent search shuffle, then Omen completion shuffle.",
+      "status": "complete_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/b/BloomvineRegent.java",
@@ -268,8 +267,8 @@
           "oracle_text": "Put a +1/+1 counter on up to one target creature. Draw a card. (Then shuffle this card into its owner's library.)"
         }
       ],
-      "status": "gated_incomplete_residual",
-      "remaining_obligation": "Up to two target graveyard cards must be from one shared graveyard; selected-target compatibility remains unimplemented.",
+      "status": "complete_pair_admitted",
+      "remaining_obligation": null,
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/f/FeralDeathgorger.java",
@@ -792,8 +791,7 @@
           "oracle_text": "Each non-Dragon creature gets -X/-X until end of turn. (Then shuffle this card into its owner's library.)"
         }
       ],
-      "status": "gated_incomplete_residual",
-      "remaining_obligation": "Chosen-inset variable X declaration/funding plus all non-Dragon -X/-X.",
+      "status": "complete_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/s/ScavengerRegent.java",
