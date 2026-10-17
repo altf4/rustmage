@@ -4227,6 +4227,76 @@ def modal_reminder_text(card):
         normalized.append(result)
     return '\n'.join(normalized)
 
+def spree_spell_template(card):
+    """Lower each nonempty distinct mode subset in printed resolution order.
+
+    Subsets use the same immutable modal additional-cost representation as
+    Tiered. No gameplay subset allocation or new persistent state is required.
+    Every printed mode must compile before any subset can be admitted.
+    """
+    if (card.get('layout') != 'normal' or card.get('type_line') not in ('Instant', 'Sorcery')
+            or spell_cost_options(card.get('mana_cost', '')) is None
+            or not isinstance(card.get('oracle_text'), str)):
+        return None
+    lines = card['oracle_text'].splitlines()
+    if not lines or lines[0] not in ('Spree', 'Spree (Choose one or more additional costs.)'):
+        return None
+    # At most 63 precompiled alternatives; the current whole pool has <=3 modes.
+    if not 1 <= len(lines) - 1 <= 6:
+        return None
+    branches = []
+    for line in lines[1:]:
+        match = re.fullmatch(r'\+ ((?:\{[^{}]+\})+) — (.+)', line)
+        if match is None:
+            return None
+        cost, body = match.groups()
+        options = spell_cost_options(cost)
+        if options is None or len(options) != 1 or '(' in body or ')' in body:
+            return None
+        compiled = spell_program_template(dict(card, oracle_text=body))
+        if compiled is None:
+            return None
+        branches.append((line[2:], options[0], compiled))
+    modes, costs = [], []
+    for mask in range(1, 1 << len(branches)):
+        labels, groups, program = [], [], []
+        colored, generic = [0] * 6, 0
+        for index, (label, (extra_colors, extra_generic), (targets, code)) in enumerate(branches):
+            if not mask & (1 << index):
+                continue
+            labels.append(label)
+            generic += extra_generic
+            colored = [a + b for a, b in zip(colored, extra_colors)]
+            if generic > 4294967295 or any(v > 65535 for v in colored):
+                return None
+            offset = len(groups)
+            groups.extend(targets if isinstance(targets, list) else [targets])
+            if len(groups) > 64:
+                return None
+            program.append(f'SelectGroup({offset})')
+            for instruction in code:
+                instruction = re.sub(r'(source: |recipient: )([0-9]+)', lambda m: m[1] + str(int(m[2]) + offset), instruction)
+                instruction = re.sub(r'SelectGroup\(([0-9]+)\)', lambda m: f'SelectGroup({int(m[1]) + offset})', instruction)
+                program.append(instruction)
+        modes.append((' + '.join(labels), groups, program))
+        costs.append('ManaCost { colored: [' + ', '.join(map(str, colored)) + '], generic: ' + str(generic) + ' }')
+    return modes, costs, []
+
+
+def spree_routes_reminders_valid(card):
+    """Nested erasure only detects an opened route; raw parsing authenticates it."""
+    surface = card.get('oracle_text', '')
+    if not isinstance(surface, str):
+        return True
+    while True:
+        if re.search(r'\bspree\b', surface, re.I):
+            return spree_spell_template(card) is not None
+        stripped = re.sub(r'\([^()]*\)', '', surface)
+        if stripped == surface:
+            return True
+        surface = stripped
+
+
 def tiered_spell_template(card):
     """Authenticate every complete branch and common clause before admission."""
     if (card.get('layout')!='normal' or card.get('type_line') not in ('Instant','Sorcery')
@@ -5561,7 +5631,8 @@ def compile_catalogue(snapshot, target):
         temporary_death = temporary_death_spell_template(original)
         temporary_consumer = temporary_death_consumers_body(original)
         modal = modal_spell_template(card)
-        tiered = tiered_spell_template(original)
+        spree = spree_spell_template(original)
+        tiered = tiered_spell_template(original) or spree
         aura = aura_template(card)
         job = job_select_template(card) if (plot is None and warp is None and not cycling and flashback is None and offspring is None and kicker is None and not bargain and not convoke and evidence is None and additional is None and target_reduction is None and not reductions and dynamic is None and not scaling and creature_entry == 'Never' and not entry_counters) else None
         equipment = job[0] if job else equipment_template(card)
@@ -5751,6 +5822,8 @@ def compile_catalogue(snapshot, target):
             effect='Unsupported'
         if temporary_death_route(original.get('oracle_text', '')) and temporary_death is None and temporary_consumer is None and tiered is None:
             effect = 'Unsupported'
+        if not spree_routes_reminders_valid(original):
+            effect='Unsupported'
         if not tiered_routes_reminders_valid(original):
             effect='Unsupported'
         if not adventure_event_reminders_valid(original):
@@ -5769,6 +5842,8 @@ def compile_catalogue(snapshot, target):
         # A complete Tiered parse authenticates its single keyword reminder;
         # retain every other byte when passing common base-stat text onward.
         base_auth = dict(original, oracle_text=original.get('oracle_text','').replace('Tiered (Choose one additional cost.)', 'Tiered', 1)) if tiered is not None else original
+        if spree is not None:
+            base_auth = dict(base_auth, oracle_text=base_auth.get('oracle_text','').replace('Spree (Choose one or more additional costs.)', 'Spree', 1))
         if not base_stat_reminders_valid(base_auth):
             effect='Unsupported'
         if not battlefield_return_reminders_valid(original):

@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "e41c4e6943ee0ce775170a27b148256fb9adadcddcd314e4f3c20a3d1fcd08cb",
+  "catalogue_version": "c0ed48531e2e030f47f6ca862e7d6014bd8e17d7cd616ac6d27f1141bb37b948",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1977,
-  "implemented_total": 1983,
-  "token_definitions": 96,
+  "implemented_standard_cards": 1979,
+  "implemented_total": 1985,
+  "token_definitions": 97,
   "emblem_definitions": 1,
   "cards": [
     {
@@ -8446,8 +8446,8 @@
     {
       "name": "Explosive Derailment",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Explosive Getaway",
@@ -18886,8 +18886,8 @@
     {
       "name": "Phantom Interference",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Phantom Train",
