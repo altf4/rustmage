@@ -173,7 +173,7 @@ impl Game {
             .selection
             .as_mut()
             .unwrap();
-        if minimum == frame.remaining.len() {
+        if minimum == frame.remaining.len() && !frame.public {
             frame.selected = std::mem::take(&mut frame.remaining);
             return self.finish_library_selection_internal(owner);
         }
@@ -279,9 +279,15 @@ impl Game {
             self.stage_entries(moves, None);
             return;
         }
-        self.commit_library_remainder(owner, f);
+        self.commit_library_remainder(owner, *f);
     }
-    fn commit_library_remainder(&mut self, owner: Player, mut f: Box<LibrarySelection>) {
+    fn commit_library_remainder(&mut self, owner: Player, mut f: LibrarySelection) {
+        if f.destination == LibraryPickDestination::Battlefield {
+            f.remaining.extend(f.selected.iter().copied().filter(|r| {
+                self.object_ref(r.card) == *r
+                    && self.state.objects[r.card as usize].zone == Zone::Library
+            }));
+        }
         match f.spec.remainder {
             LibraryRemainder::Graveyard => {
                 let ids: Vec<_> = f.remaining.iter().map(|r| r.card).collect();
@@ -312,7 +318,7 @@ impl Game {
             let resolution = self.state.resolving.as_mut().unwrap();
             let owner = resolution.item.controller;
             let frame = resolution.selection.take().unwrap();
-            self.commit_library_remainder(owner, frame);
+            self.commit_library_remainder(owner, *frame);
         }
     }
     pub(super) fn library_selection_view(&self, viewer: Player) -> Option<LibrarySelectionView> {

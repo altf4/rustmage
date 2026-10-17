@@ -3,10 +3,40 @@
   "catalogue_id": 2549,
   "oracle_id": "f6476884-f73f-465f-8e7f-ea312a5b306d",
   "facts_sha256": "0c6afe5e502b6984e363679326ddfc48cdd9e724122d4e512a8c151a20b724ce",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "468281a72d379e0c37452b8d82722dab3504fc29951db605372828befffa6a02"
   },
-  "physical_metadata_sha256": "9f2da01beb40bf1809188f288610f521d0063a797767f6270bb6bea7bbd8853b"
+  "physical_metadata_sha256": "9f2da01beb40bf1809188f288610f521d0063a797767f6270bb6bea7bbd8853b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LootExuberantExplorer.java",
+  "java_sha256": "c34db933d51e4b145caf7918833f20b604f6b579d135e42f5e8d33109700b3c8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+      "sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/PlayAdditionalLandsControllerEffect.java",
+      "sha256": "a7b2413a24959fbde172621336f4f48cb1ef76bc4254b922b272bfe2bef30664"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValueLessThanControlledLandCountPredicate.java",
+      "sha256": "db8e9c2a5d8ac168f8e0b51d14dfa16e9f07e82577ff08bb6cf9320cdd55fbe1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    }
+  ]
 }

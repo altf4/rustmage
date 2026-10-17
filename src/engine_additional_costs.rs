@@ -195,7 +195,8 @@ impl Game {
         );
         a.additional_paid = true;
         match spec.kind {
-            EffectChoiceKind::HandCreature
+            EffectChoiceKind::UntapLands { .. }
+            | EffectChoiceKind::HandCreature
             | EffectChoiceKind::HandLand { .. }
             | EffectChoiceKind::LandCards { .. }
             | EffectChoiceKind::CollectEvidence(_)

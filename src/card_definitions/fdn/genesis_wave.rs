@@ -1,16 +1,25 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from complete pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[Instruction::SelectLibraryTo(LibrarySelectionEffect {
+            spec: LibrarySelectionSpec {
+                look: 0,
+                count: LibrarySelectionCount::Fixed(u16::MAX),
+                filter: LibrarySelectionFilter::Kinds(1 | 2 | 16 | 32 | 64),
+                optional: true,
+                reveal: true,
+                remainder: LibraryRemainder::Graveyard,
+            },
+            look: LibraryLook::ChosenX,
+            destination: LibraryPickDestination::Battlefield,
+            public: true,
+            maximum_mana_value: Some(AmountValue::ChosenX),
+        })],
+    ),
+    extras: &CardExtras {
+        x_symbols: 1,
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords(0),
     ..CardRules::EMPTY
 };

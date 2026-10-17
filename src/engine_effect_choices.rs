@@ -28,6 +28,13 @@ impl Game {
         object: ObjectRef,
     ) -> bool {
         let o = &self.state.objects[object.card as usize];
+        if let EffectChoiceKind::UntapLands { maximum } = choice.kind {
+            return o.zone == Zone::Battlefield
+                && self.current_kinds(object.card) & 2 != 0
+                && self.object_ref(object.card) == object
+                && !choice.selected[player.index()].contains(&object)
+                && choice.selected[player.index()].len() < usize::from(maximum);
+        }
         if let EffectChoiceKind::LandCards { maximum, .. } = choice.kind {
             return o.owner == player
                 && self.object_ref(object.card) == object
@@ -167,6 +174,12 @@ impl Game {
             .choice
             .take()
             .unwrap();
+        if matches!(choice.kind, EffectChoiceKind::UntapLands { .. }) {
+            for object in choice.selected.iter().flatten() {
+                self.state.objects[object.card as usize].tapped = false;
+            }
+            return;
+        }
         let EffectChoiceKind::LandCards { tapped, .. } = choice.kind else {
             unreachable!()
         };
@@ -324,6 +337,15 @@ impl Game {
             .choice
             .as_ref()
             .unwrap();
+        if let EffectChoiceKind::UntapLands { maximum } = choice.kind {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            if choice.selected[player.index()].len() >= usize::from(maximum) {
+                self.finish_land_selection();
+                return false;
+            }
+            self.state.pending = Pending::EffectChoice { player };
+            return true;
+        }
         if let EffectChoiceKind::LandCards { maximum, .. } = choice.kind {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
             if choice.selected[player.index()].len() >= maximum as usize {
