@@ -1,0 +1,546 @@
+{
+  "schema": 1,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "rules": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+  "cards": [
+    {
+      "name": "Aberrant Manawurm",
+      "oracle_text": "Trample\nWhenever you cast an instant or sorcery spell, this creature gets +X/+0 until end of turn, where X is the amount of mana spent to cast that spell.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AberrantManawurm.java",
+          "java_sha256": "49db02f8ccdcdf02e2379f14be1bbefe96567c1f90c1ee425fb491c4322db36c"
+        }
+      ]
+    },
+    {
+      "name": "Blazing Bomb",
+      "oracle_text": "Whenever you cast a noncreature spell, if at least four mana was spent to cast it, put a +1/+1 counter on this creature.\nBlow Up — {T}, Sacrifice this creature: It deals damage equal to its power to target creature. Activate only as a sorcery.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BlazingBomb.java",
+          "java_sha256": "79e0aab04b9dde86371d8455f83815f2f627c46f9718d3b9f48af8f408bee66c"
+        }
+      ]
+    },
+    {
+      "name": "Cuboid Colony",
+      "oracle_text": "Flash\nFlying, trample\nIncrement (Whenever you cast a spell, if the amount of mana you spent is greater than this creature's power or toughness, put a +1/+1 counter on this creature.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CuboidColony.java",
+          "java_sha256": "27a01e72bd8046d0c41d12867a05f00dfb2b523d0b9d2b3bb55a3ceec28b7255"
+        }
+      ]
+    },
+    {
+      "name": "Deluge Virtuoso",
+      "oracle_text": "When this creature enters, tap target creature an opponent controls and put a stun counter on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)\nOpus — Whenever you cast an instant or sorcery spell, this creature gets +1/+1 until end of turn. If five or more mana was spent to cast that spell, this creature gets +2/+2 until end of turn instead.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DelugeVirtuoso.java",
+          "java_sha256": "4565f958ac5316df3fd33cc6cde429cd7e9fec20e462fdcf25c9559637d85725"
+        }
+      ]
+    },
+    {
+      "name": "Exhibition Tidecaller",
+      "oracle_text": "Opus — Whenever you cast an instant or sorcery spell, target player mills three cards. If five or more mana was spent to cast that spell, that player mills ten cards instead.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/ExhibitionTidecaller.java",
+          "java_sha256": "d83a052779e609565f7471869b07be7accff8a5e9f5af9921dfcda86e07dac95"
+        }
+      ]
+    },
+    {
+      "name": "Expressive Firedancer",
+      "oracle_text": "Opus — Whenever you cast an instant or sorcery spell, this creature gets +1/+1 until end of turn. If five or more mana was spent to cast that spell, this creature also gains double strike until end of turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/ExpressiveFiredancer.java",
+          "java_sha256": "f8bc46bdb55281924fe7777d89ef90ae27852ca91ed04cab2160c66d9644bee6"
+        }
+      ]
+    },
+    {
+      "name": "Freestrider Commando",
+      "oracle_text": "This creature enters with two +1/+1 counters on it if it wasn't cast or no mana was spent to cast it.\nPlot {3}{G} (You may pay {3}{G} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FreestriderCommando.java",
+          "java_sha256": "b594c0783c4df6440e193907432fc7db84c8961536d15fa0ef8e0ceb2c0c95b1"
+        }
+      ]
+    },
+    {
+      "name": "Hungry Graffalon",
+      "oracle_text": "Reach\nIncrement (Whenever you cast a spell, if the amount of mana you spent is greater than this creature's power or toughness, put a +1/+1 counter on this creature.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HungryGraffalon.java",
+          "java_sha256": "a606f1deeb9caef3a35d701a1aa576f7753879cc01d952ecb66a309a0f881b9f"
+        }
+      ]
+    },
+    {
+      "name": "Muse Seeker",
+      "oracle_text": "Opus — Whenever you cast an instant or sorcery spell, draw a card. Then discard a card unless five or more mana was spent to cast that spell.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MuseSeeker.java",
+          "java_sha256": "293945810718fff65edc17c72b6c8fb20c59cddd2f9dc01dbf72842b1367e7d0"
+        }
+      ]
+    },
+    {
+      "name": "Prompto Argentum",
+      "oracle_text": "Haste\nSelfie Shot — Whenever you cast a noncreature spell, if at least four mana was spent to cast it, create a Treasure token.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PromptoArgentum.java",
+          "java_sha256": "0f4ebbd4109d18b545c780a08c59bec1c3f8c3966b295c86408ff281f5316867"
+        }
+      ]
+    },
+    {
+      "name": "Rancorous Archaic",
+      "oracle_text": "Reach, trample\nConverge — This creature enters with a +1/+1 counter on it for each color of mana spent to cast it.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RancorousArchaic.java",
+          "java_sha256": "ebbc36f56258f11fb661910d0f04d7d67405a6a458ec2bcbe29aa8f47763e333"
+        }
+      ]
+    },
+    {
+      "name": "Sahagin",
+      "oracle_text": "Whenever you cast a noncreature spell, if at least four mana was spent to cast it, put a +1/+1 counter on this creature and it can't be blocked this turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/Sahagin.java",
+          "java_sha256": "81e5e4e3b2d2fb50028ff6721a9664052f03b7343aaae7bcf03e72baa7e39bc3"
+        }
+      ]
+    },
+    {
+      "name": "Shantotto, Tactician Magician",
+      "oracle_text": "Whenever you cast a noncreature spell, Shantotto gets +X/+0 until end of turn, where X is the amount of mana spent to cast that spell. If X is 4 or more, draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/ShantottoTacticianMagician.java",
+          "java_sha256": "3a96916485f752ef26390af7ccea28c6db0eb72e0286d9c8b0b2d7a3b5d3b0a0"
+        }
+      ]
+    },
+    {
+      "name": "Spectacular Skywhale",
+      "oracle_text": "Flying\nOpus — Whenever you cast an instant or sorcery spell, this creature gets +3/+0 until end of turn. If five or more mana was spent to cast that spell, put three +1/+1 counters on this creature instead.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SpectacularSkywhale.java",
+          "java_sha256": "7f889e032e41656a04d939db0e28dd97d90c8f1a33bcffb50f1b5a8f1be82360"
+        }
+      ]
+    },
+    {
+      "name": "Tackle Artist",
+      "oracle_text": "Trample\nOpus — Whenever you cast an instant or sorcery spell, put a +1/+1 counter on this creature. If five or more mana was spent to cast that spell, put two +1/+1 counters on this creature instead.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TackleArtist.java",
+          "java_sha256": "d993955d9bceca862e738fd049c6ef3cce7decbc7bda0953a232386102f1c77a"
+        }
+      ]
+    },
+    {
+      "name": "Textbook Tabulator",
+      "oracle_text": "Increment (Whenever you cast a spell, if the amount of mana you spent is greater than this creature's power or toughness, put a +1/+1 counter on this creature.)\nWhen this creature enters, surveil 2. (Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TextbookTabulator.java",
+          "java_sha256": "712b3783f6810f2a929b3d1496f008a15a7809931f7a5b4de7df54e5d54eb845"
+        }
+      ]
+    },
+    {
+      "name": "Thunderdrum Soloist",
+      "oracle_text": "Reach\nOpus — Whenever you cast an instant or sorcery spell, this creature deals 1 damage to each opponent. If five or more mana was spent to cast that spell, this creature deals 3 damage to each opponent instead.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/ThunderdrumSoloist.java",
+          "java_sha256": "99111e08598b8c441d5ff5fb2e5aabfb202c05a9f53e10461b065eb3978b716c"
+        }
+      ]
+    },
+    {
+      "name": "Ultros, Obnoxious Octopus",
+      "oracle_text": "Whenever you cast a noncreature spell, if at least four mana was spent to cast it, tap target creature an opponent controls and put a stun counter on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)\nWhenever you cast a noncreature spell, if at least eight mana was spent to cast it, put eight +1/+1 counters on Ultros.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/u/UltrosObnoxiousOctopus.java",
+          "java_sha256": "36e91e5adcc9a5a03c192d3ea50e519f7b42dbac2cefedf10ef97245daf1eff0"
+        }
+      ]
+    },
+    {
+      "name": "Unravel",
+      "oracle_text": "Counter target spell. If the amount of mana spent to cast that spell was less than its mana value, you draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/u/Unravel.java",
+          "java_sha256": "98c5f5df8d8e298f806fbe35b126dc971c83bb3a86545fe962ccc9871693cbc6"
+        }
+      ]
+    },
+    {
+      "name": "Arcane Omens",
+      "oracle_text": "Converge — Target player discards X cards, where X is the number of colors of mana spent to cast this spell.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/ArcaneOmens.java",
+          "java_sha256": "5faf994a7d477ca8a9f26950275a26354e6fcbfaa3621bcd6448fdd2e7f99b38"
+        }
+      ]
+    }
+  ],
+  "shared_sources": [
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/IncrementAbility.java",
+      "java_sha256": "4d44b4a352b0c3056cc317e0647ceef6a13307e64c2a2563ad2986277f9ab09d"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/abilityword/OpusAbility.java",
+      "java_sha256": "2fdef128f01b7c2f3ad1ffc3f9817cf19d505266fe4ee3006ccf7138ceb2a1c4"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ManaSpentToCastCount.java",
+      "java_sha256": "f0918f87126c78976ddda63fc581a2da3cbfc4fc011c671474ff946243b5cdea"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ColorsOfManaSpentToCastCount.java",
+      "java_sha256": "92b55d92985654d437785d464387ae3c981b4a2542a0f9780c8710b3b7819f8b"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/watchers/common/ManaPaidSourceWatcher.java",
+      "java_sha256": "890808f5706f88165d4770eac155b605aed3adaacb41d5c2f5262535810d9a9e"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SourcePermanentPowerValue.java",
+      "java_sha256": "aabc6ce8b7bd68b08691830a2a45af0d886a2837c652bbca9e109b5813b0ca9a"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaSpentToCastPredicate.java",
+      "java_sha256": "2ec5b23119fe3fe85109536889909edf183fe1bf4196fa12bc68001581fbcb0e"
+    }
+  ],
+  "gated": [
+    {
+      "name": "Ambitious Augmenter",
+      "mana_cost": "{G}",
+      "oracle_text": "Increment (Whenever you cast a spell, if the amount of mana you spent is greater than this creature's power or toughness, put a +1/+1 counter on this creature.)\nWhen this creature dies, if it had one or more counters on it, create a 0/0 green and blue Fractal creature token, then put this creature's counters on that token.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AmbitiousAugmenter.java",
+          "java_sha256": "a23d9f023b6697793be87e1e5637cc052de9d07ccae12e25ec4c6dbaaa70505b"
+        }
+      ],
+      "remaining_dependency": "Counter-added/history, counter-preserving death recipes or conditional token/counter batches."
+    },
+    {
+      "name": "Archaic's Agony",
+      "mana_cost": "{4}{R}",
+      "oracle_text": "Converge — Archaic's Agony deals X damage to target creature, where X is the number of colors of mana spent to cast this spell. Exile cards from the top of your library equal to the excess damage dealt to that creature this way. You may play those cards until the end of your next turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/ArchaicsAgony.java",
+          "java_sha256": "443b694ee3b513bc5119ea2f4c495c2e01b21c9dc6972c77b26267ce5f2d7f50"
+        }
+      ],
+      "remaining_dependency": "Additional complete dynamic token, life/draw, temporary mana or conditional continuation required; retained whole body below."
+    },
+    {
+      "name": "Astelli Reclaimer",
+      "mana_cost": "{3}{W}{W}",
+      "oracle_text": "Flying\nWhen this creature enters, return target noncreature, nonland permanent card with mana value X or less from your graveyard to the battlefield, where X is the amount of mana spent to cast this creature.\nWarp {2}{W}",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AstelliReclaimer.java",
+          "java_sha256": "4f118477a56e92aece32f121cadefaea997ade3777c9cfe83017a642794e3b64"
+        }
+      ],
+      "remaining_dependency": "Captured entry-spent dynamic target mana-value bounds, full Warp composition."
+    },
+    {
+      "name": "Berta, Wise Extrapolator",
+      "mana_cost": "{2}{G}{U}",
+      "oracle_text": "Increment (Whenever you cast a spell, if the amount of mana you spent is greater than this creature's power or toughness, put a +1/+1 counter on this creature.)\nWhenever one or more +1/+1 counters are put on Berta, add one mana of any color.\n{X}, {T}: Create a 0/0 green and blue Fractal creature token and put X +1/+1 counters on it.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BertaWiseExtrapolator.java",
+          "java_sha256": "de38572575e0f19f9cff3df94670de07d82898db680c2e582e98335370fc5b34"
+        }
+      ],
+      "remaining_dependency": "Dynamic mana production, counter-added triggers or variable activation costs."
+    },
+    {
+      "name": "Colorstorm Stallion",
+      "mana_cost": "{1}{U}{R}",
+      "oracle_text": "Ward {1}, haste\nOpus — Whenever you cast an instant or sorcery spell, this creature gets +1/+1 until end of turn. If five or more mana was spent to cast that spell, create a token that's a copy of this creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/ColorstormStallion.java",
+          "java_sha256": "518abf4b011b78b12b3972d007cb56a849574eb4ed1323dda009f2c230e60046"
+        }
+      ],
+      "remaining_dependency": "Arbitrary/current source copying and exact copiable characteristics."
+    },
+    {
+      "name": "Dyadrine, Synthesis Amalgam",
+      "mana_cost": "{X}{G}{W}",
+      "oracle_text": "Trample\nDyadrine enters with a number of +1/+1 counters on it equal to the amount of mana spent to cast it.\nWhenever you attack, you may remove a +1/+1 counter from each of two creatures you control. If you do, draw a card and create a 2/2 colorless Robot artifact creature token.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DyadrineSynthesisAmalgam.java",
+          "java_sha256": "13411215e5a93df59bc16abbba47aada5b9668032d8699ff4e062b2efb71bcad"
+        }
+      ],
+      "remaining_dependency": "Additional complete dynamic token, life/draw, temporary mana or conditional continuation required; retained whole body below."
+    },
+    {
+      "name": "Elemental Mascot",
+      "mana_cost": "{1}{U}{R}",
+      "oracle_text": "Flying, vigilance\nOpus — Whenever you cast an instant or sorcery spell, this creature gets +1/+0 until end of turn. If five or more mana was spent to cast that spell, exile the top card of your library. You may play that card until the end of your next turn.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/ElementalMascot.java",
+          "java_sha256": "e217e26583a1601bf7268c64fbc029a67d124a4cac9a4c38c54f45622b9b2c71"
+        }
+      ],
+      "remaining_dependency": "Additional complete dynamic token, life/draw, temporary mana or conditional continuation required; retained whole body below."
+    },
+    {
+      "name": "Fractal Tender",
+      "mana_cost": "{3}{G}{U}",
+      "oracle_text": "Ward {2}\nIncrement (Whenever you cast a spell, if the amount of mana you spent is greater than this creature's power or toughness, put a +1/+1 counter on this creature.)\nAt the beginning of each end step, if you put a counter on this creature this turn, create a 0/0 green and blue Fractal creature token and put three +1/+1 counters on it.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FractalTender.java",
+          "java_sha256": "c40150e80aa26b528cd8511fe347522c8ee8d930f7c6387b4fbf9522f3f15f39"
+        }
+      ],
+      "remaining_dependency": "Counter-added/history, counter-preserving death recipes or conditional token/counter batches."
+    },
+    {
+      "name": "Magmablood Archaic",
+      "mana_cost": "{2/R}{2/R}{2/R}",
+      "oracle_text": "Reach, trample\nConverge — This creature enters with a +1/+1 counter on it for each color of mana spent to cast it.\nWhenever you cast an instant or sorcery spell, creatures you control get +1/+0 until end of turn for each color of mana spent to cast that spell.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MagmabloodArchaic.java",
+          "java_sha256": "3ef289aebeffd1cf7faf9e8dcc0a0c0cedee0ec07d38679225a13fd0df70dc0b"
+        }
+      ],
+      "remaining_dependency": "Captured colors in controlled-set growth or another spell entry-counter modification."
+    },
+    {
+      "name": "Mana Sculpt",
+      "mana_cost": "{1}{U}{U}",
+      "oracle_text": "Counter target spell. If you control a Wizard, add an amount of {C} equal to the amount of mana spent to cast that spell at the beginning of your next main phase.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/ManaSculpt.java",
+          "java_sha256": "52a7d3848895a127767ec87451e4611107679ecc9c76f69f071ceab2e9af0ba2"
+        }
+      ],
+      "remaining_dependency": "Captured mana quantity in a next-main delayed mana trigger."
+    },
+    {
+      "name": "Mockingbird",
+      "mana_cost": "{X}{U}",
+      "oracle_text": "Flying\nYou may have this creature enter as a copy of any creature on the battlefield with mana value less than or equal to the amount of mana spent to cast this creature, except it's a Bird in addition to its other types and it has flying.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/Mockingbird.java",
+          "java_sha256": "3b867a65252cf568cff789dc1d55fb8497a62930f6f485939257aef3bd3e5598"
+        }
+      ],
+      "remaining_dependency": "Arbitrary/current source copying and exact copiable characteristics."
+    },
+    {
+      "name": "Molten Note",
+      "mana_cost": "{X}{R}{W}",
+      "oracle_text": "Molten Note deals damage to target creature equal to the amount of mana spent to cast this spell. Untap all creatures you control.\nFlashback {6}{R}{W} (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MoltenNote.java",
+          "java_sha256": "c18dd7517ac0e26a51303bfca70ef3405c6153ff93c9e5fe91912c503b7f1ffe"
+        }
+      ],
+      "remaining_dependency": "Full scalar-X/Flashback residual composition and actual spent damage."
+    },
+    {
+      "name": "Molten-Core Maestro",
+      "mana_cost": "{1}{R}",
+      "oracle_text": "Menace\nOpus — Whenever you cast an instant or sorcery spell, put a +1/+1 counter on this creature. If five or more mana was spent to cast that spell, add an amount of {R} equal to this creature's power.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/m/MoltenCoreMaestro.java",
+          "java_sha256": "29bae2285655c39e636af6d3621a87aad89f6e60c5250802fb9554528ccfce3d"
+        }
+      ],
+      "remaining_dependency": "Dynamic mana production, counter-added triggers or variable activation costs."
+    },
+    {
+      "name": "Pensive Professor",
+      "mana_cost": "{1}{U}{U}",
+      "oracle_text": "Increment (Whenever you cast a spell, if the amount of mana you spent is greater than this creature's power or toughness, put a +1/+1 counter on this creature.)\nWhenever one or more +1/+1 counters are put on this creature, draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PensiveProfessor.java",
+          "java_sha256": "5ee35d2426e85067a540c1151e6ac7210c5b594c514028b4eedf40577aef666b"
+        }
+      ],
+      "remaining_dependency": "Counter-added/history, counter-preserving death recipes or conditional token/counter batches."
+    },
+    {
+      "name": "Satoru, the Infiltrator",
+      "mana_cost": "{U}{B}",
+      "oracle_text": "Menace\nWhenever Satoru and/or one or more other nontoken creatures you control enter, if none of them were cast or no mana was spent to cast them, draw a card.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SatoruTheInfiltrator.java",
+          "java_sha256": "b747cc5e6a61ff6db54634dad873ad52ea3fb7b53901c65c9dd3665ae31cd961"
+        }
+      ],
+      "remaining_dependency": "Aggregate simultaneous nontoken entry cast-payment histories."
+    },
+    {
+      "name": "Snarl Song",
+      "mana_cost": "{5}{G}",
+      "oracle_text": "Converge — Create two 0/0 green and blue Fractal creature tokens. Put X +1/+1 counters on each of them and you gain X life, where X is the number of colors of mana spent to cast this spell.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SnarlSong.java",
+          "java_sha256": "683b8d5bd2a927685c86f10271be4900dcfc2a01abbf718442f484441b9a42b6"
+        }
+      ],
+      "remaining_dependency": "Additional complete dynamic token, life/draw, temporary mana or conditional continuation required; retained whole body below."
+    },
+    {
+      "name": "Sundering Archaic",
+      "mana_cost": "{6}",
+      "oracle_text": "Converge — When this creature enters, exile target nonland permanent an opponent controls with mana value less than or equal to the number of colors of mana spent to cast this creature.\n{2}: Put target card from a graveyard on the bottom of its owner's library.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SunderingArchaic.java",
+          "java_sha256": "de72fa91aeb322644879b3b4ffac53d807c64ae765c3d56a412d7fbbeaa64f27"
+        }
+      ],
+      "remaining_dependency": "Additional complete dynamic token, life/draw, temporary mana or conditional continuation required; retained whole body below."
+    },
+    {
+      "name": "Tellah, Great Sage",
+      "mana_cost": "{3}{U}{R}",
+      "oracle_text": "Whenever you cast a noncreature spell, create a 1/1 colorless Hero creature token. If four or more mana was spent to cast that spell, draw two cards. If eight or more mana was spent to cast that spell, sacrifice Tellah and it deals that much damage to each opponent.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TellahGreatSage.java",
+          "java_sha256": "4ba7e6db9468c453121fa028481b32784e00b07e20d0ec40465f691a494b1417"
+        }
+      ],
+      "remaining_dependency": "Additional complete dynamic token, life/draw, temporary mana or conditional continuation required; retained whole body below."
+    },
+    {
+      "name": "Tester of the Tangential",
+      "mana_cost": "{1}{U}",
+      "oracle_text": "Increment (Whenever you cast a spell, if the amount of mana you spent is greater than this creature's power or toughness, put a +1/+1 counter on this creature.)\nAt the beginning of combat on your turn, you may pay {X}. When you do, move X +1/+1 counters from this creature onto another target creature.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TesterOfTheTangential.java",
+          "java_sha256": "c974768597404749cc3ad1a80f0e0433fb214e32c1b739d087a18216339c69d4"
+        }
+      ],
+      "remaining_dependency": "Additional complete dynamic token, life/draw, temporary mana or conditional continuation required; retained whole body below."
+    },
+    {
+      "name": "The Prima Vista",
+      "mana_cost": "{4}{U}",
+      "oracle_text": "Flying\nWhenever you cast a noncreature spell, if at least four mana was spent to cast it, The Prima Vista becomes an artifact creature until end of turn.\nCrew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/ThePrimaVista.java",
+          "java_sha256": "d270fa7341dac4e81bc55411b65e297a187e81ebf015ce1dd4452a07740c77f6"
+        }
+      ],
+      "remaining_dependency": "Live creature-type change and Crew (separate issue250), then spent-qualified animation."
+    },
+    {
+      "name": "Together as One",
+      "mana_cost": "{6}",
+      "oracle_text": "Converge — Target player draws X cards, Together as One deals X damage to any target, and you gain X life, where X is the number of colors of mana spent to cast this spell.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TogetherAsOne.java",
+          "java_sha256": "0f680a6d59ec4bab6747d607042e351352e8add55bd794b598a7d3d1f9932067"
+        }
+      ],
+      "remaining_dependency": "Additional complete dynamic token, life/draw, temporary mana or conditional continuation required; retained whole body below."
+    },
+    {
+      "name": "Tokka & Rahzar, Terrible Twos",
+      "mana_cost": "{B/R}{B/R}",
+      "oracle_text": "This spell can't be countered.\nMenace\nWhenever a player casts a spell, if the amount of mana spent to cast it was less than its mana value, Tokka & Rahzar deal 3 damage to that player.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TokkaAndRahzarTerribleTwos.java",
+          "java_sha256": "6295ac1e3ac1e7fa66d8561cec607601cd830d07955b7cd1847ee5d3475f6139"
+        }
+      ],
+      "remaining_dependency": "Additional complete dynamic token, life/draw, temporary mana or conditional continuation required; retained whole body below."
+    },
+    {
+      "name": "Topiary Lecturer",
+      "mana_cost": "{2}{G}",
+      "oracle_text": "Increment (Whenever you cast a spell, if the amount of mana you spent is greater than this creature's power or toughness, put a +1/+1 counter on this creature.)\n{T}: Add an amount of {G} equal to this creature's power.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TopiaryLecturer.java",
+          "java_sha256": "5e2e503d159188d2c32a59c9bb56340b2f5b47c20b83309f9c985f8d8d137eff"
+        }
+      ],
+      "remaining_dependency": "Dynamic mana production, counter-added triggers or variable activation costs."
+    },
+    {
+      "name": "Transcendent Archaic",
+      "mana_cost": "{7}",
+      "oracle_text": "Vigilance\nConverge — When this creature enters, you may draw X cards, where X is the number of colors of mana spent to cast this spell. If you draw one or more cards this way, discard two cards.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TranscendentArchaic.java",
+          "java_sha256": "68c1d466fff2fa37c6c498a0d65d23c1dfbfa9748c907f842d6686f5667a825f"
+        }
+      ],
+      "remaining_dependency": "Additional complete dynamic token, life/draw, temporary mana or conditional continuation required; retained whole body below."
+    },
+    {
+      "name": "Uncover the Moon-Letters",
+      "mana_cost": "{3}{U}",
+      "oracle_text": "Whenever you cast a noncreature spell, you may draw X cards, where X is the amount of mana spent to cast that spell. If you do, discard two cards.",
+      "sources": [],
+      "remaining_dependency": "No constructor at pinned Java checkout; later direct authoritative Oracle/rules implementation, plus optional dynamic draw/discard."
+    },
+    {
+      "name": "Wildgrowth Archaic",
+      "mana_cost": "{2/G}{2/G}",
+      "oracle_text": "Reach, trample\nConverge — This creature enters with a +1/+1 counter on it for each color of mana spent to cast it.\nWhenever you cast a creature spell, that creature enters with X additional +1/+1 counters on it, where X is the number of colors of mana spent to cast it.",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/w/WildgrowthArchaic.java",
+          "java_sha256": "fa30e817158a68ef6edc11beea0a508b46ae53864e35f7cfbbbe9bdc418d7f63"
+        }
+      ],
+      "remaining_dependency": "Captured colors in controlled-set growth or another spell entry-counter modification."
+    }
+  ]
+}
