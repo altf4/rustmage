@@ -725,7 +725,7 @@ fn job_independent_duplicate_grants_do_not_merge_and_third_draw_uses_global_hist
         }
         assert_eq!(
             serde_json::to_value(g.object_view(bear).granted_subtypes).unwrap(),
-            serde_json::json!(["Wizard"])
+            serde_json::json!({"added": ["Wizard"], "creature_types": null})
         );
         g.draw(p);
         assert_eq!(g.state.pending_triggers.len(), 2);

@@ -24,6 +24,7 @@ pub(super) struct RoleState {
     pub live_static: Vec<LiveStaticSourceView>,
     pub stat_subjects: Vec<ResolvedStatSubjectView>,
     pub ability_timestamps: Vec<AbilitySourceTimestampView>,
+    pub creature_types: Vec<subtypes::CreatureTypesEffectView>,
     pub keyword_effects: Vec<KeywordEffectView>,
     pub ability_removal_sources: Vec<ObjectRef>,
 }
@@ -35,6 +36,7 @@ impl RoleState {
             + self.live_static.len() * std::mem::size_of::<LiveStaticSourceView>()
             + self.stat_subjects.len() * std::mem::size_of::<ResolvedStatSubjectView>()
             + self.ability_timestamps.len() * std::mem::size_of::<AbilitySourceTimestampView>()
+            + self.creature_types.len() * std::mem::size_of::<subtypes::CreatureTypesEffectView>()
             + self.keyword_effects.len() * std::mem::size_of::<KeywordEffectView>()
             + self.ability_removal_sources.len() * std::mem::size_of::<ObjectRef>()
     }

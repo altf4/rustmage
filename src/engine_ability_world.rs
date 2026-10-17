@@ -22,14 +22,36 @@ pub(super) trait CharacteristicWorld {
         }
     }
 
+    fn counter_subtype_keywords(&self, id: CardId) -> Keywords {
+        let object = self.object(id);
+        if object.zone != Zone::Battlefield || self.kinds(id) & 1 == 0 {
+            return Keywords::NONE;
+        }
+        let mut result = Keywords::NONE;
+        for group in object.card.static_ability_groups() {
+            for fragment in group.fragments {
+                if let crate::cards::StaticAbilityFragment::SourceCounterSubtype {
+                    kind,
+                    minimum,
+                    keywords,
+                    ..
+                } = *fragment
+                    && object.counters.get(kind) >= minimum
+                {
+                    result = result.union(keywords);
+                }
+            }
+        }
+        result
+    }
+
     fn death_baron_applies(&self, source: ObjectRef, id: CardId) -> bool {
         let target = self.object(id);
         target.zone == Zone::Battlefield
             && self.kinds(id) & 1 != 0
             && target.controller == self.object(source.card).controller
-            && ((target.card.has_subtype("Skeleton") || self.subtypes(id).contains("Skeleton"))
-                || (self.reference(id) != source
-                    && (target.card.has_subtype("Zombie") || self.subtypes(id).contains("Zombie"))))
+            && ((self.subtypes(id).has(target.card, "Skeleton"))
+                || (self.reference(id) != source && (self.subtypes(id).has(target.card, "Zombie"))))
     }
     fn has_ability_removal(&self) -> bool {
         self.game().state.roles.as_ref().is_some_and(|state| {
@@ -151,8 +173,7 @@ pub(super) trait CharacteristicWorld {
         member
             && effect.condition.is_none_or(|condition| {
                 let matching = target.controller == provider.controller
-                    && (target.card.has_subtype(condition.subtype)
-                        || self.subtypes(id).contains(condition.subtype));
+                    && (self.subtypes(id).has(target.card, condition.subtype));
                 matching != condition.negated
             })
     }
@@ -198,8 +219,7 @@ impl ManaProduction {
                         let object = world.object(*id as CardId);
                         object.zone == Zone::Battlefield
                             && object.controller == controller
-                            && (object.card.has_subtype(subtype)
-                                || world.subtypes(*id as CardId).contains(subtype))
+                            && (world.subtypes(*id as CardId).has(object.card, subtype))
                     })
                     .count();
                 let mut mana = [0; 6];

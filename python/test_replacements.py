@@ -39,7 +39,7 @@ class ReplacementTests(unittest.TestCase):
      baseline=dict(tokens=sum(v.get('token') is not None for v in ownbf),counter=int(bear['counters']['plus_one']),library=o['players'][pi]['library_count'])
     if done and quiet:
      self.assertEqual(o['schema'],OBSERVATION_SCHEMA)
-     if mode=='job':self.assertEqual(objs[job]['attached_to'],selected);recipient=objs[selected['card']];self.assertIn('Bard',recipient['granted_subtypes']);self.assertEqual(recipient['token']['subtypes'],'Frog' if first else 'Hero');return
+     if mode=='job':self.assertEqual(objs[job]['attached_to'],selected);recipient=objs[selected['card']];self.assertIn('Bard',recipient['granted_subtypes']['added']);self.assertEqual(recipient['token']['subtypes'],'Frog' if first else 'Hero');return
      if mode=='counter':self.assertEqual(int(bear['counters']['plus_one']),baseline['counter']+(3 if first else 4));self.assertGreater(replacements,0);return
      if mode=='token':self.assertEqual(sum(v.get('token') is not None for v in ownbf),baseline['tokens']+(3 if first else 4));self.assertGreater(replacements,0);return
      if i in [0,1,6,7]:

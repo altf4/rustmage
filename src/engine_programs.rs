@@ -2499,6 +2499,9 @@ impl Game {
                         }
                     }
                 }
+                Instruction::SetCreatureTypes { subject, types } => {
+                    self.set_creature_types(&item, subject, types);
+                }
                 Instruction::GrantUntilEndTurn { ability } => {
                     self.grant_temporary_ability(&item, ability)
                 }

@@ -58,10 +58,10 @@ class JobSelectTests(unittest.TestCase):
      linked=objects[source]['attached_to'];body=objects[linked['card']]
      if not job:
       self.assertTrue(paid);hero=body['id'];recipient=hero;self.assertEqual(body['token']['subtypes'],'Hero');self.assertEqual(body['token']['colors'],0)
-      self.assertIn(TYPES[i],body['granted_subtypes']);self.assertEqual((int(body['power']),int(body['toughness'])),(1+BONUS[i][0],1+BONUS[i][1]));job=True
-      for viewer in [p,other]:self.assertIn(TYPES[i],next(v for v in g.observe(viewer)['objects'] if v['id']==hero)['granted_subtypes'])
+      self.assertIn(TYPES[i],body['granted_subtypes']['added']);self.assertEqual((int(body['power']),int(body['toughness'])),(1+BONUS[i][0],1+BONUS[i][1]));job=True
+      for viewer in [p,other]:self.assertIn(TYPES[i],next(v for v in g.observe(viewer)['objects'] if v['id']==hero)['granted_subtypes']['added'])
      if reequip and body['card']=='Bear Cub':
-      self.assertEqual((int(body['power']),int(body['toughness'])),(2+BONUS[i][0],2+BONUS[i][1]));self.assertIn(TYPES[i],body['granted_subtypes']);self.assertNotIn(TYPES[i],objects[hero]['granted_subtypes']);return
+      self.assertEqual((int(body['power']),int(body['toughness'])),(2+BONUS[i][0],2+BONUS[i][1]));self.assertIn(TYPES[i],body['granted_subtypes']['added']);self.assertNotIn(TYPES[i],objects[hero]['granted_subtypes']['added']);return
      if not reequip and not residual:return
     packet_list=o['stack']+o.get('ordering_triggers',[])+([o['announcing']] if o['announcing'] else [])+([o['resolving']] if o['resolving'] else [])
     for packet in packet_list:

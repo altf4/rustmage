@@ -178,7 +178,7 @@ impl ReplacementState {
     }
 }
 fn matches_filter(filter: ReplacementFilter, p: &CounterPlacement) -> bool {
-    let subtype = |s| p.card.has_subtype(s) || p.subtypes.contains(s);
+    let subtype = |s| p.subtypes.has(p.card, s);
     match filter {
         ReplacementFilter::Permanent => true,
         ReplacementFilter::Creature => p.kind & 1 != 0,

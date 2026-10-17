@@ -304,7 +304,7 @@ impl<'g> FundingState<'g> {
                         && (object.card.attachment_bonus().is_some()
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
-                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
+                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
                             || object.controller == goal.actor
                                 && subtypes
                                     .iter()
@@ -375,7 +375,10 @@ impl<'g> FundingState<'g> {
         if let Some(evaluation) = ability_evaluation::evaluate_if_needed(self) {
             return evaluation.result.objects[target.id as usize].keywords;
         }
-        let mut keywords = target.object.keywords();
+        let mut keywords = target
+            .object
+            .keywords()
+            .union(ability_world::CharacteristicWorld::counter_subtype_keywords(self, target.id));
         if target.object.zone == Zone::Battlefield && self.kinds(target) & 1 != 0 {
             let reference = ObjectRef {
                 card: target.id,
@@ -488,9 +491,10 @@ impl<'g> FundingState<'g> {
             ActivationGuard::ControlSubtypeAny(_) => self.resources.iter().any(|r| {
                 r.object.zone == Zone::Battlefield
                     && r.object.controller == actor
-                    && guard.subtypes().iter().any(|s| {
-                        r.object.card.has_subtype(s) || self.granted_subtypes(r.id).contains(s)
-                    })
+                    && guard
+                        .subtypes()
+                        .iter()
+                        .any(|s| self.granted_subtypes(r.id).has(r.object.card, s))
             }),
         }
     }
@@ -2212,3 +2216,7 @@ mod ability_world_tests {
 #[cfg(test)]
 #[path = "engine_fdn_scaled_mana_tests.rs"]
 mod fdn_six_scaled_tests;
+
+#[cfg(test)]
+#[path = "engine_subtype_layers_world_tests.rs"]
+mod subtype_layers_world_tests;
