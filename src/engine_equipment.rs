@@ -27,6 +27,9 @@ impl Game {
                 let spec = object.card.attachment_bonus().unwrap();
                 stats += spec.stats;
                 keywords = keywords.union(spec.keywords);
+                if object.owner == self.state.active {
+                    keywords = keywords.union(object.card.attached_turn_keywords());
+                }
             }
         }
         (stats, keywords)
@@ -54,8 +57,9 @@ impl Game {
                     self.stat_value(value, self.object_ref(source), object.owner) != 0
                 }) && (!grant.requires_life_gain
                     || self.state.players[object.owner.index()].life_gained_this_turn > 0)
-                    && grant.matches(
+                    && grant.matches_characteristics(
                         target.card,
+                        self.granted_subtypes(id),
                         target.owner == object.owner,
                         reference == self.object_ref(source),
                         attacking,

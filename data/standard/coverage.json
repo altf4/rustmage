@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "b41688a98da80a651870ccad086b3f7dd62befc89279b2826570847efce2f81f",
+  "catalogue_version": "aee1682ea2fad0e850c7f8f6e1d89ab810be6f12d4b37354bbbd035fc48204fb",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1677,
-  "implemented_total": 1683,
+  "implemented_standard_cards": 1684,
+  "implemented_total": 1690,
   "token_definitions": 83,
   "emblem_definitions": 1,
   "cards": [
@@ -1966,8 +1966,8 @@
     {
       "name": "Bard's Bow",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Bard's Company",
@@ -5812,8 +5812,8 @@
     {
       "name": "Dark Knight's Greatsword",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Dark Leo & Shredder",
@@ -7024,8 +7024,8 @@
     {
       "name": "Dragoon's Lance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Dragoon's Wyvern",
@@ -15640,8 +15640,8 @@
     {
       "name": "Machinist's Arsenal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Madame Hydra",
@@ -17008,8 +17008,8 @@
     {
       "name": "Monk's Fist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Monoist Circuit-Feeder",
@@ -22006,8 +22006,8 @@
     {
       "name": "Samurai's Katana",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Samut, Hazoret's Champion",
@@ -29926,8 +29926,8 @@
     {
       "name": "Warrior's Sword",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Wartime Protestors",

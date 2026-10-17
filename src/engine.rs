@@ -11,14 +11,18 @@ use crate::cards::{
 #[path = "engine_saddle.rs"]
 mod saddle;
 pub use saddle::SaddleChoiceView;
-/// Public observation structure, including Endure choices and owned Plot permissions.
-pub const OBSERVATION_SCHEMA: u32 = 71;
+/// Public observation structure, including Plot permissions and captured subtype grants.
+pub const OBSERVATION_SCHEMA: u32 = 72;
 #[path = "engine_mobilize.rs"]
 mod mobilize;
 #[path = "engine_plot.rs"]
 mod plot;
 pub use mobilize::{DelayedSacrificeView, MobilizeChoiceView};
 pub use plot::{PlotPaymentView, PlottedCard};
+
+#[path = "engine_subtypes.rs"]
+mod subtypes;
+pub use subtypes::GrantedSubtypes;
 
 use crate::shared_vec::SharedVec;
 #[path = "engine_additional_costs.rs"]
@@ -768,6 +772,7 @@ struct DamageChoice {
 /// that deal damage from their hand or as spells.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize)]
 pub struct DamageFacts {
+    pub granted_subtypes: GrantedSubtypes,
     pub card: Card,
     pub battlefield: bool,
     pub counter: bool,
@@ -778,6 +783,7 @@ pub struct DamageFacts {
 impl DamageFacts {
     fn from_view(view: &ObjectView) -> Self {
         Self {
+            granted_subtypes: view.granted_subtypes,
             card: view.card,
             battlefield: view.zone == Zone::Battlefield,
             counter: view.counters.total() > 0,
@@ -1032,6 +1038,7 @@ pub struct EndureChoiceView {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ObjectView {
+    pub granted_subtypes: GrantedSubtypes,
     pub saddled: bool,
     pub id: CardId,
     pub reference: ObjectRef,
@@ -3016,6 +3023,7 @@ impl Game {
         let obj = &self.state.objects[id as usize];
         let stats = self.stats(id);
         ObjectView {
+            granted_subtypes: self.granted_subtypes(id),
             saddled: self.is_saddled(self.object_ref(id)),
             id,
             reference: self.object_ref(id),
@@ -4777,3 +4785,7 @@ mod mobilize_tests;
 #[cfg(test)]
 #[path = "engine_plot_tests.rs"]
 mod plot_tests;
+
+#[cfg(test)]
+#[path = "engine_job_select_tests.rs"]
+mod job_select_tests;

@@ -2879,6 +2879,54 @@ def equipment_template(card):
     return effect,intrinsic,[*abilities,*attached_abilities],activations,enters,power,toughness,keywords
 
 
+
+JOB_TYPES = {'Artificer','Bard','Cleric','Knight','Monk','Ninja','Rogue','Samurai','Shaman','Warrior','Wizard'}
+JOB_REMINDER = 'Job select (When this Equipment enters, create a 1/1 colorless Hero creature token, then attach this to it.)'
+
+def job_select_template(card):
+    """Closed full Job Select Equipment bodies; subtype/turn grants are immutable."""
+    if (card.get('layout') != 'normal' or permanent_type(card) != 'Artifact'
+            or 'Equipment' not in card.get('type_line','').split(' — ')[-1].split()
+            or spell_cost_options(card.get('mana_cost','')) is None):return None
+    lines=card.get('oracle_text','').split('\n')
+    if not lines or lines[0] not in ('Job select', JOB_REMINDER):return None
+    lines=[re.sub(r'\([^()]*\)', '',line).strip() for line in lines[1:]]
+    subtype=None;power=toughness=keywords=turn_keywords=0;scales=[];equip=None
+    for line in lines:
+        if m:=re.fullmatch(r'Equipped creature gets ([+][0-9]+)/([+][0-9]+)(?:, has ([a-z ]+),)? and is (?:a|an) ([A-Z][a-z]+) in addition to its other types\.',line):
+            if subtype is not None or m[4] not in JOB_TYPES:return None
+            power,toughness=int(m[1]),int(m[2]);subtype=m[4]
+            if max(power,toughness)>32767:return None
+            keywords=keyword_list(m[3]) if m[3] else 0
+            if keywords is None:return None
+        elif m:=re.fullmatch(r'Equipped creature gets ([+][0-9]+)/([+][0-9]+) for each artifact you control and is (?:a|an) ([A-Z][a-z]+) in addition to its other types\.',line):
+            if subtype is not None or m[3] not in JOB_TYPES:return None
+            a,b=int(m[1]),int(m[2]);subtype=m[3]
+            if max(a,b)>32767:return None
+            value=stat_value('artifact you control')
+            if value is None:return None
+            scales=[f'ScalingModifier {{ subject: Subject::Attached, value: {value}, stats: Stats {{ power: {a}, toughness: {b} }} }}']
+        elif line=='During your turn, equipped creature has flying.':
+            if turn_keywords:return None
+            turn_keywords=KEYWORDS['flying']
+        elif m:=re.fullmatch(r'(?:[A-Z][A-Za-z\x27 ]* — )?(Equip (?:\{(?:[0-9]+|[WUBRGC])\})+|Equip—Pay 3 life\. Activate only once each turn\.)',line):
+            if equip is not None:return None
+            equip=m[1]
+        else:return None
+    if subtype is None or equip is None:return None
+    if equip.startswith('Equip—'):
+        result=permanent_program_template(dict(card,type_line='Artifact',oracle_text='Pay 3 life: Attach this Equipment to target creature you control. Activate only as a sorcery and only once each turn.'))
+        if result is None:return None
+        effect,intrinsic,abilities,activations,enters=result
+    else:
+        result=equipment_template(dict(card,oracle_text=equip))
+        if result is None:return None
+        effect,intrinsic,abilities,activations,enters,_,_,_=result
+    token=token_program('create a 1/1 colorless Hero creature token.')[0]
+    token=re.search(r'token: ([^,]+),',token)[1]
+    abilities=[('SelfEnters',[f'JobSelect {{ token: {token} }}'],'None'),*abilities]
+    return (effect,intrinsic,abilities,activations,enters,power,toughness,keywords),subtype,turn_keywords,scales
+
 def source_return_program(text):
     """Exact activated source returns; never infer a death-trigger zone binding."""
     if text == 'Return this card from your graveyard to your hand.':
@@ -3352,6 +3400,8 @@ def compile_catalogue(snapshot, target):
     target_reduction_rows = []
     entry_counter_rows = []
     equipment_rows = []
+    attached_subtype_rows = []
+    attached_turn_rows = []
     aura_rows = []
     for index, name in enumerate(names):
         card, uncounterable = extract_uncounterable(cards.get(name, {}))
@@ -3381,7 +3431,8 @@ def compile_catalogue(snapshot, target):
         spell = spell_program_template(card)
         modal = modal_spell_template(card)
         aura = aura_template(card)
-        equipment = equipment_template(card)
+        job = job_select_template(card) if (plot is None and not cycling and flashback is None and offspring is None and kicker is None and not bargain and not convoke and evidence is None and additional is None and target_reduction is None and not reductions and dynamic is None and not scaling and creature_entry == 'Never' and not entry_counters) else None
+        equipment = job[0] if job else equipment_template(card)
         permanent = permanent_program_template(card)
         static = static_permanent_template(card)
         activations, enters = [], [0, 0, 0]
@@ -3512,6 +3563,10 @@ def compile_catalogue(snapshot, target):
             loyalty_rows.append(f'        {index} => {int(value)},')
         if effect != 'Unsupported':
             supported.append(index)
+            if job is not None:
+                attached_subtype_rows.append(f'        {index} => Some({json.dumps(job[1])}),')
+                if job[2]:attached_turn_rows.append(f'        {index} => Keywords({job[2]}),')
+                if job[3]:scaling_rows.append(f'        {index} => &['+', '.join(job[3])+'],')
             if evidence is not None: evidence_rows.append(f'        {index} => Some(({evidence[0]}, {evidence[1]})),')
             if convoke: convoke_rows.append(str(index))
             if bargain: bargain_rows.append(f'        {index} => Some({bargain_reduction}),')
@@ -3656,6 +3711,7 @@ def compile_catalogue(snapshot, target):
         lines.append(f'    pub const {name.replace(" ", "")}: Card = Card({index});')
     lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn equipment(card: Card) -> Option<EquipmentSpec> {', '    match card.0 {', *equipment_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn aura(card: Card) -> Option<AuraSpec> {', '    match card.0 {', *aura_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn plot_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *plot_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', "pub(super) fn attached_subtype(card: Card) -> Option<&'static str> {", '    match card.0 {', *attached_subtype_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn attached_turn_keywords(card: Card) -> Keywords {', '    match card.0 {', *attached_turn_rows, '        _ => Keywords::NONE,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn dynamic_stats(card: Card) -> Option<DynamicStats> {', '    match card.0 {', *dynamic_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', "pub(super) fn scaling_modifiers(card: Card) -> &'static [ScalingModifier] {", '    match card.0 {', *scaling_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn entry_trigger_suppression(card: Card) -> u16 {', '    match card.0 {', *entry_suppression_rows, '        _ => 0,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn opponent_entry_tapped(card: Card) -> u16 {', '    match card.0 {', *opponent_entry_tapped_rows, '        _ => 0,', '    }', '}', '']

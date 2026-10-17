@@ -221,8 +221,7 @@ impl Game {
                                 && related
                                 && (!other || source.reference != event.before.reference)
                                 && (!nontoken || event.before.token.is_none())
-                                && subtype
-                                    .is_none_or(|subtype| event.before.card.has_subtype(subtype))
+                                && subtype.is_none_or(|subtype| event.before.has_subtype(subtype))
                         }
                         TriggerCondition::Sacrificed {
                             filter: f,
@@ -239,12 +238,13 @@ impl Game {
                                 && f.tokens
                                     .is_none_or(|token| event.before.card.is_token() == token)
                                 && f.subtype
-                                    .is_none_or(|subtype| event.before.card.has_subtype(subtype))
+                                    .is_none_or(|subtype| event.before.has_subtype(subtype))
                         }
                         TriggerCondition::CreatureDiesFiltered { filter } => {
                             event.before.card.is_creature()
-                                && filter.matches_intrinsic(
+                                && filter.matches_characteristics(
                                     event.before.card,
+                                    event.before.granted_subtypes,
                                     event.before.owner == source.owner,
                                     event.before.reference == source.reference,
                                     event.before.attacking,
@@ -344,7 +344,7 @@ impl Game {
                             } else {
                                 (kinds == 0 || entered.card.kind_mask() & kinds != 0)
                                     && (!nontoken || entered.token.is_none())
-                                    && subtype.is_none_or(|t| entered.card.has_subtype(t))
+                                    && subtype.is_none_or(|t| entered.has_subtype(t))
                             }
                     }
                     TriggerCondition::OtherFilteredEntersYou(predicate) => {
@@ -355,12 +355,12 @@ impl Game {
                                     entered.card.is_creature()
                                         && entered.power <= i128::from(maximum)
                                 }
-                                EntryPredicate::SubtypeAny(subtypes) => subtypes
-                                    .iter()
-                                    .any(|subtype| entered.card.has_subtype(subtype)),
+                                EntryPredicate::SubtypeAny(subtypes) => {
+                                    subtypes.iter().any(|subtype| entered.has_subtype(subtype))
+                                }
                                 EntryPredicate::KindOrSubtype { kinds, subtype } => {
                                     entered.card.kind_mask() & kinds != 0
-                                        || entered.card.has_subtype(subtype)
+                                        || entered.has_subtype(subtype)
                                 }
                             }
                     }
@@ -377,10 +377,10 @@ impl Game {
                             }
                     }
                     TriggerCondition::OtherSubtypeEntersYou(subtype) => {
-                        yours && !same && entered.card.has_subtype(subtype)
+                        yours && !same && entered.has_subtype(subtype)
                     }
                     TriggerCondition::SubtypeEntersYou(subtype) => {
-                        yours && entered.card.has_subtype(subtype)
+                        yours && entered.has_subtype(subtype)
                     }
                     TriggerCondition::ArtifactEntersYou => yours && entered.card.is_artifact(),
                     TriggerCondition::EnchantmentEntersYou => {
@@ -1402,6 +1402,19 @@ impl Game {
                 } => {
                     let amount = self.item_amount(amount, &item);
                     self.create_tokens(item.controller, token, amount, tapped);
+                }
+                Instruction::JobSelect { token } => {
+                    let created = self.create_token_batch_capture(
+                        item.controller,
+                        token,
+                        1,
+                        false,
+                        None,
+                        true,
+                    );
+                    for target in created {
+                        self.attach_equipment(item.object, target);
+                    }
                 }
                 Instruction::CreateTokens {
                     token,
