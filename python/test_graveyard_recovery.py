@@ -106,4 +106,54 @@ class GraveyardRecoveryTests(unittest.TestCase):
                 self.replay(g,o,index);frames+=1
             self.fail((name,p,seed,stage,iteration,cast_turn,g.observe(p)))
 
+    def test_tombstone_actual_villain_payment_floor_and_opponent_scope_both_seats(self):
+        frames_total = 0
+        for p in ['P0', 'P1']:
+            q = 'P1' if p == 'P0' else 'P0'
+            deck = ['Swamp']*20 + ['Forest']*16 + sum(([n]*4 for n in ['Tombstone, Career Criminal', 'Common Crook', 'Bear Cub', 'Shock', 'Thrill of Possibility', 'Barkform Harvester']), [])
+            self.assertEqual(len(deck), 60)
+            with Game([deck, deck], seed=288101, starting_player=p, deck_rules='Standard') as g:
+                started = set(); paid = {}; source = None; frames = 0
+                for _ in range(12000):
+                    h = g.observe('P0'); self.assertIsNone(h['outcome'], (p, paid))
+                    o = g.observe(h['actor']); actor = o['actor']; objects = {v['id']:v for v in o['objects']}
+                    ours = [v for v in objects.values() if v['zone']=='Battlefield' and v['controller']==actor]
+                    ready = sum(v['card'] in BASICS and not v['tapped'] for v in ours) >= 5 and any(v['card']=='Swamp' and not v['tapped'] for v in ours) and any(v['card']=='Forest' and not v['tapped'] for v in ours)
+                    live_source = source is not None and objects[source]['zone']=='Battlefield'
+                    quiet = o['decision']=='priority' and not o['stack'] and not o['announcing'] and not o['resolving']
+                    if len(paid)==5 and quiet:
+                        self.assertTrue(live_source); self.assertEqual((objects[source]['owner'],objects[source]['controller']), (p,p))
+                        self.assertEqual(paid[(p,'Tombstone, Career Criminal')][0],3); self.assertGreaterEqual(paid[(p,'Tombstone, Career Criminal')][1],1)
+                        self.assertEqual(paid[(p,'Common Crook')], (1,1))
+                        self.assertEqual(paid[(q,'Common Crook')][0],2); self.assertGreaterEqual(paid[(q,'Common Crook')][1],1)
+                        self.assertEqual(paid[(p,'Barkform Harvester')][0],2)
+                        self.assertEqual(paid[(p,'Bear Cub')][0],2); self.assertGreaterEqual(paid[(p,'Bear Cub')][1],1)
+                        frames_total += frames
+                        print('TOMBSTONE_PAID',p,frames,paid,flush=True)
+                        break
+                    def score(a):
+                        k=a['kind']; n=objects.get(a.get('card'),{}).get('card','')
+                        if k in ['Concede','Mulligan','Cast','BeginCast','Activate','BeginActivate','AnnounceActivate','AnnounceAdventure','AnnounceOmen','AnnounceExile','Attack','Block']: return -10000
+                        if k=='AnnounceCast':
+                            key=(actor,n)
+                            allowed=(actor==p and n=='Tombstone, Career Criminal' and not started) or (live_source and n=='Common Crook') or (live_source and actor==p and n in ['Bear Cub','Barkform Harvester'] and (p,'Common Crook') in paid)
+                            return 3000 if allowed and ready and key not in started else -10000
+                        if k=='PlayLand': return 2600-sum(v['card']==n for v in ours)*10
+                        if k=='TapMana': return 2500 if o['decision']=='pay_costs' else -10000
+                        if k in ['Discard','Bottom']: return 2500 if n in ['Shock','Giant Growth','Thrill of Possibility'] else 1000
+                        return {'Keep':4000,'PayCosts':3500,'PutTrigger':3000,'ChooseTarget':2800,'FinishTargets':2000,'FinishAttackers':2000,'FinishBlockers':2000,'Pass':0}.get(k,100)
+                    i=max(range(len(o['actions'])),key=lambda j:score(o['actions'][j])); a=o['actions'][i]
+                    self.assertGreaterEqual(score(a),0,(p,actor,o['decision'],a,paid))
+                    if a['kind']=='AnnounceCast':
+                        n=objects[a['card']]['card']; started.add((actor,n))
+                        if n=='Tombstone, Career Criminal': source=a['card']
+                    if a['kind']=='PayCosts' and o['announcing'] and o['announcing']['kind']=='Spell':
+                        n=o['announcing']['source_card']; pay=a['payment'];
+                        if n=='Common Crook': self.denied(g,o,{'kind':'PayCosts','payment':[0]*6})
+                        paid[(actor,n)]=(sum(pay),pay[4] if n=='Bear Cub' else pay[2])
+                    self.denied(g,dict(o,actor='P1' if actor=='P0' else 'P0'),a)
+                    self.replay(g,o,i);frames+=1
+                else: self.fail((p,'payment probe timeout',paid))
+        print('TOMBSTONE_FRAMES',frames_total,'DENIALS',2*frames_total+4,flush=True)
+
 if __name__=='__main__':unittest.main()

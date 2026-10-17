@@ -395,3 +395,62 @@ fn graveyard_target_relations_cardinality_and_exact_types_are_enforced() {
         assert_eq!(g.state.objects[c as usize].zone, Zone::Graveyard);
     }
 }
+
+#[test]
+fn tombstone_actual_villain_cost_floor_uses_controller_and_preserves_other_spells() {
+    for p in [Player::P0, Player::P1] {
+        for owner in [p, p.other()] {
+            let mut g = setup(p);
+            let source = named(
+                &mut g,
+                owner,
+                "Tombstone, Career Criminal",
+                Zone::Battlefield,
+            );
+            g.state.objects[source as usize].controller = p;
+            for caster in [p, p.other()] {
+                g.state.active = caster;
+                g.state.priority = caster;
+                let card = named(&mut g, caster, "Common Crook", Zone::Hand);
+                let before = g.state.players[caster.index()].mana;
+                let other_before = g.state.players[caster.other().index()].mana;
+                act(&mut g, Action::AnnounceCast { card });
+                let saved = g.snapshot();
+                assert_eq!(
+                    g.apply(caster, Action::PayCosts { payment: [0; 6] }),
+                    Err(Error::IllegalAction)
+                );
+                assert_eq!(g.snapshot(), saved);
+                drive(&mut g, card, 0);
+                let spent: u32 = before.iter().sum::<u32>()
+                    - g.state.players[caster.index()].mana.iter().sum::<u32>();
+                assert_eq!(spent, if caster == p { 1 } else { 2 });
+                assert!(before[2] > g.state.players[caster.index()].mana[2]);
+                assert_eq!(other_before, g.state.players[caster.other().index()].mana);
+                assert_eq!(g.state.objects[card as usize].controller, caster);
+                assert_eq!(g.state.objects[card as usize].zone, Zone::Battlefield);
+            }
+            g.state.active = p;
+            g.state.priority = p;
+            let changeling = named(&mut g, p, "Barkform Harvester", Zone::Hand);
+            let mana_before = g.state.players[p.index()].mana.iter().sum::<u32>();
+            act(&mut g, Action::AnnounceCast { card: changeling });
+            drive(&mut g, changeling, 0);
+            assert_eq!(
+                mana_before - g.state.players[p.index()].mana.iter().sum::<u32>(),
+                2
+            );
+            let bear = named(&mut g, p, "Bear Cub", Zone::Hand);
+            let before = g.state.players[p.index()].mana;
+            act(&mut g, Action::AnnounceCast { card: bear });
+            drive(&mut g, bear, 0);
+            assert_eq!(
+                before.iter().sum::<u32>() - g.state.players[p.index()].mana.iter().sum::<u32>(),
+                2
+            );
+            assert!(before[4] > g.state.players[p.index()].mana[4]);
+            assert_eq!(g.state.objects[source as usize].owner, owner);
+            assert_eq!(g.state.objects[source as usize].controller, p);
+        }
+    }
+}
