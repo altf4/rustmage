@@ -15,19 +15,23 @@
   "xmage_dependencies": [
     {
       "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
-      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
     },
     {
       "path": "Mage/src/main/java/mage/abilities/condition/common/RaidCondition.java",
-      "sha256": "8be3f0dd408d51dbd78f720f072495bd95e1490e324e50c7847877210559cedd"
+      "sha256": "8be3f0dd408d51dbd78f720f072495bd95e1490e324e50c7847877210559cedd",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
     },
     {
       "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
-      "sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
+      "sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
     },
     {
       "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
-      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
     }
   ]
 }

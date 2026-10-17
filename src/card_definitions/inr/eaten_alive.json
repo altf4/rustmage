@@ -15,15 +15,18 @@
   "xmage_dependencies": [
     {
       "path": "Mage/src/main/java/mage/abilities/costs/OrCost.java",
-      "sha256": "a36fc6c29c41ef6d0673a6e40c9992c8f5b6c9bb64f9559d4011d0b9593fcf10"
+      "sha256": "a36fc6c29c41ef6d0673a6e40c9992c8f5b6c9bb64f9559d4011d0b9593fcf10",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
     },
     {
       "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
-      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
     },
     {
       "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
-      "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756"
+      "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
     }
   ]
 }

@@ -15,19 +15,23 @@
   "xmage_dependencies": [
     {
       "path": "Mage/src/main/java/mage/abilities/keyword/KickerAbility.java",
-      "sha256": "fa52c368056b1e9798f37a5af5bb70a0fe935aaf23a71dcf592a67eae3e13650"
+      "sha256": "fa52c368056b1e9798f37a5af5bb70a0fe935aaf23a71dcf592a67eae3e13650",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
     },
     {
       "path": "Mage/src/main/java/mage/abilities/condition/common/KickedCondition.java",
-      "sha256": "6c4e759d58e4d9a85bcf6d6262fcae06b43a04d08ffbf3c71d7d850dbfba5a04"
+      "sha256": "6c4e759d58e4d9a85bcf6d6262fcae06b43a04d08ffbf3c71d7d850dbfba5a04",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
     },
     {
       "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
-      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
     },
     {
       "path": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
-      "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+      "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
     }
   ]
 }

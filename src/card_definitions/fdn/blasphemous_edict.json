@@ -15,19 +15,23 @@
   "xmage_dependencies": [
     {
       "path": "Mage/src/main/java/mage/abilities/costs/AlternativeCostSourceAbility.java",
-      "sha256": "b0a55dc753a0b65f6075dd417a1cf6237599541a1e79d99c85aff3ccc0e73f98"
+      "sha256": "b0a55dc753a0b65f6075dd417a1cf6237599541a1e79d99c85aff3ccc0e73f98",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
     },
     {
       "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
-      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
     },
     {
       "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
-      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
     },
     {
       "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeAllEffect.java",
-      "sha256": "edfea847c85bbbee218fd9e81bc9c2d310ce3bc2221d31eef237e9c66accfc62"
+      "sha256": "edfea847c85bbbee218fd9e81bc9c2d310ce3bc2221d31eef237e9c66accfc62",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
     }
   ]
 }

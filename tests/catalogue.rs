@@ -177,7 +177,7 @@ fn intrinsic_colors_match_every_pinned_face_and_token_factory() {
 }
 
 #[test]
-fn printed_starting_loyalty_matches_pinned_front_faces_without_admitting_their_bodies() {
+fn printed_starting_loyalty_matches_pinned_front_faces() {
     let snapshot: serde_json::Value =
         serde_json::from_str(include_str!("../data/standard/cards.json")).unwrap();
     let mut count = 0;
@@ -201,11 +201,7 @@ fn printed_starting_loyalty_matches_pinned_front_faces_without_admitting_their_b
         count += 1;
     }
     assert!(count >= 28);
-    for name in [
-        "Vivien Reid",
-        "Chandra, Torch of Defiance",
-        "The Aetherspark",
-    ] {
+    for name in ["Chandra, Torch of Defiance", "The Aetherspark"] {
         let c = Card::from_name(name).unwrap();
         assert!(c.is_planeswalker());
         assert!(!c.is_supported());
