@@ -245,7 +245,7 @@ fn modified_filter_counts_counters_own_auras_and_any_equipment() {
         let spider = permanent(&mut g, Player::P0, "SP//dr, Piloted by Peni");
         let bear = permanent(&mut g, Player::P0, "Grizzly Bears");
         if let Some(counter) = counter {
-            g.state.objects[bear as usize].counters.add(counter, 1);
+            g.add_counter(bear, counter, 1);
         }
         if let Some(name) = name {
             attach(&mut g, owner, name, bear);
@@ -316,10 +316,13 @@ fn counter_observers_distinguish_plus_one_and_group_per_player() {
             .all(|t| t.damage_event.unwrap().dealer.is_some())
     );
     g.state.pending_triggers.clear();
-    g.state.objects[a as usize].counters = Counters {
-        stun: 1,
-        ..Counters::default()
-    };
+    g.set_counters(
+        a,
+        Counters {
+            stun: 1,
+            ..Counters::default()
+        },
+    );
     let event = hit(&g, a, Player::P1, 1, true);
     g.apply_damage_batch(&[event]);
     assert_eq!(count(&g, haliya), 0);

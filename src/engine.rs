@@ -2,14 +2,14 @@ const STARTING_LIFE: i128 = 20;
 use crate::capacity::{CapacityExt, CapacitySignal};
 use crate::cards::{
     ActivatedAbility, ActivationCost, ActivationGuard, ActivationOrigin, AdditionalCost,
-    AmountValue, BattlefieldFilter, CastRelation, CostTurn, CountFilter, CountZone, CounterKind,
-    CounterSubject, Counters, CreatureFilter, DamageQualification, DamageSubject, Effect,
-    EffectChoiceKind, EmblemInfo, EntryCounterAmount, EntryPredicate, EntryTapped, Instruction,
-    ManaCost, ManaProduction, MillAmount, MilledCount, MilledDestination, MilledFilter,
-    MilledSelectionSpec, PlayerSet, RecoveryFilter, ResolvedStatValue, SacrificeFilter, SearchSpec,
-    SpellMode, StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetGroupConstraint,
-    TargetPlan, TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep,
-    payments,
+    AmountValue, BattlefieldFilter, CastRelation, CostTurn, CountFilter, CountZone, CounterAmounts,
+    CounterKind, CounterSubject, Counters, CreatureFilter, DamageQualification, DamageSubject,
+    Effect, EffectChoiceKind, EmblemInfo, EntryCounterAmount, EntryPredicate, EntryTapped,
+    InitialCounters, Instruction, ManaCost, ManaProduction, MillAmount, MilledCount,
+    MilledDestination, MilledFilter, MilledSelectionSpec, NamedCounters, PlayerSet, RecoveryFilter,
+    ResolvedStatValue, SacrificeFilter, SearchSpec, SpellMode, StatExpr, StatValue, Stats,
+    StepGuard, StepValue, Subject, TargetGroupConstraint, TargetPlan, TargetPredicate, TargetRule,
+    TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
 #[path = "engine_milled_selection.rs"]
 mod milled_selection;
@@ -103,6 +103,8 @@ mod draw_events;
 mod endure;
 #[path = "engine_funding.rs"]
 mod funding;
+#[path = "engine_live_counters.rs"]
+mod live_counters;
 pub use convoke::{ConvokeChoiceView, ConvokeContribution, ConvokePaymentView};
 #[path = "engine_resolution_mana.rs"]
 mod resolution_mana;
@@ -172,7 +174,7 @@ pub type CardId = u32;
 
 /// Rules identity within a game branch. Every zone change creates a new incarnation.
 /// References are scoped to their game/snapshot; revision guards still protect actions.
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub struct ObjectRef {
     pub card: CardId,
     pub generation: u64,
@@ -610,7 +612,7 @@ struct Object {
     deathtouch_since_sba: bool,
     growth: Stats,
     gained_keywords: Keywords,
-    counters: Counters,
+    counters: InitialCounters,
     used_abilities: u64,
     attached_to: Option<ObjectRef>,
 }
@@ -1103,7 +1105,7 @@ impl DamageFacts {
             granted_subtypes: view.granted_subtypes,
             card: view.card,
             battlefield: view.zone == Zone::Battlefield,
-            counter: view.counters.total() > 0,
+            counter: view.counters.has_any(),
             plus_one: view.counters.plus_one > 0,
             modified: view.modified,
             attacking: view.attacking,
@@ -1326,6 +1328,7 @@ struct State {
     saddle_payment: Option<Box<saddle::SaddlePayment>>,
     crew: Option<Box<crew::CrewState>>,
     objects: SharedVec<Object>,
+    named_counters: Option<SharedVec<live_counters::NamedCounterRow>>,
     attacked_this_turn: SharedVec<ObjectRef>,
     creatures_died_this_turn: u64,
     free_tokens: Vec<CardId>,
@@ -1489,7 +1492,7 @@ pub struct PlayerView {
     pub hand_count: usize,
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct PaymentRequestView {
     pub required: Mana,
     pub generic: u32,
@@ -1498,7 +1501,7 @@ pub struct PaymentRequestView {
 }
 
 /// The choosing player's uncommitted announcement costs.
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct PendingPaymentView {
     pub mana: Mana,
     pub counters: Counters,
@@ -1828,7 +1831,7 @@ impl Game {
                     deathtouch_since_sba: false,
                     growth: Stats::default(),
                     gained_keywords: Keywords::NONE,
-                    counters: Counters::default(),
+                    counters: InitialCounters::default(),
                     used_abilities: 0,
                     attached_to: None,
                 });
@@ -1843,6 +1846,7 @@ impl Game {
                 casting_prohibited: false,
                 replacements: None,
                 objects: objects.into(),
+                named_counters: None,
                 attacked_this_turn: Vec::new().into(),
                 creatures_died_this_turn: 0,
                 free_tokens: Vec::new(),
@@ -2061,6 +2065,10 @@ impl Game {
                 || self.state.announcing.is_some()
                 || self.state.entry_batch.is_some())
                 && (!self.state.objects.ptr_eq(&checkpoint.objects)
+                    || !live_counters::same_storage(
+                        &self.state.named_counters,
+                        &checkpoint.named_counters,
+                    )
                     || self.state.active != checkpoint.active
                     || self.state.attackers != checkpoint.attackers
                     || self.state.static_sources != checkpoint.static_sources
@@ -4195,7 +4203,7 @@ impl Game {
         obj.deathtouch_since_sba = false;
         obj.growth = Stats::default();
         obj.gained_keywords = Keywords::NONE;
-        obj.counters = counters;
+        obj.counters = counters.hot();
         obj.used_abilities = 0;
         obj.attached_to = None;
         // This ordered index enumerates library cards, not transient tokens.
@@ -4204,8 +4212,10 @@ impl Game {
         if destination == Zone::Library && !obj.card.is_token() {
             self.state.players[obj.owner.index()].library.push(id);
         }
+        let entry_identity = (obj.controller, obj.card);
+        self.set_counters(id, counters);
         if destination == Zone::Battlefield {
-            let (owner, card) = (obj.controller, obj.card);
+            let (owner, card) = entry_identity;
             self.record_nonland_entry(owner, card);
             self.register_battlefield_sources(id);
         }
@@ -5007,7 +5017,7 @@ impl Game {
                 s.announcing.as_ref().and_then(|announcement| {
                     announcement.payment.map(|mana| PendingPaymentView {
                         mana,
-                        counters: announcement.counter_payment,
+                        counters: announcement.counter_payment.clone(),
                     })
                 })
             } else {
@@ -5243,6 +5253,10 @@ impl Game {
             })
             + 2 * std::mem::size_of::<Vec<CardId>>()
             + s.objects.len() * std::mem::size_of::<Object>()
+            + live_counters::owned_bytes(&s.named_counters)
+            + s.announcing
+                .as_ref()
+                .map_or(0, |a| a.counter_payment.owned_bytes())
             + s.exile_links.len() * std::mem::size_of::<ExileLink>()
             + s.exile_permissions.len() * std::mem::size_of::<ExilePlayPermission>()
             + s.adventures.as_ref().map_or(0, |p| p.bytes())
@@ -6085,6 +6099,10 @@ mod fdn_library_eight_tests;
 #[cfg(test)]
 #[path = "engine_object_name_tests.rs"]
 mod object_name_tests;
+
+#[cfg(test)]
+#[path = "engine_named_counter_tests.rs"]
+mod named_counter_tests;
 
 #[cfg(test)]
 #[path = "engine_attack_requirement_tests.rs"]

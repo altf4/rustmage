@@ -41,7 +41,7 @@ def render(metadata,records,version):
     registry=['// Module links only. Edit the independent per-set Rust files.']
     for c in cards:
         name=c['module'];path=c['path']
-        registry.extend([f'pub(super) mod {name} {{','    use crate::cards::*;', '    // Import only shared helpers: a sibling glob creates quadratic name resolution.', '    #[allow(unused_imports)]', '    use super::{CardRules, CardExtras, generic, one, object};',f'    include!("../card_definitions/{path}");','}'])
+        registry.extend([f'pub(super) mod {name} {{','    use crate::cards::*;', '    #[allow(unused_imports)]', '    use crate::cards::InitialCounters as Counters;', '    // Import only shared helpers: a sibling glob creates quadratic name resolution.', '    #[allow(unused_imports)]', '    use super::{CardRules, CardExtras, generic, one, object};',f'    include!("../card_definitions/{path}");','}'])
     registry.extend(['#[rustfmt::skip]',f'pub(super) static RULES: [&CardRules; {n}] = ['])
     registry.extend(f'    &{c["module"]}::RULES,'for c in cards)
     registry.extend(['];',"pub(super) fn mode_costs(card: Card) -> Option<&'static [ManaCost]> { RULES[card.index()].mode_costs }"])

@@ -113,7 +113,7 @@ fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
             },
             _ => None,
         };
-        let mut expected = old.counters;
+        let mut expected = old.counters.clone();
         match mode {
             Some(0) => expected.plus_one += 1,
             Some(1) => expected.minus_one += 2,
@@ -147,14 +147,7 @@ fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
         assert_eq!(created.len(), 4);
         assert!(created.iter().all(|o| o.owner == item.controller
             && o.card.has_subtype("Hero")
-            && o.counters
-                == Counters {
-                    lore: 0,
-                    loyalty: 0,
-                    plus_one: 1,
-                    minus_one: 0,
-                    stun: 0
-                }));
+            && o.counters == Counters::of(rustmage::CounterKind::PlusOne, 1)));
         checked += 4;
     }
     checked

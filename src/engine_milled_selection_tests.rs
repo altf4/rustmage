@@ -382,9 +382,7 @@ fn beluna_uses_actual_spell_face_and_glamdring_locks_layered_power_before_mana_s
             .find(|c| c.token_info().is_some_and(|i| i.name == "Treasure Token"))
             .unwrap();
         let token = spawn(&mut g, p, treasure, Zone::Battlefield);
-        g.state.objects[bunny as usize]
-            .counters
-            .add(CounterKind::MinusOne, 1);
+        g.add_counter(bunny, CounterKind::MinusOne, 1);
         equip(&mut g, sword, bunny);
         priority(&mut g, p);
         assert_eq!(g.stats(bunny).power, 2);

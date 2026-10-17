@@ -81,9 +81,7 @@ fn loyalty_entry_and_zone_resets_are_separate_from_turn_and_cleanup() {
     let mut g = scenario();
     let w = walker(&mut g, Player::P1, "Vivien Reid");
     assert_eq!(g.object_view(w).counters.loyalty, 5);
-    g.state.objects[w as usize]
-        .counters
-        .add(CounterKind::Loyalty, 3);
+    g.add_counter(w, CounterKind::Loyalty, 3);
     g.begin_turn();
     assert_eq!(g.object_view(w).counters.loyalty, 8);
     g.finish_cleanup();
@@ -290,9 +288,10 @@ fn loyalty_is_in_all_kind_counter_doubling_and_any_kind_payment_space() {
         minus_one: 1,
         stun: 1,
         loyalty: 1,
+        ..Counters::default()
     };
     let mut payments = Vec::new();
-    counter_payments(cost, available, |paid| {
+    counter_payments(cost, &available, |paid| {
         payments.push(paid);
         false
     });
@@ -301,7 +300,7 @@ fn loyalty_is_in_all_kind_counter_doubling_and_any_kind_payment_space() {
     assert!(payments.iter().all(|p| p.total() == 2));
     cost.remove = Some((Some(CounterKind::Loyalty), 1));
     payments.clear();
-    counter_payments(cost, available, |paid| {
+    counter_payments(cost, &available, |paid| {
         payments.push(paid);
         false
     });

@@ -19,7 +19,7 @@ impl Game {
             deathtouch_since_sba: false,
             growth: Stats::default(),
             gained_keywords: Keywords::NONE,
-            counters: Counters::default(),
+            counters: InitialCounters::default(),
             used_abilities: 0,
             attached_to: None,
         });

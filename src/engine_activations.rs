@@ -94,6 +94,7 @@ impl Game {
             && self.activation_guard_available(ability.guard, actor)
             && Self::object_activation_available_with_kinds(
                 &self.state.objects[card as usize],
+                self.counter_amounts(card),
                 self.current_kinds(card),
                 self.keywords(card),
                 self.state.players[actor.index()].life,
@@ -116,6 +117,10 @@ impl Game {
     ) -> bool {
         Self::object_activation_available_with_kinds(
             object,
+            CounterAmounts {
+                hot: object.counters,
+                named: None,
+            },
             object.card.kind_mask(),
             keywords,
             life,
@@ -129,6 +134,7 @@ impl Game {
     #[allow(clippy::too_many_arguments)]
     pub(super) fn object_activation_available_with_kinds(
         object: &Object,
+        counters: CounterAmounts<'_>,
         kinds: u16,
         keywords: Keywords,
         life: i128,
@@ -160,7 +166,7 @@ impl Game {
             return false;
         }
         if let Some((kind, amount)) = ability.cost.remove {
-            let count = object.counters.available(kind);
+            let count = counters.available(kind);
             if count < u128::from(amount) {
                 return false;
             }
@@ -234,154 +240,164 @@ impl Game {
                 }
                 continue;
             }
-            let done = counter_payments(ability.cost, object.counters, |counter_payment| {
-                let fundable = || {
-                    ability.cost.mana_options().any(|cost| {
-                        self.activation_can_fund(
-                            FundingGoal {
-                                reserve: None,
-                                actor,
-                                required: cost.colored,
-                                generic: cost.generic,
-                                source: Some((
-                                    self.object_ref(card),
-                                    index as u16,
-                                    counter_payment,
-                                    object.card,
-                                )),
-                            },
-                            ability.cost.additional,
-                        )
-                    })
-                };
-                let modes = match ability.program.first() {
-                    Some(Instruction::Modal(modes)) => Some(*modes),
-                    _ => None,
-                };
-                let targets_available = modes.map_or_else(
-                    || self.targets_available(ability.targets, actor, self.object_ref(card)),
-                    |modes| {
-                        modes.iter().any(|mode| {
-                            self.targets_available(mode.targets, actor, self.object_ref(card))
-                        })
-                    },
-                );
-                if targets_available && fundable() {
-                    let done = if let Some(production) = ability.mana_production() {
-                        production.in_world(self, card).visit(|production| {
-                            emit(Action::AnnounceMana {
-                                card,
-                                ability: index as u16,
-                                counter_payment,
-                                production,
-                            })
-                        })
-                    } else {
-                        emit(Action::AnnounceActivate {
-                            card,
-                            ability: index as u16,
-                            counter_payment,
+            let done = counter_payments(
+                ability.cost,
+                self.counter_amounts(card),
+                |counter_payment| {
+                    let fundable = || {
+                        ability.cost.mana_options().any(|cost| {
+                            self.activation_can_fund(
+                                FundingGoal {
+                                    reserve: None,
+                                    actor,
+                                    required: cost.colored,
+                                    generic: cost.generic,
+                                    source: Some((
+                                        self.object_ref(card),
+                                        index as u16,
+                                        counter_payment.clone(),
+                                        object.card,
+                                    )),
+                                },
+                                ability.cost.additional,
+                            )
                         })
                     };
-                    if done {
-                        return true;
+                    let modes = match ability.program.first() {
+                        Some(Instruction::Modal(modes)) => Some(*modes),
+                        _ => None,
+                    };
+                    let targets_available = modes.map_or_else(
+                        || self.targets_available(ability.targets, actor, self.object_ref(card)),
+                        |modes| {
+                            modes.iter().any(|mode| {
+                                self.targets_available(mode.targets, actor, self.object_ref(card))
+                            })
+                        },
+                    );
+                    if targets_available && fundable() {
+                        let done = if let Some(production) = ability.mana_production() {
+                            production.in_world(self, card).visit(|production| {
+                                emit(Action::AnnounceMana {
+                                    card,
+                                    ability: index as u16,
+                                    counter_payment: counter_payment.clone(),
+                                    production,
+                                })
+                            })
+                        } else {
+                            emit(Action::AnnounceActivate {
+                                card,
+                                ability: index as u16,
+                                counter_payment: counter_payment.clone(),
+                            })
+                        };
+                        if done {
+                            return true;
+                        }
                     }
-                }
-                // A modal activation must choose its mode before targets and
-                // costs. Legacy direct actions cannot encode that declaration.
-                if modes.is_some() {
-                    return false;
-                }
-                // Direct actions have no owned external-cost selection.
-                if ability.cost.additional.is_some() {
-                    return false;
-                }
-                let mut done = false;
-                let mut seen = std::collections::HashSet::new();
-                for cost in ability.cost.mana_options() {
-                    payments(
-                        self.state.players[actor.index()].mana,
-                        cost.colored,
-                        cost.generic,
-                        |payment| {
-                            if done
-                                || (!ability.cost.alternatives.is_empty() && !seen.insert(payment))
-                            {
-                                return;
-                            }
-                            if let Some(production) = ability.mana_production() {
-                                done = production.in_world(self, card).visit(|production| {
-                                    emit(Action::ActivateMana {
-                                        card,
-                                        ability: index as u16,
-                                        payment,
-                                        counter_payment,
-                                        production,
-                                    })
-                                });
-                                return;
-                            }
-                            let plan = ability.targets;
-                            let Some(spec) = plan.single() else {
-                                if self.targets_available(plan, actor, self.object_ref(card)) {
-                                    done = emit(Action::BeginActivate {
-                                        card,
-                                        ability: index as u16,
-                                        payment,
-                                        counter_payment,
-                                    });
+                    // A modal activation must choose its mode before targets and
+                    // costs. Legacy direct actions cannot encode that declaration.
+                    if modes.is_some() {
+                        return false;
+                    }
+                    // Direct actions have no owned external-cost selection.
+                    if ability.cost.additional.is_some() {
+                        return false;
+                    }
+                    let mut done = false;
+                    let mut seen = std::collections::HashSet::new();
+                    for cost in ability.cost.mana_options() {
+                        payments(
+                            self.state.players[actor.index()].mana,
+                            cost.colored,
+                            cost.generic,
+                            |payment| {
+                                if done
+                                    || (!ability.cost.alternatives.is_empty()
+                                        && !seen.insert(payment))
+                                {
+                                    return;
                                 }
-                                return;
-                            };
-                            if spec.max > 1 || (spec.max > 0 && ability.cost.remove.is_some()) {
-                                let mut count = 0;
-                                self.visit_targets(spec.rule, actor, self.object_ref(card), |_| {
-                                    count += 1;
-                                    false
-                                });
-                                if count >= usize::from(spec.min) {
-                                    done = emit(Action::BeginActivate {
-                                        card,
-                                        ability: index as u16,
-                                        payment,
-                                        counter_payment,
+                                if let Some(production) = ability.mana_production() {
+                                    done = production.in_world(self, card).visit(|production| {
+                                        emit(Action::ActivateMana {
+                                            card,
+                                            ability: index as u16,
+                                            payment,
+                                            counter_payment: counter_payment.clone(),
+                                            production,
+                                        })
                                     });
+                                    return;
                                 }
-                            } else {
-                                if spec.min == 0 {
-                                    done = emit(Action::Activate {
-                                        card,
-                                        ability: index as u16,
-                                        target: None,
-                                        payment,
-                                        counter_payment,
-                                    });
-                                }
-                                if !done && spec.max > 0 {
-                                    done = self.visit_targets(
+                                let plan = ability.targets;
+                                let Some(spec) = plan.single() else {
+                                    if self.targets_available(plan, actor, self.object_ref(card)) {
+                                        done = emit(Action::BeginActivate {
+                                            card,
+                                            ability: index as u16,
+                                            payment,
+                                            counter_payment: counter_payment.clone(),
+                                        });
+                                    }
+                                    return;
+                                };
+                                if spec.max > 1 || (spec.max > 0 && ability.cost.remove.is_some()) {
+                                    let mut count = 0;
+                                    self.visit_targets(
                                         spec.rule,
                                         actor,
                                         self.object_ref(card),
-                                        |target| {
-                                            emit(Action::Activate {
-                                                card,
-                                                ability: index as u16,
-                                                target: Some(target),
-                                                payment,
-                                                counter_payment,
-                                            })
+                                        |_| {
+                                            count += 1;
+                                            false
                                         },
                                     );
+                                    if count >= usize::from(spec.min) {
+                                        done = emit(Action::BeginActivate {
+                                            card,
+                                            ability: index as u16,
+                                            payment,
+                                            counter_payment: counter_payment.clone(),
+                                        });
+                                    }
+                                } else {
+                                    if spec.min == 0 {
+                                        done = emit(Action::Activate {
+                                            card,
+                                            ability: index as u16,
+                                            target: None,
+                                            payment,
+                                            counter_payment: counter_payment.clone(),
+                                        });
+                                    }
+                                    if !done && spec.max > 0 {
+                                        done = self.visit_targets(
+                                            spec.rule,
+                                            actor,
+                                            self.object_ref(card),
+                                            |target| {
+                                                emit(Action::Activate {
+                                                    card,
+                                                    ability: index as u16,
+                                                    target: Some(target),
+                                                    payment,
+                                                    counter_payment: counter_payment.clone(),
+                                                })
+                                            },
+                                        );
+                                    }
                                 }
-                            }
-                        },
-                    );
-                    if done {
-                        break;
+                            },
+                        );
+                        if done {
+                            break;
+                        }
                     }
-                }
-                done
-            });
+                    done
+                },
+            );
             if done {
                 return true;
             }
@@ -458,16 +474,13 @@ impl Game {
             return;
         }
         object.used_abilities |= 1u64 << ability;
-        object.counters.plus_one -= counter_payment.plus_one;
-        object.counters.minus_one -= counter_payment.minus_one;
-        object.counters.stun -= counter_payment.stun;
-        object.counters.loyalty -= counter_payment.loyalty;
-        object.counters.lore -= counter_payment.lore;
+        self.pay_counters(item.card, &counter_payment);
+        let object = &mut self.state.objects[item.card as usize];
         if let Some(change) = cost.loyalty {
             if change < 0 {
                 object.counters.loyalty -= u64::from(change.unsigned_abs());
             } else {
-                object.counters.add(CounterKind::Loyalty, change as u64);
+                self.add_counter(item.card, CounterKind::Loyalty, change as u64);
             }
         }
         // Capture the tap event before a subsequent sacrifice/discard/exile
@@ -486,11 +499,12 @@ impl Game {
 }
 
 /// Fixed small counter costs enumerate allocations, not subsets of individual counters.
-pub(super) fn counter_payments(
+pub(super) fn counter_payments<'a>(
     cost: ActivationCost,
-    available: Counters,
+    available: impl Into<CounterAmounts<'a>>,
     mut emit: impl FnMut(Counters) -> bool,
 ) -> bool {
+    let available = available.into();
     let Some((kind, amount)) = cost.remove else {
         return emit(Counters::default());
     };
@@ -506,8 +520,8 @@ pub(super) fn counter_payments(
     fn visit(
         index: usize,
         left: u64,
-        available: Counters,
-        paid: Counters,
+        available: CounterAmounts<'_>,
+        paid: &mut Counters,
         emit: &mut impl FnMut(Counters) -> bool,
     ) -> bool {
         let kind = CounterKind::ALL[index];
@@ -515,18 +529,20 @@ pub(super) fn counter_payments(
             if left > available.get(kind) {
                 return false;
             }
-            let mut paid = paid;
             paid.add(kind, left);
-            return emit(paid);
+            let done = emit(paid.clone());
+            paid.remove(kind, left);
+            return done;
         }
         for count in 0..=left.min(available.get(kind)) {
-            let mut paid = paid;
             paid.add(kind, count);
-            if visit(index + 1, left - count, available, paid, emit) {
+            let done = visit(index + 1, left - count, available, paid, emit);
+            paid.remove(kind, count);
+            if done {
                 return true;
             }
         }
         false
     }
-    visit(0, amount, available, Counters::default(), &mut emit)
+    visit(0, amount, available, &mut Counters::default(), &mut emit)
 }

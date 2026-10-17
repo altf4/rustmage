@@ -132,7 +132,7 @@ impl Game {
             self.additional_candidate(spec, actor, self.object_ref(card), object)
                 && self.can_fund(FundingGoal {
                     reserve: Some((object, spec)),
-                    ..base
+                    ..base.clone()
                 })
         })
     }
@@ -144,7 +144,7 @@ impl Game {
         let Some(spec) = spec else {
             return self.can_fund(goal);
         };
-        let source = goal.source.expect("activation source").0;
+        let source = goal.source.as_ref().expect("activation source").0;
         if let Some(n) = evidence::threshold(spec) {
             return self.can_collect_evidence(goal.actor, n) && self.can_fund(goal);
         }
@@ -156,7 +156,7 @@ impl Game {
             self.additional_candidate(spec, goal.actor, source, object)
                 && self.can_fund(FundingGoal {
                     reserve: Some((object, spec)),
-                    ..goal
+                    ..goal.clone()
                 })
         })
     }

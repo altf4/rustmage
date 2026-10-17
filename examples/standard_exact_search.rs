@@ -421,7 +421,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 optional[usize::from(accept)] += 1;
             }
             if let (Action::PayCosts { payment, .. }, Some(ann), Some(req)) =
-                (&a, &before.announcing, before.payment_request)
+                (&a, &before.announcing, before.payment_request.as_ref())
             {
                 assert_eq!(
                     payment.iter().map(|x| u64::from(*x)).sum::<u64>(),

@@ -330,7 +330,7 @@ impl CharacteristicQuery<'_> {
             let object = &self.state.objects[source as usize];
             if self.is_creature(id) && target.controller == object.controller {
                 for &(kind, grant) in object.card.counter_keyword_grants() {
-                    if target.counters.get(kind) > 0 {
+                    if self.counter_count(id, kind) > 0 {
                         keywords = keywords.union(grant);
                     }
                 }
@@ -351,7 +351,7 @@ impl CharacteristicQuery<'_> {
                             if object.controller == self.state.active
                                 && target.controller == object.controller
                                 && self.is_creature(id)
-                                && target.counters.get(kind) > 0 =>
+                                && self.counter_count(id, kind) > 0 =>
                         {
                             keywords = keywords.union(grant)
                         }
@@ -645,7 +645,7 @@ impl CharacteristicQuery<'_> {
             damage: obj.damage,
             damaged_this_turn: obj.damaged_this_turn,
             dealt_damage_this_turn: obj.dealt_damage_this_turn,
-            counters: obj.counters,
+            counters: self.counter_amounts(id).to_owned(),
             used_abilities: obj.used_abilities,
             exhausted_abilities: obj.used_abilities & obj.card.exhaust_mask(),
             attached_to: obj.attached_to,

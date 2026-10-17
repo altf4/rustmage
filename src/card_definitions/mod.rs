@@ -1,4 +1,5 @@
 //! Directly authored, compile-time card behavior. No rules text is interpreted here.
+use super::InitialCounters as Counters;
 use super::*;
 
 pub(super) struct CardRules {

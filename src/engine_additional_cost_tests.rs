@@ -221,17 +221,17 @@ fn reserved_treasure_cannot_be_spent_twice_and_prefunded_reservations_are_valida
         source: None,
         reserve: Some((g.object_ref(token), spec)),
     };
-    assert!(!g.can_fund(goal));
+    assert!(!g.can_fund(goal.clone()));
     let second = spawn(&mut g, Player::P0, factory, Zone::Battlefield);
-    assert!(g.can_fund(goal));
+    assert!(g.can_fund(goal.clone()));
     // Two otherwise identical resources must retain distinct reservation roles in search keys.
     g.move_object(second, Zone::Graveyard);
     g.state.players[0].mana[2] = 1;
-    assert!(g.can_fund(goal));
+    assert!(g.can_fund(goal.clone()));
     g.move_object(token, Zone::Graveyard);
-    assert!(!g.can_fund(goal));
+    assert!(!g.can_fund(goal.clone()));
     g.move_object(token, Zone::Battlefield);
-    assert!(!g.can_fund(goal));
+    assert!(!g.can_fund(goal.clone()));
 }
 #[test]
 fn paying_cost_can_suspend_for_returned_land_entry_before_cast_completion() {
