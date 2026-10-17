@@ -328,7 +328,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && idx(s.source_card).is_some()
             {
                 let want = *costs.entry(s.id).or_insert_with(|| expected(s, &b));
-                let request = b.payment_request.unwrap();
+                let request = b.payment_request.as_ref().unwrap();
                 assert_eq!((request.required, request.generic), (want.0, want.1));
                 locked += 1;
             }
