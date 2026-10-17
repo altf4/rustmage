@@ -365,6 +365,7 @@ fn scaled_amount_ir_rejects_unrepresentable_damage_gain_and_multiplication_atomi
             selection: None,
             target_library: None,
             search: None,
+            optional_searches: None,
             choice: None,
         });
         g.run_program();

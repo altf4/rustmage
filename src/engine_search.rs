@@ -141,3 +141,71 @@ impl Game {
         self.run_program();
     }
 }
+
+/// Public saved recipients: independent of the land/source after destruction.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct OptionalSearchSequence {
+    pub players: [Player; 2],
+    pub next: usize,
+}
+impl Game {
+    pub(super) fn destroy_land_and_search(&mut self, item: &SpellView) {
+        let Some(bound) = item
+            .targets
+            .first()
+            .copied()
+            .filter(|bound| self.same_target_object(*bound))
+        else {
+            return;
+        };
+        let Target::Card(id) = bound.target else {
+            return;
+        };
+        let affected = self.state.objects[id as usize].controller;
+        self.state.resolving.as_mut().unwrap().optional_searches =
+            Some(Box::new(OptionalSearchSequence {
+                players: [affected, item.controller],
+                next: 0,
+            }));
+        if !self.keywords(id).contains(Keywords::INDESTRUCTIBLE) {
+            self.move_target_batch(&[bound], Zone::Graveyard);
+        }
+    }
+    pub(super) fn advance_optional_searches(&mut self) -> bool {
+        let resolution = self.state.resolving.as_mut().unwrap();
+        let Some(sequence) = resolution.optional_searches.as_ref() else {
+            return false;
+        };
+        if resolution.search.is_some() {
+            return false;
+        }
+        if let Some(&player) = sequence.players.get(sequence.next) {
+            self.state.pending = Pending::OptionalSearch(player);
+            true
+        } else {
+            resolution.optional_searches = None;
+            false
+        }
+    }
+    pub(super) fn choose_optional_search(&mut self, player: Player, accept: bool) {
+        let resolution = self.state.resolving.as_mut().unwrap();
+        resolution.optional_searches.as_mut().unwrap().next += 1;
+        if accept {
+            resolution.search = Some(Box::new(SearchChoice {
+                spec: SearchSpec {
+                    filter: crate::SearchFilter::BasicLand,
+                    maximum: 1,
+                    destination: SearchDestination::Battlefield,
+                    tapped: false,
+                    reveal: false,
+                },
+                minimum: 0,
+                selected: Vec::new(),
+                battlefield: None,
+            }));
+            self.state.pending = Pending::EffectSearch { player };
+        } else {
+            self.run_program();
+        }
+    }
+}

@@ -96,6 +96,7 @@ fn program_for(
         selection: None,
         target_library: None,
         search: None,
+        optional_searches: None,
         choice: None,
     });
     g.run_program();

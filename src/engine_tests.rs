@@ -222,6 +222,8 @@ fn mulligan_round_waits_for_both_declarations_then_bottoms_before_next_round() {
     }
     assert_eq!(game.hand_count(Player::P0), 5);
     act(&mut game, Action::Keep);
+    act(&mut game, Action::FinishOpeningHand);
+    act(&mut game, Action::FinishOpeningHand);
     assert_eq!(game.state.step, Step::Upkeep);
     assert_invariants(&game);
 }
@@ -245,6 +247,8 @@ fn seven_mulligans_end_with_zero_cards_and_no_eighth_mulligan() {
             act(&mut game, Action::Mulligan);
         }
     }
+    act(&mut game, Action::FinishOpeningHand);
+    act(&mut game, Action::FinishOpeningHand);
     assert_eq!(game.state.step, Step::Upkeep);
     assert!(!game.legal_actions().contains(&Action::Mulligan));
     assert_invariants(&game);
@@ -255,6 +259,8 @@ fn first_player_skips_only_first_draw_and_other_player_draws() {
     let mut game = fresh();
     act(&mut game, Action::Keep);
     act(&mut game, Action::Keep);
+    act(&mut game, Action::FinishOpeningHand);
+    act(&mut game, Action::FinishOpeningHand);
     pass_pair(&mut game);
     assert_eq!(game.state.step, Step::Main1);
     assert_eq!(game.hand_count(Player::P0), 7);

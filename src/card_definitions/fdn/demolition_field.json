@@ -8,5 +8,30 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ff72ea3ecdea1092b698cb39e7dfb10dfd063850f03ea7d790c80a3eed464df9"
   },
-  "physical_metadata_sha256": "bcf1532b85f2f8a9cd0217f61b36f3ba109edd94caa7f97e0d63b01f92fbf620"
+  "physical_metadata_sha256": "bcf1532b85f2f8a9cd0217f61b36f3ba109edd94caa7f97e0d63b01f92fbf620",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DemolitionField.java",
+  "java_sha256": "51f3b291beb2297f3069a1f281bfb45d9bec62b6be04e697c121ffd397b861b3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayEffect.java",
+      "sha256": "0bb9a67ad4f01956cd50eb190b2086d6d070c993cccbecece569b37726129394"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayTargetControllerEffect.java",
+      "sha256": "9926405e859380634a57206fa5c0fa5a182f5cb83fa5023a2126b1b134fd7ce2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    }
+  ]
 }

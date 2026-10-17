@@ -70,6 +70,7 @@ impl EntryBatch {
             + self.choices.len() * std::mem::size_of::<usize>()
             + self.counter_order.len() * std::mem::size_of::<usize>()
             + self.timestamp_order.len() * std::mem::size_of::<usize>()
+            + self.resume.as_ref().map_or(0, Pending::owned_bytes)
             + self.replacement_resume.as_ref().map_or(0, |f| f.bytes())
     }
 }

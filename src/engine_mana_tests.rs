@@ -231,6 +231,7 @@ fn resolution_mana_choice_is_private_owned_and_replayable_before_later_instructi
         selection: None,
         target_library: None,
         search: None,
+        optional_searches: None,
         choice: None,
     });
     game.run_program();

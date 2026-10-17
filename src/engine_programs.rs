@@ -22,6 +22,7 @@ pub(super) struct Resolution {
     pub library: Option<LibraryChoice>,
     pub selection: Option<Box<super::library_selection::LibrarySelection>>,
     pub search: Option<Box<super::search::SearchChoice>>,
+    pub optional_searches: Option<Box<super::search::OptionalSearchSequence>>,
     pub choice: Option<Box<super::effect_choices::EffectChoice>>,
 }
 
@@ -1312,6 +1313,7 @@ impl Game {
             selection: None,
             target_library: None,
             search: None,
+            optional_searches: None,
             choice: None,
         });
         self.run_program();
@@ -1403,6 +1405,9 @@ impl Game {
                     .mana_payment
                     .is_some()
             {
+                return;
+            }
+            if self.advance_optional_searches() {
                 return;
             }
             self.finish_entered_library_selection();
@@ -2110,6 +2115,7 @@ impl Game {
                         return;
                     }
                 },
+                Instruction::DestroyLandAndSearch => self.destroy_land_and_search(&item),
                 Instruction::Search(spec) | Instruction::SearchRequired(spec) => {
                     let minimum = if matches!(instruction, Instruction::SearchRequired(_)) {
                         assert_eq!(

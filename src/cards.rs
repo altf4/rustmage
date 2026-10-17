@@ -819,6 +819,8 @@ pub(crate) enum Instruction {
     Scry(u16),
     Surveil(u16),
     Search(SearchSpec),
+    /// Capture the destroyed land's controller, then offer both optional basic searches.
+    DestroyLandAndSearch,
     /// Unqualified search: find the maximum, or every remaining card if fewer.
     /// Existing qualified searches retain their legal failure-to-find behavior.
     SearchRequired(SearchSpec),
@@ -2601,6 +2603,11 @@ impl Card {
             counters.add(kind, amount);
         }
         counters
+    }
+    pub(crate) fn opening_hand_battlefield(self) -> bool {
+        authored::RULES[self.index()]
+            .extras
+            .opening_hand_battlefield
     }
     pub(crate) fn entry_choice(self) -> Option<EntryChoiceKind> {
         authored::RULES[self.index()].extras.entry_choice

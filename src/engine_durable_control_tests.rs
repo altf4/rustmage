@@ -37,6 +37,7 @@ fn resolve(g: &mut Game, item: SpellView, program: &'static [Instruction]) {
         selection: None,
         target_library: None,
         search: None,
+        optional_searches: None,
         choice: None,
     });
     g.run_program();

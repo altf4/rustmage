@@ -670,6 +670,7 @@ fn flat_if_else_offsets_and_scry_pc_keep_common_tail_outside_both_branches() {
             selection: None,
             target_library: None,
             search: None,
+            optional_searches: None,
             choice: None,
         });
         g.run_program();

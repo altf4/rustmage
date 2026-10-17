@@ -336,6 +336,7 @@ fn all_program_instructions_finish_before_loss_sba_even_across_discard() {
         selection: None,
         target_library: None,
         search: None,
+        optional_searches: None,
         choice: None,
     });
     game.run_program();
@@ -499,6 +500,7 @@ fn simultaneous_discards_keep_all_selections_private_until_committed() {
         selection: None,
         target_library: None,
         search: None,
+        optional_searches: None,
         choice: None,
     });
     game.run_program();
