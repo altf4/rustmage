@@ -103,6 +103,8 @@ fn selected_x_uses_inset_bb_cost_and_freezes_non_dragon_creatures_both_seats() {
             );
             act(&mut g, Action::AnnounceOmen { card: id });
             assert_eq!(g.observe(p).decision, "x");
+            assert!(g.observe(p.other()).x_choice.is_none());
+            assert!(g.observe(p.other()).actions.is_empty());
             assert_eq!(
                 g.x_choice().unwrap().intervals,
                 vec![XInterval {
@@ -350,5 +352,63 @@ fn scaled_temporary_mass_stats_expire_and_later_entrants_are_unaffected() {
         assert!(g.state.turn > turn);
         assert_eq!(g.stats(bear).toughness, 2);
         assert_eq!(g.stats(later).toughness, 2);
+    }
+}
+
+#[test]
+fn late_scaled_mass_overflow_restores_prior_recipients_stack_and_rng() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = spawn(&mut g, p, Card::from_name(NAME).unwrap(), Zone::Hand);
+        let first = spawn(
+            &mut g,
+            p,
+            Card::from_name("Bear Cub").unwrap(),
+            Zone::Battlefield,
+        );
+        let later = spawn(
+            &mut g,
+            p.other(),
+            Card::from_name("Bear Cub").unwrap(),
+            Zone::Battlefield,
+        );
+        act(&mut g, Action::AnnounceOmen { card: id });
+        act(&mut g, Action::ChooseX { value: 3 });
+        stack(&mut g, id);
+        g.state.objects[later as usize].growth.power = i128::MIN + 1;
+        act(&mut g, Action::Pass);
+        let before = g.snapshot();
+        let revision = g.revision();
+        let actor = g.actor().unwrap();
+        let views = [
+            serde_json::to_value(g.observe(p)).unwrap(),
+            serde_json::to_value(g.observe(p.other())).unwrap(),
+        ];
+        let mut child = {
+            let parent = g.clone();
+            let c = parent.clone();
+            drop(parent);
+            c
+        };
+        assert!(matches!(
+            g.apply(actor, Action::Pass),
+            Err(Error::CapacityExceeded(_))
+        ));
+        assert!(matches!(
+            child.apply(actor, Action::Pass),
+            Err(Error::CapacityExceeded(_))
+        ));
+        assert_eq!(g.snapshot(), before);
+        assert_eq!(g.snapshot(), child.snapshot());
+        assert_eq!(g.revision(), revision);
+        assert_eq!(
+            views,
+            [
+                serde_json::to_value(g.observe(p)).unwrap(),
+                serde_json::to_value(g.observe(p.other())).unwrap()
+            ]
+        );
+        assert_eq!(g.stats(first).toughness, 2);
+        assert_eq!(g.state.objects[id as usize].zone, Zone::Stack);
     }
 }

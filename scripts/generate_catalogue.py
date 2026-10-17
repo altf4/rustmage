@@ -3966,7 +3966,17 @@ def compile_catalogue(snapshot, target):
             pt = [0 if original[axis] == '*' else int(original[axis]) for axis in ('power','toughness')]
             if max(pt) <= 2**127-1:
                 vehicle_stats_rows.append(f'        {index} => Some(Stats {{ power: {pt[0]}, toughness: {pt[1]} }}),')
-        timing_seen = any(re.search(r'\b(?:cast|play)\b.*\bas though\b', line, flags=re.I) for line in original.get('oracle_text', '').splitlines())
+        timing_surface = original.get('oracle_text', '')
+        timing_seen = False
+        while True:
+            # Inspect each erasure stage: an outer reminder can surround a
+            # permission whose keywords themselves contain an inner reminder.
+            timing_seen |= re.search(r'\b(?:cast|play)\b.*\bas though\b',
+                                     ' '.join(timing_surface.split()), flags=re.I) is not None
+            stripped = re.sub(r'\([^()]*\)', '', timing_surface)
+            if stripped == timing_surface:break
+            timing_surface = stripped
+        # Detection never authenticates or changes the raw validation body.
         card, timing_grants = extract_cast_timing_grants(cards.get(name, {}))
         card, uncounterable = extract_uncounterable(card)
         card, entry_suppression = extract_entry_trigger_suppression(card)
