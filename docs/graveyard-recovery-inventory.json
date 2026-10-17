@@ -83,6 +83,14 @@
   "gated_dependencies": {
     "Morcant's Loyalist": "issue287: exact post-death source binding for another-target exclusion"
   },
-  "composed_main": "0977111f57734f6e4e22bf6c3c68a88358d29da9",
-  "composed_main_runtime_equivalent_to_baseline": true
+  "composed_main": "bece141f80a5efa5b5bea1798257d471db0c3d8e",
+  "composed_main_runtime_equivalent_to_baseline": false,
+  "historical_composed_main": "0977111f57734f6e4e22bf6c3c68a88358d29da9",
+  "historical_composed_main_runtime_equivalent_to_baseline": true,
+  "composed_parent_definitions": 5318,
+  "composed_parent_supported": 1832,
+  "composed_supported": 1850,
+  "composed_catalogue_fingerprint": "df39fdccc7a5d94c9778e482871b82dcc587619e389278c4835b98e81ce002ed",
+  "runtime_source": "024d25830d084bef99c2eeddc0a1b61a84295968",
+  "additional_regression_source": "8ad6ea2012b20aa7b312c6432bfb062bba93e35c"
 }
