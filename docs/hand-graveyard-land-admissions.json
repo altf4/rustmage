@@ -1,6 +1,6 @@
 {
   "issue": 336,
-  "parent": "ba3752a",
+  "parent": "dffafa6caaf7288ae8bbb8fa4c90b206e5960b94",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "purpose": "Complete remaining six physical bodies plus direct explicit Java imports; Beau token and its own explicit imports are separately included. No name-based admission permission or transitive closure claim.",
   "reserved_observation_schema": 101,
@@ -2475,5 +2475,6 @@
     "Michelangelo, Improviser": "Sneak plus creature-and/or-land multiple private choice.",
     "Spelunking": "Captured successful Cave land result and prospective untapped entry replacement.",
     "The Gitrog, Ravenous Ride": "Exact saddler sacrifice choice and power-LKI-bound draw/multiple-land placement."
-  }
+  },
+  "original_inventory_baseline": "ba3752a"
 }

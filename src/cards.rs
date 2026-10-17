@@ -691,6 +691,10 @@ pub(crate) enum Instruction {
     TopLibrary,
     AdditionalLandPlays(u64),
     OwnerLibrary,
+    ShuffleTargetIntoLibrary,
+    MultiplyTargetStats {
+        factor: u8,
+    },
     ReturnToBattlefield,
     ReturnToBattlefieldTapped,
     Destroy,
@@ -731,6 +735,39 @@ pub(crate) enum Instruction {
     May {
         skip: usize,
     },
+}
+
+/// Live static recipients use only earlier-layer facts; no derived-stat predicates.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum LiveStatRecipients {
+    Creatures {
+        relation: i8,
+        other: bool,
+        enchanted_by_controller: bool,
+    },
+    Attached,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum LiveStatValue {
+    Fixed(i128),
+    ControllerLife,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct LiveStatCondition {
+    pub subtype: &'static str,
+    pub negated: bool,
+}
+/// Immutable complete continuous-effect clause. Values and membership remain live.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct LiveStaticEffect {
+    pub recipients: LiveStatRecipients,
+    pub condition: Option<LiveStatCondition>,
+    pub power: Option<LiveStatValue>,
+    pub toughness: Option<LiveStatValue>,
+    pub bonus_power: i128,
+    pub bonus_toughness: i128,
+    pub keywords: Keywords,
+    pub cannot_block_subtype: Option<&'static str>,
 }
 
 /// Fixed additive layer-7c values, including asymmetric temporary modifiers.
@@ -1803,6 +1840,12 @@ impl Card {
     }
     pub(crate) fn additional_cost(self) -> Option<AdditionalCost> {
         generated::additional_cost(self)
+    }
+    pub(crate) fn live_static_effects(self) -> &'static [LiveStaticEffect] {
+        generated::live_static_effects(self)
+    }
+    pub(crate) fn tiered_costs(self) -> Option<&'static [ManaCost]> {
+        generated::tiered_costs(self)
     }
     pub(crate) fn base_stat_setter(self) -> Option<BaseStatSetter> {
         generated::base_stat_setter(self)

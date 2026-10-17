@@ -3,7 +3,7 @@ import copy,hashlib,json,subprocess,unittest
 from scripts import generate_catalogue as g
 from scripts import test_legacy_metadata as metadata
 from scripts.catalogue_preservation import canonical,assert_union
-PARENT='ba3752a'
+PARENT='dffafa6caaf7288ae8bbb8fa4c90b206e5960b94'
 class JointLandTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):
@@ -49,7 +49,7 @@ class JointLandTests(unittest.TestCase):
   self.assertTrue(all(after['tokens'].get(k)==v for k,v in before['tokens'].items()))
   after=copy.deepcopy(after);after['tokens']=copy.deepcopy(before['tokens'])
   proof=assert_union(before,after,changed={"Worldsoul's Rage#0",'Bonny Pall, Clearcutter#0'},added=new,helpers={('dynamic_stats',key),('x_symbols',"Worldsoul's Rage#0")},aliases={key.removesuffix('#0'):key})
-  self.assertEqual(proof['prior_helpers'],912)
+  self.assertEqual(proof['prior_helpers'],924)
   mutant=copy.deepcopy(after);mutant['definitions']['Plains#0']='unrelated mutation'
   with self.assertRaises(AssertionError):assert_union(before,mutant,changed={"Worldsoul's Rage#0",'Bonny Pall, Clearcutter#0'},added=new,helpers={('dynamic_stats',key),('x_symbols',"Worldsoul's Rage#0")},aliases={key.removesuffix('#0'):key})
  def test_remaining_four_full_bodies_stay_gated(self):

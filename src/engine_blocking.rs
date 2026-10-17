@@ -28,7 +28,8 @@ impl Game {
             return false;
         }
         let keywords = self.keywords(attacker);
-        if keywords.contains(Keywords::CANT_BE_BLOCKED)
+        if self.live_static_forbids_block(blocker, attacker)
+            || keywords.contains(Keywords::CANT_BE_BLOCKED)
             || keywords.contains(Keywords::NO_TOKEN_BLOCKERS) && b.card.is_token()
             || keywords.contains(Keywords::FLYING)
                 && !self

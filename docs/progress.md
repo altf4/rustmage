@@ -8,7 +8,7 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Requirement | Current evidence | Remaining work |
 | --- | --- | --- |
 | Full legal identity pool | 5,164 frozen oracle identities, Java reconciliation and native catalogue tests | Maintain reviewed data versions; implement missing Java-source cards directly |
-| All card semantics | Coverage manifest and runtime admission agree: 1,955 executable Standard identities | 3,209 identities; many reusable mechanics plus card-specific rules |
+| All card semantics | Coverage manifest and runtime admission agree: 1,968 executable Standard identities | 3,196 identities; many reusable mechanics plus card-specific rules |
 | Gameplay enforcement | Implemented timing, payment, targets, stack, source-aware damage, strike steps, 15 keywords, typed programs, trigger ordering and regression tests | Wider events/cross-group relationships, replacement/prevention, layers, wider counter mechanics, broader token abilities/copies, modes/costs, remaining keywords and mechanics |
 | In-process library | Rust rlib and C ABI/cdylib; Python ctypes tests including complete games | Batched/packed training interface and model hooks |
 | Branch/restore | Isolated COW object/library buffers, owned continuations, local RNG, reusable snapshots, replay/invariant tests | Cover every new continuation/mechanic; search over information sets |
@@ -323,3 +323,21 @@ Every896-file manifest/library is fixed, all jobs closed and terminal non-SO bui
 cleaned. Earlier prototype and new fixture failures retain their actual failed
 scopes in [the complete delivery record](resolved-base-stat-expressions.md).
 Two independent NONAUTHOR exact-final-head reviews remain required before merge.
+
+The [Tiered delivery](tiered-costs.md) composes actual schema98 main and adds all six complete Tiered bodies/eighteen mutually exclusive modes, plus complete Boros Charm and Epic Fight. Coverage is1,968/5,164 (3,196 gated),95 token recipes and schema99. The strict union preserves all5,324 other definitions, all912 inherited helpers and every color/alias/inline flag/token recipe; only six Tiered-cost helper arms are added. Final validation passes1,900 native tests, all-target Clippy/fmt/generator,40 affected compiler/provenance methods,50 paid natural Standard vectors in three public methods (91.757s) and100 fixed unretried Standard games (177.315s;81,365 owned frames/162,730 denials). Exact production/library identities, historical prototype failures and final independent-review requirements remain explicit in the feature record. This does not complete the full Standard goal.
+
+
+## Live static stat effects — PR #332 / issue #331
+
+Four complete bodies compose actual Tiered main: Maha, Its Feathers Night;
+Archon of the Wild Rose; Aettir and Priwen; Burden of Proof. Coverage is1,972/5,164
+(3,192 gated), schema100. Sparse owned state evaluates current controllers/life/
+Aura membership, independent7b axes,7c bonuses and real blocking restrictions;
+simultaneous sources receive controller-chosen APNAP timestamps. Strict preservation
+retains5,328 unrelated definitions,918 inherited helpers and95 token recipes.
+Final frozen production ca735501 passes1,911 native tests, Clippy/fmt/generator,
+45 affected compiler/provenance methods,12 paid natural Standard vectors20.167s
+and100 fixed unretried Standard games186.170s (84,430 owned frames/168,860 denials).
+All910 execution inputs and the optimized library hash remain unchanged. Independent
+whole-four review and exact-final-head approval gate merging; the full source and
+historical failure scopes remain in [the delivery record](live-base-stat-effects.md).

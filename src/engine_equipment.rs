@@ -92,7 +92,7 @@ impl Game {
                 }
             }
         }
-        keywords
+        keywords.union(self.live_static_keywords(id))
     }
 
     pub(super) fn attach_equipment(&mut self, source: ObjectRef, target: ObjectRef) -> bool {
@@ -109,6 +109,9 @@ impl Game {
             || !self.is_creature(target.card)
         {
             return false;
+        }
+        if self.state.objects[source.card as usize].attached_to != Some(target) {
+            self.retimestamp_live_static_source(source);
         }
         self.state.objects[source.card as usize].attached_to = Some(target);
         true

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "0874912efe80441f6040fd15ce692d26e920af75222fdfe278cb20f3222f84f0",
+  "catalogue_version": "1e310a3382de48a388ae479cf50c98697b7d65cf76f86372092a30f954b9552f",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1962,
-  "implemented_total": 1968,
+  "implemented_standard_cards": 1974,
+  "implemented_total": 1980,
   "token_definitions": 96,
   "emblem_definitions": 1,
   "cards": [
@@ -460,8 +460,8 @@
     {
       "name": "Aettir and Priwen",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "equipment_template"
     },
     {
       "name": "Affectionate Indrik",
@@ -1300,8 +1300,8 @@
     {
       "name": "Archon of the Wild Rose",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Archon's Glory",
@@ -3040,8 +3040,8 @@
     {
       "name": "Boros Charm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Boros Guildgate",
@@ -3520,8 +3520,8 @@
     {
       "name": "Burden of Proof",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "aura_template"
     },
     {
       "name": "Burdened Stoneback",
@@ -8128,8 +8128,8 @@
     {
       "name": "Epic Fight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Equilibrium Adept",
@@ -9118,8 +9118,8 @@
     {
       "name": "Fire Magic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Fire Nation Attacks",
@@ -12736,8 +12736,8 @@
     {
       "name": "Ice Magic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Ice Out",
@@ -15784,8 +15784,8 @@
     {
       "name": "Maha, Its Feathers Night",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Mai, Jaded Edge",
@@ -20968,8 +20968,8 @@
     {
       "name": "Restoration Magic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Restoration Seminar",
@@ -27484,8 +27484,8 @@
     {
       "name": "Thunder Magic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Thunder Salvo",
@@ -27592,8 +27592,8 @@
     {
       "name": "Tifa's Limit Break",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Tiger-Dillo",
@@ -29392,8 +29392,8 @@
     {
       "name": "Vincent's Limit Break",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Vindictive Triumph",

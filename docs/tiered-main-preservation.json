@@ -1,0 +1,55 @@
+{
+  "prior_definitions": 5332,
+  "current_definitions": 5332,
+  "changed_definitions": [
+    "Boros Charm#0",
+    "Epic Fight#0",
+    "Fire Magic#0",
+    "Ice Magic#0",
+    "Restoration Magic#0",
+    "Thunder Magic#0",
+    "Tifa's Limit Break#0",
+    "Vincent's Limit Break#0"
+  ],
+  "added_definitions": [],
+  "preserved_definitions": 5324,
+  "prior_helpers": 912,
+  "new_helpers": [
+    [
+      "tiered_costs",
+      "Fire Magic#0"
+    ],
+    [
+      "tiered_costs",
+      "Ice Magic#0"
+    ],
+    [
+      "tiered_costs",
+      "Restoration Magic#0"
+    ],
+    [
+      "tiered_costs",
+      "Thunder Magic#0"
+    ],
+    [
+      "tiered_costs",
+      "Tifa's Limit Break#0"
+    ],
+    [
+      "tiered_costs",
+      "Vincent's Limit Break#0"
+    ]
+  ],
+  "prior_colors": 5332,
+  "inline_flag_tables": 3,
+  "token_recipes": 95,
+  "emblem_recipes": 1,
+  "prior_aliases": 5438,
+  "result": "PASS",
+  "parent": "ba3752a456908e0bee67a86e88864b14ba1312df",
+  "own_prototype": "8b80e47",
+  "expected_standard_admissions": 1968,
+  "observation_schema": 99,
+  "all_eight_programs_and_six_helpers_identical_prototype": true,
+  "tiered_runtime_module_byte_identical_prototype": true
+}

@@ -74,3 +74,17 @@ hand before the trigger resolves. The independent packet still draws for its
 historical controller and offers only that player's lands. The original six-group
 full-native/Clippy proof remains scoped to its earlier source; no executable
 production input changed for this additional test.
+
+The actual delivery-parent composition now uses merged main dffafa6 (schema100),
+with the new observation contract at101 and candidate1974 Standard identities.
+Strict preservation proves only the same two whole-body admissions plus Beau's
+one recipe/alias and the two owned helpers; all924 parent helpers and all95 parent
+recipes remain unchanged. The original prototype's two complete programs and
+Beau recipe are retained exactly. Historical modal/raw and live-static tests now
+pin their exact delivered unions while retaining current owned bindings, rather
+than expanding their allowed admissions. Public assertion/example metadata follows
+schema101. All41 affected compiler methods pass in7.476s after updating the old
+remaining-family fixture to recognize these two newly complete bodies; its first
+attempt passed40 and failed only that stale Bonny-gated expectation. No production
+change was made for this fixture correction. The new fourteen-case natural public
+policy is prepared and syntax-checked; gameplay validation remains pending.

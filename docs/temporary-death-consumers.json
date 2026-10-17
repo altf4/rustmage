@@ -2034,7 +2034,7 @@
       "mana_cost": "{1}{B}",
       "type_line": "Instant",
       "oracle_text": "Tiered (Choose one additional cost.)\nUntil end of turn, target creature you control gains \"When this creature dies, return it to the battlefield tapped under its owner's control\" and has the chosen base power and toughness.\n• Galian Beast — {0} — 3/2.\n• Death Gigas — {1} — 5/2.\n• Hellmasker — {3} — 7/2.",
-      "status": "gated_prerequisite",
+      "status": "implemented_complete_body",
       "sources": [
         {
           "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
@@ -2132,7 +2132,9 @@
       "missing_prerequisites": [
         "Generic Tiered mode-associated additional mana costs locked before payment (CR702.183).",
         "Timestamped until-end-of-turn base power/toughness setting in layer7b, including interaction with Cursed Role; all three modes required."
-      ]
+      ],
+      "implementation_issue": 329,
+      "implementation_scope": "All three Tiered costs/modes, temporary owner-tapped death return and chosen timestamped base power/toughness."
     }
   ],
   "parent_main": "e5ebe64954635555938cd315b0f423953eb4e78f",
