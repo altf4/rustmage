@@ -177,7 +177,7 @@ impl Game {
     pub(super) fn stats(&self, id: CardId) -> Stats {
         self.stats_without_hand(id, None)
     }
-    pub(super) fn stats_without_hand(&self, id: CardId, departing: Option<CardId>) -> Stats {
+    pub(super) fn base_stats_without_hand(&self, id: CardId, departing: Option<CardId>) -> Stats {
         let object = &self.state.objects[id as usize];
         let mut stats = if let Some((power, toughness)) = object.card.vehicle_stats() {
             if !self.is_creature(id) {
@@ -221,6 +221,13 @@ impl Game {
         if battlefield_creature {
             stats = self.apply_base_stat_layers(id, stats, departing);
         }
+        stats
+    }
+
+    pub(super) fn stats_without_hand(&self, id: CardId, departing: Option<CardId>) -> Stats {
+        let object = &self.state.objects[id as usize];
+        let mut stats = self.base_stats_without_hand(id, departing);
+        let battlefield_creature = object.zone == Zone::Battlefield && self.is_creature(id);
         if matches!(object.card.effect(), Effect::Creature(..))
             || object.card.vehicle_stats().is_some()
             || object.card.dynamic_stats().is_some()

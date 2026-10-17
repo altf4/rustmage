@@ -773,3 +773,49 @@ fn live_static_paid_life_equipment_uses_attachment_timestamps_against_cursed() {
         assert_eq!(g.stats(second).power, 2);
     }
 }
+
+#[test]
+fn effective_base_power_query_excludes_real_growth_counters_and_keeps_current_setters() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        g.state.players[p.index()].mana = [80; 6];
+        let body = named(&mut g, p, "Burrowguard Mentor", Zone::Battlefield);
+        assert_eq!(g.base_stats_without_hand(body, None).power, 1);
+        let _bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        assert_eq!(g.base_stats_without_hand(body, None).power, 2);
+        let growth = named(&mut g, p, "Giant Growth", Zone::Hand);
+        cast(&mut g, growth, None, &[Target::Card(body)]);
+        settle(&mut g);
+        assert_eq!(g.base_stats_without_hand(body, None).power, 2);
+        assert_eq!(g.stats(body).power, 5);
+        let veil = named(&mut g, p, "Snakeskin Veil", Zone::Hand);
+        cast(&mut g, veil, None, &[Target::Card(body)]);
+        settle(&mut g);
+        assert_eq!(g.base_stats_without_hand(body, None).power, 2);
+        assert_eq!(g.stats(body).power, 6);
+        cursed(&mut g, p, body);
+        assert_eq!(g.base_stats_without_hand(body, None).power, 1);
+        assert_eq!(g.stats(body).power, 5);
+        let wings = named(&mut g, p, "Water Wings", Zone::Hand);
+        cast(&mut g, wings, None, &[Target::Card(body)]);
+        settle(&mut g);
+        assert_eq!(g.base_stats_without_hand(body, None).power, 4);
+        assert_eq!(g.stats(body).power, 8);
+        cleanup_checked(&mut g);
+        assert_eq!(g.base_stats_without_hand(body, None).power, 1);
+        assert_eq!(g.stats(body).power, 2);
+        let item = g.activation_item(p, body, 0);
+        g.set_base_stats(&item, Subject::Source, Some(-3), None);
+        assert_eq!(g.base_stats_without_hand(body, None).power, -3);
+        assert_eq!(g.stats(body).power, -2);
+        let parent = g.snapshot();
+        let branch = {
+            let intermediate = g.clone();
+            intermediate.clone()
+        };
+        assert_eq!(branch.base_stats_without_hand(body, None).power, -3);
+        assert_eq!(branch.snapshot(), parent);
+        g.restore(&parent).unwrap();
+        assert_eq!(g.base_stats_without_hand(body, None).power, -3);
+    }
+}
