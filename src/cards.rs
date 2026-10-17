@@ -69,6 +69,9 @@ pub(crate) enum TargetRule {
     Creature,
     /// Bound to the captured attachment attack defender before target selection.
     DefendingCreature,
+    DamagedPlayerPermanent {
+        kinds: u8,
+    },
     CreatureOrVehicle {
         relation: i8,
     },
@@ -390,6 +393,7 @@ impl RecoveryFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum MillAmount {
+    ChosenX,
     Fixed(u16),
     ControllerLife,
 }
@@ -642,6 +646,11 @@ pub(crate) enum Instruction {
     Mill(PlayerSet, MillAmount),
     MayMill(u16),
     RecoverMilled(RecoveryFilter),
+    CollectGraveyard,
+    RevealHandDiscard {
+        excluded_kinds: u16,
+    },
+    DestroyLoseManaValue,
     SelectMilled(MilledSelectionSpec),
     AttachSource,
     TapAttached,
@@ -877,6 +886,7 @@ pub(crate) enum AmountValue {
     Fixed(u16),
     /// Explicit immutable parameter of the resolving spell or its exact ETB packet.
     ChosenX,
+    MilledCreatures,
     Stat(StatValue),
     LifeGainedThisTurn,
     CardsDiscardedThisTurn,

@@ -385,6 +385,7 @@ define_actions! {
         payment: Mana,
     },
     DeclineResolutionMana,
+    ChooseRevealedDiscard { object: ObjectRef },
     RecoverMilled {
         object: Option<ObjectRef>,
     },
@@ -869,6 +870,28 @@ impl SpellView {
             StackKind::TriggeredAbility { ability } => {
                 let a = &self.trigger_definition().triggers()[ability as usize];
                 let targets = match a.targets {
+                    TargetPlan::Single(mut spec)
+                        if matches!(spec.rule, TargetRule::DamagedPlayerPermanent { .. }) =>
+                    {
+                        let TargetRule::DamagedPlayerPermanent { kinds } = spec.rule else {
+                            unreachable!()
+                        };
+                        let player = self
+                            .damage_event
+                            .expect("damage-bound target requires event")
+                            .player;
+                        spec.rule = TargetRule::Object {
+                            zone: TargetZone::Battlefield,
+                            kinds,
+                            relation: if player == self.controller { 0 } else { 1 },
+                            other: false,
+                            nonland: false,
+                            tapped: false,
+                            min_mana: 0,
+                            max_mana: u32::MAX,
+                        };
+                        TargetPlan::Single(spec)
+                    }
                     TargetPlan::Single(mut spec) if spec.rule == TargetRule::DefendingCreature => {
                         if let Some(event) = &self.attachment_trigger {
                             spec.rule = TargetRule::Object {
@@ -1116,6 +1139,11 @@ enum Pending {
     },
     MilledSelection {
         player: Player,
+    },
+    RevealedDiscard {
+        player: Player,
+        victim: Player,
+        excluded_kinds: u16,
     },
     RecoverMilled {
         player: Player,
@@ -1843,6 +1871,7 @@ impl Game {
             | Pending::Role { player }
             | Pending::Legend { player }
             | Pending::MilledSelection { player }
+            | Pending::RevealedDiscard { player, .. }
             | Pending::RecoverMilled { player, .. }
             | Pending::EffectSearch { player }
             | Pending::EffectLibrarySelection { player }
@@ -2934,6 +2963,23 @@ impl Game {
                     }
                 }
             }
+            Pending::RevealedDiscard {
+                victim,
+                excluded_kinds,
+                ..
+            } => {
+                for (id, object) in s.objects.iter().enumerate() {
+                    if object.zone == Zone::Hand
+                        && object.owner == victim
+                        && object.card.kind_mask() & excluded_kinds == 0
+                        && emit(Action::ChooseRevealedDiscard {
+                            object: self.object_ref(id as CardId),
+                        })
+                    {
+                        return true;
+                    }
+                }
+            }
             Pending::RecoverMilled { player, filter } => {
                 if emit(Action::RecoverMilled { object: None }) {
                     return true;
@@ -3504,6 +3550,10 @@ impl Game {
             }
             Action::SelectMilled { object } => self.select_milled(object),
             Action::FinishMilledSelection => self.finish_milled_selection(),
+            Action::ChooseRevealedDiscard { object } => {
+                self.discard_batch(&[object.card], None);
+                self.run_program();
+            }
             Action::RecoverMilled { object } => self.recover_milled(object),
             Action::ChooseSearch { card } => self.choose_search(card),
             Action::FinishSearch => self.finish_search(actor),
@@ -4625,6 +4675,7 @@ impl Game {
                 Pending::EffectMana { .. } => "mana_choice",
                 Pending::EffectLibrary { .. } => "library_choice",
                 Pending::EffectLibrarySelection { .. } => "library_selection",
+                Pending::RevealedDiscard { .. } => "revealed_discard",
                 Pending::RecoverMilled { .. } => "recover_milled",
                 Pending::MilledSelection { .. } => "milled_selection",
                 Pending::EffectSearch { .. } => {
@@ -5767,3 +5818,7 @@ mod fdn_utility_seven_tests;
 #[cfg(test)]
 #[path = "engine_fdn_tribal_seven_tests.rs"]
 mod fdn_tribal_seven_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_private_seven_tests.rs"]
+mod fdn_private_seven_tests;

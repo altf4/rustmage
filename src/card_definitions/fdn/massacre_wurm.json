@@ -3,10 +3,30 @@
   "catalogue_id": 2678,
   "oracle_id": "93cf50cf-0ecc-4d3e-abea-778c1ebacec4",
   "facts_sha256": "bb9907578b6677c3fb2d7d565c8c099bf6cf68c74b9041791d4f223c20cc6f27",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e6757d1d9416c5335f14c595833b4fc915639df826537372a0dc9a687606981d"
   },
-  "physical_metadata_sha256": "e5be860c3941ae851bf159cc0b39dbfb196cb7ffe053af62e651848fa8058610"
+  "physical_metadata_sha256": "e5be860c3941ae851bf159cc0b39dbfb196cb7ffe053af62e651848fa8058610",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MassacreWurm.java",
+  "java_sha256": "995d1023f315b5947cc74b37bcee52096314ee016be7749066de086f03a245fa",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostOpponentsEffect.java",
+      "sha256": "fed30082a1510f3ff32c1a43420dbd6da2c5bf7a7b1e3d3775c0087f85653d00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeTargetEffect.java",
+      "sha256": "cb540577a835c69b5b4bd5182c58715215e03ee165d349a7d19d388c03224e37"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    }
+  ]
 }

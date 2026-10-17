@@ -1678,6 +1678,81 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::CollectGraveyard => {
+                    self.state.resolving.as_mut().unwrap().milled = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter(|(_, object)| {
+                            object.zone == Zone::Graveyard && object.owner == item.controller
+                        })
+                        .map(|(id, object)| ObjectRef {
+                            card: id as CardId,
+                            generation: object.generation,
+                        })
+                        .collect();
+                }
+                Instruction::RevealHandDiscard { excluded_kinds } => {
+                    let Some(victim) = self.program_players(PlayerSet::Targeted, &item).next()
+                    else {
+                        continue;
+                    };
+                    let hand: Vec<_> = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter(|(_, object)| object.zone == Zone::Hand && object.owner == victim)
+                        .map(|(id, _)| self.object_ref(id as CardId))
+                        .collect();
+                    for reference in &hand {
+                        if !self.state.known_hand.contains(reference) {
+                            self.state.known_hand.push(*reference);
+                        }
+                    }
+                    if hand.iter().any(|reference| {
+                        self.state.objects[reference.card as usize].card.kind_mask()
+                            & excluded_kinds
+                            == 0
+                    }) {
+                        self.state.pending = Pending::RevealedDiscard {
+                            player: item.controller,
+                            victim,
+                            excluded_kinds,
+                        };
+                        return;
+                    }
+                }
+                Instruction::DestroyLoseManaValue => {
+                    let loss: u64 = item
+                        .targets
+                        .iter()
+                        .filter_map(|bound| {
+                            if !self.same_target_object(*bound) {
+                                return None;
+                            }
+                            if let Target::Card(id) = bound.target {
+                                Some(self.state.objects[id as usize].card.fixed_mana_value())
+                            } else {
+                                None
+                            }
+                        })
+                        .sum();
+                    let destroy: Vec<_> = item
+                        .targets
+                        .iter()
+                        .copied()
+                        .filter(|bound| match bound.target {
+                            Target::Card(id) => {
+                                !self.keywords(id).contains(Keywords::INDESTRUCTIBLE)
+                            }
+                            _ => false,
+                        })
+                        .collect();
+                    self.move_target_batch(&destroy, Zone::Graveyard);
+                    self.lose_life(item.controller, i128::from(loss));
+                }
                 Instruction::RecoverMilled(filter) => {
                     if self
                         .state
