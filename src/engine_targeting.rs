@@ -75,11 +75,14 @@ impl Announcement {
                 unreachable!("triggered ability has no activation cost")
             }
         };
-        options.map(|cost| {
-            Game::with_flash_surcharge(
-                cost,
-                self.item.source_card,
-                self.item.cast.is_some_and(|c| c.flash_surcharge),
+        options.filter_map(|cost| {
+            Game::with_tiered_mana(
+                Game::with_flash_surcharge(
+                    cost,
+                    self.item.source_card,
+                    self.item.cast.is_some_and(|c| c.flash_surcharge),
+                ),
+                &self.item,
             )
         })
     }

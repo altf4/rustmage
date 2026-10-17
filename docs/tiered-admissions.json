@@ -3,7 +3,7 @@
   "issue": 329,
   "parent_foundation": "17d100bc39114551fdd677b215535622b2a11393",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-  "scope": "Six complete physical Tiered bodies and all eighteen mutually exclusive modes. Full source/direct-import evidence only, never compiler admission permission or transitive Java closure.",
+  "scope": "Six complete physical Tiered bodies and all eighteen mutually exclusive modes. Full source/direct-import evidence only, never compiler admission permission or transitive Java closure. Two adjacent whole generic consumers (Boros Charm and Epic Fight), each with all three legal modal choices, are audited separately.",
   "reserved_observation_schema": 99,
   "rules": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf#section=702.183",
   "cards": [
@@ -28,7 +28,7 @@
         ],
         "card_faces": null
       },
-      "status": "gated_complete_body_pending",
+      "status": "implemented_pending_final_union_and_gates",
       "tiers": [
         {
           "label": "Fire",
@@ -106,7 +106,7 @@
         ],
         "card_faces": null
       },
-      "status": "gated_complete_body_pending",
+      "status": "implemented_pending_final_union_and_gates",
       "tiers": [
         {
           "label": "Blizzard",
@@ -196,7 +196,7 @@
         ],
         "card_faces": null
       },
-      "status": "gated_complete_body_pending",
+      "status": "implemented_pending_final_union_and_gates",
       "tiers": [
         {
           "label": "Cure",
@@ -302,7 +302,7 @@
         ],
         "card_faces": null
       },
-      "status": "gated_complete_body_pending",
+      "status": "implemented_pending_final_union_and_gates",
       "tiers": [
         {
           "label": "Thunder",
@@ -386,7 +386,7 @@
         ],
         "card_faces": null
       },
-      "status": "gated_complete_body_pending",
+      "status": "implemented_pending_final_union_and_gates",
       "tiers": [
         {
           "label": "Somersault",
@@ -492,7 +492,7 @@
         ],
         "card_faces": null
       },
-      "status": "gated_complete_body_pending",
+      "status": "implemented_pending_final_union_and_gates",
       "tiers": [
         {
           "label": "Galian Beast",
@@ -824,8 +824,16 @@
       "java_sha256": "dd10138d8740e0febaaf9e9ba112ab5575f9dc9b73e07641d51c4f1f76656394"
     }
   ],
-  "source_records": 140,
+  "source_records": 171,
   "unique_sources": [
+    {
+      "java_source": "Mage.Sets/src/mage/cards/b/BorosCharm.java",
+      "java_sha256": "f78b32668b68b2cbdb3685985eed0102c004ecbef3c281d38a8a06bee89ff1ee"
+    },
+    {
+      "java_source": "Mage.Sets/src/mage/cards/e/EpicFight.java",
+      "java_sha256": "ff40c0f2a62dd852a327238d0d7b41e5b681074ce1ffb4996a01402c16a0610e"
+    },
     {
       "java_source": "Mage.Sets/src/mage/cards/f/FireMagic.java",
       "java_sha256": "4924f57c9e755d50e3bd6b28823c437e53ea58806da114b3f1d799e8e37a5edc"
@@ -947,6 +955,10 @@
       "java_sha256": "b4889a84a0f5375d21a3ca8aeb4478147e7a97e029b71f688042199c7e0d259e"
     },
     {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffect.java",
+      "java_sha256": "deea4c7c61bc169d2cc284d082e13df8322434d8784d94f2a744244ad96d24d9"
+    },
+    {
       "java_source": "Mage/src/main/java/mage/abilities/effects/Effect.java",
       "java_sha256": "92f49363848fa1b18215e3a0d516923e10d917638a38e5bbad73f274f6a1e917"
     },
@@ -965,6 +977,10 @@
     {
       "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
       "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/common/FightTargetsEffect.java",
+      "java_sha256": "e562370eb9b15a7fc0db16f44b32e8dce627719fc405b2bc09eb8dad21f8edc2"
     },
     {
       "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
@@ -1001,6 +1017,10 @@
     {
       "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessTargetEffect.java",
       "java_sha256": "cc450621ce5efa6894bfc8eab4290a28aafb69a3f197f62851095e13d2f97f8f"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/DoubleStrikeAbility.java",
+      "java_sha256": "dabf9a6900a6fb32bb83f222d00b3dfb0b11705fe9029838c50f8500a23afd27"
     },
     {
       "java_source": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
@@ -1155,6 +1175,14 @@
       "java_sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
     },
     {
+      "java_source": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+      "java_sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/common/TargetPlayerOrPlaneswalker.java",
+      "java_sha256": "e05224f8b5bbf03407c6c708400df618075841bc7c2123b25b941540abb820d8"
+    },
+    {
       "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
       "java_sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
     },
@@ -1174,5 +1202,192 @@
       "java_source": "Mage/src/main/java/mage/util/RandomUtil.java",
       "java_sha256": "fd2ea5de81baff396ddc547c6fceb3f88daa96f09c2d4499d2fbf96f428263ed"
     }
-  ]
+  ],
+  "adjacent_complete_bodies": [
+    {
+      "facts": {
+        "oracle_id": "2679d0dd-ba30-4a1c-b6a0-b3ac6c790496",
+        "name": "Boros Charm",
+        "layout": "normal",
+        "mana_cost": "{R}{W}",
+        "cmc": 2.0,
+        "type_line": "Instant",
+        "oracle_text": "Choose one —\n• Boros Charm deals 4 damage to target player or planeswalker.\n• Permanents you control gain indestructible until end of turn.\n• Target creature gains double strike until end of turn.",
+        "colors": [
+          "R",
+          "W"
+        ],
+        "color_identity": [
+          "R",
+          "W"
+        ],
+        "keywords": [],
+        "reference_printing": {
+          "id": "e0d8c9f6-cbbd-4694-b100-01cfb81036cc",
+          "set": "fdn",
+          "collector_number": "721",
+          "released_at": "2024-11-15"
+        }
+      },
+      "status": "implemented_pending_final_union_and_gates",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Mode.java",
+          "java_sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+          "java_sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/DoubleStrikeAbility.java",
+          "java_sha256": "dabf9a6900a6fb32bb83f222d00b3dfb0b11705fe9029838c50f8500a23afd27"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+          "java_sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetPlayerOrPlaneswalker.java",
+          "java_sha256": "e05224f8b5bbf03407c6c708400df618075841bc7c2123b25b941540abb820d8"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BorosCharm.java",
+          "java_sha256": "f78b32668b68b2cbdb3685985eed0102c004ecbef3c281d38a8a06bee89ff1ee"
+        }
+      ]
+    },
+    {
+      "facts": {
+        "oracle_id": "4bdfc580-de51-445b-b170-8c6832e44704",
+        "name": "Epic Fight",
+        "layout": "normal",
+        "mana_cost": "{2}{G}",
+        "cmc": 3.0,
+        "type_line": "Sorcery",
+        "oracle_text": "Choose one or both —\n• Double target creature's power and toughness until end of turn.\n• Target creature you control fights target creature an opponent controls.",
+        "colors": [
+          "G"
+        ],
+        "color_identity": [
+          "G"
+        ],
+        "keywords": [
+          "Fight",
+          "Double"
+        ],
+        "reference_printing": {
+          "id": "d521b80b-4b0b-4d69-bd95-4c83feaf2145",
+          "set": "msh",
+          "collector_number": "166",
+          "released_at": "2026-06-26"
+        }
+      },
+      "status": "implemented_pending_final_union_and_gates",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Mode.java",
+          "java_sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffect.java",
+          "java_sha256": "deea4c7c61bc169d2cc284d082e13df8322434d8784d94f2a744244ad96d24d9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/FightTargetsEffect.java",
+          "java_sha256": "e562370eb9b15a7fc0db16f44b32e8dce627719fc405b2bc09eb8dad21f8edc2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+          "java_sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+          "java_sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/EpicFight.java",
+          "java_sha256": "ff40c0f2a62dd852a327238d0d7b41e5b681074ce1ffb4996a01402c16a0610e"
+        }
+      ]
+    }
+  ],
+  "tiered_source_records": 140,
+  "tiered_unique_source_files": 87
 }

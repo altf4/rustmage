@@ -41,3 +41,15 @@ Natural Standard workloads, strict actual-parent canonical preservation and two
 independent NONAUTHOR exact-head reviews remain required. All execution inputs
 freeze during gates; terminal non-SO build outputs are cleaned immediately while
 every shared library retains its original path and hash.
+
+## Prototype implementation (not final delivery)
+
+The six physical Tiered cards compile all eighteen mutually exclusive modes. Their associated fixed colored/generic mana is added to the underlying casting cost before reductions, the selected total locks before mana abilities, and a free underlying Plot cast still pays its selected tier. The mode view publishes the additional mana recipe; the selected static mode and owned announcement retain the recipe without a mutable per-card cache.
+
+Generic signed double/triple effects add resolution-time layer 7c snapshot deltas (CR701.10–11). Owner-shuffle uses the owner library and deterministic RNG; Blizzara keeps its private owner top/bottom choice. Vincent reuses the exact-incarnation temporary death grant, owner-controlled tapped return and timestamped base-stat effects.
+
+The same generic primitives also complete all three choices of Boros Charm and all three legal combinations of Epic Fight. These are explicit adjacent full-body admissions, audited separately from the six Tiered/18-mode inventory: the combined audit contains 171 source records and 94 unique pinned Java files; the original Tiered subset remains 140/87.
+
+Current prototype gates: six compiler/provenance/preservation methods PASS (strict eight changed bodies, all 5,324 other definitions preserved, only six new Tiered helper arms); nine paid native groups PASS in both seats (0.270s; use log for exact duration). These include all eighteen tiers, adjacent modes, colored mandatory costs, a synthetic existing Plot-permission boundary, actual Glamdring reduction locked before sacrificing Treasure, signed stats and later base setters, private foreign-owner destinations, partially illegal combined groups and atomic overflow. The earlier native run had six passed and three test-fixture failures from attempting an already-completed FinishTargets; all three were corrected to respect the actual legal actions. Initial compilation attempts found test-only syntax/API errors.
+
+Final public Standard policies, broader appropriate gates, actual schema-98 parent composition, immutable optimized library and two independent final reviews remain pending. This prototype is based on reviewed base-stat foundation 17d100bc39114551fdd677b215535622b2a11393; it does not claim that foundation or later dependencies have merged.
