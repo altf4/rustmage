@@ -185,6 +185,7 @@ impl TargetPlan {
 pub(crate) enum PlayerSet {
     CastingPlayer,
     DrawingPlayer,
+    Active,
     DamagedPlayer,
     Controller,
     Opponent,
@@ -483,6 +484,18 @@ pub(crate) enum Instruction {
         skip: usize,
     },
     CounterThenDrawIfDiscounted,
+    /// Countering may fail; the spell's captured current controller still creates tokens.
+    CounterAndCreateForController {
+        token: Card,
+        amount: u16,
+    },
+    /// Resolution-time life condition on the targeted player.
+    IfTargetPlayerLife {
+        life: i128,
+        skip: usize,
+    },
+    /// The exact source permanent fights its targeted creature without targeting itself.
+    FightSource,
     DiscardScaled(PlayerSet, AmountValue),
     DiscardManaValueLifeLoss,
     PutLandCards {
@@ -730,6 +743,9 @@ pub(crate) enum Instruction {
     AdditionalLandPlays(u64),
     OwnerLibrary,
     ShuffleTargetIntoLibrary,
+    ShuffleGraveyardIntoLibrary,
+    DoubleTargetPower,
+    DrawAndProtectCounterCreatures,
     MultiplyTargetStats {
         factor: u8,
     },
@@ -893,6 +909,8 @@ pub(crate) enum StatValue {
     NonlandEntriesThisTurn,
     SourceAttacking,
     AttackingCreatures,
+    AttackingSubtype(&'static str),
+    OtherNamedCreatures(&'static str),
     /// Unqualified all-player count; distinct from controller-owned attackers.
     AllAttackingCreatures,
     SourceModified,
@@ -1659,6 +1677,8 @@ impl Keywords {
     pub const NO_POWER_GE_THREE_BLOCKERS: Self = Self(4194304);
     /// Equivalent evasion text does not itself grant the skulk keyword.
     pub const NO_GREATER_POWER_BLOCKERS: Self = Self(8388608);
+    pub const PREVENT_COMBAT_TO: Self = Self(16777216);
+    pub const PREVENT_COMBAT_BY: Self = Self(33554432);
     pub fn contains(self, keyword: Self) -> bool {
         self.0 & keyword.0 == keyword.0
     }
@@ -1671,7 +1691,19 @@ impl Keywords {
     /// Existing resolving instructions use these bits for rule restrictions,
     /// never for a quoted ability grant. Static/printed uses stay removable.
     pub(crate) const fn resolution_rules(self) -> Self {
-        Self(self.0 & (2048 | 16384 | 65536 | 131072 | 262144 | 2097152 | 4194304 | 8388608))
+        Self(
+            self.0
+                & (2048
+                    | 16384
+                    | 65536
+                    | 131072
+                    | 262144
+                    | 2097152
+                    | 4194304
+                    | 8388608
+                    | 16777216
+                    | 33554432),
+        )
     }
     pub(crate) const fn without(self, other: Self) -> Self {
         Self(self.0 & !other.0)

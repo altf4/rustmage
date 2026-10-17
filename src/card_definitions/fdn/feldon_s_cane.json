@@ -3,10 +3,31 @@
   "catalogue_id": 1484,
   "oracle_id": "9b884dfd-59f4-45c0-bf1e-6ad9f5b58895",
   "facts_sha256": "6f5629d990a81bc127d071ba4f324c0e54d234ba55ac838e15c8a47c2838f38d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ea6b6964691b944a90409230b0e988c5e59c87e69cf5ff24b0a3a54531b4ca02"
   },
-  "physical_metadata_sha256": "538a25397fd91c7b7bec2cd3c1661ab75689a4a61caabbdda56c757411ab5fa1"
+  "physical_metadata_sha256": "538a25397fd91c7b7bec2cd3c1661ab75689a4a61caabbdda56c757411ab5fa1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FeldonsCane.java",
+  "java_sha256": "b98cb3c081266a60b6b656a972d75c598b5c900523aa97165f4c1e4c96058e33",
+  "implementation": "Direct typed complete printed behavior; focused utility/protection interaction tests.",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceCost.java",
+      "sha256": "1cd064f3443f1a13cffbc141dbc6ddd71762a8a7a6b4c4d2aad6b432bf870d73"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ShuffleYourGraveyardIntoLibraryEffect.java",
+      "sha256": "69aaac1cf765295dd23550453ebdbcb6a180227d66d0dcb04d2bd3dfefead5ad"
+    }
+  ]
 }

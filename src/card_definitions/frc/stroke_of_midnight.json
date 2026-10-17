@@ -3,10 +3,40 @@
   "catalogue_id": 4190,
   "oracle_id": "9a107e48-3d50-4941-95b1-10f2b29a4245",
   "facts_sha256": "79af5fa42a36493ba6c7eb17482a1d7936c30d2061949a075a7cb61388e61105",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f48d2b49561a6dc7bf38a5d00e1f7feaea4cd06a1bcbad930aa542972e944cfa"
   },
-  "physical_metadata_sha256": "eb9d181eac472b14ec07612ac5811961c45c69ee9942937585c1b7367338f7c7"
+  "physical_metadata_sha256": "eb9d181eac472b14ec07612ac5811961c45c69ee9942937585c1b7367338f7c7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StrokeOfMidnight.java",
+  "java_sha256": "f6930288b9783d2416ac352272e166b048d4ee91e4e20b7847a63b471dce7ab7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenControllerTargetEffect.java",
+      "sha256": "ee33348ac4782cb614e73ec2dfab077cbf80dd86c9d71f5fdb7cd45c6c0c7139"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/HumanToken.java",
+      "sha256": "4ff29e9dd1a6f48978a2106131baac20f4c46790a17d78c77416dd11b379b63d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetNonlandPermanent.java",
+      "sha256": "6e4720e1386bdaa8f84eaf97cc8d6646845307f0be8697190c25cd1285ba598a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ]
 }

@@ -45,6 +45,31 @@ impl Game {
         else {
             return;
         };
+        self.creatures_deal_power_damage(source, recipient, fight);
+    }
+    pub(super) fn source_fight(&mut self, item: &SpellView) {
+        if !self.on_battlefield(item.card)
+            || self.object_ref(item.card) != item.object
+            || self.current_kinds(item.card) & 1 == 0
+        {
+            return;
+        }
+        let target = item.targets.iter().find_map(|bound| {
+            if self.same_target_object(*bound)
+                && let Target::Card(id) = bound.target
+                && self.on_battlefield(id)
+                && self.current_kinds(id) & 1 != 0
+            {
+                Some(id)
+            } else {
+                None
+            }
+        });
+        if let Some(target) = target {
+            self.creatures_deal_power_damage(item.card, target, true);
+        }
+    }
+    fn creatures_deal_power_damage(&mut self, source: CardId, recipient: CardId, fight: bool) {
         let power = self.stats(source).power.max(0);
         let source_damage = DamageEvent {
             source: self.damage_source(source),

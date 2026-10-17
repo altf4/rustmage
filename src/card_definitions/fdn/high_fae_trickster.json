@@ -3,10 +3,20 @@
   "catalogue_id": 2036,
   "oracle_id": "28c1a4a0-f58c-4d07-a918-51ff8a74f050",
   "facts_sha256": "0498578bacb0dcf42264dc15d29e32e93e4bae19eaf4e1da0a275ccf908c2708",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "09441050ee3346c82ea3a9518cca20ca8adb4ea9360c4f426cc72fa6e8e5a438"
   },
-  "physical_metadata_sha256": "06864c695bc78af20bf893bee549e309e8fb5b9fa9ebc670f017a179bee60553"
+  "physical_metadata_sha256": "06864c695bc78af20bf893bee549e309e8fb5b9fa9ebc670f017a179bee60553",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HighFaeTrickster.java",
+  "java_sha256": "20f20816581d18425f1442ab980edb1ac0043af528bb7bc23053ae244aea291c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/CastAsThoughItHadFlashAllEffect.java",
+      "sha256": "2e3ffc07fbe4e802fc19aec06b070c450381c4bf797a8f4458841e7df9f81cc9"
+    }
+  ]
 }

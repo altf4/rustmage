@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "58a043432adce46ab17715a5f1439115d7ba0af5d77957af623305d2167494d5",
+  "catalogue_version": "089a0a8e7582733b33d6999c05ec79b946858b1b897d5157d4243b9840bead62",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2011,
-  "implemented_total": 2017,
+  "implemented_standard_cards": 2032,
+  "implemented_total": 2038,
   "token_definitions": 97,
   "emblem_definitions": 1,
   "adventure_definitions": 40,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 269,
-      "gated": 158
+      "complete": 287,
+      "gated": 140
     },
     "fin": {
       "total": 305,
@@ -78,7 +78,8 @@
     },
     "frc": {
       "total": 6,
-      "gated": 6
+      "gated": 5,
+      "complete": 1
     },
     "hob": {
       "total": 188,
@@ -110,8 +111,7 @@
     },
     "m19": {
       "total": 2,
-      "complete": 1,
-      "gated": 1
+      "complete": 2
     },
     "mkm": {
       "total": 264,
@@ -181,8 +181,8 @@
     },
     "tle": {
       "total": 5,
-      "complete": 2,
-      "gated": 3
+      "complete": 3,
+      "gated": 2
     },
     "tmc": {
       "total": 1,
@@ -819,8 +819,8 @@
     {
       "name": "Affectionate Indrik",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/affectionate_indrik.rs",
       "set": "fdn"
     },
@@ -1411,8 +1411,8 @@
     {
       "name": "An Offer You Can't Refuse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/an_offer_you_can_t_refuse.rs",
       "set": "fdn"
     },
@@ -4835,8 +4835,8 @@
     {
       "name": "Bulk Up",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/bulk_up.rs",
       "set": "fdn"
     },
@@ -8219,8 +8219,8 @@
     {
       "name": "Death Baron",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/death_baron.rs",
       "set": "fdn"
     },
@@ -8787,8 +8787,8 @@
     {
       "name": "Dictate of Kruphix",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/dictate_of_kruphix.rs",
       "set": "fdn"
     },
@@ -9963,8 +9963,8 @@
     {
       "name": "Dwynen, Gilt-Leaf Daen",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/dwynen_gilt_leaf_daen.rs",
       "set": "fdn"
     },
@@ -12083,8 +12083,8 @@
     {
       "name": "Feldon's Cane",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/feldon_s_cane.rs",
       "set": "fdn"
     },
@@ -12635,8 +12635,8 @@
     {
       "name": "Fleeting Flight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/fleeting_flight.rs",
       "set": "fdn"
     },
@@ -12803,8 +12803,8 @@
     {
       "name": "Fog Bank",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/fog_bank.rs",
       "set": "fdn"
     },
@@ -14675,8 +14675,8 @@
     {
       "name": "Goblin Smuggler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/goblin_smuggler.rs",
       "set": "fdn"
     },
@@ -15627,8 +15627,8 @@
     {
       "name": "Halana and Alena, Partners",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/halana_and_alena_partners.rs",
       "set": "fdn"
     },
@@ -15723,8 +15723,8 @@
     {
       "name": "Harbinger of the Tides",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/harbinger_of_the_tides.rs",
       "set": "fdn"
     },
@@ -15787,8 +15787,8 @@
     {
       "name": "Hare Apparent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/hare_apparent.rs",
       "set": "fdn"
     },
@@ -16035,8 +16035,8 @@
     {
       "name": "Heartfire Immolator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/heartfire_immolator.rs",
       "set": "fdn"
     },
@@ -16339,8 +16339,8 @@
     {
       "name": "Heroes' Bane",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/heroes_bane.rs",
       "set": "fdn"
     },
@@ -16483,8 +16483,8 @@
     {
       "name": "Hidetsugu's Second Rite",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/hidetsugu_s_second_rite.rs",
       "set": "fdn"
     },
@@ -16499,8 +16499,8 @@
     {
       "name": "High Fae Trickster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/high_fae_trickster.rs",
       "set": "fdn"
     },
@@ -17707,8 +17707,8 @@
     {
       "name": "Inspiring Call",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tle/inspiring_call.rs",
       "set": "tle"
     },
@@ -17723,8 +17723,8 @@
     {
       "name": "Inspiring Paladin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/inspiring_paladin.rs",
       "set": "fdn"
     },
@@ -20035,8 +20035,8 @@
     {
       "name": "Leonin Vanguard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/m19/leonin_vanguard.rs",
       "set": "m19"
     },
@@ -33731,8 +33731,8 @@
     {
       "name": "Stroke of Midnight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/frc/stroke_of_midnight.rs",
       "set": "frc"
     },

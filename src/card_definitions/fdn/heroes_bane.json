@@ -3,10 +3,35 @@
   "catalogue_id": 2016,
   "oracle_id": "bccd722a-b610-4017-93bd-313f08448f5e",
   "facts_sha256": "eaef2a6562cc7a54ed4c45c221a6468c2abf3b89e1a38da588422b7bb43267f2",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6e7ce42be42fb3f092da5580e21af7c9efd03a85272542e9ad46180de9c50159"
   },
-  "physical_metadata_sha256": "98b635c201251e267d161d38c389bb210678e4c8d0e24a32900864f70dba6666"
+  "physical_metadata_sha256": "98b635c201251e267d161d38c389bb210678e4c8d0e24a32900864f70dba6666",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HeroesBane.java",
+  "java_sha256": "9af9f159ac75f6f7347ab678f65878a33b6969db687053aac720d64b51f67588",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SourcePermanentPowerValue.java",
+      "sha256": "aabc6ce8b7bd68b08691830a2a45af0d886a2837c652bbca9e109b5813b0ca9a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAbility.java",
+      "sha256": "8f8fd13f114dcff33a7022d97b46aa6af78c44986d66d9e9757c7838ada4d81f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    }
+  ]
 }

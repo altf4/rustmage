@@ -3,10 +3,41 @@
   "catalogue_id": 1808,
   "oracle_id": "eae15f7d-1f6e-4dfc-afea-7698b93cd145",
   "facts_sha256": "cee7dac11bda114f320abd1a4b223caa8a8053b26844b6723578d27a7200ca78",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "64dd10469a15f2ff395f5bd2dab635483a8bc00bdfba6229419e8189d3ca996e"
   },
-  "physical_metadata_sha256": "26ecd06d49d23ae35eff331283ec380e647a2c540298eb919f0ea778d425cdcf"
+  "physical_metadata_sha256": "26ecd06d49d23ae35eff331283ec380e647a2c540298eb919f0ea778d425cdcf",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GoblinSmuggler.java",
+  "java_sha256": "f284c73c95b80811f32e45577c33bf7fc48599d94048abfd8098579d5cfd3706",
+  "implementation": "Direct typed complete printed behavior; focused utility/protection interaction tests.",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedTargetEffect.java",
+      "sha256": "da9a306340321c49e565ce8f33756a1a381653588f886780089b31ee236adcee"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/PowerPredicate.java",
+      "sha256": "909b9038e02c0653920408059e987b6ee3cfad717900e62e78c597285f137dde"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+      "sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+    }
+  ]
 }

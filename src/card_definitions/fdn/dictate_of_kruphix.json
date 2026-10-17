@@ -3,10 +3,26 @@
   "catalogue_id": 1072,
   "oracle_id": "be74a4c1-d569-4203-b28a-3e2ac6a82990",
   "facts_sha256": "2919e165c88ed2739a59341c03d1e04482d04423e52b491466e0293ee27cae09",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d3e56a3cc78927ae4ea3f6648f13c17b9ed1d75de576542a6d0f29e9212614d2"
   },
-  "physical_metadata_sha256": "e5a5931e6d964b5010c08bf8a351f4e5a353ae314a497e015ec0689f74ceb599"
+  "physical_metadata_sha256": "e5a5931e6d964b5010c08bf8a351f4e5a353ae314a497e015ec0689f74ceb599",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DictateOfKruphix.java",
+  "java_sha256": "23042495920165008b050ba35f08d9a50a9690db154b24c1cfdb52fc58c28be5",
+  "implementation": "Direct typed complete printed behavior; focused utility/protection interaction tests.",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardTargetEffect.java",
+      "sha256": "1d131bf3ff4ac75e46660190098938610581d961ad6d8f39e553c9c200f7a467"
+    }
+  ]
 }

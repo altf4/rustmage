@@ -1133,6 +1133,7 @@ impl Game {
                 ),
                 None,
             ],
+            PlayerSet::Active => [Some(self.state.active), None],
             PlayerSet::Controller => [Some(controller), None],
             PlayerSet::Opponent => [Some(controller.other()), None],
             PlayerSet::Each => [Some(self.state.active), Some(self.state.active.other())],
@@ -1310,6 +1311,35 @@ impl Game {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
+                Instruction::FightSource => self.source_fight(&item),
+                Instruction::IfTargetPlayerLife { life, skip } => {
+                    let holds = item.targets.iter().any(|bound| {
+                        matches!(bound.target, Target::Player(player)
+                            if self.state.players[player.index()].life == life)
+                    });
+                    if !holds {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
+                Instruction::CounterAndCreateForController { token, amount } => {
+                    for bound in &item.targets {
+                        if let Target::Spell(card) = bound.target
+                            && let Some((id, controller)) = self
+                                .state
+                                .stack
+                                .iter()
+                                .find(|v| {
+                                    v.kind == StackKind::Spell
+                                        && v.card == card
+                                        && Some(v.object) == bound.object
+                                })
+                                .map(|v| (v.id, v.controller))
+                        {
+                            self.counter_stack_item(id, false);
+                            self.create_tokens(controller, token, u128::from(amount), false);
+                        }
+                    }
+                }
                 Instruction::CounterThenDrawIfDiscounted => {
                     for bound in &item.targets {
                         if let Target::Spell(card) = bound.target
@@ -1360,6 +1390,60 @@ impl Game {
                             );
                         }
                     }
+                }
+                Instruction::ShuffleGraveyardIntoLibrary => {
+                    let ids: Vec<_> = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter(|(_, o)| o.zone == Zone::Graveyard && o.owner == item.controller)
+                        .map(|(id, _)| id as CardId)
+                        .collect();
+                    for id in ids {
+                        self.move_object(id, Zone::Library);
+                    }
+                    self.forget_library_top(item.controller);
+                    self.state
+                        .rng
+                        .shuffle(&mut self.state.players[item.controller.index()].library);
+                }
+                Instruction::DoubleTargetPower => {
+                    let affected: Vec<_> = item
+                        .targets
+                        .iter()
+                        .filter(|b| self.same_target_object(**b))
+                        .filter_map(|b| match b.target {
+                            Target::Card(id) if self.is_creature(id) => {
+                                Some((id, self.stats(id).power))
+                            }
+                            _ => None,
+                        })
+                        .collect();
+                    for (id, power) in affected {
+                        self.state.objects[id as usize].growth += Stats {
+                            power,
+                            toughness: 0,
+                        };
+                    }
+                }
+                Instruction::DrawAndProtectCounterCreatures => {
+                    // Freeze exact recipients before drawing, then grant to those incarnations.
+                    let ids: Vec<_> = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter(|(id, o)| {
+                            o.zone == Zone::Battlefield
+                                && o.controller == item.controller
+                                && o.counters.plus_one > 0
+                                && self.is_creature(*id as CardId)
+                        })
+                        .map(|(id, _)| id as CardId)
+                        .collect();
+                    self.draw_many(item.controller, ids.len() as u128);
+                    self.grant_keyword_effects(&ids, item.object, Keywords::INDESTRUCTIBLE);
                 }
                 Instruction::ShuffleTargetIntoLibrary => self.shuffle_target_into_library(&item),
                 Instruction::MultiplyTargetStats { factor } => {

@@ -83,13 +83,17 @@ fn standard_checks_pool_and_semantics_independently() {
             .to_string()
             .contains("not Standard legal")
     );
-    deck[0] = Card::from_name("Hare Apparent").unwrap();
-    assert!(
-        Game::new(config(deck))
-            .unwrap_err()
-            .to_string()
-            .contains("rules not implemented")
-    );
+    // Coverage grows as whole cards are implemented. Exercise the unsupported
+    // rules gate only while the current Standard snapshot still has gated cards.
+    if let Some(gated) =
+        Card::catalogue().find(|card| card.is_standard_legal() && !card.is_supported())
+    {
+        deck[0] = gated;
+        let Err(error) = Game::new(config(deck)) else {
+            panic!("gated Standard card accepted: {}", gated.name());
+        };
+        assert!(error.to_string().contains("rules not implemented"));
+    }
     let mut banned = vec![Card::Forest; 59];
     banned.push(Card::from_name("Heartfire Hero").unwrap());
     assert!(

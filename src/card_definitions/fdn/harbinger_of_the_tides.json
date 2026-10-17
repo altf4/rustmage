@@ -3,10 +3,40 @@
   "catalogue_id": 1939,
   "oracle_id": "9f5277e8-1cbe-478c-a8bc-ac028f13305e",
   "facts_sha256": "9b99dee90646384154ed74e28e4b49ed95ab6bd66791857ce309cfee8c9c95a4",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4840e673b03310ea9fe7122f2e690c0bde2b73a2a39f430614021437ef9cc47e"
   },
-  "physical_metadata_sha256": "258c9981f6d19f3fa44e0a1deb7ee4b3bcda6db21faa171519fd17c48b6d67d0"
+  "physical_metadata_sha256": "258c9981f6d19f3fa44e0a1deb7ee4b3bcda6db21faa171519fd17c48b6d67d0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HarbingerOfTheTides.java",
+  "java_sha256": "aa05153516aac7bf7b5229aaa3364ca8c5291a0f6d6a88157b53015f22c0720b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/PayMoreToCastAsThoughtItHadFlashAbility.java",
+      "sha256": "20557cfda122a26460aace27f5084a554bd88c1dba1f84e2c091a12684048ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+      "sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ]
 }
