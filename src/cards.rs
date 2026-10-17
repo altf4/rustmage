@@ -364,6 +364,7 @@ pub(crate) enum Instruction {
         amount: AmountValue,
     },
     SacrificeDelayedTokens,
+    ExileWarpedPermanent,
     BecomeSaddled {
         minimum: u16,
     },
@@ -1450,6 +1451,9 @@ impl Card {
     }
     pub fn is_token(self) -> bool {
         self.token_info().is_some()
+    }
+    pub fn warp_cost(self) -> Option<ManaCost> {
+        generated::warp_cost(self)
     }
     pub fn plot_cost(self) -> Option<ManaCost> {
         generated::plot_cost(self)

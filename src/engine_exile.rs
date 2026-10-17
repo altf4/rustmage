@@ -11,6 +11,9 @@ pub struct ExilePlayPermission {
 }
 impl Game {
     pub(super) fn can_play_exiled(&self, player: Player, card: CardId) -> bool {
+        if self.can_cast_warped(player, card) {
+            return true;
+        }
         self.state
             .exile_permissions
             .binary_search_by_key(&card, |p| p.object.card)

@@ -60,7 +60,7 @@ pre-event replacement timing, token entry and opponent-entry life triggers.
 [Owned entering-object context](docs/entering-object-context.md) adds
 Good-Fortune Unicorn, Serra Redeemer and Wartime Protestors with exact
 non-targeted references and snapshot-safe counters/haste. Observations use schema
-71 (`rustmage::OBSERVATION_SCHEMA`); earlier milestone pages retain their original
+72 (`rustmage::OBSERVATION_SCHEMA`); earlier milestone pages retain their original
 schema and measurements. [Entry predicates](docs/entry-predicates.md) add nine complete bodies
 with entry-time power thresholds, subtype unions, outlaw and kind-or-subtype
 conditions, including Impact Tremors and Warleader's Call.

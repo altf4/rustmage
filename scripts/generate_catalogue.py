@@ -926,6 +926,20 @@ def extract_plot(card):
     return dict(card,oracle_text='\n'.join(line for line in lines if line!=declarations[0])), f'ManaCost {{ colored: {colored}, generic: {generic} }}'
 
 
+def extract_warp(card):
+    if card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'), str): return card,None
+    lines=card['oracle_text'].splitlines()
+    declarations=[line for line in lines if line.startswith('Warp')]
+    if len(declarations)!=1: return card,None
+    m=re.fullmatch(r'Warp ((?:\{(?:[0-9]+|[WUBRGC])\})+) \(You may cast this card from your hand for its warp cost\. Exile this (creature|enchantment) at the beginning of the next end step, then you may cast it from exile on a later turn\.\)',declarations[0])
+    if not m or fixed_cost(m[1]) is None or spell_cost_options(m[1]) is None: return card,None
+    types=card.get('type_line','').split(' — ')[0].split()
+    if not any(t in types for t in ['Creature','Artifact','Enchantment','Planeswalker']) or any(t in types for t in ['Instant','Sorcery','Land']):return card,None
+    if (m[2]=='creature') != ('Creature' in types):return card,None
+    colored,generic=fixed_cost(m[1])
+    return dict(card,oracle_text='\n'.join(line for line in lines if line!=declarations[0])),f'ManaCost {{ colored: {colored}, generic: {generic} }}'
+
+
 def extract_bargain(card):
     lines=card.get('oracle_text','').splitlines()
     declaration='Bargain (You may sacrifice an artifact, enchantment, or token as you cast this spell.)'
@@ -3336,6 +3350,7 @@ def compile_catalogue(snapshot, target):
     additional_rows = []
     flashback_rows = []
     plot_rows = []
+    warp_rows = []
     x_rows = []
     x_entry_rows = []
     kicker_rows = []
@@ -3365,6 +3380,8 @@ def compile_catalogue(snapshot, target):
         card, convoke = extract_convoke(card)
         plot_seen = any(line.startswith('Plot ') for line in card.get('oracle_text','').splitlines())
         card, plot = extract_plot(card)
+        warp_seen = any(line.startswith('Warp') for line in card.get('oracle_text','').splitlines())
+        card, warp = extract_warp(card)
         card, evidence = extract_evidence(card)
         card, additional = extract_additional_cost(card)
         card, target_reduction = extract_target_cost_reduction(card)
@@ -3464,12 +3481,18 @@ def compile_catalogue(snapshot, target):
         # silently combine an unimplemented additional/alternative payment recipe.
         if convoke and (bargain or evidence is not None or cycling or any(v is not None for v in (flashback,offspring,kicker,additional,target_reduction)) or '{X}' in card.get('mana_cost','') or any(line.startswith(('Saddle ', 'Mobilize ')) for line in card.get('oracle_text','').splitlines())):
             effect='Unsupported'
-        if plot_seen and (plot is None or convoke or evidence is not None or cycling
+        if plot_seen and (plot is None or warp_seen or convoke or evidence is not None or cycling
                 or any('endures ' in line for line in card.get('oracle_text','').splitlines())
                 or any(line.startswith(('Saddle ', 'Mobilize ')) for line in card.get('oracle_text','').splitlines())
                 or any(v is not None for v in (flashback,offspring,kicker,additional,target_reduction,scalar))
                 or bargain or reductions
                 or spell_cost_options(card.get('mana_cost','')) is None):
+            effect='Unsupported'
+        if warp_seen and (warp is None or plot_seen or convoke or evidence is not None or cycling
+                or any('endures ' in line for line in card.get('oracle_text','').splitlines())
+                or any(line.startswith(('Saddle ', 'Mobilize ')) for line in card.get('oracle_text','').splitlines())
+                or any(v is not None for v in (flashback,offspring,kicker,additional,target_reduction,scalar))
+                or bargain or reductions or spell_cost_options(card.get('mana_cost','')) is None):
             effect='Unsupported'
         # Later fixed-cost selectors must never revive a rejected variable-cost body.
         if '{X}' in card.get('mana_cost', '') and scalar is None:
@@ -3527,6 +3550,7 @@ def compile_catalogue(snapshot, target):
                 offspring_copy_rows.append(f'        {index} => Some(__TOKEN_{offspring_key}__),')
             if flashback is not None: flashback_rows.append(f'        {index} => Some({flashback}),')
             if plot is not None: plot_rows.append(f'        {index} => Some({plot}),')
+            if warp is not None: warp_rows.append(f'        {index} => Some({warp}),')
             if entry_suppression: entry_suppression_rows.append(f'        {index} => {entry_suppression},')
             if opponent_entry_tapped: opponent_entry_tapped_rows.append(f'        {index} => {opponent_entry_tapped},')
             if entry_counters: entry_counter_rows.append(f'        {index} => &[{", ".join(entry_counters)}],')
@@ -3656,6 +3680,7 @@ def compile_catalogue(snapshot, target):
         lines.append(f'    pub const {name.replace(" ", "")}: Card = Card({index});')
     lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn equipment(card: Card) -> Option<EquipmentSpec> {', '    match card.0 {', *equipment_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn aura(card: Card) -> Option<AuraSpec> {', '    match card.0 {', *aura_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn plot_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *plot_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn warp_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *warp_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn dynamic_stats(card: Card) -> Option<DynamicStats> {', '    match card.0 {', *dynamic_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', "pub(super) fn scaling_modifiers(card: Card) -> &'static [ScalingModifier] {", '    match card.0 {', *scaling_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn entry_trigger_suppression(card: Card) -> u16 {', '    match card.0 {', *entry_suppression_rows, '        _ => 0,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn opponent_entry_tapped(card: Card) -> u16 {', '    match card.0 {', *opponent_entry_tapped_rows, '        _ => 0,', '    }', '}', '']

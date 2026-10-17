@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "b41688a98da80a651870ccad086b3f7dd62befc89279b2826570847efce2f81f",
+  "catalogue_version": "7875762d9632c8033abfef3727fabfe3437a5f33336888ea9cb1d0caed777dd8",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1677,
-  "implemented_total": 1683,
+  "implemented_standard_cards": 1685,
+  "implemented_total": 1691,
   "token_definitions": 83,
   "emblem_definitions": 1,
   "cards": [
@@ -3646,8 +3646,8 @@
     {
       "name": "Bygone Colossus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Byrke, Long Ear of the Law",
@@ -8314,8 +8314,8 @@
     {
       "name": "Eusocial Engineering",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Evendo, Waking Haven",
@@ -10306,8 +10306,8 @@
     {
       "name": "Germinating Wurm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Germination Practicum",
@@ -14308,8 +14308,8 @@
     {
       "name": "Knight Luminary",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Knight of Doves",
@@ -20596,8 +20596,8 @@
     {
       "name": "Red Tiger Mechan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Redcap Gutter-Dweller",
@@ -23296,8 +23296,8 @@
     {
       "name": "Sinister Cryologist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Sinister Hideout",
@@ -24586,8 +24586,8 @@
     {
       "name": "Starbreach Whale",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Starfall Invocation",
@@ -30190,8 +30190,8 @@
     {
       "name": "Weftblade Enhancer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Weftstalker Ardent",

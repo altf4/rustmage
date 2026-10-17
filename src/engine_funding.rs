@@ -863,7 +863,9 @@ impl Game {
                 },
                 a.additional_cost(),
             ),
-            StackKind::TriggeredAbility { .. } | StackKind::DelayedSacrifice => false,
+            StackKind::TriggeredAbility { .. }
+            | StackKind::DelayedSacrifice
+            | StackKind::DelayedWarpExile => false,
         }
     }
     pub(super) fn funding_goal(&self, announcement: &Announcement) -> FundingGoal {
@@ -915,7 +917,9 @@ impl Game {
                     )),
                 }
             }
-            StackKind::TriggeredAbility { .. } | StackKind::DelayedSacrifice => unreachable!(),
+            StackKind::TriggeredAbility { .. }
+            | StackKind::DelayedSacrifice
+            | StackKind::DelayedWarpExile => unreachable!(),
         }
     }
     pub(super) fn visit_cost_payment(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {

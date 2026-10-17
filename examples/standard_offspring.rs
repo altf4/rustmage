@@ -441,7 +441,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && a.outcome.is_none()
             {
                 match s.kind {
-                    StackKind::DelayedSacrifice => panic!("no delayed producer in this fixture"),
+                    StackKind::DelayedSacrifice | StackKind::DelayedWarpExile => {
+                        panic!("no delayed producer in this fixture")
+                    }
                     StackKind::TriggeredAbility { ability } => {
                         let i = index(s.source_card).unwrap();
                         verify(i, ability, s, &b, &a, &mut ledger);
