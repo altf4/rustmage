@@ -3939,11 +3939,47 @@ def modal_reminder_text(card):
     def number(word):
         words = {'zero':0,'a':1,'an':1,'one':1,'two':2,'three':3,'four':4,'five':5,
                  'six':6,'seven':7,'eight':8,'nine':9,'ten':10}
-        return int(word) if word.isdecimal() else words.get(word)
+        word = word.casefold()
+        return int(word) if word.isdecimal() and len(word)<=20 else words.get(word)
+    semantic_cache = {}
+    def semantic_line(before):
+        body = before.removeprefix('• ')
+        if ' — ' in body:
+            label, candidate = body.split(' — ', 1)
+            if re.fullmatch(r"[A-Z][A-Za-z0-9' -]*", label): body = candidate
+        return body
+    def instructions(before):
+        # Lower the complete reminder-free semantic prefix. Names, labels and
+        # quoted prose cannot supply an executable mechanic merely by spelling it.
+        if before in semantic_cache: return semantic_cache[before]
+        body = semantic_line(before)
+        parsed = spell_program_template(dict(card, layout='normal', type_line='Instant', oracle_text=body))
+        program = parsed[1] if parsed is not None else []
+        if not program:
+            quoted = re.search(r'\bhas "([^"\n]+)$', body)
+            trigger_body = quoted[1] if quoted else body
+            trigger_body = trigger_body.replace('When this artifact enters, ', 'When this creature enters, ').replace('When this enchantment enters, ', 'When this creature enters, ')
+            proxy = dict(card, layout='normal', type_line=('Legendary ' if card.get('type_line','').startswith('Legendary ') else '')+'Creature', power='0', toughness='1', oracle_text=trigger_body)
+            triggered = trigger_creature_template(proxy)
+            if triggered is not None: program = [v for _, values, _ in triggered[2] for v in values]
+        if not program:
+            permanent = permanent_program_template(dict(card, oracle_text=body))
+            if permanent is not None:
+                program = [v for _, values, _ in permanent[2] for v in values]
+                program += [v for _, _, values, _, _ in permanent[3] for v in values]
+        semantic_cache[before] = program
+        return program
     def amount_present(before, mechanic, value):
         if value is None: return False
-        return any(number(m[1]) == value for m in re.finditer(
-            r'\b'+mechanic+r' ([a-z0-9]+)\b', before, re.I))
+        expected = (f'Mill(PlayerSet::Controller, MillAmount::Fixed({value}))'
+                    if mechanic == 'mill' else f'{mechanic.title()}({value})')
+        return expected in instructions(before)
+    def creates(before, key, value):
+        for instruction in instructions(before):
+            if not instruction.startswith('Create'): continue
+            for token in re.findall(r'__TOKEN_([a-f0-9]+)__', instruction):
+                if TOKEN_DEFS.get(token, {}).get(key) == value: return True
+        return False
     def slot(before, reminder):
         # Complete intrinsic lines prove their own trailing presentation.
         if intrinsic_reminder_line_valid(before+' ('+reminder+')'): return True
@@ -3953,6 +3989,10 @@ def modal_reminder_text(card):
         grant = re.search(r'\b(?:gains?|has|have) ([a-z, ]+?)(?: until end of turn)?\.$', before, re.I)
         if grant:
             keywords = re.split(r',? and |, ', grant[1].lower())
+            masks = [int(m[1]) for value in instructions(before) for m in re.finditer(r'keywords: Keywords\(([0-9]+)\)', value)]
+            declaration = semantic_line(before) in ROLE_BODIES.values()
+            keywords = [word for word in keywords if declaration or any(mask & INTRINSIC_KEYWORDS.get(word,0) for mask in masks)]
+            if not keywords: return False
             if keywords[-1] != 'hexproof' and intrinsic_reminder_line_valid(keywords[-1].title()+' ('+reminder+')'): return True
             if 'indestructible' in keywords and re.fullmatch(r'''Damage and effects that say "destroy" don't destroy it\.(?: If its toughness is 0 or less, it still dies\.)?''', reminder): return True
             if 'hexproof' in keywords:
@@ -3960,9 +4000,15 @@ def modal_reminder_text(card):
                 expected = ("They can't be the targets" if plural else "It can't be the target")+" of spells or abilities your opponents control."
                 if reminder == expected: return True
             if 'trample' in keywords and reminder == "This creature can deal excess combat damage to the player or planeswalker it's attacking.": return True
-        if re.search(r'\bfights\b[^.]*\.$', before) and reminder in [
+        if any(value.startswith('Fight {') for value in instructions(before)) and reminder in [
                 'Each deals damage equal to its power to the other.',
                 'Creatures that fight each deal damage equal to their power to the other.']: return True
+        if reminder == 'Look at the top card of your library. You may put that card on the bottom of your library.':
+            return amount_present(before, 'scry', 1)
+        if reminder in ['Look at the top card of your library. You may put it into your graveyard.', 'To surveil 1, look at the top card of your library. You may put it into your graveyard.']:
+            return amount_present(before, 'surveil', 1)
+        if reminder == 'To mill a card, put the top card of your library into your graveyard.':
+            return amount_present(before, 'mill', 1)
         if m := re.fullmatch(r'Look at the top ([a-z0-9]+) cards? of your library, then put any number of them on the bottom and the rest on top in any order\.', reminder):
             return amount_present(before, 'scry', number(m[1]))
         if m := re.fullmatch(r'To surveil ([0-9]+), look at the top ([a-z0-9]+) cards? of your library, then put any number of them into your graveyard and the rest on top of your library in any order\.', reminder):
@@ -3970,14 +4016,20 @@ def modal_reminder_text(card):
         if m := re.fullmatch(r'To mill ([a-z0-9]+) cards?, put the top ([a-z0-9]+) cards? of your library into your graveyard\.', reminder):
             return number(m[1]) == number(m[2]) and amount_present(before, 'mill', number(m[1]))
         explore = "Reveal the top card of your library. Put that card into your hand if it's a land. Otherwise, put a +1/+1 counter on that creature, then put the card back or put it into your graveyard."
-        if before.endswith('explores, then it explores again.') and reminder == explore+' Then repeat this process.': return True
-        if before.endswith('explores.') and reminder == explore: return True
+        explores = [value for value in instructions(before) if value.startswith('Explore(')]
+        if explores:
+            described = explore if explores[0]=='Explore(Subject::Targets)' else explore.replace('that creature','this creature')
+            if len(explores)==2 and reminder==described+' Then repeat this process.': return True
+            if len(explores)==1 and reminder==described: return True
         for kind, ability in PREDEFINED.items():
-            if re.search(r'\b[Cc]reate (?:a|an|one|two|three|four|five|six|seven|eight) '+kind+r' tokens?\.$', before):
+            if creates(before, 'predefined', kind):
                 if reminder == 'It\'s an artifact with "'+ability.replace('this artifact','this token')+'"': return True
         # All six Roles use their complete predefined characteristics, after any
         # authenticated nested keyword reminder has been removed recursively.
-        return role_reminder_text(before+' ('+reminder+')') == before
+        body = semantic_line(before)
+        roles = re.findall(r'\b(Cursed|Monster|Royal|Sorcerer|Wicked|Young Hero) Role token', body)
+        return (bool(roles) and creates(before, 'role', roles[-1])
+                and role_reminder_text(body+' ('+reminder+')') == body)
     def line(text, nesting=0):
         if nesting >= 64: return None
         result='';i=0

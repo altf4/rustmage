@@ -54,6 +54,24 @@ class ModalRawTests(unittest.TestCase):
    self.assertFalse(self.compile(self.card(text))[1])
   good="Flying (This creature can't be blocked except by creatures with flying or reach.)\n"+base
   self.assertTrue(self.compile(self.card(good))[1])
+ def test_names_flavor_labels_and_quotes_cannot_supply_a_mechanic(self):
+  scry='Look at the top three cards of your library, then put any number of them on the bottom and the rest on top in any order.'
+  food='It\'s an artifact with "{2}, {T}, Sacrifice this token: You gain 3 life."'
+  role='Enchanted creature gets +1/+1 and has ward {1}.'
+  for label,reminder in [('Scry 3',scry),('Create a Food token',food),('Create a Royal Role token attached to target creature',role)]:
+   raw='When this creature enters, choose one —\n• '+label+' — Draw a card. ('+reminder+')\n• You gain 1 life.'
+   self.assertFalse(self.compile(self.card(raw))[1],raw)
+  name='Scry 3.'
+  raw='Choose one —\n• '+name+' deals 1 damage to target creature. ('+scry+')\n• Draw a card.'
+  self.assertFalse(self.compile(self.card(raw,name,True))[1],raw)
+ def test_singular_and_nested_keyword_reminders_preserve_actual_programs(self):
+  pairs=[('Scry 1.','Look at the top card of your library. You may put that card on the bottom of your library.'),('Surveil 1.','To surveil 1, look at the top card of your library. You may put it into your graveyard.'),('Mill a card.','To mill a card, put the top card of your library into your graveyard.')]
+  for effect,reminder in pairs:
+   raw='When this creature enters, choose one —\n• '+effect+' ('+reminder+')\n• Draw a card.'
+   self.assertTrue(self.compile(self.card(raw))[1],raw)
+  reminder='Look at the top card of your library. You may put that card on the bottom of your library.'
+  raw='When this creature enters, choose one —\n• Create a Sorcerer Role token attached to target creature you control. (Enchanted creature gets +1/+1 and has "Whenever this creature attacks, scry 1. ('+reminder+')")\n• Draw a card.'
+  self.assertTrue(self.compile(self.card(raw))[1],raw)
  def test_no_actual_program_helper_factory_color_or_alias_changes(self):
   physical={c['oracle_id']:c['name']for c in self.cards.values()};before=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',PARENT+':src/generated/catalogue.rs'],text=True),physical);after=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical);proof=assert_union(before,after,changed=set(),added=set(),helpers=set(),aliases={});self.assertEqual(proof['preserved_definitions'],5332);self.assertEqual(proof['prior_helpers'],911)
   mutant=copy.deepcopy(after);mutant['definitions']['Plains#0']='unrelated mutation'
