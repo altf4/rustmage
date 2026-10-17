@@ -30,7 +30,7 @@ fn bouncing_only_declared_attacker_does_not_skip_blockers() {
             return;
         }
         let actions = &obs.actions;
-        let action = actions.iter().find(|a| matches!(a, Action::Keep))
+        let action = actions.iter().find(|a| matches!(a, Action::Keep | Action::FinishOpeningHand))
             .or_else(|| actions.iter().find(|a| matches!(a, Action::PlayLand { .. })))
             .or_else(|| {
                 let need_mana = (player == Player::P0 && !cast_bear && obs.step == Step::Main1)
