@@ -10,17 +10,24 @@ pub(super) struct GrantedAbilityKey {
     pub grantor_controller: Player,
     pub timestamp: u64,
 }
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) struct GrantedManaAbility {
+    pub source: ObjectRef,
+    pub production: ManaProduction,
+}
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct LayerSixObject {
     pub printed: bool,
     pub keywords: Keywords,
     pub grants: Vec<GrantedAbilityKey>,
+    pub mana: Vec<GrantedManaAbility>,
 }
 #[derive(Clone, Debug)]
 pub(super) struct LayerSixGrant {
     pub recipient: CardId,
     pub keywords: Keywords,
     pub abilities: Vec<GrantedAbilityKey>,
+    pub mana: Vec<GrantedManaAbility>,
 }
 #[derive(Clone, Debug)]
 pub(super) enum LayerSixAction {
@@ -162,6 +169,7 @@ pub(super) fn apply_layer_six(
                 let object = &mut objects[row.recipient as usize];
                 object.keywords = object.keywords.union(row.keywords);
                 object.grants.extend_from_slice(&row.abilities);
+                object.mana.extend_from_slice(&row.mana);
             }
             continue;
         }
@@ -173,6 +181,7 @@ pub(super) fn apply_layer_six(
                     object.printed = false;
                     object.keywords = Keywords::NONE;
                     object.grants.clear();
+                    object.mana.clear();
                 }
                 LayerSixAction::Grant {
                     keywords,
@@ -195,7 +204,8 @@ mod tests {
             LayerSixObject {
                 printed: true,
                 keywords: Keywords::FLYING,
-                grants: Vec::new()
+                grants: Vec::new(),
+                mana: Vec::new()
             };
             n
         ]

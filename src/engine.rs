@@ -410,6 +410,8 @@ define_actions! {
     TapMana {
         card: CardId,
     },
+    // Mana ability granted to this permanent by an exact attached source.
+    TapGrantedMana { card: CardId, grantor: ObjectRef, production: Mana },
     AnnounceCast {
         card: CardId,
     },
@@ -2331,6 +2333,11 @@ impl Game {
                     {
                         return true;
                     }
+                    if obj.zone == Zone::Battlefield
+                        && self.visit_granted_mana(card, actor, &mut emit)
+                    {
+                        return true;
+                    }
                     if matches!(obj.zone, Zone::Battlefield | Zone::Hand | Zone::Graveyard)
                         && self.visit_activations(card, actor, sorcery, &mut emit)
                     {
@@ -3129,6 +3136,12 @@ impl Game {
                     self.state.land_played = true;
                 }
                 self.state.passes = 0;
+            }
+            Action::TapGrantedMana {
+                card, production, ..
+            } => {
+                self.state.objects[card as usize].tapped = true;
+                self.add_mana(actor, production);
             }
             Action::TapMana { card } => {
                 self.tap_objects(&[card]);
@@ -5723,3 +5736,7 @@ mod fdn_life_graveyard_tests;
 #[cfg(test)]
 #[path = "engine_fdn_lords_six_tests.rs"]
 mod fdn_lords_six_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_attachments_six_tests.rs"]
+mod fdn_attachments_six_tests;

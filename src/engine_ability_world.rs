@@ -57,6 +57,31 @@ pub(super) trait CharacteristicWorld {
             game.state.attack_declared && self.attacking(source),
         )
     }
+    fn granted_mana(&self, id: CardId) -> Vec<ability_order::GrantedManaAbility> {
+        if let Some(evaluation) = ability_evaluation::evaluate_if_needed(self) {
+            return evaluation.result.objects[id as usize].mana.clone();
+        }
+        let mut result = Vec::new();
+        for &source in &self.game().state.attachment_sources {
+            let reference = self.reference(source);
+            if self.kinds(source) & 1 != 0 || !self.attachment_link(reference, self.reference(id)) {
+                continue;
+            }
+            for group in self.object(source).card.static_ability_groups() {
+                for fragment in group.fragments {
+                    if let crate::cards::StaticAbilityFragment::AttachmentMana(production) =
+                        *fragment
+                    {
+                        result.push(ability_order::GrantedManaAbility {
+                            source: reference,
+                            production,
+                        });
+                    }
+                }
+            }
+        }
+        result
+    }
     fn attachment_link(&self, source: ObjectRef, recipient: ObjectRef) -> bool {
         let object = self.object(source.card);
         object.zone == Zone::Battlefield
