@@ -4,7 +4,7 @@ from pathlib import Path
 spec=importlib.util.spec_from_file_location('saga_generator',Path(__file__).with_name('generate_catalogue.py'))
 g=importlib.util.module_from_spec(spec);spec.loader.exec_module(g)
 CORE=['Summon: Choco/Mog','Summon: Esper Ramuh','Summon: Fat Chocobo','Summon: G.F. Ifrit']
-NAMES=CORE+['Burn, Burn, Tree and Fern','Summon: Anima','Leaves from the Vine','Summon: Primal Garuda','Welcome to Sweettooth',"The Huntsman's Redemption",'Roar of Endless Song','Summon: Shiva','Korvold and the Noble Thief']
+NAMES=CORE+['Burn, Burn, Tree and Fern','Summon: Anima','Leaves from the Vine','Summon: Primal Garuda','Welcome to Sweettooth',"The Huntsman's Redemption",'Roar of Endless Song','Summon: Shiva','Korvold and the Noble Thief',"The Witch's Vanity"]
 class SagaCompilerTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):cls.cards={c['name']:c for c in json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards']}

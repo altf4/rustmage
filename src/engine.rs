@@ -5409,5 +5409,8 @@ pub use temporary_abilities::TemporaryAbilityView;
 #[path = "engine_enchanted_draw_tests.rs"]
 mod enchanted_draw_tests;
 #[cfg(test)]
+#[path = "engine_role_followup_tests.rs"]
+mod role_followup_tests;
+#[cfg(test)]
 #[path = "engine_temporary_death_grants_tests.rs"]
 mod temporary_death_grants_tests;
