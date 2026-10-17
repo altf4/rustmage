@@ -9,7 +9,7 @@ reconfirmation before guarded merge. Full Standard support is not yet achieved.
 
 The branch admits twenty whole Standard bodies, taking the pinned catalogue from
 1,707 to 1,727 of 5,164 identities. Semantic comparison preserves the other 5,247
-ordinary definitions, all ordinary IDs/colors, all 83 token recipes and the emblem.
+definitions, all ordinary IDs/colors, all 83 token recipes and the emblem.
 The 597 existing helper arms remain intact with three new helpers. All 52 unique
 manifest Java files match both their pinned Git revision and working-tree bytes.
 

@@ -6,8 +6,8 @@ update change documentation only; exact-head reconfirmation precedes guarded mer
 
 The branch composes corrected replacement execution with reviewed payment main
 `63169e1`. Nine complete Standard bodies bring coverage to 1,736/5,164, with 84
-token recipes and schema75. The other 5,258 ordinary definitions, all 5,267
-ordinary IDs/colors, all 83 old recipes and 600 prior helper arms remain intact;
+token recipes and schema75. The other 5,258 definitions, all 5,267 canonical identities/colors, all 5,183
+ordinary card IDs, all 83 old recipe metadata and 600 prior helper arms remain intact;
 one Frog recipe and ten helper arms are added. All 76 pinned Java dependencies
 match their recorded hashes and the read-only revision. No residual clause is
 removed to admit a card. The eighteen remaining related bodies are recorded for
