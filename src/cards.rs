@@ -496,6 +496,12 @@ pub(crate) enum Instruction {
         filters: &'static [BattlefieldFilter],
         exile: bool,
     },
+    /// Freeze a non-targeted battlefield group, then return it simultaneously.
+    ReturnBattlefield {
+        filters: &'static [BattlefieldFilter],
+        attacking: bool,
+        players: Option<PlayerSet>,
+    },
     DamageBattlefield {
         filters: &'static [BattlefieldFilter],
         players: Option<PlayerSet>,

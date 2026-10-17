@@ -1392,6 +1392,11 @@ impl Game {
                 Instruction::MoveBattlefield { filters, exile } => {
                     self.move_battlefield_group(&item, filters, exile);
                 }
+                Instruction::ReturnBattlefield {
+                    filters,
+                    attacking,
+                    players,
+                } => self.return_battlefield_group(&item, filters, attacking, players),
                 Instruction::DamageBattlefield {
                     filters,
                     players,

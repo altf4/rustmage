@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "0881a3aabaa1f79ba870fe0306bad19c4fdd831d90d5b965af239122c33926cf",
+  "catalogue_version": "47ef06451233ccf6e22f6e2e09bdc8cfb63fce96c87c52942e81d291a8efdf98",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1896,
-  "implemented_total": 1902,
+  "implemented_standard_cards": 1898,
+  "implemented_total": 1904,
   "token_definitions": 94,
   "emblem_definitions": 1,
   "cards": [
@@ -448,8 +448,8 @@
     {
       "name": "Aetherize",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Aetherjacket",
@@ -21310,8 +21310,8 @@
     {
       "name": "River's Rebuke",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Riverchurn Monument",

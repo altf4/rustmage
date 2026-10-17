@@ -50,8 +50,9 @@ class RoleSuccessFightTests(unittest.TestCase):
     self.assertFalse(self.compile(dict(self.card,name=name,mana_cost=cost))[1],(name,cost))
    for typ in ['Creature','Artifact','Instant Sorcery','Legendary Instant','Unknown']:
     self.assertFalse(self.compile(dict(self.card,name=name,type_line=typ,power='2',toughness='2'))[1],(name,typ))
- def test_exact_parent_preservation_has_only_one_complete_admission(self):
-  before=subprocess.check_output(['git','-C',str(g.ROOT),'show',PARENT+':src/generated/catalogue.rs'],text=True);after=(g.ROOT/'src/generated/catalogue.rs').read_text();physical={c['oracle_id']:c['name']for c in self.cards};proof=assert_union(canonical(before,physical),canonical(after,physical),changed={NAME+'#0'},added=set(),helpers=set(),aliases={});self.assertEqual(proof['preserved_definitions'],5330)
+ def test_historical_parent_preservation_and_current_complete_program(self):
+  before=subprocess.check_output(['git','-C',str(g.ROOT),'show',PARENT+':src/generated/catalogue.rs'],text=True);after=subprocess.check_output(['git','-C',str(g.ROOT),'show','c0232954838cf71203a5be7c0e8fc80a66f6bf26:src/generated/catalogue.rs'],text=True);physical={c['oracle_id']:c['name']for c in self.cards};proof=assert_union(canonical(before,physical),canonical(after,physical),changed={NAME+'#0'},added=set(),helpers=set(),aliases={});self.assertEqual(proof['preserved_definitions'],5330)
+  current=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical);self.assertEqual(current['definitions'][NAME+'#0'],canonical(after,physical)['definitions'][NAME+'#0'])
  def test_full_metadata_and_unique_pinned_source_provenance(self):
   m=json.loads((g.ROOT/'docs/role-success-fight-provenance.json').read_text());self.assertEqual(m['card'],self.card)
   root=Path(os.environ.get('RUSTMAGE_XMAGE_SOURCE','/home/altf4/Code/mage'))
