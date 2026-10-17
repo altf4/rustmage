@@ -2144,6 +2144,35 @@ impl Game {
                         }
                     }
                 }
+                Instruction::Suspect { subject } => self.suspect_subject(&item, subject),
+                Instruction::UnsuspectCreatures { filter } => {
+                    self.unsuspect_creatures(&item, filter)
+                }
+                Instruction::ReturnGrantedSourceWithSuspect { tapped } => {
+                    self.return_granted_source_suspected(&item, tapped)
+                }
+                Instruction::ReturnToBattlefieldSuspected => {
+                    let moves = item
+                        .targets
+                        .iter()
+                        .copied()
+                        .filter(|b| self.same_target_object(*b))
+                        .filter_map(|b| match b.target {
+                            Target::Card(id) => {
+                                let mut movement = self.entry_move(
+                                    id,
+                                    Zone::Battlefield,
+                                    self.enters_tapped_for(id, item.controller),
+                                );
+                                movement.controller = item.controller;
+                                movement.suspect_after = true;
+                                Some(movement)
+                            }
+                            _ => None,
+                        })
+                        .collect();
+                    self.stage_entries(moves, None);
+                }
                 Instruction::ReturnToBattlefieldWithRole { token } => {
                     let moves = item
                         .targets

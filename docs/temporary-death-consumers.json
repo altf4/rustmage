@@ -3,13 +3,15 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "scope": "Issue311 full physical remaining temporary-grant and all printed Standard suspect consumers. Inventory/provenance only, never execution permission. Explicit imports and lexical references from wildcard packages are authenticated; this is not a transitive Java port.",
   "initial_consumers": [
+    "Absolving Lammasu",
+    "Convenient Target",
     "Galuf's Final Act",
-    "Rabid Attack",
-    "Perigee Beckoner",
-    "Presumed Dead",
-    "Person of Interest",
     "It Doesn't Add Up",
-    "Absolving Lammasu"
+    "Perigee Beckoner",
+    "Person of Interest",
+    "Presumed Dead",
+    "Rabid Attack",
+    "Reasonable Doubt"
   ],
   "cards": [
     {
@@ -19,7 +21,7 @@
       "mana_cost": "{4}{W}",
       "type_line": "Creature — Lammasu",
       "oracle_text": "Flying\nWhen this creature enters, all suspected creatures are no longer suspected.\nWhen this creature dies, you gain 3 life and suspect up to one target creature an opponent controls. (A suspected creature has menace and can't block.)",
-      "status": "gated_prerequisite",
+      "status": "implemented_complete_body",
       "sources": [
         {
           "java_source": "Mage/src/main/java/mage/MageInt.java",
@@ -781,7 +783,7 @@
       "mana_cost": "{R}",
       "type_line": "Enchantment — Aura",
       "oracle_text": "Enchant creature\nWhen this Aura enters, suspect enchanted creature. (It has menace and can't block.)\nEnchanted creature gets +1/+1.\n{2}{R}: Return this card from your graveyard to your hand.",
-      "status": "gated_prerequisite",
+      "status": "implemented_complete_body",
       "sources": [
         {
           "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
@@ -1178,7 +1180,7 @@
       "mana_cost": "{1}{G}",
       "type_line": "Instant",
       "oracle_text": "Until end of turn, target creature gets +1/+0 and gains \"When this creature dies, put a number of +1/+1 counters equal to its power on up to one target creature.\"",
-      "status": "gated_prerequisite",
+      "status": "implemented_complete_body",
       "sources": [
         {
           "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
@@ -1248,7 +1250,7 @@
       "mana_cost": "{3}{B}{B}",
       "type_line": "Instant",
       "oracle_text": "Return target creature card from your graveyard to the battlefield. Suspect it. (It has menace and can't block.)",
-      "status": "gated_prerequisite",
+      "status": "implemented_complete_body",
       "sources": [
         {
           "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
@@ -1421,7 +1423,7 @@
       "mana_cost": "{4}{B}",
       "type_line": "Creature — Horror",
       "oracle_text": "When this creature enters, until end of turn, another target creature you control gets +2/+0 and gains \"When this creature dies, return it to the battlefield tapped under its owner's control.\"\nWarp {1}{B} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
-      "status": "gated_prerequisite",
+      "status": "implemented_complete_body",
       "sources": [
         {
           "java_source": "Mage/src/main/java/mage/MageInt.java",
@@ -1509,7 +1511,7 @@
       "mana_cost": "{3}{R}",
       "type_line": "Creature — Human Rogue",
       "oracle_text": "When this creature enters, suspect it. Create a 2/2 white and blue Detective creature token. (A suspected creature has menace and can't block.)",
-      "status": "gated_prerequisite",
+      "status": "implemented_complete_body",
       "sources": [
         {
           "java_source": "Mage/src/main/java/mage/MageInt.java",
@@ -1573,7 +1575,7 @@
       "mana_cost": "{1}{B}",
       "type_line": "Instant",
       "oracle_text": "Until end of turn, target creature gets +2/+0 and gains \"When this creature dies, return it to the battlefield under its owner's control and suspect it.\" (A suspected creature has menace and can't block.)",
-      "status": "gated_prerequisite",
+      "status": "implemented_complete_body",
       "sources": [
         {
           "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
@@ -1677,7 +1679,7 @@
       "mana_cost": "{1}{B}",
       "type_line": "Instant",
       "oracle_text": "Until end of turn, any number of target creatures you control each get +1/+0 and gain \"When this creature dies, draw a card.\"",
-      "status": "gated_prerequisite",
+      "status": "implemented_complete_body",
       "sources": [
         {
           "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
@@ -1739,7 +1741,7 @@
       "mana_cost": "{1}{U}",
       "type_line": "Instant",
       "oracle_text": "Counter target spell unless its controller pays {2}.\nSuspect up to one target creature. (A suspected creature has menace and can't block.)",
-      "status": "gated_prerequisite",
+      "status": "implemented_complete_body",
       "sources": [
         {
           "java_source": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",

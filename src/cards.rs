@@ -113,7 +113,8 @@ pub(crate) enum TargetZone {
 pub(crate) struct TargetSpec {
     pub rule: TargetRule,
     pub min: u16,
-    pub max: u16,
+    /// usize::MAX denotes any number; only arena/address-space limits apply.
+    pub max: usize,
 }
 impl TargetSpec {
     pub const fn one(rule: TargetRule) -> Self {
@@ -393,6 +394,16 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    Suspect {
+        subject: Subject,
+    },
+    UnsuspectCreatures {
+        filter: CreatureFilter,
+    },
+    ReturnGrantedSourceWithSuspect {
+        tapped: bool,
+    },
+    ReturnToBattlefieldSuspected,
     /// Queue a reflexive ability only when this exact Role actually enters attached.
     CreateRoleReflexive {
         token: Card,
