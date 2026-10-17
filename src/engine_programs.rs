@@ -538,6 +538,7 @@ impl Game {
         self.state.pending_triggers.push(SpellView {
             gift: None,
             source_move: None,
+            target_controller_lki: None,
             reflexive_subject: None,
             crew: None,
             cast_event: None,
@@ -986,8 +987,13 @@ impl Game {
         let was_targeted = !item.targets.is_empty();
         let spec = self.target_spec(&item);
         let target_source = item.target_source();
+        // Preserve the whole original target set for relational legality. A departed
+        // target still contributes its last controller, even though it cannot move.
+        // The empty common case allocates nothing.
+        let relation_illegal: Vec<_> = item.targets.iter().copied()
+            .filter(|bound| !self.resolution_target_relations_hold(&item, *bound, spec)).collect();
         item.targets.retain(|bound| {
-            self.same_target_object(*bound)
+            !relation_illegal.contains(bound) && self.same_target_object(*bound)
                 && spec.group(bound.group).is_some_and(|group| {
                     self.target_matches(group.rule, item.controller, target_source, bound.target)
                 })
@@ -1585,6 +1591,9 @@ impl Game {
                 Instruction::MoveBattlefield { filters, exile } => {
                     self.move_battlefield_group(&item, filters, exile);
                 }
+                Instruction::GainControlUntilEndTurn => self.gain_control_until_end_turn(&item),
+                Instruction::ReturnGraveyardCreatures { players, maximum_mana_value } => self.return_graveyard_creatures(&item, players, maximum_mana_value),
+                Instruction::DestroyTargetNameGroup => self.destroy_target_name_group(&item),
                 Instruction::ReturnBattlefield {
                     filters,
                     attacking,

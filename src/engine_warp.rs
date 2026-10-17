@@ -87,6 +87,7 @@ impl Game {
             let id = self.next_stack_id();
             self.state.pending_triggers.push(SpellView {
                 source_move: None,
+            target_controller_lki: None,
                 gift: None,
                 reflexive_subject: None,
                 delayed_warp_exile: Some(Box::new(view)),

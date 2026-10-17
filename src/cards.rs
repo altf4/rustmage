@@ -52,6 +52,7 @@ pub(crate) struct GiftSpec {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetGroupConstraint {
     SameGraveyard,
+    DifferentControllers,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -588,6 +589,9 @@ pub(crate) enum Instruction {
         exile: bool,
     },
     /// Freeze a non-targeted battlefield group, then return it simultaneously.
+    GainControlUntilEndTurn,
+    ReturnGraveyardCreatures { players: PlayerSet, maximum_mana_value: u64 },
+    DestroyTargetNameGroup,
     ReturnBattlefield {
         filters: &'static [BattlefieldFilter],
         attacking: bool,
