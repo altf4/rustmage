@@ -299,6 +299,7 @@ pub(crate) struct SearchSpec {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EffectChoiceKind {
     HandCreature,
+    HandLand { tapped: bool },
     CollectEvidence(u16),
     Forage,
     ForageOrBlack,
@@ -462,6 +463,9 @@ pub(crate) enum Instruction {
     DiscardScaled(PlayerSet, AmountValue),
     DiscardManaValueLifeLoss,
     PutHandCreature,
+    PutHandLand {
+        tapped: bool,
+    },
     JobSelect {
         token: Card,
     },
@@ -1332,6 +1336,9 @@ pub(crate) enum TriggerCondition {
     SelfOffspring,
     SelfKicked,
     CreatureExploresYou,
+    CreatureExploresCardYou {
+        land: bool,
+    },
     SelfBargained,
     SelfEvidence,
     EvidenceCollected,

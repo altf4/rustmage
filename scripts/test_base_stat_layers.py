@@ -49,8 +49,10 @@ class BaseStatTests(unittest.TestCase):
   mutant=copy.deepcopy(after);mutant['definitions']['Plains#0']='unrelated mutation'
   with self.assertRaises(AssertionError):assert_union(before,mutant,changed={n+'#0' for n in NAMES},added=set(),helpers=helpers,aliases={})
  def test_actual_composed_parent_changes_only_ten_bodies(self):
-  physical={c['oracle_id']:c['name'] for c in self.all};before=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',COMPOSED_PARENT+':src/generated/catalogue.rs'],text=True),physical);after=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  physical={c['oracle_id']:c['name'] for c in self.all};before=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show',COMPOSED_PARENT+':src/generated/catalogue.rs'],text=True),physical);after=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show','19e4602b436b7aa8c9708f28f87fe288985c9377:src/generated/catalogue.rs'],text=True),physical);current=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
   helpers={('base_stat_setter',n+'#0') for n in ['Doc Ock, Sinister Scientist','Snowmelt Stag']}|{('keyword_grants','Doc Ock, Sinister Scientist#0')};proof=assert_union(before,after,changed={n+'#0' for n in NAMES},added=set(),helpers=helpers,aliases={});self.assertEqual(proof['preserved_definitions'],5322)
+  for name in NAMES:self.assertEqual(current['definitions'][name+'#0'],after['definitions'][name+'#0'])
+  for helper in helpers:self.assertEqual(current['helpers'][helper],after['helpers'][helper])
   mutant=copy.deepcopy(after);mutant['definitions']['Plains#0']='unrelated mutation'
   with self.assertRaises(AssertionError):assert_union(before,mutant,changed={n+'#0' for n in NAMES},added=set(),helpers=helpers,aliases={})
  def test_full_family_metadata_and_complete_pinned_direct_imports(self):

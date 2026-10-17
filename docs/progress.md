@@ -8,7 +8,7 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Requirement | Current evidence | Remaining work |
 | --- | --- | --- |
 | Full legal identity pool | 5,164 frozen oracle identities, Java reconciliation and native catalogue tests | Maintain reviewed data versions; implement missing Java-source cards directly |
-| All card semantics | Coverage manifest and runtime admission agree: 1,950 executable Standard identities | 3,214 identities; many reusable mechanics plus card-specific rules |
+| All card semantics | Coverage manifest and runtime admission agree: 1,955 executable Standard identities | 3,209 identities; many reusable mechanics plus card-specific rules |
 | Gameplay enforcement | Implemented timing, payment, targets, stack, source-aware damage, strike steps, 15 keywords, typed programs, trigger ordering and regression tests | Wider events/cross-group relationships, replacement/prevention, layers, wider counter mechanics, broader token abilities/copies, modes/costs, remaining keywords and mechanics |
 | In-process library | Rust rlib and C ABI/cdylib; Python ctypes tests including complete games | Batched/packed training interface and model hooks |
 | Branch/restore | Isolated COW object/library buffers, owned continuations, local RNG, reusable snapshots, replay/invariant tests | Cover every new continuation/mechanic; search over information sets |
@@ -280,3 +280,24 @@ using death-exile replacement before death-return, and7-power dying LKI with
 owner-return/Suspect clearing old base layers. Final actual-parent preservation is
 checked separately. See base-stat-layers.md for exact source/library hashes and
 the historical failed schema assertions and missing-Git harness scope.
+
+## Private land placement — PR327
+
+Actual schema96 main19e gains exactly five complete bodies: Embrace the Paradox,
+H.E.R.B.I.E. Scout Unit, all three Insidious Fungus modes, Lessons from Life and
+both Nicanzil explored-kind clauses. Current coverage is1,955/5,164,3,209 gated,
+schema97/95 token recipes. Strict preservation retains5,327 other definitions
+and all911 prior helpers. The complete12-body/86-Java-file audit retains seven
+unfinished full bodies under issue330; full Standard remains incomplete.
+
+Runtime71d passes1,881 native tests/all-target Clippy/fmt/gen; immutable60a69
+retains its exact path/hash. Corrected policy95fed changes no runtime/generator/
+card data:37 affected compiler/provenance methods, all24 paid cases and all100
+fixed games pass (68,728 owned frames/137,456 denials). Seven parent/private-hand/
+modal/schema-routing public methods also pass at71d. The failed historical497
+compiler run and initial68-game workload retain their precise scopes; neither
+is relabelled green. [The delivery record](hand-land-placement.md) identifies
+all source/library identities, corrected fixtures/policy and remaining guards.
+Both introduced activated and inherited triggered modal string-marker forgeries
+are fixed with parser-owned bindings. An independently found pre-existing generic
+triggered-modal reminder gap remains a separate issue261 obligation.

@@ -1956,6 +1956,29 @@ def exile_play_program(text):
     return ['ExileTopPlay { amount: '+str(amount)+', next_turn: '+str('your next turn' in m[2]).lower()+' }']
 
 
+def hand_land_reminders_valid(card):
+    """Detection may erase nested text; admission authenticates original raw."""
+    raw=card.get('oracle_text','')
+    if not isinstance(raw,str):return True
+    surface=raw;seen=False
+    while True:
+        normalized=' '.join(surface.casefold().split())
+        seen |= re.search(r'\bput a land card from your hand\b|\bexplores a (?:non)?land card\b|: choose one(?: or both)? —',normalized) is not None
+        stripped=re.sub(r'\([^()]*\)','',surface)
+        if stripped==surface:break
+        surface=stripped
+    return not seen or all(intrinsic_reminder_line_valid(line)
+                           for line in raw.splitlines() if '(' in line or ')' in line)
+
+
+def hand_land_program(text):
+    if m:=re.fullmatch(r'you may put a land card from your hand onto the battlefield( tapped)?\.',text):
+        return ['PutHandLand { tapped: '+str(bool(m[1])).lower()+' }']
+    if m:=re.fullmatch(r'draw (a card|two cards|three cards|four cards), then (you may put a land card from your hand onto the battlefield(?: tapped)?\.)',text):
+        return [f'Draw(PlayerSet::Controller, {DRAW_COUNTS[m[1]]})',*hand_land_program(m[2])]
+    return None
+
+
 def statement_program(text):
     """Compile only these complete sentences; residual text never gets ignored."""
     if not isinstance(text, str) or not text:
@@ -1963,6 +1986,7 @@ def statement_program(text):
     text = strip_rule_label(text)
     if not text:return None
     text = normalize_duration(text[0].lower() + text[1:])
+    if land := hand_land_program(text):return land
     if (base_set := base_stat_program(text)) and base_set[0]=='None':return base_set[1]
     if text=="this creature can't be blocked this turn.":return ['GrantKeywords { subject: Subject::Source, keywords: Keywords(16384) }']
     if text=='suspect this creature.':return ['Suspect { subject: Subject::Source }']
@@ -3294,8 +3318,8 @@ def trigger_mode_lines(card, text):
             return None
         condition,_,_=parsed[2][0]
         data='&['+', '.join(f'SpellMode {{ text: {json.dumps(label,ensure_ascii=False)}, targets: {rust_targets(rule)}, program: {rust_program(program)} }}' for label,rule,program in modes)+']'
-        key=f'__rustmage_modal_trigger_{len(modal)}__'
-        modal[key]=(condition,['Modal('+data+')'],'None');body.append(key)
+        # Only the parsed header owns this semantic continuation.
+        modal[len(body)]=(condition,['Modal('+data+')'],'None');body.append(line)
     return body,modal
 
 
@@ -3392,6 +3416,8 @@ def trigger_creature_template(card):
         'Whenever another creature you control enters, ': 'OtherCreatureEntersYou',
         'Whenever a creature you control enters, ': 'CreatureEntersYou',
         'Whenever a creature you control explores, ': 'CreatureExploresYou',
+        'Whenever a creature you control explores a land card, ': 'CreatureExploresCardYou { land: true }',
+        'Whenever a creature you control explores a nonland card, ': 'CreatureExploresCardYou { land: false }',
         'Whenever a creature an opponent controls enters, ': 'CreatureEnters { relation: CastRelation::Opponent, other: false }',
         'Whenever another Villain you control enters, ': 'OtherSubtypeEntersYou("Villain")',
         'Whenever this creature or another creature you control enters, ': 'CreatureEntersYou',
@@ -3410,9 +3436,9 @@ def trigger_creature_template(card):
     grouped=trigger_mode_lines(card,text)
     if grouped is None:return None
     lines,modal=grouped
-    for line in lines:
-        if line in modal:
-            abilities.append(modal[line]);continue
+    for line_index, line in enumerate(lines):
+        if line_index in modal:
+            abilities.append(modal[line_index]);continue
         line = line.strip()
         line = strip_rule_label(line)
         for label in ('Do You Like Squirrels? — ', 'I LOVE Squirrels! — ', 'Vivid — ', 'Valiant — '):
@@ -4283,6 +4309,26 @@ def crew_vehicle_body(card):
     return 'Permanent',keywords,abilities,activations,enters,dynamic,scaling
 
 
+def activation_mode_lines(card, text):
+    """Announce one real ability's mode, not several fabricated abilities."""
+    lines=text.split('\n');body=[];modal={};i=0
+    while i<len(lines):
+        line=lines[i].strip();i+=1
+        if ': ' not in line or line.split(': ',1)[1] not in ('Choose one —','Choose one or both —'):
+            body.append(line);continue
+        cost,header=line.split(': ',1);bullets=[]
+        while i<len(lines) and lines[i].strip().startswith('• '):
+            bullets.append(lines[i].strip());i+=1
+        modes=modal_spell_template(dict(card,type_line='Instant',oracle_text=header+'\n'+'\n'.join(bullets)))
+        # Modal mana abilities need their own classification/production solver.
+        if modes is None or any(instruction.startswith('AddMana') for _,_,program in modes for instruction in program):return None
+        data='&['+', '.join(f'SpellMode {{ text: {json.dumps(label,ensure_ascii=False)}, targets: {rust_targets(rule)}, program: {rust_program(program)} }}' for label,rule,program in modes)+']'
+        # Bind semantic lowering to this parsed line, never to a forgeable
+        # string appearing in supplied Oracle text.
+        modal[len(body)]=['Modal('+data+')'];body.append(cost+': '+header)
+    return body,modal
+
+
 def permanent_program_template(card):
     """Whole supported permanent text, including all activation restrictions."""
     if (card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'), str)
@@ -4296,9 +4342,12 @@ def permanent_program_template(card):
     if creature and (not card.get('power', '').isdigit() or not card.get('toughness', '').isdigit()):
         return None
     text = re.sub(r'\([^()]*\)', '', card['oracle_text']).strip()
+    modal_lines=activation_mode_lines(card,text)
+    if modal_lines is None:return None
+    lines,modal_activations=modal_lines
     activations, body = [], []
     enters = [0, 0, 0]
-    for line in text.split('\n'):
+    for line_index, line in enumerate(lines):
         # Removing a reminder can leave trailing spaces before a newline.
         line=line.strip()
         for label in ('Do You Like Squirrels? — ', 'I LOVE Squirrels! — ', 'Fateful Bite — ', 'Blow Up — '):
@@ -4384,7 +4433,13 @@ def permanent_program_template(card):
             if effect_text == 'Return '+alias+" to its owner's hand.":
                 effect_text = "Return this permanent to its owner's hand."
         source_return = source_return_program(effect_text)
-        if source_return:
+        if line_index in modal_activations:
+            # External object costs need a joint per-mode reservation/target proof.
+            # Fixed mana and source costs are mode-independent; source sacrifice
+            # may legally invalidate an announced target after costs are paid.
+            if cost['additional'] is not None:return None
+            targets,program='None',modal_activations[line_index]
+        elif source_return:
             origin, program = source_return
             if cost.get('origin', origin) != origin: return None
             if origin == 'Graveyard' and (cost['tap'] or cost['sacrifice'] or cost['remove'] or cost['loyalty'] is not None or exhaust): return None
@@ -5314,6 +5369,8 @@ def compile_catalogue(snapshot, target):
             effect = 'Unsupported'
         if not intrinsic_reminders_valid(dict(original, oracle_text=suspect_proxy)):
             effect = 'Unsupported'
+        if not hand_land_reminders_valid(original):
+            effect='Unsupported'
         if not base_stat_reminders_valid(original):
             effect='Unsupported'
         if not battlefield_return_reminders_valid(original):
