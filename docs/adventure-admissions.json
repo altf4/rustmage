@@ -3,7 +3,7 @@
   "as_of": "2026-10-16",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "rules": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
-  "scope": "All88 snapshot adventure-layout records;19 admitted true Adventure pairs;56 other Adventure and13 distinct Omen gated. Full files hashed. Admitted entries include direct imported abilities/effects/filters/targets/watchers/token dependencies; shared sources are the audited face/permission infrastructure. This records pinned provenance, not a claim that every transitive Java dependency was rewritten.",
+  "scope": "All 88 snapshot adventure-layout records; 27 admitted true Adventure pairs and 48 other Adventures gated. All 13 distinct Omen pairs are now admitted by their independent Omen wrapper. Full source files are hashed. Admitted entries include direct imported semantic dependencies and the audited shared face/permission infrastructure; this does not claim every transitive Java dependency was rewritten.",
   "cards": [
     {
       "name": "An Unexpected Party // At the Door",
@@ -79,11 +79,43 @@
         }
       ],
       "mechanic": "Adventure",
-      "status": "gated_incomplete_residual",
+      "status": "complete_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/b/BeanstalkWurm.java",
           "java_sha256": "1380b6a84e387a5ae700923e35707457c96f6165fdbc16321110c8a6ddb80a61"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/PlayAdditionalLandsControllerEffect.java",
+          "java_sha256": "a7b2413a24959fbde172621336f4f48cb1ef76bc4254b922b272bfe2bef30664"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+          "java_sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/AdventureCard.java",
+          "java_sha256": "b9a7b04e6575138b44c3aae159b47b1c2e11bc221bb4f2a301cc4a944dc31b8b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
         }
       ]
     },
@@ -107,11 +139,47 @@
         }
       ],
       "mechanic": "Adventure",
-      "status": "gated_incomplete_residual",
+      "status": "complete_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/b/BellowingBruiser.java",
           "java_sha256": "2497f2d14d5baf7e20f8701084045a45f65bc41d67814df5427feb745dfe13ec"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockTargetEffect.java",
+          "java_sha256": "a8b1a9a047746f0ea70d42f8847828d3334cfe9c33dfb6af870717e1aec0ae5f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+          "java_sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/AdventureCard.java",
+          "java_sha256": "b9a7b04e6575138b44c3aae159b47b1c2e11bc221bb4f2a301cc4a944dc31b8b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
         }
       ]
     },
@@ -163,11 +231,59 @@
         }
       ],
       "mechanic": "Adventure",
-      "status": "gated_incomplete_residual",
+      "status": "complete_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/b/BelunasGatekeeper.java",
           "java_sha256": "03c9284a7cce76b03df7bd4867d9b505955e90293abae680d76304ec2111f2a1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+          "java_sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/AdventureCard.java",
+          "java_sha256": "b9a7b04e6575138b44c3aae159b47b1c2e11bc221bb4f2a301cc4a944dc31b8b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ComparisonType.java",
+          "java_sha256": "33b0abc2b4214ece7d2f842b9f000d967dd8fb4e6cb073cb34eeab7e304731ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TargetController.java",
+          "java_sha256": "bd1591f2b4d3613a47bd6e509f92d688fea7c10d31a19ce7601ccba62cbba7f6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+          "java_sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
         }
       ]
     },
@@ -191,11 +307,47 @@
         }
       ],
       "mechanic": "Adventure",
-      "status": "gated_incomplete_residual",
+      "status": "complete_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/b/BeornReluctantHost.java",
           "java_sha256": "5cbbb3fe97356d0884a43722dc5f2718e0dc270604d847f51ab7d222e94193fc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/PlayAdditionalLandsControllerEffect.java",
+          "java_sha256": "a7b2413a24959fbde172621336f4f48cb1ef76bc4254b922b272bfe2bef30664"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+          "java_sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/AdventureCard.java",
+          "java_sha256": "b9a7b04e6575138b44c3aae159b47b1c2e11bc221bb4f2a301cc4a944dc31b8b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SuperType.java",
+          "java_sha256": "4ec4cf97e8c73dee7d1d0e4be9f4b90eb980dcdcd26698fcb610aed30da9e6cc"
         }
       ]
     },
@@ -315,13 +467,14 @@
         }
       ],
       "mechanic": "Omen",
-      "status": "gated_omen_distinct_wrapper",
+      "status": "complete_omen_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/b/BloomvineRegent.java",
           "java_sha256": "7a36e59dd50cd9161518ac579e34488148efc9f523df194a7a967d16ad7d94e1"
         }
-      ]
+      ],
+      "omen_source_manifest": "omen-admissions.json"
     },
     {
       "name": "Bofur, Reliable Guardian // Concerted Care",
@@ -343,11 +496,63 @@
         }
       ],
       "mechanic": "Adventure",
-      "status": "gated_incomplete_residual",
+      "status": "complete_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/b/BofurReliableGuardian.java",
           "java_sha256": "bbf1a624add927215db4ff74ee6ea10ac1f51f27019c45076cfa0d85d658f623"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/HexproofAbility.java",
+          "java_sha256": "dd6ceb5e1dac42ece34947ba678be1057bf0f4ecc5e5eb24fc1995763954259a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+          "java_sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+          "java_sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/AdventureCard.java",
+          "java_sha256": "b9a7b04e6575138b44c3aae159b47b1c2e11bc221bb4f2a301cc4a944dc31b8b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SuperType.java",
+          "java_sha256": "4ec4cf97e8c73dee7d1d0e4be9f4b90eb980dcdcd26698fcb610aed30da9e6cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+          "java_sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+          "java_sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+          "java_sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9"
         }
       ]
     },
@@ -567,13 +772,14 @@
         }
       ],
       "mechanic": "Omen",
-      "status": "gated_omen_distinct_wrapper",
+      "status": "complete_omen_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/d/DirgurIslandDragon.java",
           "java_sha256": "a888868c75f1f0565b9b65c0f3a41c148d3645c79a30f2ea0b6e4b400d9b6dca"
         }
-      ]
+      ],
+      "omen_source_manifest": "omen-admissions.json"
     },
     {
       "name": "Disruptive Stormbrood // Petty Revenge",
@@ -595,13 +801,14 @@
         }
       ],
       "mechanic": "Omen",
-      "status": "gated_omen_distinct_wrapper",
+      "status": "complete_omen_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/d/DisruptiveStormbrood.java",
           "java_sha256": "ccfe1e86ddbfcb236c3d2f88fd97a47ae8c7d7375dd8ddf5353279a3f4e03241"
         }
-      ]
+      ],
+      "omen_source_manifest": "omen-admissions.json"
     },
     {
       "name": "Elusive Otter // Grove's Bounty",
@@ -679,13 +886,14 @@
         }
       ],
       "mechanic": "Omen",
-      "status": "gated_omen_distinct_wrapper",
+      "status": "complete_omen_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/f/FeralDeathgorger.java",
           "java_sha256": "67ca8948aed368fd3d7a725393531fc49312b5d045c394a6520d9d74639b26a1"
         }
-      ]
+      ],
+      "omen_source_manifest": "omen-admissions.json"
     },
     {
       "name": "Ferocious Werefox // Guard Change",
@@ -1399,11 +1607,51 @@
         }
       ],
       "mechanic": "Adventure",
-      "status": "gated_incomplete_residual",
+      "status": "complete_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/i/IshgardTheHolySee.java",
           "java_sha256": "cfbbccb2118bee289498a57d26a0416f4353bfabcfaa03a0fb769da7bb7f1be2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAbility.java",
+          "java_sha256": "147582b81a6ea9f26c8835600282fe7311c08dcb1ff983b26587e455c2c4514a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+          "java_sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/mana/WhiteManaAbility.java",
+          "java_sha256": "36c9c240bb0e9509d304d9300d0a157085253b4ab5d9a52cbdf1d051a43221b6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/AdventureCard.java",
+          "java_sha256": "b9a7b04e6575138b44c3aae159b47b1c2e11bc221bb4f2a301cc4a944dc31b8b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterCard.java",
+          "java_sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterArtifactOrEnchantmentCard.java",
+          "java_sha256": "f28901133a40480b227b43ce5bde99bc547eec40879403ea2d910ccea4f4fa72"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+          "java_sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
         }
       ]
     },
@@ -1591,13 +1839,14 @@
         }
       ],
       "mechanic": "Omen",
-      "status": "gated_omen_distinct_wrapper",
+      "status": "complete_omen_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/m/MarangRiverRegent.java",
           "java_sha256": "94ad25920e5284672b8d1ed3adb4994ac690d7cff87493f4161ddf844fd86992"
         }
-      ]
+      ],
+      "omen_source_manifest": "omen-admissions.json"
     },
     {
       "name": "Midgar, City of Mako // Reactor Raid",
@@ -1911,13 +2160,14 @@
         }
       ],
       "mechanic": "Omen",
-      "status": "gated_omen_distinct_wrapper",
+      "status": "complete_omen_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/p/PurgingStormbrood.java",
           "java_sha256": "418e347baeadfc0f82b0adee281f9ea8b47a164dd4abd41e2a24b0996978c8aa"
         }
-      ]
+      ],
+      "omen_source_manifest": "omen-admissions.json"
     },
     {
       "name": "Questing Druid // Seek the Beast",
@@ -2027,13 +2277,14 @@
         }
       ],
       "mechanic": "Omen",
-      "status": "gated_omen_distinct_wrapper",
+      "status": "complete_omen_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/r/RilingDawnbreaker.java",
           "java_sha256": "e16b2ea54d5352c7b3438a56bc7e4a49b5bc3f751c3fbc8bb933c409bfea1b51"
         }
-      ]
+      ],
+      "omen_source_manifest": "omen-admissions.json"
     },
     {
       "name": "Runescale Stormbrood // Chilling Screech",
@@ -2055,13 +2306,14 @@
         }
       ],
       "mechanic": "Omen",
-      "status": "gated_omen_distinct_wrapper",
+      "status": "complete_omen_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/r/RunescaleStormbrood.java",
           "java_sha256": "c1fa56dbb0bd524b95ff0e038144578d1f8375a898a843908490e7f02eda48db"
         }
-      ]
+      ],
+      "omen_source_manifest": "omen-admissions.json"
     },
     {
       "name": "Sagu Wildling // Roost Seek",
@@ -2083,13 +2335,14 @@
         }
       ],
       "mechanic": "Omen",
-      "status": "gated_omen_distinct_wrapper",
+      "status": "complete_omen_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/s/SaguWildling.java",
           "java_sha256": "2fc511fb2a772c8c164c0919bc686f3559d027a13c84f6c2000f9cac0deba18f"
         }
-      ]
+      ],
+      "omen_source_manifest": "omen-admissions.json"
     },
     {
       "name": "Scalding Viper // Steam Clean",
@@ -2139,13 +2392,14 @@
         }
       ],
       "mechanic": "Omen",
-      "status": "gated_omen_distinct_wrapper",
+      "status": "complete_omen_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/s/ScavengerRegent.java",
           "java_sha256": "5bffc5cb08aac47fe16661cedbbeb02501048f20ef56f9737beaa4211978c43a"
         }
-      ]
+      ],
+      "omen_source_manifest": "omen-admissions.json"
     },
     {
       "name": "Shrouded Shepherd // Cleave Shadows",
@@ -2331,13 +2585,14 @@
         }
       ],
       "mechanic": "Omen",
-      "status": "gated_omen_distinct_wrapper",
+      "status": "complete_omen_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/s/StormshriekFeral.java",
           "java_sha256": "ff9fb245334dc2d3cef7e6bfcfb3e8d933a5bfcf9733ab055b53bcb5f377a0e1"
         }
-      ]
+      ],
+      "omen_source_manifest": "omen-admissions.json"
     },
     {
       "name": "Tempest Hart // Scan the Clouds",
@@ -2545,13 +2800,14 @@
         }
       ],
       "mechanic": "Omen",
-      "status": "gated_omen_distinct_wrapper",
+      "status": "complete_omen_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/t/TwinmawStormbrood.java",
           "java_sha256": "02813a5921b06a87adea75cd7e7c9d21f36dff61fd8222d9af244158ab21679d"
         }
-      ]
+      ],
+      "omen_source_manifest": "omen-admissions.json"
     },
     {
       "name": "Two-Headed Hunter // Twice the Rage",
@@ -2645,11 +2901,47 @@
         }
       ],
       "mechanic": "Adventure",
-      "status": "gated_incomplete_residual",
+      "status": "complete_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/v/VelvetwingButterflies.java",
           "java_sha256": "f785d3fb2c7dcb583d7642bf62ed3ccd5f250ce2a8d72871d47e68843d18355d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+          "java_sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/AdventureCard.java",
+          "java_sha256": "b9a7b04e6575138b44c3aae159b47b1c2e11bc221bb4f2a301cc4a944dc31b8b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
         }
       ]
     },
@@ -2803,13 +3095,14 @@
         }
       ],
       "mechanic": "Omen",
-      "status": "gated_omen_distinct_wrapper",
+      "status": "complete_omen_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/w/WhirlwingStormbrood.java",
           "java_sha256": "3a3232054edaf9ef684006db5bb3ae2026dd6170d9f71951fcf4a3a02d8ed8bb"
         }
-      ]
+      ],
+      "omen_source_manifest": "omen-admissions.json"
     },
     {
       "name": "Woodland Acolyte // Mend the Wilds",
@@ -2831,11 +3124,55 @@
         }
       ],
       "mechanic": "Adventure",
-      "status": "gated_incomplete_residual",
+      "status": "complete_pair_admitted",
       "sources": [
         {
           "java_source": "Mage.Sets/src/mage/cards/w/WoodlandAcolyte.java",
           "java_sha256": "9fc8aa140c17e4d5f32affb13b4089010547e6bb84afe4d3734fa88189e7052b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+          "java_sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/AdventureCard.java",
+          "java_sha256": "b9a7b04e6575138b44c3aae159b47b1c2e11bc221bb4f2a301cc4a944dc31b8b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterCard.java",
+          "java_sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterPermanentCard.java",
+          "java_sha256": "2af04f95edb47547b39271ca3c5024712fa9ba1728c5e2c7249d63fa8c411033"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+          "java_sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
         }
       ]
     },

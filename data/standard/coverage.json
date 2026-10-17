@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "fc32a097ec542622ff08a8fa73cd178d2eb3fdca0b2f398dfc0f717fcfddb849",
+  "catalogue_version": "4a45c284c7fa3e8db5dc8ec037fcb8a3ea4be8a3e3fdf9b55077e89def136b7e",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1817,
-  "implemented_total": 1823,
+  "implemented_standard_cards": 1825,
+  "implemented_total": 1831,
   "token_definitions": 87,
   "emblem_definitions": 1,
   "cards": [
@@ -2146,8 +2146,8 @@
     {
       "name": "Beanstalk Wurm // Plant Beans",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Bear Cub",
@@ -2290,8 +2290,8 @@
     {
       "name": "Bellowing Bruiser // Beat a Path",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Bellowing Crier",
@@ -2308,8 +2308,8 @@
     {
       "name": "Beluna's Gatekeeper // Entry Denied",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Bender's Waterskin",
@@ -2344,8 +2344,8 @@
     {
       "name": "Beorn, Reluctant Host // Till and Tend",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Berta, Wise Extrapolator",
@@ -2860,8 +2860,8 @@
     {
       "name": "Bofur, Reliable Guardian // Concerted Care",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Boggart Cursecrafter",
@@ -13438,8 +13438,8 @@
     {
       "name": "Ishgard, the Holy See // Faith & Grief",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "land_template"
     },
     {
       "name": "It Doesn't Add Up",
@@ -29164,8 +29164,8 @@
     {
       "name": "Velvetwing Butterflies // Gaze in Wonder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "creature_template"
     },
     {
       "name": "Venat, Heart of Hydaelyn // Hydaelyn, the Mothercrystal",
@@ -30664,8 +30664,8 @@
     {
       "name": "Woodland Acolyte // Mend the Wilds",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Woodland Weavemaster",
@@ -31106,6 +31106,6 @@
       "implementation": null
     }
   ],
-  "adventure_definitions": 19,
+  "adventure_definitions": 27,
   "omen_definitions": 13
 }
