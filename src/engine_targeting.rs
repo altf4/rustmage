@@ -575,7 +575,7 @@ impl Game {
         };
         let qualification = qualification.or_else(|| {
             packets()
-                .find(|item| item.target_source() == source || item.object == source)
+                .find(|item| item.object == source)
                 .map(TargetSourceCharacteristics::from_item)
         });
         let source = qualification.map_or(source, |q| q.reference);

@@ -386,3 +386,51 @@ fn fdn_bounded_core_venom_source_control_and_removal_leave_queued_resolution_ind
         assert_eq!(std::mem::size_of::<Object>(), 144);
     }
 }
+
+#[test]
+fn fdn_eight_core_qualified_source_and_relational_target_groups_work_together() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let elenda = gated(
+            &mut g,
+            p.other(),
+            "Elenda, Saint of Dusk",
+            Zone::Battlefield,
+        );
+        let knight = gated(&mut g, p.other(), "Knight of Grace", Zone::Battlefield);
+        let bow = named(&mut g, p.other(), "Short Bow", Zone::Battlefield);
+        attach(&mut g, bow, knight);
+        let fiery = gated(&mut g, p, "Fiery Annihilation", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: fiery });
+        let prohibited = Action::ChooseTarget {
+            target: Target::Card(elenda),
+        };
+        assert!(!g.legal_actions().contains(&prohibited));
+        reject(&mut g, prohibited);
+        // Red instant: Elenda is protected; hexproof from black does not protect the Knight.
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(knight),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(bow),
+            },
+        );
+        while g.state.announcing.is_some() {
+            let a = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::FinishTargets | Action::PayCosts { .. }))
+                .unwrap();
+            checked(&mut g, a);
+        }
+        settle(&mut g);
+        assert_eq!(g.object_view(elenda).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(knight).zone, Zone::Exile);
+        assert_eq!(g.object_view(bow).zone, Zone::Exile);
+    }
+}
