@@ -35,6 +35,8 @@ pub(crate) struct StaticAbilityGroup {
     reason = "Complete immutable typed origin payloads are preserved while legacy fast tables supply some values; do not discard during direct-definition migration"
 )]
 pub(crate) enum StaticAbilityFragment {
+    ChosenCreatureType,
+    ChosenModifier(ChosenModifier),
     PlayerHexproof,
     ControlledSpellsUncounterable(u16),
     LifeGainAdditional(u16),

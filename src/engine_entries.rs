@@ -4,6 +4,7 @@ use super::*;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EntryMove {
+    pub choice: Option<EntryChoiceValue>,
     pub gift: Option<Box<GiftContext>>,
     pub before: ObjectView,
     pub controller: Player,
@@ -163,6 +164,7 @@ impl Game {
     }
     pub(super) fn entry_move(&self, id: CardId, destination: Zone, tapped: bool) -> EntryMove {
         EntryMove {
+            choice: None,
             gift: None,
             before: self.object_view(id),
             controller: self.state.objects[id as usize].controller,
@@ -266,7 +268,8 @@ impl Game {
             .enumerate()
             .filter(|(i, m)| {
                 m.destination == Zone::Battlefield
-                    && (m.before.card.aura().is_some() && m.attachment.is_none()
+                    && (m.before.card.entry_choice().is_some()
+                        || m.before.card.aura().is_some() && m.attachment.is_none()
                         || matches!(m.before.card.entry_tapped(), EntryTapped::PayLife(_))
                             && m.life_paid.is_none()
                             && !tap_events.iter().any(|event| event.index == *i))
@@ -434,6 +437,12 @@ impl Game {
                 counters,
                 Some(movement.controller),
             );
+            if event.moved
+                && event.destination == Zone::Battlefield
+                && let Some(value) = movement.choice
+            {
+                self.set_entry_value(event.after, value);
+            }
             event.offspring_paid = movement.offspring_paid;
             event.kicked = movement.kicked;
             if event.moved && event.destination == Zone::Battlefield {
@@ -562,13 +571,23 @@ impl Game {
                     .map(|&index| (index, batch.moves[index].controller))
             }) {
                 let movement = &self.state.entry_batch.as_ref().unwrap().moves[index];
-                if matches!(movement.before.card.entry_tapped(), EntryTapped::PayLife(_)) {
+                if movement.before.card.entry_choice().is_some() && movement.choice.is_none() {
+                    self.state.pending = Pending::EntryValue { player: owner };
+                    return true;
+                }
+                if movement.life_paid.is_none()
+                    && matches!(movement.before.card.entry_tapped(), EntryTapped::PayLife(_))
+                {
                     if self.can_pay_entry_life() {
                         self.state.pending = Pending::EntryLife { player: owner };
                         return true;
                     }
                     // An optional positive payment is impossible below the cost.
                     self.choose_entry_life(false);
+                    continue;
+                }
+                if movement.before.card.aura().is_none() || movement.attachment.is_some() {
+                    self.state.entry_batch.as_mut().unwrap().next += 1;
                     continue;
                 }
                 let eligible = self
@@ -607,7 +626,7 @@ impl Game {
                     card: m.before.card,
                     owner: m.before.owner,
                     controller: m.controller,
-                    subtypes: GrantedSubtypes::default(),
+                    subtypes: Self::entry_choice_subtypes(m),
                     kind: m.before.card.kind_mask(),
                     amount: m.counters.clone(),
                     effect: true,

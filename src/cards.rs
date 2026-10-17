@@ -204,8 +204,78 @@ pub(crate) enum PlayerSet {
     Targeted,
 }
 
+/// A color choice excludes colorless (CR105.2).
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum ChoiceColor {
+    White,
+    Blue,
+    Black,
+    Red,
+    Green,
+}
+impl ChoiceColor {
+    pub const ALL: [Self; 5] = [Self::White, Self::Blue, Self::Black, Self::Red, Self::Green];
+    pub(crate) const fn index(self) -> usize {
+        self as usize
+    }
+}
+/// Validated index into the pinned complete creature-type taxonomy; wire values
+/// remain readable names and no owned String is stored in a game branch.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct CreatureType(u16);
+impl CreatureType {
+    pub fn from_name(name: &str) -> Option<Self> {
+        CREATURE_TYPES
+            .binary_search(&name)
+            .ok()
+            .map(|i| Self(u16::try_from(i).expect("creature taxonomy fits u16")))
+    }
+    pub fn name(self) -> &'static str {
+        CREATURE_TYPES[usize::from(self.0)]
+    }
+}
+impl Serialize for CreatureType {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        s.serialize_str(self.name())
+    }
+}
+impl<'de> Deserialize<'de> for CreatureType {
+    fn deserialize<D: serde::Deserializer<'de>>(d: D) -> Result<Self, D::Error> {
+        let name = String::deserialize(d)?;
+        Self::from_name(&name).ok_or_else(|| serde::de::Error::custom("not a legal creature type"))
+    }
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum EntryChoiceValue {
+    Color(ChoiceColor),
+    CreatureType(CreatureType),
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum EntryChoiceKind {
+    Color,
+    CreatureType,
+}
+impl EntryChoiceKind {
+    pub(crate) fn matches(self, value: EntryChoiceValue) -> bool {
+        matches!(
+            (self, value),
+            (Self::Color, EntryChoiceValue::Color(_))
+                | (Self::CreatureType, EntryChoiceValue::CreatureType(_))
+        )
+    }
+}
+/// Layer-seven own-creature bonus using one source's entry choice. The optional
+/// counter factor borrows the same sparse counter world as mana planning.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct ChosenModifier {
+    pub kind: EntryChoiceKind,
+    pub other: bool,
+    pub stats: Stats,
+    pub source_counter: Option<CounterKind>,
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ManaProduction {
+    ChosenColor,
     Fixed(Mana),
     CountSubtype { color: u8, subtype: &'static str },
     Choice { mask: u8, amount: u32 },
@@ -213,7 +283,9 @@ pub(crate) enum ManaProduction {
 impl ManaProduction {
     pub(crate) fn visit(self, mut emit: impl FnMut(Mana) -> bool) -> bool {
         match self {
-            Self::CountSubtype { .. } => panic!("dynamic mana requires a characteristic world"),
+            Self::ChosenColor | Self::CountSubtype { .. } => {
+                panic!("dynamic mana requires a characteristic world")
+            }
             Self::Fixed(mana) => emit(mana),
             Self::Choice { mask, amount } => {
                 for index in 0..6 {
@@ -1539,6 +1611,7 @@ pub(crate) enum CastTarget {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum CastFilter {
+    SourceChosenColor,
     PermanentAdventure,
     Any,
     Creature,
@@ -1583,7 +1656,9 @@ impl CastFilter {
                     && card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256) != 0
             }
             // Contextual cast observers use Game::cast_filter_matches instead.
-            Self::Targeted { .. } | Self::InstantSorceryOrdinal(_) => false,
+            Self::SourceChosenColor | Self::Targeted { .. } | Self::InstantSorceryOrdinal(_) => {
+                false
+            }
             Self::Multicolored => card.colors().count_ones() >= 2,
             Self::Colors { filter, mask } => {
                 card.colors() & mask != 0 && filter.matches_mana_value(card, mana_value)
@@ -2473,6 +2548,12 @@ impl Card {
         counters.loyalty = self.starting_loyalty();
         counters.lore = u64::from(self.saga_final_chapter().is_some());
         counters
+    }
+    pub(crate) fn entry_choice(self) -> Option<EntryChoiceKind> {
+        authored::RULES[self.index()].extras.entry_choice
+    }
+    pub(crate) fn chosen_entry_counters(self) -> Option<CounterKind> {
+        authored::RULES[self.index()].extras.chosen_entry_counters
     }
     pub(crate) fn entry_counter_rules(self) -> &'static [EntryCounterRule] {
         generated::entry_counter_rules(self)

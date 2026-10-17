@@ -1,16 +1,18 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Gated core fixture: ordinary typed obligations, not an admission declaration.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Creature(1, 3),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SpellCast {
+            relation: CastRelation::You,
+            filter: CastFilter::SourceChosenColor,
+            ordinal: None,
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::GainLife(PlayerSet::Controller, 1)],
+    }],
+    extras: &CardExtras {
+        entry_choice: Some(EntryChoiceKind::Color),
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

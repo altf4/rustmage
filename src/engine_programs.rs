@@ -759,6 +759,9 @@ impl Game {
         targets: &[BoundTarget],
     ) -> bool {
         match filter {
+            CastFilter::SourceChosenColor => {
+                matches!(source.entry_choice, Some(EntryChoiceValue::Color(color)) if card.colors() & (1 << color.index()) != 0)
+            }
             CastFilter::InstantSorceryOrdinal(wanted) => {
                 CastFilter::InstantSorcery.matches(card)
                     && self.state.players[caster.index()].instant_sorcery_cast_this_turn == wanted
@@ -1225,6 +1228,7 @@ impl Game {
                                 )
                             })
                     }) || item.x.is_some()
+                        || item.source_card.entry_choice().is_some()
                         || self.has_entry_counter_replacements(item.source_card)
                     {
                         let mut movement = self.entry_move(item.card, Zone::Battlefield, false);
@@ -2042,7 +2046,9 @@ impl Game {
                     );
                 }
                 Instruction::AddMana(production) => match production.in_world(self, item.card) {
-                    ManaProduction::CountSubtype { .. } => unreachable!("resolved production"),
+                    ManaProduction::ChosenColor | ManaProduction::CountSubtype { .. } => {
+                        unreachable!("resolved production")
+                    }
                     ManaProduction::Fixed(mana) => self.add_mana(item.controller, mana),
                     ManaProduction::Choice { .. } => {
                         self.state.pending = Pending::EffectMana {

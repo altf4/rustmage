@@ -152,6 +152,7 @@ impl CharacteristicQuery<'_> {
         if !battlefield_creature {
             return (base, stats);
         }
+        stats += self.chosen_bonus(id);
         stats += self.live_static_bonus(id);
         stats += self.attachment_bonus(id).0;
         // Only the small live-source index is traversed. Central zone transitions
@@ -633,6 +634,7 @@ impl CharacteristicQuery<'_> {
             abilities: self.ability_availability(id),
             kinds: self.current_kinds(id),
             granted_subtypes: self.granted_subtypes(id),
+            entry_choice: self.entry_value(self.object_ref(id)),
             saddled: self.is_saddled(self.object_ref(id)),
             id,
             reference: self.object_ref(id),

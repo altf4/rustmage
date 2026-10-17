@@ -20,6 +20,7 @@ const JOB_TYPES: [&str; 11] = [
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, PartialOrd, Ord)]
 pub struct GrantedSubtypes {
     added: u16,
+    chosen: Option<crate::cards::CreatureType>,
     /// None retains printed types (including changeling); Some replaces only
     /// creature types, preserving e.g. Equipment, Aura, Forest and Lesson.
     creature_types: Option<&'static [&'static str]>,
@@ -28,8 +29,10 @@ impl GrantedSubtypes {
     /// Membership supplied by this overlay, excluding retained printed types.
     /// Use ObjectView::has_subtype for the full effective characteristic.
     pub fn contains(self, subtype: &str) -> bool {
-        self.creature_types
-            .is_some_and(|types| types.contains(&subtype))
+        self.chosen.is_some_and(|t| t.name() == subtype)
+            || self
+                .creature_types
+                .is_some_and(|types| types.contains(&subtype))
             || JOB_TYPES
                 .iter()
                 .position(|s| *s == subtype)
@@ -46,6 +49,7 @@ impl GrantedSubtypes {
     }
     fn replace_creature_types(&mut self, types: &'static [&'static str]) {
         self.added = 0;
+        self.chosen = None;
         self.creature_types = Some(types);
     }
     fn insert(&mut self, subtype: &str) {
@@ -70,7 +74,8 @@ impl Serialize for GrantedSubtypes {
                 out.end()
             }
         }
-        let mut out = serializer.serialize_struct("GrantedSubtypes", 2)?;
+        let mut out = serializer.serialize_struct("GrantedSubtypes", 3)?;
+        out.serialize_field("chosen", &self.chosen)?;
         out.serialize_field("added", &Added(self.added))?;
         out.serialize_field("creature_types", &self.creature_types)?;
         out.end()
@@ -140,6 +145,17 @@ impl Game {
                 .expect("registered layer-four provider timestamp")
         };
         let newer = |source| replacement_time.is_none_or(|time| source_time(source) > time);
+        if self.state.entry_values.is_some()
+            && target.card.static_ability_groups().iter().any(|g| {
+                g.fragments
+                    .iter()
+                    .any(|f| matches!(f, crate::cards::StaticAbilityFragment::ChosenCreatureType))
+            })
+            && newer(reference)
+            && let Some(EntryChoiceValue::CreatureType(typ)) = self.entry_value(reference)
+        {
+            mask.chosen = Some(typ);
+        }
         for group in target.card.static_ability_groups() {
             for fragment in group.fragments {
                 if let crate::cards::StaticAbilityFragment::SourceCounterSubtype {
@@ -242,5 +258,20 @@ impl Game {
                 .creature_types
                 .retain(|row| row.recipient != recipient);
         }
+    }
+}
+
+impl Game {
+    pub(super) fn entry_choice_subtypes(m: &entries::EntryMove) -> GrantedSubtypes {
+        let mut result = GrantedSubtypes::default();
+        if m.before.card.static_ability_groups().iter().any(|g| {
+            g.fragments
+                .iter()
+                .any(|f| matches!(f, crate::cards::StaticAbilityFragment::ChosenCreatureType))
+        }) && let Some(EntryChoiceValue::CreatureType(typ)) = m.choice
+        {
+            result.chosen = Some(typ);
+        }
+        result
     }
 }
