@@ -890,12 +890,29 @@ def search_filter(noun):
         'card named Magitek Infantry':'Name("Magitek Infantry")',
     }
     if noun in fixed:return fixed[noun]
-    if noun in ('basic land cards','land cards','creature cards','artifact cards','enchantment cards'):
+    if noun in ('basic land cards','land cards','creature cards','artifact cards','enchantment cards','basic Forest cards'):
         return fixed[noun[:-1]]
     return None
 
 
+def split_search_route_text(text, *, include_other_search=False):
+    """Detect the new route through legacy reminder erasure; never rewrite its body."""
+    if not isinstance(text, str):return False
+    while True:
+        normalized=re.sub(r'\s+', ' ', text).casefold()
+        if ('put one onto the battlefield tapped and the other into your hand' in normalized
+                or include_other_search and 'search your library' in normalized):
+            return True
+        reduced=re.sub(r'\([^()]*\)', '', text)
+        if reduced==text:return False
+        text=reduced
+
+
 def search_program(text):
+    if m:=re.fullmatch(r'search your library for up to two (.+?), reveal them, put one onto the battlefield tapped and the other into your hand, then shuffle\.',text):
+        noun=m[1];filter_=search_filter(noun)
+        if not noun.endswith('cards') or filter_ is None:return None
+        return [f'Search(SearchSpec {{ filter: SearchFilter::{filter_}, maximum: 2, destination: SearchDestination::BattlefieldThenHand {{ battlefield: 1 }}, tapped: true, reveal: true }})']
     match=re.fullmatch(r'search your library for (a |an |up to two |up to three |up to four )(.+?), (reveal (?:it|them), )?put (it|them|that card) (into your hand|onto the battlefield)( tapped)?, then shuffle\.',text)
     if not match:return None
     count,noun,reveal,pronoun,destination,tapped=match.groups()
@@ -4035,7 +4052,8 @@ def compile_catalogue(snapshot, target):
         abilities = []
         entry = 'Never'
         land = land_template(card)
-        if name in legacy and not (timing_seen or scalar_mass_seen or graveyard_route_seen):
+        use_legacy = name in legacy and not (timing_seen or scalar_mass_seen or graveyard_route_seen or split_search_route_text(original.get('oracle_text', ''), include_other_search=True))
+        if use_legacy:
             effect, fallback_cost, color = legacy[name]
             # Lands have no mana cost. Their legacy cost token encodes colour only.
             cost = '' if effect == 'Land' else card.get('mana_cost', fallback_cost)
@@ -4144,6 +4162,13 @@ def compile_catalogue(snapshot, target):
                 activations=[];enters=[0,0,0]
         if attachment_ward_route(original) and not attachment_ward_reminders_valid(original):
             effect='Unsupported'
+        # New split-search consumers are whole bodies. The older permanent
+        # templates strip generic parentheticals, so reject every unaudited
+        # clause before that historical behavior can hide a new instruction.
+        raw_split_text = original.get('oracle_text', '')
+        if (split_search_route_text(raw_split_text)
+                and ('(' in raw_split_text or ')' in raw_split_text)):
+            effect = 'Unsupported'
         # Later fixed-cost selectors must never revive a rejected variable-cost body.
         if ('{X}' in card.get('mana_cost', '') or scalar_mass_seen) and scalar is None:
             effect = 'Unsupported'
@@ -4264,7 +4289,7 @@ def compile_catalogue(snapshot, target):
         exhaust_mask=sum(1<<i for i,a in enumerate(activations) if a[0].get('exhaust',False))
         if exhaust_mask and effect!='Unsupported':exhaust_rows.append(f'        {index} => {exhaust_mask},')
         coverage.append({'name': name, 'standard_legal': name in standard_names, 'implemented': effect != 'Unsupported',
-                         'implementation': 'bargain_template' if bargain and effect != 'Unsupported' else 'explicit' if name in legacy and not (graveyard_route_seen or timing_seen) else 'land_template' if land else 'creature_template' if template else 'trigger_template' if trigger_template else 'modal_template' if modal else 'spell_template' if spell else 'aura_template' if aura else 'equipment_template' if equipment else 'permanent_template' if permanent else 'static_template' if static else None})
+                         'implementation': 'bargain_template' if bargain and effect != 'Unsupported' else 'explicit' if use_legacy else 'land_template' if land else 'creature_template' if template else 'trigger_template' if trigger_template else 'modal_template' if modal else 'spell_template' if spell else 'aura_template' if aura else 'equipment_template' if equipment else 'permanent_template' if permanent else 'static_template' if static else None})
 
     # Only factories referenced by wholly accepted cards enter the executable catalogue.
     used_tokens = sorted(set(re.findall(r'__TOKEN_([0-9a-f]+)__', '\n'.join(definitions+replacement_rows))))

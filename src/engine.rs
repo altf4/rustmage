@@ -21,7 +21,7 @@ pub use adventure::{AdventurePermission, SpellCharacteristicsView};
 pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 79;
+pub const OBSERVATION_SCHEMA: u32 = 80;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
 #[path = "engine_mobilize.rs"]
@@ -453,6 +453,7 @@ define_actions! {
         card: CardId,
     },
     FinishSearch,
+    ChooseSearchBattlefield { card: CardId },
     SelectLibrary { card: CardId },
     FinishLibrarySelection,
     OrderLibraryBottom { card: CardId },
@@ -1234,6 +1235,15 @@ pub struct SearchChoiceView {
     pub selected: Vec<CardId>,
 }
 
+/// Revealed search results whose split destinations are being assigned.
+#[derive(Clone, Debug, Serialize)]
+pub struct SearchDistributionView {
+    pub player: Player,
+    pub battlefield_count: u16,
+    pub candidates: Vec<ObjectView>,
+    pub battlefield: Vec<CardId>,
+}
+
 /// All milled identities and legal recovery candidates are public graveyard facts.
 #[derive(Clone, Debug, Serialize)]
 pub struct RecoveryChoiceView {
@@ -1371,6 +1381,7 @@ pub struct Observation {
     pub last_target_library_move: Option<TargetLibraryMovement>,
     pub recovery_choice: Option<RecoveryChoiceView>,
     pub search_choice: Option<SearchChoiceView>,
+    pub search_distribution: Option<SearchDistributionView>,
     pub effect_choice: Option<EffectChoiceView>,
     pub aura_entry: Option<entries::AuraEntryView>,
     pub entry_life: Option<entries::EntryLifeView>,
@@ -2616,16 +2627,26 @@ impl Game {
             }
             Pending::EffectSearch { player } => {
                 let choice = s.resolving.as_ref().unwrap().search.as_ref().unwrap();
-                if emit(Action::FinishSearch) {
-                    return true;
-                }
-                if choice.selected.len() < usize::from(choice.spec.maximum) {
-                    for &card in &s.players[player.index()].library {
-                        if choice.spec.filter.matches(s.objects[card as usize].card)
-                            && !choice.selected.contains(&card)
-                            && emit(Action::ChooseSearch { card })
+                if let Some(selected) = &choice.battlefield {
+                    for &card in &choice.selected {
+                        if !selected.contains(&card)
+                            && emit(Action::ChooseSearchBattlefield { card })
                         {
                             return true;
+                        }
+                    }
+                } else {
+                    if emit(Action::FinishSearch) {
+                        return true;
+                    }
+                    if choice.selected.len() < usize::from(choice.spec.maximum) {
+                        for &card in &s.players[player.index()].library {
+                            if choice.spec.filter.matches(s.objects[card as usize].card)
+                                && !choice.selected.contains(&card)
+                                && emit(Action::ChooseSearch { card })
+                            {
+                                return true;
+                            }
                         }
                     }
                 }
@@ -3122,6 +3143,7 @@ impl Game {
             Action::RecoverMilled { object } => self.recover_milled(object),
             Action::ChooseSearch { card } => self.choose_search(card),
             Action::FinishSearch => self.finish_search(actor),
+            Action::ChooseSearchBattlefield { card } => self.choose_search_battlefield(actor, card),
             Action::SelectLibrary { card } => self.choose_library_selection(card),
             Action::FinishLibrarySelection => self.finish_library_selection(actor),
             Action::OrderLibraryBottom { card } => self.order_library_bottom(actor, card),
@@ -4189,7 +4211,17 @@ impl Game {
                 Pending::EffectLibrary { .. } => "library_choice",
                 Pending::EffectLibrarySelection { .. } => "library_selection",
                 Pending::RecoverMilled { .. } => "recover_milled",
-                Pending::EffectSearch { .. } => "library_search",
+                Pending::EffectSearch { .. } => {
+                    if s.resolving
+                        .as_ref()
+                        .and_then(|r| r.search.as_ref())
+                        .is_some_and(|choice| choice.battlefield.is_some())
+                    {
+                        "library_search_destination"
+                    } else {
+                        "library_search"
+                    }
+                }
                 Pending::EffectDiscard { .. } => "effect_discard",
                 Pending::HandDefender { .. } => "hand_defender",
                 Pending::EffectChoice { .. } => "effect_choice",
@@ -4408,6 +4440,7 @@ impl Game {
                 s.resolving
                     .as_ref()
                     .and_then(|r| r.search.as_ref())
+                    .filter(|choice| choice.battlefield.is_none())
                     .map(|choice| SearchChoiceView {
                         filter: choice.spec.filter,
                         maximum: choice.spec.maximum,
@@ -4424,6 +4457,29 @@ impl Game {
             } else {
                 None
             },
+            search_distribution: s
+                .resolving
+                .as_ref()
+                .and_then(|r| r.search.as_ref())
+                .and_then(|choice| {
+                    let battlefield = choice.battlefield.as_ref()?;
+                    let crate::SearchDestination::BattlefieldThenHand {
+                        battlefield: battlefield_count,
+                    } = choice.spec.destination
+                    else {
+                        return None;
+                    };
+                    Some(SearchDistributionView {
+                        player: s.resolving.as_ref().unwrap().item.controller,
+                        battlefield_count,
+                        candidates: choice
+                            .selected
+                            .iter()
+                            .map(|&id| self.object_view(id))
+                            .collect(),
+                        battlefield: battlefield.clone(),
+                    })
+                }),
             connive_choice: s
                 .resolving
                 .as_ref()
@@ -4575,7 +4631,12 @@ impl Game {
                         + resolution
                             .search
                             .as_ref()
-                            .map(|choice| choice.selected.len() * std::mem::size_of::<CardId>())
+                            .map(|choice| {
+                                std::mem::size_of::<search::SearchChoice>()
+                                    + (choice.selected.len()
+                                        + choice.battlefield.as_ref().map_or(0, Vec::len))
+                                        * std::mem::size_of::<CardId>()
+                            })
                             .unwrap_or(0)
                         + resolution
                             .library
@@ -5128,3 +5189,7 @@ mod composition_tests;
 #[cfg(test)]
 #[path = "engine_selected_x_tests.rs"]
 mod selected_x_tests;
+
+#[cfg(test)]
+#[path = "engine_split_search_tests.rs"]
+mod split_search_tests;

@@ -1,0 +1,177 @@
+{
+  "schema": 1,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "scope": "Whole Bloomvine Omen pair plus complete Troop of Ponies activated body, enabled by the same typed split-library instruction. All constructor/direct-import and explicit semantic-base files are full-file provenance; this does not claim translation of every transitive dependency.",
+  "cards": [
+    {
+      "name": "Bloomvine Regent // Claim Territory",
+      "oracle_id": "da1e019c-2ffb-412d-90d7-f2e5e5c44c4b",
+      "faces": [
+        {
+          "name": "Bloomvine Regent",
+          "mana_cost": "{3}{G}{G}",
+          "type_line": "Creature — Dragon",
+          "oracle_text": "Flying\nWhenever this creature or another Dragon you control enters, you gain 3 life.",
+          "power": "4",
+          "toughness": "5"
+        },
+        {
+          "name": "Claim Territory",
+          "mana_cost": "{2}{G}",
+          "type_line": "Sorcery — Omen",
+          "oracle_text": "Search your library for up to two basic Forest cards, reveal them, put one onto the battlefield tapped and the other into your hand, then shuffle. (Also shuffle this card.)"
+        }
+      ],
+      "status": "complete_whole_body_admitted",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BloomvineRegent.java",
+          "java_sha256": "7a36e59dd50cd9161518ac579e34488148efc9f523df194a7a967d16ad7d94e1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldThisOrAnotherTriggeredAbility.java",
+          "java_sha256": "2f5818fd959ec418604af2da920faa13d4eab583848e899591ef1a473a3b126f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutOntoBattlefieldTappedRestInHandEffect.java",
+          "java_sha256": "52b593d496c49f76c87e729cc95fb31bf44350f75df260960df6dd4132eea67f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/OmenCard.java",
+          "java_sha256": "23ab5ce7824ef4ff96e68a43e16b9cc29fe9e5f03e447653d981da346fb5fcba"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterCard.java",
+          "java_sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterBasicCard.java",
+          "java_sha256": "8c80c816be8541c94ea9963a7273a76a20532f075a20388a15a9d8bdf59e48f5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+          "java_sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+        }
+      ]
+    },
+    {
+      "name": "Troop of Ponies",
+      "oracle_id": "bb52b3c3-09f0-4506-b7c0-250ab0b91866",
+      "faces": [
+        {
+          "name": "Troop of Ponies",
+          "mana_cost": "{2}",
+          "type_line": "Creature — Horse",
+          "oracle_text": "{2}, {T}, Sacrifice this creature: Search your library for up to two basic land cards, reveal them, put one onto the battlefield tapped and the other into your hand, then shuffle.",
+          "power": "2",
+          "toughness": "1"
+        }
+      ],
+      "status": "complete_whole_body_admitted",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TroopOfPonies.java",
+          "java_sha256": "45c5a3b4b0cb7991f9f27e9c088d4bd16c1a4c0cfe620e5ee57e2bc3207920f4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+          "java_sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "java_sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "java_sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutOntoBattlefieldTappedRestInHandEffect.java",
+          "java_sha256": "52b593d496c49f76c87e729cc95fb31bf44350f75df260960df6dd4132eea67f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+          "java_sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        }
+      ]
+    }
+  ],
+  "shared_sources": [
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/SearchEffect.java",
+      "java_sha256": "3bd01fb726f6f76df078d7bf1f7a84fe484cc02fa0b1ca8dff89a3a2f562be96"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/target/TargetCard.java",
+      "java_sha256": "e4ac7e19f604b43a36475592a0d13f75fcd6e21b287a813a2381b9b42ca4740e"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/FilterPermanentThisOrAnother.java",
+      "java_sha256": "f5513101336889bfff822f2b6e4d4fbf901eb76ee91d6f307d87b1d9e28081d4"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+      "java_sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+    }
+  ]
+}

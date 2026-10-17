@@ -20,7 +20,7 @@ pub(super) struct Resolution {
     pub milled: Vec<ObjectRef>,
     pub library: Option<LibraryChoice>,
     pub selection: Option<Box<super::library_selection::LibrarySelection>>,
-    pub search: Option<super::search::SearchChoice>,
+    pub search: Option<Box<super::search::SearchChoice>>,
     pub choice: Option<Box<super::effect_choices::EffectChoice>>,
 }
 
@@ -1423,10 +1423,12 @@ impl Game {
                     }
                 },
                 Instruction::Search(spec) => {
-                    self.state.resolving.as_mut().unwrap().search = Some(search::SearchChoice {
-                        spec,
-                        selected: Vec::new(),
-                    });
+                    self.state.resolving.as_mut().unwrap().search =
+                        Some(Box::new(search::SearchChoice {
+                            spec,
+                            selected: Vec::new(),
+                            battlefield: None,
+                        }));
                     self.state.pending = Pending::EffectSearch {
                         player: item.controller,
                     };
