@@ -1,0 +1,1378 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-16",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "rules": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+  "shared_sources": [
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+      "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/SpecialAction.java",
+      "java_sha256": "4969e4f9662cdd9af5edeed34dde4aed12d64d49e9b834ddadfd1c955f6d8ded"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/SpellAbility.java",
+      "java_sha256": "4e4176a30f97131904087a7dd383dcc0751afc17514457761eb2ceeaa7e71354"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/costs/Cost.java",
+      "java_sha256": "51faa5510bad018a9529ca34c9a3c7189a2ff5df0bd9e5853e53303d7f54e1b8"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/costs/Costs.java",
+      "java_sha256": "af0ae70d995d7e5e409a16d3787fd49dbc9b5d4d18c02462e37f83860a418dd7"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/costs/mana/AlternateManaPaymentAbility.java",
+      "java_sha256": "a23a31a88b076ed73aef4f2cc234e2c7b1d5e424f67d50020f7be5715678002a"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCost.java",
+      "java_sha256": "f74fa94645e0467ed63fa6f09c2af9c038dc8dad7a15dc81ca169dd6d6f13273"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/costs/mana/VariableManaCost.java",
+      "java_sha256": "b4889a84a0f5375d21a3ca8aeb4478147e7a97e029b71f688042199c7e0d259e"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+      "java_sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardsInControllerHandCount.java",
+      "java_sha256": "765c3acced450b7a4f5b4f9659d478415f7b18f09e385a4dc10a78437d71b811"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SignInversionDynamicValue.java",
+      "java_sha256": "4c4175b8acbc1aeafe355bcad4f1fece8983c36ee7b506fae1de38563dde6da0"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+      "java_sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/Effect.java",
+      "java_sha256": "92f49363848fa1b18215e3a0d516923e10d917638a38e5bbad73f274f6a1e917"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/hint/Hint.java",
+      "java_sha256": "5b3e37a154109935f244c02a79a0182695daad1bee2180f5f0b407bdf630509a"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/hint/ValueHint.java",
+      "java_sha256": "d0748934608e742b2bb47c3dab958c95246fc69ef40a54a5f4d95c64cb79e99a"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "java_sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+      "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/abilities/mana/ManaOptions.java",
+      "java_sha256": "92cfbd396b66b6147d700c36843d32d1a5bbb0fced6ce2dadd77b7e87d72e9c7"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/FilterCard.java",
+      "java_sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+      "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/VarmintToken.java",
+      "java_sha256": "894a28c683e8329dbe4058d3ce451deeff9f29ffafeeeb25c55137abdc028a7a"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/ZombieRogueToken.java",
+      "java_sha256": "3c55d0c8a5df2f739860636305fe57e1b4807180446eb43dc87a392ca13527c0"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/watchers/Watcher.java",
+      "java_sha256": "9f13c8d5e69444bab89de1c7fd22feb9370606b56bb89fd6816f98439415868f"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/watchers/common/CreaturesDiedWatcher.java",
+      "java_sha256": "c54597f69b5487c4714868ce642f8fc78464db0bb508ed154206096a74ae1ab1"
+    },
+    {
+      "java_source": "Mage/src/main/java/mage/watchers/common/SpellsCastWatcher.java",
+      "java_sha256": "cd80bcc11ba9cb5774cf81148c1ab251c8a3b6b529a67af9ed084c64f88600a8"
+    }
+  ],
+  "cards": [
+    {
+      "name": "Beastbond Outcaster",
+      "mana_cost": "{2}{G}",
+      "oracle_text": "When this creature enters, if you control a creature with power 4 or greater, draw a card.\nPlot {1}{G} (You may pay {1}{G} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BeastbondOutcaster.java",
+          "java_sha256": "5087f852eec74020e48d5b8a7283ddffa8a96d67228c3f4688e4b232a07f2e1c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/FerociousCondition.java",
+          "java_sha256": "4cb67672f9434ee2230c941595cd3489a6b27658508e5cadaa3cecacbc8e84fa"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/hint/common/FerociousHint.java",
+          "java_sha256": "f8da304053e202617f65f5b24115dbd37451a21fde4e89147d4bc74ac266e05a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        }
+      ],
+      "type_line": "Creature — Human Druid",
+      "power": "3",
+      "toughness": "3"
+    },
+    {
+      "name": "Blacksnag Buzzard",
+      "mana_cost": "{2}{B}",
+      "oracle_text": "Flying\nThis creature enters with a +1/+1 counter on it if a creature died this turn.\nPlot {1}{B} (You may pay {1}{B} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BlacksnagBuzzard.java",
+          "java_sha256": "650c892e37b82c32a9d3416dabe1a48a4423ff32d7878f5fb6eef9523cfdf05c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAbility.java",
+          "java_sha256": "8f8fd13f114dcff33a7022d97b46aa6af78c44986d66d9e9757c7838ada4d81f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/MorbidCondition.java",
+          "java_sha256": "21adfb30d2aa5202e5d00f11e73480be8f0af2557cd5e03e05864b15a8485126"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/hint/common/MorbidHint.java",
+          "java_sha256": "eed50642ee0ac1a5cc9d19242c0952734fc551ebc41913454501fa219d170722"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        }
+      ],
+      "type_line": "Creature — Bird",
+      "power": "2",
+      "toughness": "1"
+    },
+    {
+      "name": "Cunning Coyote",
+      "mana_cost": "{1}{R}",
+      "oracle_text": "Haste\nWhen this creature enters, another target creature you control gets +1/+1 and gains haste until end of turn.\nPlot {1}{R} (You may pay {1}{R} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CunningCoyote.java",
+          "java_sha256": "97786f3ac5631fe786914d67e3353ecd393e520e61f25957c3de7e68d8a2ead9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+          "java_sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        }
+      ],
+      "type_line": "Creature — Coyote",
+      "power": "2",
+      "toughness": "2"
+    },
+    {
+      "name": "Demonic Ruckus",
+      "mana_cost": "{1}{R}",
+      "oracle_text": "Enchant creature\nEnchanted creature gets +1/+1 and has menace and trample.\nWhen this Aura is put into a graveyard from the battlefield, draw a card.\nPlot {R} (You may pay {R} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DemonicRuckus.java",
+          "java_sha256": "18f554c357d27ec7ee25d71454f0c826739a04b0521cded30cbf20730e704914"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/PutIntoGraveFromBattlefieldSourceTriggeredAbility.java",
+          "java_sha256": "d68a84aa9f0e48cb7d0847b1bcd5fe447d39b876eef5f1b972a2b448db04ce37"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEnchantedEffect.java",
+          "java_sha256": "c390aae1354b298fc7d8b379f73583e2bbee3bdd13d88a082553dce6c75e1303"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+          "java_sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+          "java_sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+          "java_sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ],
+      "type_line": "Enchantment — Aura"
+    },
+    {
+      "name": "Djinn of Fool's Fall",
+      "mana_cost": "{4}{U}",
+      "oracle_text": "Flying\nPlot {3}{U} (You may pay {3}{U} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DjinnOfFoolsFall.java",
+          "java_sha256": "284e33afcfcbe6983e8b508e7a26fd769d6ca848fe11a5f287c5ed8da7a7e563"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        }
+      ],
+      "type_line": "Creature — Djinn",
+      "power": "4",
+      "toughness": "3"
+    },
+    {
+      "name": "Irascible Wolverine",
+      "mana_cost": "{2}{R}",
+      "oracle_text": "When this creature enters, exile the top card of your library. Until end of turn, you may play that card.\nPlot {2}{R} (You may pay {2}{R} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/i/IrascibleWolverine.java",
+          "java_sha256": "0624f5c31098a9c7a5c21a131a97bba055914a5ccd31ef2545d29b45143d328f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+          "java_sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        }
+      ],
+      "type_line": "Creature — Wolverine",
+      "power": "3",
+      "toughness": "2"
+    },
+    {
+      "name": "Loan Shark",
+      "mana_cost": "{3}{U}",
+      "oracle_text": "When this creature enters, if you've cast two or more spells this turn, draw a card.\nPlot {3}{U} (You may pay {3}{U} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LoanShark.java",
+          "java_sha256": "f65b5ea13d0bf4fcb7f058fd88a57900f701edcfa5b4a884fd34cb8040c2ce70"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+          "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/StormAbility.java",
+          "java_sha256": "50780a61df4fcc4f08d1055021373554d896532c977990f209edf1dd3606c1fd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/watchers/common/SpellsCastWatcher.java",
+          "java_sha256": "cd80bcc11ba9cb5774cf81148c1ab251c8a3b6b529a67af9ed084c64f88600a8"
+        }
+      ],
+      "type_line": "Creature — Shark Rogue",
+      "power": "3",
+      "toughness": "4"
+    },
+    {
+      "name": "Rictus Robber",
+      "mana_cost": "{3}{B}",
+      "oracle_text": "When this creature enters, if a creature died this turn, create a 2/2 blue and black Zombie Rogue creature token.\nPlot {2}{B} (You may pay {2}{B} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RictusRobber.java",
+          "java_sha256": "9ced1ed9ff200dafb8a9d3f3e76d54440c90f9ed26600a1c05b44a4252972c66"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/MorbidCondition.java",
+          "java_sha256": "21adfb30d2aa5202e5d00f11e73480be8f0af2557cd5e03e05864b15a8485126"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/hint/common/MorbidHint.java",
+          "java_sha256": "eed50642ee0ac1a5cc9d19242c0952734fc551ebc41913454501fa219d170722"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/ZombieRogueToken.java",
+          "java_sha256": "3c55d0c8a5df2f739860636305fe57e1b4807180446eb43dc87a392ca13527c0"
+        }
+      ],
+      "type_line": "Creature — Zombie Rogue",
+      "power": "4",
+      "toughness": "3"
+    },
+    {
+      "name": "Rise of the Varmints",
+      "mana_cost": "{3}{G}",
+      "oracle_text": "Create X 2/1 green Varmint creature tokens, where X is the number of creature cards in your graveyard.\nPlot {2}{G} (You may pay {2}{G} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RiseOfTheVarmints.java",
+          "java_sha256": "1df7b241957d4f80a7c159cc69c04ec38057c6089ce881f6cecef01e091747de"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardsInControllerGraveyardCount.java",
+          "java_sha256": "1681b71d7aeed7c96c0e4b1963a4ebec63874299ad681fd1bf7b9f1b539ba297"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/VarmintToken.java",
+          "java_sha256": "894a28c683e8329dbe4058d3ce451deeff9f29ffafeeeb25c55137abdc028a7a"
+        }
+      ],
+      "type_line": "Sorcery"
+    },
+    {
+      "name": "Slickshot Show-Off",
+      "mana_cost": "{1}{R}",
+      "oracle_text": "Flying, haste\nWhenever you cast a noncreature spell, this creature gets +2/+0 until end of turn.\nPlot {1}{R} (You may pay {1}{R} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SlickshotShowOff.java",
+          "java_sha256": "f8bb6c365d89c1b747adbd1acb88aeda2796383812a363a22a67b93b17f982d9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+          "java_sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+          "java_sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+          "java_sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        }
+      ],
+      "type_line": "Creature — Bird Wizard",
+      "power": "1",
+      "toughness": "2"
+    },
+    {
+      "name": "Spinewoods Paladin",
+      "mana_cost": "{4}{G}",
+      "oracle_text": "Trample\nWhen this creature enters, you gain 3 life.\nPlot {3}{G} (You may pay {3}{G} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SpinewoodsPaladin.java",
+          "java_sha256": "5387e61af0a0a760189ab3151ad50465203c30c66a1b23e2cc901231a33bf6d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+          "java_sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+        }
+      ],
+      "type_line": "Creature — Human Knight",
+      "power": "5",
+      "toughness": "4"
+    },
+    {
+      "name": "Stagecoach Security",
+      "mana_cost": "{4}{W}",
+      "oracle_text": "When this creature enters, creatures you control get +1/+1 and gain vigilance until end of turn.\nPlot {3}{W} (You may pay {3}{W} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StagecoachSecurity.java",
+          "java_sha256": "be91fbf08fd614ecb494be23699cc5d9ad1200d97b7711d5a2566ed23f916041"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+          "java_sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+          "java_sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "java_sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        }
+      ],
+      "type_line": "Creature — Human Soldier",
+      "power": "4",
+      "toughness": "5"
+    },
+    {
+      "name": "Stingerback Terror",
+      "mana_cost": "{2}{R}{R}",
+      "oracle_text": "Flying, trample\nThis creature gets -1/-1 for each card in your hand.\nPlot {2}{R} (You may pay {2}{R} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StingerbackTerror.java",
+          "java_sha256": "3625aca08a52e202d3fb0227535cd5505befcbb3793bdfd59a0c420eb8b9772f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+          "java_sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardsInControllerHandCount.java",
+          "java_sha256": "765c3acced450b7a4f5b4f9659d478415f7b18f09e385a4dc10a78437d71b811"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SignInversionDynamicValue.java",
+          "java_sha256": "4c4175b8acbc1aeafe355bcad4f1fece8983c36ee7b506fae1de38563dde6da0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+          "java_sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+          "java_sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+        }
+      ],
+      "type_line": "Creature — Scorpion Dragon",
+      "power": "7",
+      "toughness": "7"
+    }
+  ],
+  "gated": [
+    {
+      "name": "Aloe Alchemist",
+      "mana_cost": "{1}{G}",
+      "oracle_text": "Trample\nWhen this card becomes plotted, target creature gets +3/+2 and gains trample until end of turn.\nPlot {1}{G} (You may pay {1}{G} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AloeAlchemist.java",
+          "java_sha256": "aad98809c5bf310cb1cce9209d16be343cb79834e03d393a3e96cb375a0d01dd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesPlottedSourceTriggeredAbility.java",
+          "java_sha256": "d5e5fb253cffec1495b08be459dc01ad6f67b1de15eac4a03742016300eedf1a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+          "java_sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        }
+      ],
+      "type_line": "Creature — Plant Warlock",
+      "power": "3",
+      "toughness": "2",
+      "gate": "Becomes-plotted source observer and target trigger not implemented."
+    },
+    {
+      "name": "Brimstone Roundup",
+      "mana_cost": "{1}{R}",
+      "oracle_text": "Whenever you cast your second spell each turn, create a 1/1 red Mercenary creature token with \"{T}: Target creature you control gets +1/+0 until end of turn. Activate only as a sorcery.\"\nPlot {2}{R} (You may pay {2}{R} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BrimstoneRoundup.java",
+          "java_sha256": "b3fead00bfe2f486117badb1516cf822c578dc3391cf702abe807440d5c7457f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/CastSecondSpellTriggeredAbility.java",
+          "java_sha256": "a4e91db65304a2f0a017d34eb680d683186071207b0002b036e94fcdc773ddce"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/MercenaryToken.java",
+          "java_sha256": "e3da133ae91b84af428f1ec547e285f0fcd0a89bbd6e287f66f309fcf0704668"
+        }
+      ],
+      "type_line": "Enchantment",
+      "gate": "Mercenary token granted sorcery activation not implemented."
+    },
+    {
+      "name": "Dust Animus",
+      "mana_cost": "{1}{W}",
+      "oracle_text": "Flying\nIf you control five or more untapped lands, this creature enters with two +1/+1 counters and a lifelink counter on it.\nPlot {1}{W} (You may pay {1}{W} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DustAnimus.java",
+          "java_sha256": "c5e78471f6b332ae4424c589087e2500cd6a4c73ae1d4cc7ca04630930d87b70"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAbility.java",
+          "java_sha256": "8f8fd13f114dcff33a7022d97b46aa6af78c44986d66d9e9757c7838ada4d81f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+          "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+          "java_sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledLandPermanent.java",
+          "java_sha256": "849ad46e024ce53b361821cabf62476783a69b3295eb16ea66d165d18c243ac7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/TappedPredicate.java",
+          "java_sha256": "71eabf46dc3838343404e9d40c88835361370549c67e42e8c694082ecd050436"
+        }
+      ],
+      "type_line": "Creature — Spirit",
+      "power": "2",
+      "toughness": "3",
+      "gate": "Conditional untapped-land entry replacement and lifelink counter not implemented."
+    },
+    {
+      "name": "Freestrider Commando",
+      "mana_cost": "{2}{G}",
+      "oracle_text": "This creature enters with two +1/+1 counters on it if it wasn't cast or no mana was spent to cast it.\nPlot {3}{G} (You may pay {3}{G} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FreestriderCommando.java",
+          "java_sha256": "b594c0783c4df6440e193907432fc7db84c8961536d15fa0ef8e0ceb2c0c95b1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAbility.java",
+          "java_sha256": "8f8fd13f114dcff33a7022d97b46aa6af78c44986d66d9e9757c7838ada4d81f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+          "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        }
+      ],
+      "type_line": "Creature — Centaur Mercenary",
+      "power": "3",
+      "toughness": "3",
+      "gate": "Historical no-mana-spent/noncast entry replacement not implemented."
+    },
+    {
+      "name": "Highway Robbery",
+      "mana_cost": "{1}{R}",
+      "oracle_text": "You may discard a card or sacrifice a land. If you do, draw two cards.\nPlot {1}{R} (You may pay {1}{R} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/h/HighwayRobbery.java",
+          "java_sha256": "38338cdcd9fceff47008a85e9f94bf547a798efd5f15d37feef3aaee7699a5cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/OrCost.java",
+          "java_sha256": "a36fc6c29c41ef6d0673a6e40c9992c8f5b6c9bb64f9559d4011d0b9593fcf10"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+          "java_sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+          "java_sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        }
+      ],
+      "type_line": "Sorcery",
+      "gate": "Optional discard-or-land-sacrifice resolution choice not implemented."
+    },
+    {
+      "name": "Longhorn Sharpshooter",
+      "mana_cost": "{2}{R}",
+      "oracle_text": "Reach\nWhen this card becomes plotted, it deals 2 damage to any target.\nPlot {3}{R} (You may pay {3}{R} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/l/LonghornSharpshooter.java",
+          "java_sha256": "f240ab9ebf6fc9a3a055170fcaf9c30f5d4eb64e9dd331111cefa9f844ca51eb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/BecomesPlottedSourceTriggeredAbility.java",
+          "java_sha256": "d5e5fb253cffec1495b08be459dc01ad6f67b1de15eac4a03742016300eedf1a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "java_sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+          "java_sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetAnyTarget.java",
+          "java_sha256": "94f28b8a4a9908ef9b7599805c0ac39faf0aae249231969cd51373db206ebf34"
+        }
+      ],
+      "type_line": "Creature — Minotaur Rogue",
+      "power": "3",
+      "toughness": "3",
+      "gate": "Becomes-plotted source observer and any-target trigger not implemented."
+    },
+    {
+      "name": "Outcaster Trailblazer",
+      "mana_cost": "{2}{G}",
+      "oracle_text": "When this creature enters, add one mana of any color.\nWhenever another creature you control with power 4 or greater enters, draw a card.\nPlot {2}{G} (You may pay {2}{G} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/o/OutcasterTrailblazer.java",
+          "java_sha256": "36b23250f66e8c959766d62f2d573e13e1d1fa0187cc0787cdb61ea9b9b9b331"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+          "java_sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/mana/AddManaOfAnyColorEffect.java",
+          "java_sha256": "1ab49b0ed403a80a0daed4883b432e65e47e38a72d5e4ebca87894284c4fa085"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+          "java_sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+          "java_sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/PowerPredicate.java",
+          "java_sha256": "909b9038e02c0653920408059e987b6ee3cfad717900e62e78c597285f137dde"
+        }
+      ],
+      "type_line": "Creature — Human Druid",
+      "power": "4",
+      "toughness": "2",
+      "gate": "Entry any-color mana plus another-ferocious-entry draw not implemented."
+    },
+    {
+      "name": "Outlaw Stitcher",
+      "mana_cost": "{3}{U}",
+      "oracle_text": "When this creature enters, create a 2/2 blue and black Zombie Rogue creature token, then put two +1/+1 counters on that token for each spell you've cast this turn other than the first.\nPlot {4}{U} (You may pay {4}{U} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/o/OutlawStitcher.java",
+          "java_sha256": "f4c6a93a54232b8c1bc63dc9dff7c653dd9ecada061f1736772e2074fd794876"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+          "java_sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/Effect.java",
+          "java_sha256": "92f49363848fa1b18215e3a0d516923e10d917638a38e5bbad73f274f6a1e917"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/hint/Hint.java",
+          "java_sha256": "5b3e37a154109935f244c02a79a0182695daad1bee2180f5f0b407bdf630509a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/hint/ValueHint.java",
+          "java_sha256": "d0748934608e742b2bb47c3dab958c95246fc69ef40a54a5f4d95c64cb79e99a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/ZombieRogueToken.java",
+          "java_sha256": "3c55d0c8a5df2f739860636305fe57e1b4807180446eb43dc87a392ca13527c0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/watchers/common/CastSpellLastTurnWatcher.java",
+          "java_sha256": "065a8c406c463e6b5a4fc410b932eb1784fd05f2964afc8e64c81664a518a7ce"
+        }
+      ],
+      "type_line": "Creature — Human Warlock",
+      "power": "1",
+      "toughness": "4",
+      "gate": "New token receives dynamic per-prior-spell entry counters not implemented."
+    },
+    {
+      "name": "Pillage the Bog",
+      "mana_cost": "{B}{G}",
+      "oracle_text": "Look at the top X cards of your library, where X is twice the number of lands you control. Put one of them into your hand and the rest on the bottom of your library in a random order.\nPlot {1}{B}{G} (You may pay {1}{B}{G} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PillageTheBog.java",
+          "java_sha256": "d2e9defb758e6d5c220bdfc3b868f17b1921e2f4754d970c001953e5fe44f467"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+          "java_sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/MultipliedValue.java",
+          "java_sha256": "d8e70d3468d5bfaf3ab1f030aebb4a66738648af642ab39502a5cffffd38c314"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+          "java_sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+          "java_sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/hint/Hint.java",
+          "java_sha256": "5b3e37a154109935f244c02a79a0182695daad1bee2180f5f0b407bdf630509a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/hint/ValueHint.java",
+          "java_sha256": "d0748934608e742b2bb47c3dab958c95246fc69ef40a54a5f4d95c64cb79e99a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        }
+      ],
+      "type_line": "Sorcery",
+      "gate": "Live twice-land-count library window not implemented."
+    },
+    {
+      "name": "Pitiless Carnage",
+      "mana_cost": "{3}{B}",
+      "oracle_text": "Sacrifice any number of permanents you control, then draw that many cards.\nPlot {1}{B}{B} (You may pay {1}{B}{B} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PitilessCarnage.java",
+          "java_sha256": "a002c84cb5a54490d848e0ba1ee839601a04aea33f96567accba90dab42da971"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetSacrifice.java",
+          "java_sha256": "24e8ec2dda0609630c60e91b1b890feebc7c8dbb0eb6002565897a07ca9113d7"
+        }
+      ],
+      "type_line": "Sorcery",
+      "gate": "Unbounded voluntary permanent sacrifice with count-dependent draw not implemented."
+    },
+    {
+      "name": "Plan the Heist",
+      "mana_cost": "{2}{U}{U}",
+      "oracle_text": "Surveil 3 if you have no cards in hand. Then draw three cards. (To surveil 3, look at the top three cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)\nPlot {3}{U} (You may pay {3}{U} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PlanTheHeist.java",
+          "java_sha256": "f083c2f0787f9047b854868a4f385de3b5acc0152d81839604bbc66216e7bb9c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/HellbentCondition.java",
+          "java_sha256": "3d45855754d8e51b32915d3cde6c4fb050b40b0b76cbd13a1abf5cb76a86b713"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+          "java_sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        }
+      ],
+      "type_line": "Sorcery",
+      "gate": "Conditional empty-hand Surveil sequencing not implemented."
+    },
+    {
+      "name": "Railway Brawler",
+      "mana_cost": "{3}{G}{G}",
+      "oracle_text": "Reach, trample\nWhenever another creature you control enters, put X +1/+1 counters on it, where X is its power.\nPlot {3}{G} (You may pay {3}{G} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RailwayBrawler.java",
+          "java_sha256": "4cf8a0c5e093c3aa89047c256935686278003f0173219d7f05c05e98d1b9129a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+          "java_sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+          "java_sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+          "java_sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        }
+      ],
+      "type_line": "Creature — Rhino Warrior",
+      "power": "5",
+      "toughness": "5",
+      "gate": "Other-entry target power-based counter observer not implemented."
+    },
+    {
+      "name": "Sheriff of Safe Passage",
+      "mana_cost": "{2}{W}",
+      "oracle_text": "This creature enters with a +1/+1 counter on it plus an additional +1/+1 counter on it for each other creature you control.\nPlot {1}{W} (You may pay {1}{W} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SheriffOfSafePassage.java",
+          "java_sha256": "fd09d2923bc5dfd24f15d0255d24547045cee1ade3527c8e47769b6090a492c1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAbility.java",
+          "java_sha256": "8f8fd13f114dcff33a7022d97b46aa6af78c44986d66d9e9757c7838ada4d81f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+          "java_sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/IntPlusDynamicValue.java",
+          "java_sha256": "e6b7d97aecee63d129c961c1d35245a1daec6d200f4f495ca6ed10081e5b1c43"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+          "java_sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "java_sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/hint/Hint.java",
+          "java_sha256": "5b3e37a154109935f244c02a79a0182695daad1bee2180f5f0b407bdf630509a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/hint/ValueHint.java",
+          "java_sha256": "d0748934608e742b2bb47c3dab958c95246fc69ef40a54a5f4d95c64cb79e99a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        }
+      ],
+      "type_line": "Creature — Human Knight",
+      "power": "0",
+      "toughness": "0",
+      "gate": "Dynamic other-creature entry counter replacement not implemented."
+    },
+    {
+      "name": "Slickshot Lockpicker",
+      "mana_cost": "{2}{U}",
+      "oracle_text": "When this creature enters, target instant or sorcery card in your graveyard gains flashback until end of turn. The flashback cost is equal to its mana cost. (You may cast that card from your graveyard for its flashback cost. Then exile it.)\nPlot {2}{U} (You may pay {2}{U} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/SlickshotLockpicker.java",
+          "java_sha256": "62df070f9a865374f086bd81ea2543874592e8747279cc5b225f280950bbcae8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainFlashbackTargetEffect.java",
+          "java_sha256": "a31c4c77af35bdd83e3e259a3d4546236e5017d4a9b037f92c309e2e8927beed"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+          "java_sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+        }
+      ],
+      "type_line": "Creature — Human Rogue",
+      "power": "2",
+      "toughness": "3",
+      "gate": "Temporary target graveyard flashback permission not implemented."
+    },
+    {
+      "name": "Step Between Worlds",
+      "mana_cost": "{3}{U}{U}",
+      "oracle_text": "Each player may shuffle their hand and graveyard into their library. Each player who does draws seven cards. Exile Step Between Worlds.\nPlot {4}{U}{U} (You may pay {4}{U}{U} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/s/StepBetweenWorlds.java",
+          "java_sha256": "3b8bed9ee68b634192174999d1ad7c2179b629f1f5eb7a20d359436a79a885f6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ExileSpellEffect.java",
+          "java_sha256": "a7e5f14c36dc0938ad32916c58ae5c50971810fbdb26b8a69f4bfcfdd243b78c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        }
+      ],
+      "type_line": "Sorcery",
+      "gate": "Each-player optional hand/graveyard shuffle and draw-seven not implemented."
+    },
+    {
+      "name": "Tumbleweed Rising",
+      "mana_cost": "{1}{G}",
+      "oracle_text": "Create an X/X green Elemental creature token, where X is the greatest power among creatures you control.\nPlot {2}{G} (You may pay {2}{G} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/t/TumbleweedRising.java",
+          "java_sha256": "2526dea22eeb1abd256d86f52075bc441a1d88d4d26c868e7875b5d6c5d4e8da"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GreatestAmongPermanentsValue.java",
+          "java_sha256": "1fb2bb2baf97bbbf6aa1cf4669139b3d10d3fc3beb40a6f2c76fc403393fb299"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/ElementalXXGreenToken.java",
+          "java_sha256": "12a8918a4c23ae1feb26f5de65f2b2e56b1108fd0b73c5f2fc3c26d5e607686b"
+        }
+      ],
+      "type_line": "Sorcery",
+      "gate": "Greatest-power frozen token characteristics not implemented."
+    },
+    {
+      "name": "Unscrupulous Contractor",
+      "mana_cost": "{2}{B}",
+      "oracle_text": "When this creature enters, you may sacrifice a creature. When you do, target player draws two cards and loses 2 life.\nPlot {2}{B} (You may pay {2}{B} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/u/UnscrupulousContractor.java",
+          "java_sha256": "98742c2777149f77a88e32a1d5f45f2bd853c621fad8c37e8d21f342286307f4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+          "java_sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+          "java_sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardTargetEffect.java",
+          "java_sha256": "1d131bf3ff4ac75e46660190098938610581d961ad6d8f39e553c9c200f7a467"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeTargetEffect.java",
+          "java_sha256": "cb540577a835c69b5b4bd5182c58715215e03ee165d349a7d19d388c03224e37"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPlayer.java",
+          "java_sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba"
+        }
+      ],
+      "type_line": "Creature — Human Assassin",
+      "power": "3",
+      "toughness": "2",
+      "gate": "Optional sacrifice with reflexive any-player draw/life target not implemented."
+    },
+    {
+      "name": "Visage Bandit",
+      "mana_cost": "{3}{U}",
+      "oracle_text": "You may have this creature enter as a copy of a creature you control, except it's a Shapeshifter Rogue in addition to its other types.\nPlot {2}{U} (You may pay {2}{U} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+      "sources": [
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VisageBandit.java",
+          "java_sha256": "a047de19f8994a2c3098a9ac8c04b68f6d0489db15cc8eb18b4b90d999011a8c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAbility.java",
+          "java_sha256": "8f8fd13f114dcff33a7022d97b46aa6af78c44986d66d9e9757c7838ada4d81f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CopyPermanentEffect.java",
+          "java_sha256": "256e2224f1087a614a7e4826dcdd43873e9e5b50236b9904affb8408698fe8fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+          "java_sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        }
+      ],
+      "type_line": "Creature — Shapeshifter Rogue",
+      "power": "2",
+      "toughness": "2",
+      "gate": "Copy-as-entering replacement and added creature types not implemented."
+    }
+  ]
+}
