@@ -41,7 +41,7 @@ class OwnershipControlTests(unittest.TestCase):
             chapters={}; paid_sagas=set(); private=0; distributions=0
             for iteration in range(30000):
                 head=g.observe('P0')
-                self.assertEqual((head['schema'],head['catalogue']),(89,EXPECTED))
+                self.assertEqual((head['schema'],head['catalogue']),(93,EXPECTED))
                 if head['outcome'] is not None:
                     self.assertEqual(stage,'finish',(player,seed,mode,stage,name,iteration))
                     self.assertTrue(any({1,2,3} <= seen for seen in chapters.values()),chapters)

@@ -10,7 +10,7 @@ SAGA='Korvold and the Noble Thief'
 ROOT=Path(__file__).resolve().parents[1]
 FACTS={v['name']:v for v in json.loads((ROOT/'data/standard/cards.json').read_text())['cards']}
 FP=json.loads((ROOT/'data/standard/coverage.json').read_text())['catalogue_version']
-SCHEMA=89
+SCHEMA=93
 class RoleFollowupTests(unittest.TestCase):
  frame=prior.RoleConsumerTests.frame
  def test_all_twelve_paid_complete_bodies_both_seats(self):

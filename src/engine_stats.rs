@@ -1,5 +1,6 @@
-//! Derived additive continuous effects. Unsupported setting/switching/dependency
-//! layers remain gated by complete-text admission, never approximated by deltas.
+//! Derived layer-7 statistics: characteristic definitions, timestamped base
+//! setters, then additive modifiers. Unsupported switching/dependency effects
+//! remain gated by complete-text admission, never approximated by deltas.
 use super::*;
 
 impl Game {
@@ -220,16 +221,31 @@ impl Game {
             || object.card.vehicle_stats().is_some()
             || object.card.dynamic_stats().is_some()
         {
+            let dynamic = object.card.dynamic_stats();
+            let power_resource = if dynamic.is_some_and(|base| base.power.is_some()) {
+                "power exhausted"
+            } else if object.card.vehicle_stats().is_some() {
+                "Vehicle power exhausted"
+            } else {
+                "power representation exhausted"
+            };
+            let toughness_resource = if dynamic.is_some_and(|base| base.toughness.is_some()) {
+                "toughness exhausted"
+            } else if object.card.vehicle_stats().is_some() {
+                "Vehicle toughness exhausted"
+            } else {
+                "toughness representation exhausted"
+            };
             stats.power = stats
                 .power
                 .checked_add(object.growth.power)
                 .and_then(|v| v.checked_add(object.counter_delta()))
-                .capacity("power exhausted");
+                .capacity(power_resource);
             stats.toughness = stats
                 .toughness
                 .checked_add(object.growth.toughness)
                 .and_then(|v| v.checked_add(object.counter_delta()))
-                .capacity("toughness exhausted");
+                .capacity(toughness_resource);
         }
         if !battlefield_creature {
             return stats;
