@@ -23,7 +23,7 @@ class EnchantedDrawTests(unittest.TestCase):
     o=g.observe('P0')
     if o['outcome'] is not None:
      self.assertTrue(proved,(p,remove,stage,iteration));return dict(player=p,remove=remove,frames=frames,role_seen=role_seen,paid=paid,destroyed=destroyed)
-    o=g.observe(o['actor']);actor=o['actor'];self.assertEqual((o['schema'],o['catalogue']),(97,EXPECTED));objects={v['id']:v for v in o['objects']};private=g.observe(p);hand=[v for v in private['objects'] if v['zone']=='Hand' and v['owner']==p];field=[v for v in objects.values() if v['zone']=='Battlefield' and v['controller']==p];ally=next((v for v in field if v['card']=='Llanowar Elves'),None);quiet=o['decision']=='priority' and not o['stack'] and not o['announcing'] and not o['resolving'];ann=o['announcing']
+    o=g.observe(o['actor']);actor=o['actor'];self.assertEqual((o['schema'],o['catalogue']),(98,EXPECTED));objects={v['id']:v for v in o['objects']};private=g.observe(p);hand=[v for v in private['objects'] if v['zone']=='Hand' and v['owner']==p];field=[v for v in objects.values() if v['zone']=='Battlefield' and v['controller']==p];ally=next((v for v in field if v['card']=='Llanowar Elves'),None);quiet=o['decision']=='priority' and not o['stack'] and not o['announcing'] and not o['resolving'];ann=o['announcing']
     if stage=='wait_role' and quiet:
      token=next((v for v in objects.values() if v['zone']=='Battlefield' and v['token'] and v['token']['name']=='Wicked' and v['attached_to']==objects[target]['reference']),None)
      if token:

@@ -634,6 +634,11 @@ pub(crate) enum Instruction {
         power: Option<i128>,
         toughness: Option<i128>,
     },
+    SetResolvedBaseStats {
+        subject: Subject,
+        power: Option<ResolvedStatValue>,
+        toughness: Option<ResolvedStatValue>,
+    },
     Grow {
         subject: Subject,
         power: i32,
@@ -782,6 +787,20 @@ pub(crate) enum AmountValue {
         value: &'static AmountValue,
         factor: u16,
     },
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum ResolvedStatValue {
+    /// Capture a signed scalar once, when the instruction resolves.
+    Stat(StatValue),
+    /// Evaluate before creating the fixed, until-cleanup layer-7b effect.
+    Threshold {
+        value: StatValue,
+        minimum: i128,
+        yes: i128,
+        no: i128,
+    },
+    /// Current exact event object, or its signed departure LKI.
+    EnteringPower,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StatValue {
