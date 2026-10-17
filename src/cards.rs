@@ -348,6 +348,7 @@ pub(crate) struct SearchSpec {
 /// A resolution choice; discard here is a cost, not a forced discard effect.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EffectChoiceKind {
+    UntapLands { maximum: u16 },
     HandCreature,
     HandLand { tapped: bool },
     LandCards { maximum: u32, tapped: bool },
@@ -716,6 +717,13 @@ pub(crate) enum Instruction {
     SelectLibraryTo(LibrarySelectionEffect),
     NoMaximumHandSize,
     ExileResolvingSpell,
+    UntapLands(u16),
+    IfAmountAtLeast {
+        value: AmountValue,
+        minimum: u128,
+        skip: usize,
+    },
+    RevealUntilLandToGraveyard(PlayerSet),
     Damage(i32),
     DamageScaled(AmountValue),
     DamagePlayers(PlayerSet, i32),
@@ -1963,9 +1971,7 @@ impl Card {
         generated::token_info(self)
     }
     pub fn emblem_info(self) -> Option<&'static EmblemInfo> {
-        self.index()
-            .checked_sub(generated::EMBLEM_BASE)
-            .and_then(|offset| generated::EMBLEMS.get(offset))
+        generated::emblem_info(self)
     }
     pub fn is_emblem(self) -> bool {
         self.emblem_info().is_some()

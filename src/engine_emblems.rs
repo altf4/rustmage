@@ -23,13 +23,6 @@ impl Game {
             used_abilities: 0,
             attached_to: None,
         });
-        // The compiler admits only life-gain observers in this emblem family.
-        assert!(
-            factory
-                .triggers()
-                .iter()
-                .all(|a| matches!(a.condition.event(), TriggerCondition::LifeGained { .. }))
-        );
-        self.state.life_sources.push(id);
+        self.register_battlefield_sources(id);
     }
 }
