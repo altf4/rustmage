@@ -5554,7 +5554,6 @@
   "remaining_dependencies": [
     "Kellan, the Kid",
     "Michelangelo, Improviser",
-    "Spelunking",
     "The Gitrog, Ravenous Ride"
   ],
   "original_inventory_baseline": "8dd395286661963d1d1d98a2d384f2f5ab62d620",
@@ -5570,6 +5569,7 @@
   "subsequently_completed": {
     "PuPu UFO": "PR328 / issue326: full dynamic Town-count base-power setter plus inherited private hand-land ability",
     "Worldsoul's Rage": "PR339 / issue336 candidate: complete selected-X damage and simultaneous owned hand/graveyard land entry",
-    "Bonny Pall, Clearcutter": "PR339 / issue336 candidate: complete attack draw/land entry plus legendary Beau live CDA recipe"
+    "Bonny Pall, Clearcutter": "PR339 / issue336 candidate: complete attack draw/land entry plus legendary Beau live CDA recipe",
+    "Spelunking": "PR343 / issue342: complete draw, optional actual Cave-entry life bonus and ordered prospective untapped-entry replacements"
   }
 }

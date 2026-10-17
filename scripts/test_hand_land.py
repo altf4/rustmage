@@ -22,8 +22,8 @@ class HandLandTests(unittest.TestCase):
     for cost in ['{Y}','{R}{','{4294967296}']:
      self.assertFalse(self.compile(dict(d,mana_cost=cost))[1],(n,name,cost))
     self.assertFalse(self.compile(dict(d,type_line='Unknown'))[1])
- def test_four_remaining_and_later_complete_bodies_keep_full_body_guards(self):
-  for n in ['PuPu UFO',"Worldsoul's Rage",'Bonny Pall, Clearcutter']:
+ def test_three_remaining_and_later_complete_bodies_keep_full_body_guards(self):
+  for n in ['PuPu UFO',"Worldsoul's Rage",'Bonny Pall, Clearcutter','Spelunking']:
    c=self.cards[n];self.assertTrue(self.compile(c)[1]);self.assertFalse(self.compile(dict(c,oracle_text=c['oracle_text']+'\nDiscover 4.'))[1])
   for n in self.audit['remaining_dependencies']:
    c=self.cards[n];self.assertFalse(self.compile(c)[1],n)
