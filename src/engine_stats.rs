@@ -88,6 +88,7 @@ impl Game {
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::PermanentToGraveyard { .. }
                     | TriggerCondition::CreatureDiesFiltered { .. }
+                    | TriggerCondition::CreatureDiesAttackState { .. }
                     | TriggerCondition::FoodsSacrificed
                     | TriggerCondition::Sacrificed { .. }
             )

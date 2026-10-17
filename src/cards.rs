@@ -690,6 +690,11 @@ pub(crate) enum Instruction {
     MayOpponent {
         skip: usize,
     },
+    /// Offer the following payment block only when the controller can afford it.
+    MayPayControllerLife {
+        amount: u16,
+        skip: usize,
+    },
     MayPayOpponentLife {
         amount: u16,
         skip: usize,
@@ -1819,6 +1824,11 @@ pub(crate) enum TriggerCondition {
     },
     CreatureDiesFiltered {
         filter: CreatureFilter,
+    },
+    /// Match the departing creature's pre-event combat membership.
+    CreatureDiesAttackState {
+        filter: CreatureFilter,
+        attacking: bool,
     },
     PermanentToGraveyard {
         kinds: u16,

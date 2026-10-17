@@ -371,8 +371,15 @@ impl Game {
                                 && f.subtype
                                     .is_none_or(|subtype| event.before.has_subtype(subtype))
                         }
-                        TriggerCondition::CreatureDiesFiltered { filter } => {
+                        TriggerCondition::CreatureDiesFiltered { filter }
+                        | TriggerCondition::CreatureDiesAttackState { filter, .. } => {
                             event.before.is_creature()
+                                && match ability.condition.event() {
+                                    TriggerCondition::CreatureDiesAttackState {
+                                        attacking, ..
+                                    } => event.before.attacking == attacking,
+                                    _ => true,
+                                }
                                 && filter.matches_characteristics(
                                     event.before.card,
                                     event.before.kinds,
@@ -460,6 +467,7 @@ impl Game {
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::PermanentToGraveyard { .. }
                     | TriggerCondition::CreatureDiesFiltered { .. }
+                    | TriggerCondition::CreatureDiesAttackState { .. }
                     | TriggerCondition::Sacrificed { .. }
                     | TriggerCondition::LifeGained { .. }
                     | TriggerCondition::LifeLost { .. }
@@ -1759,8 +1767,14 @@ impl Game {
                     };
                     return;
                 }
-                Instruction::MayPayOpponentLife { amount, skip } => {
-                    let player = item.controller.other();
+                Instruction::MayPayOpponentLife { amount, skip }
+                | Instruction::MayPayControllerLife { amount, skip } => {
+                    let player = if matches!(instruction, Instruction::MayPayControllerLife { .. })
+                    {
+                        item.controller
+                    } else {
+                        item.controller.other()
+                    };
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");
                     assert!(skip_to <= resolution.program.len());
                     if amount != 0 && self.state.players[player.index()].life < i128::from(amount) {

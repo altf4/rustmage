@@ -327,6 +327,7 @@ fn source_indices_follow_every_admitted_definition_and_round_trip_restore() {
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::PermanentToGraveyard { .. }
                     | TriggerCondition::CreatureDiesFiltered { .. }
+                    | TriggerCondition::CreatureDiesAttackState { .. }
                     | TriggerCondition::FoodsSacrificed
                     | TriggerCondition::Sacrificed { .. }
             )

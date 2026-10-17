@@ -6142,3 +6142,7 @@ mod fdn_drake_amulet_juggernaut_tests;
 #[cfg(test)]
 #[path = "engine_fdn_punisher_two_tests.rs"]
 mod fdn_punisher_two_tests;
+
+#[cfg(test)]
+#[path = "engine_fdn_death_life_core_tests.rs"]
+mod fdn_death_life_core_tests;
