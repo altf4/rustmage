@@ -207,9 +207,19 @@ impl Game {
                         )
                     })
                 };
-                if self.targets_available(ability.targets, actor, self.object_ref(card))
-                    && fundable()
-                {
+                let modes = match ability.program.first() {
+                    Some(Instruction::Modal(modes)) => Some(*modes),
+                    _ => None,
+                };
+                let targets_available = modes.map_or_else(
+                    || self.targets_available(ability.targets, actor, self.object_ref(card)),
+                    |modes| {
+                        modes.iter().any(|mode| {
+                            self.targets_available(mode.targets, actor, self.object_ref(card))
+                        })
+                    },
+                );
+                if targets_available && fundable() {
                     let done = if let Some(production) = ability.mana_production() {
                         production.visit(|production| {
                             emit(Action::AnnounceMana {
@@ -229,6 +239,11 @@ impl Game {
                     if done {
                         return true;
                     }
+                }
+                // A modal activation must choose its mode before targets and
+                // costs. Legacy direct actions cannot encode that declaration.
+                if modes.is_some() {
+                    return false;
                 }
                 // Direct actions have no owned external-cost selection.
                 if ability.cost.additional.is_some() {

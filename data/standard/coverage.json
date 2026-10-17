@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "ba88114f740c2281de8da35f1861924ea17d94170f57565bc78c03199e9f95fe",
+  "catalogue_version": "0b3cab8cbee3235b32f9cb9d8c2571a033349419de5ef3614ce200820fece817",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1914,
-  "implemented_total": 1920,
+  "implemented_standard_cards": 1919,
+  "implemented_total": 1925,
   "token_definitions": 94,
   "emblem_definitions": 1,
   "cards": [
@@ -7864,8 +7864,8 @@
     {
       "name": "Embrace the Paradox",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Emerge from the Cocoon",
@@ -11530,8 +11530,8 @@
     {
       "name": "H.E.R.B.I.E. Scout Unit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "HULK SMASH!",
@@ -13102,8 +13102,8 @@
     {
       "name": "Insidious Fungus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Insidious Roots",
@@ -14884,8 +14884,8 @@
     {
       "name": "Lessons from Life",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Let's Play a Game",
@@ -17596,8 +17596,8 @@
     {
       "name": "Nicanzil, Current Conductor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Nick Fury, Agent of S.H.I.E.L.D.",

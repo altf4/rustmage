@@ -725,9 +725,7 @@ impl Game {
         let plan = self.target_spec(&item);
         let player = item.controller;
         assert!(self.targets_available(plan, player, item.target_source()));
-        let needs_mode = item.kind == StackKind::Spell
-            && matches!(item.source_card.effect(), Effect::Modal(_))
-            && item.mode.is_none();
+        let needs_mode = item.modes().is_some() && item.mode.is_none();
         self.state.announcing = Some(Announcement {
             item,
             spec: TargetSpec::NONE,

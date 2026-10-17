@@ -18,10 +18,13 @@ impl Game {
         {
             self.register_evidence_source(id);
         }
-        if triggers
-            .iter()
-            .any(|a| a.condition.event() == TriggerCondition::CreatureExploresYou)
-        {
+        if triggers.iter().any(|a| {
+            matches!(
+                a.condition.event(),
+                TriggerCondition::CreatureExploresYou
+                    | TriggerCondition::CreatureExploresCardYou { .. }
+            )
+        }) {
             self.register_explore_source(id);
         }
         if triggers.iter().any(|ability| {

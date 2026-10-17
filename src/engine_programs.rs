@@ -1264,7 +1264,7 @@ impl Game {
                 Instruction::Reflexive { ability } => {
                     self.queue_reflexive(&item, ability, None);
                 }
-                Instruction::Modal(_) => unreachable!("unselected modal trigger executed"),
+                Instruction::Modal(_) => unreachable!("unselected modal ability executed"),
                 Instruction::Explore(subject) => {
                     if self.start_explore(&item, subject) {
                         return;
@@ -1620,6 +1620,11 @@ impl Game {
                 } => {
                     let amount = self.item_amount(amount, &item);
                     self.create_tokens(item.controller, token, amount, tapped);
+                }
+                Instruction::PutHandLand { tapped } => {
+                    if self.start_hand_land(&item, tapped) {
+                        return;
+                    }
                 }
                 Instruction::PutHandCreature => {
                     if self.start_hand_creature(&item) {
