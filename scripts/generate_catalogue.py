@@ -3943,7 +3943,7 @@ def modal_reminder_text(card):
         return int(word) if word.isdecimal() and len(word)<=20 else words.get(word)
     semantic_cache = {}
     def semantic_line(before):
-        body = before.removeprefix('• ')
+        body = before.strip().removeprefix('• ')
         if ' — ' in body:
             label, candidate = body.split(' — ', 1)
             if re.fullmatch(r"[A-Z][A-Za-z0-9' -]*", label): body = candidate

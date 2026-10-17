@@ -36,3 +36,7 @@ separate and were fixed before this passing checkpoint. This branch must compose
 the eventual Tiered predecessor and validate its reminder via its complete typed
 Tiered template, rather than treating “Choose one additional cost” as a modal
 instruction. Final queued-parent validation remains pending.
+
+The current focused inherited/new suite passes all33 methods in9.530s (modal raw,
+intrinsic, legacy metadata, private hand placement and four existing modal grammar
+checks), with no skipped methods. No native/library claim is made at this stage.
