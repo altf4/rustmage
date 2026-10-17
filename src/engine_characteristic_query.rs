@@ -17,6 +17,10 @@ impl std::ops::Deref for CharacteristicQuery<'_> {
     }
 }
 impl Game {
+    /// Central current-name query. Views freeze this value for last-known information.
+    pub(super) fn object_name(&self, id: CardId) -> &'static str {
+        CharacteristicWorld::name(self, id)
+    }
     pub(super) fn characteristic_query(&self) -> CharacteristicQuery<'_> {
         CharacteristicQuery {
             game: self,
@@ -632,6 +636,7 @@ impl CharacteristicQuery<'_> {
             id,
             reference: self.object_ref(id),
             card: definition,
+            name: CharacteristicWorld::name(self, id),
             owner: obj.owner,
             controller: obj.controller,
             zone: obj.zone,

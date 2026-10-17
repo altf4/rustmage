@@ -11,6 +11,17 @@ pub(super) trait CharacteristicWorld {
     fn gained_life(&self, player: Player) -> bool;
     fn attacking(&self, id: CardId) -> bool;
 
+    /// Effective string name in this actual or speculative object world.
+    /// Name-changing effects belong here, before later characteristic layers.
+    fn name(&self, id: CardId) -> &'static str {
+        let object = self.object(id);
+        if object.zone == Zone::Stack {
+            self.game().effective_spell_card(id).name()
+        } else {
+            object.card.name()
+        }
+    }
+
     fn death_baron_applies(&self, source: ObjectRef, id: CardId) -> bool {
         let target = self.object(id);
         target.zone == Zone::Battlefield
@@ -62,6 +73,7 @@ pub(super) trait CharacteristicWorld {
             },
             &|id| self.subtypes(id),
             &|id, object| game.object_kinds(id, object),
+            &|id| self.name(id),
             self.life(controller),
             game.state.attack_declared && self.attacking(source),
         )

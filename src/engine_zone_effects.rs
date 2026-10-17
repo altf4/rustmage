@@ -141,8 +141,7 @@ impl Game {
         };
         // Token factories have stable synthetic identities; their actual names,
         // not those factory identifiers, determine shared-name destruction.
-        let name = |card: Card| card.token_info().map_or(card.name(), |t| t.name);
-        let target_name = name(self.state.objects[id as usize].card);
+        let target_name = self.object_name(id);
         let ids: Vec<_> = self
             .state
             .objects
@@ -151,7 +150,7 @@ impl Game {
             .filter_map(|(i, o)| {
                 (o.zone == Zone::Battlefield
                     && (i as CardId == id
-                        || !target_name.is_empty() && name(o.card) == target_name)
+                        || !target_name.is_empty() && self.object_name(i as CardId) == target_name)
                     && !self
                         .keywords(i as CardId)
                         .contains(Keywords::INDESTRUCTIBLE))

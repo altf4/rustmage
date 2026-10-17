@@ -66,6 +66,7 @@ impl Game {
             },
             &|id| self.granted_subtypes(id),
             &|id, o| self.object_kinds(id, o),
+            &|id| self.object_name(id),
             self.state.players[owner.index()].life,
             self.state.attack_declared
                 && self.state.attackers.iter().any(|a| a.card == source.card),
@@ -82,6 +83,7 @@ impl Game {
         objects: &F,
         subtypes: &impl Fn(CardId) -> GrantedSubtypes,
         kinds: &impl Fn(CardId, &Object) -> u16,
+        names: &impl Fn(CardId) -> &'static str,
         life: i128,
         attacking: bool,
     ) -> i128
@@ -99,7 +101,7 @@ impl Game {
                 .count() as i128,
             StatValue::Not(value) => i128::from(
                 self.stat_value_with(
-                    *value, source, owner, objects, subtypes, kinds, life, attacking,
+                    *value, source, owner, objects, subtypes, kinds, names, life, attacking,
                 ) == 0,
             ),
             StatValue::ControllerHandSize => objects()
@@ -132,7 +134,7 @@ impl Game {
                     o.controller == owner
                         && o.zone == Zone::Battlefield
                         && kinds(*id, o) & 1 != 0
-                        && o.card.name() == name
+                        && names(*id) == name
                         && (*id != source.card || o.generation != source.generation)
                 })
                 .count() as i128,
@@ -166,7 +168,7 @@ impl Game {
                 .count() as i128,
             StatValue::AtLeast { value, minimum } => i128::from(
                 self.stat_value_with(
-                    *value, source, owner, objects, subtypes, kinds, life, attacking,
+                    *value, source, owner, objects, subtypes, kinds, names, life, attacking,
                 ) >= i128::from(minimum),
             ),
             StatValue::SpellsCastThisTurn => {
@@ -217,12 +219,7 @@ impl Game {
                     .filter(|&(id, o)| {
                         Self::count_object_matches(filter, source, owner, id, o, subtypes, kinds)
                     })
-                    .map(|(_, object)| {
-                        object
-                            .card
-                            .token_info()
-                            .map_or_else(|| object.card.name(), |info| info.name)
-                    })
+                    .map(|(id, _)| names(id))
                     .collect();
                 names.sort_unstable();
                 names.dedup();
@@ -252,7 +249,7 @@ impl Game {
                 .iter()
                 .map(|&value| {
                     self.stat_value_with(
-                        value, source, owner, objects, subtypes, kinds, life, attacking,
+                        value, source, owner, objects, subtypes, kinds, names, life, attacking,
                     )
                 })
                 .try_fold(0i128, i128::checked_add)

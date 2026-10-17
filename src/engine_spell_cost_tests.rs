@@ -1207,7 +1207,8 @@ fn distinct_names_use_rules_names_rather_than_internal_token_factory_keys() {
                 .map(|right| (left, right))
         })
         .expect("two factories with one rules name");
-    assert_ne!(left.name(), right.name());
+    assert_eq!(left.name(), right.name());
+    assert_ne!(left.identity(), right.identity());
     spawn(&mut g, Player::P0, left, Zone::Battlefield);
     spawn(&mut g, Player::P0, right, Zone::Battlefield);
     named(&mut g, Player::P0, "Bear Cub", Zone::Battlefield);

@@ -1413,6 +1413,8 @@ pub struct ObjectView {
     pub id: CardId,
     pub reference: ObjectRef,
     pub card: Card,
+    /// Frozen effective rules name; independent of lookup/serialization identity.
+    pub name: &'static str,
     pub owner: Player,
     pub controller: Player,
     pub zone: Zone,
@@ -1435,6 +1437,13 @@ pub struct ObjectView {
     pub keywords: Keywords,
     pub token: Option<&'static TokenInfo>,
     pub emblem: Option<&'static EmblemInfo>,
+}
+
+impl ObjectView {
+    /// Captured rules name, retained even after this object changes or leaves play.
+    pub fn name(&self) -> &'static str {
+        self.name
+    }
 }
 
 /// A single zone transition with the departing object's last-known characteristics.
@@ -6078,3 +6087,7 @@ mod fdn_exile_two_tests;
 #[cfg(test)]
 #[path = "engine_fdn_library_eight_tests.rs"]
 mod fdn_library_eight_tests;
+
+#[cfg(test)]
+#[path = "engine_object_name_tests.rs"]
+mod object_name_tests;
