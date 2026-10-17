@@ -4,6 +4,7 @@ use super::*;
 
 impl Game {
     pub(super) fn register_battlefield_sources(&mut self, id: CardId) {
+        self.register_static_base_stats(id);
         if self.state.objects[id as usize]
             .card
             .attachment_bonus()
@@ -177,37 +178,27 @@ impl Game {
             if !self.is_creature(id) {
                 return Stats::default();
             }
-            Stats {
-                power: power
-                    .checked_add(object.growth.power)
-                    .and_then(|n| n.checked_add(object.counter_delta()))
-                    .capacity("Vehicle power exhausted"),
-                toughness: toughness
-                    .checked_add(object.growth.toughness)
-                    .and_then(|n| n.checked_add(object.counter_delta()))
-                    .capacity("Vehicle toughness exhausted"),
-            }
+            Stats { power, toughness }
         } else {
-            Stats {
-                power: object.local_power(),
-                toughness: object.local_toughness(),
+            match object.card.effect() {
+                Effect::Creature(power, toughness) => Stats {
+                    power: i128::from(power),
+                    toughness: i128::from(toughness),
+                },
+                _ => Stats::default(),
             }
         };
-        // Characteristic-defining abilities apply in every zone (layer 7a).
+        // Layer 7a applies in every zone, before setters and additive modifiers.
         if let Some(base) = object.card.dynamic_stats() {
             let reference = self.object_ref(id);
             let power = base.power.map(|expr| {
                 self.stat_expression_without_hand(expr, reference, object.controller, departing)
             });
             if let Some(power) = power {
-                stats.power = power
-                    .checked_add(object.growth.power)
-                    .and_then(|p| p.checked_add(object.counter_delta()))
-                    .capacity("power exhausted");
+                stats.power = power;
             }
             if let Some(expr) = base.toughness {
-                // Most CDAs share a count for both axes; query that count once.
-                let value = if let Some(p) = base.power
+                stats.toughness = if let Some(p) = base.power
                     && p.value == expr.value
                     && p.multiplier == expr.multiplier
                 {
@@ -219,27 +210,29 @@ impl Game {
                 } else {
                     self.stat_expression_without_hand(expr, reference, object.controller, departing)
                 };
-                stats.toughness = value
-                    .checked_add(object.growth.toughness)
-                    .and_then(|t| t.checked_add(object.counter_delta()))
-                    .capacity("toughness exhausted");
             }
         }
-        if object.zone != Zone::Battlefield || !self.is_creature(id) {
-            return stats;
+        let battlefield_creature = object.zone == Zone::Battlefield && self.is_creature(id);
+        if battlefield_creature {
+            stats = self.apply_base_stat_layers(id, stats, departing);
         }
-        // Base-setting effects apply after CDAs and before all layer-7c additions.
-        if self.has_cursed_role(self.object_ref(id)) {
-            stats = Stats {
-                power: 1i128
-                    .checked_add(object.growth.power)
-                    .and_then(|v| v.checked_add(object.counter_delta()))
-                    .capacity("Cursed power exhausted"),
-                toughness: 1i128
-                    .checked_add(object.growth.toughness)
-                    .and_then(|v| v.checked_add(object.counter_delta()))
-                    .capacity("Cursed toughness exhausted"),
-            };
+        if matches!(object.card.effect(), Effect::Creature(..))
+            || object.card.vehicle_stats().is_some()
+            || object.card.dynamic_stats().is_some()
+        {
+            stats.power = stats
+                .power
+                .checked_add(object.growth.power)
+                .and_then(|v| v.checked_add(object.counter_delta()))
+                .capacity("power exhausted");
+            stats.toughness = stats
+                .toughness
+                .checked_add(object.growth.toughness)
+                .and_then(|v| v.checked_add(object.counter_delta()))
+                .capacity("toughness exhausted");
+        }
+        if !battlefield_creature {
+            return stats;
         }
         stats += self.attachment_bonus(id).0;
         // Only the small live-source index is traversed. Central zone transitions

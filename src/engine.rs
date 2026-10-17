@@ -24,7 +24,7 @@ pub use adventure::{AdventurePermission, SpellCharacteristicsView};
 pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 89;
+pub const OBSERVATION_SCHEMA: u32 = 93;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
 #[path = "engine_mobilize.rs"]
@@ -117,6 +117,9 @@ mod roles;
 #[path = "engine_sba.rs"]
 mod sba;
 pub use roles::{RoleGroupView, RoleTimestampView};
+#[path = "engine_base_stats.rs"]
+mod base_stats;
+pub use base_stats::BaseStatsEffectView;
 #[path = "engine_search.rs"]
 mod search;
 pub use explore::{ExploreChoiceView, ExploreEventView, ExplorerView, RevealedLibraryCard};
@@ -586,6 +589,7 @@ impl Object {
         }
     }
 
+    #[cfg(test)]
     fn local_power(&self) -> i128 {
         match self.card.effect() {
             Effect::Creature(p, _) => i128::from(p)
@@ -595,6 +599,7 @@ impl Object {
             _ => 0,
         }
     }
+    #[cfg(test)]
     fn local_toughness(&self) -> i128 {
         match self.card.effect() {
             Effect::Creature(_, t) => i128::from(t)
@@ -1450,6 +1455,7 @@ pub struct Observation {
     pub triggered_this_turn: Vec<TriggerUse>,
     pub role_choices: Vec<RoleGroupView>,
     pub role_timestamps: Vec<RoleTimestampView>,
+    pub base_stat_effects: Vec<BaseStatsEffectView>,
     pub legend_choices: Vec<LegendGroupView>,
     pub stack: Vec<SpellView>,
     pub resolving: Option<SpellView>,
@@ -3747,6 +3753,7 @@ impl Game {
         }
         if before.zone == Zone::Battlefield {
             self.forget_role(before.reference);
+            self.forget_base_stats(before.reference);
             // Abilities use the source's actual last-known keywords if it leaves,
             // including gains made after that ability was announced.
             for item in self
@@ -4042,6 +4049,7 @@ impl Game {
     fn finish_cleanup(&mut self) {
         // Until-end-of-turn abilities expire before any cleanup-induced SBA death.
         self.state.temporary_abilities = None;
+        self.expire_base_stats();
         for player in &mut self.state.players {
             player.extra_land_plays_remaining = 0;
         }
@@ -4502,6 +4510,10 @@ impl Game {
                 .sba_batch
                 .as_ref()
                 .map_or_else(Vec::new, |b| b.roles.clone()),
+            base_stat_effects: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |r| r.base_stats.clone()),
             role_timestamps: s
                 .roles
                 .as_ref()
@@ -5445,3 +5457,7 @@ mod battlefield_return_tests;
 #[cfg(test)]
 #[path = "engine_combat_restriction_tests.rs"]
 mod combat_restriction_tests;
+
+#[cfg(test)]
+#[path = "engine_base_stats_tests.rs"]
+mod base_stats_tests;

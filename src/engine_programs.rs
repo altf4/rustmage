@@ -1818,6 +1818,11 @@ impl Game {
                     };
                     self.apply_damage_batch(&events);
                 }
+                Instruction::SetBaseStats {
+                    subject,
+                    power,
+                    toughness,
+                } => self.set_base_stats(&item, subject, power, toughness),
                 Instruction::Grow {
                     subject,
                     power,
