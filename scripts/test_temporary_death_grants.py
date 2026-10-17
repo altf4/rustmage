@@ -34,6 +34,27 @@ class TemporaryDeathGrantCompilerTests(unittest.TestCase):
    self.assertEqual(norm(text.replace(json.dumps(name),json.dumps(renamed['name']))),norm(other))
    if name=='Undying Malice':self.assertIn('counter: Some((CounterKind::PlusOne, 1))',text)
    if name=='Fake Your Own Death':self.assertRegex(text,r'ReturnGrantedSource[^\n]+CreateTokens')
+ def test_actual_main_union_preserves_every_unrelated_program_and_declared_ancestor(self):
+  from scripts.catalogue_preservation import canonical,assert_union
+  physical={c['oracle_id']:c['name'] for c in self.cards.values()}
+  def frozen(ref):return canonical(subprocess.check_output(['git','-C',str(ROOT),'show',ref+':src/generated/catalogue.rs'],text=True),physical)
+  current=canonical((ROOT/'src/generated/catalogue.rs').read_text(),physical)
+  roles=['Return Triumphant','Twisted Sewer-Witch','Syr Armont, the Redeemer','Asinine Antics','A Tale for the Ages','Mystical Tether']
+  exclusions=['Amazing Acrobatics','Coeurl','Decoy Ploy','Guerrilla Gorilla','Overwhelming Surge','Rock Soldiers','Sterling Keykeeper']
+  own=['Not Dead After All','Fake Your Own Death','Undying Malice']
+  before=frozen('ce4b0c104a8e0dbc0a76753a03608eb7bc4618be')
+  helpers={('enchanted_modifiers',n+'#0') for n in ['A Tale for the Ages','Syr Armont, the Redeemer']}|{('flash_surcharge',n+'#0') for n in ['Asinine Antics','Mystical Tether']}
+  changed={n+'#0' for n in roles+exclusions+own}
+  report=assert_union(before,current,changed=changed,added=set(),helpers=helpers,aliases={})
+  self.assertEqual(report['preserved_definitions'],5315)
+  for ref,names in [('fb56027f4016f4ccc5508013f31f78c70ee7f16c',roles),('ac1aa6292e4947a3234a411a95353b1eb40aa0bd',exclusions),('eb3790c',own)]:
+   old=frozen(ref)
+   for name in names:self.assertEqual(current['definitions'][name+'#0'],old['definitions'][name+'#0'])
+   for key,value in old['helpers'].items():self.assertEqual(current['helpers'][key],value)
+  import copy
+  for section,key in [('definitions','Plains#0'),('helpers',next(iter(current['helpers'])))]:
+   mutant=copy.deepcopy(current);mutant[section][key]='unauthorized mutation'
+   with self.assertRaises(AssertionError):assert_union(before,mutant,changed=changed,added=set(),helpers=helpers,aliases={})
  def test_reserved_names_authenticate_supplied_semantics_instead_of_old_fixture(self):
   for original in ['Not Dead After All','Fake Your Own Death','Undying Malice']:
    for name,*_ in self.g.LEGACY:

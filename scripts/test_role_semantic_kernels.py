@@ -16,12 +16,14 @@ class RoleSemanticCompilerTests(unittest.TestCase):
     def setUpClass(cls):
         cls.cards={c['name']:c for c in json.loads((g.ROOT/'data/standard/cards.json').read_text())['cards']}
 
-    def test_exact_six_body_union_preserves_current_parent_and_pinned_java_sources(self):
+    def test_historical_six_body_union_and_current_programs_preserve_pinned_sources(self):
         from scripts.catalogue_preservation import canonical, assert_union
         names=['Return Triumphant','Twisted Sewer-Witch','Syr Armont, the Redeemer','Asinine Antics','A Tale for the Ages','Mystical Tether']
         physical={c['oracle_id']:c['name'] for c in self.cards.values()}
         before=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show','c41c060c024626843b17cf292aab838d36fd6eb1:src/generated/catalogue.rs'],text=True),physical)
-        after=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+        after=canonical(subprocess.check_output(['git','-C',str(g.ROOT),'show','fb56027f4016f4ccc5508013f31f78c70ee7f16c:src/generated/catalogue.rs'],text=True),physical)
+        current=canonical((g.ROOT/'src/generated/catalogue.rs').read_text(),physical)
+        for name in names:self.assertEqual(current['definitions'][name+'#0'],after['definitions'][name+'#0'])
         helpers={('enchanted_modifiers',n+'#0') for n in ['Syr Armont, the Redeemer','A Tale for the Ages']}|{('flash_surcharge',n+'#0') for n in ['Asinine Antics','Mystical Tether']}
         assert_union(before,after,changed={n+'#0' for n in names},added=set(),helpers=helpers,aliases={})
         manifest=json.loads((g.ROOT/'docs/role-semantic-admissions.json').read_text())
