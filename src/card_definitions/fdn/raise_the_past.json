@@ -3,10 +3,25 @@
   "catalogue_id": 3349,
   "oracle_id": "a69a24d0-ca58-4a44-8af1-a3bd1608d2f9",
   "facts_sha256": "9ee4bfaf1e8b622f5cc1f7bbf47eccc5f56658488570f54d8d6c02678a0c8e9f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "358d2ae2bf3719faa6dbf3b8926b75609b0ce23b80f85d87e236a59c2e404903"
   },
-  "physical_metadata_sha256": "174e3a223b50e829eaf7cd6b8589ad422e468b78587e76368fb07a6cb12647c7"
+  "physical_metadata_sha256": "174e3a223b50e829eaf7cd6b8589ad422e468b78587e76368fb07a6cb12647c7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RaiseThePast.java",
+  "java_sha256": "730f6bca0634d52b372fc64bddc098a973ebf2b86c7ac6bfa4b55b56fd380e93",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromYourGraveyardToBattlefieldAllEffect.java",
+      "sha256": "444e837f098cf2687f903aea028d28b77d561a40b23b66085fbf03284becdde7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+      "sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+    }
+  ]
 }

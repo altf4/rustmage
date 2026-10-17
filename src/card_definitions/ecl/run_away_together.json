@@ -3,10 +3,31 @@
   "catalogue_id": 3617,
   "oracle_id": "290faa28-450e-4797-9a8f-642d8af3f82a",
   "facts_sha256": "0aa9f746940b62ebe58e319e330a89b40f205c066cd6459049152164b3cfb189",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "946001183e98e867fb7a17acebfe6958991e58e02310038baf0727efc587bd62"
   },
-  "physical_metadata_sha256": "b69285fe95fa26caa11e2d22cfb12b77696af156c699db5a7ab14db7cb4a6282"
+  "physical_metadata_sha256": "b69285fe95fa26caa11e2d22cfb12b77696af156c699db5a7ab14db7cb4a6282",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RunAwayTogether.java",
+  "java_sha256": "cbffd111a98876b659876ccdc8ef4e7478c029dfdb9839491bd48a1e8ccb74c6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+      "sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ],
+  "authoritative_rulings": [
+    {
+      "url": "https://media.wizards.com/2024/downloads/FDN_Release_Notes_dPeeQG7XyE/EN_FDN%20Release%20Notes%2008282024.pdf",
+      "used_for": "Departed targets retain last-known controller for relational legality; same-controller targets are both illegal at resolution."
+    }
+  ]
 }

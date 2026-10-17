@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "089a0a8e7582733b33d6999c05ec79b946858b1b897d5157d4243b9840bead62",
+  "catalogue_version": "4b5ca4657edc5a2c3de0d0bbb91db906de0cdd1f90466b68b837e3f6a77782a8",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2032,
-  "implemented_total": 2038,
+  "implemented_standard_cards": 2039,
+  "implemented_total": 2045,
   "token_definitions": 97,
   "emblem_definitions": 1,
   "adventure_definitions": 40,
@@ -48,8 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 167,
-      "complete": 100
+      "gated": 166,
+      "complete": 101
     },
     "eoc": {
       "total": 8,
@@ -63,8 +63,8 @@
     },
     "fdn": {
       "total": 427,
-      "complete": 287,
-      "gated": 140
+      "complete": 292,
+      "gated": 135
     },
     "fin": {
       "total": 305,
@@ -93,8 +93,8 @@
     },
     "inr": {
       "total": 4,
-      "complete": 1,
-      "gated": 3
+      "complete": 2,
+      "gated": 2
     },
     "jmp": {
       "total": 2,
@@ -17947,8 +17947,8 @@
     {
       "name": "Involuntary Employment",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/involuntary_employment.rs",
       "set": "fdn"
     },
@@ -21099,8 +21099,8 @@
     {
       "name": "Maelstrom Pulse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/inr/maelstrom_pulse.rs",
       "set": "inr"
     },
@@ -26059,8 +26059,8 @@
     {
       "name": "Primal Might",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/primal_might.rs",
       "set": "fdn"
     },
@@ -27003,8 +27003,8 @@
     {
       "name": "Raise the Past",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/raise_the_past.rs",
       "set": "fdn"
     },
@@ -28515,8 +28515,8 @@
     {
       "name": "Rise of the Dark Realms",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/rise_of_the_dark_realms.rs",
       "set": "fdn"
     },
@@ -29147,8 +29147,8 @@
     {
       "name": "Run Away Together",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/run_away_together.rs",
       "set": "ecl"
     },
@@ -37411,8 +37411,8 @@
     {
       "name": "Tragic Banshee",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fdn/tragic_banshee.rs",
       "set": "fdn"
     },
