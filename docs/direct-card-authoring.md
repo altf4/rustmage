@@ -83,3 +83,27 @@ value. Names are shared string references, with no allocated string in each live
 object. Future name-changing effects must extend the characteristic query rather
 than changing physical metadata or recomputing a departed object's name. This
 query does not itself admit new copy, rename or named-ability suppression cards.
+
+## Named counters
+
+Live `Counters` owns sparse, canonically ordered values for incubation, bait,
+page, divinity, revival and soul counters. Use `Counters::of(kind, amount)` for a
+single-kind action payment and `get(kind)` to inspect any kind. Mixed payments
+can also be deserialized from the typed `named` list; zero, duplicate and hot-kind
+entries there are rejected. Empty cold storage is omitted from JSON.
+
+The five existing counter fields stay inline. The additional runtime storage is
+one nullable pointer regardless of how many named kinds are supported; it owns a
+boxed vector header and its element buffer only when a named kind is present.
+Removing the last named counter releases both. `Game::state_bytes()` includes
+initialized sparse payloads in objects, announcements, replacement and entry
+batches, consistently excluding unused vector capacity. Snapshots and frozen
+object views clone that payload; feasibility queries borrow their goals and
+available counter sets.
+
+Immutable card initializers retain their existing five-field `Counters` spelling
+through a private `InitialCounters` alias in generated module imports. New named
+entry counters use typed entry-counter rules or the surrounding entry effect;
+this storage change does not admit the six Foundations consumers or implement
+their remaining triggers and costs. In particular, adding a counter as an
+activation cost still needs its own rules implementation and tests.

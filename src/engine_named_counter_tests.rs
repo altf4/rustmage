@@ -31,12 +31,24 @@ fn named_counters_storage_is_canonical_owned_and_sparse() {
     assert_eq!(all, empty);
     assert_eq!(all.owned_bytes(), 0);
     assert_eq!(frozen.total(), 12);
-    let baseline = Game::new(Config { decks: [vec![Card::Forest; 60],vec![Card::Forest; 60]],
-        seed: 249, starting_player: Player::P0, deck_rules: DeckRules::Standard }).unwrap();
-    println!("NAMED_COUNTER_MEMORY counters={} initial_counters={} object={} state={} initial_logical_bytes={} six_kinds_logical_heap={} six_kinds_allocated_heap={} empty_allocated_heap={}",
-        std::mem::size_of::<Counters>(), std::mem::size_of::<crate::cards::InitialCounters>(),
-        std::mem::size_of::<Object>(), std::mem::size_of::<State>(), baseline.state_bytes(),
-        frozen.owned_bytes(), frozen.allocated_bytes(), empty.allocated_bytes());
+    let baseline = Game::new(Config {
+        decks: [vec![Card::Forest; 60], vec![Card::Forest; 60]],
+        seed: 249,
+        starting_player: Player::P0,
+        deck_rules: DeckRules::Standard,
+    })
+    .unwrap();
+    println!(
+        "NAMED_COUNTER_MEMORY counters={} initial_counters={} object={} state={} initial_logical_bytes={} six_kinds_logical_heap={} six_kinds_allocated_heap={} empty_allocated_heap={}",
+        std::mem::size_of::<Counters>(),
+        std::mem::size_of::<crate::cards::InitialCounters>(),
+        std::mem::size_of::<Object>(),
+        std::mem::size_of::<State>(),
+        baseline.state_bytes(),
+        frozen.owned_bytes(),
+        frozen.allocated_bytes(),
+        empty.allocated_bytes()
+    );
     let wire = serde_json::to_value(&frozen).unwrap();
     assert_eq!(
         serde_json::from_value::<Counters>(wire.clone()).unwrap(),
@@ -229,14 +241,35 @@ fn named_counter_doubling_and_capacity_failure_use_paid_rules_transactions() {
     for player in [Player::P0, Player::P1] {
         for amount in [3, u64::MAX] {
             let mut game = setup(player);
-            let source = named(&mut game, player, "Zimone, Paradox Sculptor", Zone::Battlefield);
+            let source = named(
+                &mut game,
+                player,
+                "Zimone, Paradox Sculptor",
+                Zone::Battlefield,
+            );
             let target = named(&mut game, player, "Mox Jasper", Zone::Battlefield);
             game.state.objects[target as usize].counters = Counters::of(CounterKind::Soul, amount);
             game.state.objects[target as usize].counters.plus_one = 1;
-            checked(&mut game, Action::AnnounceActivate { card: source, ability: 0, counter_payment: Counters::default() });
-            checked(&mut game, Action::ChooseTarget { target: Target::Card(target) });
+            checked(
+                &mut game,
+                Action::AnnounceActivate {
+                    card: source,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            checked(
+                &mut game,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
             checked(&mut game, Action::FinishTargets);
-            let payment = game.legal_actions().into_iter().find(|a| matches!(a, Action::PayCosts { .. })).unwrap();
+            let payment = game
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PayCosts { .. }))
+                .unwrap();
             checked(&mut game, payment);
             checked(&mut game, Action::Pass);
             if amount == 3 {
@@ -244,19 +277,36 @@ fn named_counter_doubling_and_capacity_failure_use_paid_rules_transactions() {
                 assert_eq!(game.object_view(target).counters.get(CounterKind::Soul), 6);
                 assert_eq!(game.object_view(target).counters.plus_one, 2);
             } else {
-                let saved = game.snapshot(); let revision = game.revision();
+                let saved = game.snapshot();
+                let revision = game.revision();
                 let actor = game.actor().unwrap();
-                let index = game.legal_actions().iter().position(|a| *a == Action::Pass).unwrap();
-                let mut child = { let parent = game.clone(); parent.clone() };
-                let error = Err(Error::CapacityExceeded(crate::CapacityExceeded { resource: "counter representation exhausted" }));
+                let index = game
+                    .legal_actions()
+                    .iter()
+                    .position(|a| *a == Action::Pass)
+                    .unwrap();
+                let mut child = {
+                    let parent = game.clone();
+                    parent.clone()
+                };
+                let error = Err(Error::CapacityExceeded(crate::CapacityExceeded {
+                    resource: "counter representation exhausted",
+                }));
                 assert_eq!(game.apply(actor, Action::Pass), error);
                 assert_eq!(child.apply_index(actor, revision, index), error);
-                assert_eq!(game.snapshot(), saved); assert_eq!(child.snapshot(), saved);
+                assert_eq!(game.snapshot(), saved);
+                assert_eq!(child.snapshot(), saved);
                 assert_eq!(game.revision(), revision);
                 for viewer in [player, player.other()] {
-                    assert_eq!(serde_json::to_value(game.observe(viewer)).unwrap(), serde_json::to_value(child.observe(viewer)).unwrap());
+                    assert_eq!(
+                        serde_json::to_value(game.observe(viewer)).unwrap(),
+                        serde_json::to_value(child.observe(viewer)).unwrap()
+                    );
                 }
-                assert_eq!(game.object_view(target).counters.get(CounterKind::Soul), amount);
+                assert_eq!(
+                    game.object_view(target).counters.get(CounterKind::Soul),
+                    amount
+                );
                 assert_eq!(game.object_view(target).counters.plus_one, 1);
             }
         }

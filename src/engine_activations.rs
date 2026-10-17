@@ -508,7 +508,9 @@ pub(super) fn counter_payments(
     ) -> bool {
         let kind = CounterKind::ALL[index];
         if index + 1 == CounterKind::ALL.len() {
-            if left > available.get(kind) { return false; }
+            if left > available.get(kind) {
+                return false;
+            }
             paid.add(kind, left);
             let done = emit(paid.clone());
             paid.remove(kind, left);
@@ -518,7 +520,9 @@ pub(super) fn counter_payments(
             paid.add(kind, count);
             let done = visit(index + 1, left - count, available, paid, emit);
             paid.remove(kind, count);
-            if done { return true; }
+            if done {
+                return true;
+            }
         }
         false
     }

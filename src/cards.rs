@@ -1392,8 +1392,10 @@ impl Counters {
     }
     #[cfg(test)]
     pub(crate) fn allocated_bytes(&self) -> usize {
-        self.named.as_ref().map_or(0, |v| std::mem::size_of::<NamedCounters>()
-            + v.0.capacity() * std::mem::size_of::<(CounterKind, u64)>())
+        self.named.as_ref().map_or(0, |v| {
+            std::mem::size_of::<NamedCounters>()
+                + v.0.capacity() * std::mem::size_of::<(CounterKind, u64)>()
+        })
     }
     pub(crate) fn contains(&self, payment: &Self) -> bool {
         self.plus_one >= payment.plus_one

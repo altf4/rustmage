@@ -6097,5 +6097,6 @@ mod object_name_tests;
 #[path = "engine_named_counter_tests.rs"]
 mod named_counter_tests;
 
+#[cfg(test)]
 #[path = "engine_attack_requirement_tests.rs"]
 mod attack_requirement_tests;
