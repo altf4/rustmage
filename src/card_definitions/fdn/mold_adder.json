@@ -3,10 +3,30 @@
   "catalogue_id": 2809,
   "oracle_id": "2091eb7e-2357-4ef8-b15e-1e6f82176340",
   "facts_sha256": "caa771f61c519576e15156e23cf682b2f964acde863fb3ca3f44405af6b7b5f0",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "730b9f1edddf8ad6db438e79f8b8d912d731e3aac8f82efbba20894c2c8a194c"
   },
-  "physical_metadata_sha256": "cf0568add74e98522a5593b47c45c9883376c459d95f0b9feb3ad455e60e0faa"
+  "physical_metadata_sha256": "cf0568add74e98522a5593b47c45c9883376c459d95f0b9feb3ad455e60e0faa",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MoldAdder.java",
+  "java_sha256": "1ce7433195fc5ffd57224db59f01936c118dd8f6e3390d90a0e0fc6a4f707ab2",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastOpponentTriggeredAbility.java",
+      "sha256": "84626f91214806489e0cd62e2dfae9fb0f0e510af41d84ca8bdd20d94ca9d9f3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ColorPredicate.java",
+      "sha256": "b62ced1f121575b7737a20875425334d7bf61e018a809548805d14f38d71e82b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    }
+  ]
 }

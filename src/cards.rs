@@ -894,6 +894,7 @@ pub(crate) struct CountFilter {
 pub(crate) enum AmountValue {
     ManaSpent,
     ColorsSpent,
+    SpellColors,
     SourcePower,
     Fixed(u16),
     /// Explicit immutable parameter of the resolving spell or its exact ETB packet.
@@ -1214,6 +1215,10 @@ pub(crate) enum CastFilter {
     Subtype(&'static str),
     AnyOf(&'static [CastFilter]),
     Multicolored,
+    Colors {
+        filter: &'static CastFilter,
+        mask: u8,
+    },
     Targeted {
         filter: &'static CastFilter,
         target: CastTarget,
@@ -1241,6 +1246,9 @@ impl CastFilter {
             // Contextual cast observers use Game::cast_filter_matches instead.
             Self::Targeted { .. } | Self::InstantSorceryOrdinal(_) => false,
             Self::Multicolored => card.colors().count_ones() >= 2,
+            Self::Colors { filter, mask } => {
+                card.colors() & mask != 0 && filter.matches_mana_value(card, mana_value)
+            }
             Self::ManaValueMaximum { filter, maximum } => {
                 filter.matches_mana_value(card, mana_value) && mana_value <= maximum
             }
@@ -1501,6 +1509,9 @@ pub(crate) enum TriggerCondition {
     SelfDies,
     SelfEntersOrDies,
     SelfAttacks,
+    CreatureAttacksYou {
+        colors: u8,
+    },
     /// Declaration-time condition; not a resolution-time intervening if.
     SelfAttacksAlone,
     EquippedAttacks,
@@ -1709,6 +1720,7 @@ impl Keywords {
     pub const NO_GREATER_POWER_BLOCKERS: Self = Self(8388608);
     pub const PREVENT_COMBAT_TO: Self = Self(16777216);
     pub const PREVENT_COMBAT_BY: Self = Self(33554432);
+    pub const NO_HUMAN_BLOCKERS: Self = Self(67108864);
     pub fn contains(self, keyword: Self) -> bool {
         self.0 & keyword.0 == keyword.0
     }

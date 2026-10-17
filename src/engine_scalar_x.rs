@@ -151,6 +151,10 @@ impl Game {
                     .map(u64::from)
                     .sum::<u64>(),
             ),
+            AmountValue::SpellColors => item
+                .cast_event
+                .as_ref()
+                .map_or(0, |event| event.card.colors().count_ones() as u128),
             AmountValue::ColorsSpent => (0..5)
                 .filter(|&i| self.item_cast_payment(item)[i] > 0)
                 .count() as u128,
