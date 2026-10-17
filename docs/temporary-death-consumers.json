@@ -1,0 +1,2142 @@
+{
+  "schema": 1,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "scope": "Issue311 full physical remaining temporary-grant and all printed Standard suspect consumers. Inventory/provenance only, never execution permission. Explicit imports and lexical references from wildcard packages are authenticated; this is not a transitive Java port.",
+  "initial_consumers": [
+    "Galuf's Final Act",
+    "Rabid Attack",
+    "Perigee Beckoner",
+    "Presumed Dead",
+    "Person of Interest",
+    "It Doesn't Add Up",
+    "Absolving Lammasu"
+  ],
+  "cards": [
+    {
+      "name": "Absolving Lammasu",
+      "oracle_id": "dbedd45e-f76c-4be7-ad89-ff57bed6626f",
+      "layout": "normal",
+      "mana_cost": "{4}{W}",
+      "type_line": "Creature — Lammasu",
+      "oracle_text": "Flying\nWhen this creature enters, all suspected creatures are no longer suspected.\nWhen this creature dies, you gain 3 life and suspect up to one target creature an opponent controls. (A suspected creature has menace and can't block.)",
+      "status": "gated_prerequisite",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+          "java_sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "java_sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/SuspectTargetEffect.java",
+          "java_sha256": "f54b6dda93bc9ee1e469774404ef095782e6a7e2f55161a6e86e552310b7a8f7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "java_sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+          "java_sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AbsolvingLammasu.java",
+          "java_sha256": "39a8397f4902a88d904a12a3504820ee68d9eb34fe5d1a1e89f1e58742561fc9"
+        }
+      ],
+      "power": "4",
+      "toughness": "3",
+      "colors": [
+        "W"
+      ],
+      "keywords": [
+        "Flying",
+        "Suspect"
+      ],
+      "card_faces": null
+    },
+    {
+      "name": "Agency Coroner",
+      "oracle_id": "3686fd97-49ff-4a92-9cb2-7d8e9438d945",
+      "layout": "normal",
+      "mana_cost": "{4}{B}",
+      "type_line": "Creature — Ogre Cleric",
+      "oracle_text": "{2}{B}, Sacrifice another creature: Draw a card. If the sacrificed creature was suspected, draw two cards instead.",
+      "status": "gated_prerequisite",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+          "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+          "java_sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/util/CardUtil.java",
+          "java_sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AgencyCoroner.java",
+          "java_sha256": "9400075cb1ba34efbf786a85666bdfd2cd0240f612541930582285c17420539c"
+        }
+      ],
+      "power": "3",
+      "toughness": "6",
+      "colors": [
+        "B"
+      ],
+      "keywords": [],
+      "card_faces": null
+    },
+    {
+      "name": "Agrus Kos, Spirit of Justice",
+      "oracle_id": "11b7ee78-fca6-4b34-93e4-e60492583d50",
+      "layout": "normal",
+      "mana_cost": "{2}{R}{W}",
+      "type_line": "Legendary Creature — Spirit Detective",
+      "oracle_text": "Double strike, vigilance\nWhenever Agrus Kos enters or attacks, choose up to one target creature. If it's suspected, exile it. Otherwise, suspect it. (A suspected creature has menace and can't block.)",
+      "status": "gated_prerequisite",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOrAttacksSourceTriggeredAbility.java",
+          "java_sha256": "b5c87d096aa0a689c9915ee2c8c8f8b6eb0fcd2acd4ad8c0c8696c6204f27224"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/DoubleStrikeAbility.java",
+          "java_sha256": "dabf9a6900a6fb32bb83f222d00b3dfb0b11705fe9029838c50f8500a23afd27"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "java_sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SuperType.java",
+          "java_sha256": "4ec4cf97e8c73dee7d1d0e4be9f4b90eb980dcdcd26698fcb610aed30da9e6cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Zone.java",
+          "java_sha256": "4d8040e25af69a6e12c441a029b7cb44f1115d1016148738eafa4d2096f5610e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/Player.java",
+          "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AgrusKosSpiritOfJustice.java",
+          "java_sha256": "c1bf3c205ff7e13a5523e691c535b4890df67f9cb59596945b2a52b5f6da0424"
+        }
+      ],
+      "power": "2",
+      "toughness": "4",
+      "colors": [
+        "R",
+        "W"
+      ],
+      "keywords": [
+        "Vigilance",
+        "Suspect",
+        "Double strike"
+      ],
+      "card_faces": null
+    },
+    {
+      "name": "Airtight Alibi",
+      "oracle_id": "cb666ea8-55e3-4e27-ae6d-806677dfc17a",
+      "layout": "normal",
+      "mana_cost": "{2}{G}",
+      "type_line": "Enchantment — Aura",
+      "oracle_text": "Flash\nEnchant creature\nWhen this Aura enters, untap enchanted creature. It gains hexproof until end of turn. If it's suspected, it's no longer suspected.\nEnchanted creature gets +2/+2 and can't become suspected.",
+      "status": "gated_prerequisite",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/ReplacementEffectImpl.java",
+          "java_sha256": "d575331184e31fd4a909956ff2822c038832dc6a6febff6e4502bcac82b836e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/UntapAttachedEffect.java",
+          "java_sha256": "2fa3c394587eff1a4e2a1e1be58a4924f310b3375c714b839b672186dc8136f7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEnchantedEffect.java",
+          "java_sha256": "c390aae1354b298fc7d8b379f73583e2bbee3bdd13d88a082553dce6c75e1303"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+          "java_sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+          "java_sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/HexproofAbility.java",
+          "java_sha256": "dd6ceb5e1dac42ece34947ba678be1057bf0f4ecc5e5eb24fc1995763954259a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/AttachmentType.java",
+          "java_sha256": "7931287bfa8563637d894de3e49b3d5fb3f15da417940ef4cc0c416f20976d24"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/events/GameEvent.java",
+          "java_sha256": "3df463d33eff295607e700578e547cef896cf183e1dba3c41131a353f53cb7dc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/a/AirtightAlibi.java",
+          "java_sha256": "137080a2ea2641fd4fea9dcf6f3208ece262b40cbb7fef35db34dc2b896716e5"
+        }
+      ],
+      "power": null,
+      "toughness": null,
+      "colors": [
+        "G"
+      ],
+      "keywords": [
+        "Enchant",
+        "Flash"
+      ],
+      "card_faces": null
+    },
+    {
+      "name": "Barbed Servitor",
+      "oracle_id": "e3d82066-d8b9-47bf-8821-1370c506970b",
+      "layout": "normal",
+      "mana_cost": "{3}{B}",
+      "type_line": "Artifact Creature — Construct",
+      "oracle_text": "Indestructible\nWhen this creature enters, suspect it. (It has menace and can't block.)\nWhenever this creature deals combat damage to a player, you draw a card and you lose 1 life.\nWhenever this creature is dealt damage, target opponent loses that much life.",
+      "status": "gated_prerequisite",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+          "java_sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DealtDamageToSourceTriggeredAbility.java",
+          "java_sha256": "97485da3564c3e9e3b6355947a03b4480cd40bd32fc00a0f3b4e6c8d5e166b79"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SavedDamageValue.java",
+          "java_sha256": "2198ea2d400af0d1b03071469d9f85f92660dbe5101725ecb428a059d4264d26"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+          "java_sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeTargetEffect.java",
+          "java_sha256": "cb540577a835c69b5b4bd5182c58715215e03ee165d349a7d19d388c03224e37"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/SuspectSourceEffect.java",
+          "java_sha256": "13b4850dc7d9252e93c7525fc71662fd350d3cf3833e1ddb2a395d47d6e7b628"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+          "java_sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+          "java_sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/b/BarbedServitor.java",
+          "java_sha256": "a4e475b1fea0e2ac877e8e870039f5ac1719084b974fd731d57bca4e7552307f"
+        }
+      ],
+      "power": "1",
+      "toughness": "1",
+      "colors": [
+        "B"
+      ],
+      "keywords": [
+        "Indestructible",
+        "Suspect"
+      ],
+      "card_faces": null
+    },
+    {
+      "name": "Case of the Stashed Skeleton",
+      "oracle_id": "64219e17-1302-4a43-85d2-8a6214448890",
+      "layout": "case",
+      "mana_cost": "{1}{B}",
+      "type_line": "Enchantment — Case",
+      "oracle_text": "When this Case enters, create a 2/1 black Skeleton creature token and suspect it. (It has menace and can't block.)\nTo solve — You control no suspected Skeletons. (If unsolved, solve at the beginning of your end step.)\nSolved — {1}{B}, Sacrifice this Case: Search your library for a card, put it into your hand, then shuffle. Activate only as a sorcery.",
+      "status": "gated_prerequisite",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/ActivateIfConditionActivatedAbility.java",
+          "java_sha256": "9f9d45f4e624eaa78c99f720c00a3302f6936e7b5246bf76ae15f9e75ba327b0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/CaseAbility.java",
+          "java_sha256": "1dee85ba94e14af7d4fb257620ca65e6810e1c3ff259c4711401e1d9dd266dcd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+          "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+          "java_sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/common/SolvedSourceCondition.java",
+          "java_sha256": "f1b1db3ea216b2935bdd4f5af87c9ba222257458eb2f5e4ca1d105a4e80251d1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+          "java_sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+          "java_sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/hint/common/CaseSolvedHint.java",
+          "java_sha256": "6d2f162f50c0cb3e7a84f59c5126d7e496b217884e14a45a480bbfaf80945ca6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/ComparisonType.java",
+          "java_sha256": "33b0abc2b4214ece7d2f842b9f000d967dd8fb4e6cb073cb34eeab7e304731ef"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TimingRule.java",
+          "java_sha256": "ce29c2591308e309ec653a343d24ae0c1cdd477341ac1e060f7a6725d1269024"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+          "java_sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/SuspectedPredicate.java",
+          "java_sha256": "452a0f1fe57a6c0ce600a6a9cc286b7b694ac460d10e2a97af4c5541ec8098bd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/Skeleton21Token.java",
+          "java_sha256": "f6ebe98425b53d9b0a4a669a5d4bf4124ab6060bddc98e5f368e4635a7d5c1fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+          "java_sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CaseOfTheStashedSkeleton.java",
+          "java_sha256": "e0587d2a10e6da3dbf2bd0c2ba84f3fc0929c6d3dafd214342f2ddf5af723992"
+        }
+      ],
+      "power": null,
+      "toughness": null,
+      "colors": [
+        "B"
+      ],
+      "keywords": [
+        "Solved",
+        "Suspect"
+      ],
+      "card_faces": null
+    },
+    {
+      "name": "Caught Red-Handed",
+      "oracle_id": "484b3586-c0ed-4793-a3c0-e99f265e092d",
+      "layout": "normal",
+      "mana_cost": "{4}{R}",
+      "type_line": "Instant",
+      "oracle_text": "This spell can't be countered. (This includes by the ward ability.)\nGain control of target creature until end of turn. Untap that creature. It gains haste until end of turn. Suspect it. (It has menace and can't block.)",
+      "status": "gated_prerequisite",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/CantBeCounteredSourceAbility.java",
+          "java_sha256": "ab592d3d97f245e6b3ca9971e1c559a7063c8717a4a5963b64564a13abd768de"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/SuspectTargetEffect.java",
+          "java_sha256": "f54b6dda93bc9ee1e469774404ef095782e6a7e2f55161a6e86e552310b7a8f7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/UntapTargetEffect.java",
+          "java_sha256": "69bec57593db2620ef750768e381badf6843aefaf7584c796037dcdf87f1b973"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainControlTargetEffect.java",
+          "java_sha256": "93e055d129c924686ebca800aee72c6797220dfc56b829c70b715dd06a8c09ed"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+          "java_sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/CaughtRedHanded.java",
+          "java_sha256": "045ccf83b6747b25049202a0b812181e438275881c51391bce5a1c069d90555a"
+        }
+      ],
+      "power": null,
+      "toughness": null,
+      "colors": [
+        "R"
+      ],
+      "keywords": [
+        "Suspect"
+      ],
+      "card_faces": null
+    },
+    {
+      "name": "Clandestine Meddler",
+      "oracle_id": "f11ec1c9-347d-4d79-aaa9-5919db5f9044",
+      "layout": "normal",
+      "mana_cost": "{2}{B}",
+      "type_line": "Creature — Vampire Rogue",
+      "oracle_text": "When this creature enters, suspect up to one other target creature you control. (A suspected creature has menace and can't block.)\nWhenever one or more suspected creatures you control attack, surveil 1. (Look at the top card of your library. You may put it into your graveyard.)",
+      "status": "gated_prerequisite",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+          "java_sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/SuspectTargetEffect.java",
+          "java_sha256": "f54b6dda93bc9ee1e469774404ef095782e6a7e2f55161a6e86e552310b7a8f7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+          "java_sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+          "java_sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+          "java_sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/SuspectedPredicate.java",
+          "java_sha256": "452a0f1fe57a6c0ce600a6a9cc286b7b694ac460d10e2a97af4c5541ec8098bd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/ClandestineMeddler.java",
+          "java_sha256": "4097d77f860789d64e862049f73fc7aa8337e98dc5f230be4b9170ab266f9196"
+        }
+      ],
+      "power": "3",
+      "toughness": "2",
+      "colors": [
+        "B"
+      ],
+      "keywords": [
+        "Surveil",
+        "Suspect"
+      ],
+      "card_faces": null
+    },
+    {
+      "name": "Convenient Target",
+      "oracle_id": "2f214dcf-9601-4ccb-bdac-2f9b9f6dff99",
+      "layout": "normal",
+      "mana_cost": "{R}",
+      "type_line": "Enchantment — Aura",
+      "oracle_text": "Enchant creature\nWhen this Aura enters, suspect enchanted creature. (It has menace and can't block.)\nEnchanted creature gets +1/+1.\n{2}{R}: Return this card from your graveyard to your hand.",
+      "status": "gated_prerequisite",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "java_sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "java_sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToHandEffect.java",
+          "java_sha256": "36a1255bbe73cc6e97976aa6749cbc9c458b58b2fa3541010a79722ca4e78e70"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEnchantedEffect.java",
+          "java_sha256": "c390aae1354b298fc7d8b379f73583e2bbee3bdd13d88a082553dce6c75e1303"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "java_sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Zone.java",
+          "java_sha256": "4d8040e25af69a6e12c441a029b7cb44f1115d1016148738eafa4d2096f5610e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/c/ConvenientTarget.java",
+          "java_sha256": "822964642706dac957a739cfb1d42de7ce490080f99b0521a913685502f40b14"
+        }
+      ],
+      "power": null,
+      "toughness": null,
+      "colors": [
+        "R"
+      ],
+      "keywords": [
+        "Suspect",
+        "Enchant"
+      ],
+      "card_faces": null
+    },
+    {
+      "name": "Deadly Complication",
+      "oracle_id": "c53c75a0-c248-4e76-8d28-f7e53b2dcc49",
+      "layout": "normal",
+      "mana_cost": "{1}{B}{R}",
+      "type_line": "Sorcery",
+      "oracle_text": "Choose one or both —\n• Destroy target creature.\n• Put a +1/+1 counter on target suspected creature you control. You may have it become no longer suspected.",
+      "status": "gated_prerequisite",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Mode.java",
+          "java_sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+          "java_sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/counters/CounterType.java",
+          "java_sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+          "java_sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/SuspectedPredicate.java",
+          "java_sha256": "452a0f1fe57a6c0ce600a6a9cc286b7b694ac460d10e2a97af4c5541ec8098bd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/Player.java",
+          "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/d/DeadlyComplication.java",
+          "java_sha256": "9b1cc5111b757c8b81c23f0ad1fad4902847b1ab6898bf3a8452002c06ed53e7"
+        }
+      ],
+      "power": null,
+      "toughness": null,
+      "colors": [
+        "B",
+        "R"
+      ],
+      "keywords": [],
+      "card_faces": null
+    },
+    {
+      "name": "Eliminate the Impossible",
+      "oracle_id": "c78d4cec-6764-4cce-96d2-a2d85a57b218",
+      "layout": "normal",
+      "mana_cost": "{1}{U}",
+      "type_line": "Instant",
+      "oracle_text": "Investigate. Creatures your opponents control get -2/-0 until end of turn. If any of them are suspected, they're no longer suspected. (To investigate, create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")",
+      "status": "gated_prerequisite",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllEffect.java",
+          "java_sha256": "207759bf847022c212e713d520d0899243c37ef89c90c19473082c0ddd03099e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/InvestigateEffect.java",
+          "java_sha256": "db04263634b8969dee966be525deac8165e358e3a0774b3e11de300f024ac3ed"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/e/EliminateTheImpossible.java",
+          "java_sha256": "27a2e77b58ea9f88f68fb9d1c87fe34cb2a0d006dfcfdb621254a3a9badc0b3f"
+        }
+      ],
+      "power": null,
+      "toughness": null,
+      "colors": [
+        "U"
+      ],
+      "keywords": [
+        "Investigate"
+      ],
+      "card_faces": null
+    },
+    {
+      "name": "Frantic Scapegoat",
+      "oracle_id": "d181310f-404b-4f26-8024-b7b537d1fd90",
+      "layout": "normal",
+      "mana_cost": "{R}",
+      "type_line": "Creature — Goat",
+      "oracle_text": "Haste\nWhen this creature enters, suspect it. (It has menace and can't block.)\nWhenever one or more other creatures you control enter, if this creature is suspected, you may suspect one of the other creatures. If you do, this creature is no longer suspected.",
+      "status": "gated_prerequisite",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/MageObjectReference.java",
+          "java_sha256": "41270277c5a846dce3442714757e4f0e3963e42ef4eea798d3667cdccb5afabc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/BatchTriggeredAbility.java",
+          "java_sha256": "e2891aafe6a447fbb1347f9b0a52cf2b8f79bc566e7518933f12bd4ed503ad86"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+          "java_sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/SuspectSourceEffect.java",
+          "java_sha256": "13b4850dc7d9252e93c7525fc71662fd350d3cf3833e1ddb2a395d47d6e7b628"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+          "java_sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Zone.java",
+          "java_sha256": "4d8040e25af69a6e12c441a029b7cb44f1115d1016148738eafa4d2096f5610e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/PermanentReferenceInCollectionPredicate.java",
+          "java_sha256": "e7ec47749bb94bfad8ea07ca41c59b141bf7262358cec100670be0a925f3c132"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/events/GameEvent.java",
+          "java_sha256": "3df463d33eff295607e700578e547cef896cf183e1dba3c41131a353f53cb7dc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/events/ZoneChangeBatchEvent.java",
+          "java_sha256": "779086d8ead6af88391bca75b4724ef865b1c0c2f879bf6128542db5245a8252"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/events/ZoneChangeEvent.java",
+          "java_sha256": "eba0b01196de4b4ee1c99ca60b2734755800c5eedbc724f5573216d38b77df1e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/Player.java",
+          "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/Target.java",
+          "java_sha256": "bfa4bcb195f5bc43a53e61baf312f392c782fd177d36c4b232e4146156a6b916"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/f/FranticScapegoat.java",
+          "java_sha256": "95f1690b7261d490f7fd292ba4685122e152826e29b817b7c115c8116b45b43e"
+        }
+      ],
+      "power": "1",
+      "toughness": "1",
+      "colors": [
+        "R"
+      ],
+      "keywords": [
+        "Suspect",
+        "Haste"
+      ],
+      "card_faces": null
+    },
+    {
+      "name": "Galuf's Final Act",
+      "oracle_id": "9268d369-173e-4325-98f6-348beeb8ba62",
+      "layout": "normal",
+      "mana_cost": "{1}{G}",
+      "type_line": "Instant",
+      "oracle_text": "Until end of turn, target creature gets +1/+0 and gains \"When this creature dies, put a number of +1/+1 counters equal to its power on up to one target creature.\"",
+      "status": "gated_prerequisite",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+          "java_sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SourcePermanentPowerValue.java",
+          "java_sha256": "aabc6ce8b7bd68b08691830a2a45af0d886a2837c652bbca9e109b5813b0ca9a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "java_sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/counters/CounterType.java",
+          "java_sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/g/GalufsFinalAct.java",
+          "java_sha256": "213318028406a6a8936edaae9f525edf99b82b3be832b42a688b974bf320721c"
+        }
+      ],
+      "power": null,
+      "toughness": null,
+      "colors": [
+        "G"
+      ],
+      "keywords": [],
+      "card_faces": null
+    },
+    {
+      "name": "It Doesn't Add Up",
+      "oracle_id": "dcfc8c59-d032-414d-9da6-125ebcb1366c",
+      "layout": "normal",
+      "mana_cost": "{3}{B}{B}",
+      "type_line": "Instant",
+      "oracle_text": "Return target creature card from your graveyard to the battlefield. Suspect it. (It has menace and can't block.)",
+      "status": "gated_prerequisite",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/Card.java",
+          "java_sha256": "86b9a512358a5c6814e62bc2f9cff87be07cf5a248e313686c137f0b76b798b0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Zone.java",
+          "java_sha256": "4d8040e25af69a6e12c441a029b7cb44f1115d1016148738eafa4d2096f5610e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/Player.java",
+          "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+          "java_sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/util/CardUtil.java",
+          "java_sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/i/ItDoesntAddUp.java",
+          "java_sha256": "5e7998db25e8f084375d4b88543c5ab5ad43ca50ef4a4feb5bda8e6478bdea47"
+        }
+      ],
+      "power": null,
+      "toughness": null,
+      "colors": [
+        "B"
+      ],
+      "keywords": [
+        "Suspect"
+      ],
+      "card_faces": null
+    },
+    {
+      "name": "J. Jonah Jameson",
+      "oracle_id": "de861715-fd0b-493e-9a7c-c470a23044c0",
+      "layout": "normal",
+      "mana_cost": "{2}{R}",
+      "type_line": "Legendary Creature — Human Citizen",
+      "oracle_text": "When J. Jonah Jameson enters, suspect up to one target creature. (A suspected creature has menace and can't block.)\nWhenever a creature you control with menace attacks, create a Treasure token.",
+      "status": "gated_prerequisite",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksAllTriggeredAbility.java",
+          "java_sha256": "685d9b004cf03f55ada70dbaa555a1d606f9ed316c2ee75457b43e51c82d650a"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/SuspectTargetEffect.java",
+          "java_sha256": "f54b6dda93bc9ee1e469774404ef095782e6a7e2f55161a6e86e552310b7a8f7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+          "java_sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SetTargetPointer.java",
+          "java_sha256": "a8f2e34b69d3cf460248cf90b28dbea3bb31fa6c912d89a6fdb32b0fd46ad4e6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SuperType.java",
+          "java_sha256": "4ec4cf97e8c73dee7d1d0e4be9f4b90eb980dcdcd26698fcb610aed30da9e6cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/TargetController.java",
+          "java_sha256": "bd1591f2b4d3613a47bd6e509f92d688fea7c10d31a19ce7601ccba62cbba7f6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/mageobject/AbilityPredicate.java",
+          "java_sha256": "6e8ecc0108fde867fbb47c3afbc24e5dd30a0e9de97efc5e06950498f0b32dda"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+          "java_sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/j/JJonahJameson.java",
+          "java_sha256": "806cdef277a01e89e130ad2fba1d72c579fa2d5d5c99c561fc0f00f6f9cf2c0b"
+        }
+      ],
+      "power": "2",
+      "toughness": "2",
+      "colors": [
+        "R"
+      ],
+      "keywords": [
+        "Suspect",
+        "Treasure"
+      ],
+      "card_faces": null
+    },
+    {
+      "name": "Perigee Beckoner",
+      "oracle_id": "e0a35a44-e56d-434e-8043-43d5031b2e84",
+      "layout": "normal",
+      "mana_cost": "{4}{B}",
+      "type_line": "Creature — Horror",
+      "oracle_text": "When this creature enters, until end of turn, another target creature you control gets +2/+0 and gains \"When this creature dies, return it to the battlefield tapped under its owner's control.\"\nWarp {1}{B} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+      "status": "gated_prerequisite",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+          "java_sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToBattlefieldUnderOwnerControlTargetEffect.java",
+          "java_sha256": "0fc807f72c6feeb241f8a5b7db20fd2ea9fd67206d5a13b91341b400742affeb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/WarpAbility.java",
+          "java_sha256": "9ac044ebe7da1f678c965e9a3f5fd329efaf50d946e8c2b9cf622f750d9d4499"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SetTargetPointer.java",
+          "java_sha256": "a8f2e34b69d3cf460248cf90b28dbea3bb31fa6c912d89a6fdb32b0fd46ad4e6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "java_sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "java_sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PerigeeBeckoner.java",
+          "java_sha256": "304c56879e028f4a756e2ad9f4bea320428f8aae0111e8708b05ee6d861831df"
+        }
+      ],
+      "power": "4",
+      "toughness": "5",
+      "colors": [
+        "B"
+      ],
+      "keywords": [
+        "Warp"
+      ],
+      "card_faces": null
+    },
+    {
+      "name": "Person of Interest",
+      "oracle_id": "3d18cd9b-6013-48d7-9269-4787e7585a51",
+      "layout": "normal",
+      "mana_cost": "{3}{R}",
+      "type_line": "Creature — Human Rogue",
+      "oracle_text": "When this creature enters, suspect it. Create a 2/2 white and blue Detective creature token. (A suspected creature has menace and can't block.)",
+      "status": "gated_prerequisite",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "java_sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/SuspectSourceEffect.java",
+          "java_sha256": "13b4850dc7d9252e93c7525fc71662fd350d3cf3833e1ddb2a395d47d6e7b628"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/token/DetectiveToken.java",
+          "java_sha256": "47f8432351e379fe651d32482b9aacb2d81831a6473a6b5a810b934ef9543af4"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PersonOfInterest.java",
+          "java_sha256": "757fabe52c680ddd0af7ee83cea80af2754f83e2ae5be9a2c12987d27c321d00"
+        }
+      ],
+      "power": "2",
+      "toughness": "2",
+      "colors": [
+        "R"
+      ],
+      "keywords": [
+        "Suspect"
+      ],
+      "card_faces": null
+    },
+    {
+      "name": "Presumed Dead",
+      "oracle_id": "a2d3e3f0-7399-4eb9-a0cf-831710c3d431",
+      "layout": "normal",
+      "mana_cost": "{1}{B}",
+      "type_line": "Instant",
+      "oracle_text": "Until end of turn, target creature gets +2/+0 and gains \"When this creature dies, return it to the battlefield under its owner's control and suspect it.\" (A suspected creature has menace and can't block.)",
+      "status": "gated_prerequisite",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+          "java_sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/Card.java",
+          "java_sha256": "86b9a512358a5c6814e62bc2f9cff87be07cf5a248e313686c137f0b76b798b0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/Cards.java",
+          "java_sha256": "2ceaf2939456fd7356ea668af3c3aa642d7319455cf24ebf690109dce09db3d3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardsImpl.java",
+          "java_sha256": "e3a32dd4f367a6429bd83cb8c1a1890e314b5dfbbedf8d61f4251797646dc1e0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SetTargetPointer.java",
+          "java_sha256": "a8f2e34b69d3cf460248cf90b28dbea3bb31fa6c912d89a6fdb32b0fd46ad4e6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Zone.java",
+          "java_sha256": "4d8040e25af69a6e12c441a029b7cb44f1115d1016148738eafa4d2096f5610e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/players/Player.java",
+          "java_sha256": "81ab7eab7d469f6a29fb0a469b295a1971f495b98a095f377aac52f2d27eb31f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/util/CardUtil.java",
+          "java_sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/p/PresumedDead.java",
+          "java_sha256": "7c7d14183e748f56ceb657c734095ee103ac0f6a5d1b54da18e8d84cd087bc8e"
+        }
+      ],
+      "power": null,
+      "toughness": null,
+      "colors": [
+        "B"
+      ],
+      "keywords": [
+        "Suspect"
+      ],
+      "card_faces": null
+    },
+    {
+      "name": "Rabid Attack",
+      "oracle_id": "4db02b34-efec-437c-ab28-aa318b8879ad",
+      "layout": "normal",
+      "mana_cost": "{1}{B}",
+      "type_line": "Instant",
+      "oracle_text": "Until end of turn, any number of target creatures you control each get +1/+0 and gain \"When this creature dies, draw a card.\"",
+      "status": "gated_prerequisite",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+          "java_sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/Effect.java",
+          "java_sha256": "92f49363848fa1b18215e3a0d516923e10d917638a38e5bbad73f274f6a1e917"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "java_sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RabidAttack.java",
+          "java_sha256": "9acbb7d74d926a3fade7c3ca7330df36f04a1982b3f8a864f100fedc84f2688d"
+        }
+      ],
+      "power": null,
+      "toughness": null,
+      "colors": [
+        "B"
+      ],
+      "keywords": [],
+      "card_faces": null
+    },
+    {
+      "name": "Reasonable Doubt",
+      "oracle_id": "020503f5-0915-4cd5-a617-1c7bde045e10",
+      "layout": "normal",
+      "mana_cost": "{1}{U}",
+      "type_line": "Instant",
+      "oracle_text": "Counter target spell unless its controller pays {2}.\nSuspect up to one target creature. (A suspected creature has menace and can't block.)",
+      "status": "gated_prerequisite",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "java_sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+          "java_sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/SuspectTargetEffect.java",
+          "java_sha256": "f54b6dda93bc9ee1e469774404ef095782e6a7e2f55161a6e86e552310b7a8f7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/TargetSpell.java",
+          "java_sha256": "349d67f29235bc2e3ad846c3b177f18dc1097e87e80327a77c852667289f94cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/SecondTargetPointer.java",
+          "java_sha256": "135cc53e0202fad251c5902855c6001ba5de1d05fb4dd4341c7f8a17ecec4ef2"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/ReasonableDoubt.java",
+          "java_sha256": "b0b56d1f0f2d1e78d1ee53f41ce103c06137b64b96212be39eec0286ef9eef6d"
+        }
+      ],
+      "power": null,
+      "toughness": null,
+      "colors": [
+        "U"
+      ],
+      "keywords": [
+        "Suspect"
+      ],
+      "card_faces": null
+    },
+    {
+      "name": "Repeat Offender",
+      "oracle_id": "4d1885d1-212e-47ae-865f-e6dc4148ddf2",
+      "layout": "normal",
+      "mana_cost": "{1}{B}",
+      "type_line": "Creature — Human Assassin",
+      "oracle_text": "{2}{B}: If this creature is suspected, put a +1/+1 counter on it. Otherwise, suspect it. (A suspected creature has menace and can't block.)",
+      "status": "gated_prerequisite",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/counters/CounterType.java",
+          "java_sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RepeatOffender.java",
+          "java_sha256": "82f9fe7d97040fda12116162f3f2002f77bfb02d73b02f4ac15d252c0340fef9"
+        }
+      ],
+      "power": "2",
+      "toughness": "1",
+      "colors": [
+        "B"
+      ],
+      "keywords": [
+        "Suspect"
+      ],
+      "card_faces": null
+    },
+    {
+      "name": "Rubblebelt Braggart",
+      "oracle_id": "4ae7f959-9f44-4769-8bd3-49ca18928aba",
+      "layout": "normal",
+      "mana_cost": "{4}{R}",
+      "type_line": "Creature — Lizard Warrior",
+      "oracle_text": "Whenever this creature attacks, if it's not suspected, you may suspect it. (A suspected creature has menace and can't block.)",
+      "status": "gated_prerequisite",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+          "java_sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+          "java_sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/SuspectSourceEffect.java",
+          "java_sha256": "13b4850dc7d9252e93c7525fc71662fd350d3cf3833e1ddb2a395d47d6e7b628"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RubblebeltBraggart.java",
+          "java_sha256": "4a17ac7be5f788e96241b33f4a410fe0d144ae907177ec02fabc3ebbb87a1e9f"
+        }
+      ],
+      "power": "5",
+      "toughness": "5",
+      "colors": [
+        "R"
+      ],
+      "keywords": [
+        "Suspect"
+      ],
+      "card_faces": null
+    },
+    {
+      "name": "Rune-Brand Juggler",
+      "oracle_id": "8c105948-4b8f-4615-b66a-2bbdb3f3d6dd",
+      "layout": "normal",
+      "mana_cost": "{B}{R}",
+      "type_line": "Creature — Human Shaman",
+      "oracle_text": "When this creature enters, suspect up to one target creature you control. (A suspected creature has menace and can't block.)\n{3}{B}{R}, Sacrifice a suspected creature: Target creature gets -5/-5 until end of turn.",
+      "status": "gated_prerequisite",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/MageInt.java",
+          "java_sha256": "db2532ca3078df78c1348df6edbbedfe24f51a5694fe5f8a0e2e8dba7015b140"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "java_sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "java_sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+          "java_sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "java_sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/SuspectTargetEffect.java",
+          "java_sha256": "f54b6dda93bc9ee1e469774404ef095782e6a7e2f55161a6e86e552310b7a8f7"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "java_sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SubType.java",
+          "java_sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "java_sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "java_sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/filter/predicate/permanent/SuspectedPredicate.java",
+          "java_sha256": "452a0f1fe57a6c0ce600a6a9cc286b7b694ac460d10e2a97af4c5541ec8098bd"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "java_sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/r/RuneBrandJuggler.java",
+          "java_sha256": "7d788ddc76cde9580fee09fbe170b4b343b6ba523102c1760e4270bbe5f18521"
+        }
+      ],
+      "power": "2",
+      "toughness": "2",
+      "colors": [
+        "B",
+        "R"
+      ],
+      "keywords": [
+        "Suspect"
+      ],
+      "card_faces": null
+    },
+    {
+      "name": "Vincent's Limit Break",
+      "oracle_id": "814679b4-51bd-4b07-a7b8-d3375d36ff45",
+      "layout": "normal",
+      "mana_cost": "{1}{B}",
+      "type_line": "Instant",
+      "oracle_text": "Tiered (Choose one additional cost.)\nUntil end of turn, target creature you control gains \"When this creature dies, return it to the battlefield tapped under its owner's control\" and has the chosen base power and toughness.\n• Galian Beast — {0} — 3/2.\n• Death Gigas — {1} — 5/2.\n• Hellmasker — {3} — 7/2.",
+      "status": "gated_prerequisite",
+      "sources": [
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Ability.java",
+          "java_sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/Mode.java",
+          "java_sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+          "java_sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "java_sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+          "java_sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/ReturnToBattlefieldUnderOwnerControlTargetEffect.java",
+          "java_sha256": "0fc807f72c6feeb241f8a5b7db20fd2ea9fd67206d5a13b91341b400742affeb"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "java_sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessTargetEffect.java",
+          "java_sha256": "cc450621ce5efa6894bfc8eab4290a28aafb69a3f197f62851095e13d2f97f8f"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/abilities/keyword/TieredAbility.java",
+          "java_sha256": "83c7417ee2f4a3e10db46cc5c65a9f0b57836a416a3ee52e29a146d9848c2fbc"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardImpl.java",
+          "java_sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/cards/CardSetInfo.java",
+          "java_sha256": "b3521fc116a6d640c607f4b276415d3f0dd838bbddb831afef8a3fdc272a31af"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/CardType.java",
+          "java_sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Duration.java",
+          "java_sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/Outcome.java",
+          "java_sha256": "446463d279d521fafddd4f006b5a12e3636fdbed97d7c6bce1b4b5aeab375ae2"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/constants/SetTargetPointer.java",
+          "java_sha256": "a8f2e34b69d3cf460248cf90b28dbea3bb31fa6c912d89a6fdb32b0fd46ad4e6"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/Game.java",
+          "java_sha256": "00346aa13d1605eb083c8f7687dbc04a64aa1cd3a7c3ea0e9252038ba10d0a6d"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/game/permanent/Permanent.java",
+          "java_sha256": "ae9259afa26bffad5163ced5f8b655c2bab0e44106eb320dd43afa5fdc6499cf"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "java_sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        },
+        {
+          "java_source": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+          "java_sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+        },
+        {
+          "java_source": "Mage.Sets/src/mage/cards/v/VincentsLimitBreak.java",
+          "java_sha256": "7e53f949023b5d087d99511c6ea454abc49c3abdb4a7094678ea7bfee726ddac"
+        }
+      ],
+      "power": null,
+      "toughness": null,
+      "colors": [
+        "B"
+      ],
+      "keywords": [
+        "Hellmasker",
+        "Death Gigas",
+        "Tiered",
+        "Galian Beast"
+      ],
+      "card_faces": null,
+      "missing_prerequisites": [
+        "Generic Tiered mode-associated additional mana costs locked before payment (CR702.183).",
+        "Timestamped until-end-of-turn base power/toughness setting in layer7b, including interaction with Cursed Role; all three modes required."
+      ]
+    }
+  ],
+  "parent_main": "e5ebe64954635555938cd315b0f423953eb4e78f",
+  "rules": {
+    "701.60": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf#page=143",
+    "702.183": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf#page=192",
+    "702.185": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf#page=192"
+  }
+}
