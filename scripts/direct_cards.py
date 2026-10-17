@@ -34,4 +34,4 @@ def registry(records,indices):
     for identity,record in records.items():
         if identity in indices:lines.append(f'        {indices[identity]} => Some(&{record["module"]}::RULES),')
     lines.extend(['        _=>None,','    }','}'])
-    return '\n'.join(lines)+'\n' 
+    return '\n'.join(lines)+'\n'
