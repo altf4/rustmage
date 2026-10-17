@@ -15,7 +15,7 @@ mod rng;
 
 pub use cards::{
     CATALOGUE_VERSION, CREATURE_TYPES, Card, CardInfo, CounterKind, Counters, EffectChoiceKind,
-    EmblemInfo, Keywords, Mana, ManaCost, RecoveryFilter, SearchDestination, SearchFilter,
-    TokenInfo, is_creature_type,
+    EmblemInfo, Keywords, Mana, ManaCost, MilledDestination, MilledFilter, RecoveryFilter,
+    SearchDestination, SearchFilter, TokenInfo, is_creature_type,
 };
 pub use engine::*;

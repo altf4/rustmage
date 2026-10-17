@@ -83,6 +83,7 @@ fn program(g: &mut Game, code: &'static [Instruction], targets: Vec<BoundTarget>
         forage: None,
         selected_discards: [Vec::new(), Vec::new()],
         milled: Vec::new(),
+        milled_selection: None,
         library: None,
         selection: None,
         target_library: None,

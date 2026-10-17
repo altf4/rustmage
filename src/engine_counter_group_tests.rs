@@ -429,6 +429,7 @@ fn group_counter_instructions_finish_before_state_based_deaths_and_pair_cancella
         discards: [0; 2],
         selected_discards: [Vec::new(), Vec::new()],
         milled: Vec::new(),
+        milled_selection: None,
         library: None,
         selection: None,
         target_library: None,

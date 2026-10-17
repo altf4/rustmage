@@ -166,6 +166,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 observation.aura_entry.as_ref().unwrap().card,
                 Target::Card(object.card),
             ),
+            Action::SelectMilled { .. } => 60,
+            Action::FinishMilledSelection => 0,
             Action::RecoverMilled { object } => {
                 if object.is_some() {
                     60
