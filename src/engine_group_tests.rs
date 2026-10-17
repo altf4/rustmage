@@ -334,6 +334,7 @@ fn target_focus_survives_private_library_continuation_and_replays() {
         selection: None,
         target_library: None,
         search: None,
+        optional_searches: None,
         choice: None,
     });
     game.run_program();
@@ -435,6 +436,7 @@ fn fighting_itself_is_one_noncombat_event_for_twice_current_power() {
         selection: None,
         target_library: None,
         search: None,
+        optional_searches: None,
         choice: None,
     });
     game.run_program();

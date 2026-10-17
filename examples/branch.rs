@@ -12,6 +12,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     })?;
     game.apply(Player::P0, Action::Keep)?;
     game.apply(Player::P1, Action::Keep)?;
+    game.apply(Player::P0, Action::FinishOpeningHand)?;
+    game.apply(Player::P1, Action::FinishOpeningHand)?;
     let root = game.snapshot();
     let actor = game.actor().unwrap();
     for action in game

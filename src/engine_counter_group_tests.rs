@@ -444,6 +444,7 @@ fn group_counter_instructions_finish_before_state_based_deaths_and_pair_cancella
         selection: None,
         target_library: None,
         search: None,
+        optional_searches: None,
         choice: None,
     });
     let before = g.snapshot();

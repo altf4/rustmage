@@ -562,6 +562,8 @@ fn opening_hands_and_mulligans_do_not_count_toward_the_first_game_turn() {
         .unwrap();
     replay(&mut g, bottom);
     replay(&mut g, Action::Keep);
+    replay(&mut g, Action::FinishOpeningHand);
+    replay(&mut g, Action::FinishOpeningHand);
     assert_eq!(g.state.step, Step::Upkeep);
     assert!(g.state.players.iter().all(|p| p.cards_drawn_this_turn == 0));
     pass_pair(&mut g);

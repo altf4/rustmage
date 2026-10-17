@@ -574,6 +574,7 @@ fn departed_hero_damage_uses_frozen_battlefield_facts_for_observers() {
         selection: None,
         target_library: None,
         search: None,
+        optional_searches: None,
         choice: None,
     });
     let aura = attach(&mut g, Player::P0, "Frantic Strength", hero);

@@ -22,6 +22,7 @@ pub(super) struct Resolution {
     pub library: Option<LibraryChoice>,
     pub selection: Option<Box<super::library_selection::LibrarySelection>>,
     pub search: Option<Box<super::search::SearchChoice>>,
+    pub optional_searches: Option<Box<super::search::OptionalSearchSequence>>,
     pub choice: Option<Box<super::effect_choices::EffectChoice>>,
 }
 
@@ -189,6 +190,7 @@ impl Game {
         {
             return;
         }
+        self.queue_state_counter_triggers();
         if !self.state.counter_sources.is_empty() {
             let recipient = self.object_view(object.card);
             let observers: Vec<_> = self
@@ -333,6 +335,19 @@ impl Game {
             for source in death_sources {
                 for (index, ability) in source.card.triggers().iter().enumerate() {
                     let matched = match ability.condition.event() {
+                        TriggerCondition::DamagedCreatureDies => {
+                            event.before.is_creature()
+                                && self
+                                    .state
+                                    .creature_damage_history
+                                    .as_ref()
+                                    .is_some_and(|rows| {
+                                        rows.iter().any(|row| {
+                                            row.source == source.reference
+                                                && row.recipient == event.before.reference
+                                        })
+                                    })
+                        }
                         TriggerCondition::SelfDies | TriggerCondition::SelfEntersOrDies => {
                             source.reference == event.before.reference
                         }
@@ -463,6 +478,9 @@ impl Game {
                     | TriggerCondition::SelfDiscarded
                     | TriggerCondition::SelfCycled
                     | TriggerCondition::Discarded { .. }
+                    | TriggerCondition::SourceDealtCombatDamage
+                    | TriggerCondition::DamagedCreatureDies
+                    | TriggerCondition::StateCounterAtLeast { .. }
                     | TriggerCondition::PlayerDamaged { .. }
                     | TriggerCondition::SelfDies
                     | TriggerCondition::CreatureDies { .. }
@@ -1118,6 +1136,13 @@ impl Game {
     }
 
     pub(super) fn prepare_triggers(&mut self) {
+        if self.state.pending == Pending::Priority
+            && self.state.entry_batch.is_none()
+            && self.state.resolving.is_none()
+            && self.state.outcome.is_none()
+        {
+            self.queue_state_counter_triggers();
+        }
         if self.state.pending != Pending::Priority
             || self.state.entry_batch.is_some()
             || self.state.resolving.is_some()
@@ -1312,6 +1337,7 @@ impl Game {
             selection: None,
             target_library: None,
             search: None,
+            optional_searches: None,
             choice: None,
         });
         self.run_program();
@@ -1403,6 +1429,9 @@ impl Game {
                     .mana_payment
                     .is_some()
             {
+                return;
+            }
+            if self.advance_optional_searches() {
                 return;
             }
             self.finish_entered_library_selection();
@@ -2110,6 +2139,7 @@ impl Game {
                         return;
                     }
                 },
+                Instruction::DestroyLandAndSearch => self.destroy_land_and_search(&item),
                 Instruction::Search(spec) | Instruction::SearchRequired(spec) => {
                     let minimum = if matches!(instruction, Instruction::SearchRequired(_)) {
                         assert_eq!(
@@ -2588,6 +2618,25 @@ impl Game {
                 }
                 Instruction::SetCreatureTypes { subject, types } => {
                     self.set_creature_types(&item, subject, types);
+                }
+                Instruction::SacrificeAbilitySource => {
+                    let source = item.target_source();
+                    if self.on_battlefield(source.card)
+                        && self.object_ref(source.card) == source
+                        && self.state.objects[source.card as usize].controller == item.controller
+                    {
+                        self.sacrifice_batch(&[(item.controller, source.card)]);
+                    }
+                }
+                Instruction::ExileSourceGainLifeIfMoved(life) => {
+                    if self.on_battlefield(item.object.card)
+                        && self.object_ref(item.object.card) == item.object
+                    {
+                        let event = self.move_object(item.object.card, Zone::Exile);
+                        if event.moved && event.destination == Zone::Exile {
+                            self.gain_life(item.controller, i128::from(life));
+                        }
+                    }
                 }
                 Instruction::GrantUntilEndTurn { ability } => {
                     self.grant_temporary_ability(&item, ability)

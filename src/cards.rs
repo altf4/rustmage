@@ -819,6 +819,8 @@ pub(crate) enum Instruction {
     Scry(u16),
     Surveil(u16),
     Search(SearchSpec),
+    /// Capture the destroyed land's controller, then offer both optional basic searches.
+    DestroyLandAndSearch,
     /// Unqualified search: find the maximum, or every remaining card if fewer.
     /// Existing qualified searches retain their legal failure-to-find behavior.
     SearchRequired(SearchSpec),
@@ -875,6 +877,8 @@ pub(crate) enum Instruction {
         subject: Subject,
         types: &'static [&'static str],
     },
+    SacrificeAbilitySource,
+    ExileSourceGainLifeIfMoved(u16),
     GrantUntilEndTurn {
         ability: u16,
     },
@@ -1895,6 +1899,12 @@ pub(crate) enum TriggerCondition {
         relation: CastRelation,
         spells_only: bool,
     },
+    SourceDealtCombatDamage,
+    DamagedCreatureDies,
+    StateCounterAtLeast {
+        kind: CounterKind,
+        minimum: u64,
+    },
     PlayerDamaged {
         subject: DamageSubject,
         combat_only: bool,
@@ -2602,11 +2612,24 @@ impl Card {
         }
         counters
     }
+    pub(crate) fn opening_hand_battlefield(self) -> bool {
+        authored::RULES[self.index()]
+            .extras
+            .opening_hand_battlefield
+    }
     pub(crate) fn entry_choice(self) -> Option<EntryChoiceKind> {
         authored::RULES[self.index()].extras.entry_choice
     }
     pub(crate) fn chosen_entry_counters(self) -> Option<CounterKind> {
         authored::RULES[self.index()].extras.chosen_entry_counters
+    }
+    pub(crate) fn activation_put_counter(self, ability: u16) -> Option<(CounterKind, u64)> {
+        authored::RULES[self.index()]
+            .extras
+            .activation_put_counters
+            .iter()
+            .find(|(index, _, _)| *index == ability)
+            .map(|(_, kind, amount)| (*kind, *amount))
     }
     pub(crate) fn hand_cast_entry_counters(self) -> &'static [(CounterKind, u64)] {
         authored::RULES[self.index()]

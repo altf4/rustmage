@@ -407,6 +407,8 @@ define_actions! {
         object: ObjectRef,
     },
     Keep,
+    BeginOnBattlefield { object: ObjectRef },
+    FinishOpeningHand,
     Mulligan,
     Bottom {
         card: CardId,
@@ -1262,6 +1264,11 @@ enum Pending {
     AuraEntry {
         player: Player,
     },
+    OpeningHand {
+        player: Player,
+        eligible: Box<[Vec<ObjectRef>; 2]>,
+    },
+    OptionalSearch(Player),
     Mulligan(Player),
     Bottom {
         player: Player,
@@ -1325,6 +1332,21 @@ enum Pending {
 
 /// All mutable rules state, including every suspended choice and future randomness.
 /// Card definitions are enum/static data, never cloned object graphs or trait objects.
+impl Pending {
+    fn owned_bytes(&self) -> usize {
+        match self {
+            Self::OpeningHand { eligible, .. } => {
+                std::mem::size_of::<[Vec<ObjectRef>; 2]>()
+                    + eligible
+                        .iter()
+                        .map(|v| v.len() * std::mem::size_of::<ObjectRef>())
+                        .sum::<usize>()
+            }
+            _ => 0,
+        }
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
     #[allow(clippy::box_collection)]
@@ -1348,6 +1370,7 @@ struct State {
     crew: Option<Box<crew::CrewState>>,
     objects: SharedVec<Object>,
     named_counters: Option<SharedVec<live_counters::NamedCounterRow>>,
+    creature_damage_history: Option<SharedVec<CreatureDamageHistoryView>>,
     entry_values: entry_choices::Rows,
     ability_resolutions: ability_resolutions::Rows,
     attacked_this_turn: SharedVec<ObjectRef>,
@@ -1660,6 +1683,7 @@ pub struct LegalActionSpace {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    pub creature_damage_history: Vec<CreatureDamageHistoryView>,
     pub temporary_controls: Vec<TemporaryControlView>,
     pub casting_prohibited: bool,
     pub death_exile_replacements: Vec<ExileDeathReplacementView>,
@@ -1714,6 +1738,7 @@ pub struct Observation {
     pub stack: Vec<SpellView>,
     pub resolving: Option<SpellView>,
     pub group_move_count: Option<u64>,
+    pub optional_search_sequence: Option<OptionalSearchSequence>,
     pub announcing: Option<SpellView>,
     pub announcing_payment: Option<PendingPaymentView>,
     pub mana_choices: Vec<Mana>,
@@ -1871,6 +1896,7 @@ impl Game {
                 replacements: None,
                 objects: objects.into(),
                 named_counters: None,
+                creature_damage_history: None,
                 entry_values: None,
                 ability_resolutions: None,
                 attacked_this_turn: Vec::new().into(),
@@ -1969,7 +1995,10 @@ impl Game {
 
     pub fn actor(&self) -> Option<Player> {
         match self.state.pending {
-            Pending::Mulligan(p) | Pending::Bottom { player: p, .. } => Some(p),
+            Pending::OpeningHand { player: p, .. }
+            | Pending::OptionalSearch(p)
+            | Pending::Mulligan(p)
+            | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
             Pending::Replacement { player }
             | Pending::CreatedToken { player }
@@ -2438,6 +2467,29 @@ impl Game {
             }
             Pending::EffectMana { production, .. } => {
                 if production.visit(|production| emit(Action::ChooseMana { production })) {
+                    return true;
+                }
+            }
+            Pending::OpeningHand {
+                player,
+                ref eligible,
+            } => {
+                if emit(Action::FinishOpeningHand) {
+                    return true;
+                }
+                for &object in &eligible[player.index()] {
+                    if self.object_ref(object.card) == object
+                        && s.objects[object.card as usize].zone == Zone::Hand
+                        && emit(Action::BeginOnBattlefield { object })
+                    {
+                        return true;
+                    }
+                }
+            }
+            Pending::OptionalSearch(_) => {
+                if emit(Action::ChooseOptional { accept: true })
+                    || emit(Action::ChooseOptional { accept: false })
+                {
                     return true;
                 }
             }
@@ -3731,6 +3783,29 @@ impl Game {
             Action::ArrangeLibrary { card, destination } => {
                 self.arrange_library(actor, card, destination);
             }
+            Action::BeginOnBattlefield { object } => {
+                let Pending::OpeningHand { eligible, .. } = &mut self.state.pending else {
+                    unreachable!()
+                };
+                eligible[actor.index()].retain(|&candidate| candidate != object);
+                let movement = self.entry_move(object.card, Zone::Battlefield, false);
+                self.stage_entries(vec![movement], None);
+            }
+            Action::FinishOpeningHand => {
+                if actor == self.state.starting {
+                    let Pending::OpeningHand { player, .. } = &mut self.state.pending else {
+                        unreachable!()
+                    };
+                    *player = actor.other();
+                } else {
+                    self.begin_turn();
+                }
+            }
+            Action::ChooseOptional { accept }
+                if matches!(self.state.pending, Pending::OptionalSearch(_)) =>
+            {
+                self.choose_optional_search(actor, accept);
+            }
             Action::ChooseOptional { accept } => {
                 let Pending::EffectOptional { skip_to, .. } = self.state.pending else {
                     unreachable!()
@@ -3808,7 +3883,23 @@ impl Game {
                 return;
             }
         }
-        self.begin_turn();
+        let eligible = std::array::from_fn(|index| {
+            self.state
+                .objects
+                .iter()
+                .enumerate()
+                .filter(|(_, object)| {
+                    object.owner.index() == index
+                        && object.zone == Zone::Hand
+                        && object.card.opening_hand_battlefield()
+                })
+                .map(|(id, _)| self.object_ref(id as CardId))
+                .collect()
+        });
+        self.state.pending = Pending::OpeningHand {
+            player: self.state.starting,
+            eligible: Box::new(eligible),
+        };
     }
 
     fn hand_count(&self, p: Player) -> usize {
@@ -4339,6 +4430,7 @@ impl Game {
         self.clear_crew_history();
         self.state.triggered_this_turn.clear();
         self.state.ability_resolutions = None;
+        self.state.creature_damage_history = None;
         self.state.attacked_this_turn.clear();
         self.state.creatures_died_this_turn = 0;
         for player in &mut self.state.players {
@@ -4643,6 +4735,7 @@ impl Game {
         for gain in &gains {
             self.gain_life(gain.source.controller, gain.amount);
         }
+        self.creature_damage_events(events);
         self.player_damage_triggers(events);
         // Trigger events are recorded before SBAs, after the whole damage batch.
         gains
@@ -4854,6 +4947,10 @@ impl Game {
                 .death_exile_replacements
                 .as_ref()
                 .map_or_else(Vec::new, |rules| rules.as_ref().clone()),
+            creature_damage_history: s
+                .creature_damage_history
+                .as_ref()
+                .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
             schema: OBSERVATION_SCHEMA,
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
             creatures_died_this_turn: s.creatures_died_this_turn,
@@ -4869,6 +4966,8 @@ impl Game {
                 Pending::CreatedToken { .. } => "created_token",
                 Pending::ResolutionMana { .. } => "resolution_mana",
                 Pending::ConniveOrder { .. } => "connive_order",
+                Pending::OpeningHand { .. } => "opening_hand",
+                Pending::OptionalSearch(_) => "optional_search",
                 Pending::Mulligan(_) => "mulligan",
                 Pending::Bottom { .. } => "bottom",
                 Pending::Priority => "priority",
@@ -5170,7 +5269,12 @@ impl Game {
             } else {
                 None
             },
-            search_choice: if owns_choice {
+            optional_search_sequence: s
+                .resolving
+                .as_ref()
+                .and_then(|r| r.optional_searches.as_deref())
+                .cloned(),
+            search_choice: if owns_choice && matches!(s.pending, Pending::EffectSearch { .. }) {
                 s.resolving
                     .as_ref()
                     .and_then(|r| r.search.as_ref())
@@ -5311,6 +5415,7 @@ impl Game {
             + s.objects.len() * std::mem::size_of::<Object>()
             + live_counters::owned_bytes(&s.named_counters)
             + entry_choices::owned_bytes(&s.entry_values)
+            + s.pending.owned_bytes()
             + ability_resolutions::owned_bytes(&s.ability_resolutions)
             + s.announcing
                 .as_ref()
@@ -5366,6 +5471,10 @@ impl Game {
                             .milled_selection
                             .as_ref()
                             .map_or(0, |f| f.bytes())
+                        + resolution
+                            .optional_searches
+                            .as_ref()
+                            .map_or(0, |_| std::mem::size_of::<search::OptionalSearchSequence>())
                         + resolution.target_library.as_ref().map_or(0, |f| f.bytes())
                         + resolution.forage.as_ref().map_or(0, |f| f.bytes())
                         + resolution.evidence.as_ref().map_or(0, |f| f.bytes())
@@ -5435,6 +5544,10 @@ impl Game {
             + s.selected_attackers.len() * std::mem::size_of::<Attacker>()
             + s.selected_blocks.len() * std::mem::size_of::<(CardId, CardId)>()
             + s.hits.len() * std::mem::size_of::<DamageEvent>()
+            + s.creature_damage_history.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<CreatureDamageHistoryView>>()
+                    + rows.len() * std::mem::size_of::<CreatureDamageHistoryView>()
+            })
             + s.first_strikers.len() * std::mem::size_of::<CardId>()
             + s.damage_choices.len() * std::mem::size_of::<DamageChoice>()
             + s.damage_choices
@@ -6240,3 +6353,16 @@ mod fdn_eight_gate_acceptance_tests;
 #[cfg(test)]
 #[path = "engine_fdn_eight_bounded_acceptance_tests.rs"]
 mod fdn_eight_bounded_acceptance_tests;
+
+pub use search::OptionalSearchSequence;
+#[path = "engine_event_counter_core.rs"]
+mod event_counter_core;
+pub use event_counter_core::CreatureDamageHistoryView;
+
+#[cfg(test)]
+#[path = "engine_search_pregame_tests.rs"]
+mod search_pregame_tests;
+
+#[cfg(test)]
+#[path = "engine_event_counter_core_tests.rs"]
+mod event_counter_core_tests;

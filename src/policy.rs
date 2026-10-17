@@ -220,7 +220,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 }
             }
             Action::KeepRole { .. } | Action::KeepLegend { .. } => 100,
-            Action::Keep => 100,
+            Action::Keep | Action::FinishOpeningHand => 100,
+            Action::BeginOnBattlefield { .. } => 110,
             Action::Mulligan => -100,
             Action::PlayLand { .. } => 90,
             Action::BeginCast { .. } => 80,

@@ -28,7 +28,7 @@ impl Game {
             let Target::Card(id) = bound.target else {
                 continue;
             };
-            if !self.on_battlefield(id) || !self.is_creature(id) {
+            if !self.on_battlefield(id) {
                 continue;
             }
             let grant = TemporaryAbilityView {

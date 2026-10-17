@@ -22,6 +22,7 @@ pub(super) struct SbaBatch {
 impl SbaBatch {
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
+            + self.resume.owned_bytes()
             + (self.deaths.len() + self.ceased.len()) * std::mem::size_of::<CardId>()
             + self.pairs.len() * std::mem::size_of::<(ObjectRef, u64)>()
             + self.detached.len() * std::mem::size_of::<ObjectRef>()
@@ -130,7 +131,8 @@ impl Game {
             || b.lost.iter().any(|&lost| lost)
     }
     pub(super) fn state_based_actions(&mut self) {
-        if self.state.sba_batch.is_some()
+        if self.state.step == Step::Pregame
+            || self.state.sba_batch.is_some()
             || self.state.outcome.is_some()
             || self.state.entry_batch.is_some()
         {
