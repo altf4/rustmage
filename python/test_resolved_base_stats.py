@@ -1,4 +1,4 @@
-"""Naturally drawn, fully paid resolved-stat bodies. Pending composed acceptance."""
+"""Naturally drawn, fully paid resolved-stat consumers with owned replay."""
 import json,os,unittest
 from pathlib import Path
 from rustmage import Game
@@ -8,7 +8,7 @@ CASES=[('Genemorph Imago',True),('Moon Girl and Devil Dinosaur',True),('Belliger
 BASICS=['Forest','Island','Mountain','Swamp']
 class ResolvedBasePublicTests(unittest.TestCase):
  frame=replay.RoleConsumerTests.frame
- def test_three_complete_bodies_and_optional_choice_paid_both_seats(self):
+ def test_five_complete_bodies_and_optional_choice_paid_both_seats(self):
   for i,(name,accept)in enumerate(CASES):
    for p in ['P0','P1']:
     with self.subTest(name=name,accept=accept,seat=p):self.scenario(i,p,32600+i)
