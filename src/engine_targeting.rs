@@ -350,7 +350,7 @@ impl Game {
                     TargetPredicate::Token => object.card.is_token(),
                     TargetPredicate::Subtype(subtype) => self.has_subtype(id, subtype),
                     TargetPredicate::Permanent => {
-                        object.card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256) != 0
+                        self.current_kinds(id) & (1 | 2 | 16 | 32 | 64 | 256) != 0
                     }
                     TargetPredicate::Nonbasic => !object.card.is_basic_land(),
                     TargetPredicate::NonOutlaw => {
@@ -402,13 +402,13 @@ impl Game {
                 match rule {
                     TargetRule::CreatureOrVehicle { relation } => {
                         obj.zone == Zone::Battlefield
-                            && (obj.card.is_creature() || obj.card.has_subtype("Vehicle"))
+                            && (self.is_creature(id) || obj.card.has_subtype("Vehicle"))
                             && (relation == -1 || (obj.owner == controller) == (relation == 0))
                     }
-                    TargetRule::Creature => obj.zone == Zone::Battlefield && obj.card.is_creature(),
+                    TargetRule::Creature => obj.zone == Zone::Battlefield && self.is_creature(id),
                     TargetRule::Any => {
                         obj.zone == Zone::Battlefield
-                            && (obj.card.is_creature() || obj.card.is_planeswalker())
+                            && (self.is_creature(id) || obj.card.is_planeswalker())
                     }
                     TargetRule::Object {
                         zone,
@@ -426,7 +426,7 @@ impl Game {
                         };
                         obj.zone == expected
                             && (expected != Zone::Graveyard || !obj.card.is_token())
-                            && (kinds == 0 || obj.card.kind_mask() & u16::from(kinds) != 0)
+                            && (kinds == 0 || self.current_kinds(id) & u16::from(kinds) != 0)
                             && (relation == -1 || (obj.owner == controller) == (relation == 0))
                             && (!other || self.object_ref(id) != source)
                             && (!nonland || !obj.card.is_land())

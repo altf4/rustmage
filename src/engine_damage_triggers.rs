@@ -77,7 +77,7 @@ impl Game {
             } => {
                 let facts = dealer.facts;
                 facts.battlefield
-                    && facts.card.is_creature()
+                    && facts.is_creature()
                     && match filter.relation {
                         0 => dealer.controller == source.owner,
                         1 => dealer.controller != source.owner,

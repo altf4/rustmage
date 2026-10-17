@@ -5,12 +5,10 @@ impl Game {
         let giver = self.state.objects.get(grantor as usize)?;
         let recipient = giver.attached_to?;
         (giver.zone == Zone::Battlefield
-            && !giver.card.is_creature()
+            && !self.is_creature(grantor)
             && self.on_battlefield(recipient.card)
             && self.object_ref(recipient.card) == recipient
-            && self.state.objects[recipient.card as usize]
-                .card
-                .is_creature())
+            && self.is_creature(recipient.card))
         .then_some(recipient)
     }
     /// Only indexed observers are visited. Ordinary sources allocate no grant packet.

@@ -695,6 +695,7 @@ impl CreatureFilter {
     pub(crate) fn matches_characteristics(
         self,
         card: Card,
+        kinds: u16,
         added: GrantedSubtypes,
         yours: bool,
         same: bool,
@@ -710,7 +711,7 @@ impl CreatureFilter {
                 .is_none_or(|subtype| card.has_subtype(subtype) || added.contains(subtype))
             && (!self.attacking || attacking)
             && self.tokens.is_none_or(|tokens| card.is_token() == tokens)
-            && (!self.artifact || card.is_artifact())
+            && (!self.artifact || kinds & 16 != 0)
     }
 }
 
@@ -726,9 +727,12 @@ pub(crate) struct KeywordGrant {
     pub keywords: Keywords,
 }
 impl KeywordGrant {
+    // Borrowed actual/virtual characteristics are passed without allocating a view.
+    #[allow(clippy::too_many_arguments)]
     pub(crate) fn matches_characteristics(
         self,
         card: Card,
+        kinds: u16,
         added: GrantedSubtypes,
         yours: bool,
         same: bool,
@@ -743,8 +747,8 @@ impl KeywordGrant {
         (!self.own_turn || own_turn)
             && (!self.source_only || same)
             // A tribal noun may also describe a noncreature kindred permanent.
-            && (self.filter.subtype.is_some() || card.is_creature())
-            && self.filter.matches_characteristics(card, added, yours, same, attacking)
+            && (self.filter.subtype.is_some() || kinds & 1 != 0)
+            && self.filter.matches_characteristics(card, kinds, added, yours, same, attacking)
     }
 }
 

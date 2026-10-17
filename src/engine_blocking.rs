@@ -6,7 +6,7 @@ impl Game {
         self.state.objects.get(id as usize).is_some_and(|b| {
             b.zone == Zone::Battlefield
                 && b.owner == self.state.active.other()
-                && b.card.is_creature()
+                && self.is_creature(id)
                 && !b.tapped
                 && !self.keywords(id).contains(Keywords::CANT_BLOCK)
         })
@@ -22,7 +22,7 @@ impl Game {
         if !self.can_be_blocker(blocker)
             || a.zone != Zone::Battlefield
             || a.owner != self.state.active
-            || !a.card.is_creature()
+            || !self.is_creature(attacker)
         {
             return false;
         }

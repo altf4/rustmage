@@ -75,8 +75,9 @@ impl Game {
         sorcery: bool,
     ) -> bool {
         self.activation_guard_available(ability.guard, actor)
-            && Self::object_activation_available(
+            && Self::object_activation_available_with_kinds(
                 &self.state.objects[card as usize],
+                self.current_kinds(card),
                 self.keywords(card),
                 self.state.players[actor.index()].life,
                 ability,
@@ -86,8 +87,32 @@ impl Game {
             )
     }
 
+    #[cfg(test)]
     pub(super) fn object_activation_available(
         object: &Object,
+        keywords: Keywords,
+        life: i128,
+        ability: &ActivatedAbility,
+        index: usize,
+        actor: Player,
+        sorcery: bool,
+    ) -> bool {
+        Self::object_activation_available_with_kinds(
+            object,
+            object.card.kind_mask(),
+            keywords,
+            life,
+            ability,
+            index,
+            actor,
+            sorcery,
+        )
+    }
+    // Shared real/virtual readiness query: no allocation or speculative state clone.
+    #[allow(clippy::too_many_arguments)]
+    pub(super) fn object_activation_available_with_kinds(
+        object: &Object,
+        kinds: u16,
         keywords: Keywords,
         life: i128,
         ability: &ActivatedAbility,
@@ -106,9 +131,7 @@ impl Game {
         }
         if ability.cost.tap
             && (object.tapped
-                || (object.card.is_creature()
-                    && object.summoning_sick
-                    && !keywords.contains(Keywords::HASTE)))
+                || (kinds & 1 != 0 && object.summoning_sick && !keywords.contains(Keywords::HASTE)))
         {
             return false;
         }

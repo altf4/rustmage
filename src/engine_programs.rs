@@ -217,7 +217,7 @@ impl Game {
                                 CastRelation::Opponent => source.owner != event.before.owner,
                                 CastRelation::Any => true,
                             };
-                            event.before.card.is_creature()
+                            event.before.is_creature()
                                 && related
                                 && (!other || source.reference != event.before.reference)
                                 && (!nontoken || event.before.token.is_none())
@@ -231,8 +231,7 @@ impl Game {
                                 && (!own_turn || self.state.active == source.owner)
                                 && (!f.source_only || source.reference == event.before.reference)
                                 && (!f.other || source.reference != event.before.reference)
-                                && (f.kinds == 0
-                                    || event.before.card.kind_mask() & u16::from(f.kinds) != 0)
+                                && (f.kinds == 0 || event.before.kinds & u16::from(f.kinds) != 0)
                                 && (!f.nonland || !event.before.card.is_land())
                                 && event.before.keywords.contains(f.keywords)
                                 && f.tokens
@@ -241,9 +240,10 @@ impl Game {
                                     .is_none_or(|subtype| event.before.has_subtype(subtype))
                         }
                         TriggerCondition::CreatureDiesFiltered { filter } => {
-                            event.before.card.is_creature()
+                            event.before.is_creature()
                                 && filter.matches_characteristics(
                                     event.before.card,
+                                    event.before.kinds,
                                     event.before.granted_subtypes,
                                     event.before.owner == source.owner,
                                     event.before.reference == source.reference,
@@ -261,10 +261,10 @@ impl Game {
                                 CastRelation::Opponent => source.owner != event.before.owner,
                                 CastRelation::Any => true,
                             };
-                            event.before.card.kind_mask() & kinds != 0
+                            event.before.kinds & kinds != 0
                                 && related
                                 && (source.reference != event.before.reference
-                                    || event.before.card.kind_mask() & exclude_source_kinds == 0)
+                                    || event.before.kinds & exclude_source_kinds == 0)
                         }
                         _ => false,
                     };
@@ -284,7 +284,7 @@ impl Game {
         let entered = self.object_view(event.after.card);
         // This prohibition concerns the event, irrespective of which permanent
         // would observe it. Death/attack/step events take their separate paths.
-        if entered.card.kind_mask() & entry_suppression != 0 {
+        if entered.kinds & entry_suppression != 0 {
             return;
         }
         for source in sources {
@@ -343,7 +343,7 @@ impl Game {
                             && if same {
                                 include_source
                             } else {
-                                (kinds == 0 || entered.card.kind_mask() & kinds != 0)
+                                (kinds == 0 || entered.kinds & kinds != 0)
                                     && (!nontoken || entered.token.is_none())
                                     && subtype.is_none_or(|t| entered.has_subtype(t))
                             }
@@ -353,23 +353,21 @@ impl Game {
                             && !same
                             && match predicate {
                                 EntryPredicate::CreaturePowerAtMost(maximum) => {
-                                    entered.card.is_creature()
-                                        && entered.power <= i128::from(maximum)
+                                    entered.is_creature() && entered.power <= i128::from(maximum)
                                 }
                                 EntryPredicate::SubtypeAny(subtypes) => {
                                     subtypes.iter().any(|subtype| entered.has_subtype(subtype))
                                 }
                                 EntryPredicate::KindOrSubtype { kinds, subtype } => {
-                                    entered.card.kind_mask() & kinds != 0
-                                        || entered.has_subtype(subtype)
+                                    entered.kinds & kinds != 0 || entered.has_subtype(subtype)
                                 }
                             }
                     }
                     TriggerCondition::OtherCreatureEntersYou => {
-                        yours && !same && entered.card.is_creature()
+                        yours && !same && entered.is_creature()
                     }
                     TriggerCondition::CreatureEnters { relation, other } => {
-                        entered.card.is_creature()
+                        entered.is_creature()
                             && (!other || !same)
                             && match relation {
                                 CastRelation::You => yours,
@@ -384,10 +382,8 @@ impl Game {
                         yours && entered.has_subtype(subtype)
                     }
                     TriggerCondition::ArtifactEntersYou => yours && entered.card.is_artifact(),
-                    TriggerCondition::EnchantmentEntersYou => {
-                        yours && entered.card.kind_mask() & 32 != 0
-                    }
-                    TriggerCondition::CreatureEntersYou => yours && entered.card.is_creature(),
+                    TriggerCondition::EnchantmentEntersYou => yours && entered.kinds & 32 != 0,
+                    TriggerCondition::CreatureEntersYou => yours && entered.is_creature(),
                     TriggerCondition::LandEntersYou => yours && entered.card.is_land(),
                     TriggerCondition::OtherArtifactEntersYou => {
                         yours && !same && entered.card.is_artifact()
@@ -545,10 +541,10 @@ impl Game {
                         match target {
                             CastTarget::Source => reference == source.reference,
                             CastTarget::OpponentOrCreature => {
-                                object.card.is_creature() && object.owner != source.owner
+                                self.is_creature(id) && object.owner != source.owner
                             }
                             CastTarget::Creature(relation) => {
-                                object.card.is_creature()
+                                self.is_creature(id)
                                     && match relation {
                                         CastRelation::You => object.owner == source.owner,
                                         CastRelation::Opponent => object.owner != source.owner,
@@ -687,7 +683,7 @@ impl Game {
                             let o = &self.state.objects[a.card as usize];
                             o.owner == actor
                                 && o.zone == Zone::Battlefield
-                                && o.card.is_creature()
+                                && self.is_creature(a.card)
                                 && power_min
                                     .is_none_or(|p| self.object_view(a.card).power >= i128::from(p))
                         })

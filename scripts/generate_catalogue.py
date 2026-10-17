@@ -3026,6 +3026,49 @@ def source_return_program(text):
     return None
 
 
+def crew_vehicle_body(card):
+    """Bind authenticated self-Vehicle clauses to the source, never external nouns.
+
+    The creature-shaped parser is only a local source-subject grammar. Executable
+    identity remains the original Artifact, and layer-4 Crew adds Creature later.
+    Every residual sentence must compile; this does not erase Vehicle mentions.
+    """
+    if (card.get('layout') != 'normal' or permanent_type(card) != 'Artifact'
+            or 'Vehicle' not in card.get('type_line','').split(' — ')[-1].split()
+            or not isinstance(card.get('oracle_text'),str)
+            or not spell_cost_options(card.get('mana_cost',''))): return None
+    if any(not isinstance(card.get(axis),str) or not (card[axis].isdigit() or card[axis]=='*')
+           or (card[axis].isdigit() and int(card[axis])>2**127-1) for axis in ('power','toughness')): return None
+    declarations=[];body=[]
+    for line in card['oracle_text'].splitlines():
+        if line.startswith('Crew '):
+            # Authenticate the entire reminder as well as the nonnegative count.
+            m=re.fullmatch(r'Crew ([0-9]+)(?: \(Tap any number of (?:other untapped )?creatures you control with total power ([0-9]+) or more: This Vehicle becomes an artifact creature until end of turn\.\))?',line)
+            if m is None or int(m[1])>65535 or (m[2] is not None and int(m[2])!=int(m[1])): return None
+            declarations.append(int(m[1]))
+        else:body.append(line)
+    if len(declarations)!=1:return None
+    # Exact deictic source phrases only. Target Vehicle/card/other-Vehicle clauses
+    # are left untouched and rejected unless the complete grammar supports them.
+    text='\n'.join(body).replace('this Vehicle','this creature').replace('This Vehicle','This creature')
+    proxy=dict(card,type_line='Artifact Creature',oracle_text=text)
+    proxy,dynamic,scaling=extract_stat_rules(proxy)
+    # A printed star is not a zero-power approximation: it needs a complete CDA.
+    if '*' in card['power']+card['toughness'] and dynamic is None:return None
+    parsed=permanent_program_template(proxy)
+    if parsed is None:
+        basic=creature_template(proxy);trigger=trigger_creature_template(proxy)
+        if basic:effect,keywords=basic;abilities=[]
+        elif trigger:effect,keywords,abilities=trigger
+        else:return None
+        activations=[];enters=[0,0,0]
+    else:effect,keywords,abilities,activations,enters=parsed
+    cost=activation_cost('{0}');cost['mana_component']=False
+    activations=[*activations,(cost,'None',[f'Crew {{ minimum: {declarations[0]} }}'],False,False)]
+    if len(activations)>64:return None
+    return 'Permanent',keywords,abilities,activations,enters,dynamic,scaling
+
+
 def permanent_program_template(card):
     """Whole supported permanent text, including all activation restrictions."""
     if (card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'), str)
@@ -3626,6 +3669,15 @@ def compile_catalogue(snapshot, target):
                 or any(v is not None for v in (flashback,offspring,kicker,additional,target_reduction,scalar))
                 or bargain or reductions or spell_cost_options(card.get('mana_cost','')) is None):
             effect='Unsupported'
+        crew_seen = any(line.startswith('Crew ') for line in original.get('oracle_text','').splitlines())
+        if crew_seen:
+            crew = crew_vehicle_body(card) if (not convoke and not bargain and evidence is None
+                    and not plot_seen and not warp_seen
+                    and all(v is None for v in (flashback,offspring,kicker,additional,target_reduction,scalar))
+                    and not reductions and dynamic is None and not scaling and not entry_counters
+                    and creature_entry == 'Never') else None
+            if crew is None: effect='Unsupported'
+            else: effect,keywords,abilities,activations,enters,dynamic,scaling=crew
         # Later fixed-cost selectors must never revive a rejected variable-cost body.
         if '{X}' in card.get('mana_cost', '') and scalar is None:
             effect = 'Unsupported'

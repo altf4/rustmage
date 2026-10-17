@@ -79,7 +79,7 @@ impl Game {
             o.generation == r.generation
                 && o.zone == Zone::Battlefield
                 && o.owner == p
-                && o.card.is_creature()
+                && self.is_creature(r.card)
                 && !o.tapped
                 && r != source
         })

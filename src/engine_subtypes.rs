@@ -65,7 +65,7 @@ impl Game {
         lookup: impl Fn(CardId) -> Option<&'a Object>,
     ) -> GrantedSubtypes {
         let mut mask = GrantedSubtypes::default();
-        if target.zone != Zone::Battlefield || !target.card.is_creature() {
+        if target.zone != Zone::Battlefield || self.object_kinds(id, target) & 1 == 0 {
             return mask;
         }
         let reference = ObjectRef {
@@ -77,7 +77,7 @@ impl Game {
                 continue;
             };
             if o.zone == Zone::Battlefield
-                && !o.card.is_creature()
+                && self.object_kinds(source, o) & 1 == 0
                 && o.attached_to == Some(reference)
                 && let Some(subtype) = o.card.attached_subtype()
             {

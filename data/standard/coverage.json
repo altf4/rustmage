@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "7cc71b314befb033cdf1976f0fa91603650500fef0ac5badcaed14dc69c77c08",
+  "catalogue_version": "8ea9ef36298eff71fd9ee7add7d2512e4ab11c5717931241b5f0d8b29115924b",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1707,
-  "implemented_total": 1713,
+  "implemented_standard_cards": 1731,
+  "implemented_total": 1737,
   "token_definitions": 83,
   "emblem_definitions": 1,
   "cards": [
@@ -382,7 +382,7 @@
     {
       "name": "Adventurer's Airship",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -634,7 +634,7 @@
     {
       "name": "Air Response Unit",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -3034,7 +3034,7 @@
     {
       "name": "Boosted Sloop",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -3388,7 +3388,7 @@
     {
       "name": "Broadcast Rambler",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -3556,7 +3556,7 @@
     {
       "name": "Burner Rocket",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -3916,7 +3916,7 @@
     {
       "name": "Careening Mine Cart",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -4576,7 +4576,7 @@
     {
       "name": "Clamorous Ironclad",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -5548,7 +5548,7 @@
     {
       "name": "Cultivator's Caravan",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -6064,7 +6064,7 @@
     {
       "name": "Debris Beetle",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -6274,7 +6274,7 @@
     {
       "name": "Dependable Quinjet",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -9154,7 +9154,7 @@
     {
       "name": "Fire Nation Warship",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -11782,7 +11782,7 @@
     {
       "name": "Haunted Hellride",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -12586,7 +12586,7 @@
     {
       "name": "Hulldrifter",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -15472,7 +15472,7 @@
     {
       "name": "Lumbering Worldwagon",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -15718,7 +15718,7 @@
     {
       "name": "Magitek Armor",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -21220,7 +21220,7 @@
     {
       "name": "Ripclaw Wrangler",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -21832,7 +21832,7 @@
     {
       "name": "S.H.I.E.L.D. Helicarrier",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -23398,7 +23398,7 @@
     {
       "name": "Skybox Ferry",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -24430,7 +24430,7 @@
     {
       "name": "Spotcycle Scouter",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -25144,7 +25144,7 @@
     {
       "name": "Strixhaven Skycoach",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -27226,7 +27226,7 @@
     {
       "name": "Thopter Fabricator",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -28210,7 +28210,7 @@
     {
       "name": "Tundra Tank",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -28252,7 +28252,7 @@
     {
       "name": "Turtle Blimp",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {
@@ -29158,7 +29158,7 @@
     {
       "name": "Veloheart Bike",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {

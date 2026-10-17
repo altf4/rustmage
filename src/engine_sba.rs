@@ -65,11 +65,11 @@ impl Game {
                     batch.deaths.push(id);
                 }
             } else if let Some(target) = object.attached_to
-                && (object.card.is_creature()
+                && (self.is_creature(id)
                     || target == self.object_ref(id)
                     || !self.on_battlefield(target.card)
                     || self.object_ref(target.card) != target
-                    || !self.state.objects[target.card as usize].card.is_creature())
+                    || !self.is_creature(target.card))
             {
                 batch.detached.push(self.object_ref(id));
             }
@@ -79,7 +79,7 @@ impl Game {
                     .or_default()
                     .push(self.object_ref(id));
             }
-            if object.card.is_creature() {
+            if self.is_creature(id) {
                 let toughness = self.stats(id).toughness;
                 if toughness <= 0
                     || (!self.keywords(id).contains(Keywords::INDESTRUCTIBLE)
@@ -109,6 +109,15 @@ impl Game {
         batch
     }
 
+    pub(super) fn sba_required(&self) -> bool {
+        let b = self.collect_sba_batch();
+        !b.deaths.is_empty()
+            || !b.detached.is_empty()
+            || !b.ceased.is_empty()
+            || !b.pairs.is_empty()
+            || !b.groups.is_empty()
+            || b.lost.iter().any(|&lost| lost)
+    }
     pub(super) fn state_based_actions(&mut self) {
         if self.state.sba_batch.is_some()
             || self.state.outcome.is_some()

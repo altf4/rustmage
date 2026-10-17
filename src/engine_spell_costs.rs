@@ -143,7 +143,7 @@ impl Game {
                     .filter(|(id, o)| {
                         o.zone == Zone::Battlefield
                             && o.owner == actor
-                            && o.card.is_creature()
+                            && self.is_creature(*id as CardId)
                             && self.stats_without_hand(*id as CardId, departing).power
                                 >= i128::from(minimum)
                     })

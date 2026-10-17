@@ -48,7 +48,7 @@ impl Game {
         let f = choice.filter;
         o.zone == Zone::Battlefield
             && self.keywords(object.card).contains(f.keywords)
-            && (f.kinds == 0 || o.card.kind_mask() & u16::from(f.kinds) != 0)
+            && (f.kinds == 0 || self.current_kinds(object.card) & u16::from(f.kinds) != 0)
             && (!f.source_only || object == choice.source)
             && (!f.nonland || !o.card.is_land())
             && (!f.other || object != choice.source)
@@ -183,8 +183,10 @@ impl Game {
                     .objects
                     .iter()
                     .enumerate()
-                    .filter(|(_, o)| {
-                        o.zone == Zone::Battlefield && o.owner == player && o.card.is_creature()
+                    .filter(|(id, o)| {
+                        o.zone == Zone::Battlefield
+                            && o.owner == player
+                            && self.is_creature(*id as CardId)
                     })
                     .map(|(id, _)| self.object_view(id as CardId).power)
                     .max();

@@ -139,9 +139,10 @@ impl Game {
     ) -> bool {
         let object = &self.state.objects[id as usize];
         object.zone == Zone::Battlefield
-            && object.card.is_creature()
+            && self.is_creature(id)
             && filter.matches_characteristics(
                 object.card,
+                self.current_kinds(id),
                 self.granted_subtypes(id),
                 object.owner == controller,
                 self.object_ref(id) == source,
@@ -219,8 +220,7 @@ impl Game {
                 let applies = match modifier.subject {
                     Subject::Source => source == id,
                     Subject::Attached => {
-                        !object.card.is_creature()
-                            && object.attached_to == Some(self.object_ref(id))
+                        !self.is_creature(source) && object.attached_to == Some(self.object_ref(id))
                     }
                     Subject::Targets | Subject::Entering => {
                         unreachable!("event or targeted scaling static modifier")

@@ -1970,7 +1970,7 @@ impl Game {
                     if obj.zone == Zone::Battlefield
                         && !obj.tapped
                         && obj.card.mana_color().is_some()
-                        && (!obj.card.is_creature()
+                        && (!self.is_creature(card)
                             || !obj.summoning_sick
                             || self.keywords(card).contains(Keywords::HASTE))
                         && emit(Action::TapMana { card })
@@ -2272,7 +2272,7 @@ impl Game {
                     let card = i as CardId;
                     if obj.owner != actor
                         || obj.zone != Zone::Battlefield
-                        || !obj.card.is_creature()
+                        || !self.is_creature(card)
                         || obj.tapped
                         || (obj.summoning_sick && !self.keywords(card).contains(Keywords::HASTE))
                         || self.keywords(card).contains(Keywords::DEFENDER)
@@ -3334,7 +3334,7 @@ impl Game {
         );
         if before.zone == Zone::Battlefield
             && destination == Zone::Graveyard
-            && before.card.is_creature()
+            && before.is_creature()
         {
             self.state.creatures_died_this_turn = self
                 .state
@@ -3343,6 +3343,7 @@ impl Game {
                 .capacity("creature death history exhausted");
         }
         if before.zone == Zone::Battlefield {
+            self.forget_vehicle_animation(before.reference);
             self.state.saddled.retain(|r| *r != before.reference);
         }
         let generation = before
@@ -3532,6 +3533,7 @@ impl Game {
     }
 
     fn begin_turn(&mut self) {
+        self.clear_crew_history();
         self.state.triggered_this_turn.clear();
         self.state.attacked_this_turn.clear();
         self.state.creatures_died_this_turn = 0;
@@ -3668,6 +3670,7 @@ impl Game {
     }
 
     fn finish_cleanup(&mut self) {
+        let expired_vehicles = self.expire_vehicle_animation();
         self.state.saddled.clear();
         self.state
             .exile_permissions
@@ -3682,9 +3685,10 @@ impl Game {
         // Losing temporary growth can expose lethal negative counters. Apply
         // SBAs before advancing the turn; CR514.3 gives an extra priority cycle.
         if !self.state.pending_triggers.is_empty()
+            || expired_vehicles && self.sba_required()
             || self.state.objects.iter().enumerate().any(|(id, obj)| {
                 obj.zone == Zone::Battlefield
-                    && obj.card.is_creature()
+                    && self.is_creature(id as CardId)
                     && self.stats(id as CardId).toughness <= 0
             })
         {
@@ -3738,6 +3742,7 @@ impl Game {
                     self.lose_life(p, event.amount);
                 }
                 Target::Card(id) => {
+                    let creature = self.is_creature(id);
                     let obj = &mut self.state.objects[id as usize];
                     if obj.card.is_planeswalker() {
                         let removed = u128::try_from(event.amount)
@@ -3746,15 +3751,15 @@ impl Game {
                             as u64;
                         obj.counters.loyalty -= removed;
                     }
-                    if obj.card.is_creature() || !obj.card.is_planeswalker() {
+                    if creature {
                         obj.damage = obj
                             .damage
                             .checked_add(event.amount)
                             .capacity("damage representation exhausted");
                     }
                     obj.damaged_this_turn = true;
-                    obj.deathtouch_since_sba |= obj.card.is_creature()
-                        && event.source.keywords.contains(Keywords::DEATHTOUCH);
+                    obj.deathtouch_since_sba |=
+                        creature && event.source.keywords.contains(Keywords::DEATHTOUCH);
                 }
                 Target::Spell(_) => unreachable!("damage cannot target stack objects"),
             }
