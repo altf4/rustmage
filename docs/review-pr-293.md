@@ -10,7 +10,7 @@ A generated-code preservation assertion compares against Role parent `0f15430`: 
 
 Immutable optimized library:
 
-- File: `/home/altf4/.cache/rustmage-immutable/trigger287-a1c950e-1286-schema86-c2dca4f0fa50.so`
+- File: `<cache>/rustmage-immutable/trigger287-a1c950e-1286-schema86-c2dca4f0fa50.so`
 - SHA256: `c2dca4f0fa50a92a0f97191f3134ba8b96d8e84973810ec498f9f8e767ed348d`
 - Catalogue: `1286b67491500df6c3b26a0f381c26cffcfc5dcf6fc38661c395a9ddc299055c`
 - Observation schema:86. Public constructors/subprocesses explicitly pin this file and assert the complete schema/fingerprint.
@@ -26,7 +26,7 @@ Morcant's entire normal Elf lord and SelfDies recovery body is admitted. Its own
 ## Completed validation and exact scopes
 
 - Fresh `c5f860e` full native: 1,743 unit +12 integration = 1,755 tests, all-target Clippy, formatting. All 795 tracked files remain unchanged through these gates.
-- Full `a1c950e` compiler collection: 423 unique methods in 572.799 seconds; 421 execute/pass and two opt-in Java provenance methods skip because the source environment was omitted. The exact two skipped methods subsequently execute/pass with `/home/altf4/Code/mage`, 0.130 seconds and no skips. Together all 423 unique methods execute/pass. This is not relabeled as one no-skip full run. All 794 original checkpoint files were unchanged until the full run and focused provenance completion ended.
+- Full `a1c950e` compiler collection: 423 unique methods in 572.799 seconds; 421 execute/pass and two opt-in Java provenance methods skip because the source environment was omitted. The exact two skipped methods subsequently execute/pass with `<xmage>`, 0.130 seconds and no skips. Together all 423 unique methods execute/pass. This is not relabeled as one no-skip full run. All 794 original checkpoint files were unchanged until the full run and focused provenance completion ended.
 - Twelve focused compiler/provenance methods pass in 1.122 seconds, including full nineteen-card recovery/name independence, typed `other`+Elf filtering and unknown/infix/nested reminder rejection. The Morcant manifest authenticates the full pinned record and sixteen directly imported Java files, without claiming all transitive Java rewriting.
 - Fresh public source-binding smoke:three methods/six paid Standard cases pass in 10.371 seconds from an immutable 794-file `a1c950e` export. Each seat exercises a real paid Morcant and two paid Corrupted Conviction sacrifices; victims are an Elf, a Changeling or a non-Elf. No scenario edits or seed substitution were needed.
 - After inherited Tombstone tests compose, four fresh methods pass in 12.057 seconds from an immutable 795-file `c5f860e` export on the same library. Six source-binding cases produce 5,097 owned frames and 10,194 wrong-actor/stale denials. The Tombstone method adds 1,003 owned frames and 2,010 denials, proving actual controller-only Villain/Changeling reduction, colored-cost floor and rejected underpayment. This is separately scoped from the broad public checkpoint.

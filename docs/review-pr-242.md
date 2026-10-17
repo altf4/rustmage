@@ -14,7 +14,7 @@ Standard100: 111,604 actions/replays, 261 private payment observations, 7,688 pa
 
 The native 1,000-game smoke benchmark measures 571,049 decisions, 200,549 decisions/s, 282.53 ns clone and 289.80 ns restore on the shared host. Policy and native observation construction are included; model inference, tensors and JSON are excluded. These are not Java parity/speedup or full-Standard throughput claims. Logical byte counts exclude allocator overhead and capacity.
 
-Fresh immutable library `/home/altf4/.cache/rustmage-root242/librustmage-b04-schema71-b416.so` has SHA256 `a8b40adfde384c98caba3f336ff73ee218784c6971cfc1dcf31467a4d6ea40b9`. Constructors and subprocesses explicitly select it. Evidence prefix `/tmp/rustmage-240-`: `integrated-rust-fixed.log`, `integrated-clippy-fixed.log`, `integrated-compiler-full.log`, `integrated-python-full.log`, `integrated-generated-check.log`, `integrated-fmt-final.log`, `integrated-semantic.log`, `standard-final.log`, `standard-repeat.log`, `integrated-benchmark.log`.
+Fresh immutable library `<cache>/rustmage-root242/librustmage-b04-schema71-b416.so` has SHA256 `a8b40adfde384c98caba3f336ff73ee218784c6971cfc1dcf31467a4d6ea40b9`. Constructors and subprocesses explicitly select it. Evidence prefix `<temp>/rustmage-240-`: `integrated-rust-fixed.log`, `integrated-clippy-fixed.log`, `integrated-compiler-full.log`, `integrated-python-full.log`, `integrated-generated-check.log`, `integrated-fmt-final.log`, `integrated-semantic.log`, `standard-final.log`, `standard-repeat.log`, `integrated-benchmark.log`.
 
 ## Rules — `/root/review_explore_library`
 
@@ -24,7 +24,7 @@ Three copied-source native groups test exact owner/source-generation hand projec
 
 This reviewer independently compiles and runs Standard100, reproducing the complete 111,604-action ledger. It found the new example's four collapsible-if lint warnings, resolved at a18 with equivalent conditional chains. Final all-target Clippy and formatting pass; production/compiler/catalogue remain identical to the reviewed freeze.
 
-Evidence prefix `/tmp/issue242-rules-review-`: `native-final.log`, `clippy-final.log`, `fmt.log`, `generated.log`, `python.log`, `standard.log`, `semantic.log`, `provenance.log`, `negatives.log`, `probes.log`/`probes.rs`, `public-probe.log`. The earlier checkpoint report is `/tmp/issue242-rules-review-core-checkpoint.md`; final verdict is `/tmp/issue242-rules-review-final.md`.
+Evidence prefix `<temp>/issue242-rules-review-`: `native-final.log`, `clippy-final.log`, `fmt.log`, `generated.log`, `python.log`, `standard.log`, `semantic.log`, `provenance.log`, `negatives.log`, `probes.log`/`probes.rs`, `public-probe.log`. The earlier checkpoint report is `<temp>/issue242-rules-review-core-checkpoint.md`; final verdict is `<temp>/issue242-rules-review-final.md`.
 
 ## Library/API — `/root/attachment_rules_214`
 
@@ -32,7 +32,7 @@ Approves exact remote `a18c889e7e9306e7923c8d006526c3a0315c6f6b`, with no unreso
 
 Two additional actual paid public games verify 457 owned parent-closed replays, four private frames, twelve atomic rejects and 67 timing denials. They cover paid Plot, later free Aura casting, a genuine Slickshot cast trigger and actual Unsummon/Aura death draw. Independently runs the integrator-built exact a7 Standard binary, reproducing the entire 111,604-action ledger; this reviewer did not independently compile that binary. All 711 original driver lines and the four equivalent a18 conditional-chain lint fixes are audited.
 
-Report `/tmp/issue240-library-core-review.md`. Logs: `/tmp/issue240-library-integrated208-17dd.log`, `/tmp/issue240-library-integrated-ownroutes-17dd.log`, `/tmp/issue240-library-standard100-a7.log`, `/tmp/issue240-library-integrated-adverse-17dd.log`, `/tmp/issue240-library-integrated-plotcompiler-17dd.log`, `/tmp/issue240-library-integrated-canonical-17dd.log`, `/tmp/issue240-library-manifest-37f.log`, `/tmp/issue240-library-fixed-native-b04.log`, `/tmp/issue240-library-independent-fixed-hand-native.log`. Earlier complete final52 paid scenarios pass independently in 15.348 seconds. All jobs ended; disposable outputs are cleaned, immutable libraries/source/logs preserved.
+Report `<temp>/issue240-library-core-review.md`. Logs: `<temp>/issue240-library-integrated208-17dd.log`, `<temp>/issue240-library-integrated-ownroutes-17dd.log`, `<temp>/issue240-library-standard100-a7.log`, `<temp>/issue240-library-integrated-adverse-17dd.log`, `<temp>/issue240-library-integrated-plotcompiler-17dd.log`, `<temp>/issue240-library-integrated-canonical-17dd.log`, `<temp>/issue240-library-manifest-37f.log`, `<temp>/issue240-library-fixed-native-b04.log`, `<temp>/issue240-library-independent-fixed-hand-native.log`. Earlier complete final52 paid scenarios pass independently in 15.348 seconds. All jobs ended; disposable outputs are cleaned, immutable libraries/source/logs preserved.
 
 Both reviewers are nonauthors of Plot, its hand-departure fix and integrated acceptance driver. Their exclusive worktrees are separate from the author and integrator. Review artifacts and immutable libraries are retained; completed disposable build artifacts are cleaned after all jobs using them finish.
 

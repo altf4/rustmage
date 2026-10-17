@@ -1,6 +1,11 @@
 """Pinned full-source provenance; no rules text is compiled."""
 import hashlib,json,os,re,subprocess,unittest
 from pathlib import Path
+if __package__:
+    from .source_paths import xmage_source
+else:
+    from source_paths import xmage_source
+
 ROOT=Path(__file__).resolve().parents[1]
 
 NAMES = {'Doc Ock, Sinister Scientist', 'Mirkwood Meditator', 'Multiply by Zero', 'Perfected Theory', 'Quandrix Charm', 'Snowmelt Stag', 'Turtle-Duck', 'Water Wings', 'Gateway Sneak', 'Snooping Page'}
@@ -33,9 +38,9 @@ class BaseStatTests(unittest.TestCase):
                 if path in seen:
                     self.assertEqual(seen[path], sha)
                     continue
-                blob = subprocess.check_output(['git', '-C', '/home/altf4/Code/mage', 'show', manifest['java_revision'] + ':' + path])
+                blob = subprocess.check_output(['git', '-C', str(xmage_source()), 'show', manifest['java_revision'] + ':' + path])
                 self.assertEqual(hashlib.sha256(blob).hexdigest(), sha)
-                self.assertEqual((Path('/home/altf4/Code/mage') / path).read_bytes(), blob)
+                self.assertEqual((xmage_source() / path).read_bytes(), blob)
                 seen[path] = sha
         self.assertEqual(len(seen), 242)
         self.assertEqual(records, 57 + 824)

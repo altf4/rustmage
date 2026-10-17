@@ -16,7 +16,7 @@ The new compiler route requires an exact complete permission sentence on a perma
 
 Runtime source `3910bb2580c4d5abbb6fa5cae4f952cc3d0aa234` includes merged main `9e4e08adbbbf41772657c8f90de5c7bb59755468`. It supports 1,811/5,164 Standard identities (3,353 still gated), 87 token recipes, one emblem, nineteen Adventure helpers and ten Omen helpers: 5,300 definitions, schema79. The remaining three Omen obligations—Bloomvine split destinations, Feral same-graveyard grouping and Scavenger inset X—remain tracked in #255. This delivery does not complete Standard support.
 
-Final catalogue fingerprint: `e6591b397553621288a204da250532c02e151d44a1f08e88f6ea9eac2c8b3474`. The optimized immutable library used for final acceptance is `/home/altf4/.cache/rustmage-immutable/timing268-e659-2e1af89a308b-schema79.so`, SHA-256 `2e1af89a308ba6b4d1907df2c8762bef9f80a1342cc2293317ecd63b4b482289`.
+Final catalogue fingerprint: `e6591b397553621288a204da250532c02e151d44a1f08e88f6ea9eac2c8b3474`. The optimized immutable library used for final acceptance is `<cache>/rustmage-immutable/timing268-e659-2e1af89a308b-schema79.so`, SHA-256 `2e1af89a308ba6b4d1907df2c8762bef9f80a1342cc2293317ecd63b4b482289`.
 
 Final source passed 1,672 native tests (1,660 unit tests in 4.89 seconds plus twelve integration tests), all-target Clippy with warnings denied (11.41 seconds), and 29 focused compiler methods (1.367 seconds). Fresh public paid scenarios passed in both seats (5.617 seconds). The final-library Standard acceptance completed 100 naturally terminal games, 100,567 owned branch/restore replays and 201,134 wrong-actor/stale denials. Every constructor asserted the complete final fingerprint and schema79.
 

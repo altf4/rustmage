@@ -75,7 +75,7 @@ Issue [337](https://github.com/altf4/rustmage/issues/337). Foundation `61a7d0cef
 
 ## Rules evidence and difficult cases
 
-Pinned primary CR2026-09-25 local `/tmp/rustmage-rules-20260925.txt`:613.1f/613.3 (layer6),613.6 (multi-layer continuation),613.7a-e/m/n (timestamps),613.8a-c (dependencies),122.1b (keyword counters),603.10a (pre-event lookback),113.7a (queued abilities independent of source). Read the complete relevant text rather than treating the Java implementation as the rules authority.
+Pinned primary CR2026-09-25 local `<temp>/rustmage-rules-20260925.txt`:613.1f/613.3 (layer6),613.6 (multi-layer continuation),613.7a-e/m/n (timestamps),613.8a-c (dependencies),122.1b (keyword counters),603.10a (pre-event lookback),113.7a (queued abilities independent of source). Read the complete relevant text rather than treating the Java implementation as the rules authority.
 
 A single 'last loss timestamp' is insufficient if source ability removal changes the existence of another layer6 provider. Likewise, clearing only Keywords does not disable mana abilities, Ward, death grants, replacements, cost reductions, continuous statistics or combat restrictions. An ad-hoc source boolean without earlier-layer participation is insufficient for Changeling/type-changing providers. These are architecture constraints to resolve, not reasons to narrow individual admitted card text.
 

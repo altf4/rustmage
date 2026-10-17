@@ -16,7 +16,7 @@ also equal the original a36 prototype. No native rebuild is attributed to the
 policy-only correction.
 
 Final immutable library:
-`/home/altf4/.cache/rustmage-immutable/handland325-71d7c34-a9e0-schema97-60a69f3cf930.so`
+`<cache>/rustmage-immutable/handland325-71d7c34-a9e0-schema97-60a69f3cf930.so`
 
 SHA256 `60a69f3cf930435df3d49c0db180c7f37868878815fda83b5a65f748600c4811`.
 
@@ -108,7 +108,7 @@ comparison is exactly five changed definitions, 5,326 preserved and all 888 prio
 helpers/colors/aliases/recipes unchanged; no helpers or factories are added.
 
 The optimized prototype library is
-`/home/altf4/.cache/rustmage-immutable/handland325-a36efe3-b683-schema97-e8172e49872d.so`,
+`<cache>/rustmage-immutable/handland325-a36efe3-b683-schema97-e8172e49872d.so`,
 SHA256 `e8172e49872d596b0f0d5d55f57e6ec77fa1db8fd69231699799a1e98ed2e53c`,
 FP `b68305118668e7c0c2078d057f9fe1490fc54ff983b48fa6cbeb59702817025c`.
 The initial naturally drawn paid Standard policy passes all 24 body/mode/decline

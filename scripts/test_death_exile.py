@@ -1,6 +1,11 @@
 """Pinned full-source provenance; no rules text is compiled."""
 import hashlib,json,os,re,subprocess,unittest
 from pathlib import Path
+if __package__:
+    from .source_paths import xmage_source
+else:
+    from source_paths import xmage_source
+
 ROOT=Path(__file__).resolve().parents[1]
 
 class DeathExileTests(unittest.TestCase):
@@ -11,7 +16,7 @@ class DeathExileTests(unittest.TestCase):
         cls.audit = json.loads((ROOT / 'docs/death-exile-admissions.json').read_text())
 
     def test_entire_pinned_java_source_and_full_metadata_audit(self):
-        root = Path(os.environ.get('RUSTMAGE_XMAGE_SOURCE', '/home/altf4/Code/mage'))
+        root = xmage_source()
         if not root.exists():
             self.skipTest('set RUSTMAGE_XMAGE_SOURCE for complete pinned source audit')
         self.assertEqual(self.audit['source_records'], 242)

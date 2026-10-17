@@ -8,6 +8,11 @@ import unittest
 from scripts import link_catalogue as linker
 
 
+if __package__:
+    from .source_paths import xmage_source
+else:
+    from source_paths import xmage_source
+
 class DirectCardTests(unittest.TestCase):
     def test_all_typed_definitions_have_stable_ids_and_set_paths(self):
         metadata, records, version = linker.load()
@@ -93,7 +98,7 @@ class DirectCardTests(unittest.TestCase):
                     for record in records.values()
                     for pin in record.get('xmage_dependencies', []))
         for revision, path, digest in sorted(set(pins)):
-            raw = subprocess.check_output(['git','-C','/home/altf4/Code/mage','show',revision+':'+path])
+            raw = subprocess.check_output(['git','-C',str(xmage_source()),'show',revision+':'+path])
             self.assertEqual(hashlib.sha256(raw).hexdigest(), digest, path)
 
 if __name__ == '__main__': unittest.main()

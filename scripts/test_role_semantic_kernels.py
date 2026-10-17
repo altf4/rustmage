@@ -1,6 +1,11 @@
 """Full Role source inventory retained independently of the removed parser."""
 import hashlib,json,os,subprocess,unittest
 from pathlib import Path
+if __package__:
+    from .source_paths import xmage_source
+else:
+    from source_paths import xmage_source
+
 ROOT=Path(__file__).resolve().parents[1]
 class RoleProvenanceTests(unittest.TestCase):
     @classmethod
@@ -10,7 +15,7 @@ class RoleProvenanceTests(unittest.TestCase):
         names = ['Return Triumphant', 'Twisted Sewer-Witch', 'Syr Armont, the Redeemer', 'Asinine Antics', 'A Tale for the Ages', 'Mystical Tether']
         manifest = json.loads((ROOT / 'docs/role-semantic-admissions.json').read_text())
         self.assertEqual({c['name'] for c in manifest['cards']}, set(names))
-        source = Path(os.environ.get('RUSTMAGE_XMAGE_SOURCE', '/home/altf4/Code/mage'))
+        source = xmage_source()
         records = manifest['shared_sources'] + [v for c in manifest['cards'] for v in c['sources']]
         for card in manifest['cards']:
             self.assertEqual(card['oracle_id'], self.cards[card['name']]['oracle_id'])

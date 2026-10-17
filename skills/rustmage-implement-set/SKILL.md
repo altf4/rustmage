@@ -6,8 +6,8 @@ description: Implement complete Magic card batches in rustmage using directly au
 Implement whole cards for rustmage's deterministic in-process RL/MCTS library.
 Read the checkout's `AGENTS.md` and `docs/direct-card-authoring.md` for current
 interfaces and validation commands. Resolve repository paths from the active
-checkout; the usual primary checkout is `/home/altf4/Code/rustmage` and XMage is
-`/home/altf4/Code/mage`.
+checkout. Locate XMage through `RUSTMAGE_XMAGE_SOURCE`, or use a sibling `mage`
+checkout; the shared source resolver also handles linked Git worktrees.
 
 ## Finish engine dependencies first
 

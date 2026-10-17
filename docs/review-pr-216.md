@@ -11,7 +11,7 @@ Independently passed 1,363 Rust tests, 166 fresh-release Python tests (190.780 s
 
 Additional public probes exercised eight actual Alania exile casts of Thwip!/Yip Yip! across both seats and conditional branches, eight cleanup resets, fifty clone/restore/stale checks and thirty-four wrong actors. Two further witnesses verified Dreamdew finishes tap/stun/draw before Chrome's separately queued trigger resolves.
 
-Evidence: `/tmp/issue213-library-review-rust.log`, `release.log`, `python.log`, `standard.log`, `probe.log` and `tap-probe.log`, with each latter name using the same `/tmp/issue213-library-review-` prefix. External probe sources use the corresponding `.py` names.
+Evidence: `<temp>/issue213-library-review-rust.log`, `release.log`, `python.log`, `standard.log`, `probe.log` and `tap-probe.log`, with each latter name using the same `<temp>/issue213-library-review-` prefix. External probe sources use the corresponding `.py` names.
 
 ## Rules/compiler reviewer — `/root/independent_library_189`
 
@@ -20,4 +20,4 @@ Independently passed 1,363 Rust tests, 260 compiler/data tests (333.099 seconds)
 
 Read complete constructors/shared rules and verified all forty Java hashes across forty files, including gates and shared helpers. Exactly nine definitions change; 5,247 others, all IDs/color masks, 72 factories/emblem and 466 numeric helper arms remain unchanged.
 
-Evidence: `/tmp/issue213-rules-review-rust.log`, `compiler.log`, `standard100.log`, `probe-frozen-deps.log`, `audit.log` and `catalogue.log`, with each latter name using the same `/tmp/issue213-rules-review-` prefix. The private probe uses a home-backed build target and frozen worktree Cargo.lock.
+Evidence: `<temp>/issue213-rules-review-rust.log`, `compiler.log`, `standard100.log`, `probe-frozen-deps.log`, `audit.log` and `catalogue.log`, with each latter name using the same `<temp>/issue213-rules-review-` prefix. The private probe uses a home-backed build target and frozen worktree Cargo.lock.

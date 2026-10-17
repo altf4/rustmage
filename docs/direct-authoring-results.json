@@ -84,11 +84,11 @@
         "--edition",
         "2024",
         "--check",
-        "/home/altf4/.codex/worktrees/role-aura-kernels/rustmage/src/card_definitions/explosive_derailment.rs",
-        "/home/altf4/.codex/worktrees/role-aura-kernels/rustmage/src/card_definitions/jailbreak_scheme.rs",
-        "/home/altf4/.codex/worktrees/role-aura-kernels/rustmage/src/card_definitions/mod.rs",
-        "/home/altf4/.codex/worktrees/role-aura-kernels/rustmage/src/card_definitions/requisition_raid.rs",
-        "/home/altf4/.codex/worktrees/role-aura-kernels/rustmage/src/card_definitions/rustler_rampage.rs"
+        "<worktree>/src/card_definitions/explosive_derailment.rs",
+        "<worktree>/src/card_definitions/jailbreak_scheme.rs",
+        "<worktree>/src/card_definitions/mod.rs",
+        "<worktree>/src/card_definitions/requisition_raid.rs",
+        "<worktree>/src/card_definitions/rustler_rampage.rs"
       ],
       "exit": 0,
       "seconds": 0.013777680054772645
@@ -126,7 +126,7 @@
     },
     {
       "command": [
-        "/home/altf4/.cache/rustmage-validation-506w6noa/release/benchmark",
+        "<cache>/rustmage-validation-506w6noa/release/benchmark",
         "100"
       ],
       "exit": 0,

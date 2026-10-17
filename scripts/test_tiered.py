@@ -1,6 +1,11 @@
 """Pinned full-source provenance; no rules text is compiled."""
 import hashlib,json,os,re,subprocess,unittest
 from pathlib import Path
+if __package__:
+    from .source_paths import xmage_source
+else:
+    from source_paths import xmage_source
+
 ROOT=Path(__file__).resolve().parents[1]
 
 NAMES = {'Fire Magic', 'Ice Magic', 'Restoration Magic', 'Thunder Magic', "Tifa's Limit Break", "Vincent's Limit Break", 'Boros Charm', 'Epic Fight'}
@@ -37,5 +42,5 @@ class TieredTests(unittest.TestCase):
         self.assertEqual(len(unique), len(manifest['unique_sources']))
         self.assertEqual(unique, {r['java_source']: r['java_sha256'] for r in manifest['unique_sources']})
         for path, sha in unique.items():
-            raw = subprocess.check_output(['git', '-C', '/home/altf4/Code/mage', 'show', manifest['java_revision'] + ':' + path])
+            raw = subprocess.check_output(['git', '-C', str(xmage_source()), 'show', manifest['java_revision'] + ':' + path])
             self.assertEqual(hashlib.sha256(raw).hexdigest(), sha)

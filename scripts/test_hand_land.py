@@ -1,6 +1,11 @@
 """Pinned full-source provenance; no rules text is compiled."""
 import hashlib,json,os,re,subprocess,unittest
 from pathlib import Path
+if __package__:
+    from .source_paths import xmage_source
+else:
+    from source_paths import xmage_source
+
 ROOT=Path(__file__).resolve().parents[1]
 
 class HandLandTests(unittest.TestCase):
@@ -14,7 +19,7 @@ class HandLandTests(unittest.TestCase):
         self.assertEqual(len(self.audit['cards']), 12)
         self.assertEqual(self.audit['source_records'], 187)
         self.assertEqual(self.audit['unique_source_count'], 86)
-        root = Path('/home/altf4/Code/mage')
+        root = xmage_source()
         for row in self.audit['cards']:
             self.assertEqual(row['facts'], self.cards[row['name']])
         for row in self.audit['unique_sources']:

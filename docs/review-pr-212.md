@@ -12,7 +12,7 @@ Reviewed all thirteen complete bodies, owner-private suspension, controller-inde
 
 Canonical audit verified thirteen changed definitions, 5,243 preserved definitions, all 5,256 identities and no new factory. An independent benchmark confirmed **19,944 initial logical bytes** and 571,049 smoke decisions. The reviewer separately checked the final PR's remote head and OPEN state. A stale-revision interception issue affected only its supplementary probe harness and was corrected before the successful final run.
 
-Evidence: `/tmp/issue209-library-review-{rust,python,standard100,probe-final,catalogue-delta,benchmark}.log`.
+Evidence: `<temp>/issue209-library-review-{rust,python,standard100,probe-final,catalogue-delta,benchmark}.log`.
 
 ## Rules and compiler
 
@@ -22,7 +22,7 @@ Verified complete modes, cycling, Ward, Chrome life gain, live Villain condition
 
 Additional instrumentation checked **50,712 public observations**, **64 private owner windows**, **84 exact-source/target public movement events** and **454 unchanged historical steps**, including six private reorder steps and 32 subsequent draws. Public events changed only on successful targeted moves and matched both viewers.
 
-Evidence: `/tmp/issue209-rules-review-{verdict,native,compiler,standard100,public-probe,audit,catalogue,checkpoint}.log`; supplementary scripts share that prefix. The reviewer read the final PR objects locally when a web cache lookup failed, and verified the exact final commit directly.
+Evidence: `<temp>/issue209-rules-review-{verdict,native,compiler,standard100,public-probe,audit,catalogue,checkpoint}.log`; supplementary scripts share that prefix. The reviewer read the final PR objects locally when a web cache lookup failed, and verified the exact final commit directly.
 
 ## Integration and preaudit fixes
 

@@ -15,7 +15,7 @@ Independent209 compiler negatives and eight controls include all17 reciprocal co
 
 A genuine paid public route in both seats declares Dalkovan and Dragonback together, creates two independent batches/four Warriors, and gives Impact Tremors/Hinterland Sanctifier exactly four real entries while recording only two declared attackers. Actual Unsummon removes a Warrior; paid Resolute Reinforcements creates a new Soldier in the same physical slot with a new generation. Both delayed packets sacrifice only the three remaining old Warriors and leave the new Soldier alive. The route checks3,059 owned parent-closed branches and189 atomic wrong-actor rejections, plus snapshot/restore/stale replay throughout.
 
-Evidence prefix `/tmp/issue235-rules-review-`: `rust.log`, `compiler.log`, `public38.log`, `standard.log`, `clippy.log`, `fmt.log`, `generated.log`, `sources.log`, `semantic.log`, `negative.log`, `native-independent.log` and `public-reuse.log`. Immutable library `/home/altf4/.cache/rustmage-review235-rules/librustmage-fb97c16-immutable.so` SHA256 `d3adf3615589750da08a3dce0fa932d2c6cba5beff688b3e8cb17cb9baa7e2d1`.
+Evidence prefix `<temp>/issue235-rules-review-`: `rust.log`, `compiler.log`, `public38.log`, `standard.log`, `clippy.log`, `fmt.log`, `generated.log`, `sources.log`, `semantic.log`, `negative.log`, `native-independent.log` and `public-reuse.log`. Immutable library `<cache>/rustmage-review235-rules/librustmage-fb97c16-immutable.so` SHA256 `d3adf3615589750da08a3dce0fa932d2c6cba5beff688b3e8cb17cb9baa7e2d1`.
 
 ## Library/API — `/root/attachment_rules_214`
 
@@ -25,7 +25,7 @@ Six actually paid public games verify1,857 owned replays, six private defender-p
 
 Independent full303 compiler tests pass638.683seconds and full204 fresh immutable-library Python tests pass471.210seconds. Actual countered delayed packets are independently native-tested; no admitted public spell currently counters abilities, so public tests do not claim a real counterspell cast against the new ability kind.
 
-Evidence prefix `/tmp/issue235-library-`: `native-fb97.log`, `compiler-fb97.log`, `python-full-fb97.log`, `composition-final.log`, `clippy-fb97.log`, `fmt-fb97.log`, `generated-fb97.log`, `canonical-fb97.log`, `adverse-fb97.log`, `public-probes-fb97.log`, `reuse-fb97.log`, `standard100-a.log`, `standard100-b.log` and `benchmark-fb97.log`. Complete reviewer report: `/tmp/issue235-library-review.md`. Immutable library `/home/altf4/.cache/rustmage-issue235-library/frozen-fb97/librustmage.so` has the same SHA256 listed above.
+Evidence prefix `<temp>/issue235-library-`: `native-fb97.log`, `compiler-fb97.log`, `python-full-fb97.log`, `composition-final.log`, `clippy-fb97.log`, `fmt-fb97.log`, `generated-fb97.log`, `canonical-fb97.log`, `adverse-fb97.log`, `public-probes-fb97.log`, `reuse-fb97.log`, `standard100-a.log`, `standard100-b.log` and `benchmark-fb97.log`. Complete reviewer report: `<temp>/issue235-library-review.md`. Immutable library `<cache>/rustmage-issue235-library/frozen-fb97/librustmage.so` has the same SHA256 listed above.
 
 ## Integration verification
 
@@ -33,4 +33,4 @@ The integrator independently passes1,526 native tests, Clippy, formatting, gener
 
 Mobilize Standard100 starts at20,136bytes and reaches22,508. Adjacent Convoke remains identical in all gameplay vectors, with20,136initial/21,488maximum logical bytes. Exact accepted Convoke initial state is20,088, so the Mobilize enclosing-layout increase is48bytes. A contended native1,000-game smoke benchmark has571,049decisions at140,626decisions/s,458.93ns clone and765.07ns restore. These timings include policy/observation construction, exclude model/tensors/JSON and do not claim an XMage speedup; memory excludes capacity/allocator overhead.
 
-Integration evidence prefix `/tmp/rustmage-235-integrated-`: `rust-final.log`, `clippy.log`, `fmt.log`, `generated-check.log`, `composition.log`, `semantic.log`, `release.log`, `python.log`, `standard.log`, `convoke.log` and `benchmark.log`. This final evidence commit changes documentation only; both reviewers confirm its attribution and unchanged approved code before merge.
+Integration evidence prefix `<temp>/rustmage-235-integrated-`: `rust-final.log`, `clippy.log`, `fmt.log`, `generated-check.log`, `composition.log`, `semantic.log`, `release.log`, `python.log`, `standard.log`, `convoke.log` and `benchmark.log`. This final evidence commit changes documentation only; both reviewers confirm its attribution and unchanged approved code before merge.

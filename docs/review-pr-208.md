@@ -12,7 +12,7 @@ Independently checked immutable predicates, actor-only private windows, exact re
 
 An external public-API adverse probe exercised **25 stage signatures**, **671 rejected actions**, **12 divergent-clone checks**, **78 deferred selections**, **six copy-window observations** and **54 hybrid-stage checks**. Wrong actors, duplicates and out-of-window objects remained rejected without altering state. Independently verified all **122 Java hashes / 29 files** and canonical twelve-replacement/one-copy delta.
 
-Local evidence: `/tmp/pr208-library-review-{native,python,standard100,probe}.log`; probe source `/tmp/pr208-library-review-probe.py`.
+Local evidence: `<temp>/pr208-library-review-{native,python,standard100,probe}.log`; probe source `<temp>/pr208-library-review-probe.py`.
 
 ## Rules and compiler review
 
@@ -22,7 +22,7 @@ Independently checked every complete body, subtype union/exclusion/conjunction s
 
 **113 name-preserving adverse full-body mutations** remained gated; all **twelve unchanged controls** admitted. Verified all pinned and checkout provenance hashes, **5,243 unchanged definitions**, twelve replacements, one added copy, **5,183 stable ordinary IDs**, **5,255 preserved old color masks**, **71 unchanged prior factories** and **442 preserved old helper arms**, with four added arms.
 
-Local evidence: `/tmp/pr208-rules-review-{verdict,rust,compiler,python,standard100,audit,negative,provenance,catalogue,release}.log`; audit scripts `/tmp/pr208-rules-review-audit.py` and `/tmp/pr208-rules-review-negative-names.py`.
+Local evidence: `<temp>/pr208-rules-review-{verdict,rust,compiler,python,standard100,audit,negative,provenance,catalogue,release}.log`; audit scripts `<temp>/pr208-rules-review-audit.py` and `<temp>/pr208-rules-review-negative-names.py`.
 
 ## Integration validation
 

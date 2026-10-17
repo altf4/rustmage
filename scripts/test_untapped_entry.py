@@ -1,6 +1,11 @@
 """Pinned full-source provenance; no rules text is compiled."""
 import hashlib,json,os,re,subprocess,unittest
 from pathlib import Path
+if __package__:
+    from .source_paths import xmage_source
+else:
+    from source_paths import xmage_source
+
 ROOT=Path(__file__).resolve().parents[1]
 
 class UntappedEntryTests(unittest.TestCase):
@@ -16,5 +21,5 @@ class UntappedEntryTests(unittest.TestCase):
         self.assertEqual([c['name'] for c in audit['cards'] if c['current_standard']], ['Spelunking', 'The Wandering Minstrel'])
         import hashlib
         for record in [s for c in audit['cards'] for s in c['sources']] + audit['additional_sources']:
-            raw = subprocess.check_output(['git', '-C', '/home/altf4/Code/mage', 'show', audit['java_revision'] + ':' + record['java_source']])
+            raw = subprocess.check_output(['git', '-C', str(xmage_source()), 'show', audit['java_revision'] + ':' + record['java_source']])
             self.assertEqual(hashlib.sha256(raw).hexdigest(), record['java_sha256'])
