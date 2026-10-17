@@ -267,3 +267,46 @@ fn ability_removal_paid_already_queued_trigger_keeps_its_own_program() {
         );
     }
 }
+
+#[test]
+fn ability_removal_paid_removed_minstrel_cannot_override_land_entry_then_restores() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let minstrel = named(&mut g, p, "The Wandering Minstrel", Zone::Hand);
+        cast(&mut g, minstrel, None, &[]);
+        settle(&mut g);
+        let aura = named(&mut g, p, "Stop Cold", Zone::Hand);
+        cast(&mut g, aura, None, &[Target::Card(minstrel)]);
+        settle(&mut g);
+        let first = named(&mut g, p, "Baron, Airship Kingdom", Zone::Hand);
+        checked(&mut g, Action::PlayLand { card: first });
+        settle(&mut g);
+        assert!(g.object_view(first).tapped);
+        let remove = named(&mut g, p, "Disenchant", Zone::Hand);
+        cast(&mut g, remove, None, &[Target::Card(aura)]);
+        settle(&mut g);
+        next_turn(&mut g);
+        next_turn(&mut g);
+        while g.state.step != Step::Main1 {
+            checked(&mut g, Action::Pass);
+        }
+        let second = named(&mut g, p, "Baron, Airship Kingdom", Zone::Hand);
+        checked(&mut g, Action::PlayLand { card: second });
+        let intrinsic = g
+            .entry_tap_view(p)
+            .unwrap()
+            .effects
+            .into_iter()
+            .find(|effect| effect.intrinsic)
+            .unwrap();
+        checked(
+            &mut g,
+            Action::ChooseEntryReplacement {
+                source: intrinsic.source,
+                intrinsic: true,
+            },
+        );
+        settle(&mut g);
+        assert!(!g.object_view(second).tapped);
+    }
+}

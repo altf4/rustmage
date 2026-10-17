@@ -349,9 +349,6 @@ pub struct AbilityAvailabilityView {
     pub grants: Vec<GrantedAbilityView>,
 }
 impl Game {
-    pub(super) fn has_ability_removal(&self) -> bool {
-        CharacteristicWorld::has_ability_removal(self)
-    }
     pub(super) fn evaluated_abilities(&self) -> Option<AbilityEvaluation> {
         evaluate_if_needed(self)
     }

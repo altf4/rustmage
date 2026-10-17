@@ -1880,7 +1880,25 @@ impl Card {
     }
     pub(crate) fn static_ability_groups(self) -> &'static [StaticAbilityGroup] {
         authored::rules(self).map_or_else(
-            || generated::static_ability_groups(self),
+            || {
+                let groups = generated::static_ability_groups(self);
+                if self.controlled_entry_untapped() != 0 {
+                    // These legacy providers were added after the original typed
+                    // origin table. Their sole static effect gets its own source-
+                    // local identity without interpreting English or card names.
+                    assert!(
+                        groups.is_empty(),
+                        "new typed provider needs explicit combined groups"
+                    );
+                    &[StaticAbilityGroup {
+                        line: 0,
+                        first_layer: AbilityLayer::Rule,
+                        fragments: &[StaticAbilityFragment::ControlledEntryUntapped],
+                    }]
+                } else {
+                    groups
+                }
+            },
             |rules| rules.static_groups,
         )
     }
