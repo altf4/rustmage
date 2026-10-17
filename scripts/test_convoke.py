@@ -19,7 +19,8 @@ class ConvokeCompilerTests(unittest.TestCase):
  def test_unrestricted_other_and_one_or_two_have_exact_cardinality(self):
   spec,program=g.targeted_program("return up to one other target nonland permanent to its owner's hand.");self.assertEqual(spec,('OtherNonland',0,1));self.assertEqual(program,['ReturnToHand']);self.assertIn('relation: -1',g.rust_targets(spec));self.assertIn('other: true',g.rust_targets(spec))
   self.assertEqual(g.targeted_program('one or two target creatures each get +2/+1 until end of turn.')[0],('Creature',1,2))
-  for bad in ["return up to two other target nonland permanents to their owners' hands.",'one or three target creatures each get +2/+1 until end of turn.','one or two target creatures each get +2/+1 until your next turn.']:
+  self.assertEqual(g.targeted_program("return up to two other target nonland permanents to their owners' hands."),(('OtherNonland',0,2),['ReturnToHand']))
+  for bad in ["return up to three other target nonland permanents to their owners' hands.",'one or three target creatures each get +2/+1 until end of turn.','one or two target creatures each get +2/+1 until your next turn.']:
    self.assertIsNone(g.targeted_program(bad))
  def test_variable_and_composed_costs_never_revive_a_convoke_body(self):
   names=[r['name'] for r in self.manifest['cards']]
