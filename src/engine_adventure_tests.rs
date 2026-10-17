@@ -372,3 +372,68 @@ fn popped_spell_exit_captures_inset_characteristics_but_preserves_physical_card(
         assert!(g.state.adventures.is_none());
     }
 }
+
+#[test]
+fn late_stack_exit_and_later_normal_announcement_capacity_restore_exact_permissions() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let parent = Card::from_name("Minecart Daredevil // Ride the Rails").unwrap();
+        let id = spawn(&mut g, p, parent, Zone::Hand);
+        g.state.objects[id as usize].generation = u64::MAX - 1;
+        announce_to_stack(&mut g, Action::AnnounceAdventure { card: id }, None, id);
+        act(&mut g, Action::Pass);
+        let saved = g.snapshot();
+        assert!(matches!(
+            g.apply(p.other(), Action::Pass),
+            Err(Error::CapacityExceeded(_))
+        ));
+        assert_eq!(g.snapshot(), saved);
+        assert!(g.state.adventures.is_none());
+
+        let mut g = setup(p);
+        let id = spawn(&mut g, p, parent, Zone::Hand);
+        act(&mut g, Action::AnnounceAdventure { card: id });
+        settle(&mut g);
+        g.state.priority = p;
+        g.state.next_stack_id = u64::MAX;
+        let saved = g.snapshot();
+        assert!(matches!(
+            g.apply(p, Action::AnnounceExile { card: id }),
+            Err(Error::CapacityExceeded(_))
+        ));
+        assert_eq!(g.snapshot(), saved);
+        assert!(g.can_play_adventure(p, id));
+    }
+}
+
+#[test]
+fn normal_only_permission_survives_cleanup_but_retains_land_limits_and_actor() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let parent = Card::from_name("Midgar, City of Mako // Reactor Raid").unwrap();
+        let id = spawn(&mut g, p, parent, Zone::Hand);
+        act(&mut g, Action::AnnounceAdventure { card: id });
+        settle(&mut g);
+        let permission = g.state.adventures.as_ref().unwrap().permissions[0].clone();
+        // Indefinite Adventure grants do not use the cleanup deadline registry.
+        g.state.step = Step::Cleanup;
+        g.finish_cleanup();
+        assert!(g.can_play_adventure(p, id));
+        assert!(!g.can_play_adventure(p.other(), id));
+        assert_eq!(
+            g.state.adventures.as_ref().unwrap().permissions[0],
+            permission
+        );
+        g.state.step = Step::Main1;
+        g.state.active = p;
+        g.state.priority = p;
+        g.state.land_played = true;
+        assert!(!g.legal_actions().contains(&Action::PlayLand { card: id }));
+        g.state.land_played = false;
+        let count = g.state.players[p.index()].spells_cast_this_turn;
+        act(&mut g, Action::PlayLand { card: id });
+        assert_eq!(g.state.players[p.index()].spells_cast_this_turn, count);
+        assert!(g.state.objects[id as usize].tapped);
+        assert!(g.state.adventures.is_none());
+    }
+}

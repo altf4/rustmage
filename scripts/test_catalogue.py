@@ -2170,7 +2170,7 @@ class CatalogueCompilerTests(unittest.TestCase):
         definitions=coverage['cards']
         for name,mask in [('Cat-Owl',3),('Forest',0),('Grizzly Bears',16),('Abandon Attachments',10)]:
             self.assertEqual(colors[next(i for i,c in enumerate(definitions) if c['name']==name)],mask)
-        self.assertEqual(len(colors),len(definitions)+coverage['token_definitions']+coverage['emblem_definitions'])
+        self.assertEqual(len(colors),len(definitions)+coverage['adventure_definitions']+coverage['token_definitions']+coverage['emblem_definitions'])
 
     def test_missing_invalid_colors_fail_closed_even_with_fresh_checksum(self):
         import json,hashlib,copy
