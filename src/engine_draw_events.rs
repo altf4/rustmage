@@ -23,8 +23,8 @@ impl Game {
                 };
                 if ordinal.is_none_or(|n| n == event.ordinal)
                     && match relation {
-                        CastRelation::You => source.owner == player,
-                        CastRelation::Opponent => source.owner != player,
+                        CastRelation::You => source.controller == player,
+                        CastRelation::Opponent => source.controller != player,
                         CastRelation::Any => true,
                     }
                     && self.queue_trigger_from(&source, index, grant.map(Box::new))

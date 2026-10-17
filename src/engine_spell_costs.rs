@@ -151,7 +151,7 @@ impl Game {
                     .enumerate()
                     .filter(|(id, o)| {
                         o.zone == Zone::Battlefield
-                            && o.owner == actor
+                            && o.controller == actor
                             && self.is_creature(*id as CardId)
                             && self.stats_without_hand(*id as CardId, departing).power
                                 >= i128::from(minimum)
@@ -223,7 +223,7 @@ impl Game {
         }
         for &source in &self.state.static_sources {
             let object = &self.state.objects[source as usize];
-            if object.owner != actor {
+            if object.controller != actor {
                 continue;
             }
             for rule in object.card.cost_reductions() {

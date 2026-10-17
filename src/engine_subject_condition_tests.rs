@@ -403,7 +403,7 @@ fn illegal_targets_fizzle_the_full_body_and_cannot_migrate_to_new_incarnations()
                 }
                 _ => {
                     g.state.objects[target as usize].gained_keywords = Keywords::HEXPROOF;
-                    g.state.objects[target as usize].owner = Player::P1;
+                    g.state.objects[target as usize].controller = Player::P1;
                 }
             }
             settle(&mut g, None);

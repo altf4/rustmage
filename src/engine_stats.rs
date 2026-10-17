@@ -157,7 +157,7 @@ impl Game {
                 object.card,
                 self.current_kinds(id),
                 self.granted_subtypes(id),
-                object.owner == controller,
+                object.controller == controller,
                 self.object_ref(id) == source,
                 self.state.attackers.iter().any(|a| a.card == id),
             )
@@ -193,7 +193,7 @@ impl Game {
         if let Some(base) = object.card.dynamic_stats() {
             let reference = self.object_ref(id);
             let power = base.power.map(|expr| {
-                self.stat_expression_without_hand(expr, reference, object.owner, departing)
+                self.stat_expression_without_hand(expr, reference, object.controller, departing)
             });
             if let Some(power) = power {
                 stats.power = power
@@ -213,7 +213,7 @@ impl Game {
                         .and_then(|v| v.checked_sub(p.offset))
                         .capacity("toughness exhausted")
                 } else {
-                    self.stat_expression_without_hand(expr, reference, object.owner, departing)
+                    self.stat_expression_without_hand(expr, reference, object.controller, departing)
                 };
                 stats.toughness = value
                     .checked_add(object.growth.toughness)
@@ -243,7 +243,7 @@ impl Game {
                     let value = self.stat_value_without_hand(
                         modifier.value,
                         self.object_ref(source),
-                        object.owner,
+                        object.controller,
                         departing,
                     );
                     stats += Stats {
@@ -261,12 +261,12 @@ impl Game {
                 }
             }
             for modifier in object.card.static_modifiers() {
-                if (!modifier.own_turn || self.state.active == object.owner)
+                if (!modifier.own_turn || self.state.active == object.controller)
                     && (!modifier.requires_life_gain
-                        || self.state.players[object.owner.index()].life_gained_this_turn > 0)
+                        || self.state.players[object.controller.index()].life_gained_this_turn > 0)
                     && self.creature_matches(
                         modifier.filter,
-                        object.owner,
+                        object.controller,
                         self.object_ref(source),
                         id,
                     )

@@ -78,7 +78,7 @@ impl Game {
         self.state.objects.get(r.card as usize).is_some_and(|o| {
             o.generation == r.generation
                 && o.zone == Zone::Battlefield
-                && o.owner == p
+                && o.controller == p
                 && self.is_creature(r.card)
                 && !o.tapped
                 && r != source
@@ -114,7 +114,7 @@ impl Game {
             .is_some_and(|o| {
                 o.generation == a.item.object.generation
                     && o.zone == Zone::Battlefield
-                    && o.owner == a.item.controller
+                    && o.controller == a.item.controller
             })
             && f.selected
                 .iter()

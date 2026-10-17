@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "f8cb39054fbbf5678195e908d8848b6796ba6ea92dbd3477d3ea3a673752c1bf",
+  "catalogue_version": "b88837b7de709802a1132b60a262f2e9bc1a1627991b4fc6b68ff45c77568443",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1831,
-  "implemented_total": 1837,
+  "implemented_standard_cards": 1832,
+  "implemented_total": 1838,
   "token_definitions": 88,
   "emblem_definitions": 1,
   "cards": [
@@ -14398,7 +14398,7 @@
     {
       "name": "Korvold and the Noble Thief",
       "standard_legal": true,
-      "implemented": false,
+      "implemented": true,
       "implementation": null
     },
     {

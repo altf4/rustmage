@@ -427,6 +427,9 @@ pub(crate) enum Instruction {
         amount: u16,
         next_turn: bool,
     },
+    ExileTargetLibraryPlay {
+        amount: u16,
+    },
     Forage {
         skip: usize,
     },

@@ -452,7 +452,7 @@ impl Game {
                     return false;
                 };
                 if obj.zone == Zone::Battlefield
-                    && obj.owner != controller
+                    && obj.controller != controller
                     && self.keywords(id).contains(Keywords::HEXPROOF)
                 {
                     return false;
@@ -461,7 +461,7 @@ impl Game {
                     TargetRule::CreatureOrVehicle { relation } => {
                         obj.zone == Zone::Battlefield
                             && (self.is_creature(id) || obj.card.has_subtype("Vehicle"))
-                            && (relation == -1 || (obj.owner == controller) == (relation == 0))
+                            && (relation == -1 || (obj.controller == controller) == (relation == 0))
                     }
                     TargetRule::Creature => obj.zone == Zone::Battlefield && self.is_creature(id),
                     TargetRule::Any => {
@@ -485,7 +485,13 @@ impl Game {
                         obj.zone == expected
                             && (expected != Zone::Graveyard || !obj.card.is_token())
                             && (kinds == 0 || self.current_kinds(id) & u16::from(kinds) != 0)
-                            && (relation == -1 || (obj.owner == controller) == (relation == 0))
+                            && (relation == -1
+                                || (if expected == Zone::Battlefield {
+                                    obj.controller
+                                } else {
+                                    obj.owner
+                                } == controller)
+                                    == (relation == 0))
                             && (!other || self.object_ref(id) != source)
                             && (!nonland || !obj.card.is_land())
                             && (!tapped || obj.tapped)
@@ -579,7 +585,16 @@ impl Game {
         self.spend_mana(actor, payment);
         self.state.passes = 0;
         let origin = self.state.objects[card as usize].zone;
-        let object = self.move_object(card, Zone::Stack).after;
+        let before = self.object_view(card);
+        let event = self.transition_object_under_control(
+            before,
+            Zone::Stack,
+            false,
+            Counters::default(),
+            Some(actor),
+        );
+        self.finish_zone_events(std::slice::from_ref(&event), &[]);
+        let object = event.after;
         let id = self.next_stack_id();
         SpellView {
             crew: None,

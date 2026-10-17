@@ -45,7 +45,7 @@ impl Game {
                     controller: if self.on_battlefield(item.card)
                         && self.object_ref(item.card) == item.object
                     {
-                        self.state.objects[item.card as usize].owner
+                        self.state.objects[item.card as usize].controller
                     } else {
                         item.controller
                     },
@@ -60,7 +60,7 @@ impl Game {
                     };
                     Some(ConniverView {
                         object: bound.object?,
-                        controller: self.state.objects[id as usize].owner,
+                        controller: self.state.objects[id as usize].controller,
                     })
                 })
                 .collect(),
@@ -69,7 +69,7 @@ impl Game {
                 .map(|id| {
                     vec![ConniverView {
                         object: self.object_ref(id),
-                        controller: self.state.objects[id as usize].owner,
+                        controller: self.state.objects[id as usize].controller,
                     }]
                 })
                 .unwrap_or_default(),

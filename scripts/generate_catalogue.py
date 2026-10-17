@@ -3892,6 +3892,11 @@ def adventure_faces(card, mechanic="Adventure"):
 def saga_chapter_program(body):
     """Complete chapter sentences using shared immutable effects, without card-name gates."""
     text=normalize_duration(body[0].lower()+body[1:])
+    if m:=re.fullmatch(r"exile the top (two|three|[0-9]+) cards of target opponent's library\. You may play those cards this turn\.",text):
+        amount={'two':2,'three':3}.get(m[1])
+        if amount is None:amount=int(m[1])
+        if not 1<=amount<=65535:return None
+        return 'Opponent',[f'ExileTargetLibraryPlay {{ amount: {amount} }}']
     if text=='destroy target artifact an opponent controls.':return 'ArtifactOpponent',['Destroy']
     if m:=re.fullmatch(r'this creature deals ([0-9]+) damage to target tapped creature an opponent controls\.',text):
         return ('CreatureOpponentTapped',[f'Damage({int(m[1])})']) if int(m[1])<=32767 else None
@@ -3948,6 +3953,7 @@ def saga_body(card):
             # Only remove authenticated reminder sentences from their exact instruction.
             # Unknown parenthesized text is executable residual, never harmless prose.
             reminders = {
+                'Create a Treasure token. (It\'s an artifact with "{T}, Sacrifice this token: Add one mana of any color.")': 'Create a Treasure token.',
                 'Mill three cards, then create a Food token. (It\'s an artifact with "{2}, {T}, Sacrifice this token: You gain 3 life.")': 'Mill three cards, then create a Food token.',
                 'Tap target creature an opponent controls. Put a stun counter on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)': 'Tap target creature an opponent controls. Put a stun counter on it.',
             }

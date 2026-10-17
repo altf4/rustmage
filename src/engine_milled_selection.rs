@@ -55,12 +55,7 @@ impl Game {
         } else {
             card.card
         };
-        let kinds = definition.kind_mask()
-            | if card.zone == Zone::Battlefield && self.is_creature(object.card) {
-                1
-            } else {
-                0
-            };
+        let kinds = self.current_kinds(object.card);
         match filter {
             MilledFilter::Kinds(mask) => kinds & u16::from(mask) != 0,
             MilledFilter::KindsOrSubtype {
