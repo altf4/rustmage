@@ -25,6 +25,62 @@ fn deck(land: &str, names: &[&str]) -> Vec<Card> {
 }
 
 #[test]
+fn foundations_chosen_values_control_and_death_cards_full_games() {
+    let mut decks = [
+        deck(
+            "Plains",
+            &[
+                "Diamond Mare",
+                "Heraldic Banner",
+                "Adaptive Automaton",
+                "Banner of Kinship",
+                "Healer's Hawk",
+                "Leonin Vanguard",
+                "Hare Apparent",
+                "Angel of Vitality",
+                "Inspiring Overseer",
+            ],
+        ),
+        deck(
+            "Swamp",
+            &[
+                "Wishclaw Talisman",
+                "Harmless Offering",
+                "Garna, Bloodfist of Keld",
+                "Crossway Troublemakers",
+                "Desecration Demon",
+                "Vampire Interloper",
+                "Vengeful Bloodwitch",
+                "Feed the Swarm",
+                "Diregraf Ghoul",
+            ],
+        ),
+    ];
+    for land in &mut decks[0][..4] {
+        *land = Card::from_name("Uncharted Haven").unwrap();
+    }
+    for land in &mut decks[1][..8] {
+        *land = Card::from_name("Mountain").unwrap();
+    }
+    run_matrix_actions(
+        &decks,
+        &[
+            "Diamond Mare",
+            "Heraldic Banner",
+            "Adaptive Automaton",
+            "Banner of Kinship",
+            "Wishclaw Talisman",
+            "Harmless Offering",
+            "Garna, Bloodfist of Keld",
+            "Crossway Troublemakers",
+            "Desecration Demon",
+        ],
+        &["Uncharted Haven"],
+        &["Uncharted Haven", "Heraldic Banner"],
+    );
+}
+
+#[test]
 fn foundations_five_color_full_games_and_owned_search_replay() {
     let mut decks = [
         deck(
@@ -354,6 +410,17 @@ fn foundations_every_admitted_card_in_set_only_full_games() {
 }
 
 fn run_matrix(decks: &[Vec<Card>], expected_casts: &[&str]) {
+    run_matrix_actions(decks, expected_casts, &[], &[]);
+}
+
+fn run_matrix_actions(
+    decks: &[Vec<Card>],
+    expected_casts: &[&str],
+    expected_lands: &[&str],
+    expected_mana_sources: &[&str],
+) {
+    let mut played_lands = BTreeSet::new();
+    let mut used_mana_sources = BTreeSet::new();
     let mut total_decisions = 0;
     let mut triggered = false;
     let mut token = false;
@@ -391,6 +458,17 @@ fn run_matrix(decks: &[Vec<Card>], expected_casts: &[&str]) {
                     let action = actions[index].clone();
                     assert!(!matches!(action, Action::Concede));
                     let obs = game.observe(actor);
+                    match &action {
+                        Action::PlayLand { card } => {
+                            let object = obs.objects.iter().find(|o| o.id == *card).unwrap();
+                            played_lands.insert(object.card.name());
+                        }
+                        Action::ActivateMana { card, .. } | Action::TapMana { card } => {
+                            let object = obs.objects.iter().find(|o| o.id == *card).unwrap();
+                            used_mana_sources.insert(object.card.name());
+                        }
+                        _ => {}
+                    }
                     for item in &obs.stack {
                         if item.kind == StackKind::Spell {
                             new_spells.insert(item.source_card.name());
@@ -444,6 +522,15 @@ fn run_matrix(decks: &[Vec<Card>], expected_casts: &[&str]) {
         assert!(
             new_spells.contains(name),
             "new card was not cast in full games: {name}"
+        );
+    }
+    for name in expected_lands {
+        assert!(played_lands.contains(name), "land was not played: {name}");
+    }
+    for name in expected_mana_sources {
+        assert!(
+            used_mana_sources.contains(name),
+            "mana source was not used: {name}"
         );
     }
     assert!(branches >= 20);
