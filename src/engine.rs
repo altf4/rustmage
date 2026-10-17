@@ -23,8 +23,11 @@ mod saddle;
 pub use adventure::{AdventurePermission, SpellCharacteristicsView};
 pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
+#[path = "engine_gift.rs"]
+mod gift;
+pub use gift::{GiftContext, GiftDeclaration};
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 88;
+pub const OBSERVATION_SCHEMA: u32 = 90;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
 #[path = "engine_mobilize.rs"]
@@ -327,6 +330,9 @@ define_actions! {
     ChooseX { value: u32 },
     ChooseKicker {
         pay: bool,
+    },
+    ChooseGift {
+        beneficiary: Option<Player>,
     },
     ChooseOffspring {
         pay: bool,
@@ -643,6 +649,9 @@ pub enum CastFace {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CastInfo {
+    /// A non-targeted promise, declared before targets; absent until chosen.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gift: Option<GiftDeclaration>,
     /// Chosen characteristics, independent of payment/permission method.
     pub face: CastFace,
     /// Canonical physical identity, distinct from the chosen inset definition.
@@ -800,7 +809,22 @@ impl SpellView {
                 let a = &self.source_card.activations()[ability as usize];
                 Some((a.targets, a.program))
             }
-            StackKind::Spell => self.source_card.spell_program(self.mode),
+            StackKind::Spell => self
+                .source_card
+                .spell_program(self.mode)
+                .map(|(plan, program)| {
+                    let promised = self
+                        .cast
+                        .is_some_and(|c| matches!(c.gift, Some(GiftDeclaration::Promised { .. })));
+                    let plan = if promised {
+                        self.source_card
+                            .gift()
+                            .map_or(plan, |gift| gift.promised_targets)
+                    } else {
+                        plan
+                    };
+                    (plan, program)
+                }),
             StackKind::DelayedSacrifice => {
                 Some((TargetPlan::NONE, &[Instruction::SacrificeDelayedTokens]))
             }
@@ -981,6 +1005,9 @@ enum Pending {
         player: Player,
     },
     Kicker {
+        player: Player,
+    },
+    Gift {
         player: Player,
     },
     Offspring {
@@ -1676,6 +1703,7 @@ impl Game {
             | Pending::Bargain { player }
             | Pending::X { player }
             | Pending::Kicker { player }
+            | Pending::Gift { player }
             | Pending::Offspring { player }
             | Pending::SpellCost { player }
             | Pending::ActivationCost { player }
@@ -2600,6 +2628,16 @@ impl Game {
                     }
                 }
             }
+            Pending::Gift { .. } => {
+                let a = s.announcing.as_ref().unwrap();
+                for beneficiary in [None, Some(actor.other())] {
+                    if self.gift_choice_fundable(a, beneficiary)
+                        && emit(Action::ChooseGift { beneficiary })
+                    {
+                        return true;
+                    }
+                }
+            }
             Pending::Offspring { player: _ } => {
                 let a = s.announcing.as_ref().unwrap();
                 for pay in [false, true] {
@@ -3149,6 +3187,7 @@ impl Game {
                     .kicker = Some(pay);
                 self.continue_announcement_choices(false);
             }
+            Action::ChooseGift { beneficiary } => self.choose_gift(beneficiary),
             Action::ChooseOffspring { pay } => {
                 self.state
                     .announcing
@@ -4352,6 +4391,7 @@ impl Game {
                 Pending::Offspring { .. } => "offspring",
                 Pending::Bargain { .. } => "bargain",
                 Pending::Kicker { .. } => "kicker",
+                Pending::Gift { .. } => "gift",
                 Pending::Endure { .. } => "endure",
                 Pending::Convoke { .. } => "convoke",
                 Pending::Mobilize { .. } => "mobilize",

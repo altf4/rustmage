@@ -308,6 +308,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     assert_eq!(
                         info,
                         CastInfo {
+                            gift: None,
                             physical_card: None,
                             flash_surcharge: false,
                             face: CastFace::Normal,

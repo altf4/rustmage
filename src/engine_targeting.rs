@@ -101,6 +101,12 @@ impl Announcement {
             && self.item.source_card.kicker_cost().is_some()
             && self.item.cast.is_some_and(|c| c.kicker.is_none())
     }
+    pub(super) fn needs_gift(&self) -> bool {
+        self.pay_window
+            && self.item.kind == StackKind::Spell
+            && self.item.source_card.gift().is_some()
+            && self.item.cast.is_some_and(|c| c.gift.is_none())
+    }
     pub(super) fn needs_offspring(&self) -> bool {
         self.pay_window
             && self.item.kind == StackKind::Spell
@@ -279,6 +285,8 @@ impl Game {
             self.state.pending = Pending::Bargain { player };
         } else if a.needs_kicker() {
             self.state.pending = Pending::Kicker { player };
+        } else if a.needs_gift() {
+            self.state.pending = Pending::Gift { player };
         } else if a.needs_mana_cost() {
             self.state.pending = if a.item.kind == StackKind::Spell {
                 Pending::SpellCost { player }
@@ -616,6 +624,7 @@ impl Game {
             x: None,
             attachment_trigger: None,
             cast: Some(CastInfo {
+                gift: None,
                 physical_card: None,
                 face: CastFace::Normal,
                 payment,

@@ -5123,6 +5123,8 @@ def compile_catalogue(snapshot, target):
     lines += ['#[rustfmt::skip]', 'pub(super) fn x_symbols(card: Card) -> u8 {', '    match card.0 {', *x_rows, '        _ => 0,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn x_entry_counters(card: Card) -> bool {', '    '+('matches!(card.0, '+' | '.join(x_entry_rows)+')' if x_entry_rows else 'false'), '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn kicker_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *kicker_rows, '        _ => None,', '    }', '}', '']
+    # Gift recipes are emitted only after complete body lowering authenticates them.
+    lines += ['pub(super) fn gift(_card: Card) -> Option<GiftSpec> { None }', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn kicked_entry_counters(card: Card) -> u16 {', '    match card.0 {', *kicked_entry_rows, '        _ => 0,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn counter_keyword_grants(card: Card) -> &'static [(CounterKind, Keywords)] {", '    match card.0 {', *counter_grant_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn offspring_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *offspring_rows, '        _ => None,', '    }', '}', '']

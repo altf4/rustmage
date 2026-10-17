@@ -26,6 +26,22 @@ pub(crate) struct SpellMode {
     pub program: &'static [Instruction],
 }
 
+/// The four complete Gift payloads present in the pinned Standard catalogue.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum GiftKind {
+    Card,
+    Food,
+    Treasure,
+    TappedFish,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct GiftSpec {
+    pub kind: GiftKind,
+    pub token: Option<Card>,
+    pub promised_targets: TargetPlan,
+}
+
 /// A relationship between distinct bindings within one occurrence of target.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetGroupConstraint {
@@ -1852,6 +1868,9 @@ impl Card {
     /// Fixed optional kicker surcharge for this immutable whole-card definition.
     pub fn kicker_cost(self) -> Option<ManaCost> {
         generated::kicker_cost(self)
+    }
+    pub(crate) fn gift(self) -> Option<GiftSpec> {
+        generated::gift(self)
     }
     pub(crate) fn kicked_entry_counters(self) -> u16 {
         generated::kicked_entry_counters(self)
