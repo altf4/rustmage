@@ -3,10 +3,43 @@
   "catalogue_id": 1188,
   "oracle_id": "7c179e54-3beb-4761-bddf-41fa98b082db",
   "facts_sha256": "2e6ae5aa6add52ef28de873390bcc4a3703aeb5427d01fc1e523b4688913cc6d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5a5eaaa1e0b8d89f5fc861ded7a203180af2ab3e8cc57c49ad1a199232f6b885"
   },
-  "physical_metadata_sha256": "11e882c4e3444fbe950e9e7d2c09df36d80a3db559e9ff4eb2d0b64753a8e0e8"
+  "physical_metadata_sha256": "11e882c4e3444fbe950e9e7d2c09df36d80a3db559e9ff4eb2d0b64753a8e0e8",
+  "xmage": {
+    "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "path": "Mage.Sets/src/mage/cards/d/DriverOfTheDead.java",
+    "sha256": "559bfb348b59518c09e249af984787aaf2eaaead03120526baa3859adde625d2"
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterCreatureCard.java",
+      "sha256": "ee796c20588a1c0975306824c57d1c173bfa54b4afaf8c3526aaf32e15d02739"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+      "sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+    }
+  ],
+  "rules_tests": "src/engine_fdn_recursion_tests.rs"
 }

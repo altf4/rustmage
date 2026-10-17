@@ -287,6 +287,8 @@ impl SearchFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum SearchDestination {
+    /// Shuffle, then put the selected cards on top (last selected uppermost).
+    Top,
     Hand,
     Battlefield,
     BattlefieldThenHand { battlefield: u16 },
