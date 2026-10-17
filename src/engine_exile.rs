@@ -194,13 +194,7 @@ impl Game {
         // They use no stack and offer no intervening choice or priority.
         let moves = returning
             .into_iter()
-            .map(|(id, destination)| {
-                self.entry_move(
-                    id,
-                    destination,
-                    destination == Zone::Battlefield && self.enters_tapped(id),
-                )
-            })
+            .map(|(id, destination)| self.entry_move(id, destination, false))
             .collect();
         self.stage_entries(moves, None);
     }

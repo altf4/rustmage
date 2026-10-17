@@ -148,6 +148,10 @@ impl Game {
             || self.state.objects[id as usize].card.opponent_entry_tapped() != 0
             || self.state.objects[id as usize]
                 .card
+                .controlled_entry_untapped()
+                != 0
+            || self.state.objects[id as usize]
+                .card
                 .static_cast_restriction()
                 != 0
             || !self.state.objects[id as usize]

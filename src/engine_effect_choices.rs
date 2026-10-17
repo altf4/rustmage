@@ -12,6 +12,7 @@ pub(super) struct EffectChoice {
     pub greatest_power: [Option<i128>; 2],
     pub discard_mana_value_life: Option<Player>,
     pub hand_defender: Option<CombatDefender>,
+    pub entry_life_bonus: Option<(&'static str, u16)>,
 }
 impl EffectChoice {
     pub fn bytes(&self) -> usize {
@@ -180,11 +181,7 @@ impl Game {
                         && matches!(object.zone, Zone::Hand | Zone::Graveyard)
                         && object.card.is_land()
                 );
-                let mut movement = self.entry_move(
-                    reference.card,
-                    Zone::Battlefield,
-                    tapped || self.enters_tapped_for(reference.card, player),
-                );
+                let mut movement = self.entry_move(reference.card, Zone::Battlefield, tapped);
                 movement.controller = player;
                 movement
             })
@@ -258,6 +255,7 @@ impl Game {
             amount,
             discard_mana_value_life,
             hand_defender: None,
+            entry_life_bonus: None,
             source: item.object,
             required: [0; 2],
             selected: std::array::from_fn(|_| Vec::new()),
@@ -385,10 +383,13 @@ impl Game {
             let mut movement = self.entry_move(
                 reference.card,
                 Zone::Battlefield,
-                forced_tapped || enchantment || self.enters_tapped_for(reference.card, player),
+                forced_tapped || enchantment,
             );
             movement.controller = player;
             movement.attacking = choice.hand_defender;
+            movement.life_bonus = choice
+                .entry_life_bonus
+                .map(|(subtype, life)| (player, subtype, life));
             self.stage_entries(vec![movement], None);
             return false;
         }

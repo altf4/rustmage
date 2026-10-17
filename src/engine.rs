@@ -31,7 +31,7 @@ mod gift;
 mod gift_tests;
 pub use gift::{GiftContext, GiftDeclaration};
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
-pub const OBSERVATION_SCHEMA: u32 = 104;
+pub const OBSERVATION_SCHEMA: u32 = 106;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
 #[path = "engine_mobilize.rs"]
@@ -387,6 +387,7 @@ define_actions! {
     SelectMilled { object: ObjectRef },
     FinishMilledSelection,
     ChooseEntryTimestamp { object: ObjectRef },
+    ChooseEntryReplacement { source: ObjectRef, intrinsic: bool },
     ChooseEntryLife {
         pay: bool,
     },
@@ -1117,6 +1118,9 @@ enum Pending {
     EntryTimestamp {
         player: Player,
     },
+    EntryReplacement {
+        player: Player,
+    },
     EntryLife {
         player: Player,
     },
@@ -1572,6 +1576,7 @@ pub struct Observation {
     pub effect_choice: Option<EffectChoiceView>,
     pub aura_entry: Option<entries::AuraEntryView>,
     pub entry_life: Option<entries::EntryLifeView>,
+    pub entry_replacement: Option<entry_tap::EntryTapView>,
     pub entry_timestamps: Option<entries::EntryTimestampView>,
     pub additional_cost: Option<AdditionalCostView>,
     pub forage: Option<ForageView>,
@@ -1823,6 +1828,7 @@ impl Game {
             | Pending::ResolutionMana { player }
             | Pending::AdditionalCost { player }
             | Pending::EntryTimestamp { player }
+            | Pending::EntryReplacement { player }
             | Pending::EntryLife { player }
             | Pending::AuraEntry { player }
             | Pending::EffectChoice { player }
@@ -2132,6 +2138,16 @@ impl Game {
             Pending::EntryTimestamp { .. } => {
                 for object in self.entry_timestamp_candidates() {
                     if emit(Action::ChooseEntryTimestamp { object }) {
+                        return true;
+                    }
+                }
+            }
+            Pending::EntryReplacement { .. } => {
+                for effect in self.entry_tap_candidates() {
+                    if emit(Action::ChooseEntryReplacement {
+                        source: effect.source,
+                        intrinsic: effect.intrinsic,
+                    }) {
                         return true;
                     }
                 }
@@ -3026,6 +3042,9 @@ impl Game {
             Action::DeclineResolutionMana => self.finish_resolution_payment(None),
             Action::ChooseAdditionalCost { object } => self.choose_additional_cost(object),
             Action::ChooseEntryTimestamp { object } => self.choose_entry_timestamp(object),
+            Action::ChooseEntryReplacement { source, intrinsic } => {
+                self.choose_entry_tap_effect(source, intrinsic)
+            }
             Action::ChooseEntryLife { pay } => self.choose_entry_life(pay),
             Action::ChooseAuraAttachment { object } => self.choose_aura_attachment(object),
             Action::Keep => {
@@ -3089,19 +3108,11 @@ impl Game {
                     {
                         self.state.known_hand.push(reference);
                     }
-                    let mut movement = self.entry_move(
-                        card,
-                        Zone::Battlefield,
-                        self.enters_tapped_for(card, actor),
-                    );
+                    let mut movement = self.entry_move(card, Zone::Battlefield, false);
                     movement.controller = actor;
                     self.stage_entries(vec![movement], None);
                 } else {
-                    let mut movement = self.entry_move(
-                        card,
-                        Zone::Battlefield,
-                        self.enters_tapped_for(card, actor),
-                    );
+                    let mut movement = self.entry_move(card, Zone::Battlefield, false);
                     movement.controller = actor;
                     self.stage_entries(vec![movement], None);
                 }
@@ -3758,9 +3769,12 @@ impl Game {
 
     fn enters_tapped_for(&self, id: CardId, controller: Player) -> bool {
         let object = &self.state.objects[id as usize];
-        if self.opponent_entry_requires_tapped(object.card, controller) {
-            return true;
-        }
+        self.opponent_entry_requires_tapped(object.card, controller)
+            || self.self_entry_requires_tapped(id, controller)
+    }
+
+    fn self_entry_requires_tapped(&self, id: CardId, controller: Player) -> bool {
+        let object = &self.state.objects[id as usize];
         match object.card.entry_tapped() {
             EntryTapped::Never | EntryTapped::PayLife(_) => false,
             EntryTapped::UnlessPlainsOrIsland => !self.state.objects.iter().any(|o| {
@@ -4639,6 +4653,7 @@ impl Game {
                 Pending::EffectChoice { .. } => "effect_choice",
                 Pending::EntryTimestamp { .. } => "entry_timestamps",
                 Pending::EntryLife { .. } => "entry_life",
+                Pending::EntryReplacement { .. } => "entry_replacement",
                 Pending::AuraEntry { .. } => "aura_entry",
                 Pending::Attackers => "attackers",
                 Pending::Blockers => "blockers",
@@ -4686,6 +4701,7 @@ impl Game {
             effect_choice: self.effect_choice_view(viewer),
             aura_entry: self.aura_entry_view(viewer),
             entry_life: self.entry_life_view(viewer),
+            entry_replacement: self.entry_tap_view(viewer),
             entry_timestamps: self.entry_timestamp_view(viewer),
             additional_cost: self.additional_cost_view(viewer),
             forage: self.forage_view(viewer),
@@ -5205,10 +5221,13 @@ mod equipment_tests;
 
 #[path = "engine_entries.rs"]
 mod entries;
+#[path = "engine_entry_tap.rs"]
+mod entry_tap;
 pub use entries::{
     AuraAttachmentView, AuraEntryView, EntryLifeSelection, EntryLifeView, EntryTimestampObjectView,
     EntryTimestampView,
 };
+pub use entry_tap::{EntryTapEffect, EntryTapKind, EntryTapView};
 
 #[cfg(test)]
 #[path = "engine_aura_tests.rs"]
@@ -5713,3 +5732,7 @@ mod ability_timeline_tests;
 #[cfg(test)]
 #[path = "engine_ability_removal_tests.rs"]
 mod ability_removal_tests;
+
+#[cfg(test)]
+#[path = "engine_untapped_entry_tests.rs"]
+mod untapped_entry_tests;

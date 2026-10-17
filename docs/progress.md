@@ -8,7 +8,7 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Requirement | Current evidence | Remaining work |
 | --- | --- | --- |
 | Full legal identity pool | 5,164 frozen oracle identities, Java reconciliation and native catalogue tests | Maintain reviewed data versions; implement missing Java-source cards directly |
-| All card semantics | Coverage manifest and runtime admission agree: 1,977 executable Standard identities | 3,187 identities; many reusable mechanics plus card-specific rules |
+| All card semantics | Coverage manifest and runtime admission agree: 1,983 executable Standard identities | 3,181 identities; many reusable mechanics plus card-specific rules |
 | Gameplay enforcement | Implemented timing, payment, targets, stack, source-aware damage, strike steps, 15 keywords, typed programs, trigger ordering and regression tests | Wider events/cross-group relationships, replacement/prevention, layers, wider counter mechanics, broader token abilities/copies, modes/costs, remaining keywords and mechanics |
 | In-process library | Rust rlib and C ABI/cdylib; Python ctypes tests including complete games | Batched/packed training interface and model hooks |
 | Branch/restore | Isolated COW object/library buffers, owned continuations, local RNG, reusable snapshots, replay/invariant tests | Cover every new continuation/mechanic; search over information sets |
@@ -388,3 +388,33 @@ The existing uncrewed Vehicle test caught a real query-extraction regression;
 the corrected full run and unchanged paid Crew policies pass. Exact evidence,
 historical failures and independent-review requirements are in the
 [delivery record](base-power-qualification.md). Full Standard remains incomplete.
+
+
+## Ordered untapped entry — PR #343 / issue #342
+
+Complete Spelunking and The Wandering Minstrel bring executable Standard coverage
+to1,979/5,164 (3,185 gated),97 token recipes and schema105. Owned entry transactions
+distinguish the original event from tapped/untapped replacements, offer actual
+controller ordering and shockland payment, and bind Cave life gain to successful
+entry. Minstrel retains its complete Town threshold, all-color token and paid boost.
+Validation passes1,934 native tests/Clippy on7872b98,24 corrected compiler checks,
+and18 paid naturally completed Standard cases on the corrected immutable library.
+Valid generated semantics are unchanged by the compiler exception fix. Source and
+validation scopes, failed fixture diagnostics and final review requirements are in
+[the delivery record](untapped-entry.md). All jobs are closed and non-SO build
+outputs cleaned; the full Standard migration remains incomplete.
+
+
+## Direct Rust authoring — PR347 / issue346
+
+New cards use independently editable typed Rust definitions; Oracle/Java records
+provide provenance and metadata, with no required English behavior compiler.
+Four complete Spree bodies add Explosive Derailment, Jailbreak Scheme, Requisition
+Raid and Rustler Rampage:1,983/5,164,3,181 remaining, schema105 unchanged. Shared
+selected-player counter/untap batches complement existing modes, costs and rollback.
+All1,936 native tests,Clippy/format/generator,provenance checks and three focused
+public API methods pass. All16 mode combinations run in both seats with real
+payment and owned replay. The existing100-game native smoke benchmark passes;
+its scope and measured implementation/validation throughput are in
+[the automated results](direct-authoring-results.json). This is partial progress;
+full Standard rules/interactions and broad simulation/search performance remain open.

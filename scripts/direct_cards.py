@@ -7,7 +7,7 @@ def digest(value):
 def load(root):
     directory=root/'src/card_definitions'
     facts={c['oracle_id']:c for c in json.loads((root/'data/standard/cards.json').read_text())['cards']}
-    cards={};fingerprint=bytearray()
+    cards={};seen=set();fingerprint=bytearray()
     for path in sorted(directory.glob('*.json')):
         record=json.loads(path.read_text());slug=path.stem
         if not re.fullmatch('[a-z][a-z0-9_]*',slug):raise ValueError('invalid authored module: '+slug)
@@ -15,7 +15,8 @@ def load(root):
         if digest(card)!=record['facts_sha256']:raise ValueError('authored facts changed: '+card['name'])
         source=path.with_suffix('.rs')
         if not source.is_file():raise ValueError('missing authored Rust: '+slug)
-        if record['oracle_id'] in cards:raise ValueError('duplicate authored identity')
+        if record['oracle_id'] in seen:raise ValueError('duplicate authored identity')
+        seen.add(record['oracle_id'])
         if record.get('complete') is True:cards[record['oracle_id']]=dict(record,module=slug)
         fingerprint.extend(path.read_bytes());fingerprint.extend(source.read_bytes())
     if (directory/'mod.rs').exists():fingerprint.extend((directory/'mod.rs').read_bytes())
@@ -33,4 +34,4 @@ def registry(records,indices):
     for identity,record in records.items():
         if identity in indices:lines.append(f'        {indices[identity]} => Some(&{record["module"]}::RULES),')
     lines.extend(['        _=>None,','    }','}'])
-    return '\n'.join(lines)+'\n'
+    return '\n'.join(lines)+'\n' 

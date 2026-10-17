@@ -945,6 +945,8 @@ mod owned_memory_tests {
             resume: None,
             shuffle_after: None,
             replacement_resume: None,
+            tap_events: Vec::new(),
+            tap_next: 0,
         };
         let without_outer = entry.bytes();
         entry.replacement_resume = Some(Box::new(frame.clone()));

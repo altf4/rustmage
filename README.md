@@ -4,10 +4,14 @@ An **in-process Rust library** for fast, deterministic Magic simulation and sear
 No JVM, client/server connection, or network protocol runs in the simulation loop.
 Python can load the same library directly using the included `ctypes` binding.
 
+New card behavior is [authored directly in typed Rust](docs/direct-card-authoring.md),
+using reusable engine effects and independent per-card files. Existing templates
+remain available; English rules parsing is not required for new definitions.
+
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,977 have executable rules so far,
-with 3,187 still gated. The catalogue includes 96 token recipes and one emblem;
-observations use schema 103.
+knows all 5,164 pinned Standard identities; 1,983 have executable rules so far,
+with 3,181 still gated. The catalogue includes 97 token recipes and one emblem;
+observations use schema 105.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
@@ -22,6 +26,7 @@ The first training target is [current Standard, pinned to October 15, 2026](docs
 [Tiered costs and complete modal bodies](docs/tiered-costs.md) complete all six Tiered cards and eighteen tiers, plus Boros Charm and Epic Fight, with mandatory mode costs, exact owner shuffle and signed snapshot multiplication.
 [Resolved signed base stats](docs/resolved-base-stat-expressions.md) complete five bodies with resolution-time land/Town snapshots, exact signed subject LKI, independent draw events and whole equipped-attack effects.
 [Joint hand/graveyard land selection](docs/joint-land-selection.md) completes Worldsoul’s Rage and Bonny Pall with private staged choices, simultaneous real entry and the complete live Beau token.
+[Ordered untapped entry](docs/untapped-entry.md) completes Spelunking and The Wandering Minstrel with owned replacement choices, actual Cave-entry results and all-color Elementals.
 [Private land placement](docs/hand-land-placement.md) completes five bodies with private optional choices, actual land entry, paid modal activations and exact explored-kind triggers.
 [Timestamped base-stat layers](docs/base-stat-layers.md) add ten complete bodies with independent power/toughness setters, live static conditions and exact Role ordering; [the remaining base-stat family tracker](https://github.com/altf4/rustmage/issues/324) retains every unfinished whole body.
 [Temporary creature death grants](docs/temporary-death-grants.md) add three complete spells with exact death-trigger bindings, owner returns, replacement-aware entry counters and sparse owned state.

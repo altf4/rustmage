@@ -1003,11 +1003,7 @@ impl Game {
             StackKind::Spell => match item.source_card.effect() {
                 Effect::Aura(_) => {
                     let target = item.targets[0].object.unwrap();
-                    let mut movement = self.entry_move(
-                        item.card,
-                        Zone::Battlefield,
-                        self.enters_tapped(item.card),
-                    );
+                    let mut movement = self.entry_move(item.card, Zone::Battlefield, false);
                     movement.attachment = Some(target);
                     movement.cast_payment = item.cast.map(|c| c.payment);
                     movement.gift = item.gift_context().map(Box::new);
@@ -1037,11 +1033,7 @@ impl Game {
                     }) || item.x.is_some()
                         || self.has_entry_counter_replacements(item.source_card)
                     {
-                        let mut movement = self.entry_move(
-                            item.card,
-                            Zone::Battlefield,
-                            self.enters_tapped(item.card),
-                        );
+                        let mut movement = self.entry_move(item.card, Zone::Battlefield, false);
                         movement.warp_controller = item
                             .cast
                             .filter(|c| c.method == CastMethod::Warp)
@@ -1484,11 +1476,7 @@ impl Game {
                     if self.object_ref(item.card) == item.object
                         && self.state.objects[item.card as usize].zone == Zone::Graveyard
                     {
-                        let movement = self.entry_move(
-                            item.card,
-                            Zone::Battlefield,
-                            tapped || self.enters_tapped(item.card),
-                        );
+                        let movement = self.entry_move(item.card, Zone::Battlefield, tapped);
                         self.stage_entries(vec![movement], None);
                     }
                 }
@@ -1737,6 +1725,23 @@ impl Game {
                 }
                 Instruction::PutHandLand { tapped } => {
                     if self.start_hand_land(&item, tapped) {
+                        return;
+                    }
+                }
+                Instruction::PutHandLandWithLife {
+                    tapped,
+                    subtype,
+                    life,
+                } => {
+                    if self.start_hand_land(&item, tapped) {
+                        self.state
+                            .resolving
+                            .as_mut()
+                            .unwrap()
+                            .choice
+                            .as_mut()
+                            .unwrap()
+                            .entry_life_bonus = Some((subtype, life));
                         return;
                     }
                 }
@@ -2303,11 +2308,7 @@ impl Game {
                         .filter(|b| self.same_target_object(*b))
                         .filter_map(|b| match b.target {
                             Target::Card(id) => {
-                                let mut movement = self.entry_move(
-                                    id,
-                                    Zone::Battlefield,
-                                    self.enters_tapped_for(id, item.controller),
-                                );
+                                let mut movement = self.entry_move(id, Zone::Battlefield, false);
                                 movement.controller = item.controller;
                                 movement.suspect_after = true;
                                 Some(movement)

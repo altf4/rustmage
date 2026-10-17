@@ -322,6 +322,21 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 }
                 if tap_for_main { 10 } else { -20 }
             }
+            Action::ChooseEntryReplacement { source, intrinsic } => {
+                let effect = observation
+                    .entry_replacement
+                    .as_ref()
+                    .unwrap()
+                    .effects
+                    .iter()
+                    .find(|effect| effect.source == *source && effect.intrinsic == *intrinsic)
+                    .unwrap();
+                if effect.kind == crate::EntryTapKind::Untapped {
+                    5
+                } else {
+                    10
+                }
+            }
             Action::Pass | Action::FinishAttackers | Action::FinishBlockers => 0,
         }
     };

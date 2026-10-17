@@ -1,4 +1,5 @@
 //! Owned pre-entry attachment/life choices; no object moves until the batch is ready.
+use super::entry_tap::{EntryTapEffect, EntryTapEvent, EntryTapKind};
 use super::*;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -12,6 +13,8 @@ pub(super) struct EntryMove {
     /// Owned completion tied to this move's actual successful public result.
     pub role_after: Option<(Card, Player)>,
     pub suspect_after: bool,
+    /// A surrounding instruction observes only this actual successful entry.
+    pub life_bonus: Option<(Player, &'static str, u16)>,
     /// Counters put on this object as part of entering by the surrounding effect.
     pub effect_counter: Option<(CounterKind, u64)>,
     pub attacking: Option<CombatDefender>,
@@ -41,11 +44,19 @@ pub(super) struct EntryBatch {
     pub shuffle_after: Option<Player>,
     /// A surrounding effect waits for this immediate entry before its next event.
     pub replacement_resume: Option<Box<replacements::ReplacementState>>,
+    /// Allocated only for events with competing untapped-entry replacements.
+    pub tap_events: Vec<EntryTapEvent>,
+    pub tap_next: usize,
 }
 impl EntryBatch {
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.moves.len() * std::mem::size_of::<EntryMove>()
+            + self
+                .tap_events
+                .iter()
+                .map(EntryTapEvent::bytes)
+                .sum::<usize>()
             + self.moves.iter().filter(|m| m.gift.is_some()).count()
                 * std::mem::size_of::<GiftContext>()
             + self.choices.len() * std::mem::size_of::<usize>()
@@ -85,7 +96,7 @@ pub struct EntryLifeView {
     pub selected: Vec<EntryLifeSelection>,
     pub selected_attachments: Vec<AuraAttachmentView>,
 }
-fn visible(m: &EntryMove, viewer: Player, known_hand: &[ObjectRef]) -> bool {
+pub(super) fn visible(m: &EntryMove, viewer: Player, known_hand: &[ObjectRef]) -> bool {
     m.before.owner == viewer
         || known_hand.contains(&m.before.reference)
         || !matches!(m.before.zone, Zone::Hand | Zone::Library)
@@ -155,6 +166,7 @@ impl Game {
             attachment: None,
             role_after: None,
             suspect_after: false,
+            life_bonus: None,
             effect_counter: None,
             attacking: None,
             skipped: false,
@@ -179,6 +191,44 @@ impl Game {
             self.state.entry_batch.is_none(),
             "one entry transaction at a time"
         );
+        let mut tap_events = Vec::new();
+        for (index, movement) in moves.iter_mut().enumerate() {
+            if movement.destination != Zone::Battlefield {
+                continue;
+            }
+            let mut effects = self.entry_tap_effects(movement);
+            if effects.is_empty() {
+                movement.tapped |= self.enters_tapped_for(movement.before.id, movement.controller);
+            } else {
+                // The incoming event retains instruction-level tapped entry;
+                // intrinsic/global tapped replacements have not yet applied.
+                if self.self_entry_requires_tapped(movement.before.id, movement.controller) {
+                    effects.push(EntryTapEffect {
+                        source: movement.before.reference,
+                        intrinsic: true,
+                        kind: EntryTapKind::Tapped,
+                    });
+                }
+                if let EntryTapped::PayLife(cost) = movement.before.card.entry_tapped() {
+                    effects.push(EntryTapEffect {
+                        source: movement.before.reference,
+                        intrinsic: true,
+                        kind: EntryTapKind::PayLife(cost),
+                    });
+                }
+                tap_events.push(EntryTapEvent {
+                    index,
+                    effects,
+                    payment: None,
+                });
+            }
+        }
+        tap_events.sort_by_key(|event| {
+            (
+                moves[event.index].controller != self.state.active,
+                event.index,
+            )
+        });
         // Entry replacements inspect the pre-event world, before any life-payment
         // choices. Later ETB triggers will instead observe the committed payments.
         for movement in &mut moves {
@@ -209,11 +259,12 @@ impl Game {
         let mut choices: Vec<_> = moves
             .iter()
             .enumerate()
-            .filter(|(_, m)| {
+            .filter(|(i, m)| {
                 m.destination == Zone::Battlefield
                     && (m.before.card.aura().is_some() && m.attachment.is_none()
                         || matches!(m.before.card.entry_tapped(), EntryTapped::PayLife(_))
-                            && m.life_paid.is_none())
+                            && m.life_paid.is_none()
+                            && !tap_events.iter().any(|event| event.index == *i))
             })
             .map(|(i, _)| i)
             .collect();
@@ -238,6 +289,8 @@ impl Game {
             resume: None,
             shuffle_after,
             replacement_resume: None,
+            tap_events,
+            tap_next: 0,
         };
         let counter_replacements = batch.moves.iter().any(|m| {
             m.destination == Zone::Battlefield
@@ -252,6 +305,7 @@ impl Game {
                     }))
         });
         if batch.choices.is_empty()
+            && batch.tap_events.is_empty()
             && !counter_replacements
             && !self.entry_needs_timestamp_choice(&batch)
         {
@@ -349,6 +403,7 @@ impl Game {
         let mut attachments = Vec::new();
         let mut role_results = Vec::new();
         let mut suspect_results = Vec::new();
+        let mut life_results = Vec::new();
         for (movement, counters) in moves {
             let mut event = self.transition_object_under_control(
                 movement.before,
@@ -366,6 +421,11 @@ impl Game {
             event.x = movement.x;
             event.evidence_collected = movement.evidence_collected;
             if event.moved {
+                if event.destination == Zone::Battlefield
+                    && let Some((controller, subtype, amount)) = movement.life_bonus
+                {
+                    life_results.push((event.after, controller, subtype, amount));
+                }
                 if event.destination == Zone::Battlefield && movement.suspect_after {
                     suspect_results.push(event.after);
                 }
@@ -424,6 +484,14 @@ impl Game {
             }
         }
         self.finish_zone_events(&events, &[]);
+        for (reference, controller, subtype, amount) in life_results {
+            if self.object_ref(reference.card) == reference
+                && self.on_battlefield(reference.card)
+                && self.has_subtype(reference.card, subtype)
+            {
+                self.gain_life(controller, i128::from(amount));
+            }
+        }
         // The entry event precedes the subsequent suspect instruction.
         for recipient in suspect_results {
             self.set_suspected(recipient, true);
@@ -461,6 +529,9 @@ impl Game {
             };
             if batch.resume.is_none() {
                 batch.resume = Some(self.state.pending.clone());
+            }
+            if self.advance_entry_tap_effects() {
+                return true;
             }
             while let Some((index, owner)) = self.state.entry_batch.as_ref().and_then(|batch| {
                 batch
@@ -563,6 +634,9 @@ impl Game {
         batch.next += 1;
     }
     pub(super) fn can_pay_entry_life(&self) -> bool {
+        if let Some((movement, cost)) = self.entry_tap_payment() {
+            return self.state.players[movement.controller.index()].life >= i128::from(cost);
+        }
         let batch = self.state.entry_batch.as_ref().unwrap();
         let movement = &batch.moves[batch.choices[batch.next]];
         let EntryTapped::PayLife(cost) = movement.before.card.entry_tapped() else {
@@ -572,6 +646,9 @@ impl Game {
     }
     pub(super) fn choose_entry_life(&mut self, pay: bool) {
         assert!(!pay || self.can_pay_entry_life());
+        if self.finish_entry_tap_payment(pay) {
+            return;
+        }
         let batch = self.state.entry_batch.as_mut().unwrap();
         let movement = &mut batch.moves[batch.choices[batch.next]];
         let EntryTapped::PayLife(cost) = movement.before.card.entry_tapped() else {
@@ -590,7 +667,11 @@ impl Game {
             return None;
         }
         let batch = self.state.entry_batch.as_ref()?;
-        let movement = batch.moves.get(*batch.choices.get(batch.next)?)?;
+        let movement = if let Some((movement, _)) = self.entry_tap_payment() {
+            movement
+        } else {
+            batch.moves.get(*batch.choices.get(batch.next)?)?
+        };
         if !visible(movement, viewer, &self.state.known_hand) {
             return None;
         }
@@ -611,7 +692,11 @@ impl Game {
             return None;
         }
         let batch = self.state.entry_batch.as_ref()?;
-        let movement = batch.moves.get(*batch.choices.get(batch.next)?)?;
+        let movement = if let Some((movement, _)) = self.entry_tap_payment() {
+            movement
+        } else {
+            batch.moves.get(*batch.choices.get(batch.next)?)?
+        };
         if !visible(movement, viewer, &self.state.known_hand) {
             return None;
         }

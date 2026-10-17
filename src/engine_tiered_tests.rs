@@ -2,7 +2,7 @@ use super::tests::{scenario, spawn};
 use super::*;
 
 fn named(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
-    let card = Card::from_name(name).unwrap();
+    let card = Card::from_name(name).expect(name);
     assert!(card.is_supported(), "{name}");
     spawn(g, p, card, zone)
 }

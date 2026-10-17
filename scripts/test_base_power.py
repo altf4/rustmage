@@ -111,6 +111,8 @@ class BasePowerCompilerTests(unittest.TestCase):
             self.assertEqual(current['helpers'][('static_cast_restriction',name+'#0')], after['helpers'][('static_cast_restriction',name+'#0')])
         args = dict(changed={n+'#0'for n in self.names},added=set(),helpers={('static_cast_restriction',n+'#0')for n in ['Kutzil, Malamet Exemplar','Voice of Victory']},aliases={})
         proof=assert_union(before,after,**args)
+        for name in self.names:self.assertEqual(current['definitions'][name+'#0'],after['definitions'][name+'#0'])
+        for key in args['helpers']:self.assertEqual(current['helpers'][key],after['helpers'][key])
         self.assertEqual(proof['preserved_definitions'],5330)
         self.assertEqual(proof['prior_helpers'],926)
         self.assertEqual(proof['token_recipes'],96)
