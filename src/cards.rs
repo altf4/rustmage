@@ -393,6 +393,8 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    /// Register an exact current target for a direct exile replacement until cleanup.
+    ExileIfDiesThisTurn,
     /// Queue a reflexive ability only when this exact Role actually enters attached.
     CreateRoleReflexive {
         token: Card,
