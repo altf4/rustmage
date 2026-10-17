@@ -648,6 +648,9 @@ pub struct EntryTimestampView {
 impl Game {
     fn entry_has_timestamp(m: &EntryMove) -> bool {
         m.destination == Zone::Battlefield
+            && m.before.zone != Zone::Battlefield
+            && !m.before.card.is_token()
+            && !m.before.card.is_emblem()
             && !m.skipped
             && (m.before.card.base_stat_setter().is_some()
                 || !m.before.card.live_static_effects().is_empty()

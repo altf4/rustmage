@@ -261,11 +261,20 @@ mod tests {
     fn live_static_primitives_track_controller_and_late_recipient_without_retimestamp() {
         for p in [Player::P0, Player::P1] {
             let mut g = scenario();
-            let source = named(&mut g, p, "Bear Cub");
+            let source = named(&mut g, p, "Doc Ock, Sinister Scientist");
             let own = named(&mut g, p, "Bear Cub");
             let enemy = named(&mut g, p.other(), "Bear Cub");
             g.register_live_static_effects(source, &[OPPONENT]);
             let stamp = g.observe(p).live_static_sources[0].timestamp;
+            assert_eq!(
+                stamp,
+                g.observe(p)
+                    .base_stat_effects
+                    .iter()
+                    .find(|e| e.source.card == source)
+                    .unwrap()
+                    .timestamp
+            );
             assert_eq!(g.stats(own).toughness, 2);
             assert_eq!(g.stats(enemy).toughness, 1);
             let late = named(&mut g, p.other(), "Bear Cub");
@@ -391,7 +400,7 @@ mod timestamp_tests {
                 g.state.priority = active;
                 let mut ids = Vec::new();
                 for p in [active.other(), active] {
-                    for name in ["Doc Ock, Sinister Scientist", "Snooping Page"] {
+                    for name in ["Doc Ock, Sinister Scientist", "Snowmelt Stag"] {
                         ids.push(spawn(
                             &mut g,
                             p,
@@ -440,51 +449,39 @@ mod timestamp_tests {
         }
     }
     #[test]
-    fn live_static_primitives_simultaneous_role_and_static_use_one_ordered_clock() {
+    fn live_static_primitives_departed_tokens_cannot_reenter_or_receive_timestamp() {
         for p in [Player::P0, Player::P1] {
-            for role_first in [false, true] {
-                let mut g = scenario();
-                g.state.active = p;
-                g.state.priority = p;
-                let bear = spawn(
-                    &mut g,
-                    p,
-                    Card::from_name("Bear Cub").unwrap(),
-                    Zone::Battlefield,
-                );
-                let doc = spawn(
-                    &mut g,
-                    p,
-                    Card::from_name("Doc Ock, Sinister Scientist").unwrap(),
-                    Zone::Graveyard,
-                );
-                let curse = Card::catalogue()
-                    .find(|c| c.role() == Some(crate::cards::RoleKind::Cursed))
-                    .unwrap();
-                let aura = spawn(&mut g, p, curse, Zone::Exile);
-                let mut m = g.entry_move(aura, Zone::Battlefield, false);
-                m.attachment = Some(g.object_ref(bear));
-                let d = g.entry_move(doc, Zone::Battlefield, false);
-                g.stage_entries(vec![m, d], None);
-                assert!(g.advance_entries());
-                let object = g.object_ref(if role_first { aura } else { doc });
-                checked(&mut g, Action::ChooseEntryTimestamp { object });
-                let r = g.state.roles.as_ref().unwrap();
-                let role = r
-                    .attached
-                    .iter()
-                    .find(|v| v.aura.card == aura)
-                    .unwrap()
-                    .timestamp;
-                let stat = r
-                    .base_stats
-                    .iter()
-                    .find(|v| v.source.card == doc)
-                    .unwrap()
-                    .timestamp;
-                assert_eq!(role < stat, role_first);
-                assert_eq!((g.stats(bear).power, g.stats(bear).toughness), (1, 1));
-            }
+            let mut g = scenario();
+            g.state.active = p;
+            g.state.priority = p;
+            let bear = spawn(
+                &mut g,
+                p,
+                Card::from_name("Bear Cub").unwrap(),
+                Zone::Battlefield,
+            );
+            let doc = spawn(
+                &mut g,
+                p,
+                Card::from_name("Doc Ock, Sinister Scientist").unwrap(),
+                Zone::Graveyard,
+            );
+            let curse = Card::catalogue()
+                .find(|c| c.role() == Some(crate::cards::RoleKind::Cursed))
+                .unwrap();
+            let aura = spawn(&mut g, p, curse, Zone::Exile);
+            let mut m = g.entry_move(aura, Zone::Battlefield, false);
+            m.attachment = Some(g.object_ref(bear));
+            let d = g.entry_move(doc, Zone::Battlefield, false);
+            g.stage_entries(vec![m, d], None);
+            assert!(g.state.entry_batch.is_none());
+            assert!(g.on_battlefield(doc));
+            assert_eq!(g.state.objects[aura as usize].zone, Zone::Exile);
+            let r = g.state.roles.as_ref().unwrap();
+            assert!(r.attached.is_empty());
+            assert_eq!(r.base_stats.len(), 1);
+            assert_ne!(r.base_stats[0].timestamp, 0);
+            assert_eq!((g.stats(bear).power, g.stats(bear).toughness), (2, 2));
         }
     }
 }

@@ -74,3 +74,10 @@ incarnations. This still admits zero cards and awaits focused validation.
 The first timestamp build at1308ddb found an unhandled new action in the baseline
 policy's exhaustive match. A deterministic legal-choice score now covers it; no
 test executed in that compilation-only failed run.
+
+At eddb864, the original three primitives pass. Two new ordering fixtures failed:
+Snooping Page has no static setter (use the actual static Snowmelt Stag), and an
+exiled Role token cannot reenter under CR111.8. The latter is now an explicit
+rejection test, and impossible token/emblem entries do not acquire timestamps or
+create ordering choices. A source with both self and live clauses also verifies
+that it shares one timestamp.
