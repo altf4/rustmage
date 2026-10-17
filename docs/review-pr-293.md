@@ -10,7 +10,7 @@ A generated-code preservation assertion compares against Role parent `0f15430`: 
 
 Immutable optimized library:
 
-- File: `/home/altf4/.cache/rustmage-immutable/trigger287-a1c950e-1286-schema 86-c2dca4f0fa50.so`
+- File: `/home/altf4/.cache/rustmage-immutable/trigger287-a1c950e-1286-schema86-c2dca4f0fa50.so`
 - SHA256: `c2dca4f0fa50a92a0f97191f3134ba8b96d8e84973810ec498f9f8e767ed348d`
 - Catalogue: `1286b67491500df6c3b26a0f381c26cffcfc5dcf6fc38661c395a9ddc299055c`
 - Observation schema:86. Public constructors/subprocesses explicitly pin this file and assert the complete schema/fingerprint.
