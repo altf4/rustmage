@@ -123,7 +123,7 @@ fn subtype_layers_static_threshold_is_reversible_and_starts_before_ability_remov
         assert!(!g.keywords(squire).contains(Keywords::FLYING));
         g.state.objects[squire as usize].counters.plus_one = 2;
         assert!(!g.has_subtype(squire, "Knight"));
-        let bounce = named(&mut g, p, "Disperse", Zone::Hand);
+        let bounce = named(&mut g, p, "Disenchant", Zone::Hand);
         cast(&mut g, bounce, None, &[Target::Card(aura)]);
         settle(&mut g);
         g.state.objects[squire as usize].counters.plus_one = 3;
