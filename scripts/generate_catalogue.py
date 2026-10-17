@@ -3540,6 +3540,105 @@ def temporary_death_route(text):
         text = stripped
 
 
+def extract_gift(card):
+    """Authenticate the actual keyword slot before exposing any remaining body."""
+    raw = card.get('oracle_text')
+    if card.get('layout') != 'normal' or not isinstance(raw, str): return card, None
+    lines = raw.splitlines()
+    if not lines: return card, None
+    match = re.fullmatch(r'Gift (a card|a Food|a Treasure|a tapped Fish)(?: \((.*)\))?', lines[0])
+    if match is None: return card, None
+    kind, reminder = match.groups()
+    permanent = card.get('type_line','').split(' — ')[0] not in ('Instant','Sorcery')
+    result = {'a card':'they draw a card', 'a Food':'they create a Food token',
+              'a Treasure':'they create a Treasure token',
+              'a tapped Fish':'they create a tapped 1/1 blue Fish creature token'}[kind]
+    expected = ('You may promise an opponent a gift as you cast this spell. If you do, '
+                + ('when it enters, '+result+'.' if permanent else result+' before its other effects.'))
+    if kind == 'a Food': expected += ' It\'s an artifact with "{2}, {T}, Sacrifice this token: You gain 3 life."'
+    if kind == 'a Treasure': expected += ' It\'s an artifact with "{T}, Sacrifice this token: Add one mana of any color."'
+    if reminder is not None and reminder != expected: return card, None
+    return dict(card, oracle_text='\n'.join(lines[1:])), {'a card':'Card','a Food':'Food','a Treasure':'Treasure','a tapped Fish':'TappedFish'}[kind]
+
+
+def gift_spell_program(card):
+    """Whole semantic bodies; neither card names nor inventory labels dispatch."""
+    if (card.get('layout') != 'normal' or card.get('type_line') not in ('Instant','Sorcery')
+            or spell_cost_options(card.get('mana_cost','')) is None): return None
+    body = card.get('oracle_text','')
+    # Only this precise presentation slot is needed by the complete stun body.
+    stun = ' (If a permanent with a stun counter would become untapped, remove one from it instead.)'
+    if body.endswith(stun): body = body[:-len(stun)]
+    if '(' in body or ')' in body: return None
+    body = ' '.join(body.split())
+    if card.get('name'):
+        body = re.sub(r'(^|\. |, |instead )'+re.escape(card['name'])+r' (also )?deals ',
+                      lambda m:m[1]+'this spell '+(m[2] or '')+'deals ', body)
+    def conditional(program, promised=True):
+        return [f'IfGift {{ promised: {str(promised).lower()}, skip: {len(program)} }}', *program]
+    cases = {
+      "Return target spell to its owner's hand. If the gift was promised, players can't cast spells this turn.":
+        ('Spell','Spell',['ReturnSpellToHand',*conditional(['ProhibitCastingThisTurn'])]),
+      'You and permanents you control gain hexproof until end of turn. If the gift was promised, permanents you control also gain indestructible until end of turn.':
+        ('None','None',['PlayerHexproofThisTurn','GrantPermanentsThisTurn(Keywords(4096))',*conditional(['GrantPermanentsThisTurn(Keywords(8192))'])]),
+      'Creatures you control get +2/+0 until end of turn. If the gift was promised, target creature you control gains first strike until end of turn.':
+        ('None','CreatureYou',[*statement_program('creatures you control get +2/+0 until end of turn.'),*conditional(['GrantKeywords { subject: Subject::Targets, keywords: Keywords(512) }'])]),
+      'this spell deals 2 damage to each creature. If the gift was promised, instead this spell deals 1 damage to any target and 2 damage to each creature.':
+        ('None','Any', [*conditional(['Damage(1)']),*battlefield_damage_program('this spell deals 2 damage to each creature.')]),
+      "this spell deals 2 damage to target creature. If the gift was promised, this spell also deals 3 damage to that creature's controller.":
+        ('Creature','Creature',[*conditional(['Damage(2)'],False),*conditional(['DamageWithController { damage: 2, controller_damage: 3 }'])]),
+      "Destroy target creature. If the gift wasn't promised, you lose 2 life.":
+        ('Creature','Creature',['Destroy',*conditional(['LoseLife(PlayerSet::Controller, 2)'],False)]),
+      'Target creature you control gets +2/+2 until end of turn. If the gift was promised, that creature also gains indestructible until end of turn.':
+        ('CreatureYou','CreatureYou',[grow_instruction('Targets',2,2),*conditional(['GrantKeywords { subject: Subject::Targets, keywords: Keywords(8192) }'])]),
+      "Return target creature an opponent controls to its owner's hand. If the gift was promised, instead return target nonland permanent an opponent controls to its owner's hand.":
+        ('CreatureOpponent','NonlandOpponent',['ReturnToHand']),
+      'Counter target creature spell. If the gift was promised, instead counter target spell.':
+        ('SpellCreature','Spell',['Counter']),
+      'Destroy target artifact or enchantment. If the gift was promised, instead destroy two target artifacts and/or enchantments.':
+        ('ArtifactEnchantment',('ArtifactEnchantment',2,2),['Destroy']),
+      'Return target permanent card from your graveyard to your hand. If the gift was promised, instead return two target permanent cards from your graveyard to your hand.':
+        ('PermanentGraveYou',('PermanentGraveYou',2,2),['ReturnToHand']),
+      'Choose target creature you control and target creature you don\'t control. Put a +1/+1 counter on the creature you control if the gift was promised. Then those creatures fight each other.':
+        (['CreatureYou','CreatureOpponent'],['CreatureYou','CreatureOpponent'],[*conditional(['PutCounters { subject: Subject::Targets, kind: CounterKind::PlusOne, amount: 1 }']),'Fight { source: 0, recipient: 1 }']),
+      'Target player draws three cards. If the gift was promised, tap target creature an opponent controls and put a stun counter on it.':
+        ('Player',['Player','CreatureOpponent'],['Draw(PlayerSet::Targeted, 3)',*conditional(['SelectGroup(1)','Tap','PutCounters { subject: Subject::Targets, kind: CounterKind::Stun, amount: 1 }'])]),
+      'Target player draws two cards. If the gift was promised, target creature you control gets +2/+0 until end of turn.':
+        ('Player',['Player','CreatureYou'],['Draw(PlayerSet::Targeted, 2)',*conditional(['SelectGroup(1)',grow_instruction('Targets',2,0)])]),
+    }
+    if body in cases: return cases[body]
+    if body == 'Return up to two target creature cards each with mana value 2 or less from your graveyard to the battlefield. If the gift was promised, instead return up to three target creature cards each with mana value 2 or less from your graveyard to the battlefield.':
+        rule='GiftCreatureGraveYouMax2'
+        TARGET_RULES[rule]='TargetRule::Object { zone: TargetZone::Graveyard, kinds: 1, relation: 0, other: false, nonland: false, tapped: false, min_mana: 0, max_mana: 2 }'
+        return (rule,0,2),(rule,0,3),['ReturnToBattlefield']
+    if body == 'Target opponent sacrifices a creature with the greatest power among creatures they control. If the gift was promised, return target creature card from your graveyard to your hand.':
+        return 'Opponent',['Opponent','CreatureGraveYou'],['SacrificeGreatestPower',*conditional(['SelectGroup(1)','ReturnToHand'])]
+    return None
+
+
+def gift_permanent_body(card):
+    """A complete intrinsic creature plus its gift-qualified entry ability."""
+    if card.get('layout') != 'normal' or not isinstance(card.get('oracle_text'),str): return None
+    lines = card['oracle_text'].splitlines()
+    if not lines: return None
+    if any(('(' in line or ')' in line) and not intrinsic_reminder_line_valid(line)
+           for line in lines[:-1]): return None
+    trigger = lines[-1]
+    if card.get('name'):
+        trigger = trigger.replace('When '+card['name']+' enters, ', 'When this creature enters, ', 1)
+    match = re.fullmatch(r'When this creature enters, if the gift was promised, (.+)', trigger)
+    if match is None: return None
+    result = targeted_program(match[1][0].upper()+match[1][1:])
+    if match[1] == 'destroy target artifact or enchantment an opponent controls.':
+        result = 'ArtifactEnchantmentOpponent',['Destroy']
+    if result is None: return None
+    base = creature_template(dict(card,oracle_text='\n'.join(lines[:-1])))
+    if base is None: return None
+    if any(int(card[axis]) > 2147483647 for axis in ('power','toughness')): return None
+    rule, program = result
+    return base[0],base[1],[('SelfGiftEnters',['GiveGift'],'None'),('SelfGiftEnters',program,rule)]
+
+
 def temporary_death_spell_template(card):
     if (card.get('layout') != 'normal'
             or card.get('type_line', '').split(' — ')[0] not in ('Instant', 'Sorcery')
@@ -4759,6 +4858,7 @@ def compile_catalogue(snapshot, target):
     x_rows = []
     x_entry_rows = []
     kicker_rows = []
+    gift_rows = []
     bargain_rows = []
     convoke_rows = []
     evidence_rows = []
@@ -4810,7 +4910,8 @@ def compile_catalogue(snapshot, target):
             if stripped == timing_surface:break
             timing_surface = stripped
         # Detection never authenticates or changes the raw validation body.
-        card, timing_grants = extract_cast_timing_grants(cards.get(name, {}))
+        gift_card, gift_kind = extract_gift(original)
+        card, timing_grants = extract_cast_timing_grants(gift_card)
         card, combat = extract_combat_restriction(card)
         card, uncounterable = extract_uncounterable(card)
         card, entry_suppression = extract_entry_trigger_suppression(card)
@@ -4936,6 +5037,18 @@ def compile_catalogue(snapshot, target):
         paid_body=actual_mana_body(card) if (plot is None and warp is None and not convoke and not cycling and not bargain and evidence is None and all(v is None for v in (flashback,offspring,kicker,additional,target_reduction)) and not reductions and not dynamic and not scaling) else None
         if paid_body is not None:
             effect,keywords,abilities,activations,enters=paid_body
+        gift_body = gift_spell_program(card) if gift_kind is not None else None
+        gift_permanent = gift_permanent_body(card) if gift_kind is not None else None
+        if gift_body is not None:
+            declined_targets, promised_targets, gift_program = gift_body
+            effect = 'Spell'
+            keywords = 0
+            spell = declined_targets, ['GiveGift', *gift_program]
+            abilities=[];activations=[];enters=[0,0,0]
+        elif gift_permanent is not None:
+            effect,keywords,abilities = gift_permanent
+            promised_targets='None'
+            activations=[];enters=[0,0,0]
         role_fight = role_fight_body(original)
         if role_fight is not None:
             effect, keywords, abilities, spell = role_fight
@@ -5008,7 +5121,7 @@ def compile_catalogue(snapshot, target):
             effect = 'Unsupported'
         if not adventure_event_reminders_valid(original):
             effect = 'Unsupported'
-        if not recovery_reminders_valid(original):
+        if not recovery_reminders_valid(gift_card if gift_body is not None else original):
             effect = 'Unsupported'
         if not intrinsic_reminders_valid(original):
             effect = 'Unsupported'
@@ -5035,6 +5148,16 @@ def compile_catalogue(snapshot, target):
             checked_flash = role_reminder_text(original.get('oracle_text', ''))
             if '(' in checked_flash or ')' in checked_flash:
                 effect = 'Unsupported'
+        # Gift is an entire keyword plus body contract; no later selector may
+        # revive a malformed keyword, unauthenticated reminder or partial body.
+        gift_surface = original.get('oracle_text','')
+        gift_seen = False
+        while True:
+            gift_seen |= re.search(r'(?:^|\n|\()\s*Gift\s',gift_surface) is not None
+            stripped = re.sub(r'\([^()]*\)', '', gift_surface)
+            if stripped == gift_surface: break
+            gift_surface = stripped
+        if gift_seen and (gift_kind is None or (gift_body is None and gift_permanent is None)): effect='Unsupported'
         programs = {
             'Damage(3)': ('Any', ['Damage(3)']), 'Damage(2)': ('Any', ['Damage(2)']),
             'Grow': ('Creature', [grow_instruction('Targets', 3, 3)]), 'Draw': ('None', ['Draw(PlayerSet::Controller, 2)']),
@@ -5088,6 +5211,13 @@ def compile_catalogue(snapshot, target):
                 raise ValueError(f'invalid or missing starting loyalty: {name}')
             loyalty_rows.append(f'        {index} => {int(value)},')
         if effect != 'Unsupported':
+            if gift_body is not None or gift_permanent is not None:
+                token='None'
+                if gift_kind != 'Card':
+                    creation = (token_program('create a tapped 1/1 blue Fish creature token.')
+                                if gift_kind == 'TappedFish' else predefined_program('create a '+gift_kind+' token.'))
+                    token='Some('+re.search(r'token: (__TOKEN_[a-f0-9]+__)',creation[0])[1]+')'
+                gift_rows.append(f'        {index} => {{ const SPEC: GiftSpec = GiftSpec {{ kind: GiftKind::{gift_kind}, token: {token}, promised_targets: {rust_targets(promised_targets)} }}; Some(SPEC) }},')
             if combat:combat_rows.append(f'        {index} => Some({combat}),')
             if timing_grants:cast_timing_rows.append(f'        {index} => &[{", ".join(timing_grants)}],')
             if replacements:replacement_rows.append(f'        {index} => &[{", ".join(replacements)}],')
@@ -5162,7 +5292,7 @@ def compile_catalogue(snapshot, target):
                          'implementation': 'bargain_template' if bargain and effect != 'Unsupported' else 'explicit' if use_legacy else 'land_template' if land else 'creature_template' if template else 'trigger_template' if trigger_template else 'modal_template' if modal else 'spell_template' if spell else 'aura_template' if aura else 'equipment_template' if equipment else 'permanent_template' if permanent else 'static_template' if static else None})
 
     # Only factories referenced by wholly accepted cards enter the executable catalogue.
-    used_tokens = sorted(set(re.findall(r'__TOKEN_([0-9a-f]+)__', '\n'.join(definitions+replacement_rows))))
+    used_tokens = sorted(set(re.findall(r'__TOKEN_([0-9a-f]+)__', '\n'.join(definitions+replacement_rows+gift_rows))))
     token_base = len(names)
     token_infos = []
     role_rows = []
@@ -5234,6 +5364,7 @@ def compile_catalogue(snapshot, target):
     definitions=[replace_token_markers(row) for row in definitions]
     offspring_copy_rows=[replace_token_markers(row) for row in offspring_copy_rows]
     replacement_rows=[replace_token_markers(row) for row in replacement_rows]
+    gift_rows=[replace_token_markers(row) for row in gift_rows]
     used_emblems=sorted(set(re.findall(r'__EMBLEM_([0-9a-f]+)__', '\n'.join(definitions))))
     emblem_base=len(names)
     emblem_infos=[]
@@ -5296,6 +5427,8 @@ def compile_catalogue(snapshot, target):
     lines += ['#[rustfmt::skip]', 'pub(super) fn x_symbols(card: Card) -> u8 {', '    match card.0 {', *x_rows, '        _ => 0,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn x_entry_counters(card: Card) -> bool {', '    '+('matches!(card.0, '+' | '.join(x_entry_rows)+')' if x_entry_rows else 'false'), '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn kicker_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *kicker_rows, '        _ => None,', '    }', '}', '']
+    # Gift recipes are emitted only after complete body lowering authenticates them.
+    lines += ['#[rustfmt::skip]', 'pub(super) fn gift(card: Card) -> Option<GiftSpec> {', '    match card.0 {', *gift_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn kicked_entry_counters(card: Card) -> u16 {', '    match card.0 {', *kicked_entry_rows, '        _ => 0,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', "pub(super) fn counter_keyword_grants(card: Card) -> &'static [(CounterKind, Keywords)] {", '    match card.0 {', *counter_grant_rows, '        _ => &[],', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn offspring_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *offspring_rows, '        _ => None,', '    }', '}', '']

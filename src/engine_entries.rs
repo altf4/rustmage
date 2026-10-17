@@ -3,6 +3,7 @@ use super::*;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EntryMove {
+    pub gift: Option<Box<GiftContext>>,
     pub before: ObjectView,
     pub controller: Player,
     pub destination: Zone,
@@ -42,6 +43,8 @@ impl EntryBatch {
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.moves.len() * std::mem::size_of::<EntryMove>()
+            + self.moves.iter().filter(|m| m.gift.is_some()).count()
+                * std::mem::size_of::<GiftContext>()
             + self.choices.len() * std::mem::size_of::<usize>()
             + self.counter_order.len() * std::mem::size_of::<usize>()
             + self.replacement_resume.as_ref().map_or(0, |f| f.bytes())
@@ -140,6 +143,7 @@ impl Game {
     }
     pub(super) fn entry_move(&self, id: CardId, destination: Zone, tapped: bool) -> EntryMove {
         EntryMove {
+            gift: None,
             before: self.object_view(id),
             controller: self.state.objects[id as usize].controller,
             destination,
@@ -328,6 +332,9 @@ impl Game {
             );
             event.offspring_paid = movement.offspring_paid;
             event.kicked = movement.kicked;
+            if event.moved && event.destination == Zone::Battlefield {
+                event.gift = movement.gift.clone();
+            }
             event.bargained = movement.bargained;
             event.x = movement.x;
             event.evidence_collected = movement.evidence_collected;
