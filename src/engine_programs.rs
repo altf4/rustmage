@@ -1357,6 +1357,7 @@ impl Game {
             {
                 return;
             }
+            self.finish_entered_library_selection();
             if self.state.resolving.as_ref().unwrap().connive.is_some() && self.advance_connive() {
                 return;
             }
@@ -1389,7 +1390,9 @@ impl Game {
             let resolution = self.state.resolving.as_mut().unwrap();
             let Some(instruction) = resolution.program.get(resolution.pc).copied() else {
                 let item = self.state.resolving.take().unwrap().item;
-                if item.kind == StackKind::Spell {
+                if item.kind == StackKind::Spell
+                    && self.state.objects[item.card as usize].zone == Zone::Stack
+                {
                     if item.cast.is_some_and(|c| c.face == CastFace::Adventure) {
                         self.finish_adventure(&item);
                     } else if item.cast.is_some_and(|c| c.face == CastFace::Omen) {
@@ -2020,6 +2023,22 @@ impl Game {
                 Instruction::ExileTargetLibraryPlay { amount } => {
                     for player in self.program_players(PlayerSet::Targeted, &item) {
                         self.exile_top_play_from(player, item.controller, amount, false);
+                    }
+                }
+                Instruction::NoMaximumHandSize => {
+                    self.state.players[item.controller.index()].no_maximum_hand_size = true;
+                }
+                Instruction::ExileResolvingSpell => {
+                    if item.kind == StackKind::Spell
+                        && self.object_ref(item.card) == item.object
+                        && self.state.objects[item.card as usize].zone == Zone::Stack
+                    {
+                        self.move_object(item.card, Zone::Exile);
+                    }
+                }
+                Instruction::SelectLibraryTo(effect) => {
+                    if self.start_library_selection_to(&item, effect) {
+                        return;
                     }
                 }
                 Instruction::SelectLibrary(spec) => {

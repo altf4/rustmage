@@ -130,6 +130,8 @@ impl Game {
                         fragment,
                         crate::cards::StaticAbilityFragment::SelfUntap(_)
                             | crate::cards::StaticAbilityFragment::LifeGainAdditional(_)
+                            | crate::cards::StaticAbilityFragment::NoMaximumHandSize
+                            | crate::cards::StaticAbilityFragment::AdditionalLandPlays(_)
                             | crate::cards::StaticAbilityFragment::CantGainLife
                             | crate::cards::StaticAbilityFragment::DeathBaronLord
                             | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..)

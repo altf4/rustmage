@@ -658,6 +658,7 @@ impl Object {
 struct PlayerState {
     hexproof_until_end_turn: bool,
     extra_land_plays_remaining: u64,
+    no_maximum_hand_size: bool,
     nonland_permanents_entered_this_turn: u64,
     spells_cast_this_turn: u64,
     instant_sorcery_cast_this_turn: u64,
@@ -1361,6 +1362,7 @@ struct State {
     next_stack_id: u64,
     passes: u8,
     land_played: bool,
+    continuous_land_plays_used: u64,
     attack_declared: bool,
     attackers: Vec<Attacker>,
     blocking: Vec<CardId>, // Remains blocking even after its attacker leaves combat.
@@ -1452,6 +1454,7 @@ pub struct PlayerView {
     pub hexproof_until_end_turn: bool,
     /// Additional land plays granted until the current turn ends.
     pub extra_land_plays_remaining: u64,
+    pub no_maximum_hand_size: bool,
     /// Historical actual entries this turn; departures do not remove them.
     pub nonland_permanents_entered_this_turn: u64,
     pub spells_cast_this_turn: u64,
@@ -1769,6 +1772,7 @@ impl Game {
         let mut players = std::array::from_fn(|_| PlayerState {
             hexproof_until_end_turn: false,
             extra_land_plays_remaining: 0,
+            no_maximum_hand_size: false,
             nonland_permanents_entered_this_turn: 0,
             spells_cast_this_turn: 0,
             instant_sorcery_cast_this_turn: 0,
@@ -1874,6 +1878,7 @@ impl Game {
                 passes: 0,
                 mulligan_round: [false; 2],
                 land_played: false,
+                continuous_land_plays_used: 0,
                 attack_declared: false,
                 attackers: Vec::new(),
                 blocking: Vec::new(),
@@ -2465,7 +2470,8 @@ impl Game {
                             && sorcery
                             && (obj.zone == Zone::Hand || self.can_play_exiled(actor, card))
                             && (!s.land_played
-                                || s.players[actor.index()].extra_land_plays_remaining > 0)
+                                || s.players[actor.index()].extra_land_plays_remaining > 0
+                                || self.continuous_land_plays(actor) > s.continuous_land_plays_used)
                             && emit(Action::PlayLand { card })
                         {
                             return true;
@@ -2520,7 +2526,8 @@ impl Game {
                     if obj.card.is_land() {
                         if sorcery
                             && (!s.land_played
-                                || s.players[actor.index()].extra_land_plays_remaining > 0)
+                                || s.players[actor.index()].extra_land_plays_remaining > 0
+                                || self.continuous_land_plays(actor) > s.continuous_land_plays_used)
                             && emit(Action::PlayLand { card })
                         {
                             return true;
@@ -3249,7 +3256,11 @@ impl Game {
                     self.stage_entries(vec![movement], None);
                 }
                 if self.state.land_played {
-                    self.state.players[actor.index()].extra_land_plays_remaining -= 1;
+                    if self.state.players[actor.index()].extra_land_plays_remaining > 0 {
+                        self.state.players[actor.index()].extra_land_plays_remaining -= 1;
+                    } else {
+                        self.state.continuous_land_plays_used += 1;
+                    }
                 } else {
                     self.state.land_played = true;
                 }
@@ -4242,6 +4253,7 @@ impl Game {
             player.attacked_this_turn = false;
         }
         self.state.land_played = false;
+        self.state.continuous_land_plays_used = 0;
         self.state.attack_declared = false;
         self.state.attackers.clear();
         self.state.blocking.clear();
@@ -4353,7 +4365,9 @@ impl Game {
             }
             Step::End | Step::Cleanup => {
                 self.state.step = Step::Cleanup;
-                if self.hand_count(self.state.active) > 7 {
+                if !self.no_maximum_hand_size(self.state.active)
+                    && self.hand_count(self.state.active) > 7
+                {
                     self.state.pending = Pending::Discard;
                 } else {
                     self.finish_cleanup();
@@ -4807,6 +4821,11 @@ impl Game {
             players: std::array::from_fn(|i| PlayerView {
                 hexproof_until_end_turn: s.players[i].hexproof_until_end_turn,
                 extra_land_plays_remaining: s.players[i].extra_land_plays_remaining,
+                no_maximum_hand_size: self.no_maximum_hand_size(if i == 0 {
+                    Player::P0
+                } else {
+                    Player::P1
+                }),
                 nonland_permanents_entered_this_turn: s.players[i]
                     .nonland_permanents_entered_this_turn,
                 spells_cast_this_turn: s.players[i].spells_cast_this_turn,
@@ -5946,3 +5965,43 @@ mod fdn_cast_combat_eight_tests;
 #[cfg(test)]
 #[path = "engine_fdn_program_seven_tests.rs"]
 mod fdn_program_seven_tests;
+
+impl Game {
+    fn no_maximum_hand_size(&self, player: Player) -> bool {
+        self.state.players[player.index()].no_maximum_hand_size
+            || self.state.static_sources.iter().any(|&id| {
+                self.state.objects[id as usize].controller == player
+                    && self.continuous_fragment_available(id, |f| {
+                        matches!(f, crate::cards::StaticAbilityFragment::NoMaximumHandSize)
+                    })
+            })
+    }
+    fn continuous_land_plays(&self, player: Player) -> u64 {
+        self.state
+            .static_sources
+            .iter()
+            .filter(|&&id| self.state.objects[id as usize].controller == player)
+            .map(|&id| {
+                self.state.objects[id as usize]
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .flat_map(|g| g.fragments)
+                    .filter_map(|f| match f {
+                        crate::cards::StaticAbilityFragment::AdditionalLandPlays(n)
+                            if self.continuous_fragment_available(id, |x| {
+                                matches!(
+                                    x,
+                                    crate::cards::StaticAbilityFragment::AdditionalLandPlays(_)
+                                )
+                            }) =>
+                        {
+                            Some(u64::from(*n))
+                        }
+                        _ => None,
+                    })
+                    .sum::<u64>()
+            })
+            .sum()
+    }
+}
