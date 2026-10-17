@@ -8,7 +8,14 @@ fn act(g: &mut Game, a: Action) {
         .legal_actions()
         .iter()
         .position(|v| *v == a)
-        .expect("legal action");
+        .unwrap_or_else(|| {
+            panic!(
+                "illegal fixture action {a:?} pending {:?} actor {:?} legal {:?}",
+                g.state.pending,
+                g.actor(),
+                g.legal_actions()
+            )
+        });
     let before = g.snapshot();
     let revision = g.revision();
     assert!(g.apply(p.other(), a.clone()).is_err());
@@ -482,6 +489,200 @@ fn feral_whirl_off_turn_dragon_and_sorcery_faces_keep_grouped_etb_and_owned_comp
         assert_eq!(g.state.objects[inset as usize].zone, Zone::Library);
         assert_eq!(g.state.players[p.index()].library.len(), library);
         assert_eq!(g.state.objects[grantor as usize].zone, Zone::Battlefield);
+        assert!(g.state.adventures.is_none());
+        assert!(g.state.exile_permissions.is_empty());
+    }
+}
+
+// The X API accepts every value in its interval, beyond representative indices.
+fn union_declared_x(g: &mut Game, value: u32) {
+    let p = g.actor().unwrap();
+    let before = g.snapshot();
+    let revision = g.revision();
+    let action = Action::ChooseX { value };
+    assert_eq!(g.apply(p.other(), action.clone()), Err(Error::WrongActor));
+    assert_eq!(g.snapshot(), before);
+    let mut child = {
+        let parent = g.clone();
+        let child = parent.clone();
+        drop(parent);
+        child
+    };
+    child.apply(p, action.clone()).unwrap();
+    g.apply(p, action.clone()).unwrap();
+    assert_eq!(g.snapshot(), child.snapshot());
+    for viewer in [p, p.other()] {
+        assert_eq!(
+            serde_json::to_value(g.observe(viewer)).unwrap(),
+            serde_json::to_value(child.observe(viewer)).unwrap()
+        );
+    }
+    let after = g.snapshot();
+    g.restore(&before).unwrap();
+    assert_eq!(g.apply_index(p, revision, 0), Err(Error::StaleRevision));
+    g.apply(p, action).unwrap();
+    assert_eq!(g.snapshot(), after);
+}
+
+#[test]
+fn omen_union_mass_deaths_feed_grouped_exile_before_private_split_search_both_seats() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, feral) = setup(p);
+        g.state.active = p.other();
+        g.state.priority = p;
+        g.state.step = Step::FirstStrikeDamage;
+        let whirl = spawn(
+            &mut g,
+            p,
+            Card::from_name("Whirlwing Stormbrood // Dynamic Soar").unwrap(),
+            Zone::Battlefield,
+        );
+        let bloom = spawn(
+            &mut g,
+            p,
+            Card::from_name("Bloomvine Regent // Claim Territory").unwrap(),
+            Zone::Battlefield,
+        );
+        let mascot = spawn(
+            &mut g,
+            p,
+            Card::from_name("Three Tree Mascot").unwrap(),
+            Zone::Battlefield,
+        );
+        let own = [
+            spawn(
+                &mut g,
+                p,
+                Card::from_name("Bear Cub").unwrap(),
+                Zone::Battlefield,
+            ),
+            spawn(
+                &mut g,
+                p,
+                Card::from_name("Bear Cub").unwrap(),
+                Zone::Battlefield,
+            ),
+        ];
+        let foreign = [
+            spawn(
+                &mut g,
+                p.other(),
+                Card::from_name("Bear Cub").unwrap(),
+                Zone::Battlefield,
+            ),
+            spawn(
+                &mut g,
+                p.other(),
+                Card::from_name("Bear Cub").unwrap(),
+                Zone::Battlefield,
+            ),
+        ];
+        let toxin = spawn(
+            &mut g,
+            p,
+            Card::from_name("Scavenger Regent // Exude Toxin").unwrap(),
+            Zone::Hand,
+        );
+        let search = spawn(
+            &mut g,
+            p,
+            Card::from_name("Bloomvine Regent // Claim Territory").unwrap(),
+            Zone::Hand,
+        );
+        let library = g.state.players[p.index()].library.len();
+        let mana = g.state.players[p.index()]
+            .mana
+            .into_iter()
+            .map(u64::from)
+            .sum::<u64>();
+        act(&mut g, Action::AnnounceOmen { card: toxin });
+        union_declared_x(&mut g, 2);
+        settle(&mut g);
+        assert_eq!(
+            g.state.players[p.index()]
+                .mana
+                .into_iter()
+                .map(u64::from)
+                .sum::<u64>(),
+            mana - 4
+        );
+        for id in own.into_iter().chain(foreign) {
+            assert_eq!(g.state.objects[id as usize].zone, Zone::Graveyard);
+        }
+        for id in [whirl, bloom, mascot] {
+            assert_eq!(g.state.objects[id as usize].zone, Zone::Battlefield);
+        }
+        assert_eq!(g.state.objects[toxin as usize].zone, Zone::Library);
+        assert_eq!(g.state.players[p.index()].library.len(), library + 1);
+        if g.actor() != Some(p) {
+            act(&mut g, Action::Pass);
+        }
+        let life = g.state.players[p.index()].life;
+        normal_targets(&mut g, feral);
+        choose(&mut g, own[0]);
+        deny(&mut g, foreign[0]);
+        choose(&mut g, own[1]);
+        settle(&mut g);
+        for id in own {
+            assert_eq!(g.state.objects[id as usize].zone, Zone::Exile);
+        }
+        for id in foreign {
+            assert_eq!(g.state.objects[id as usize].zone, Zone::Graveyard);
+        }
+        assert_eq!(g.state.objects[feral as usize].zone, Zone::Battlefield);
+        assert_eq!(g.state.players[p.index()].life, life + 3);
+        if g.actor() != Some(p) {
+            act(&mut g, Action::Pass);
+        }
+        act(&mut g, Action::AnnounceOmen { card: search });
+        for _ in 0..80 {
+            if matches!(g.state.pending, Pending::EffectSearch { .. }) {
+                break;
+            }
+            next(&mut g);
+        }
+        assert!(matches!(g.state.pending, Pending::EffectSearch { .. }));
+        let selected = g.state.players[p.index()]
+            .library
+            .iter()
+            .copied()
+            .filter(|&id| g.state.objects[id as usize].card == Card::Forest)
+            .take(2)
+            .collect::<Vec<_>>();
+        assert_eq!(selected.len(), 2);
+        for &card in &selected {
+            act(&mut g, Action::ChooseSearch { card });
+        }
+        act(&mut g, Action::FinishSearch);
+        assert!(g.observe(p).search_distribution.is_some());
+        let other = g.observe(p.other());
+        assert!(other.search_choice.is_none());
+        assert_eq!(
+            other
+                .search_distribution
+                .unwrap()
+                .candidates
+                .iter()
+                .map(|v| v.id)
+                .collect::<Vec<_>>(),
+            selected
+        );
+        assert!(other.objects.iter().all(|v| v.zone != Zone::Library));
+        assert!(g.observe(p.other()).actions.is_empty());
+        act(
+            &mut g,
+            Action::ChooseSearchBattlefield { card: selected[1] },
+        );
+        settle(&mut g);
+        assert_eq!(g.state.objects[selected[0] as usize].zone, Zone::Hand);
+        assert_eq!(
+            g.state.objects[selected[1] as usize].zone,
+            Zone::Battlefield
+        );
+        assert!(g.state.objects[selected[1] as usize].tapped);
+        assert_eq!(g.state.objects[search as usize].zone, Zone::Library);
+        assert_eq!(g.state.players[p.index()].library.len(), library);
+        assert_eq!(g.state.active, p.other());
         assert!(g.state.adventures.is_none());
         assert!(g.state.exile_permissions.is_empty());
     }
