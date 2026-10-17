@@ -33,6 +33,15 @@ class GraveyardRecoveryTests(unittest.TestCase):
                 replacement, row = metadata.LegacyMetadataTests().definition(card)
                 self.assertTrue(row['implemented'])
                 self.assertEqual(original.replace(json.dumps(name), json.dumps(renamed)), replacement)
+                # Include helper arms (notably Tombstone's cost reduction), token
+                # recipes and colors, allowing only identity and lookup ordering.
+                before=metadata.LegacyMetadataTests.compile([self.cards[name]])[0]
+                after=metadata.LegacyMetadataTests.compile([card])[0]
+                def semantics(text):
+                    lines=[line for line in text.splitlines() if not line.startswith('pub const CATALOGUE_VERSION:')]
+                    lookups=[line for line in lines if re.fullmatch(r'    \("(?:[^"\\]|\\.)*", [0-9]+\),',line)]
+                    return [line for line in lines if line not in lookups],sorted(lookups)
+                self.assertEqual(semantics(before.replace(json.dumps(name),json.dumps(renamed))),semantics(after))
 
     def test_unknown_residuals_and_parentheses_gate_whole_bodies(self):
         mutants = []
