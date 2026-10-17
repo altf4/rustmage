@@ -2092,7 +2092,10 @@ def recovery_route(text):
     """Detect even nested/infix attempted recovery; erasure never authenticates it."""
     if not isinstance(text, str): return False
     while True:
-        if re.search(r'from your graveyard (?:to your hand|on (?:the )?(?:top|bottom) of your library)', text):
+        # Detection only: erasing an infix parenthesis can leave extra spaces,
+        # while whole-body parsers normalize those spaces before recognizing it.
+        # The strict validator below still receives the untouched raw body.
+        if re.search(r'from\s+your\s+graveyard\s+(?:to\s+your\s+hand|on\s+(?:the\s+)?(?:top|bottom)\s+of\s+your\s+library)', text, re.IGNORECASE):
             return True
         stripped = re.sub(r'\([^()]*\)', '', text)
         if stripped == text: return False

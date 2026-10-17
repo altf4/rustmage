@@ -156,4 +156,39 @@ class GraveyardRecoveryTests(unittest.TestCase):
         self.assertTrue(all(l.startswith(('    Definition {','pub const CATALOGUE_VERSION:','    pub const ALL:')) for l in removed))
 
 
+
+    def test_infix_reminders_cannot_evade_route_detection_at_any_word_boundary(self):
+        routes = ['from your graveyard to your hand',
+                  'from your graveyard on the top of your library',
+                  'from your graveyard on the bottom of your library']
+        for route in routes:
+            words = route.split()
+            for index in range(1, len(words)):
+                for reminder in ['(Draw seven cards.)', '((Draw seven cards.))']:
+                    for separator in [' ', '\t', '\n', '  ']:
+                        text = separator.join(words[:index]) + separator + reminder + separator + separator.join(words[index:])
+                        with self.subTest(text=text):
+                            self.assertTrue(g.recovery_route(text))
+                            self.assertFalse(g.recovery_reminders_valid({'oracle_text':text}))
+
+    def test_full_bodies_reject_unknown_infix_reminders_across_every_recovery_boundary(self):
+        mutants = []
+        for name in NAMES:
+            if name == "Morcant's Loyalist": continue
+            base = self.cards[name]
+            route = re.search(r'from your graveyard (?:to your hand|on (?:the )?(?:top|bottom) of your library)', base['oracle_text'])
+            self.assertIsNotNone(route, name)
+            words = route[0].split()
+            for index in range(1,len(words)):
+                for reminder in ['(Draw seven cards.)', '((Draw seven cards.))']:
+                    for separator in [' ', '\t', '\n']:
+                        replacement = ' '.join(words[:index]) + separator + reminder + separator + ' '.join(words[index:])
+                        text = base['oracle_text'][:route.start()] + replacement + base['oracle_text'][route.end():]
+                        renamed = f'Infix Recovery Mutation {len(mutants)}'
+                        mutants.append(dict(base, name=renamed, oracle_text=text.replace(name,renamed).replace(name.split(',')[0],renamed)))
+        _, coverage = metadata.LegacyMetadataTests.compile(mutants)
+        rows = {row['name']:row for row in coverage['cards']}
+        for card in mutants:
+            self.assertFalse(rows[card['name']]['implemented'],card['oracle_text'])
+
 if __name__ == '__main__': unittest.main()
