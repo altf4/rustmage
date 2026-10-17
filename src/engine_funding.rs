@@ -78,6 +78,7 @@ struct FundingMove {
 #[derive(Hash, PartialEq, Eq)]
 struct ResourceKey {
     definition: usize,
+    token: bool,
     kinds: u16,
     protected: bool,
     reserved: bool,
@@ -467,6 +468,7 @@ impl<'g> FundingState<'g> {
                             || self.life_gained[source.object.controller.index()])
                         && grant.matches_characteristics(
                             target.object.card,
+                            target.object.is_token(),
                             self.game.object_kinds(target.id, &target.object),
                             self.granted_subtypes(target.id),
                             target.object.controller == source.object.controller,
@@ -679,6 +681,7 @@ impl<'g> FundingState<'g> {
             .iter()
             .map(|r| ResourceKey {
                 definition: r.object.card.index(),
+                token: r.object.is_token(),
                 kinds: self.kinds(r),
                 protected: goal
                     .source
@@ -704,7 +707,7 @@ impl<'g> FundingState<'g> {
             .collect();
         resources.sort_by_key(|r| {
             (
-                r.definition,
+                (r.definition, r.token),
                 r.kinds,
                 (r.protected, r.reserved),
                 r.present,
@@ -923,7 +926,7 @@ impl<'g> FundingState<'g> {
             .state
             .objects
             .iter()
-            .filter(|o| o.owner == self.actor && o.zone == Zone::Graveyard && !o.card.is_token())
+            .filter(|o| o.owner == self.actor && o.zone == Zone::Graveyard && !o.is_token())
             .map(|o| u128::from(o.card.fixed_mana_value()))
             .sum();
         actual
@@ -934,7 +937,7 @@ impl<'g> FundingState<'g> {
                     r.object.owner == self.actor
                         && r.object.zone == Zone::Graveyard
                         && self.game.state.objects[r.id as usize].zone != Zone::Graveyard
-                        && !r.object.card.is_token()
+                        && !r.object.is_token()
                 })
                 .map(|r| u128::from(r.object.card.fixed_mana_value()))
                 .sum::<u128>()
@@ -972,7 +975,7 @@ impl<'g> FundingState<'g> {
                     .filter(|r| {
                         r.object.controller == self.actor
                             && r.object.zone == Zone::Battlefield
-                            && !r.object.card.is_token()
+                            && !r.object.is_token()
                             && r.object.card.activations().iter().any(|a| {
                                 a.cost.sacrifice
                                     && (!a.cost.tap || !r.object.tapped)
@@ -1924,6 +1927,62 @@ mod conditional_keyword_tests {
                     actual.keywords(id)
                 );
             }
+        }
+    }
+    #[test]
+    fn runtime_copy_funding_keys_distinguish_original_and_token_sacrifice_evidence() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = scenario();
+            g.state.active = p;
+            g.state.priority = p;
+            let definition = Card::from_name("Omni-Cheese Pizza").unwrap();
+            let original = named(&mut g, p, definition.name(), Zone::Battlefield);
+            g.stage_copy_creation(p, CopyRecipe { definition }, 1);
+            super::super::ability_timeline_tests::settle(&mut g);
+            let token = g
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .find(|(_, o)| o.copy_token && o.card == definition && o.zone == Zone::Battlefield)
+                .map(|(id, _)| id as CardId)
+                .unwrap();
+            for id in [original, token] {
+                g.state.objects[id as usize].summoning_sick = false;
+            }
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+            let before = g.snapshot();
+            let goal = goal(p);
+            let state = FundingState::from_game(&g, &goal);
+            let sacrifice = |id| {
+                let step = state
+                    .moves(&goal)
+                    .into_iter()
+                    .find(|m| state.resources[m.resource].id == id && m.production[3] == 1)
+                    .unwrap();
+                let mut next = state.clone();
+                next.apply(&step);
+                next
+            };
+            let physical_sacrificed = sacrifice(original);
+            let token_sacrificed = sacrifice(token);
+            assert_eq!(physical_sacrificed.mana, token_sacrificed.mana);
+            assert!(
+                physical_sacrificed.key(&goal) != token_sacrificed.key(&goal),
+                "physical definition equality does not make tokens interchangeable with cards"
+            );
+            let evidence = u128::from(definition.fixed_mana_value());
+            assert!(evidence > 0);
+            assert_eq!(physical_sacrificed.evidence_value(), evidence);
+            assert_eq!(token_sacrificed.evidence_value(), 0);
+            for fork in [&physical_sacrificed, &token_sacrificed] {
+                assert!(fork.reachable_with_evidence(
+                    &goal,
+                    Some(evidence as u16),
+                    &mut HashSet::new()
+                ));
+            }
+            assert_eq!(g.snapshot(), before);
         }
     }
     #[test]

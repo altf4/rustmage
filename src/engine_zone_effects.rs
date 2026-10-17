@@ -137,7 +137,7 @@ impl Game {
                 if o.zone == Zone::Graveyard
                     && owners[o.owner.index()]
                     && o.card.is_creature()
-                    && !o.card.is_token()
+                    && !o.is_token()
                     && o.card.fixed_mana_value() <= maximum_mana_value
                 {
                     let mut movement = self.entry_move(id as CardId, Zone::Battlefield, false);

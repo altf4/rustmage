@@ -41,6 +41,7 @@ impl CharacteristicQuery<'_> {
             && self.is_creature(id)
             && filter.matches_characteristics(
                 object.card,
+                CharacteristicWorld::is_token(self, id),
                 self.current_kinds(id),
                 self.granted_subtypes(id),
                 object.controller == controller,
@@ -119,7 +120,8 @@ impl CharacteristicQuery<'_> {
         }
         let mut stats = base;
         let battlefield_creature = object.zone == Zone::Battlefield && self.is_creature(id);
-        if matches!(object.card.effect(), Effect::Creature(..))
+        if battlefield_creature
+            || matches!(object.card.effect(), Effect::Creature(..))
             || object.card.vehicle_stats().is_some()
             || object.card.dynamic_stats().is_some()
         {
@@ -370,6 +372,7 @@ impl CharacteristicQuery<'_> {
                     || self.state.players[object.controller.index()].life_gained_this_turn > 0)
                     && grant.matches_characteristics(
                         target.card,
+                        target.is_token(),
                         self.current_kinds(id),
                         self.granted_subtypes(id),
                         target.controller == object.controller,
@@ -664,7 +667,12 @@ impl CharacteristicQuery<'_> {
             } else {
                 self.keywords(id)
             },
-            token: obj.card.token_info(),
+            copy_recipe: if obj.copy_token {
+                self.copy_recipe(self.object_ref(id))
+            } else {
+                None
+            },
+            token: self.object_token_info(id),
             emblem: obj.card.emblem_info(),
         }
     }

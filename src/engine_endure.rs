@@ -146,7 +146,7 @@ mod tests {
             .filter(|(_, o)| {
                 o.owner == p
                     && o.zone == Zone::Battlefield
-                    && o.card.is_token()
+                    && o.is_token()
                     && o.card.has_subtype("Spirit")
             })
             .map(|(id, _)| g.object_view(id as CardId))

@@ -92,7 +92,7 @@ impl Game {
         let p = state.cards[i];
         let object = &self.state.objects[card as usize];
         if object.card.is_land()
-            || object.card.is_token()
+            || object.is_token()
             || object.card.is_emblem()
             || !object.card.is_supported()
         {

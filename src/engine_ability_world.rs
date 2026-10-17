@@ -42,6 +42,10 @@ pub(super) trait CharacteristicWorld {
         }
     }
 
+    fn is_token(&self, id: CardId) -> bool {
+        self.object(id).is_token()
+    }
+
     fn counter_subtype_keywords(&self, id: CardId) -> Keywords {
         let object = self.object(id);
         if object.zone != Zone::Battlefield || self.kinds(id) & 1 == 0 {

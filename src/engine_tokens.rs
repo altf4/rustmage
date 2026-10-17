@@ -155,7 +155,7 @@ impl Game {
                     Some(id) => {
                         let old = &self.state.objects[id as usize];
                         assert_eq!(old.zone, Zone::Outside);
-                        assert!(old.card.is_token());
+                        assert!(old.is_token());
                         (id, old.generation)
                     }
                     None => (
@@ -166,6 +166,7 @@ impl Game {
                 };
                 let object = Object {
                     card: token,
+                    copy_token: false,
                     owner: controller,
                     controller,
                     zone: Zone::Outside,
@@ -236,8 +237,9 @@ impl Game {
     }
 
     pub(super) fn cease_token(&mut self, id: CardId) {
+        self.clear_copy_recipe(self.object_ref(id));
         let object = &mut self.state.objects[id as usize];
-        assert!(object.card.is_token());
+        assert!(object.is_token());
         assert!(!matches!(object.zone, Zone::Battlefield | Zone::Outside));
         if object.zone == Zone::Library {
             self.state.players[object.owner.index()]

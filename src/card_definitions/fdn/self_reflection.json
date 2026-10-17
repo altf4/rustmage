@@ -8,5 +8,48 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ae13987684d3ac15252faee8143c7c038cc622b15248ae1b96e9585dc38bee0f"
   },
-  "physical_metadata_sha256": "b8fb605824395cf31592cdc16daed2729ddcecb1a4cf271a0d837952a3ee2371"
+  "physical_metadata_sha256": "b8fb605824395cf31592cdc16daed2729ddcecb1a4cf271a0d837952a3ee2371",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SelfReflection.java",
+  "java_sha256": "cc6fce9fb9a3afcda102cecfefcdbb1b0b549dd19a13df932d6f68a2002d7692",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenCopyTargetEffect.java",
+      "sha256": "d04e58fdcda406a60d92c760243fca54440f13ec1fc94517c97eb9b360b9a158"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/functions/CopyTokenFunction.java",
+      "sha256": "ed8c0fe3b50030f54d3e32ddbabbdc1f7018c0da6878429821f54020c4d4ce1a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/functions/CopyApplier.java",
+      "sha256": "82b30d931a3e310abd321918f97eb3ec6d8bf1e93bd665e7ddc66ed032a2fcdf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/functions/EmptyCopyApplier.java",
+      "sha256": "b7a59355b96283deb3cb3cf79a0b2c00576637990d87efc64cd8aa82ede040ca"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashbackAbility.java",
+      "sha256": "6a3cea9f6a49b61f425bf267cc280a991d4d1315322b11059cd0604e0dd76e87"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CastFromGraveyardAbility.java",
+      "sha256": "d960ebf54f87db2baf2a23785c181bdfea863a60d493eb66707ba64becc77be9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    }
+  ],
+  "remaining_obligations": [
+    "Gated core fixture: whole-card consumer acceptance and independent runtime-copy core reviews remain pending."
+  ]
 }
