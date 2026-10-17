@@ -711,6 +711,10 @@ pub(crate) enum Instruction {
     /// Freeze a non-targeted battlefield group, then return it simultaneously.
     GainControlUntilEndTurn,
     /// A fixed controller for this exact permanent, with no expiry or source dependence.
+    #[allow(
+        dead_code,
+        reason = "Scenario-tested core; complete-card consumers remain gated"
+    )]
     GainControl {
         subject: Subject,
         controller: PlayerSet,
