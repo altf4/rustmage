@@ -3920,7 +3920,7 @@ def spell_program_template(card):
 def modal_route(raw):
     """Erasure is detection only: no detected surface is executable input."""
     while isinstance(raw, str):
-        if re.search(r'\bchoose\s+one\b', ' '.join(raw.split()), re.I): return True
+        if re.search(r'\bchoose\s+one(?:\s+or\s+both)?\s+—', ' '.join(raw.split()), re.I): return True
         stripped = re.sub(r'\([^()]*\)', '', raw)
         if stripped == raw: return False
         raw = stripped

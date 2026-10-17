@@ -40,3 +40,12 @@ instruction. Final queued-parent validation remains pending.
 The current focused inherited/new suite passes all33 methods in9.530s (modal raw,
 intrinsic, legacy metadata, private hand placement and four existing modal grammar
 checks), with no skipped methods. No native/library claim is made at this stage.
+
+The third checkpoint detects a complete “choose one [or both] —” header across
+parenthetical-erasure stages. Ordinary prose such as Tiered's “Choose one
+additional cost” stays untouched for its own complete parser. Nine focused tests
+pass in1.818s. An isolated composition with the pending Tiered checkpoint26adbde
+preserves every5332 definition,918 helpers,5438 aliases and95 token recipes,
+including all six Tiered cards and Boros Charm/Epic Fight. Six adversarial
+triggered/activated modal tails remain rejected. This is a compatibility probe,
+not final-parent delivery validation or a native/public gameplay claim.

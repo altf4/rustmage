@@ -12,6 +12,12 @@ class ModalRawTests(unittest.TestCase):
   return dict(metadata.LegacyMetadataTests.creature(name),oracle_text=body,**({'type_line':'Instant'}if spell else{}))
  def compile(self,card):
   rust,cov=metadata.LegacyMetadataTests.compile([card]);return rust,next(x['implemented']for x in cov['cards']if x['name']==card['name'])
+ def test_detection_requires_a_complete_modal_header(self):
+  for raw in ['Tiered (Choose one additional cost.)', 'Choose one additional cost.', 'Choose one card from your hand.']:
+   self.assertFalse(g.modal_route(raw),raw)
+   self.assertEqual(g.modal_reminder_text(dict(oracle_text=raw)),raw)
+  for raw in ['Choose one —','Choose one or both —','Cho(unknown)ose one —','Choose one (unknown) —','Choose one or (unknown)both —']:
+   self.assertTrue(g.modal_route(raw),raw)
  def test_all_generic_hosts_and_reserved_names_reject_unknown_raw(self):
   basic='• Draw a card.\n• You gain 1 life.'
   hosts=[('When this creature enters, choose one —\n'+basic,False),('Whenever this creature attacks, choose one —\n'+basic,False),('{2}: Choose one —\n'+basic,False),('Choose one —\n'+basic,True),('Choose one or both —\n'+basic,True),('When this creature enters, choose one —\n'+basic+'\n{1}: You gain 1 life.',False),('{1}: Choose one —\n'+basic+'\nWhenever this creature attacks, draw a card.',False)]
