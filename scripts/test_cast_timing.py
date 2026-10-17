@@ -67,6 +67,15 @@ class CastingTimingCompilerTests(unittest.TestCase):
                 c=copy.deepcopy(front);c["name"]=name;c["oracle_text"]=c["oracle_text"].replace(old,new)
                 with self.subTest(name=name,fragment=new):self.assertFalse(self.admitted(c))
 
+    def test_outer_wrapped_split_timing_clause_is_detected_before_any_stripping(self):
+        for name in ["Grizzly Bears","Llanowar Elves"]:
+            for depth in [1,2,3]:
+                c=copy.deepcopy(self.cards[self.name]["card_faces"][0])
+                c.update(name=name,layout="normal",oracle_id=self.cards[self.name]["oracle_id"],colors=["U"],keywords=["Flash","Flying"])
+                hidden="("*depth+self.grant.replace("as though","as(You win the game.) though")+")"*depth
+                c["oracle_text"]=c["oracle_text"].replace(self.grant,hidden)
+                self.assertFalse(self.admitted(c))
+
     def test_unknown_permissions_and_any_unknown_face_text_remain_gated(self):
         changes = [
             "You may cast sorcery spells and Dragon spells as though they had flying.",
