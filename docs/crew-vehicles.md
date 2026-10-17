@@ -74,3 +74,50 @@ Initial logical state is 20,280 bytes; maxima are 23,516 (Crew) and 23,552
 they do not stand in for the pending final full collections after replacement
 composition. Evidence logs are `/tmp/rustmage-root253-public-focused.log` and
 `/tmp/rustmage-root253-standard-{crew,payments}.log`.
+
+## Complete payment and replacement composition
+
+The final execution source at `c84ab2a`, carried unchanged into reviewed-main
+merge `7379c85`, includes payment PR251 and replacement PR252. Coverage is
+1,760/5,164 Standard identities, with 84 token recipes, one emblem and schema76.
+The fingerprint is
+`92dcc6649eaf01aa27336a8c42d9e204324ff669782f85afd3cb01300bd32543`.
+Both owned Crew and actual-cast-payment contexts survive branches. Counter
+replacement events capture live battlefield kinds; incoming entry counters
+retain the entering characteristics. Job attachment filters also query current
+creature status. A native both-seat/order cross test actually pays Caravan Crew
+and Snakeskin Veil, proving the animated Vehicle receives the noncommuting
+Michelangelo/Loading Zone counter modifications, with atomic wrong-actor
+rejection and parent-closed replay. Its initial public-frame visibility assertion
+was a fixture mistake; battlefield counter choices are public, while only the
+entitled actor can apply them. No production privacy change was needed.
+
+All 1,624 native tests (1,612 unit and twelve integration), all-target Clippy,
+formatting and generated checks pass. The clean compiler/data collection passes
+334 tests in 377.673 seconds. The final fresh public collection passes all 225 unique methods in 510.027
+seconds. It explicitly asserts the immutable library's schema/fingerprint, with
+the same explicit path in its subprocess. The immutable library is
+`/home/altf4/.cache/rustmage-root253/librustmage-92dcc-schema76.so`, SHA256
+`118a17ec5a620c2695bdd6b8938cc01016b6fcb772f1ae02c3d661881adb1585`.
+
+All three exact-source Standard100 drivers pass with natural terminal outcomes
+and positive full-body effect vectors. Crew completes 95,925 decisions/replays
+and parent-closed branches, 6,247 private frames and 108,419 denials; payments
+completes 104,413 replays, 1,330 frames and 208,826 denials; replacements completes
+187,965 replays, 44 frames and 375,930 denials, including actual Warp/exile/recast
+routes. Initial logical state is 20,296 bytes; workload maxima are respectively
+23,532, 23,568 and 21,144 bytes. These are current composition measurements,
+separate from the historical standalone and interim metrics above.
+
+Both independent nonauthor reviewers verify all 214 pinned source hash records
+across 110 Java files, all 24 whole constructors and CR702.122. Against actually
+merged main `f7a2fa0`, exactly 24 ordinary definitions change, 5,159 ordinary
+definitions plus 84 token definitions and one emblem remain semantically intact:
+5,244 preserved out of 5,268 total. All 5,183 ordinary IDs, canonical identities
+and color masks and all recipe metadata remain intact. All 610 prior helper arms
+are preserved; 75 printed Vehicle metadata arms and one dynamic CDA arm are added.
+The reviewers' focused native/compiler/public/Standard evidence is separately
+attributed in the final PR review record; neither claims root's broad collections
+as their own runs. Final approval requires exact-head reconfirmation after the complete public
+result. The remaining 3,404 identities and broader rules/RL work remain
+part of the active goal.
