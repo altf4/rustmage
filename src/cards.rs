@@ -625,6 +625,11 @@ pub(crate) enum Instruction {
     UntapSource,
     TapSource,
     UntapCreatures(CreatureFilter),
+    SetBaseStats {
+        subject: Subject,
+        power: Option<i128>,
+        toughness: Option<i128>,
+    },
     Grow {
         subject: Subject,
         power: i32,
@@ -809,6 +814,13 @@ pub(crate) struct StatExpr {
     pub value: StatValue,
     pub multiplier: i128,
     pub offset: i128,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct BaseStatSetter {
+    pub power: Option<i128>,
+    pub toughness: Option<i128>,
+    pub own_turn: bool,
+    pub condition: Option<StatValue>,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct DynamicStats {
@@ -1760,6 +1772,9 @@ impl Card {
     }
     pub(crate) fn additional_cost(self) -> Option<AdditionalCost> {
         generated::additional_cost(self)
+    }
+    pub(crate) fn base_stat_setter(self) -> Option<BaseStatSetter> {
+        generated::base_stat_setter(self)
     }
     pub(crate) fn dynamic_stats(self) -> Option<DynamicStats> {
         generated::dynamic_stats(self)

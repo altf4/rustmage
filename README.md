@@ -5,9 +5,9 @@ No JVM, client/server connection, or network protocol runs in the simulation loo
 Python can load the same library directly using the included `ctypes` binding.
 
 **Status: migration in progress, not a full XMage rewrite.** The native catalogue
-knows all 5,164 pinned Standard identities; 1,940 have executable rules so far,
-with 3,224 still gated. The catalogue includes 95 token recipes and one emblem;
-observations use schema 95.
+knows all 5,164 pinned Standard identities; 1,950 have executable rules so far,
+with 3,214 still gated. The catalogue includes 95 token recipes and one emblem;
+observations use schema 96.
 There are also six non-Standard regression cards. Unsupported decks are rejected. The full
 migration is tracked in [issue #1](https://github.com/altf4/rustmage/issues/1).
 The first training target is [current Standard, pinned to October 15, 2026](docs/standard-target.md).
@@ -18,6 +18,7 @@ The first training target is [current Standard, pinned to October 15, 2026](docs
 [Adventure faces](docs/adventure.md), [eight further complete pairs](docs/adventure-land-targets.md), [exact milled selection](docs/adventure-milled-selection.md), [Role Auras](docs/role-auras.md) and [cast and attack events](docs/adventure-event-predicates.md) provide forty complete pairs with paid inset casts and owned normal-play exile permissions; [typed attachment Ward](docs/attachment-ward.md) adds ten complete bodies. Their [composition record](docs/review-pr-258.md) tracks combined validation.
 [Complete Role consumers](docs/role-followup.md) add twelve whole bodies with paid inline/reflexive choices, independent target groups and full Saga resolution.
 [Role move results and paid flash](docs/role-semantic-kernels.md) add six complete bodies with exact returned recipients, mass Role attachments, enchanted-creature lords and optional timing costs.
+[Timestamped base-stat layers](docs/base-stat-layers.md) add ten complete bodies with independent power/toughness setters, live static conditions and exact Role ordering; [the remaining 48-family tracker](https://github.com/altf4/rustmage/issues/324) retains every unfinished whole body.
 [Temporary creature death grants](docs/temporary-death-grants.md) add three complete spells with exact death-trigger bindings, owner returns, replacement-aware entry counters and sparse owned state.
 [Further death consumers and Suspect](docs/temporary-death-consumers.md) add nine complete bodies with persistent exact-incarnation designations, unbounded incremental targets, late death choices and paid owner-return continuations.
 [Shared Gift declarations](docs/gift-kernels.md) add seventeen complete bodies with pre-target promises, all four gift kinds, exact paid entry bindings and owned continuations.

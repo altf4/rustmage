@@ -19,10 +19,13 @@ pub struct RoleGroupView {
 pub(super) struct RoleState {
     clock: u64,
     pub attached: Vec<RoleTimestampView>,
+    pub base_stats: Vec<BaseStatsEffectView>,
 }
 impl RoleState {
     pub fn bytes(&self) -> usize {
-        std::mem::size_of::<Self>() + self.attached.len() * std::mem::size_of::<RoleTimestampView>()
+        std::mem::size_of::<Self>()
+            + self.attached.len() * std::mem::size_of::<RoleTimestampView>()
+            + self.base_stats.len() * std::mem::size_of::<BaseStatsEffectView>()
     }
 }
 impl Game {
@@ -112,16 +115,20 @@ impl Game {
             r.attached.retain(|v| v.aura != aura);
         }
     }
-    pub(super) fn has_cursed_role(&self, recipient: ObjectRef) -> bool {
-        self.state.roles.as_ref().is_some_and(|r| {
-            r.attached.iter().any(|v| {
-                v.recipient == recipient
-                    && self.on_battlefield(v.aura.card)
-                    && self.object_ref(v.aura.card) == v.aura
-                    && self.state.objects[v.aura.card as usize].card.role()
-                        == Some(RoleKind::Cursed)
-                    && self.state.objects[v.aura.card as usize].attached_to == Some(recipient)
-            })
+    pub(super) fn cursed_role_timestamp(&self, recipient: ObjectRef) -> Option<u64> {
+        self.state.roles.as_ref().and_then(|r| {
+            r.attached
+                .iter()
+                .filter(|v| {
+                    v.recipient == recipient
+                        && self.on_battlefield(v.aura.card)
+                        && self.object_ref(v.aura.card) == v.aura
+                        && self.state.objects[v.aura.card as usize].card.role()
+                            == Some(RoleKind::Cursed)
+                        && self.state.objects[v.aura.card as usize].attached_to == Some(recipient)
+                })
+                .map(|v| v.timestamp)
+                .max()
         })
     }
     pub(super) fn resolve_role(&mut self, item: &SpellView, token: Card, subject: Subject) {

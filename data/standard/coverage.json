@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "67b5c64ea193ad159aa94d7976e3e692d2abc327232d50fd1438034852dc312e",
+  "catalogue_version": "9fc25b72fa36df9d09c874eb64e990754020e5e572e8bbb523d37d462dd87aa9",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 1940,
-  "implemented_total": 1946,
+  "implemented_standard_cards": 1950,
+  "implemented_total": 1956,
   "token_definitions": 95,
   "emblem_definitions": 1,
   "cards": [
@@ -6706,8 +6706,8 @@
     {
       "name": "Doc Ock, Sinister Scientist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "static_template"
     },
     {
       "name": "Doc Samson, Super Psychiatrist",
@@ -10186,8 +10186,8 @@
     {
       "name": "Gateway Sneak",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Gather the White Lotus",
@@ -10223,7 +10223,7 @@
       "name": "Gearseeker Serpent",
       "standard_legal": true,
       "implemented": false,
-      "implementation": null
+      "implementation": "permanent_template"
     },
     {
       "name": "Geist of Saint Thalia",
@@ -16696,8 +16696,8 @@
     {
       "name": "Mirkwood Meditator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Mirkwood Nurturer",
@@ -17260,8 +17260,8 @@
     {
       "name": "Multiply by Zero",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Multiversal Incursion",
@@ -18772,8 +18772,8 @@
     {
       "name": "Perfected Theory",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Perforating Artist",
@@ -19834,8 +19834,8 @@
     {
       "name": "Quandrix Charm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "modal_template"
     },
     {
       "name": "Quandrix, the Proof",
@@ -23680,8 +23680,8 @@
     {
       "name": "Snooping Page",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "trigger_template"
     },
     {
       "name": "Snow Villiers",
@@ -23692,8 +23692,8 @@
     {
       "name": "Snowmelt Stag",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Snowslope Hunter",
@@ -28276,8 +28276,8 @@
     {
       "name": "Turtle-Duck",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "permanent_template"
     },
     {
       "name": "Turtles Forever",
@@ -29986,8 +29986,8 @@
     {
       "name": "Water Wings",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null
+      "implemented": true,
+      "implementation": "spell_template"
     },
     {
       "name": "Waterbender Ascension",

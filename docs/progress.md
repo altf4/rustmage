@@ -8,7 +8,7 @@ satisfy this goal. The active target is pinned to October 15, 2026.
 | Requirement | Current evidence | Remaining work |
 | --- | --- | --- |
 | Full legal identity pool | 5,164 frozen oracle identities, Java reconciliation and native catalogue tests | Maintain reviewed data versions; implement missing Java-source cards directly |
-| All card semantics | Coverage manifest and runtime admission agree: 1,940 executable Standard identities | 3,224 identities; many reusable mechanics plus card-specific rules |
+| All card semantics | Coverage manifest and runtime admission agree: 1,950 executable Standard identities | 3,214 identities; many reusable mechanics plus card-specific rules |
 | Gameplay enforcement | Implemented timing, payment, targets, stack, source-aware damage, strike steps, 15 keywords, typed programs, trigger ordering and regression tests | Wider events/cross-group relationships, replacement/prevention, layers, wider counter mechanics, broader token abilities/copies, modes/costs, remaining keywords and mechanics |
 | In-process library | Rust rlib and C ABI/cdylib; Python ctypes tests including complete games | Batched/packed training interface and model hooks |
 | Branch/restore | Isolated COW object/library buffers, owned continuations, local RNG, reusable snapshots, replay/invariant tests | Cover every new continuation/mechanic; search over information sets |
@@ -260,3 +260,23 @@ fresh schema95 broad run. All jobs are terminal and completed build non-SO outpu
 are cleaned with every shared library retained. Two independent NONAUTHOR exact
 final-head reviews are required before merge. Fifteen inventoried full consumers,
 including complete Tiered Vincent, remain gated; issue311 and full Standard stay open.
+
+
+## Timestamped base-stat layers — PR321
+
+This delivery adds ten complete bodies to the actual merged Suspect/Gift parent,
+bringing executable coverage to1,950/5,164, with3,214 gated,95 token recipes and
+observation schema96. Shared sparse exact-incarnation effects enforce7a→7b→7c,
+Cursed Role timestamps, live static predicates, fixed resolution recipients and
+cleanup/departure. Owned branches, replay, restore and public projections remain
+independent. Full56-card source/dependency inventory remains in the audit;48
+remaining base-stat bodies are tracked in issue324, and full Standard is unfinished.
+
+Composedf373 evidence:1870 native tests/Clippy/fmt/generator,50 affected compiler
+methods,30 paid natural cases, three corrected split-search API methods and the
+complete fixed100 workload all pass. The100 workload has81,625 owned replay frames
+and163,250 denials. New paid cross-rule cases cover zero-toughness state actions
+using death-exile replacement before death-return, and7-power dying LKI with
+owner-return/Suspect clearing old base layers. Final actual-parent preservation is
+checked separately. See base-stat-layers.md for exact source/library hashes and
+the historical failed schema assertions and missing-Git harness scope.

@@ -6,7 +6,7 @@ import test_role_consumers as prior
 ROOT=Path(__file__).resolve().parents[1]
 FP=json.loads((ROOT/'data/standard/coverage.json').read_text())['catalogue_version']
 FACTS={v['name']:v for v in json.loads((ROOT/'data/standard/cards.json').read_text())['cards']}
-SCHEMA=95
+SCHEMA=96
 NAME='Curse of the Werefox'
 SAGA='Korvold and the Noble Thief'
 BASICS=['Plains','Island','Swamp','Mountain','Forest']

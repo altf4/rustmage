@@ -31,7 +31,7 @@ class SelectedXTests(unittest.TestCase):
         self.assertEqual(len(deck), 60)
         with Game([deck, deck], seed=seed, starting_player=p, deck_rules="Standard", library=library) as g:
             self.assertEqual(g.observe(p)["catalogue"],json.loads((Path(__file__).resolve().parents[1]/"data/standard/coverage.json").read_text())["catalogue_version"])
-            self.assertEqual(g.observe(p)["schema"],95)
+            self.assertEqual(g.observe(p)["schema"],96)
             stage="setup"; source=inset=shock=resource=None; base=None
             frames=0; ward_seen=False; x_seen=False; descriptor=False; attacked=False
             for iteration in range(30000):

@@ -74,6 +74,83 @@ def spell_cost_options(cost):
     # side of every two-brid symbol. Its total remains the printed mana value.
     return [(list(row[:6]),row[6]) for row in sorted(variants)]
 
+def base_stat_program(text):
+    """Whole constant 7b setters; each axis is independent of additive bonuses."""
+    if not isinstance(text,str) or not text:return None
+    text=normalize_duration(text[0].lower()+text[1:])
+    optional=text.startswith("you may have this creature's base ")
+    if optional:
+        text='this creature has base '+text[len("you may have this creature's base "):]
+        text=text.replace(' become ', ' ',1)
+    m=re.fullmatch(r'(target creature you control|target creature|this creature) has base (power and toughness|power|toughness) (-?[0-9]+)(?:/(-?[0-9]+))?(?: and gains (.+))? until end of turn\.',text)
+    if m is None:return None
+    who,axes,first,second,words=m.groups()
+    if (axes=='power and toughness') != (second is not None):return None
+    values=[int(first),int(second) if second is not None else None]
+    if any(v is not None and not -(2**127)<=v<2**127 for v in values):return None
+    p=values[0] if axes!='toughness' else None
+    t=values[1] if axes=='power and toughness' else values[0] if axes=='toughness' else None
+    subject='Source' if who=='this creature' else 'Targets'
+    option=lambda n:'None' if n is None else 'Some('+str(n)+')'
+    program=['SetBaseStats { subject: Subject::'+subject+', power: '+option(p)+', toughness: '+option(t)+' }']
+    if words is not None:
+        keywords=keyword_list(words)
+        if keywords is None or keywords & KEYWORDS['flash']:return None
+        program.append('GrantKeywords { subject: Subject::'+subject+', keywords: Keywords('+str(keywords)+') }')
+    if optional:program=['May { skip: '+str(len(program))+' }',*program]
+    return ('None' if subject=='Source' else 'CreatureYou' if who.endswith('you control') else 'Creature'),program
+
+
+def extract_base_stat_setter(card):
+    if (card.get('layout')!='normal' or not isinstance(card.get('oracle_text'),str)
+            or 'Creature' not in card.get('type_line','').split(' — ')[0].split()):return card,None
+    names=[card.get('name','')]
+    if card.get('type_line','').startswith('Legendary '):names.append(names[0].split(',')[0])
+    residual=[];found=[]
+    for raw in card['oracle_text'].splitlines():
+        line=source_rule_line(raw,[n for n in names if n]);own_turn=line.startswith('During your turn, ');condition=None
+        if own_turn:line=line[len('During your turn, '):]
+        elif m:=re.fullmatch(r'As long as (.+), (this creature has base .+)',line):
+            condition=stat_threshold_condition(m[1])
+            if condition is None:residual.append(raw);continue
+            line=m[2]
+        m=re.fullmatch(r'[Tt]his creature has base (power and toughness|power|toughness) (-?[0-9]+)(?:/(-?[0-9]+))?\.',line)
+        if m is None or (m[1]=='power and toughness') != (m[3] is not None):residual.append(raw);continue
+        first=int(m[2]);second=int(m[3]) if m[3] is not None else None
+        if any(v is not None and not -(2**127)<=v<2**127 for v in [first,second]):residual.append(raw);continue
+        p=first if m[1]!='toughness' else None;t=second if m[1]=='power and toughness' else first if m[1]=='toughness' else None
+        option=lambda n:'None' if n is None else 'Some('+str(n)+')'
+        found.append('BaseStatSetter { power: '+option(p)+', toughness: '+option(t)+', own_turn: '+str(own_turn).lower()+', condition: '+('None' if condition is None else 'Some('+condition+')')+' }')
+    if len(found)!=1:return card,None
+    return dict(card,oracle_text='\n'.join(residual)),found[0]
+
+
+def base_stat_reminders_valid(card):
+    raw=card.get('oracle_text','');surface=raw;seen=False
+    if not isinstance(raw,str):return True
+    while True:
+        seen |= re.search(r'\bbase\s+(?:power|toughness)\b',' '.join(surface.casefold().split())) is not None or \
+            "this creature can't be blocked this turn" in ' '.join(surface.casefold().split())
+        erased=re.sub(r'\([^()]*\)','',surface)
+        if erased==surface:break
+        surface=erased
+    if not seen:return True
+    names=[card.get('name','')]
+    if card.get('type_line','').startswith('Legendary '):names.append(names[0].split(',')[0])
+    for line in raw.splitlines():
+        if '(' not in line and ')' not in line:continue
+        if intrinsic_reminder_line_valid(line):continue
+        m=re.fullmatch(r"([^()]+) \((It|He) can't be the target of spells or abilities your opponents control\.\)",line)
+        if m is None:return False
+        parsed=base_stat_program(m[1])
+        if parsed and any('GrantKeywords' in row and (int(re.search(r'Keywords\(([0-9]+)\)',row)[1]) & KEYWORDS['hexproof']) for row in parsed[1]):continue
+        normalized=source_rule_line(m[1],[n for n in names if n])
+        conditional=re.fullmatch(r'As long as (.+), this creature has hexproof\.',normalized)
+        if conditional and stat_threshold_condition(conditional[1]) is not None:continue
+        return False
+    return True
+
+
 def extract_combat_restriction(card):
     """Whole readonly source/Aura clauses; unrecognized conditions stay in body."""
     if (card.get('layout')!='normal' or not isinstance(card.get('oracle_text'),str)
@@ -1886,6 +1963,8 @@ def statement_program(text):
     text = strip_rule_label(text)
     if not text:return None
     text = normalize_duration(text[0].lower() + text[1:])
+    if (base_set := base_stat_program(text)) and base_set[0]=='None':return base_set[1]
+    if text=="this creature can't be blocked this turn.":return ['GrantKeywords { subject: Subject::Source, keywords: Keywords(16384) }']
     if text=='suspect this creature.':return ['Suspect { subject: Subject::Source }']
     if text=='suspect enchanted creature.':return ['Suspect { subject: Subject::Attached }']
     if text=='all suspected creatures are no longer suspected.':return ['UnsuspectCreatures { filter: '+creature_filter('creatures')+' }']
@@ -2621,6 +2700,7 @@ def targeted_program(text):
     if 'another target attacking creature you control' in text:
         result=targeted_program(text.replace('another target attacking creature you control','another target creature you control',1))
         return ('OtherCreatureAttackingYou',result[1]) if result and result[0]=='OtherCreatureYou' else None
+    if result:=base_stat_program(text):return result
     if result:=damage_death_exile_program(text):return result
     if result:=role_return_program(text):return result
     returned=battlefield_return_program(text)
@@ -4942,6 +5022,7 @@ def compile_catalogue(snapshot, target):
     static_rows = []
     enchanted_rows = []
     flash_surcharge_rows = []
+    base_set_rows = []
     combat_rows = []
     grant_rows = []
     dynamic_rows = []
@@ -5008,6 +5089,7 @@ def compile_catalogue(snapshot, target):
         # Detection never authenticates or changes the raw validation body.
         gift_card, gift_kind = extract_gift(original)
         card, timing_grants = extract_cast_timing_grants(gift_card)
+        card, base_set = extract_base_stat_setter(card)
         card, combat = extract_combat_restriction(card)
         card, uncounterable = extract_uncounterable(card)
         card, entry_suppression = extract_entry_trigger_suppression(card)
@@ -5232,6 +5314,8 @@ def compile_catalogue(snapshot, target):
             effect = 'Unsupported'
         if not intrinsic_reminders_valid(dict(original, oracle_text=suspect_proxy)):
             effect = 'Unsupported'
+        if not base_stat_reminders_valid(original):
+            effect='Unsupported'
         if not battlefield_return_reminders_valid(original):
             effect='Unsupported'
         if not combat_restriction_reminders_valid(original):
@@ -5318,6 +5402,7 @@ def compile_catalogue(snapshot, target):
                 raise ValueError(f'invalid or missing starting loyalty: {name}')
             loyalty_rows.append(f'        {index} => {int(value)},')
         if effect != 'Unsupported':
+            if base_set:base_set_rows.append(f'        {index} => Some({base_set}),')
             if gift_body is not None or gift_permanent is not None:
                 token='None'
                 if gift_kind != 'Card':
@@ -5389,6 +5474,12 @@ def compile_catalogue(snapshot, target):
             enchanted_rows.append(f'        {index} => &[' + ', '.join(enchanted) + '],')
         if flash_surcharge is not None and effect != 'Unsupported':
             flash_surcharge_rows.append(f'        {index} => Some({flash_surcharge}),')
+        # A newly parsed activation must not leak a partial program on a card
+        # whose complete body is still unsupported (for example an unported cost).
+        if effect == 'Unsupported':
+            activations = [a for a in activations if not any(
+                instruction.startswith('SetBaseStats') or instruction == 'GrantKeywords { subject: Subject::Source, keywords: Keywords(16384) }'
+                for instruction in a[2])]
         definitions.append(f"    Definition {{ info: CardInfo {{ name: {quote(card.get('name', name))}, oracle_id: {oracle_id}, mana_cost: {quote(card.get("mana_cost",cost) if scalar is not None else cost)}, type_line: {quote(type_line)}, oracle_keywords: {oracle_keywords}, standard_legal: {str(name in standard_names).lower()}, legendary: {str(card.get('type_line', '').startswith('Legendary ')).lower()}, implemented: {str(effect != 'Unsupported').lower()}, keywords: Keywords({keywords}), deck_limit: {deck_limit} }}, effect: Effect::{effect}, triggers: {triggers_rust}, activated: {rust_activations(activations)}, enters: Counters {{ plus_one: {enters[0]}, minus_one: {enters[1]}, stun: {enters[2]}, loyalty: 0, lore: 0 }}, entry: EntryTapped::{entry}, kind: {kind}, basic: {str(basic).lower()}, mana_color: {'None' if color is None else f'Some({color})'}, colored: {colored}, generic: {generic} }},")
         if offspring_key is not None:
             offspring_factories[offspring_key]=(index,definitions[-1],color_mask,card.get('type_line','').split(' — ')[-1])
@@ -5419,7 +5510,7 @@ def compile_catalogue(snapshot, target):
             color_masks.append(color)
             # Clone every compiled property table for the immutable copy; no
             # mutable copy/type-changing engine or runtime card-name dispatch.
-            for table in [combat_rows,static_rows,grant_rows,dynamic_rows,scaling_rows,additional_rows,hybrid_rows,reduction_rows,cast_timing_rows,target_reduction_rows,entry_counter_rows,entry_suppression_rows,opponent_entry_tapped_rows,offspring_rows]:
+            for table in [base_set_rows,combat_rows,static_rows,grant_rows,dynamic_rows,scaling_rows,additional_rows,hybrid_rows,reduction_rows,cast_timing_rows,target_reduction_rows,entry_counter_rows,entry_suppression_rows,opponent_entry_tapped_rows,offspring_rows]:
                 prefix=f'        {source_index} =>'
                 table.extend(row.replace(prefix,f'        {index} =>',1) for row in list(table) if row.startswith(prefix))
             offspring_copy_rows.append(f'        {index} => Some(__TOKEN_{key}__),')
@@ -5506,6 +5597,7 @@ def compile_catalogue(snapshot, target):
     for index, (name, _, _, _) in enumerate(LEGACY):
         lines.append(f'    pub const {name.replace(" ", "")}: Card = Card({index});')
     lines += ['}', '#[rustfmt::skip]', "pub(super) fn static_modifiers(card: Card) -> &'static [StaticModifier] {", '    match card.0 {', *static_rows, '        _ => &[],', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn equipment(card: Card) -> Option<EquipmentSpec> {', '    match card.0 {', *equipment_rows, '        _ => None,', '    }', '}', '#[rustfmt::skip]', 'pub(super) fn aura(card: Card) -> Option<AuraSpec> {', '    match card.0 {', *aura_rows, '        _ => None,', '    }', '}', '']
+    lines += ['#[rustfmt::skip]', 'pub(super) fn base_stat_setter(card: Card) -> Option<BaseStatSetter> {', '    match card.0 {', *base_set_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn combat_restriction(card: Card) -> Option<CombatRestriction> {', '    match card.0 {', *combat_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn role(card: Card) -> Option<RoleKind> {', '    match card.0 {', *role_rows, '        _ => None,', '    }', '}', '']
     lines += ['#[rustfmt::skip]', 'pub(super) fn plot_cost(card: Card) -> Option<ManaCost> {', '    match card.0 {', *plot_rows, '        _ => None,', '    }', '}', '']
