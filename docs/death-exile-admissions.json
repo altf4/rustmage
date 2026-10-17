@@ -1,5 +1,5 @@
 {
-  "baseline": "c0232954838cf71203a5be7c0e8fc80a66f6bf26",
+  "baseline": "5d103e7a3172e4742687d3f77f3ed814264b1532",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "purpose": "Whole eighteen-card audit, not an execution whitelist or claim of transitive Java migration.",
   "cards": [
@@ -7226,5 +7226,6 @@
   },
   "issue": 313,
   "reserved_observation_schema": 92,
-  "dependency_index_note": "unique_sources contains complete per-file explicit-import edges; card/shared records reference those exact source paths and hashes."
+  "dependency_index_note": "unique_sources contains complete per-file explicit-import edges; card/shared records reference those exact source paths and hashes.",
+  "original_inventory_baseline": "c0232954838cf71203a5be7c0e8fc80a66f6bf26"
 }
