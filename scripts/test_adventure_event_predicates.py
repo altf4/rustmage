@@ -53,3 +53,30 @@ class AdventureEventCompilerTests(unittest.TestCase):
   self.assertEqual(report['current_definitions'],5331)
   self.assertEqual(report['token_recipes'],94)
   self.assertEqual(report['inline_flag_tables'],3)
+ def normal_faces(self):
+  result=[]
+  for name in NAMES:
+   c=copy.deepcopy(self.rows[name]);c.update(c['card_faces'][0]);c.pop('card_faces',None);c['layout']='normal';c['name']='Independent normal event '+str(len(result));result.append(c)
+  second=copy.deepcopy(result[0]);second['name']='Independent second cast event';second['oracle_text']=second['oracle_text'].replace('first instant','second instant');result.append(second)
+  return result
+ def test_generic_normal_events_authenticate_raw_text_at_every_infix_boundary(self):
+  for c in self.normal_faces():
+   self.assertTrue(self.admitted(c),c['name'])
+   words=c['oracle_text'].split()
+   for index in range(len(words)+1):
+    for injected in ['(You win the game.)','((You win the game.))']:
+     for separator in [' ','\t','\n']:
+      mutant=copy.deepcopy(c);mutant['oracle_text']=' '.join(words[:index])+separator+injected+separator+' '.join(words[index:])
+      with self.subTest(name=c['name'],index=index,clause=injected,separator=separator):self.assertFalse(self.admitted(mutant),mutant['oracle_text'])
+   for word in ['cast','attacks','damage']:
+    if word in c['oracle_text']:
+     mutant=copy.deepcopy(c);mutant['oracle_text']=mutant['oracle_text'].replace(word,word[:2]+'(You win the game.)'+word[2:],1);self.assertFalse(self.admitted(mutant))
+ def test_event_route_allows_only_authenticated_intrinsic_and_food_reminders(self):
+  for c in self.normal_faces():
+   c['oracle_text']='Flying (This creature can\'t be blocked except by creatures with flying or reach.)\n'+c['oracle_text']
+   self.assertTrue(self.admitted(c),c['name'])
+   for changed in ['Flying (You win the game.)','Flying ((This creature can\'t be blocked except by creatures with flying or reach.))','Flying\n(This creature can\'t be blocked except by creatures with flying or reach.)']:
+    mutant=copy.deepcopy(c);mutant['oracle_text']=changed+'\n'+c['oracle_text'].split('\n',1)[1];self.assertFalse(self.admitted(mutant))
+  food=self.normal_faces()[2];reminder=food['oracle_text'][food['oracle_text'].index('('):]
+  for changed in [food['oracle_text'].replace('Food token.','Clue token.'),food['oracle_text'].replace(' '+reminder,'\n'+reminder),food['oracle_text']+' '+reminder,food['oracle_text'].replace('gain 3 life','gain 30 life')]:
+   mutant=copy.deepcopy(food);mutant['oracle_text']=changed;self.assertFalse(self.admitted(mutant),changed)
