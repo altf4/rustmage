@@ -459,3 +459,84 @@ fn actually_paid_counterspell_prevents_all_search_and_completion_shuffles() {
         assert!(g.state.adventures.is_none());
     }
 }
+
+#[test]
+fn actual_opponent_turn_whirl_entry_gains_bloom_life_and_enables_split_omen_not_horse() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        g.state.active = p.other();
+        g.state.priority = p;
+        let bloom = spawn(
+            &mut g,
+            p,
+            Card::from_name(BLOOM).unwrap(),
+            Zone::Battlefield,
+        );
+        let troop = spawn(
+            &mut g,
+            p,
+            Card::from_name("Troop of Ponies").unwrap(),
+            Zone::Hand,
+        );
+        let omen = spawn(&mut g, p, Card::from_name(BLOOM).unwrap(), Zone::Hand);
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceOmen { card: omen })
+        );
+        let whirl = spawn(
+            &mut g,
+            p,
+            Card::from_name("Whirlwing Stormbrood // Dynamic Soar").unwrap(),
+            Zone::Hand,
+        );
+        let life = g.state.players[p.index()].life;
+        replay(&mut g, Action::AnnounceCast { card: whirl });
+        drive(&mut g, false);
+        assert_eq!(g.state.objects[whirl as usize].zone, Zone::Battlefield);
+        assert_eq!(g.state.players[p.index()].life, life + 3);
+        assert_eq!(g.state.objects[bloom as usize].zone, Zone::Battlefield);
+        assert_eq!(g.state.active, p.other());
+        if g.actor() == Some(p.other()) {
+            replay(&mut g, Action::Pass);
+        }
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceCast { card: troop })
+        );
+        assert!(
+            g.legal_actions()
+                .contains(&Action::AnnounceOmen { card: omen })
+        );
+        replay(&mut g, Action::AnnounceOmen { card: omen });
+        drive(&mut g, true);
+        let selected = g.state.players[p.index()].library[..2].to_vec();
+        for &card in &selected {
+            replay(&mut g, Action::ChooseSearch { card });
+        }
+        replay(&mut g, Action::FinishSearch);
+        assert_eq!(
+            g.observe(p)
+                .search_distribution
+                .as_ref()
+                .unwrap()
+                .candidates
+                .len(),
+            2
+        );
+        assert!(g.observe(p.other()).search_choice.is_none());
+        replay(
+            &mut g,
+            Action::ChooseSearchBattlefield { card: selected[1] },
+        );
+        drive(&mut g, false);
+        assert_eq!(g.state.active, p.other());
+        assert_eq!(g.state.objects[omen as usize].zone, Zone::Library);
+        assert_eq!(
+            g.state.objects[selected[1] as usize].zone,
+            Zone::Battlefield
+        );
+        assert!(g.state.objects[selected[1] as usize].tapped);
+        assert_eq!(g.state.objects[selected[0] as usize].zone, Zone::Hand);
+        assert!(g.state.adventures.is_none());
+    }
+}

@@ -163,7 +163,11 @@ impl Game {
         if object.zone != Zone::Hand && !generic_exile {
             return false;
         }
-        if !sorcery && !definition.is_instant() {
+        if !sorcery
+            && !definition.is_instant()
+            && !definition.info().keywords.contains(Keywords::FLASH)
+            && !self.cast_timing_granted(actor, definition)
+        {
             return false;
         }
         let plan = match definition.effect() {

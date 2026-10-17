@@ -10,6 +10,8 @@ use crate::cards::{
 };
 #[path = "engine_adventure.rs"]
 mod adventure;
+#[path = "engine_cast_timing.rs"]
+mod cast_timing;
 #[path = "engine_crew.rs"]
 mod crew;
 #[path = "engine_saddle.rs"]
@@ -2089,7 +2091,8 @@ impl Game {
                     if obj.zone == Zone::Hand
                         && (sorcery
                             || obj.card.is_instant()
-                            || self.keywords(card).contains(Keywords::FLASH))
+                            || self.keywords(card).contains(Keywords::FLASH)
+                            || self.cast_timing_granted(actor, obj.card))
                         && obj
                             .card
                             .warp_cost()
@@ -2130,6 +2133,7 @@ impl Game {
                     if !sorcery
                         && !obj.card.is_instant()
                         && !self.keywords(card).contains(Keywords::FLASH)
+                        && !self.cast_timing_granted(actor, obj.card)
                     {
                         continue;
                     }

@@ -40,6 +40,21 @@ class SplitSearchCompilerTests(unittest.TestCase):
     if n==NAMES[0]:t['card_faces'][1]['mana_cost']=cost;t['mana_cost']=' // '.join(f['mana_cost']for f in t['card_faces'])
     else:t['mana_cost']=cost
     self.assertFalse(self.admitted(t))
+ def test_legacy_named_consumers_preserve_whole_body_and_reject_unknown_effects(self):
+  for name in ['Grizzly Bears','Llanowar Elves','Shock','Goblin Piker']:
+   c=copy.deepcopy(self.cards[NAMES[1]]);c['name']=name
+   rust,metadata=self.compile(c)
+   self.assertNotEqual(next(v['implementation']for v in metadata['cards']if v['name']==name),'explicit')
+   row=next(line for line in rust.splitlines()if 'name: '+json.dumps(name)+','in line)
+   with self.subTest(name=name):
+    self.assertTrue(self.admitted(c));self.assertIn('effect: Effect::Creature(2, 1)',row);self.assertNotIn('activated: &[]',row)
+    self.assertIn('BattlefieldThenHand { battlefield: 1 }',rust);self.assertIn('tap: true, sacrifice: true',rust)
+   for tail in ['\nDiscover 4.','\nDraw thirty cards.',' (Unknown.)',' (unclosed',')']:
+    t=copy.deepcopy(c);t['oracle_text']+=tail
+    with self.subTest(name=name,tail=tail):self.assertFalse(self.admitted(t))
+   for old,new in [('up to two','up to three'),('reveal them, ',''),('battlefield tapped','battlefield'),('the other into your hand','the other into your graveyard')]:
+    t=copy.deepcopy(c);t['oracle_text']=t['oracle_text'].replace(old,new)
+    with self.subTest(name=name,boundary=(old,new)):self.assertFalse(self.admitted(t))
  def test_admission_is_semantic_not_a_name_whitelist(self):
   for n in NAMES:
    c=copy.deepcopy(self.cards[n])

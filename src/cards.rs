@@ -916,6 +916,7 @@ pub(crate) enum CastFilter {
     Creature,
     Noncreature,
     InstantSorcery,
+    Sorcery,
     Artifact,
     // Compiler vocabulary; no complete admitted card currently uses this filter.
     #[allow(dead_code)]
@@ -952,6 +953,7 @@ impl CastFilter {
             Self::Creature => card.is_creature(),
             Self::Noncreature => !card.is_creature(),
             Self::InstantSorcery => card.kind_mask() & (4 | 8) != 0,
+            Self::Sorcery => card.kind_mask() & 4 != 0,
             Self::Artifact => card.is_artifact(),
             Self::Enchantment => card.kind_mask() & 32 != 0,
             Self::Subtype(subtype) => card.has_subtype(subtype),
@@ -1726,6 +1728,10 @@ impl Card {
     }
     pub(crate) fn target_cost_reduction(self) -> Option<&'static TargetSpellReduction> {
         generated::target_cost_reduction(self)
+    }
+    /// Timing permission is an as-though effect, not a granted Flash keyword.
+    pub(crate) fn cast_timing_grants(self) -> &'static [CastFilter] {
+        generated::cast_timing_grants(self)
     }
     pub(crate) fn cost_reductions(self) -> &'static [SpellReduction] {
         generated::cost_reductions(self)
